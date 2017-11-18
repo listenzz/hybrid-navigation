@@ -48,7 +48,6 @@
 			isa = PBXGroup;
 			children = (
 				914E8E6D1FC03AD300E5F241 /* Navigation */,
-				914E8E841FC03B5400E5F241 /* Library */,
 				914E8E6C1FC03AD300E5F241 /* Products */,
 				AB6D919799112C758431F021 /* Pods */,
 				9E7EA43B3E457403125604F0 /* Frameworks */,
@@ -77,13 +76,6 @@
 				914E8E7D1FC03AD300E5F241 /* main.m */,
 			);
 			path = Navigation;
-			sourceTree = "<group>";
-		};
-		914E8E841FC03B5400E5F241 /* Library */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Library;
 			sourceTree = "<group>";
 		};
 		9E7EA43B3E457403125604F0 /* Frameworks */ = {

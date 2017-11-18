@@ -20,6 +20,10 @@ PODS:
     - DoubleConversion
     - GLog
   - GLog (0.3.4)
+  - NavigationHybrid (0.0.1):
+    - React
+  - React (0.50.3):
+    - React/Core (= 0.50.3)
   - React/Core (0.50.3):
     - yoga (= 0.50.3.React)
   - React/CxxBridge (0.50.3):
@@ -65,6 +69,7 @@ DEPENDENCIES:
   - DoubleConversion (from `../../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Folly (from `../../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - GLog (from `../../node_modules/react-native/third-party-podspecs/GLog.podspec`)
+  - NavigationHybrid (from `../../`)
   - React/Core (from `../../node_modules/react-native`)
   - React/CxxBridge (from `../../node_modules/react-native`)
   - React/DevSupport (from `../../node_modules/react-native`)
@@ -85,6 +90,8 @@ EXTERNAL SOURCES:
     :podspec: ../../node_modules/react-native/third-party-podspecs/Folly.podspec
   GLog:
     :podspec: ../../node_modules/react-native/third-party-podspecs/GLog.podspec
+  NavigationHybrid:
+    :path: ../../
   React:
     :path: ../../node_modules/react-native
   yoga:
@@ -95,9 +102,10 @@ SPEC CHECKSUMS:
   DoubleConversion: ebb6747c5b66026ad4f97b789c3ceac6f18e57a6
   Folly: b7255b29f1d693c375d642d0f04f0592181156d9
   GLog: 3e4e4ae9746ce6bf6e9420c7fc1e08ad59c8ba1a
+  NavigationHybrid: 2b1d26c74f5645f803709d9dda7c7224fe141fbf
   React: 0ba6cae888dc82dc47d6d5f3090615e1b5f6f3e7
   yoga: faecc6be81ca7823ccbb470b93a1b228499fa1c0
 
-PODFILE CHECKSUM: f8ea7cdd44f6a2678bd7efffb90ab8c35557be9d
+PODFILE CHECKSUM: a138cf315b01516e4954e7a02606c846192efe68
 
 COCOAPODS: 1.3.1
