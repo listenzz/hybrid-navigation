@@ -116,6 +116,7 @@
 				914E8E691FC03AD300E5F241 /* Resources */,
 				C029829BEC12B26B315034A0 /* [CP] Embed Pods Frameworks */,
 				15B446512C9C5FF4AA3A3CA5 /* [CP] Copy Pods Resources */,
+				91E338371FC09211006A2C8B /* Bundle React Native code and images */,
 			);
 			buildRules = (
 			);
@@ -187,6 +188,20 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Navigation/Pods-Navigation-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		91E338371FC09211006A2C8B /* Bundle React Native code and images */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export NODE_BINARY=node\n../../node_modules/react-native/scripts/react-native-xcode.sh";
 		};
 		A2082383C75791889450F6CC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
