@@ -1,4 +1,4 @@
-package com.reactnativenavigationhybrid.playground;
+package com.navigationhybrid.playground;
 
 import com.facebook.react.ReactActivity;
 

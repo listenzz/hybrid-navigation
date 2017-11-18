@@ -1,4 +1,4 @@
-package com.reactnativenavigationhybrid;
+package com.navigationhybrid.playground;
 
 import org.junit.Test;
 

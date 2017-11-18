@@ -1,4 +1,4 @@
-package com.reactnativenavigationhybrid;
+package com.navigationhybrid;
 
 import android.support.v7.app.AppCompatActivity;
 

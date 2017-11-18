@@ -1,5 +1,5 @@
 rootProject.name = 'Navigation'
 include ':app'
 
-include ':react-native-navigation-hybrid'
-project(':react-native-navigation-hybrid').projectDir = new File(rootProject.projectDir, '../../lib/android/library')
+include ':navigation-hybrid'
+project(':navigation-hybrid').projectDir = new File(rootProject.projectDir, '../../lib/android/library')

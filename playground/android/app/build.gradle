@@ -10,7 +10,7 @@ apply from: "../../../node_modules/react-native/react.gradle"
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.reactnativenavigationhybrid.playground"
+        applicationId "navigationhybrid.playground"
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
@@ -31,7 +31,7 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
     implementation 'com.facebook.react:react-native:+'
-    implementation project(':react-native-navigation-hybrid')
+    implementation project(':navigation-hybrid')
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

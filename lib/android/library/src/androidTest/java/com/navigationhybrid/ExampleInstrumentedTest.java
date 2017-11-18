@@ -1,4 +1,4 @@
-package com.reactnativenavigationhybrid;
+package com.navigationhybrid;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.reactnativenavigationhybrid.test", appContext.getPackageName());
+        assertEquals("com.navigationhybrid.test", appContext.getPackageName());
     }
 }

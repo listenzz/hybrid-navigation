@@ -7,6 +7,10 @@
 
 #import "NavigatorModule.h"
 
+@interface NavigatorModule()
+
+@end
+
 @implementation NavigatorModule
 
 @end
