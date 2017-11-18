@@ -1,4 +1,4 @@
-rootProject.name = 'playground'
+rootProject.name = 'Navigation'
 include ':app'
 
 include ':react-native-navigation-hybrid'

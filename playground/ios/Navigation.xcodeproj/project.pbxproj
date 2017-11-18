@@ -394,7 +394,7 @@
 					"\"JavaScriptCore\"",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.reactnativenavigationhybrid.Navigation;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reactnativenavigationhybrid.playground;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -419,7 +419,7 @@
 					"\"JavaScriptCore\"",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.reactnativenavigationhybrid.Navigation;
+				PRODUCT_BUNDLE_IDENTIFIER = com.reactnativenavigationhybrid.playground;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
