@@ -1,21 +1,25 @@
 package com.navigationhybrid.playground;
 
-import com.facebook.react.ReactActivity;
+import android.os.Bundle;
 
-import javax.annotation.Nullable;
+import com.navigationhybrid.ReactAppCompatActivity;
 
-public class MainActivity extends ReactActivity {
+public class MainActivity extends ReactAppCompatActivity {
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//    }
-
-
-    @Nullable
     @Override
-    protected String getMainComponentName() {
-        return "Navigator";
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.content, new ReactFragment())
+                    .addToBackStack("react")
+                    .commit();
+        }
+
     }
+
+
 }

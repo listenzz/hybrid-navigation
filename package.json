@@ -5,6 +5,7 @@
 		"url": "git+https://github.com/listenzz/react-native-navigation-hybrid.git"
 	},
 	"version": "0.0.1",
+	"nativePackage": true,
 	"description": "A native navigation for React Native which support navigation between native and react side",
 	"author": "listen <listenzz@163.com>",
 	"license": "MIT",
