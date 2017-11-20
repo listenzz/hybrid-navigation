@@ -2,7 +2,9 @@ package com.navigationhybrid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.facebook.react.ReactInstanceManager;
@@ -17,6 +19,7 @@ import com.facebook.react.modules.core.PermissionListener;
 
 public class ReactAppCompatActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity {
 
+    private static final String TAG = "ReactNative";
 
     private final ReactAppCompatActivityDelegate activityDelegate;
 
@@ -55,18 +58,26 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
+        Log.i(TAG, "onKeyUp keyCode:" + keyCode);
         return activityDelegate.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
     @Override
     public void onBackPressed() {
         if (!activityDelegate.onBackPressed()) {
+            Log.i(TAG, getClass().getSimpleName() +  "#onBackPressed");
             super.onBackPressed();
         }
     }
 
     @Override
     public void invokeDefaultOnBackPressed() {
+        Log.i(TAG, getClass().getSimpleName() + "#invokeDefaultOnBackPressed");
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (count == 1) {
+            ActivityCompat.finishAfterTransition(this);
+            return;
+        }
         super.onBackPressed();
     }
 

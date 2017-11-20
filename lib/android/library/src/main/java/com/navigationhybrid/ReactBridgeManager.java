@@ -1,8 +1,8 @@
 package com.navigationhybrid;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
-import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.ReactContext;
@@ -12,7 +12,7 @@ import com.facebook.react.bridge.ReactContext;
  */
 
 public class ReactBridgeManager {
-    private static final String TAG = "navigation";
+    private static final String TAG = "ReactNative";
 
     public static ReactBridgeManager instance = new ReactBridgeManager();
 
@@ -30,7 +30,7 @@ public class ReactBridgeManager {
         return reactNativeHost;
     }
 
-    ReactInstanceManager getReactInstanceManager() {
+    public ReactInstanceManager getReactInstanceManager() {
         checkReactNativeHost();
         return reactNativeHost.getReactInstanceManager();
     }
@@ -39,14 +39,14 @@ public class ReactBridgeManager {
     private boolean isInitialized;
 
     private void setup() {
-        FLog.i(TAG, "bridge manager setup");
+        Log.w(TAG, "bridge manager setup");
         final ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         reactInstanceManager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
             @Override
             public void onReactContextInitialized(ReactContext context) {
-                reactInstanceManager.removeReactInstanceEventListener(this);
+                // reactInstanceManager.removeReactInstanceEventListener(this);
                 isInitialized = true;
-                FLog.i(TAG, "react context initialized");
+                Log.w(TAG, "react context initialized");
             }
         });
         reactInstanceManager.createReactContextInBackground();

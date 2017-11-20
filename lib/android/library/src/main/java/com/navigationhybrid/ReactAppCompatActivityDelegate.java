@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
@@ -30,6 +31,9 @@ import javax.annotation.Nullable;
  */
 
 public class ReactAppCompatActivityDelegate {
+
+    private static final String TAG = "ReactNative";
+
     private final int REQUEST_OVERLAY_PERMISSION_CODE = 1111;
     private static final String REDBOX_PERMISSION_GRANTED_MESSAGE =
             "Overlay permissions have been granted.";
@@ -69,8 +73,10 @@ public class ReactAppCompatActivityDelegate {
 
     protected void onCreate(Bundle savedInstanceState) {
         if (getReactNativeHost().getUseDeveloperSupport() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Log.w(TAG,"check overlay permission");
             // Get permission to show redbox in dev builds.
             if (!Settings.canDrawOverlays(getContext())) {
+                Log.w(TAG, "request overlay permission");
                 Intent serviceIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
                 FLog.w(ReactConstants.TAG, REDBOX_PERMISSION_MESSAGE);
                 Toast.makeText(getContext(), REDBOX_PERMISSION_MESSAGE, Toast.LENGTH_LONG).show();
@@ -137,6 +143,7 @@ public class ReactAppCompatActivityDelegate {
 
     public boolean onBackPressed() {
         if (getReactNativeHost().hasInstance()) {
+            Log.i(TAG, "onBackPressed hasInstance");
             getReactNativeHost().getReactInstanceManager().onBackPressed();
             return true;
         }
@@ -164,10 +171,12 @@ public class ReactAppCompatActivityDelegate {
             final int requestCode,
             final String[] permissions,
             final int[] grantResults) {
+        Log.w(TAG, getClass().getSimpleName() + "#onRequestPermissionsResult");
         mPermissionsCallback = new Callback() {
             @Override
             public void invoke(Object... args) {
                 if (mPermissionListener != null && mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+                    Log.w(TAG, "call permission listener");
                     mPermissionListener = null;
                 }
             }
