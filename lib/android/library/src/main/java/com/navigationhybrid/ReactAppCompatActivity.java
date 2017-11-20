@@ -3,6 +3,7 @@ package com.navigationhybrid;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -85,10 +86,27 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
     @Override
     public void invokeDefaultOnBackPressed() {
         Log.i(TAG, getClass().getSimpleName() + "#invokeDefaultOnBackPressed");
-        int count = getSupportFragmentManager().getBackStackEntryCount();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        int count = fragmentManager.getBackStackEntryCount();
         if (count == 1) {
             ActivityCompat.finishAfterTransition(this);
             return;
+        }
+
+        FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(count -1);
+        if (entry.getName() != null) {
+            Fragment fragment = fragmentManager.findFragmentByTag(entry.getName());
+            if (fragment instanceof NavigationFragment) {
+                NavigationFragment navigationFragment = (NavigationFragment) fragment;
+                Navigator navigator = navigationFragment.getNavigator();
+                if (navigator.canPop()) {
+                    navigator.pop();
+                    return;
+                } else if (navigator.canDismiss()) {
+                    navigator.dismiss();
+                    return;
+                }
+            }
         }
         super.onBackPressed();
     }

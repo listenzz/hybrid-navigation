@@ -52,5 +52,6 @@ public class MainApplication extends Application implements ReactApplication{
         ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
         bridgeManager.registerNativeModule("NativeNavigation", NativeNavigationFragment.class);
         bridgeManager.registerNativeModule("Navigation", NativeNavigationFragment.class);
+        bridgeManager.registerNativeModule("NativeResult", NativeResultFragment.class);
     }
 }

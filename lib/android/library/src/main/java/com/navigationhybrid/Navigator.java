@@ -54,7 +54,7 @@ public class Navigator {
         NavigationFragment topFragment = getTopFragment();
 
         if (topFragment != null) {
-            transaction.hide(topFragment);
+           transaction.hide(topFragment);
         }
 
         transaction.addToBackStack(navId);
@@ -88,9 +88,12 @@ public class Navigator {
 
         props.putString(NavigationFragment.PROPS_NAV_ID, navId);
         props.putString(NavigationFragment.PROPS_SCENE_ID, sceneId);
+
         args.putBundle(NavigationFragment.NAVIGATION_PROPS, props);
         args.putBundle(NavigationFragment.NAVIGATION_OPTIONS, options);
         args.putInt(NavigationFragment.NAVIGATION_CONTAINER_ID, containerId);
+        args.putInt(NavigationFragment.NAVIGATION_REQUEST_CODE, requestCode);
+
         if (fragment != null) {
             fragment.setArguments(args);
         }

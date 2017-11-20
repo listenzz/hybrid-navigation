@@ -85,7 +85,7 @@ public class NavigationFragment extends Fragment {
     }
 
     public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
-        Log.d(TAG, toString() + "#onFragmentResult requestCode=" + requestCode + " resultCode=" + resultCode + " data=" + data );
+        Log.i(TAG, toString() + "#onFragmentResult requestCode=" + requestCode + " resultCode=" + resultCode + " data=" + data );
         List<Fragment> fragments =  getChildFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof NavigationFragment) {
@@ -105,7 +105,7 @@ public class NavigationFragment extends Fragment {
             String navId = props.getString(PROPS_NAV_ID);
             String sceneId = props.getString(PROPS_SCENE_ID);
             int containerId = args.getInt(NAVIGATION_CONTAINER_ID);
-            navigator = new Navigator(navId, sceneId, getActivity().getSupportFragmentManager(),containerId);
+            navigator = new Navigator(navId, sceneId, getFragmentManager(), containerId);
             String anim = args.getString(NAVIGATION_ANIM);
             if (anim != null) {
                 navigator.anim = PresentAnimation.valueOf(anim);

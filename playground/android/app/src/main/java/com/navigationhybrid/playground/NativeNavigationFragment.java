@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.navigationhybrid.NavigationFragment;
 
@@ -13,6 +15,10 @@ import com.navigationhybrid.NavigationFragment;
  */
 
 public class NativeNavigationFragment extends NavigationFragment {
+
+    private static final int REQUEST_CODE = 1;
+
+    TextView resultText;
 
     @Nullable
     @Override
@@ -44,7 +50,7 @@ public class NativeNavigationFragment extends NavigationFragment {
         view.findViewById(R.id.request_from_native).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                navigator.present("NativeResult", REQUEST_CODE);
             }
         });
 
@@ -54,6 +60,15 @@ public class NativeNavigationFragment extends NavigationFragment {
 
             }
         });
+
+        view.findViewById(R.id.description).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getContext(), "你点击了底下的页面", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        resultText = view.findViewById(R.id.result);
 
         return view;
     }
@@ -67,6 +82,18 @@ public class NativeNavigationFragment extends NavigationFragment {
             getView().findViewById(R.id.pop_to_root).setEnabled(!navigator.isRoot());
         }
 
+    }
 
+    @Override
+    public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
+        super.onFragmentResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode != 0) {
+                String text = data.getString("text", "");
+                resultText.setText("result："+text);
+            } else {
+                resultText.setText("ACTION CANCEL");
+            }
+        }
     }
 }
