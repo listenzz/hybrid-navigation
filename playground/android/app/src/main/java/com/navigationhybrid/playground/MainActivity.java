@@ -2,7 +2,11 @@ package com.navigationhybrid.playground;
 
 import android.os.Bundle;
 
+import com.navigationhybrid.NavigationFragment;
+import com.navigationhybrid.Navigator;
 import com.navigationhybrid.ReactAppCompatActivity;
+
+import java.util.UUID;
 
 public class MainActivity extends ReactAppCompatActivity {
 
@@ -12,11 +16,9 @@ public class MainActivity extends ReactAppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.content, new ReactFragment())
-                    .addToBackStack("react")
-                    .commit();
+            Navigator navigator = new Navigator(UUID.randomUUID().toString(), UUID.randomUUID().toString(), getSupportFragmentManager(), R.id.content);
+            NavigationFragment fragment = navigator.createFragment("NativeNavigation", navigator.sceneId, null, null);
+            navigator.setRoot(fragment, false);
         }
 
     }

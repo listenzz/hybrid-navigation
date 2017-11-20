@@ -3,6 +3,7 @@ package com.navigationhybrid;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -31,6 +32,17 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityDelegate.onCreate(savedInstanceState);
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                FragmentManager fragmentManager =  getSupportFragmentManager();
+                int count = fragmentManager.getBackStackEntryCount();
+                for (int i = 0; i < count; i++) {
+                    FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
+                    Log.i(TAG, "Entry index:" + entry.getId() + " tag:" + entry.getName());
+                }
+            }
+        });
     }
 
     @Override

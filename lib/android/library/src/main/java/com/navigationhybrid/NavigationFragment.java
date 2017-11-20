@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -20,6 +21,7 @@ public class NavigationFragment extends Fragment {
 
     public static final String NAVIGATION_PROPS = "props";
     public static final String NAVIGATION_OPTIONS = "options";
+    public static final String NAVIGATION_CONTAINER_ID = "container_id";
     public static final String NAVIGATION_ANIM = "anim";
     public static final String NAVIGATION_REQUEST_CODE = "request_code";
 
@@ -31,13 +33,37 @@ public class NavigationFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG, getClass().getSimpleName() + "onCreate");
+        Log.d(TAG, toString() + "#onCreate");
         navigator = getNavigator();
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, toString() + "#onDestroy");
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.d(TAG, toString() + "#onViewCreated");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, toString() + "#onDestroyView");
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.d(TAG, toString() + "#onHiddenChanged hidden="+ hidden);
+    }
+
+    @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        Log.i(TAG, getClass().getSimpleName() + "#onCreateAnimation transit=" + transit + " enter="+ enter);
+        Log.d(TAG, toString() + "#onCreateAnimation transit=" + transit + " enter="+ enter);
         if (transit == FragmentTransaction.TRANSIT_NONE) {
             return AnimationUtils.loadAnimation(getContext(), R.anim.no_anim);
         }
@@ -59,6 +85,7 @@ public class NavigationFragment extends Fragment {
     }
 
     public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
+        Log.d(TAG, toString() + "#onFragmentResult requestCode=" + requestCode + " resultCode=" + resultCode + " data=" + data );
         List<Fragment> fragments =  getChildFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment instanceof NavigationFragment) {
@@ -77,12 +104,14 @@ public class NavigationFragment extends Fragment {
             Bundle props = args.getBundle(NAVIGATION_PROPS);
             String navId = props.getString(PROPS_NAV_ID);
             String sceneId = props.getString(PROPS_SCENE_ID);
-            navigator = new Navigator(navId, sceneId, getFragmentManager(), R.id.react_activity_content_id);
+            int containerId = args.getInt(NAVIGATION_CONTAINER_ID);
+            navigator = new Navigator(navId, sceneId, getActivity().getSupportFragmentManager(),containerId);
             String anim = args.getString(NAVIGATION_ANIM);
             if (anim != null) {
                 navigator.anim = PresentAnimation.valueOf(anim);
             }
             navigator.requestCode = args.getInt(NAVIGATION_REQUEST_CODE);
+            Log.i(TAG, navigator.toString());
         }
         return navigator;
     }
@@ -105,14 +134,12 @@ public class NavigationFragment extends Fragment {
         Bundle args = FragmentHelper.getArguments(this);
         args.putString(NAVIGATION_ANIM, animation.name());
         setArguments(args);
-        navigator.anim = PresentAnimation.valueOf(animation.name());
     }
 
     public void setRequestCode(int requestCode) {
         Bundle args = FragmentHelper.getArguments(this);
         args.putInt(NAVIGATION_REQUEST_CODE, requestCode);
         setArguments(args);
-        navigator.requestCode = requestCode;
     }
 
 

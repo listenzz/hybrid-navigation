@@ -2,10 +2,11 @@ package com.navigationhybrid;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+
+import java.util.UUID;
 
 /**
  * Created by Listen on 2017/11/20.
@@ -15,15 +16,17 @@ public class Navigator {
 
     private static final String TAG = "ReactNative";
 
-    private final String navId;
-    private final String sceneId;
-    private final FragmentManager fragmentManager;
-    private final int containerId;
+    public final String navId;
+    public final String sceneId;
+    public final FragmentManager fragmentManager;
+    public final int containerId;
 
     public PresentAnimation anim = PresentAnimation.None;
     public int requestCode;
     private int resultCode;
     private Bundle result;
+
+    private ReactBridgeManager reactBridgeManager = ReactBridgeManager.instance;
 
     public Navigator(@NonNull String navId, @NonNull String sceneId, @NonNull FragmentManager fragmentManager, int containerId) {
         this.navId = navId;
@@ -39,17 +42,17 @@ public class Navigator {
         }
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-
         transaction.setReorderingAllowed(true);
 
         if (animated) {
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             fragment.setCurrentAnimations(PresentAnimation.Modal);
+            anim = PresentAnimation.Modal;
         }
 
         transaction.add(containerId, fragment, navId);
-
         NavigationFragment topFragment = getTopFragment();
+
         if (topFragment != null) {
             transaction.hide(topFragment);
         }
@@ -58,13 +61,45 @@ public class Navigator {
         transaction.commit();
     }
 
-    public NavigationFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
-        // FIXME implement
-        return null;
+    public NavigationFragment createFragment(@NonNull String moduleName, @NonNull String sceneId, Bundle props, Bundle options) {
+
+        NavigationFragment fragment = null;
+
+        if (reactBridgeManager.hasReactModule(moduleName)) {
+
+        } else {
+            Class<? extends NavigationFragment> fragmentClass = reactBridgeManager.nativeModuleClassForName(moduleName);
+            if (fragmentClass == null) {
+                throw new IllegalArgumentException("未能找到名为 " + moduleName + " 的模块，你是否忘了注册？");
+            }
+
+            try {
+                fragment = fragmentClass.newInstance();
+            } catch (Exception e) {
+                // ignore
+                e.printStackTrace();
+            }
+        }
+
+        Bundle args = FragmentHelper.getArguments(fragment);
+        if (props == null) {
+            props = new Bundle();
+        }
+
+        props.putString(NavigationFragment.PROPS_NAV_ID, navId);
+        props.putString(NavigationFragment.PROPS_SCENE_ID, sceneId);
+        args.putBundle(NavigationFragment.NAVIGATION_PROPS, props);
+        args.putBundle(NavigationFragment.NAVIGATION_OPTIONS, options);
+        args.putInt(NavigationFragment.NAVIGATION_CONTAINER_ID, containerId);
+        if (fragment != null) {
+            fragment.setArguments(args);
+        }
+
+        return fragment;
     }
 
     public void push(@NonNull String moduleName, Bundle props, Bundle options, boolean animated) {
-        NavigationFragment fragment = createFragment(moduleName, props, options);
+        NavigationFragment fragment = createFragment(moduleName, UUID.randomUUID().toString(), props, options);
 
         if (animated) {
             fragment.setCurrentAnimations(PresentAnimation.Push);
@@ -90,7 +125,7 @@ public class Navigator {
     }
 
     public boolean isRoot() {
-        return getRootFragment() != getSelfFragment();
+        return getRootFragment() == getSelfFragment();
     }
 
     public boolean canPop() {
@@ -111,31 +146,27 @@ public class Navigator {
             anim = PresentAnimation.None;
         }
 
-        fragmentManager.popBackStack(sceneId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.popBackStack();
     }
 
     public void pop() {
         pop(true);
     }
 
-    public void present(@NonNull String moduleName, int requestCode, Bundle props, Bundle options, boolean animated) {
-        NavigationFragment fragment = createFragment(moduleName, props, options);
-        fragment.setRequestCode(requestCode);
-        if (animated) {
-            fragment.setCurrentAnimations(PresentAnimation.Modal);
-            anim = PresentAnimation.Modal;
+    public void popToRoot() {
+        if (!canPop()) {
+            return;
         }
+        anim = PresentAnimation.Push;
+        fragmentManager.popBackStack(navId, 0);
+    }
 
-        NavigationFragment selfFragment = getSelfFragment();
-
-        fragmentManager
-                .beginTransaction()
-                .setReorderingAllowed(true)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .add(containerId, fragment, fragment.getNavId())
-                .hide(selfFragment)
-                .addToBackStack(fragment.getNavId())
-                .commit();
+    public void present(@NonNull String moduleName, int requestCode, Bundle props, Bundle options, boolean animated) {
+        anim = PresentAnimation.Modal;
+        Navigator navigator = new Navigator(UUID.randomUUID().toString(), UUID.randomUUID().toString(), fragmentManager, containerId);
+        NavigationFragment fragment = navigator.createFragment(moduleName, navigator.sceneId, props, options);
+        fragment.setRequestCode(requestCode);
+        navigator.setRoot(fragment, animated);
     }
 
     public void present(@NonNull String moduleName, int requestCode) {
@@ -183,11 +214,14 @@ public class Navigator {
     }
 
     NavigationFragment getSelfFragment() {
-        Fragment fragment = fragmentManager.findFragmentByTag(sceneId);
+        NavigationFragment fragment = (NavigationFragment) fragmentManager.findFragmentByTag(sceneId);
         if (fragment == null) {
-            fragment = fragmentManager.findFragmentByTag(navId);
+            fragment = (NavigationFragment) fragmentManager.findFragmentByTag(navId);
+            if (!fragment.getSceneId().equals(sceneId)) {
+                Log.w(TAG, "fragment scene id not equal!");
+            }
         }
-        return (NavigationFragment) fragment;
+        return fragment;
     }
 
     NavigationFragment getTopFragment() {
@@ -216,7 +250,7 @@ public class Navigator {
             FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
             String name = entry.getName();
             if (name != null) {
-                if (name.equals(fragment.getNavigator().sceneId) || name.equals(fragment.getNavigator().navId)) {
+                if (name.equals(fragment.getTag())) {
                     index = i - 1;
                     break;
                 }
@@ -244,4 +278,14 @@ public class Navigator {
         return getPreFragment(getRootFragment());
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("navId=" + navId);
+        builder.append(" sceneId=" + sceneId);
+        builder.append(" containerId=" + containerId);
+        builder.append(" anim=" + anim.name());
+        builder.append(" requestCode=" + requestCode);
+        return builder.toString();
+    }
 }

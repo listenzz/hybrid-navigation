@@ -49,5 +49,8 @@ public class MainApplication extends Application implements ReactApplication{
         super.onCreate();
         SoLoader.init(this, false);
         ReactBridgeManager.install(getReactNativeHost());
+        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+        bridgeManager.registerNativeModule("NativeNavigation", NativeNavigationFragment.class);
+        bridgeManager.registerNativeModule("Navigation", NativeNavigationFragment.class);
     }
 }
