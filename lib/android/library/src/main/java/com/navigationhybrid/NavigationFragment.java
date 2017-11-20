@@ -63,7 +63,7 @@ public class NavigationFragment extends Fragment {
 
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        Log.d(TAG, toString() + "#onCreateAnimation transit=" + transit + " enter="+ enter);
+        Log.d(TAG, toString() + "#onCreateAnimation transit=" + transit + " enter="+ enter + " anim=" + navigator.anim.name());
         if (transit == FragmentTransaction.TRANSIT_NONE) {
             return AnimationUtils.loadAnimation(getContext(), R.anim.no_anim);
         }
@@ -134,12 +134,18 @@ public class NavigationFragment extends Fragment {
         Bundle args = FragmentHelper.getArguments(this);
         args.putString(NAVIGATION_ANIM, animation.name());
         setArguments(args);
+        if (navigator != null) {
+            navigator.anim = animation;
+        }
     }
 
     public void setRequestCode(int requestCode) {
         Bundle args = FragmentHelper.getArguments(this);
         args.putInt(NAVIGATION_REQUEST_CODE, requestCode);
         setArguments(args);
+        if (navigator != null) {
+            navigator.requestCode = requestCode;
+        }
     }
 
 

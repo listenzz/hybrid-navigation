@@ -64,7 +64,7 @@ public class NativeNavigationFragment extends NavigationFragment {
         view.findViewById(R.id.description).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "你点击了底下的页面", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "你点击了原生导航页面", Toast.LENGTH_LONG).show();
             }
         });
 

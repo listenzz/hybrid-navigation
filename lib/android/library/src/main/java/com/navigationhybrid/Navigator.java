@@ -43,15 +43,14 @@ public class Navigator {
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setReorderingAllowed(true);
-
+        NavigationFragment topFragment = getTopFragment();
         if (animated) {
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             fragment.setCurrentAnimations(PresentAnimation.Modal);
-            anim = PresentAnimation.Modal;
+            topFragment.setCurrentAnimations(PresentAnimation.Modal);
         }
 
         transaction.add(containerId, fragment, navId);
-        NavigationFragment topFragment = getTopFragment();
 
         if (topFragment != null) {
            transaction.hide(topFragment);
@@ -103,13 +102,11 @@ public class Navigator {
 
     public void push(@NonNull String moduleName, Bundle props, Bundle options, boolean animated) {
         NavigationFragment fragment = createFragment(moduleName, UUID.randomUUID().toString(), props, options);
-
+        NavigationFragment selfFragment = getSelfFragment();
         if (animated) {
             fragment.setCurrentAnimations(PresentAnimation.Push);
-            anim = PresentAnimation.Push;
+            selfFragment.setCurrentAnimations(PresentAnimation.Push);
         }
-
-        NavigationFragment selfFragment = getSelfFragment();
 
         fragmentManager
                 .beginTransaction()
