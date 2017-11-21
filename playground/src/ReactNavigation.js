@@ -25,24 +25,28 @@ export default class ReactNavigation extends Component {
 		this.requestFromReact = this.requestFromReact.bind(this);
 	}
 
+	onComponentResult(requestCode, resultCode, data) {
+		console.warn("-------哈哈哈哈-----" + data.text);
+	}
+
 	pushToNative() {
-		console.warn("-------哈哈哈哈-----");
+		this.props.navigator.push('NativeNavigation');
 	}
 
 	pushToReact() {
-
+		this.props.navigator.push('ReactNavigation');
 	}
 
 	popToRoot() {
-
+		this.props.navigator.popToRoot();
 	}
 
 	requestFromReact() {
-
+		this.props.navigator.present("ReactResult", 1);
 	}
 
 	requestFromNative() {
-
+		this.props.navigator.present("NativeResult", 1);
 	}
 
 	render() {
@@ -50,39 +54,39 @@ export default class ReactNavigation extends Component {
 			<View style={styles.container}>
 				<Text style={styles.welcome}>
 					这是一个 React Native 页面：
-        </Text>
+        		</Text>
 
 				<TouchableOpacity onPress={this.pushToNative} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						push 到原生页面
-          </Text>
+          			</Text>
 				</TouchableOpacity>
-				<TouchableOpacity onPress={this.pushToNative} activeOpacity={0.2} style={styles.button}>
+				<TouchableOpacity onPress={this.pushToReact} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						push 到 RN 页面
-          </Text>
+          			</Text>
 				</TouchableOpacity>
-				<TouchableOpacity onPress={this.pushToNative} activeOpacity={0.2} style={styles.button}>
+				<TouchableOpacity onPress={this.popToRoot} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						popToRoot
-          </Text>
+          			</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={this.pushToNative} activeOpacity={0.2} style={styles.button}>
+				<TouchableOpacity onPress={this.requestFromReact} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						请求 React Native 返回结果
-          </Text>
+          			</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={this.pushToNative} activeOpacity={0.2} style={styles.button}>
+				<TouchableOpacity onPress={this.requestFromNative} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						请求 native 返回结果
-          </Text>
+          			</Text>
 				</TouchableOpacity>
 
 				<Text style={styles.result}>
 					 结果
-        </Text>
+        		</Text>
 				
 			</View>
 		);

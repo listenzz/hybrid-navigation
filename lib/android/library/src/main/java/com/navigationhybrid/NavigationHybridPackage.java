@@ -18,7 +18,7 @@ public class NavigationHybridPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
-                new NavigatorModule(reactContext)
+                new NavigatorModule(reactContext, ReactBridgeManager.instance)
         );
     }
 

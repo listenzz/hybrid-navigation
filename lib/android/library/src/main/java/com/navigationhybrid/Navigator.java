@@ -65,7 +65,7 @@ public class Navigator {
         NavigationFragment fragment = null;
 
         if (reactBridgeManager.hasReactModule(moduleName)) {
-
+            fragment = new ReactNavigationFragment();
         } else {
             Class<? extends NavigationFragment> fragmentClass = reactBridgeManager.nativeModuleClassForName(moduleName);
             if (fragmentClass == null) {
@@ -92,6 +92,7 @@ public class Navigator {
         args.putBundle(NavigationFragment.NAVIGATION_OPTIONS, options);
         args.putInt(NavigationFragment.NAVIGATION_CONTAINER_ID, containerId);
         args.putInt(NavigationFragment.NAVIGATION_REQUEST_CODE, requestCode);
+        args.putString(NavigationFragment.NAVIGATION_MODULE_NAME, moduleName);
 
         if (fragment != null) {
             fragment.setArguments(args);

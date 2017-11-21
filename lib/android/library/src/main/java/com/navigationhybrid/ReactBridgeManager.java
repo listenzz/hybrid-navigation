@@ -1,25 +1,36 @@
 package com.navigationhybrid;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.util.Log;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.ReactContext;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Listen on 2017/11/17.
  */
 
 public class ReactBridgeManager {
+
+    public interface ReactModuleRegistryListener {
+        void onReactModuleRegistryCompleted();
+    }
+
     private static final String TAG = "ReactNative";
 
     public static ReactBridgeManager instance = new ReactBridgeManager();
 
     private HashMap<String, Class<? extends NavigationFragment>> nativeModules = new HashMap<>();
     private HashMap<String, String> reactModules = new HashMap<>();
+    private List<ReactModuleRegistryListener> reactModuleRegistryListeners = new ArrayList<>();
+
+    private boolean isReactModuleInRegistry = true;
 
     public ReactBridgeManager() {
 
@@ -44,6 +55,34 @@ public class ReactBridgeManager {
 
     public void registerReactModule(String moduleName, String componentName) {
         reactModules.put(moduleName, componentName);
+    }
+
+    public boolean isReactModuleInRegistry() {
+        return isReactModuleInRegistry;
+    }
+
+    @UiThread
+    public void startRegisterReactModule() {
+        clearReactModules();
+        isReactModuleInRegistry = true;
+    }
+
+    @UiThread
+    public void endRegisterReactModule() {
+        isReactModuleInRegistry = false;
+        for (ReactModuleRegistryListener listener : reactModuleRegistryListeners) {
+            listener.onReactModuleRegistryCompleted();
+        }
+    }
+
+    @UiThread
+    public void addReactModuleRegistryListener(ReactModuleRegistryListener listener) {
+        reactModuleRegistryListeners.add(listener);
+    }
+
+    @UiThread
+    public void removeReactModuleRegisryListener(ReactModuleRegistryListener listener) {
+        reactModuleRegistryListeners.remove(listener);
     }
 
     public boolean hasReactModule(String moduleName) {

@@ -19,6 +19,7 @@ public class NavigationFragment extends Fragment {
 
     protected static final String TAG = "ReactNative";
 
+    public static final String NAVIGATION_MODULE_NAME = "module_name";
     public static final String NAVIGATION_PROPS = "props";
     public static final String NAVIGATION_OPTIONS = "options";
     public static final String NAVIGATION_CONTAINER_ID = "container_id";
@@ -147,7 +148,5 @@ public class NavigationFragment extends Fragment {
             navigator.requestCode = requestCode;
         }
     }
-
-
 
 }
