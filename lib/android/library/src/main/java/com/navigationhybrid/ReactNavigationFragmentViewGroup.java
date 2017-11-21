@@ -28,17 +28,8 @@ public class ReactNavigationFragmentViewGroup extends FrameLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    void unmountReactApplicationAfterAnimation(ReactRootView reactRootView) {
+    public void setReactRootView(ReactRootView reactRootView) {
         this.reactRootView = reactRootView;
-    }
-
-    @Override
-    protected void onAnimationEnd() {
-        super.onAnimationEnd();
-        if (reactRootView != null) {
-            reactRootView.unmountReactApplication();
-            reactRootView = null;
-        }
     }
 
     @Override

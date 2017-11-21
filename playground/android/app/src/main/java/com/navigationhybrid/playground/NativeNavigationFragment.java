@@ -57,7 +57,7 @@ public class NativeNavigationFragment extends NavigationFragment {
         view.findViewById(R.id.request_from_react).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                navigator.present("ReactResult", REQUEST_CODE);
             }
         });
 

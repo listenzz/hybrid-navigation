@@ -30,5 +30,10 @@ export default class Navigator {
     setResult(resultCode, data = {}) {
         Navigation.setResult(this.navId, this.sceneId, resultCode, data);
     }
+}
 
+const RESULT_OK = -1;
+
+export {
+    RESULT_OK,
 }

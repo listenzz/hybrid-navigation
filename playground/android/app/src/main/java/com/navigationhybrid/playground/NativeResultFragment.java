@@ -38,7 +38,7 @@ public class NativeResultFragment extends NavigationFragment {
         view.findViewById(R.id.push_to_react).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                navigator.push("ReactResult");
             }
         });
 

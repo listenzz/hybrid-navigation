@@ -3,13 +3,10 @@ package com.navigationhybrid;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 
 import com.facebook.react.ReactInstanceManager;
@@ -49,7 +46,7 @@ public class ReactNavigationFragment extends NavigationFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
+        reactRootView = null;
     }
 
     @Override
@@ -63,40 +60,6 @@ public class ReactNavigationFragment extends NavigationFragment {
         result.putString(PROPS_SCENE_ID, navigator.sceneId);
         bridgeManager.sendEvent(Navigator.ON_COMPONENT_RESULT_EVENT, Arguments.fromBundle(result));
     }
-
-    @Override
-    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        Log.d(TAG, toString() + "#onCreateAnimation transit=" + transit + " enter="+ enter + " anim=" + navigator.anim.name());
-
-        if (!enter) {
-            if (transit == FragmentTransaction.TRANSIT_NONE) {
-                reactRootView.unmountReactApplication();
-            } else {
-                containerLayout.unmountReactApplicationAfterAnimation(reactRootView);
-            }
-            reactRootView = null;
-        }
-
-        if (transit == FragmentTransaction.TRANSIT_NONE) {
-            return AnimationUtils.loadAnimation(getContext(), R.anim.no_anim);
-        }
-
-        if (transit == FragmentTransaction.TRANSIT_FRAGMENT_OPEN) {
-            if (enter) {
-                return AnimationUtils.loadAnimation(getContext(), navigator.anim.enter);
-            } else {
-                return AnimationUtils.loadAnimation(getContext(), navigator.anim.exit);
-            }
-        } else if (transit == FragmentTransaction.TRANSIT_FRAGMENT_CLOSE) {
-            if (enter) {
-                return AnimationUtils.loadAnimation(getContext(), navigator.anim.popEnter);
-            } else {
-                return AnimationUtils.loadAnimation(getContext(), navigator.anim.popExit);
-            }
-        }
-        return super.onCreateAnimation(transit, enter, nextAnim);
-    }
-
 
     protected boolean isBridgeInitialized() {
         return bridgeManager.isInitialized();
@@ -136,6 +99,7 @@ public class ReactNavigationFragment extends NavigationFragment {
             });
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             containerLayout.addView(reactRootView, layoutParams);
+            containerLayout.setReactRootView(reactRootView);
             String moduleName = getArguments().getString(NAVIGATION_MODULE_NAME);
             Bundle initialProps = getArguments().getBundle(NAVIGATION_PROPS);
             reactRootView.startReactApplication(reactInstanceManager, moduleName, initialProps);

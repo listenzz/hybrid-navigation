@@ -14,6 +14,10 @@ import {
 
 import styles from './Styles'
 
+import { RESULT_OK } from './Navigator'
+
+const REQUEST_CODE = 1;
+
 export default class ReactNavigation extends Component {
 
 	constructor(props){
@@ -23,18 +27,30 @@ export default class ReactNavigation extends Component {
 		this.popToRoot = this.popToRoot.bind(this);
 		this.requestFromNative = this.requestFromNative.bind(this);
 		this.requestFromReact = this.requestFromReact.bind(this);
+
+		this.state = {
+			text: undefined,
+			error: undefined,
+		}
 	}
 
 	componentWillMount() {
-		console.log('componentWillMount');
+		console.log('componentWillMount=' + this.props.sceneId );
 	}
 
 	componentWillUnmount() {
-		console.log('componentWillUnmount');
+		console.log('componentWillUnmount=' + this.props.sceneId);
 	}
 
 	onComponentResult(requestCode, resultCode, data) {
-		console.warn("-------哈哈哈哈-----" + data.text);
+		console.log(data);
+		if(requestCode === REQUEST_CODE) {
+			if(resultCode === RESULT_OK) {
+				this.setState({text: data.text || '', error: undefined});
+			} else {
+				this.setState({text: undefined, error: 'ACTION CANCEL'});
+			}
+		}
 	}
 
 	pushToNative() {
@@ -50,11 +66,11 @@ export default class ReactNavigation extends Component {
 	}
 
 	requestFromReact() {
-		this.props.navigator.present("ReactResult", 1);
+		this.props.navigator.present("ReactResult", REQUEST_CODE);
 	}
 
 	requestFromNative() {
-		this.props.navigator.present("NativeResult", 1);
+		this.props.navigator.present("NativeResult", REQUEST_CODE);
 	}
 
 	render() {
@@ -92,10 +108,18 @@ export default class ReactNavigation extends Component {
           			</Text>
 				</TouchableOpacity>
 
-				<Text style={styles.result}>
-					 结果
-        		</Text>
-				
+				{this.state.text !== undefined && 
+					(<Text style={styles.result}>
+							返回的结果：{this.state.text}
+					</Text>)
+				}
+			
+				{this.state.error !== undefined && 
+					(<Text style={styles.result}>
+						{this.state.error}
+					</Text>)
+				}
+
 			</View>
 		);
 	}

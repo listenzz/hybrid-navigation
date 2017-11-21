@@ -31,9 +31,14 @@ export default ReactRegistry = {
                         realComponentWillMount.apply(instance);
                     }
 
-                    let event = DeviceEventEmitter.addListener('ON_COMPONENT_RESULT', function(e){
-                        console.log('--------------------');
-                        console.log(e);
+                    let event = DeviceEventEmitter.addListener('ON_COMPONENT_RESULT', function(event){
+                        if(instance.props.sceneId === event.sceneId) {
+                            if(instance.onComponentResult){
+                                instance.onComponentResult(event.requestCode, event.resultCode, event.data);
+                            } else {
+                                console.warn(RealComponent.name + " 似乎未实现 onComponentResult");
+                            }
+                        } 
                     });
                     events.push(event);
                     console.info("注册监听事件");
@@ -51,7 +56,7 @@ export default ReactRegistry = {
                     })
                 }
 
-                console.info(instance);
+                // console.info(instance);
                 return instance;
             };
         }

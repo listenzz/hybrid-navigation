@@ -27,6 +27,12 @@ export default styles = StyleSheet.create({
       color: '#333333',
       fontSize: 13,
     },
+    input: {
+      height: 40,
+      marginLeft: 32,
+      marginRight: 32,
+      marginBottom: 16,
+    },
     welcome: {
       fontSize: 17,
       textAlign: 'center',
