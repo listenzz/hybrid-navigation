@@ -18,16 +18,16 @@ public class ReactBridgeManager {
 
     public static ReactBridgeManager instance = new ReactBridgeManager();
 
-    public static void install(@NonNull ReactNativeHost reactNativeHost) {
-        instance.reactNativeHost = reactNativeHost;
-        instance.setup();
-    }
-
     private HashMap<String, Class<? extends NavigationFragment>> nativeModules = new HashMap<>();
     private HashMap<String, String> reactModules = new HashMap<>();
 
     public ReactBridgeManager() {
 
+    }
+
+    public void install(@NonNull ReactNativeHost reactNativeHost) {
+        this.reactNativeHost = reactNativeHost;
+        this.setup();
     }
 
     public void registerNativeModule(String moduleName, Class<? extends NavigationFragment> clazz) {

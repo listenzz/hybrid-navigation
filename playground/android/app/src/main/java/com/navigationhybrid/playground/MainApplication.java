@@ -35,7 +35,7 @@ public class MainApplication extends Application implements ReactApplication{
 
         @Override
         protected String getJSMainModuleName() {
-            return "index";
+            return "playground/index";
         }
     };
 
@@ -48,8 +48,9 @@ public class MainApplication extends Application implements ReactApplication{
     public void onCreate() {
         super.onCreate();
         SoLoader.init(this, false);
-        ReactBridgeManager.install(getReactNativeHost());
         ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+
+        bridgeManager.install(getReactNativeHost());
         bridgeManager.registerNativeModule("NativeNavigation", NativeNavigationFragment.class);
         bridgeManager.registerNativeModule("Navigation", NativeNavigationFragment.class);
         bridgeManager.registerNativeModule("NativeResult", NativeResultFragment.class);

@@ -1,1 +1,1 @@
-require('./playground/index');
+require('./lib/js');

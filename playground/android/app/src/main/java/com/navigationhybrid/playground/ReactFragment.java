@@ -124,7 +124,7 @@ public class ReactFragment extends Fragment {
             });
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             containerLayout.addView(reactRootView, layoutParams);
-            reactRootView.startReactApplication(reactInstanceManager, "Navigator");
+            reactRootView.startReactApplication(reactInstanceManager, "ReactNavigation");
         }
     }
 }
