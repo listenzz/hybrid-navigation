@@ -3,6 +3,7 @@ package com.navigationhybrid;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import com.facebook.react.ReactRootView;
@@ -34,6 +35,16 @@ public class ReactNavigationFragmentViewGroup extends FrameLayout {
     @Override
     protected void onAnimationEnd() {
         super.onAnimationEnd();
+        if (reactRootView != null) {
+            reactRootView.unmountReactApplication();
+            reactRootView = null;
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        Log.w("ReactNative", "onDetachedFromWindow");
         if (reactRootView != null) {
             reactRootView.unmountReactApplication();
             reactRootView = null;

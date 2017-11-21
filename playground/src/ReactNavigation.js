@@ -25,6 +25,14 @@ export default class ReactNavigation extends Component {
 		this.requestFromReact = this.requestFromReact.bind(this);
 	}
 
+	componentWillMount() {
+		console.log('componentWillMount');
+	}
+
+	componentWillUnmount() {
+		console.log('componentWillUnmount');
+	}
+
 	onComponentResult(requestCode, resultCode, data) {
 		console.warn("-------哈哈哈哈-----" + data.text);
 	}

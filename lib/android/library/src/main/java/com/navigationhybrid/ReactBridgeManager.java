@@ -6,7 +6,10 @@ import android.util.Log;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,6 +98,16 @@ public class ReactBridgeManager {
 
     public void clearReactModules() {
         reactModules.clear();
+    }
+
+    public void sendEvent(String eventName, WritableMap data) {
+        DeviceEventManagerModule.RCTDeviceEventEmitter emitter = getReactInstanceManager().getCurrentReactContext()
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+        emitter.emit(eventName, data);
+    }
+
+    public void sendEvent(String eventName) {
+        sendEvent(eventName, Arguments.createMap());
     }
 
     public boolean isInitialized() {

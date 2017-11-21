@@ -1,4 +1,4 @@
-import { AppRegistry } from 'react-native';
+import { AppRegistry, DeviceEventEmitter } from 'react-native';
 import React, { Component } from 'react';
 import Navigator from './Navigator';
 import NavigationModule from './NavigationModule';
@@ -11,13 +11,52 @@ export default ReactRegistry = {
 
     endRegisterComponent() {
         NavigationModule.endRegisterReactComponent();
-    
     },
 
     registerComponent(appKey, componentProvider) {
         const RealComponent = componentProvider();
-        console.info(RealComponent);
 
+        function hookRealComponent(klass) {
+            const Traits = function () {};
+            Traits.prototype = klass.prototype;
+            return function () {
+                var instance = new Traits();
+                klass.apply(instance, arguments);
+
+                let events = [];
+                // 绑定监听事件
+                const realComponentWillMount = instance.componentWillMount;
+                instance.componentWillMount = function() {
+                    if (realComponentWillMount) {
+                        realComponentWillMount.apply(instance);
+                    }
+
+                    let event = DeviceEventEmitter.addListener('ON_COMPONENT_RESULT', function(e){
+                        console.log('--------------------');
+                        console.log(e);
+                    });
+                    events.push(event);
+                    console.info("注册监听事件");
+                }
+
+                // 解绑监听事件
+                const realComponentWillUnmount = instance.componentWillUnmount;
+                instance.componentWillUnmount = function() {
+                    if(realComponentWillUnmount) {
+                        realComponentWillUnmount.apply(instance);
+                    }
+                    events.forEach(function(event){
+                        event.remove();
+                        console.info('移除监听事件');
+                    })
+                }
+
+                console.info(instance);
+                return instance;
+            };
+        }
+
+        const ProxiedComponent =  hookRealComponent(RealComponent);
         class Screen extends Component {
             constructor(props){
                 super(props);
@@ -25,7 +64,7 @@ export default ReactRegistry = {
             }
 
             render() {
-                return(<RealComponent {...this.props} navigator={this.navigator} />)
+                return(<ProxiedComponent {...this.props} navigator={this.navigator} />)
             }
         }
 
@@ -33,7 +72,4 @@ export default ReactRegistry = {
         NavigationModule.registerReactComponent(appKey);
     },
 
-    clearReactComponents() {
-  
-    }
 }

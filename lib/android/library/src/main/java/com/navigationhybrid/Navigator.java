@@ -14,6 +14,11 @@ import java.util.UUID;
 
 public class Navigator {
 
+    public static final String ON_COMPONENT_RESULT_EVENT = "ON_COMPONENT_RESULT";
+    public static final String REQUEST_CODE_KEY = "REQUEST_CODE_KEY";
+    public static final String RESULT_CODE_KEY = "RESULT_CODE_KEY";
+    public static final String RESULT_DATA_KEY = "RESULT_DATA_KEY";
+
     private static final String TAG = "ReactNative";
 
     public final String navId;

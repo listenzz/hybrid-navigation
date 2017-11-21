@@ -7,12 +7,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 
-import static com.navigationhybrid.ConversionUtil.toBundle;
 
 /**
  * Created by Listen on 2017/11/20.
@@ -74,7 +74,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
             public void run() {
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
-                    navigator.push(moduleName, toBundle(props), toBundle(options), animated);
+                    navigator.push(moduleName, Arguments.toBundle(props), Arguments.toBundle(options), animated);
                 } else {
                     Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }
@@ -119,7 +119,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
             public void run() {
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
-                    navigator.present(moduleName, requestCode, toBundle(props), toBundle(options), animated);
+                    navigator.present(moduleName, requestCode, Arguments.toBundle(props), Arguments.toBundle(options), animated);
                 } else {
                     Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }
@@ -134,7 +134,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
             public void run() {
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
-                    navigator.setResult(resultCode, toBundle(result));
+                    navigator.setResult(resultCode, Arguments.toBundle(result));
                 } else {
                     Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }

@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 
 /**
@@ -48,6 +49,19 @@ public class ReactNavigationFragment extends NavigationFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
+    }
+
+    @Override
+    public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
+        super.onFragmentResult(requestCode, resultCode, data);
+        Bundle result = new Bundle();
+        result.putInt(Navigator.REQUEST_CODE_KEY, requestCode);
+        result.putInt(Navigator.RESULT_CODE_KEY, resultCode);
+        result.putBundle(Navigator.RESULT_DATA_KEY, data);
+        result.putString(PROPS_NAV_ID, navigator.navId);
+        result.putString(PROPS_SCENE_ID, navigator.sceneId);
+        bridgeManager.sendEvent(Navigator.ON_COMPONENT_RESULT_EVENT, Arguments.fromBundle(result));
     }
 
     @Override
@@ -127,4 +141,6 @@ public class ReactNavigationFragment extends NavigationFragment {
             reactRootView.startReactApplication(reactInstanceManager, moduleName, initialProps);
         }
     }
+
+
 }
