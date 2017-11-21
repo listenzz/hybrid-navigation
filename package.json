@@ -2,7 +2,7 @@
 	"name": "react-native-navigation-hybrid",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/listenzz/react-native-navigation-hybrid.git"
+		"url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
 	},
 	"version": "0.0.1",
 	"nativePackage": true,

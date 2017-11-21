@@ -1,9 +1,10 @@
 import { AppRegistry } from 'react-native';
-import  ReactRegistry from './src/ReactRegistry'; 
+import  { ReactRegistry } from 'react-native-navigation-hybrid'; 
 
 import App from './App';
-import ReactNavigation from './src/ReactNavigation'
-import ReactResult from './src/ReactResult'
+import ReactNavigation from './src/ReactNavigation';
+import ReactResult from './src/ReactResult';
+
 
 ReactRegistry.startRegisterComponent();
 

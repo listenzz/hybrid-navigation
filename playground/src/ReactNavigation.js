@@ -14,7 +14,7 @@ import {
 
 import styles from './Styles'
 
-import { RESULT_OK } from './Navigator'
+import { RESULT_OK } from 'react-native-navigation-hybrid'
 
 const REQUEST_CODE = 1;
 
