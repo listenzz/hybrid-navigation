@@ -40,7 +40,7 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
                 int count = fragmentManager.getBackStackEntryCount();
                 for (int i = 0; i < count; i++) {
                     FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
-                    Log.i(TAG, "Entry index:" + entry.getId() + " tag:" + entry.getName());
+                    Log.d(TAG, "Entry index:" + entry.getId() + " tag:" + entry.getName());
                 }
             }
         });

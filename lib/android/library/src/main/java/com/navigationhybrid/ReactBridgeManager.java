@@ -58,6 +58,7 @@ public class ReactBridgeManager {
 
     public void registerReactModule(String moduleName, String componentName) {
         reactModules.put(moduleName, componentName);
+        Log.w(TAG, toString() +" register component:" + moduleName);
     }
 
     public boolean isReactModuleInRegistry() {
@@ -84,7 +85,7 @@ public class ReactBridgeManager {
     }
 
     @UiThread
-    public void removeReactModuleRegisryListener(ReactModuleRegistryListener listener) {
+    public void removeReactModuleRegistryListener(ReactModuleRegistryListener listener) {
         reactModuleRegistryListeners.remove(listener);
     }
 
@@ -128,14 +129,14 @@ public class ReactBridgeManager {
     private boolean isInitialized;
 
     private void setup() {
-        Log.w(TAG, "bridge manager setup");
+        Log.w(TAG, toString() + " bridge manager setup");
         final ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         reactInstanceManager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
             @Override
             public void onReactContextInitialized(ReactContext context) {
                 // reactInstanceManager.removeReactInstanceEventListener(this);
                 isInitialized = true;
-                Log.w(TAG, "react context initialized");
+                Log.w(TAG, toString() + " react context initialized");
             }
         });
         reactInstanceManager.createReactContextInBackground();

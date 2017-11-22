@@ -288,10 +288,10 @@ public class Navigator {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("navId=" + navId);
-        builder.append(" sceneId=" + sceneId);
-        builder.append(" containerId=" + containerId);
-        builder.append(" anim=" + anim.name());
-        builder.append(" requestCode=" + requestCode);
+        builder.append(", sceneId=" + sceneId);
+        builder.append(", containerId=" + containerId);
+        builder.append(", anim=" + anim.name());
+        builder.append(", requestCode=" + requestCode);
         return builder.toString();
     }
 }

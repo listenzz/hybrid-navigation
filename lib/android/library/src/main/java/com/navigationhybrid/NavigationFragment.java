@@ -1,13 +1,19 @@
 package com.navigationhybrid;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+
+import com.navigationhybrid.view.TopBar;
 
 import java.util.List;
 
@@ -30,6 +36,7 @@ public class NavigationFragment extends Fragment {
     public static final String PROPS_SCENE_ID = "sceneId";
 
     protected Navigator navigator;
+    protected TopBar topBar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,14 +52,75 @@ public class NavigationFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG, toString() + "#onAttach");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG, toString() + "#onDetach");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, toString() + "#onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, toString() + "#onPause");
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, toString() + "#onViewCreated");
+        if (view instanceof LinearLayout) {
+            LinearLayout linearLayout = (LinearLayout) view;
+            TopBar topBar = new TopBar(getContext());
+            this.topBar = topBar;
+            linearLayout.addView(topBar, 0, new LinearLayout.LayoutParams(-1, -2));
+        } else if (view instanceof FrameLayout) {
+            FrameLayout frameLayout = (FrameLayout) view;
+            TopBar topBar = new TopBar(getContext());
+            this.topBar = topBar;
+            frameLayout.addView(topBar,  new FrameLayout.LayoutParams(-1, -2));
+        } else {
+            throw new UnsupportedOperationException("NavigationFragment 还没适配 " + view.getClass().getSimpleName());
+        }
+
+        if (topBar != null) {
+            setupTopBar();
+        }
+    }
+    
+    protected void setupTopBar() {
+        if (!navigator.isRoot()) {
+            Toolbar toolbar = topBar.getToolbar();
+            toolbar.setNavigationIcon(R.drawable.nav_ic_arrow_back_white);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    navigator.pop();
+                }
+            });
+        }
+    }
+
+    public void setTitle(String title) {
+        if (topBar != null) {
+            topBar.setTitle(title);
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        topBar = null;
         Log.d(TAG, toString() + "#onDestroyView");
     }
 

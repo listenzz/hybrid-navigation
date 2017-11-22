@@ -52,5 +52,9 @@ public class NativeResultFragment extends NavigationFragment {
         return view;
     }
 
-
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setTitle("native result");
+    }
 }

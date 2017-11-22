@@ -70,8 +70,9 @@ public class ReactNavigationFragment extends NavigationFragment {
             return;
         }
 
+        // FIXME 因为必须初始化成功才开始添加 fragment， 考虑移除在 fragment 中作这样的判断
         if (!isBridgeInitialized()) {
-            Log.w(TAG, toString() +" waiting for bridge initialize");
+            Log.d(TAG, toString() +" waiting for bridge initialize");
             reactInstanceManager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
                 @Override
                 public void onReactContextInitialized(ReactContext context) {
@@ -87,7 +88,7 @@ public class ReactNavigationFragment extends NavigationFragment {
             return;
         }
 
-        Log.w(TAG, toString() + " bridge initialized now");
+        Log.d(TAG, toString() + " bridge initialized now");
 
         if (reactRootView == null && getView() != null) {
             reactRootView = new ReactRootView(getContext());

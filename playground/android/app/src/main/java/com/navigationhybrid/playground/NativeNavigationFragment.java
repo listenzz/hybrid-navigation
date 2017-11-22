@@ -23,6 +23,7 @@ public class NativeNavigationFragment extends NavigationFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_native_navigation, container, false);
 
         view.findViewById(R.id.push_to_native).setOnClickListener(new View.OnClickListener() {
@@ -73,6 +74,11 @@ public class NativeNavigationFragment extends NavigationFragment {
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setTitle("native navigation");
+    }
 
     @Override
     public void onResume() {
