@@ -62,7 +62,13 @@ public class Navigator {
         }
 
         transaction.addToBackStack(navId);
+
+
         transaction.commit();
+        if (!animated) {
+            fragmentManager.executePendingTransactions();
+        }
+
     }
 
     public NavigationFragment createFragment(@NonNull String moduleName, @NonNull String sceneId, Bundle props, Bundle options) {
@@ -213,14 +219,6 @@ public class Navigator {
 
     public void dismiss() {
         dismiss(true);
-    }
-
-    void signalFirstRenderComplete() {
-        NavigationFragment fragment = getSelfFragment();
-        if (fragment instanceof ReactNavigationFragment) {
-            ReactNavigationFragment reactFragment = (ReactNavigationFragment) fragment;
-            reactFragment.signalFirstRenderComplete();
-        }
     }
 
     NavigationFragment getRootFragment() {

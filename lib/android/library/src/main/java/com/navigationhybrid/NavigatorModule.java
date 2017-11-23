@@ -3,6 +3,7 @@ package com.navigationhybrid;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -71,11 +72,11 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
        handler.post(new Runnable() {
            @Override
            public void run() {
-               Navigator navigator = findNavigator(navId, sceneId);
-               if (navigator != null) {
-                   navigator.signalFirstRenderComplete();
+               ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
+               if (fragment != null) {
+                   fragment.signalFirstRenderComplete();
                } else {
-                   Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
+                   Log.w(TAG, "ReactNavigationFragment is null. navId:" + navId + " sceneId:" + sceneId);
                }
            }
        });
@@ -176,12 +177,29 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         if (activity instanceof AppCompatActivity) {
             AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
             FragmentManager fragmentManager = appCompatActivity.getSupportFragmentManager();
-            NavigationFragment fragment = (NavigationFragment) fragmentManager.findFragmentByTag(sceneId);
+            Fragment fragment = fragmentManager.findFragmentByTag(sceneId);
             if (fragment == null) {
-                fragment = (NavigationFragment) fragmentManager.findFragmentByTag(navId);
+                fragment = fragmentManager.findFragmentByTag(navId);
             }
-            if (fragment != null) {
-                return fragment.getNavigator();
+            if (fragment != null && fragment instanceof NavigationFragment) {
+                NavigationFragment navigationFragment = (NavigationFragment) fragment;
+                return navigationFragment.getNavigator();
+            }
+        }
+        return null;
+    }
+
+    private ReactNavigationFragment findReactNavigationFragment(String navId, String sceneId) {
+        Activity activity = getCurrentActivity();
+        if (activity instanceof AppCompatActivity) {
+            AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
+            FragmentManager fragmentManager = appCompatActivity.getSupportFragmentManager();
+            Fragment fragment =  fragmentManager.findFragmentByTag(sceneId);
+            if (fragment == null) {
+                fragment =  fragmentManager.findFragmentByTag(navId);
+            }
+            if (fragment != null && fragment instanceof ReactNavigationFragment) {
+                return (ReactNavigationFragment) fragment;
             }
         }
         return null;

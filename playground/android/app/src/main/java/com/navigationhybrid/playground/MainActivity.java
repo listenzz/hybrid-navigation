@@ -19,14 +19,14 @@ public class MainActivity extends ReactAppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-        Log.w(TAG, "isReactModuleInRegistry:" + bridgeManager.isReactModuleInRegistry());
+        Log.w(TAG, toString() +" isReactModuleInRegistry:" + bridgeManager.isReactModuleInRegistry());
         if (savedInstanceState == null) {
             if (bridgeManager.isReactModuleInRegistry()) {
                 bridgeManager.addReactModuleRegistryListener(new ReactBridgeManager.ReactModuleRegistryListener() {
                     @Override
                     public void onReactModuleRegistryCompleted() {
                         bridgeManager.removeReactModuleRegistryListener(this);
-                        Log.w(TAG, "onReactModuleRegistryCompleted");
+                        Log.w(TAG, MainActivity.this.toString() + " onReactModuleRegistryCompleted");
                         setup();
                     }
                 });
@@ -38,7 +38,7 @@ public class MainActivity extends ReactAppCompatActivity {
 
     void setup() {
         Navigator navigator = new Navigator(UUID.randomUUID().toString(), UUID.randomUUID().toString(), getSupportFragmentManager(), R.id.content);
-        NavigationFragment fragment = navigator.createFragment("NativeNavigation", navigator.sceneId, null, null);
+        NavigationFragment fragment = navigator.createFragment("ReactNavigation", navigator.sceneId, null, null);
         navigator.setRoot(fragment, false);
     }
 

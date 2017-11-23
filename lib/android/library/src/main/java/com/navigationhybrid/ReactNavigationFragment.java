@@ -9,10 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactContext;
 
 /**
  * Created by Listen on 2017/11/20.
@@ -23,7 +21,6 @@ public class ReactNavigationFragment extends NavigationFragment {
     protected static final String TAG = "ReactNative";
 
     ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-    ReactInstanceManager reactInstanceManager = bridgeManager.getReactInstanceManager();
     ReactRootView reactRootView;
     ReactNavigationFragmentViewGroup containerLayout;
     Handler handler = new Handler();
@@ -32,7 +29,9 @@ public class ReactNavigationFragment extends NavigationFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, toString() + "#onCreateView");
-        postponeEnterTransition();
+        if (navigator.anim != PresentAnimation.None) {
+            postponeEnterTransition();
+        }
         View view = inflater.inflate(R.layout.fragment_react, container, false);
         containerLayout = view.findViewById(R.id.react_content);
         return view;
@@ -62,34 +61,24 @@ public class ReactNavigationFragment extends NavigationFragment {
         bridgeManager.sendEvent(Navigator.ON_COMPONENT_RESULT_EVENT, Arguments.fromBundle(result));
     }
 
-    protected boolean isBridgeInitialized() {
-        return bridgeManager.isInitialized();
-    }
-
     private void initReactNative() {
         if (reactRootView != null || getView() == null) {
             return;
         }
 
-        // FIXME 因为必须初始化成功才开始添加 fragment， 考虑移除在 fragment 中作这样的判断
-        if (!isBridgeInitialized()) {
-            Log.d(TAG, toString() +" waiting for bridge initialize");
-            reactInstanceManager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
+        if (bridgeManager.isReactModuleInRegistry()) {
+            bridgeManager.addReactModuleRegistryListener(new ReactBridgeManager.ReactModuleRegistryListener() {
                 @Override
-                public void onReactContextInitialized(ReactContext context) {
-                    reactInstanceManager.removeReactInstanceEventListener(this);
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            initReactNative();
-                        }
-                    });
+                public void onReactModuleRegistryCompleted() {
+                    bridgeManager.removeReactModuleRegistryListener(this);
+                    Log.w(TAG, ReactNavigationFragment.this.toString() + " onReactModuleRegistryCompleted");
+                    initReactNative();
                 }
             });
             return;
         }
 
-        Log.d(TAG, toString() + " bridge initialized now");
+        Log.d(TAG, toString() + " bridge is initialized");
 
         if (reactRootView == null && getView() != null) {
             reactRootView = new ReactRootView(getContext());
@@ -98,7 +87,7 @@ public class ReactNavigationFragment extends NavigationFragment {
             containerLayout.setReactRootView(reactRootView);
             String moduleName = getArguments().getString(NAVIGATION_MODULE_NAME);
             Bundle initialProps = getArguments().getBundle(NAVIGATION_PROPS);
-            reactRootView.startReactApplication(reactInstanceManager, moduleName, initialProps);
+            reactRootView.startReactApplication(bridgeManager.getReactInstanceManager(), moduleName, initialProps);
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -107,8 +96,6 @@ public class ReactNavigationFragment extends NavigationFragment {
             }, 2000);
         }
     }
-
-
 
     public void signalFirstRenderComplete() {
         Log.d(TAG, "signalFirstRenderComplete");

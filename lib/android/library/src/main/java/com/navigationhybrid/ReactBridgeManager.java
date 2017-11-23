@@ -11,9 +11,8 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Listen on 2017/11/17.
@@ -31,7 +30,7 @@ public class ReactBridgeManager {
 
     private HashMap<String, Class<? extends NavigationFragment>> nativeModules = new HashMap<>();
     private HashMap<String, String> reactModules = new HashMap<>();
-    private List<ReactModuleRegistryListener> reactModuleRegistryListeners = new ArrayList<>();
+    private CopyOnWriteArrayList<ReactModuleRegistryListener> reactModuleRegistryListeners = new CopyOnWriteArrayList<>();
 
     private boolean isReactModuleInRegistry = true;
 
@@ -67,7 +66,7 @@ public class ReactBridgeManager {
 
     @UiThread
     public void startRegisterReactModule() {
-        clearReactModules();
+        reactModules.clear();
         isReactModuleInRegistry = true;
     }
 
@@ -97,10 +96,6 @@ public class ReactBridgeManager {
         return reactModules.get(moduleName);
     }
 
-    public void clearReactModules() {
-        reactModules.clear();
-    }
-
     public void sendEvent(String eventName, WritableMap data) {
         DeviceEventManagerModule.RCTDeviceEventEmitter emitter = getReactInstanceManager().getCurrentReactContext()
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
@@ -111,9 +106,6 @@ public class ReactBridgeManager {
         sendEvent(eventName, Arguments.createMap());
     }
 
-    public boolean isInitialized() {
-        return isInitialized;
-    }
 
     ReactNativeHost getReactNativeHost() {
         checkReactNativeHost();
@@ -126,7 +118,7 @@ public class ReactBridgeManager {
     }
 
     private ReactNativeHost reactNativeHost;
-    private boolean isInitialized;
+
 
     private void setup() {
         Log.w(TAG, toString() + " bridge manager setup");
@@ -134,8 +126,6 @@ public class ReactBridgeManager {
         reactInstanceManager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
             @Override
             public void onReactContextInitialized(ReactContext context) {
-                // reactInstanceManager.removeReactInstanceEventListener(this);
-                isInitialized = true;
                 Log.w(TAG, toString() + " react context initialized");
             }
         });
@@ -144,7 +134,7 @@ public class ReactBridgeManager {
 
     private void checkReactNativeHost() {
         if (reactNativeHost == null) {
-            throw new IllegalStateException("must call install first");
+            throw new IllegalStateException("must call ReactBridgeManager#install first");
         }
     }
 
