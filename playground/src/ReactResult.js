@@ -19,6 +19,10 @@ import { RESULT_OK } from 'react-native-navigation-hybrid'
 
 export default class ReactResult extends Component {
 
+	static titleItem = {
+		title: 'RN result',
+	}
+
 	constructor(props){
 		super(props);
 		this.pushToNative = this.pushToNative.bind(this);
@@ -52,7 +56,7 @@ export default class ReactResult extends Component {
 		return (
 			<View style={styles.container}>
 				<Text style={styles.welcome}>
-					这是一个 React Native 页面：
+					这是一个 React Native 页面:
         		</Text>
 
                 <TextInput style={styles.input} onChangeText={this.onInputTextChanged} value={this.state.text}/>

@@ -1,5 +1,6 @@
 package com.navigationhybrid;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.util.Log;
@@ -29,7 +30,7 @@ public class ReactBridgeManager {
     public static ReactBridgeManager instance = new ReactBridgeManager();
 
     private HashMap<String, Class<? extends NavigationFragment>> nativeModules = new HashMap<>();
-    private HashMap<String, String> reactModules = new HashMap<>();
+    private HashMap<String, Bundle> reactModules = new HashMap<>();
     private CopyOnWriteArrayList<ReactModuleRegistryListener> reactModuleRegistryListeners = new CopyOnWriteArrayList<>();
 
     private boolean isReactModuleInRegistry = true;
@@ -55,9 +56,8 @@ public class ReactBridgeManager {
         return nativeModules.get(moduleName);
     }
 
-    public void registerReactModule(String moduleName, String componentName) {
-        reactModules.put(moduleName, componentName);
-        Log.w(TAG, toString() +" register component:" + moduleName);
+    public void registerReactModule(String moduleName, Bundle options) {
+        reactModules.put(moduleName, options);
     }
 
     public boolean isReactModuleInRegistry() {
@@ -92,7 +92,7 @@ public class ReactBridgeManager {
         return reactModules.containsKey(moduleName);
     }
 
-    public String reactModuleComponentForName(String moduleName) {
+    public Bundle reactModuleOptionsForKey(String moduleName) {
         return reactModules.get(moduleName);
     }
 

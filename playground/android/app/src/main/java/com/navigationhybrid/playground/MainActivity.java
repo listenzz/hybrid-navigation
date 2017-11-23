@@ -38,7 +38,7 @@ public class MainActivity extends ReactAppCompatActivity {
 
     void setup() {
         Navigator navigator = new Navigator(UUID.randomUUID().toString(), UUID.randomUUID().toString(), getSupportFragmentManager(), R.id.content);
-        NavigationFragment fragment = navigator.createFragment("ReactNavigation", navigator.sceneId, null, null);
+        NavigationFragment fragment = navigator.createFragment("NativeNavigation", navigator.sceneId, null, null);
         navigator.setRoot(fragment, false);
     }
 

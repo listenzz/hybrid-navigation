@@ -109,6 +109,18 @@ public class NavigationFragment extends Fragment {
                 }
             });
         }
+
+        Bundle options = getOptions();
+        if (options != null) {
+            Bundle titleItem = options.getBundle("titleItem");
+            if (titleItem != null) {
+                String title = titleItem.getString("title");
+                setTitle(title);
+            }
+
+
+        }
+
     }
 
     public void setTitle(String title) {
@@ -183,6 +195,11 @@ public class NavigationFragment extends Fragment {
             Log.i(TAG, navigator.toString());
         }
         return navigator;
+    }
+
+    private Bundle getOptions() {
+        Bundle args = getArguments();
+        return args.getBundle(NAVIGATION_OPTIONS);
     }
 
     public String getSceneId() {

@@ -20,6 +20,10 @@ const REQUEST_CODE = 1;
 
 export default class ReactNavigation extends Component {
 
+	static titleItem = {
+		title: 'RN navigation',
+	}
+
 	constructor(props){
 		super(props);
 		this.pushToNative = this.pushToNative.bind(this);
@@ -47,7 +51,6 @@ export default class ReactNavigation extends Component {
 	}
 
 	onComponentResult(requestCode, resultCode, data) {
-		console.log(data);
 		if(requestCode === REQUEST_CODE) {
 			if(resultCode === RESULT_OK) {
 				this.setState({text: data.text || '', error: undefined});

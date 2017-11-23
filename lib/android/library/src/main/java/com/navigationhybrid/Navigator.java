@@ -63,7 +63,6 @@ public class Navigator {
 
         transaction.addToBackStack(navId);
 
-
         transaction.commit();
         if (!animated) {
             fragmentManager.executePendingTransactions();
@@ -77,6 +76,7 @@ public class Navigator {
 
         if (reactBridgeManager.hasReactModule(moduleName)) {
             fragment = new ReactNavigationFragment();
+            options = reactBridgeManager.reactModuleOptionsForKey(moduleName);
         } else {
             Class<? extends NavigationFragment> fragmentClass = reactBridgeManager.nativeModuleClassForName(moduleName);
             if (fragmentClass == null) {
