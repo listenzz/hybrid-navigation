@@ -88,7 +88,7 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
         Log.i(TAG, getClass().getSimpleName() + "#invokeDefaultOnBackPressed");
         FragmentManager fragmentManager = getSupportFragmentManager();
         int count = fragmentManager.getBackStackEntryCount();
-        if (count == 1) {
+        if (count <= 1) {
             ActivityCompat.finishAfterTransition(this);
             return;
         }

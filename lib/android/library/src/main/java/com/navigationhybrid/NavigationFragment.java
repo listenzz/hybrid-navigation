@@ -97,7 +97,7 @@ public class NavigationFragment extends Fragment {
             setupTopBar();
         }
     }
-    
+
     protected void setupTopBar() {
         if (!navigator.isRoot()) {
             Toolbar toolbar = topBar.getToolbar();

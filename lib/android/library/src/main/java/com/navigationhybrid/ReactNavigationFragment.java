@@ -32,6 +32,7 @@ public class ReactNavigationFragment extends NavigationFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, toString() + "#onCreateView");
+        postponeEnterTransition();
         View view = inflater.inflate(R.layout.fragment_react, container, false);
         containerLayout = view.findViewById(R.id.react_content);
         return view;
@@ -92,20 +93,43 @@ public class ReactNavigationFragment extends NavigationFragment {
 
         if (reactRootView == null && getView() != null) {
             reactRootView = new ReactRootView(getContext());
-            reactRootView.setEventListener(new ReactRootView.ReactRootViewEventListener() {
-                @Override
-                public void onAttachedToReactInstance(ReactRootView rootView) {
-                    Log.w(TAG, ReactNavigationFragment.this.toString() + "#onAttachedToReactInstance");
-                }
-            });
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             containerLayout.addView(reactRootView, layoutParams);
             containerLayout.setReactRootView(reactRootView);
             String moduleName = getArguments().getString(NAVIGATION_MODULE_NAME);
             Bundle initialProps = getArguments().getBundle(NAVIGATION_PROPS);
             reactRootView.startReactApplication(reactInstanceManager, moduleName, initialProps);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startPostponedEnterTransition();
+                }
+            }, 2000);
         }
     }
+
+
+
+    public void signalFirstRenderComplete() {
+        Log.d(TAG, "signalFirstRenderComplete");
+        startPostponedEnterTransition();
+    }
+
+//    @Override
+//    public void postponeEnterTransition() {
+//        super.postponeEnterTransition();
+//        Log.d(TAG, "postponeEnterTransition");
+//        getActivity().supportPostponeEnterTransition();
+//    }
+//
+//    @Override
+//    public void startPostponedEnterTransition() {
+//        super.startPostponedEnterTransition();
+//        Log.d(TAG, "startPostponeEnterTransition");
+//        if (getActivity() != null) {
+//            getActivity().supportStartPostponedEnterTransition();
+//        }
+//    }
 
 
 }

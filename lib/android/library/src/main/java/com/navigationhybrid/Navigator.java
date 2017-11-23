@@ -215,6 +215,14 @@ public class Navigator {
         dismiss(true);
     }
 
+    void signalFirstRenderComplete() {
+        NavigationFragment fragment = getSelfFragment();
+        if (fragment instanceof ReactNavigationFragment) {
+            ReactNavigationFragment reactFragment = (ReactNavigationFragment) fragment;
+            reactFragment.signalFirstRenderComplete();
+        }
+    }
+
     NavigationFragment getRootFragment() {
         return (NavigationFragment) fragmentManager.findFragmentByTag(navId);
     }

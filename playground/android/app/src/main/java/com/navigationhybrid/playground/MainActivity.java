@@ -26,6 +26,7 @@ public class MainActivity extends ReactAppCompatActivity {
                     @Override
                     public void onReactModuleRegistryCompleted() {
                         bridgeManager.removeReactModuleRegistryListener(this);
+                        Log.w(TAG, "onReactModuleRegistryCompleted");
                         setup();
                     }
                 });

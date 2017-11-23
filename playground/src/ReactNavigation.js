@@ -38,6 +38,10 @@ export default class ReactNavigation extends Component {
 		console.log('componentWillMount=' + this.props.sceneId );
 	}
 
+	componentDidMount() {
+		console.log('componentDidMount =' + this.props.sceneId);
+	}
+
 	componentWillUnmount() {
 		console.log('componentWillUnmount=' + this.props.sceneId);
 	}
