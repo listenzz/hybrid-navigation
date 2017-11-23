@@ -18,6 +18,7 @@ public class Navigator {
     public static final String REQUEST_CODE_KEY = "requestCode";
     public static final String RESULT_CODE_KEY = "resultCode";
     public static final String RESULT_DATA_KEY = "data";
+    public static final String ON_BAR_BUTTON_ITEM_CLICK_EVENT = "ON_BAR_BUTTON_ITEM_CLICK";
 
     private static final String TAG = "ReactNative";
 

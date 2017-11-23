@@ -7,12 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.facebook.react.bridge.Arguments;
 import com.navigationhybrid.view.TopBar;
 
 import java.util.List;
@@ -118,7 +120,32 @@ public class NavigationFragment extends Fragment {
                 setTitle(title);
             }
 
+            Bundle rightBarButtonItem = options.getBundle("rightBarButtonItem");
+            if (rightBarButtonItem != null) {
+                Log.w(TAG, rightBarButtonItem.toString());
 
+                String title = rightBarButtonItem.getString("title");
+                Toolbar toolbar = topBar.getToolbar();
+                MenuItem menuItem = toolbar.getMenu().add(title);
+                menuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                final String action = rightBarButtonItem.getString("action");
+                boolean enabled = rightBarButtonItem.getBoolean("enabled", true);
+                menuItem.setEnabled(enabled);
+                if (action != null) {
+                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+                            Bundle bundle = new Bundle();
+                            bundle.putString("action", action);
+                            bundle.putString(PROPS_NAV_ID, navigator.navId);
+                            bundle.putString(PROPS_SCENE_ID, navigator.sceneId);
+                            bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
+                            return true;
+                        }
+                    });
+                }
+            }
         }
 
     }
@@ -126,6 +153,12 @@ public class NavigationFragment extends Fragment {
     public void setTitle(String title) {
         if (topBar != null) {
             topBar.setTitle(title);
+        }
+    }
+
+    public void setRightBarButtonItem(Bundle rightBarButtonItem) {
+        if (rightBarButtonItem != null) {
+
         }
     }
 

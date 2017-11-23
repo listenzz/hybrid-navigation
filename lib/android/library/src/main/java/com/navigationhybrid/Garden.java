@@ -1,5 +1,6 @@
 package com.navigationhybrid;
 
+
 import android.graphics.Color;
 
 /**
@@ -9,11 +10,17 @@ import android.graphics.Color;
 public class Garden {
 
     public static class Global {
-        public static int tabItemColor = Color.parseColor("#c9c9c9");
-        public static int tabItemSelectedColor = Color.parseColor("#F44336");
-        public static int tabItemFontSize;
-        public static int tabItemBubbleColor = Color.parseColor("FF4040");
-        public static int tabItemBubbleBorderColor = Color.WHITE;
+
+        public static int titleTextColor = Color.WHITE;
+        public static int titleTextSize = 18;
+        public static int barButtonItemTextColor = Color.WHITE;
+        public static int barButtonItemTextSize = 16;
+
+        public static int tabBarItemColor = Color.parseColor("#c9c9c9");
+        public static int tabBarItemSelectedColor = Color.parseColor("#F44336");
+        public static int tabBarItemFontSize;
+        public static int tabBarItemBubbleColor = Color.parseColor("#FF4040");
+        public static int tabBarItemBubbleBorderColor = Color.WHITE;
     }
 
 

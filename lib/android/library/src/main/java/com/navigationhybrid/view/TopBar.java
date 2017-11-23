@@ -9,10 +9,12 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.navigationhybrid.Garden;
 import com.navigationhybrid.R;
 
 /**
@@ -22,6 +24,7 @@ import com.navigationhybrid.R;
 public class TopBar extends AppBarLayout {
 
     private Toolbar toolbar;
+    private TextView titleView;
 
     public TopBar(Context context) {
         super(context);
@@ -47,11 +50,25 @@ public class TopBar extends AppBarLayout {
         }
 
         addView(toolbar, LayoutParams.MATCH_PARENT, height);
+
+        titleView = new TextView(context);
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, Garden.Global.titleTextSize);
+        titleView.setTextColor(Garden.Global.titleTextColor);
+
+
+//        TypedArray typedArray = context.obtainStyledAttributes(new int[]{R.attr.titleTextAppearance});
+//         int i = typedArray.getResourceId(0, 0);
+//        typedArray.recycle();
+
+        Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
+        toolbar.addView(titleView, layoutParams);
+
     }
 
 
     public void setTitle(String title) {
-        toolbar.setTitle(title);
+        // toolbar.setTitle(title);
+        titleView.setText(title);
     }
 
     public String getTitle() {

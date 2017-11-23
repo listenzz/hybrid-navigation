@@ -62,7 +62,7 @@ public class BottomBarTab extends FrameLayout {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);
         mIcon.setImageResource(icon);
         mIcon.setLayoutParams(params);
-        mIcon.setColorFilter(Garden.Global.tabItemColor);
+        mIcon.setColorFilter(Garden.Global.tabBarItemColor);
         lLContainer.addView(mIcon);
 
         mTvTitle = new TextView(context);
@@ -70,7 +70,7 @@ public class BottomBarTab extends FrameLayout {
         LinearLayout.LayoutParams paramsTv = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramsTv.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
         mTvTitle.setTextSize(10);
-        mTvTitle.setTextColor(Garden.Global.tabItemColor);
+        mTvTitle.setTextColor(Garden.Global.tabBarItemColor);
         mTvTitle.setLayoutParams(paramsTv);
         lLContainer.addView(mTvTitle);
 
@@ -79,8 +79,8 @@ public class BottomBarTab extends FrameLayout {
         int min = dip2px(context, 20);
         int padding = dip2px(context, 5);
         mTvUnreadCount = new TextView(context);
-        RoundedColorDrawable roundedColorDrawable = new RoundedColorDrawable(dip2px(context, 20), Garden.Global.tabItemBubbleColor);
-        roundedColorDrawable.setBorder(Garden.Global.tabItemBubbleBorderColor, dip2px(context, 1));
+        RoundedColorDrawable roundedColorDrawable = new RoundedColorDrawable(dip2px(context, 20), Garden.Global.tabBarItemBubbleColor);
+        roundedColorDrawable.setBorder(Garden.Global.tabBarItemBubbleBorderColor, dip2px(context, 1));
         mTvUnreadCount.setBackground(roundedColorDrawable);
         mTvUnreadCount.setMinWidth(min);
         mTvUnreadCount.setTextColor(Color.WHITE);
@@ -100,11 +100,11 @@ public class BottomBarTab extends FrameLayout {
     public void setSelected(boolean selected) {
         super.setSelected(selected);
         if (selected) {
-            mIcon.setColorFilter(Garden.Global.tabItemSelectedColor);
-            mTvTitle.setTextColor(Garden.Global.tabItemSelectedColor);
+            mIcon.setColorFilter(Garden.Global.tabBarItemSelectedColor);
+            mTvTitle.setTextColor(Garden.Global.tabBarItemSelectedColor);
         } else {
-            mIcon.setColorFilter(Garden.Global.tabItemColor);
-            mTvTitle.setTextColor(Garden.Global.tabItemColor);
+            mIcon.setColorFilter(Garden.Global.tabBarItemColor);
+            mTvTitle.setTextColor(Garden.Global.tabBarItemColor);
         }
     }
 

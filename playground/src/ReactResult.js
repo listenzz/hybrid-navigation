@@ -10,7 +10,8 @@ import {
 	StyleSheet,
 	Text,
 	View,
-    TextInput
+	Image,
+	TextInput
 } from 'react-native';
 
 import styles from './Styles'
@@ -23,6 +24,12 @@ export default class ReactResult extends Component {
 		title: 'RN result',
 	}
 
+	static rightBarButtonItem = {
+		title: '点我',
+		icon: Image.resolveAssetSource(require('./ic_settings.png')),
+		action: 'somthing happen',
+	}
+
 	constructor(props){
 		super(props);
 		this.pushToNative = this.pushToNative.bind(this);
@@ -33,6 +40,10 @@ export default class ReactResult extends Component {
 		this.state = {
 			text: '',
 		}
+	}
+
+	onBarButtonItemClick(action) {
+		
 	}
 
 	pushToNative() {
