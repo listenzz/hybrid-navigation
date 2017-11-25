@@ -1,18 +1,26 @@
 package com.navigationhybrid;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
+import com.facebook.react.bridge.queue.MessageQueueThreadHandler;
+
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.UUID;
 
 /**
  * Created by Listen on 2017/11/20.
  */
 
-public class Navigator {
+public class Navigator implements LifecycleObserver {
 
     public static final String ON_COMPONENT_RESULT_EVENT = "ON_COMPONENT_RESULT";
     public static final String REQUEST_CODE_KEY = "requestCode";
@@ -34,14 +42,28 @@ public class Navigator {
 
     private ReactBridgeManager reactBridgeManager = ReactBridgeManager.instance;
 
-    public Navigator(@NonNull String navId, @NonNull String sceneId, @NonNull FragmentManager fragmentManager, int containerId) {
+    LifecycleOwner lifecycleOwner;
+
+    public Navigator(@NonNull LifecycleOwner lifecycleOwner, @NonNull String navId, @NonNull String sceneId, @NonNull FragmentManager fragmentManager, int containerId) {
+        this.lifecycleOwner = lifecycleOwner;
+        lifecycleOwner.getLifecycle().addObserver(this);
+
         this.navId = navId;
         this.sceneId = sceneId;
         this.fragmentManager = fragmentManager;
         this.containerId = containerId;
     }
 
-    public void setRoot(NavigationFragment fragment, boolean animated) {
+    public void setRoot(final NavigationFragment fragment, final boolean animated) {
+        scheduleTask(new Runnable() {
+            @Override
+            public void run() {
+                setRootTask(fragment, animated);
+            }
+        });
+    }
+
+    void setRootTask(NavigationFragment fragment, boolean animated) {
         NavigationFragment root = getRootFragment();
         if (root != null) {
             throw new IllegalStateException("已经设置 root fragment 了，不可以再设置");
@@ -59,7 +81,7 @@ public class Navigator {
         transaction.add(containerId, fragment, navId);
 
         if (topFragment != null) {
-           transaction.hide(topFragment);
+            transaction.hide(topFragment);
         }
 
         transaction.addToBackStack(navId);
@@ -68,7 +90,6 @@ public class Navigator {
         if (!animated) {
             fragmentManager.executePendingTransactions();
         }
-
     }
 
     public NavigationFragment createFragment(@NonNull String moduleName, @NonNull String sceneId, Bundle props, Bundle options) {
@@ -113,7 +134,16 @@ public class Navigator {
         return fragment;
     }
 
-    public void push(@NonNull String moduleName, Bundle props, Bundle options, boolean animated) {
+    public void push(@NonNull final String moduleName, final Bundle props, final Bundle options, final boolean animated) {
+        scheduleTask(new Runnable() {
+            @Override
+            public void run() {
+                pushTask(moduleName, props, options, animated);
+            }
+        });
+    }
+
+    void pushTask(@NonNull String moduleName, Bundle props, Bundle options, boolean animated) {
         NavigationFragment fragment = createFragment(moduleName, UUID.randomUUID().toString(), props, options);
         NavigationFragment selfFragment = getSelfFragment();
         if (animated) {
@@ -129,7 +159,6 @@ public class Navigator {
                 .hide(selfFragment)
                 .addToBackStack(fragment.getSceneId())
                 .commit();
-
     }
 
 
@@ -145,7 +174,16 @@ public class Navigator {
         return !isRoot();
     }
 
-    public void pop(boolean animated) {
+    public void pop(final boolean animated) {
+        scheduleTask(new Runnable() {
+            @Override
+            public void run() {
+                popTask(animated);
+            }
+        });
+    }
+
+    void popTask(boolean animated) {
         if (!canPop()) {
             return;
         }
@@ -167,6 +205,15 @@ public class Navigator {
     }
 
     public void popToRoot() {
+        scheduleTask(new Runnable() {
+            @Override
+            public void run() {
+                popToRootTask();
+            }
+        });
+    }
+
+    void popToRootTask() {
         if (!canPop()) {
             return;
         }
@@ -174,9 +221,18 @@ public class Navigator {
         fragmentManager.popBackStack(navId, 0);
     }
 
-    public void present(@NonNull String moduleName, int requestCode, Bundle props, Bundle options, boolean animated) {
+    public void present(@NonNull final String moduleName, final int requestCode, final Bundle props, final Bundle options, final boolean animated) {
+        scheduleTask(new Runnable() {
+            @Override
+            public void run() {
+                presentTask(moduleName, requestCode, props, options, animated);
+            }
+        });
+    }
+
+    void presentTask(@NonNull String moduleName, int requestCode, Bundle props, Bundle options, boolean animated) {
         anim = PresentAnimation.Modal;
-        Navigator navigator = new Navigator(UUID.randomUUID().toString(), UUID.randomUUID().toString(), fragmentManager, containerId);
+        Navigator navigator = new Navigator(lifecycleOwner, UUID.randomUUID().toString(), UUID.randomUUID().toString(), fragmentManager, containerId);
         NavigationFragment fragment = navigator.createFragment(moduleName, navigator.sceneId, props, options);
         fragment.setRequestCode(requestCode);
         navigator.setRoot(fragment, animated);
@@ -195,7 +251,16 @@ public class Navigator {
         this.resultCode = resultCode;
     }
 
-    public void dismiss(boolean animated) {
+    public void dismiss(final boolean animated) {
+        scheduleTask(new Runnable() {
+            @Override
+            public void run() {
+                dismissTask(animated);
+            }
+        });
+    }
+
+    void dismissTask(boolean animated) {
         if (!canDismiss()) {
             return;
         }
@@ -215,7 +280,6 @@ public class Navigator {
         presenting.onFragmentResult(requestCode, resultCode, result);
 
         fragmentManager.popBackStack(navId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
     }
 
     public void dismiss() {
@@ -289,6 +353,48 @@ public class Navigator {
     NavigationFragment getPresentingFragment() {
         // FIXMe 精确到子 fragment
         return getPreFragment(getRootFragment());
+    }
+
+    boolean active;
+    LinkedList<Runnable> tasks = new LinkedList<>();
+
+    void scheduleTask(Runnable runnable) {
+        tasks.add(runnable);
+        considerExecute();
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
+    void onStateChange() {
+        if (lifecycleOwner.getLifecycle().getCurrentState() == Lifecycle.State.DESTROYED) {
+            // 清空队列
+            tasks.clear();
+        } else {
+            activeStateChanged(isActiveState(lifecycleOwner.getLifecycle().getCurrentState()));
+        }
+    }
+
+    void activeStateChanged(boolean newActive) {
+        if (newActive != this.active) {
+            this.active = newActive;
+            considerExecute();
+        }
+    }
+
+    void considerExecute() {
+        if (active) {
+            if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
+                if (tasks.size() > 0) {
+                    for (Runnable task : tasks) {
+                        task.run();
+                    }
+                    tasks.clear();
+                }
+            }
+        }
+    }
+
+    boolean isActiveState(Lifecycle.State state) {
+        return state.isAtLeast(Lifecycle.State.STARTED);
     }
 
     @Override

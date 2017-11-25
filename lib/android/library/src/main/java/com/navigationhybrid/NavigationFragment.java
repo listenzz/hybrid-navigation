@@ -219,7 +219,7 @@ public class NavigationFragment extends Fragment {
             String navId = props.getString(PROPS_NAV_ID);
             String sceneId = props.getString(PROPS_SCENE_ID);
             int containerId = args.getInt(NAVIGATION_CONTAINER_ID);
-            navigator = new Navigator(navId, sceneId, getFragmentManager(), containerId);
+            navigator = new Navigator(this, navId, sceneId, getFragmentManager(), containerId);
             String anim = args.getString(NAVIGATION_ANIM);
             if (anim != null) {
                 navigator.anim = PresentAnimation.valueOf(anim);
