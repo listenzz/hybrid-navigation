@@ -43,9 +43,10 @@ export default class ReactResult extends Component {
 	}
 
 	componentWillMount() {
-		this.props.navigator.isRoot().then(function(isRoot) {
+		this.props.navigator.isRoot().then((isRoot) => {
 			if(isRoot) {
 				console.info('-------------------is root---------------');
+				this.props.garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
 			} else {
 				console.info('-------------------is not root---------------');
 			}
@@ -53,7 +54,10 @@ export default class ReactResult extends Component {
 	}
 
 	onBarButtonItemClick(action) {
-		
+		console.info('-------------------' + action + '------------------');
+		if (action === 'cancel') {
+			this.props.navigator.dismiss();
+		}
 	}
 
 	pushToNative() {

@@ -11,6 +11,7 @@
 #import <React/RCTRootView.h>
 #import <React/RCTEventEmitter.h>
 #import <React/RCTConvert.h>
+#import "HBDGarden.h"
 
 
 @interface HBDReactViewController ()
@@ -57,25 +58,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    HBDGarden *garden = [[HBDGarden alloc] init];
     NSDictionary *titleItem = self.options[@"titleItem"];
-    if (titleItem) {
-        NSString *title = titleItem[@"title"];
-        self.navigationItem.title = title;
-    }
+    [garden setTitleItem:titleItem forController:self];
     
     NSDictionary *rightBarButtonItem = self.options[@"rightBarButtonItem"];
-    if (rightBarButtonItem) {
-        NSDictionary *icon = rightBarButtonItem[@"icon"];
-        if (icon) {
-            UIImage *iconImage = [RCTConvert UIImage:icon];
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:nil action:NULL];
-        } else {
-            NSString *title = rightBarButtonItem[@"title"];
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:nil action:NULL];
-        }
-    }
+    [garden setRightBarButtonItem:rightBarButtonItem forController:self];
     
-    
+    NSDictionary *leftBarButtonItem = self.options[@"leftBarButtonItem"];
+    [garden setLeftBarButtonItem:leftBarButtonItem forController:self];
     
 }
 

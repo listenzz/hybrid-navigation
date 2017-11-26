@@ -1,2 +1,2 @@
 *.pbxproj -text
-*.xcworkspace -text
+*.xcworkspacedata -text
