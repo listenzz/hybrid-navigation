@@ -45,13 +45,12 @@ public class Navigator implements LifecycleObserver {
     LifecycleOwner lifecycleOwner;
 
     public Navigator(@NonNull LifecycleOwner lifecycleOwner, @NonNull String navId, @NonNull String sceneId, @NonNull FragmentManager fragmentManager, int containerId) {
-        this.lifecycleOwner = lifecycleOwner;
-        lifecycleOwner.getLifecycle().addObserver(this);
-
         this.navId = navId;
         this.sceneId = sceneId;
         this.fragmentManager = fragmentManager;
         this.containerId = containerId;
+        this.lifecycleOwner = lifecycleOwner;
+        lifecycleOwner.getLifecycle().addObserver(this);
     }
 
     public void setRoot(final NavigationFragment fragment, final boolean animated) {
@@ -359,8 +358,10 @@ public class Navigator implements LifecycleObserver {
     LinkedList<Runnable> tasks = new LinkedList<>();
 
     void scheduleTask(Runnable runnable) {
-        tasks.add(runnable);
-        considerExecute();
+        if (lifecycleOwner.getLifecycle().getCurrentState() != Lifecycle.State.DESTROYED) {
+            tasks.add(runnable);
+            considerExecute();
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_ANY)
@@ -368,7 +369,10 @@ public class Navigator implements LifecycleObserver {
         if (lifecycleOwner.getLifecycle().getCurrentState() == Lifecycle.State.DESTROYED) {
             // 清空队列
             tasks.clear();
+            lifecycleOwner.getLifecycle().removeObserver(this);
+            Log.d(TAG, sceneId + " lifecycle DESTROYED");
         } else {
+            Log.d(TAG, sceneId + " lifecycle state change:" + lifecycleOwner.getLifecycle().getCurrentState().name());
             activeStateChanged(isActiveState(lifecycleOwner.getLifecycle().getCurrentState()));
         }
     }
