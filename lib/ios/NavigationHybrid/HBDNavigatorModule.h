@@ -7,6 +7,6 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NavigatorModule : NSObject
+@interface HBDNavigatorModule : NSObject
 
 @end
