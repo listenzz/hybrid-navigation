@@ -1,2 +1,3 @@
 *.pbxproj -text
 *.xcworkspacedata -text
+*.hpp linguist-language=JavaScript
