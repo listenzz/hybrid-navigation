@@ -7,14 +7,18 @@
 
 #import "HBDNavigator.h"
 #import "HBDViewController.h"
-#import "HBDReactBridgeManager.h"
+#import "HBDReactViewController.h"
+
+#import <React/RCTBridge.h>
 
 NSInteger const RESULT_OK = -1;
 NSInteger const RESULT_CANCEL = 0;
 
+NSString * const ON_COMPONENT_RESULT_EVENT = @"ON_COMPONENT_RESULT";
+NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
+
 @interface HBDNavigator()
 
-@property(nonatomic, strong) HBDReactBridgeManager *bridgeManager;
 @property(nonatomic, assign) NSInteger requestCode;
 @property(nonatomic, assign) NSInteger resultCode;
 @property(nonatomic, copy) NSDictionary *resultData;
@@ -110,7 +114,7 @@ NSInteger const RESULT_CANCEL = 0;
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options  {
     HBDViewController *vc = nil;
     if ([self.bridgeManager hasReactModuleForName:moduleName]) {
-        
+        vc = [[HBDReactViewController alloc] initWithNavigator:self moduleName:moduleName props:props options:options];
     } else {
         Class clazz =  [self.bridgeManager nativeModuleClassFromName:moduleName];
         NSCAssert([self.bridgeManager hasNativeModule:moduleName], @"找不到名为 %@ 的模块，你是否忘了注册？", moduleName);

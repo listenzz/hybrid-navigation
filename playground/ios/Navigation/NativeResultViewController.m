@@ -31,7 +31,6 @@
     [self.navigator dismissAnimated:YES];
 }
 
-                                             
 - (IBAction)pushToRN:(UIButton *)sender {
     [self.navigator pushModule:@"ReactResult"];
 }

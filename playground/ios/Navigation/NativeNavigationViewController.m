@@ -15,13 +15,15 @@
 
 @end
 
+const NSInteger REQUEST_CODE = 1;
+
 @implementation NativeNavigationViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.popToRootButton.enabled = [self.navigator canPop];
-    self.title = @"navigation";
+    self.title = @"native navigation";
     self.navigationItem.title = self.title;
 }
 
@@ -30,7 +32,7 @@
 }
 
 - (IBAction)pushToRN:(UIButton *)sender {
-    
+    [self.navigator pushModule:@"ReactNavigation"];
 }
 
 - (IBAction)popToRoot:(UIButton *)sender {
@@ -38,16 +40,16 @@
 }
 
 - (IBAction)requestFromRN:(UIButton *)sender {
-    
+    [self.navigator presentModule:@"ReactResult" requestCode:REQUEST_CODE];
 }
 
 - (IBAction)requestFromNative:(UIButton *)sender {
-    [self.navigator presentModule:@"NativeResult" requestCode:1];
+    [self.navigator presentModule:@"NativeResult" requestCode:REQUEST_CODE];
 }
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
-    if (requestCode == 1) {
+    if (requestCode == REQUEST_CODE) {
         if (resultCode == RESULT_OK) {
             if (!data) {
                 data = @{};

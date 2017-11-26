@@ -6,7 +6,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@interface HBDNavigatorModule : NSObject
+@interface HBDNavigatorModule : RCTEventEmitter <RCTBridgeModule>
 
 @end
+

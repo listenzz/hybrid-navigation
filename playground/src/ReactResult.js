@@ -42,6 +42,16 @@ export default class ReactResult extends Component {
 		}
 	}
 
+	componentWillMount() {
+		this.props.navigator.isRoot().then(function(isRoot) {
+			if(isRoot) {
+				console.info('-------------------is root---------------');
+			} else {
+				console.info('-------------------is not root---------------');
+			}
+		})
+	}
+
 	onBarButtonItemClick(action) {
 		
 	}
@@ -70,7 +80,8 @@ export default class ReactResult extends Component {
 					这是一个 React Native 页面:
         		</Text>
 
-                <TextInput style={styles.input} onChangeText={this.onInputTextChanged} value={this.state.text}/>
+				<TextInput style={styles.input} onChangeText={this.onInputTextChanged} value={this.state.text} 
+					placeholder={'请输入要返回的结果'} underlineColorAndroid='#00000000'/>
 
 				<TouchableOpacity onPress={this.sendResult} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>

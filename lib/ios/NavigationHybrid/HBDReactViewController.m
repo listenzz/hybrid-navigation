@@ -6,21 +6,113 @@
 //
 
 #import "HBDReactViewController.h"
+#import "HBDReactBridgeManager.h"
+
+#import <React/RCTRootView.h>
+#import <React/RCTEventEmitter.h>
+#import <React/RCTConvert.h>
+
 
 @interface HBDReactViewController ()
+
+@property(nonatomic, copy) NSString *moduleName;
+@property(nonatomic, copy) NSDictionary *props;
+@property(nonatomic, copy) NSDictionary *options;
 
 @end
 
 @implementation HBDReactViewController
 
+- (instancetype)initWithNavigator:(HBDNavigator *)navigator moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
+    if (self = [super initWithNavigator:navigator]) {
+        if (props == nil) {
+            props = @{};
+        }
+        
+        if (options == nil) {
+            options = @{};
+        }
+        
+        NSMutableDictionary *immediateProps = [props mutableCopy];
+        [immediateProps setObject:self.navigator.navId forKey:@"navId"];
+        [immediateProps setObject:self.sceneId forKey:@"sceneId"];
+        _props = [immediateProps copy];
+        
+        NSMutableDictionary *immediateOptions = [[self.navigator.bridgeManager reactModuleOptionsForKey:moduleName] mutableCopy];
+        for (NSString *key in [options allKeys]) {
+            [immediateOptions setObject:[options objectForKey:key] forKey:key];
+        }
+        _options = [immediateOptions copy];
+        
+        _moduleName = moduleName;
+    }
+    return self;
+}
+
+- (void)loadView {
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:self.navigator.bridgeManager.bridge moduleName:self.moduleName initialProperties:self.props];
+    self.view = rootView;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    NSDictionary *titleItem = self.options[@"titleItem"];
+    if (titleItem) {
+        NSString *title = titleItem[@"title"];
+        self.navigationItem.title = title;
+    }
+    
+    NSDictionary *rightBarButtonItem = self.options[@"rightBarButtonItem"];
+    if (rightBarButtonItem) {
+        NSDictionary *icon = rightBarButtonItem[@"icon"];
+        if (icon) {
+            UIImage *iconImage = [RCTConvert UIImage:icon];
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain target:nil action:NULL];
+        } else {
+            NSString *title = rightBarButtonItem[@"title"];
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain target:nil action:NULL];
+        }
+    }
+    
+    
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    NSLog(@"viewWillAppear");
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    NSLog(@"viewDidAppear");
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    NSLog(@"viewWillDisappear");
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    NSLog(@"viewDidDisappear");
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
+    [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
+    RCTEventEmitter *emitter = [self.navigator.bridgeManager.bridge moduleForName:@"NavigationHybrid"];
+    [emitter sendEventWithName:ON_COMPONENT_RESULT_EVENT body:@{@"requestCode": @(requestCode),
+                                                                @"resultCode": @(resultCode),
+                                                                @"data": data,
+                                                                @"navId": self.navigator.navId,
+                                                                @"sceneId": self.sceneId,
+                                                                }];
 }
 
 /*

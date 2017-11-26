@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -120,6 +121,21 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
                     navigator.popToRoot();
+                } else {
+                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void isRoot(final String navId, final String sceneId, final Promise promise) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Navigator navigator = findNavigator(navId, sceneId);
+                if (navigator != null) {
+                    promise.resolve(navigator.isRoot());
                 } else {
                     Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }

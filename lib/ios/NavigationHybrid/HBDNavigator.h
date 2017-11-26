@@ -7,9 +7,12 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "HBDReactBridgeManager.h"
 
 UIKIT_EXTERN NSInteger const RESULT_OK;
 UIKIT_EXTERN NSInteger const RESULT_CANCEL;
+UIKIT_EXTERN NSString * const ON_COMPONENT_RESULT_EVENT;
+UIKIT_EXTERN NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT;
 
 @class HBDReactBridgeManager;
 
@@ -17,6 +20,7 @@ UIKIT_EXTERN NSInteger const RESULT_CANCEL;
 
 @property(nonatomic, strong, readonly) UINavigationController *navigationController;
 @property(nonatomic, copy, readonly) NSString *navId;
+@property(nonatomic, strong, readonly) HBDReactBridgeManager *bridgeManager;
 
 - (instancetype)initWithRootModule:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options reactBridgeManager:(HBDReactBridgeManager *)manager;
 
