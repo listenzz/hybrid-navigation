@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NativeResultViewController">
+            <connections>
+                <outlet property="descriptionLabel" destination="DZN-Wy-z0Q" id="cdG-qL-eFZ"/>
+                <outlet property="resultTextField" destination="uzQ-S9-E9E" id="ACt-eJ-Qrk"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="这是一个原生页面" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DZN-Wy-z0Q">
+                    <rect key="frame" x="32" y="84" width="311" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VyH-DX-vuk">
+                    <rect key="frame" x="32" y="177" width="311" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="gLn-q6-GTV"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <state key="normal" title="返回结果"/>
+                    <connections>
+                        <action selector="sendResult:" destination="-1" eventType="touchUpInside" id="gQk-2z-i6E"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jgz-hS-qb8">
+                    <rect key="frame" x="32" y="217" width="311" height="40"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <state key="normal" title="push 到 React Native 页面"/>
+                    <connections>
+                        <action selector="pushToRN:" destination="-1" eventType="touchUpInside" id="NAQ-NE-nmX"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SvU-eX-bN7">
+                    <rect key="frame" x="32" y="257" width="311" height="40"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <state key="normal" title="push 到 native 页面"/>
+                    <connections>
+                        <action selector="pushToNative:" destination="-1" eventType="touchUpInside" id="5BG-dm-NJS"/>
+                    </connections>
+                </button>
+                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="请输入要返回的结果" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uzQ-S9-E9E">
+                    <rect key="frame" x="32" y="121" width="311" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="he2-su-L0z"/>
+                    </constraints>
+                    <nil key="textColor"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <textInputTraits key="textInputTraits"/>
+                </textField>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="SvU-eX-bN7" firstAttribute="trailing" secondItem="DZN-Wy-z0Q" secondAttribute="trailing" id="3Ur-wc-M7E"/>
+                <constraint firstItem="SvU-eX-bN7" firstAttribute="top" secondItem="jgz-hS-qb8" secondAttribute="bottom" id="DMy-Qz-Vgo"/>
+                <constraint firstItem="VyH-DX-vuk" firstAttribute="trailing" secondItem="DZN-Wy-z0Q" secondAttribute="trailing" id="ErG-RH-1IS"/>
+                <constraint firstItem="VyH-DX-vuk" firstAttribute="leading" secondItem="DZN-Wy-z0Q" secondAttribute="leading" id="EsU-5p-lkV"/>
+                <constraint firstItem="DZN-Wy-z0Q" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="64" id="LJK-2p-9rV"/>
+                <constraint firstItem="uzQ-S9-E9E" firstAttribute="leading" secondItem="DZN-Wy-z0Q" secondAttribute="leading" id="VGO-tR-y53"/>
+                <constraint firstItem="jgz-hS-qb8" firstAttribute="height" secondItem="VyH-DX-vuk" secondAttribute="height" id="bcg-bA-gTy"/>
+                <constraint firstItem="uzQ-S9-E9E" firstAttribute="top" secondItem="DZN-Wy-z0Q" secondAttribute="bottom" constant="16" id="ea7-do-JCp"/>
+                <constraint firstItem="VyH-DX-vuk" firstAttribute="top" secondItem="uzQ-S9-E9E" secondAttribute="bottom" constant="16" id="hao-3A-eGR"/>
+                <constraint firstItem="jgz-hS-qb8" firstAttribute="top" secondItem="VyH-DX-vuk" secondAttribute="bottom" id="kB2-3X-DtQ"/>
+                <constraint firstItem="DZN-Wy-z0Q" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="32" id="nvT-NJ-w1O"/>
+                <constraint firstItem="uzQ-S9-E9E" firstAttribute="trailing" secondItem="DZN-Wy-z0Q" secondAttribute="trailing" id="o5k-57-uXn"/>
+                <constraint firstItem="jgz-hS-qb8" firstAttribute="leading" secondItem="DZN-Wy-z0Q" secondAttribute="leading" id="rKZ-bH-X3u"/>
+                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="DZN-Wy-z0Q" secondAttribute="trailing" constant="32" id="tqS-E3-iYI"/>
+                <constraint firstItem="SvU-eX-bN7" firstAttribute="leading" secondItem="DZN-Wy-z0Q" secondAttribute="leading" id="vAF-8w-5Bw"/>
+                <constraint firstItem="SvU-eX-bN7" firstAttribute="height" secondItem="VyH-DX-vuk" secondAttribute="height" id="vSP-kq-Ewr"/>
+                <constraint firstItem="jgz-hS-qb8" firstAttribute="trailing" secondItem="DZN-Wy-z0Q" secondAttribute="trailing" id="wRX-17-oNI"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
+        </view>
+    </objects>
+</document>

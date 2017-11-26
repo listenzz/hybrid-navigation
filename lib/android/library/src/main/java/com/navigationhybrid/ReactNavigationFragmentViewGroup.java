@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import com.facebook.react.ReactRootView;
 
 /**
- * Root ViewGroup for {@link ReactNavigationFragment} that allows it to get KeyEvents.
+ * Root ViewGroup for {@link ReactNavigationFragment}
  */
 public class ReactNavigationFragmentViewGroup extends LinearLayout {
 

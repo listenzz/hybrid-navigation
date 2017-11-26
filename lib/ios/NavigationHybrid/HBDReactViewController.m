@@ -1,29 +1,17 @@
 //
-//  HBDViewController.m
+//  HBDReactViewController.m
 //  Pods
 //
-//  Created by Listen on 2017/11/25.
+//  Created by Listen on 2017/11/26.
 //
 
-#import "HBDViewController.h"
+#import "HBDReactViewController.h"
 
-@interface HBDViewController ()
+@interface HBDReactViewController ()
 
 @end
 
-@implementation HBDViewController
-
-- (instancetype)initWithNavigator:(HBDNavigator *)navigator; {
-    if (self = [super init]) {
-        _navigator = navigator;
-        _sceneId = [[NSUUID UUID] UUIDString];
-    }
-    return self;
-}
-
-- (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
-    NSLog(@"requestCode:%d, resultCode:%d, data:%@", requestCode, resultCode, data);
-}
+@implementation HBDReactViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];

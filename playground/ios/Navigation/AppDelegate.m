@@ -7,33 +7,70 @@
 //
 
 #import "AppDelegate.h"
-
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+#import <React/RCTLog.h>
+
+#import <NavigationHybrid/HBDReactBridgeManager.h>
+#import <NavigationHybrid/HBDNavigator.h>
+
+#import "NativeNavigationViewController.h"
+#import "NativeResultViewController.h"
+
 
 @interface AppDelegate ()
+
+@property(nonatomic, strong) RCTBridge *bridge;
 
 @end
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
-    NSURL *jsCodeLocation;
     
-    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index.ios" fallbackResource:nil];
+    [[NSNotificationCenter defaultCenter] addObserverForName:RCTJavaScriptWillStartLoadingNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"RCTJavaScriptWillStartLoadingNotification");
+    }];
+
+    [[NSNotificationCenter defaultCenter] addObserverForName:RCTJavaScriptDidLoadNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"RCTJavaScriptDidLoadNotification");
+//
+//        RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:_bridge moduleName:@"Navigator" initialProperties:nil];
+//        rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+//        UIViewController *rootViewController = [UIViewController new];
+//        rootViewController.view = rootView;
+ //       self.window.rootViewController = rootViewController;
+       
+    }];
     
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
-                                                        moduleName:@"Navigator"
-                                                 initialProperties:nil
-                                                     launchOptions:launchOptions];
-    rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+    [[NSNotificationCenter defaultCenter] addObserverForName:RCTBridgeWillReloadNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"RCTBridgeWillReloadNotification");
+    }];
     
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    UIViewController *rootViewController = [UIViewController new];
-    rootViewController.view = rootView;
-    self.window.rootViewController = rootViewController;
+    [[NSNotificationCenter defaultCenter] addObserverForName:RCTBridgeWillDownloadScriptNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"RCTBridgeWillDownloadScriptNotification");
+    }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:RCTBridgeDidDownloadScriptNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
+        NSLog(@"RCTBridgeDidDownloadScriptNotification");
+    }];
+    
+    NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index.ios" fallbackResource:nil];
+    [[HBDReactBridgeManager instance] installWithJsCodeLocation:jsCodeLocation launchOptions:launchOptions];
+    _bridge = [HBDReactBridgeManager instance].bridge;
+    
+    // 注册 native 模块
+    [[HBDReactBridgeManager instance] registerNativeModule:@"NativeNavigation" forController:[NativeNavigationViewController class]];
+    [[HBDReactBridgeManager instance] registerNativeModule:@"Navigation" forController:[NativeNavigationViewController class]];
+    [[HBDReactBridgeManager instance] registerNativeModule:@"NativeResult" forController:[NativeResultViewController class]];
+    
+    HBDNavigator *navigator = [[HBDNavigator alloc] initWithRootModule:@"NativeNavigation" props:nil options:nil reactBridgeManager:[HBDReactBridgeManager instance]];
+    
+    [[HBDReactBridgeManager instance] registerNavigator:navigator];
+    self.window.rootViewController = navigator.navigationController;
+    
+//    UIViewController *vc = [[UIStoryboard storyboardWithName:@"LaunchScreen" bundle:[NSBundle mainBundle]] instantiateInitialViewController];
+//    self.window.rootViewController = vc;
     [self.window makeKeyAndVisible];
     return YES;
 }
