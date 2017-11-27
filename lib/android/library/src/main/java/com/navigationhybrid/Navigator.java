@@ -54,12 +54,16 @@ public class Navigator implements LifecycleObserver {
     }
 
     public void setRoot(final NavigationFragment fragment, final boolean animated) {
-        scheduleTask(new Runnable() {
-            @Override
-            public void run() {
-                setRootTask(fragment, animated);
-            }
-        });
+        if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
+            setRootTask(fragment, animated);
+        } else {
+            scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    setRootTask(fragment, animated);
+                }
+            });
+        }
     }
 
     void setRootTask(NavigationFragment fragment, boolean animated) {
@@ -134,12 +138,16 @@ public class Navigator implements LifecycleObserver {
     }
 
     public void push(@NonNull final String moduleName, final Bundle props, final Bundle options, final boolean animated) {
-        scheduleTask(new Runnable() {
-            @Override
-            public void run() {
-                pushTask(moduleName, props, options, animated);
-            }
-        });
+        if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
+            pushTask(moduleName, props, options, animated);
+        } else {
+            scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    pushTask(moduleName, props, options, animated);
+                }
+            });
+        }
     }
 
     void pushTask(@NonNull String moduleName, Bundle props, Bundle options, boolean animated) {
@@ -174,12 +182,16 @@ public class Navigator implements LifecycleObserver {
     }
 
     public void pop(final boolean animated) {
-        scheduleTask(new Runnable() {
-            @Override
-            public void run() {
-                popTask(animated);
-            }
-        });
+        if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
+            popTask(animated);
+        } else {
+            scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    popTask(animated);
+                }
+            });
+        }
     }
 
     void popTask(boolean animated) {
@@ -204,12 +216,16 @@ public class Navigator implements LifecycleObserver {
     }
 
     public void popToRoot() {
-        scheduleTask(new Runnable() {
-            @Override
-            public void run() {
-                popToRootTask();
-            }
-        });
+        if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
+            popToRootTask();
+        } else {
+            scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    popToRootTask();
+                }
+            });
+        }
     }
 
     void popToRootTask() {
@@ -221,12 +237,16 @@ public class Navigator implements LifecycleObserver {
     }
 
     public void present(@NonNull final String moduleName, final int requestCode, final Bundle props, final Bundle options, final boolean animated) {
-        scheduleTask(new Runnable() {
-            @Override
-            public void run() {
-                presentTask(moduleName, requestCode, props, options, animated);
-            }
-        });
+        if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
+            presentTask(moduleName, requestCode, props, options, animated);
+        } else {
+            scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    presentTask(moduleName, requestCode, props, options, animated);
+                }
+            });
+        }
     }
 
     void presentTask(@NonNull String moduleName, int requestCode, Bundle props, Bundle options, boolean animated) {
@@ -251,12 +271,16 @@ public class Navigator implements LifecycleObserver {
     }
 
     public void dismiss(final boolean animated) {
-        scheduleTask(new Runnable() {
-            @Override
-            public void run() {
-                dismissTask(animated);
-            }
-        });
+        if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
+            dismissTask(animated);
+        } else {
+            scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    dismissTask(animated);
+                }
+            });
+        }
     }
 
     void dismissTask(boolean animated) {
