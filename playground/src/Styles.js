@@ -18,6 +18,7 @@ export default styles = StyleSheet.create({
     },
     button: {
       alignItems: "center",
+      justifyContent: "center",
       height: 40,
     },
     buttonText: {

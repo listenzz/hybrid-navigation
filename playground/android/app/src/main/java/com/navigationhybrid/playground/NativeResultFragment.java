@@ -1,11 +1,13 @@
 package com.navigationhybrid.playground;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.navigationhybrid.NavigationFragment;
@@ -57,4 +59,20 @@ public class NativeResultFragment extends NavigationFragment {
         super.onActivityCreated(savedInstanceState);
         setTitle("native result");
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        hideSoftInput(resultText);
+    }
+
+    /**
+     * 隐藏软键盘
+     */
+    public static void hideSoftInput(View view) {
+        if (view == null || view.getContext() == null) return;
+        InputMethodManager imm = (InputMethodManager) view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
 }

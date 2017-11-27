@@ -4,14 +4,14 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 
 import com.facebook.react.ReactRootView;
 
 /**
  * Root ViewGroup for {@link ReactNavigationFragment}
  */
-public class ReactNavigationFragmentViewGroup extends LinearLayout {
+public class ReactNavigationFragmentViewGroup extends FrameLayout {
 
     @Nullable
     private ReactRootView reactRootView;

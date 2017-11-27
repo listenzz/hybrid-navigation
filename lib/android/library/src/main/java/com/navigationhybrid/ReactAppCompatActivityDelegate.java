@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -88,6 +89,9 @@ public class ReactAppCompatActivityDelegate {
 
     protected void onPause() {
         if (getReactNativeHost().hasInstance()) {
+            if (!isMainThread()) {
+                Log.e(TAG, "thread:" + Thread.currentThread().getName());
+            }
             getReactNativeHost().getReactInstanceManager().onHostPause(getPlainActivity());
         }
     }
@@ -189,5 +193,9 @@ public class ReactAppCompatActivityDelegate {
 
     private Activity getPlainActivity() {
         return ((Activity) getContext());
+    }
+
+    static boolean isMainThread() {
+        return Looper.getMainLooper().getThread() == Thread.currentThread();
     }
 }
