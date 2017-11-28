@@ -5,16 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.facebook.react.bridge.Arguments;
 import com.navigationhybrid.view.TopBar;
 
 import java.util.List;
@@ -38,6 +35,7 @@ public class NavigationFragment extends Fragment {
     public static final String PROPS_SCENE_ID = "sceneId";
 
     protected Navigator navigator;
+    protected Garden garden;
     protected TopBar topBar;
 
     @Override
@@ -45,6 +43,7 @@ public class NavigationFragment extends Fragment {
         super.onCreate(savedInstanceState);
         Log.d(TAG, toString() + "#onCreate");
         navigator = getNavigator();
+        garden = getGarden();
     }
 
     @Override
@@ -93,72 +92,6 @@ public class NavigationFragment extends Fragment {
             frameLayout.addView(topBar,  new FrameLayout.LayoutParams(-1, -2));
         } else {
             throw new UnsupportedOperationException("NavigationFragment 还没适配 " + view.getClass().getSimpleName());
-        }
-
-        if (topBar != null) {
-            setupTopBar();
-        }
-    }
-
-    protected void setupTopBar() {
-        if (!navigator.isRoot()) {
-            Toolbar toolbar = topBar.getToolbar();
-            toolbar.setNavigationIcon(R.drawable.nav_ic_arrow_back_white);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    navigator.pop();
-                }
-            });
-        }
-
-        Bundle options = getOptions();
-        if (options != null) {
-            Bundle titleItem = options.getBundle("titleItem");
-            if (titleItem != null) {
-                String title = titleItem.getString("title");
-                setTitle(title);
-            }
-
-            Bundle rightBarButtonItem = options.getBundle("rightBarButtonItem");
-            if (rightBarButtonItem != null) {
-                Log.w(TAG, rightBarButtonItem.toString());
-
-                String title = rightBarButtonItem.getString("title");
-                Toolbar toolbar = topBar.getToolbar();
-                MenuItem menuItem = toolbar.getMenu().add(title);
-                menuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-                final String action = rightBarButtonItem.getString("action");
-                boolean enabled = rightBarButtonItem.getBoolean("enabled", true);
-                menuItem.setEnabled(enabled);
-                if (action != null) {
-                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-                            Bundle bundle = new Bundle();
-                            bundle.putString("action", action);
-                            bundle.putString(PROPS_NAV_ID, navigator.navId);
-                            bundle.putString(PROPS_SCENE_ID, navigator.sceneId);
-                            bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
-                            return true;
-                        }
-                    });
-                }
-            }
-        }
-
-    }
-
-    public void setTitle(String title) {
-        if (topBar != null) {
-            topBar.setTitle(title);
-        }
-    }
-
-    public void setRightBarButtonItem(Bundle rightBarButtonItem) {
-        if (rightBarButtonItem != null) {
-
         }
     }
 
@@ -230,7 +163,22 @@ public class NavigationFragment extends Fragment {
         return navigator;
     }
 
-    private Bundle getOptions() {
+    public Garden getGarden() {
+        if (getActivity() == null) {
+            throw new IllegalStateException("不能在 fragment 还没添加到 activity 的时候调用此方法");
+        }
+        if (garden == null) {
+            garden = new Garden(this);
+        }
+        return garden;
+    }
+
+    public void setTitle(String title) {
+        garden.setTitle(title);
+    }
+
+
+    protected Bundle getOptions() {
         Bundle args = getArguments();
         return args.getBundle(NAVIGATION_OPTIONS);
     }

@@ -1,5 +1,4 @@
-<resources>
-
+<resources >
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -17,14 +16,8 @@
         <!--在无需多点触控的页面上，建议关闭多点触控-->
         <item name="android:splitMotionEvents">false</item>
 
-        <!-- toolbar 标题颜色-->
-        <item name="titleTextColor">@android:color/white</item>
-
-        <!-- toolbar menu color-->
-        <item name="actionMenuTextColor">@android:color/white</item>
-
-
     </style>
+
 
 
 </resources>
