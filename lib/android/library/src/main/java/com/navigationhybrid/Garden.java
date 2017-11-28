@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -139,12 +140,16 @@ public class Garden {
         if (rightBarButtonItem != null) {
             Log.d(TAG, rightBarButtonItem.toString());
             Toolbar toolbar = fragment.topBar.getToolbar();
+            
+            Menu menu = toolbar.getMenu();
+            menu.clear();
             String title = rightBarButtonItem.getString("title");
-            MenuItem menuItem = toolbar.getMenu().add(title);
+            MenuItem menuItem = menu.add(title);
             menuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
             boolean enabled = rightBarButtonItem.getBoolean("enabled", true);
             menuItem.setEnabled(enabled);
+
             Bundle icon = rightBarButtonItem.getBundle("icon");
             if (icon != null) {
                 String uri = icon.getString("uri");
