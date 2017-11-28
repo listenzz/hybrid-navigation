@@ -140,7 +140,7 @@ public class Garden {
         if (rightBarButtonItem != null) {
             Log.d(TAG, rightBarButtonItem.toString());
             Toolbar toolbar = fragment.topBar.getToolbar();
-            
+
             Menu menu = toolbar.getMenu();
             menu.clear();
             String title = rightBarButtonItem.getString("title");

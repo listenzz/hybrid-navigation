@@ -3,7 +3,6 @@ package com.navigationhybrid;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,9 +40,6 @@ public class ReactNavigationFragment extends NavigationFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (topBar != null) {
-            setupTopBar();
-        }
         initReactNative();
     }
 
@@ -104,36 +100,6 @@ public class ReactNavigationFragment extends NavigationFragment {
     public void signalFirstRenderComplete() {
         Log.d(TAG, "signalFirstRenderComplete");
         startPostponedEnterTransition();
-    }
-
-    protected void setupTopBar() {
-        Bundle options = getOptions();
-        if (options == null) {
-            options = new Bundle();
-        }
-
-        Bundle titleItem = options.getBundle("titleItem");
-        garden.setTitleItem(titleItem);
-
-        Bundle rightBarButtonItem = options.getBundle("rightBarButtonItem");
-        garden.setRightBarButtonItem(rightBarButtonItem);
-
-        Bundle leftBarButtonItem = options.getBundle("leftBarButtonItem");
-        if (leftBarButtonItem != null) {
-            garden.setLeftBarButtonItem(leftBarButtonItem);
-        } else {
-            if (!navigator.isRoot()) {
-                Toolbar toolbar = topBar.getToolbar();
-                // FIXME 根据不同主题选择不同颜色的返回按钮
-                toolbar.setNavigationIcon(R.drawable.nav_ic_arrow_back_white);
-                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        navigator.pop();
-                    }
-                });
-            }
-        }
     }
 
 //    @Override

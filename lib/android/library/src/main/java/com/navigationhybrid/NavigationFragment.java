@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -92,6 +93,9 @@ public class NavigationFragment extends Fragment {
             frameLayout.addView(topBar,  new FrameLayout.LayoutParams(-1, -2));
         } else {
             throw new UnsupportedOperationException("NavigationFragment 还没适配 " + view.getClass().getSimpleName());
+        }
+        if (topBar != null) {
+            setupTopBar();
         }
     }
 
@@ -212,6 +216,36 @@ public class NavigationFragment extends Fragment {
         setArguments(args);
         if (navigator != null) {
             navigator.requestCode = requestCode;
+        }
+    }
+
+    protected void setupTopBar() {
+        Bundle options = getOptions();
+        if (options == null) {
+            options = new Bundle();
+        }
+
+        Bundle titleItem = options.getBundle("titleItem");
+        garden.setTitleItem(titleItem);
+
+        Bundle rightBarButtonItem = options.getBundle("rightBarButtonItem");
+        garden.setRightBarButtonItem(rightBarButtonItem);
+
+        Bundle leftBarButtonItem = options.getBundle("leftBarButtonItem");
+        if (leftBarButtonItem != null) {
+            garden.setLeftBarButtonItem(leftBarButtonItem);
+        } else {
+            if (!navigator.isRoot()) {
+                Toolbar toolbar = topBar.getToolbar();
+                // FIXME 根据不同主题选择不同颜色的返回按钮
+                toolbar.setNavigationIcon(R.drawable.nav_ic_arrow_back_white);
+                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        navigator.pop();
+                    }
+                });
+            }
         }
     }
 
