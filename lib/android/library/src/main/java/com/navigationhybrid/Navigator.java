@@ -236,6 +236,55 @@ public class Navigator implements LifecycleObserver {
         fragmentManager.popBackStack(navId, 0);
     }
 
+    public void replace(@NonNull final String moduleName, final Bundle props, final Bundle options) {
+        if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
+            replaceTask(moduleName, props, options);
+        } else {
+            scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    replace(moduleName, props, options);
+                }
+            });
+        }
+    }
+
+    void replaceTask(@NonNull String moduleName, Bundle props, Bundle options) {
+        fragmentManager.executePendingTransactions();
+        NavigationFragment fragment = createFragment(moduleName, UUID.randomUUID().toString(), props, options);
+        NavigationFragment selfFragment = getSelfFragment();
+        NavigationFragment preFragment = getPreFragment(selfFragment);
+
+        fragment.setCurrentAnimations(PresentAnimation.None);
+        selfFragment.setCurrentAnimations(PresentAnimation.None);
+
+        boolean isRoot = isRoot();
+
+        fragmentManager.popBackStackImmediate();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setReorderingAllowed(true);
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        if (isRoot) {
+            transaction.add(containerId, fragment, fragment.getNavId());
+        } else {
+            transaction.add(containerId, fragment, fragment.getSceneId());
+        }
+
+        if (preFragment != null) {
+            transaction.hide(preFragment);
+        }
+
+        if (isRoot) {
+            transaction.addToBackStack(fragment.getNavId());
+        } else {
+            transaction.addToBackStack(fragment.getSceneId());
+        }
+
+        transaction.commit();
+
+        fragmentManager.executePendingTransactions();
+    }
+
     public void present(@NonNull final String moduleName, final int requestCode, final Bundle props, final Bundle options, final boolean animated) {
         if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
             presentTask(moduleName, requestCode, props, options, animated);

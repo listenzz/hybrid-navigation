@@ -10,7 +10,7 @@ ReactRegistry.startRegisterComponent();
 
 ReactRegistry.registerComponent('Navigator', () => App);
 ReactRegistry.registerComponent('ReactNavigation', () => ReactNavigation);
-ReactRegistry.registerComponent('Navigation', () => ReactNavigation);
+//ReactRegistry.registerComponent('Navigation', () => ReactNavigation);
 ReactRegistry.registerComponent('ReactResult', () => ReactResult)
 
 ReactRegistry.endRegisterComponent();

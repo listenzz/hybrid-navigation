@@ -31,7 +31,7 @@ export default class ReactNavigation extends Component {
 		this.popToRoot = this.popToRoot.bind(this);
 		this.requestFromNative = this.requestFromNative.bind(this);
 		this.requestFromReact = this.requestFromReact.bind(this);
-
+		this.replaceWithNative = this.replaceWithNative.bind(this);
 		this.state = {
 			text: undefined,
 			error: undefined,
@@ -72,6 +72,10 @@ export default class ReactNavigation extends Component {
 		this.props.navigator.popToRoot();
 	}
 
+	replaceWithNative() {
+		this.props.navigator.replace("NativeNavigation");
+	}
+
 	requestFromReact() {
 		this.props.navigator.present("ReactResult", REQUEST_CODE);
 	}
@@ -97,6 +101,13 @@ export default class ReactNavigation extends Component {
 						push 到 RN 页面
           			</Text>
 				</TouchableOpacity>
+
+				<TouchableOpacity onPress={this.replaceWithNative} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>
+						replace 为原生页面
+          			</Text>
+				</TouchableOpacity>
+
 				<TouchableOpacity onPress={this.popToRoot} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						popToRoot
