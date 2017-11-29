@@ -158,6 +158,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         });
     }
 
+    @ReactMethod
     public void replaceAll(final String navId, final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options) {
         handler.post(new Runnable() {
             @Override

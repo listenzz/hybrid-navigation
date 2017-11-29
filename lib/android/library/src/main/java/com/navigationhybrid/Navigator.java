@@ -229,6 +229,8 @@ public class Navigator implements LifecycleObserver {
         if (!canPop()) {
             return;
         }
+        NavigationFragment rootFragment = getRootFragment();
+        rootFragment.setCurrentAnimations(PresentAnimation.Push);
         anim = PresentAnimation.Push;
         fragmentManager.popBackStack(navId, 0);
     }
