@@ -50,6 +50,8 @@ const NSInteger REQUEST_CODE = 1;
     [self.navigator presentModule:@"NativeResult" requestCode:REQUEST_CODE];
 }
 
+
+
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     if (requestCode == REQUEST_CODE) {

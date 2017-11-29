@@ -11,21 +11,20 @@
 #import <React/RCTRootView.h>
 #import <React/RCTEventEmitter.h>
 #import <React/RCTConvert.h>
-#import "HBDGarden.h"
-
 
 @interface HBDReactViewController ()
 
 @property(nonatomic, copy) NSString *moduleName;
-@property(nonatomic, copy) NSDictionary *props;
-@property(nonatomic, copy) NSDictionary *options;
 
 @end
 
 @implementation HBDReactViewController
 
+@synthesize props = _props;
+@synthesize options = _options;
+
 - (instancetype)initWithNavigator:(HBDNavigator *)navigator moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
-    if (self = [super initWithNavigator:navigator]) {
+    if (self = [super initWithNavigator:navigator props:props options:options]) {
         if (props == nil) {
             props = @{};
         }
@@ -44,7 +43,7 @@
             [immediateOptions setObject:[options objectForKey:key] forKey:key];
         }
         _options = [immediateOptions copy];
-        
+    
         _moduleName = moduleName;
     }
     return self;
@@ -58,15 +57,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    HBDGarden *garden = [[HBDGarden alloc] init];
-    NSDictionary *titleItem = self.options[@"titleItem"];
-    [garden setTitleItem:titleItem forController:self];
     
-    NSDictionary *rightBarButtonItem = self.options[@"rightBarButtonItem"];
-    [garden setRightBarButtonItem:rightBarButtonItem forController:self];
-    
-    NSDictionary *leftBarButtonItem = self.options[@"leftBarButtonItem"];
-    [garden setLeftBarButtonItem:leftBarButtonItem forController:self];
     
 }
 

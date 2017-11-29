@@ -11,6 +11,7 @@
 @interface NativeResultViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
 @property (weak, nonatomic) IBOutlet UITextField *resultTextField;
+@property (weak, nonatomic) IBOutlet UIButton *backToHomeButton;
 
 @end
 
@@ -24,6 +25,10 @@
     if (![self.navigator canPop]) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
     }
+    
+    BOOL isRoot = self == self.navigationController.childViewControllers[0];
+    self.backToHomeButton.enabled = !isRoot;
+    
 }
 
 - (IBAction)sendResult:(UIButton *)sender {
@@ -32,17 +37,39 @@
 }
 
 - (IBAction)pushToRN:(UIButton *)sender {
-    [self.navigator pushModule:@"ReactResult"];
+    [self.navigator pushModule:@"ReactResult" props:@{@"homeId": [self homeId]} options:@{} animated:YES];
 }
 
 - (IBAction)pushToNative:(UIButton *)sender {
-    [self.navigator pushModule:@"NativeResult"];
+    [self.navigator pushModule:@"NativeResult" props:@{@"homeId": [self homeId]} options:@{} animated:YES];
 }
+
 - (IBAction)replaceWithRN:(UIButton *)sender {
-    [self.navigator replaceModule:@"ReactResult"];
+    BOOL isRoot = self == self.navigationController.childViewControllers[0];
+    if (isRoot) {
+        [self.navigator replaceModule:@"ReactResult"];
+    } else {
+        [self.navigator replaceModule:@"ReactResult" props:@{@"homeId": [self homeId]} options:@{}];
+    }
 }
+
 - (IBAction)replaceToRootWithRN:(UIButton *)sender {
     [self.navigator replaceToRootModule:@"ReactResult"];
+}
+
+- (IBAction)backToHome:(UIButton *)sender {
+    NSString *homeId =  [self.props objectForKey:@"homeId"];
+    if (homeId) {
+        [self.navigator popToScene:homeId animated:YES];
+    }
+}
+
+- (NSString *)homeId {
+    NSString *homeId = [self.props objectForKey:@"homeId"];
+    if (!homeId) {
+        homeId = self.sceneId;
+    }
+    return homeId;
 }
 
 - (void)cancel {

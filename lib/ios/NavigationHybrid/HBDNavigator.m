@@ -8,8 +8,8 @@
 #import "HBDNavigator.h"
 #import "HBDViewController.h"
 #import "HBDReactViewController.h"
-
 #import <React/RCTBridge.h>
+#import <React/RCTLog.h>
 
 NSInteger const RESULT_OK = -1;
 NSInteger const RESULT_CANCEL = 0;
@@ -58,6 +58,28 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
 
 - (void)popAnimated:(BOOL)animated {
     [self.navigationController popViewControllerAnimated:animated];
+}
+
+- (void)popToScene:(NSString *)sceneId animated:(BOOL)animated {
+    NSArray *children = self.navigationController.childViewControllers;
+    HBDViewController *targetController;
+    NSUInteger count = children.count;
+    for (NSUInteger i = 0; i < count; i ++) {
+        UIViewController *vc = [children objectAtIndex:i];
+        if ([vc isKindOfClass:[HBDViewController class]]) {
+            HBDViewController *hbdvc = (HBDViewController *)vc;
+            if ([hbdvc.sceneId isEqualToString:sceneId]) {
+                targetController = hbdvc;
+                break;
+            }
+        }
+    }
+    
+    if (targetController != nil) {
+        [self.navigationController popToViewController:targetController animated:animated];
+    } else {
+        RCTLogWarn(@"can't find the specified scene at current navigator");
+    }
 }
 
 - (void)popToRootAnimated:(BOOL)animated {
@@ -139,7 +161,7 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
     } else {
         Class clazz =  [self.bridgeManager nativeModuleClassFromName:moduleName];
         NSCAssert([self.bridgeManager hasNativeModule:moduleName], @"找不到名为 %@ 的模块，你是否忘了注册？", moduleName);
-        vc = [[clazz alloc] initWithNavigator:self];
+        vc = [[clazz alloc] initWithNavigator:self props:props options:options];
     }
     return vc;
 }

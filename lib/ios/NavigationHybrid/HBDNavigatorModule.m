@@ -61,6 +61,11 @@ RCT_EXPORT_METHOD(pop:(NSString *)navId sceneId:(NSString *)sceneId animated:(BO
     [navigator popAnimated:animated];
 }
 
+RCT_EXPORT_METHOD(popTo:(NSString *)navId sceneId:(NSString *)sceneId targetId:(NSString *)targetId animated:(BOOL) animated) {
+    HBDNavigator *navigator = [self navigatorForNavId:navId];
+    [navigator popToScene:targetId animated:animated];
+}
+
 RCT_EXPORT_METHOD(popToRoot:(NSString *)navId sceneId:(NSString *)sceneId animated:(BOOL) animated) {
     HBDNavigator *navigator = [self navigatorForNavId:navId];
     [navigator popToRootAnimated:animated];

@@ -15,7 +15,10 @@
 @property(nonatomic, copy, readonly) NSString *sceneId;
 @property(nonatomic, weak, readonly) HBDNavigator *navigator;
 
-- (instancetype)initWithNavigator:(HBDNavigator *)navigator;
+@property(nonatomic, copy, readonly) NSDictionary *props;
+@property(nonatomic, copy, readonly) NSDictionary *options;
+
+- (instancetype)initWithNavigator:(HBDNavigator *)navigator props:(NSDictionary *)props options:(NSDictionary *)options;
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode;
 

@@ -15,7 +15,7 @@
 
 @implementation HBDGarden
 
-- (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDReactViewController *)controller {
+- (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     if (item) {
         controller.navigationItem.leftBarButtonItem = [self createBarButtonItem:item forController:controller];
     } else {
@@ -23,7 +23,7 @@
     }
 }
 
-- (void)setRightBarButtonItem:(NSDictionary *)item forController:(HBDReactViewController *)controller {
+- (void)setRightBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     if (item) {
         controller.navigationItem.rightBarButtonItem = [self createBarButtonItem:item forController:controller];
     } else {
@@ -31,7 +31,7 @@
     }
 }
 
-- (HBDBarButtonItem *)createBarButtonItem:(NSDictionary *)item forController:(HBDReactViewController *)controller {
+- (HBDBarButtonItem *)createBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     HBDBarButtonItem *barButtonItem;
     NSDictionary *icon = item[@"icon"];
     if (icon) {
@@ -56,7 +56,7 @@
     return barButtonItem;
 }
 
-- (void)setTitleItem:(NSDictionary *)item forController:(HBDReactViewController *)controller {
+- (void)setTitleItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     if (item) {
         NSString *title = item[@"title"];
         controller.navigationItem.title = title;

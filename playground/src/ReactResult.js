@@ -38,8 +38,10 @@ export default class ReactResult extends Component {
         this.onInputTextChanged = this.onInputTextChanged.bind(this);
 		this.replaceWithNative = this.replaceWithNative.bind(this);
 		this.replaceToRootWithNative = this.replaceToRootWithNative.bind(this);
+		this.returnHome = this.returnHome.bind(this);
 		this.state = {
 			text: '',
+			isRoot: false,
 		}
 	}
 
@@ -48,6 +50,7 @@ export default class ReactResult extends Component {
 			if(isRoot) {
 				console.info('-------------------is root---------------');
 				this.props.garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
+				this.setState({isRoot});
 			} else {
 				console.info('-------------------is not root---------------');
 			}
@@ -62,15 +65,35 @@ export default class ReactResult extends Component {
 	}
 
 	pushToNative() {
-		this.props.navigator.push('NativeResult');
+		this.props.navigator.push('NativeResult', {homeId: this.getHomeId()});
 	}
 
 	pushToReact() {
-		this.props.navigator.push('ReactResult');
+		this.props.navigator.push('ReactResult', {homeId: this.getHomeId()});
+	}
+
+	returnHome() {
+		if(this.props.homeId) {
+			this.props.navigator.popTo(this.props.homeId);
+		}
+	}
+
+	getHomeId() {
+		let homeId = this.props.homeId;
+		if(!homeId) {
+			homeId = this.props.sceneId;
+		}
+		return homeId;
 	}
 
 	replaceWithNative() {
-		this.props.navigator.replace('NativeResult');
+		this.props.navigator.isRoot().then((isRoot => {
+			if(isRoot) {
+				this.props.navigator.replace('NativeResult');
+			} else {
+				this.props.navigator.replace('NativeResult', {homeId: this.getHomeId()});
+			}
+		}));
 	}
 
 	replaceToRootWithNative() {
@@ -109,6 +132,11 @@ export default class ReactResult extends Component {
 				<TouchableOpacity onPress={this.pushToNative} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						push 到 native 页面
+          			</Text>
+				</TouchableOpacity>
+				<TouchableOpacity onPress={this.returnHome} activeOpacity={0.2} style={styles.button} disabled={this.state.isRoot}>
+					<Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
+						返回首页
           			</Text>
 				</TouchableOpacity>
 				<TouchableOpacity onPress={this.replaceWithNative} activeOpacity={0.2} style={styles.button}>

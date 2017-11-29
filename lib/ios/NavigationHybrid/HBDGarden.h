@@ -7,14 +7,14 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "HBDReactViewController.h"
+#import "HBDViewController.h"
 
 @interface HBDGarden : NSObject
 
-- (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDReactViewController *)controller;
+- (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller;
 
-- (void)setRightBarButtonItem:(NSDictionary *)item forController:(HBDReactViewController *)controller;
+- (void)setRightBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller;
 
-- (void)setTitleItem:(NSDictionary *)item forController:(HBDReactViewController *)controller;
+- (void)setTitleItem:(NSDictionary *)item forController:(HBDViewController *)controller;
 
 @end

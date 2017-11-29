@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NativeResultViewController">
             <connections>
+                <outlet property="backToHomeButton" destination="VAk-3C-aYB" id="RY3-J3-zUr"/>
                 <outlet property="descriptionLabel" destination="DZN-Wy-z0Q" id="cdG-qL-eFZ"/>
                 <outlet property="resultTextField" destination="uzQ-S9-E9E" id="ACt-eJ-Qrk"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -65,7 +66,7 @@
                     <textInputTraits key="textInputTraits"/>
                 </textField>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lWv-z6-JGs">
-                    <rect key="frame" x="32" y="297" width="311" height="40"/>
+                    <rect key="frame" x="32" y="337" width="311" height="40"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <state key="normal" title="替换成 ReactNative 页面"/>
                     <connections>
@@ -73,11 +74,19 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rNm-Uv-mwh">
-                    <rect key="frame" x="32" y="337" width="311" height="40"/>
+                    <rect key="frame" x="32" y="377" width="311" height="40"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <state key="normal" title="替换成 ReactNative 页面到根部"/>
                     <connections>
                         <action selector="replaceToRootWithRN:" destination="-1" eventType="touchUpInside" id="4xn-81-nHH"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VAk-3C-aYB">
+                    <rect key="frame" x="32" y="297" width="311" height="40"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <state key="normal" title="返回首页"/>
+                    <connections>
+                        <action selector="backToHome:" destination="-1" eventType="touchUpInside" id="lhI-rV-rF4"/>
                     </connections>
                 </button>
             </subviews>
@@ -91,12 +100,16 @@
                 <constraint firstItem="SvU-eX-bN7" firstAttribute="top" secondItem="jgz-hS-qb8" secondAttribute="bottom" id="DMy-Qz-Vgo"/>
                 <constraint firstItem="VyH-DX-vuk" firstAttribute="trailing" secondItem="DZN-Wy-z0Q" secondAttribute="trailing" id="ErG-RH-1IS"/>
                 <constraint firstItem="VyH-DX-vuk" firstAttribute="leading" secondItem="DZN-Wy-z0Q" secondAttribute="leading" id="EsU-5p-lkV"/>
+                <constraint firstItem="VAk-3C-aYB" firstAttribute="top" secondItem="SvU-eX-bN7" secondAttribute="bottom" id="HYt-d9-tHw"/>
                 <constraint firstItem="DZN-Wy-z0Q" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="64" id="LJK-2p-9rV"/>
+                <constraint firstItem="VAk-3C-aYB" firstAttribute="leading" secondItem="uzQ-S9-E9E" secondAttribute="leading" id="U5K-QD-jAf"/>
                 <constraint firstItem="uzQ-S9-E9E" firstAttribute="leading" secondItem="DZN-Wy-z0Q" secondAttribute="leading" id="VGO-tR-y53"/>
                 <constraint firstItem="lWv-z6-JGs" firstAttribute="leading" secondItem="uzQ-S9-E9E" secondAttribute="leading" id="Xhf-mQ-IEM"/>
                 <constraint firstItem="jgz-hS-qb8" firstAttribute="height" secondItem="VyH-DX-vuk" secondAttribute="height" id="bcg-bA-gTy"/>
+                <constraint firstItem="VAk-3C-aYB" firstAttribute="height" secondItem="uzQ-S9-E9E" secondAttribute="height" id="cye-p2-Ioy"/>
                 <constraint firstItem="uzQ-S9-E9E" firstAttribute="top" secondItem="DZN-Wy-z0Q" secondAttribute="bottom" constant="16" id="ea7-do-JCp"/>
                 <constraint firstItem="VyH-DX-vuk" firstAttribute="top" secondItem="uzQ-S9-E9E" secondAttribute="bottom" constant="16" id="hao-3A-eGR"/>
+                <constraint firstItem="lWv-z6-JGs" firstAttribute="top" secondItem="VAk-3C-aYB" secondAttribute="bottom" id="iYx-oM-dHN"/>
                 <constraint firstItem="jgz-hS-qb8" firstAttribute="top" secondItem="VyH-DX-vuk" secondAttribute="bottom" id="kB2-3X-DtQ"/>
                 <constraint firstItem="rNm-Uv-mwh" firstAttribute="height" secondItem="uzQ-S9-E9E" secondAttribute="height" id="mCC-Ws-jea"/>
                 <constraint firstItem="DZN-Wy-z0Q" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="32" id="nvT-NJ-w1O"/>
@@ -107,7 +120,7 @@
                 <constraint firstItem="SvU-eX-bN7" firstAttribute="leading" secondItem="DZN-Wy-z0Q" secondAttribute="leading" id="vAF-8w-5Bw"/>
                 <constraint firstItem="SvU-eX-bN7" firstAttribute="height" secondItem="VyH-DX-vuk" secondAttribute="height" id="vSP-kq-Ewr"/>
                 <constraint firstItem="jgz-hS-qb8" firstAttribute="trailing" secondItem="DZN-Wy-z0Q" secondAttribute="trailing" id="wRX-17-oNI"/>
-                <constraint firstItem="lWv-z6-JGs" firstAttribute="top" secondItem="SvU-eX-bN7" secondAttribute="bottom" id="wt2-4M-WYn"/>
+                <constraint firstItem="VAk-3C-aYB" firstAttribute="trailing" secondItem="uzQ-S9-E9E" secondAttribute="trailing" id="xEj-P3-upj"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
         </view>
