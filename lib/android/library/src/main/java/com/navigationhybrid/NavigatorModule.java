@@ -76,8 +76,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
                if (fragment != null) {
                    fragment.signalFirstRenderComplete();
-               } else {
-                   Log.w(TAG, "ReactNavigationFragment is null. navId:" + navId + " sceneId:" + sceneId);
                }
            }
        });
@@ -91,8 +89,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
                     navigator.push(moduleName, Arguments.toBundle(props), Arguments.toBundle(options), animated);
-                } else {
-                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }
             }
         });
@@ -106,8 +102,19 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
                     navigator.pop(animated);
-                } else {
-                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void popTo(final String navId, final String sceneId, final String targetId, final boolean animated) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Navigator navigator = findNavigator(navId, sceneId);
+                if (navigator != null) {
+                    navigator.popTo(targetId, animated);
                 }
             }
         });
@@ -121,8 +128,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
                     navigator.popToRoot();
-                } else {
-                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }
             }
         });
@@ -136,8 +141,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
                     promise.resolve(navigator.isRoot());
-                } else {
-                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }
             }
         });
@@ -151,8 +154,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
                     navigator.replace(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
-                } else {
-                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }
             }
         });
@@ -166,8 +167,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
                     navigator.replaceToRoot(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
-                } else {
-                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }
             }
         });
@@ -181,8 +180,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
                     navigator.present(moduleName, requestCode, Arguments.toBundle(props), Arguments.toBundle(options), animated);
-                } else {
-                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }
             }
         });
@@ -196,8 +193,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
                     navigator.setResult(resultCode, Arguments.toBundle(result));
-                } else {
-                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }
             }
         });
@@ -211,8 +206,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 Navigator navigator = findNavigator(navId, sceneId);
                 if (navigator != null) {
                     navigator.dismiss(animated);
-                } else {
-                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
                 }
             }
         });
@@ -232,6 +225,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
                 return navigationFragment.getNavigator();
             }
         }
+        Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
         return null;
     }
 

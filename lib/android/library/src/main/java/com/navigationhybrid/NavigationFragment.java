@@ -181,6 +181,10 @@ public class NavigationFragment extends Fragment {
         garden.setTitle(title);
     }
 
+    protected Bundle getProps() {
+        Bundle args = getArguments();
+        return args.getBundle(NAVIGATION_PROPS);
+    }
 
     protected Bundle getOptions() {
         Bundle args = getArguments();

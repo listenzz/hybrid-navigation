@@ -53,6 +53,14 @@
         android:textColor="@color/touchable_opacity_font_color" />
 
     <TextView
+        android:id="@+id/back_to_home"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="返回首页"
+        android:textColor="@color/touchable_opacity_font_color" />
+
+    <TextView
         android:id="@+id/replace_with_react"
         android:layout_width="match_parent"
         android:layout_height="40dp"

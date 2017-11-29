@@ -178,6 +178,10 @@ public class Navigator implements LifecycleObserver {
         return !isRoot();
     }
 
+    public void pop() {
+        pop(true);
+    }
+
     public void pop(final boolean animated) {
         if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
             popTask(animated);
@@ -208,9 +212,65 @@ public class Navigator implements LifecycleObserver {
         fragmentManager.popBackStack();
     }
 
-    public void pop() {
-        pop(true);
+    public void popTo(String sceneId) {
+        popTo(sceneId, true);
     }
+
+    public void popTo(final String sceneId, final boolean animated) {
+        if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
+            popToTask(sceneId, animated);
+        } else {
+            scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    popTo(sceneId, animated);
+                }
+            });
+        }
+    }
+
+    void popToTask(String sceneId, boolean animated) {
+
+        if (!canPop()) return;
+
+        NavigationFragment root = getRootFragment();
+        NavigationFragment target = null;
+        String tag = null;
+
+        int count = fragmentManager.getBackStackEntryCount();
+        for (int i = count -1; i > -1; i--) {
+            FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
+            String name = entry.getName();
+            tag = name;
+            if (name != null && name.equals(sceneId)) {
+                target = (NavigationFragment) fragmentManager.findFragmentByTag(sceneId);
+                break;
+            }
+
+            // 到根部了
+            if (name != null && name.equals(root.getTag())) {
+                if (sceneId.equals(root.getSceneId())) {
+                    target = root;
+                }
+                break; // must put here, since we don't want the target out of navigation bounds
+            }
+        }
+
+        if (target != null) {
+            if (animated) {
+                anim = PresentAnimation.Push;
+                target.setCurrentAnimations(PresentAnimation.Push);
+            } else {
+                anim = PresentAnimation.None;
+                target.setCurrentAnimations(PresentAnimation.None);
+            }
+            fragmentManager.popBackStack(tag, 0);
+
+        } else {
+            Log.w(TAG, "can't find the specified scene at current navigation bounds");
+        }
+    }
+
 
     public void popToRoot() {
         if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {

@@ -40,21 +40,36 @@ public class NativeResultFragment extends NavigationFragment {
         view.findViewById(R.id.push_to_react).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigator.push("ReactResult");
+                navigator.push("ReactResult", getHomeProps(), null, true);
             }
         });
 
         view.findViewById(R.id.push_to_native).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigator.push("NativeResult");
+                navigator.push("NativeResult", getHomeProps(), null, true);
+            }
+        });
+
+        view.findViewById(R.id.back_to_home).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle props = getProps();
+                String homeId = props.getString("homeId");
+                if (homeId != null) {
+                    navigator.popTo(homeId);
+                }
             }
         });
 
         view.findViewById(R.id.replace_with_react).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigator.replace("ReactResult");
+                if (navigator.isRoot()) {
+                    navigator.replace("ReactResult");
+                } else {
+                    navigator.replace("ReactResult", getHomeProps(), null);
+                }
             }
         });
 
@@ -68,10 +83,29 @@ public class NativeResultFragment extends NavigationFragment {
         return view;
     }
 
+    String getPassHomeId() {
+        Bundle props = getProps();
+        String homeId = props.getString("homeId");
+        if (homeId == null) {
+            homeId = getSceneId();
+        }
+        return homeId;
+    }
+
+    Bundle getHomeProps() {
+        String homeId = getPassHomeId();
+        Bundle props = new Bundle();
+        props.putString("homeId", homeId);
+        return props;
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setTitle("native result");
+        if (navigator.isRoot()) {
+            getView().findViewById(R.id.back_to_home).setEnabled(false);
+        }
     }
 
     @Override
