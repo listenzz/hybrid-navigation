@@ -253,7 +253,6 @@ public class Navigator implements LifecycleObserver {
     }
 
     void replaceTask(@NonNull String moduleName, Bundle props, Bundle options) {
-        fragmentManager.executePendingTransactions();
         NavigationFragment fragment = createFragment(moduleName, UUID.randomUUID().toString(), props, options);
         NavigationFragment selfFragment = getSelfFragment();
         NavigationFragment preFragment = getPreFragment(selfFragment);
@@ -265,7 +264,7 @@ public class Navigator implements LifecycleObserver {
         }
 
         boolean isRoot = isRoot();
-        fragmentManager.popBackStackImmediate();
+        fragmentManager.popBackStack();
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setReorderingAllowed(true);
@@ -287,8 +286,6 @@ public class Navigator implements LifecycleObserver {
         }
 
         transaction.commit();
-
-        fragmentManager.executePendingTransactions();
     }
 
     public void replaceAll(String moduleName) {
@@ -309,7 +306,6 @@ public class Navigator implements LifecycleObserver {
     }
 
     void replaceAllTask(@NonNull String moduleName, Bundle props, Bundle options) {
-        fragmentManager.executePendingTransactions();
         NavigationFragment fragment = createFragment(moduleName, UUID.randomUUID().toString(), props, options);
         NavigationFragment rootFragment = getRootFragment();
         NavigationFragment preFragment = getPreFragment(rootFragment);
@@ -320,7 +316,7 @@ public class Navigator implements LifecycleObserver {
             preFragment.setCurrentAnimations(PresentAnimation.None);
         }
 
-        fragmentManager.popBackStackImmediate(rootFragment.getTag(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        fragmentManager.popBackStack(rootFragment.getTag(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setReorderingAllowed(true);
@@ -331,9 +327,6 @@ public class Navigator implements LifecycleObserver {
         }
         transaction.addToBackStack(fragment.getNavId());
         transaction.commit();
-
-        fragmentManager.executePendingTransactions();
-
     }
 
     public void present(@NonNull final String moduleName, final int requestCode, final Bundle props, final Bundle options, final boolean animated) {
