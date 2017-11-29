@@ -288,24 +288,24 @@ public class Navigator implements LifecycleObserver {
         transaction.commit();
     }
 
-    public void replaceAll(String moduleName) {
-        replaceAll(moduleName, null, null);
+    public void replaceToRoot(String moduleName) {
+        replaceToRoot(moduleName, null, null);
     }
 
-    public void replaceAll(@NonNull final String moduleName, final Bundle props, final Bundle options) {
+    public void replaceToRoot(@NonNull final String moduleName, final Bundle props, final Bundle options) {
         if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
-            replaceAllTask(moduleName, props, options);
+            replaceToRootTask(moduleName, props, options);
         } else {
             scheduleTask(new Runnable() {
                 @Override
                 public void run() {
-                    replaceAllTask(moduleName, props, options);
+                    replaceToRootTask(moduleName, props, options);
                 }
             });
         }
     }
 
-    void replaceAllTask(@NonNull String moduleName, Bundle props, Bundle options) {
+    void replaceToRootTask(@NonNull String moduleName, Bundle props, Bundle options) {
         NavigationFragment fragment = createFragment(moduleName, UUID.randomUUID().toString(), props, options);
         NavigationFragment rootFragment = getRootFragment();
         NavigationFragment preFragment = getPreFragment(rootFragment);

@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:gravity="center"
-        android:text="替换所有页面为一个 ReactNative 页面"
+        android:text="替换成 ReactNative 页面到根部"
         android:textColor="@color/touchable_opacity_font_color" />
 
 

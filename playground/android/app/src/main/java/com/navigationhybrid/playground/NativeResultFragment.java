@@ -61,7 +61,7 @@ public class NativeResultFragment extends NavigationFragment {
         view.findViewById(R.id.replace_all_with_one_react).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigator.replaceAll("ReactResult");
+                navigator.replaceToRoot("ReactResult");
             }
         });
 
