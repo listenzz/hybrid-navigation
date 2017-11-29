@@ -64,6 +64,27 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
     [self.navigationController popToRootViewControllerAnimated:animated];
 }
 
+- (void)replaceModule:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
+    HBDViewController *vc = [self controllerWithModuleName:moduleName props:props options:options];
+    NSMutableArray *children = [self.navigationController.childViewControllers mutableCopy];
+    [children removeObjectAtIndex:children.count - 1];
+    [children addObject:vc];
+    [self.navigationController setViewControllers:[children copy] animated:NO];
+}
+
+- (void)replaceModule:(NSString *)moduleName {
+    [self replaceModule:moduleName props:nil options:nil];
+}
+
+- (void)replaceToRootModule:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
+    HBDViewController *vc = [self controllerWithModuleName:moduleName props:props options:options];
+    [self.navigationController setViewControllers:@[vc] animated:NO];
+}
+
+- (void)replaceToRootModule:(NSString *)moduleName {
+    [self replaceToRootModule:moduleName props:nil options:nil];
+}
+
 - (void)presentModule:(NSString *)moduleName requestCode:(NSInteger) requestCode props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL) animated {
     HBDNavigator *navigator = [[HBDNavigator alloc] initWithRootModule:moduleName props:props options:options reactBridgeManager:self.bridgeManager];
     navigator.requestCode = requestCode;

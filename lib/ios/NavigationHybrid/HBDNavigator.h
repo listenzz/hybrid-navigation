@@ -34,6 +34,14 @@ UIKIT_EXTERN NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT;
 
 - (void)popToRootAnimated:(BOOL)animated;
 
+- (void)replaceModule:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options;
+
+- (void)replaceModule:(NSString *)moduleName;
+
+- (void)replaceToRootModule:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options;
+
+- (void)replaceToRootModule:(NSString *)moduleName;
+
 - (void)presentModule:(NSString *)moduleName requestCode:(NSInteger) requestCode props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL) animated;
 
 - (void)presentModule:(NSString *)moduleName requestCode:(NSInteger) requestCode;

@@ -35,6 +35,7 @@ const NSInteger REQUEST_CODE = 1;
     [self.navigator pushModule:@"ReactNavigation"];
 }
 - (IBAction)replaceWithRN:(UIButton *)sender {
+    [self.navigator replaceModule:@"ReactNavigation"];
 }
 
 - (IBAction)popToRoot:(UIButton *)sender {

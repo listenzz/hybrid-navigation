@@ -39,10 +39,10 @@
     [self.navigator pushModule:@"NativeResult"];
 }
 - (IBAction)replaceWithRN:(UIButton *)sender {
-    
+    [self.navigator replaceModule:@"ReactResult"];
 }
 - (IBAction)replaceToRootWithRN:(UIButton *)sender {
-    
+    [self.navigator replaceToRootModule:@"ReactResult"];
 }
 
 - (void)cancel {

@@ -79,6 +79,16 @@ RCT_EXPORT_METHOD(isRoot:(NSString *)navId sceneId:(NSString *)sceneId resolver:
     }
 }
 
+RCT_EXPORT_METHOD(replace:(NSString *)navId sceneId:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
+    HBDNavigator *navigator = [self navigatorForNavId:navId];
+    [navigator replaceModule:moduleName props:props options:options];
+}
+
+RCT_EXPORT_METHOD(replaceToRoot:(NSString *)navId sceneId:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
+    HBDNavigator *navigator = [self navigatorForNavId:navId];
+    [navigator replaceToRootModule:moduleName props:props options:options];
+}
+
 RCT_EXPORT_METHOD(present:(NSString *)navId sceneId:(NSString *)sceneId moduleName:(NSString *)moduleName requestCode:(NSInteger)requestCode props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL)animated) {
     HBDNavigator *navigator = [self navigatorForNavId:navId];
     [navigator presentModule:moduleName requestCode:requestCode props:props options:options animated:animated];
