@@ -38,7 +38,13 @@
 - (IBAction)pushToNative:(UIButton *)sender {
     [self.navigator pushModule:@"NativeResult"];
 }
-                                             
+- (IBAction)replaceWithRN:(UIButton *)sender {
+    
+}
+- (IBAction)replaceToRootWithRN:(UIButton *)sender {
+    
+}
+
 - (void)cancel {
     [self.navigator dismissAnimated:YES];
 }

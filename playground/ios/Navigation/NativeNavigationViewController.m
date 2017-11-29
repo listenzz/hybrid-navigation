@@ -34,6 +34,8 @@ const NSInteger REQUEST_CODE = 1;
 - (IBAction)pushToRN:(UIButton *)sender {
     [self.navigator pushModule:@"ReactNavigation"];
 }
+- (IBAction)replaceWithRN:(UIButton *)sender {
+}
 
 - (IBAction)popToRoot:(UIButton *)sender {
     [self.navigator popToRootAnimated:YES];

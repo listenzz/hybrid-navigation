@@ -49,7 +49,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k3z-Jh-hjC">
-                    <rect key="frame" x="32" y="201" width="311" height="40"/>
+                    <rect key="frame" x="32" y="241" width="311" height="40"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <state key="normal" title="popToRoot"/>
                     <connections>
@@ -57,7 +57,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Taf-fK-rfw">
-                    <rect key="frame" x="32" y="241" width="311" height="40"/>
+                    <rect key="frame" x="32" y="281" width="311" height="40"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <state key="normal" title="请求 React Native 返回结果"/>
                     <connections>
@@ -65,7 +65,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T47-QC-KUQ">
-                    <rect key="frame" x="32" y="281" width="311" height="40"/>
+                    <rect key="frame" x="32" y="321" width="311" height="40"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <state key="normal" title="请求 native 返回结果"/>
                     <connections>
@@ -73,14 +73,23 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="In8-2w-rD4">
-                    <rect key="frame" x="32" y="329" width="311" height="0.0"/>
+                    <rect key="frame" x="32" y="369" width="311" height="0.0"/>
                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UlL-2E-la6">
+                    <rect key="frame" x="32" y="201" width="311" height="40"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                    <state key="normal" title="替换成 RN 页面"/>
+                    <connections>
+                        <action selector="replaceWithRN:" destination="-1" eventType="touchUpInside" id="Fep-LD-4tC"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="UlL-2E-la6" firstAttribute="height" secondItem="dv6-uc-Qc4" secondAttribute="height" id="47q-Fv-S85"/>
                 <constraint firstItem="rDg-mr-F5q" firstAttribute="trailing" secondItem="dv6-uc-Qc4" secondAttribute="trailing" id="4A5-vw-g6P"/>
                 <constraint firstItem="T47-QC-KUQ" firstAttribute="top" secondItem="Taf-fK-rfw" secondAttribute="bottom" id="5k3-Ec-Hj0"/>
                 <constraint firstItem="k3z-Jh-hjC" firstAttribute="height" secondItem="dv6-uc-Qc4" secondAttribute="height" id="8Bi-Fo-DzK"/>
@@ -88,20 +97,23 @@
                 <constraint firstItem="p53-Ta-XLU" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="Bcc-Np-cse"/>
                 <constraint firstItem="dv6-uc-Qc4" firstAttribute="top" secondItem="p53-Ta-XLU" secondAttribute="bottom" constant="16" id="Cb4-Su-Pf5"/>
                 <constraint firstItem="rDg-mr-F5q" firstAttribute="top" secondItem="dv6-uc-Qc4" secondAttribute="bottom" id="JIJ-y4-gO7"/>
-                <constraint firstItem="k3z-Jh-hjC" firstAttribute="top" secondItem="rDg-mr-F5q" secondAttribute="bottom" id="K8N-f9-8m1"/>
                 <constraint firstItem="T47-QC-KUQ" firstAttribute="height" secondItem="dv6-uc-Qc4" secondAttribute="height" id="Lr2-2B-mxX"/>
                 <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="dv6-uc-Qc4" secondAttribute="trailing" constant="32" id="QMT-qa-CAu"/>
                 <constraint firstItem="rDg-mr-F5q" firstAttribute="leading" secondItem="dv6-uc-Qc4" secondAttribute="leading" id="SCP-pI-Plk"/>
                 <constraint firstItem="T47-QC-KUQ" firstAttribute="leading" secondItem="dv6-uc-Qc4" secondAttribute="leading" id="U8Z-1z-LHZ"/>
                 <constraint firstItem="dv6-uc-Qc4" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="32" id="Yag-Qw-oo9"/>
+                <constraint firstItem="UlL-2E-la6" firstAttribute="top" secondItem="rDg-mr-F5q" secondAttribute="bottom" id="a6z-qG-dcE"/>
                 <constraint firstItem="In8-2w-rD4" firstAttribute="trailing" secondItem="dv6-uc-Qc4" secondAttribute="trailing" id="bhU-Mw-7hB"/>
+                <constraint firstItem="UlL-2E-la6" firstAttribute="leading" secondItem="dv6-uc-Qc4" secondAttribute="leading" id="cx2-ct-hg6"/>
                 <constraint firstItem="In8-2w-rD4" firstAttribute="leading" secondItem="dv6-uc-Qc4" secondAttribute="leading" id="dGE-Ph-gUH"/>
                 <constraint firstItem="Taf-fK-rfw" firstAttribute="height" secondItem="dv6-uc-Qc4" secondAttribute="height" id="gKc-EN-HBn"/>
                 <constraint firstItem="Taf-fK-rfw" firstAttribute="trailing" secondItem="dv6-uc-Qc4" secondAttribute="trailing" id="hOC-Id-vo3"/>
+                <constraint firstItem="UlL-2E-la6" firstAttribute="trailing" secondItem="dv6-uc-Qc4" secondAttribute="trailing" id="htd-s0-v0u"/>
                 <constraint firstItem="In8-2w-rD4" firstAttribute="top" secondItem="T47-QC-KUQ" secondAttribute="bottom" constant="8" id="myH-8k-Nif"/>
                 <constraint firstItem="rDg-mr-F5q" firstAttribute="height" secondItem="dv6-uc-Qc4" secondAttribute="height" id="nyU-mI-qEd"/>
                 <constraint firstItem="k3z-Jh-hjC" firstAttribute="leading" secondItem="dv6-uc-Qc4" secondAttribute="leading" id="oeQ-Tr-bWV"/>
                 <constraint firstItem="k3z-Jh-hjC" firstAttribute="trailing" secondItem="dv6-uc-Qc4" secondAttribute="trailing" id="tfw-RS-xjn"/>
+                <constraint firstItem="k3z-Jh-hjC" firstAttribute="top" secondItem="UlL-2E-la6" secondAttribute="bottom" id="u3r-2c-buy"/>
                 <constraint firstItem="Taf-fK-rfw" firstAttribute="top" secondItem="k3z-Jh-hjC" secondAttribute="bottom" id="wnH-by-nAy"/>
                 <constraint firstItem="Taf-fK-rfw" firstAttribute="leading" secondItem="dv6-uc-Qc4" secondAttribute="leading" id="xLg-DA-vKt"/>
                 <constraint firstItem="T47-QC-KUQ" firstAttribute="trailing" secondItem="dv6-uc-Qc4" secondAttribute="trailing" id="zKL-ri-qjZ"/>
