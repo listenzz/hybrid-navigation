@@ -94,7 +94,7 @@ export default class ReactResult extends Component {
         		</Text>
 
 				<TextInput style={styles.input} onChangeText={this.onInputTextChanged} value={this.state.text} 
-					placeholder={'请输入要返回的结果'} underlineColorAndroid='#00000000'/>
+					placeholder={'请输入要返回的结果'} underlineColorAndroid='#00000000' textAlignVertical="center"/>
 
 				<TouchableOpacity onPress={this.sendResult} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>

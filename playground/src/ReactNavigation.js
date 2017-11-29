@@ -35,11 +35,17 @@ export default class ReactNavigation extends Component {
 		this.state = {
 			text: undefined,
 			error: undefined,
+			isRoot: false,
 		}
 	}
 
 	componentWillMount() {
 		console.log('componentWillMount=' + this.props.sceneId );
+		this.props.navigator.isRoot().then((isRoot) => {
+			if(isRoot) {
+				this.setState({isRoot});
+			}
+		});
 	}
 
 	componentDidMount() {
@@ -108,8 +114,8 @@ export default class ReactNavigation extends Component {
           			</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={this.popToRoot} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>
+				<TouchableOpacity onPress={this.popToRoot} activeOpacity={0.2} style={styles.button} disabled={this.state.isRoot}>
+					<Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
 						popToRoot
           			</Text>
 				</TouchableOpacity>

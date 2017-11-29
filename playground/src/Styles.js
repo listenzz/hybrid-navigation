@@ -24,6 +24,11 @@ export default styles = StyleSheet.create({
     buttonText: {
 
     },
+
+    buttonTextDisable: {
+      color: '#d1d1d1'
+    },
+
     result: {
       textAlign: 'center',
       color: '#333333',
