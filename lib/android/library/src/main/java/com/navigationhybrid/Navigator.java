@@ -10,10 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
-import com.facebook.react.bridge.queue.MessageQueueThreadHandler;
-
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.UUID;
 
 /**
@@ -236,6 +233,10 @@ public class Navigator implements LifecycleObserver {
         fragmentManager.popBackStack(navId, 0);
     }
 
+    public void replace(String moduleName) {
+        replace(moduleName, null, null);
+    }
+
     public void replace(@NonNull final String moduleName, final Bundle props, final Bundle options) {
         if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
             replaceTask(moduleName, props, options);
@@ -255,12 +256,15 @@ public class Navigator implements LifecycleObserver {
         NavigationFragment selfFragment = getSelfFragment();
         NavigationFragment preFragment = getPreFragment(selfFragment);
 
-        fragment.setCurrentAnimations(PresentAnimation.None);
         selfFragment.setCurrentAnimations(PresentAnimation.None);
 
-        boolean isRoot = isRoot();
+        if (preFragment != null) {
+           preFragment.setCurrentAnimations(PresentAnimation.None);
+        }
 
+        boolean isRoot = isRoot();
         fragmentManager.popBackStackImmediate();
+
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.setReorderingAllowed(true);
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
@@ -283,6 +287,51 @@ public class Navigator implements LifecycleObserver {
         transaction.commit();
 
         fragmentManager.executePendingTransactions();
+    }
+
+    public void replaceAll(String moduleName) {
+        replaceAll(moduleName, null, null);
+    }
+
+    public void replaceAll(@NonNull final String moduleName, final Bundle props, final Bundle options) {
+        if (isActiveState(lifecycleOwner.getLifecycle().getCurrentState())) {
+            replaceAllTask(moduleName, props, options);
+        } else {
+            scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    replaceAllTask(moduleName, props, options);
+                }
+            });
+        }
+    }
+
+    void replaceAllTask(@NonNull String moduleName, Bundle props, Bundle options) {
+        fragmentManager.executePendingTransactions();
+        NavigationFragment fragment = createFragment(moduleName, UUID.randomUUID().toString(), props, options);
+        NavigationFragment rootFragment = getRootFragment();
+        NavigationFragment preFragment = getPreFragment(rootFragment);
+        NavigationFragment selfFragment = getSelfFragment();
+
+        selfFragment.setCurrentAnimations(PresentAnimation.None);
+        if (preFragment != null) {
+            preFragment.setCurrentAnimations(PresentAnimation.None);
+        }
+
+        fragmentManager.popBackStackImmediate(rootFragment.getTag(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setReorderingAllowed(true);
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.add(containerId, fragment, fragment.getNavId());
+        if (preFragment != null) {
+            transaction.hide(preFragment);
+        }
+        transaction.addToBackStack(fragment.getNavId());
+        transaction.commit();
+
+        fragmentManager.executePendingTransactions();
+
     }
 
     public void present(@NonNull final String moduleName, final int requestCode, final Bundle props, final Bundle options, final boolean animated) {

@@ -40,6 +40,13 @@ public class NativeNavigationFragment extends NavigationFragment {
             }
         });
 
+        view.findViewById(R.id.replace_with_react).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigator.replace("ReactNavigation");
+            }
+        });
+
         view.findViewById(R.id.pop_to_root).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -36,7 +36,8 @@ export default class ReactResult extends Component {
 		this.pushToReact = this.pushToReact.bind(this);
         this.sendResult = this.sendResult.bind(this);
         this.onInputTextChanged = this.onInputTextChanged.bind(this);
-
+		this.replaceWithNative = this.replaceWithNative.bind(this);
+		this.replaceAllwithNative = this.replaceAllwithNative.bind(this);
 		this.state = {
 			text: '',
 		}
@@ -66,6 +67,14 @@ export default class ReactResult extends Component {
 
 	pushToReact() {
 		this.props.navigator.push('ReactResult');
+	}
+
+	replaceWithNative() {
+		this.props.navigator.replace('NativeResult');
+	}
+
+	replaceAllwithNative() {
+		this.props.navigator.replaceAll('NativeResult');
 	}
 
 	sendResult() {
@@ -100,6 +109,16 @@ export default class ReactResult extends Component {
 				<TouchableOpacity onPress={this.pushToNative} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						到 native 页面
+          			</Text>
+				</TouchableOpacity>
+				<TouchableOpacity onPress={this.replaceWithNative} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>
+						替换成 native 页面
+          			</Text>
+				</TouchableOpacity>
+				<TouchableOpacity onPress={this.replaceAllwithNative} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>
+						替换所有页面为一个 native 页面
           			</Text>
 				</TouchableOpacity>
 			</View>

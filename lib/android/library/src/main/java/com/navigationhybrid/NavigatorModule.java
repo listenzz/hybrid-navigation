@@ -158,6 +158,20 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         });
     }
 
+    public void replaceAll(final String navId, final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Navigator navigator = findNavigator(navId, sceneId);
+                if (navigator != null) {
+                    navigator.replaceAll(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                } else {
+                    Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
+                }
+            }
+        });
+    }
+
     @ReactMethod
     public void present(final String navId, final String sceneId, final String moduleName, final int requestCode, final ReadableMap props, final ReadableMap options, final boolean animated) {
         handler.post(new Runnable() {
