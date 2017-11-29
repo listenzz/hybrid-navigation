@@ -100,7 +100,7 @@
     RCTEventEmitter *emitter = [self.navigator.bridgeManager.bridge moduleForName:@"NavigationHybrid"];
     [emitter sendEventWithName:ON_COMPONENT_RESULT_EVENT body:@{@"requestCode": @(requestCode),
                                                                 @"resultCode": @(resultCode),
-                                                                @"data": data,
+                                                                @"data": data ?: [NSNull null],
                                                                 @"navId": self.navigator.navId,
                                                                 @"sceneId": self.sceneId,
                                                                 }];
