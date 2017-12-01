@@ -89,9 +89,6 @@ public class ReactAppCompatActivityDelegate {
 
     protected void onPause() {
         if (getReactNativeHost().hasInstance()) {
-            if (!isMainThread()) {
-                Log.e(TAG, "thread:" + Thread.currentThread().getName());
-            }
             getReactNativeHost().getReactInstanceManager().onHostPause(getPlainActivity());
         }
     }
