@@ -12,11 +12,11 @@ git clone git@github.com:listenzz/react-native-navigation-hybrid.git
 cd react-native-navigation-hybrid
 ```
 
-```
+```shell
 npm install
 ```
 
-```
+```shell
 npm start
 ```
 
