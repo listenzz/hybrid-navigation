@@ -4,7 +4,7 @@
 		"type": "git",
 		"url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
 	},
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"nativePackage": true,
 	"description": "A native navigation for React Native which support navigation between native and react side",
 	"author": "listen <listenzz@163.com>",
@@ -20,6 +20,9 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "node node_modules/react-native/local-cli/cli.js start",
+		"run:ios": "react-native run-ios --project-path ./playground/ios",
+		"start:android": "adb shell am start -n com.navigationhybrid.playground/.MainActivity",
+		"run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
 		"test": "jest"
 	},
 	"dependencies": {
