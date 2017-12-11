@@ -63,6 +63,7 @@
 
 - (void)registerReactModule:(NSString *)moduleName options:(NSDictionary *)options {
     NSCAssert(self.isReactModuleInRegistry, @"非法操作，你应该先调用 `startRegisterReactModule`");
+    NSLog(@"register react module:%@,options:%@", moduleName, options);
     [_reactModules setObject:options forKey:moduleName];
 }
 

@@ -17,10 +17,7 @@
 #import "NativeNavigationViewController.h"
 #import "NativeResultViewController.h"
 
-
 @interface AppDelegate ()
-
-@property(nonatomic, strong) RCTBridge *bridge;
 
 @end
 
@@ -28,49 +25,23 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:RCTJavaScriptWillStartLoadingNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
-        NSLog(@"RCTJavaScriptWillStartLoadingNotification");
-    }];
-
     [[NSNotificationCenter defaultCenter] addObserverForName:RCTJavaScriptDidLoadNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
         NSLog(@"RCTJavaScriptDidLoadNotification");
-//
-//        RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:_bridge moduleName:@"Navigator" initialProperties:nil];
-//        rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
-//        UIViewController *rootViewController = [UIViewController new];
-//        rootViewController.view = rootView;
- //       self.window.rootViewController = rootViewController;
-       
-    }];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:RCTBridgeWillReloadNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
-        NSLog(@"RCTBridgeWillReloadNotification");
-    }];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:RCTBridgeWillDownloadScriptNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
-        NSLog(@"RCTBridgeWillDownloadScriptNotification");
-    }];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:RCTBridgeDidDownloadScriptNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
-        NSLog(@"RCTBridgeDidDownloadScriptNotification");
+        HBDNavigator *navigator = [[HBDNavigator alloc] initWithRootModule:@"ReactNavigation" props:nil options:nil reactBridgeManager:[HBDReactBridgeManager instance]];
+        [[HBDReactBridgeManager instance] registerNavigator:navigator];
+        self.window.rootViewController = navigator.navigationController;
     }];
     
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index.ios" fallbackResource:nil];
     [[HBDReactBridgeManager instance] installWithJsCodeLocation:jsCodeLocation launchOptions:launchOptions];
-    _bridge = [HBDReactBridgeManager instance].bridge;
     
     // 注册 native 模块
     [[HBDReactBridgeManager instance] registerNativeModule:@"NativeNavigation" forController:[NativeNavigationViewController class]];
     [[HBDReactBridgeManager instance] registerNativeModule:@"Navigation" forController:[NativeNavigationViewController class]];
     [[HBDReactBridgeManager instance] registerNativeModule:@"NativeResult" forController:[NativeResultViewController class]];
     
-    HBDNavigator *navigator = [[HBDNavigator alloc] initWithRootModule:@"NativeNavigation" props:nil options:nil reactBridgeManager:[HBDReactBridgeManager instance]];
-    
-    [[HBDReactBridgeManager instance] registerNavigator:navigator];
-    self.window.rootViewController = navigator.navigationController;
-    
-//    UIViewController *vc = [[UIStoryboard storyboardWithName:@"LaunchScreen" bundle:[NSBundle mainBundle]] instantiateInitialViewController];
-//    self.window.rootViewController = vc;
+    UIViewController *vc = [[UIStoryboard storyboardWithName:@"LaunchScreen" bundle:[NSBundle mainBundle]] instantiateInitialViewController];
+    self.window.rootViewController = vc;
     [self.window makeKeyAndVisible];
     return YES;
 }
