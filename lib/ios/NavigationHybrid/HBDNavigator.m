@@ -41,6 +41,19 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
     return self;
 }
 
+- (instancetype)initWithNavigationController:(UINavigationController *)nav reactBridgeManager:(HBDReactBridgeManager *)bridgeManager {
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _bridgeManager = bridgeManager;
+    _navId = [[NSUUID UUID] UUIDString];
+    _navigationController = nav;
+    _resultCode = RESULT_CANCEL;
+    return self;
+}
+
+
 #pragma mark - public methods
 
 - (void)pushModule:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL) animated {
@@ -154,7 +167,7 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
 
 #pragma mark - private methods
 
-- (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options  {
+- (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
     HBDViewController *vc = nil;
     if ([self.bridgeManager hasReactModuleForName:moduleName]) {
         vc = [[HBDReactViewController alloc] initWithNavigator:self moduleName:moduleName props:props options:options];

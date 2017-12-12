@@ -35,14 +35,11 @@ public class GardenModule extends ReactContextBaseJavaModule{
 
     @ReactMethod
     public void setLeftBarButtonItem(final String navId, final String sceneId, final ReadableMap item) {
-        Log.w(TAG, "------ setLeftBarButtonItem 0 -------");
         handler.post(new Runnable() {
             @Override
             public void run() {
                 ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
-                Log.w(TAG, "------- setLeftBarButtonItem 1 --------");
                 if (fragment != null && fragment.getView() != null) {
-                    Log.w(TAG, "------ setLeftBarButtonItem 2 -------");
                     fragment.garden.setLeftBarButtonItem(Arguments.toBundle(item));
                 }
             }

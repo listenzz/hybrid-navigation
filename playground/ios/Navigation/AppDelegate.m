@@ -17,7 +17,7 @@
 #import "NativeNavigationViewController.h"
 #import "NativeResultViewController.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () <HBDReactBridgeManagerDelegate>
 
 @end
 
@@ -32,6 +32,7 @@
         self.window.rootViewController = navigator.navigationController;
     }];
     
+    [HBDReactBridgeManager instance].delegate = self;
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index.ios" fallbackResource:nil];
     [[HBDReactBridgeManager instance] installWithJsCodeLocation:jsCodeLocation launchOptions:launchOptions];
     
@@ -44,6 +45,11 @@
     self.window.rootViewController = vc;
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+
+- (void)reactModuleRegistryDidCompleted:(HBDReactBridgeManager *)manager {
+    NSLog(@"reactModuleRegistryDidCompleted");
 }
 
 

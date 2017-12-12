@@ -82,13 +82,16 @@
 - (void)startRegisterReactModule {
     [_reactModules removeAllObjects];
     _isReactModuleInRegistry = YES;
+    [_navigators removeAllObjects];
 }
 
 - (void)endRegisterReactModule {
     _isReactModuleInRegistry = NO;
-    if (self.delegate != nil) {
-        [self.delegate reactModuleRegistryDidCompleted:self];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+         if (self.delegate != nil) {
+             [self.delegate reactModuleRegistryDidCompleted:self];
+         }
+    });
 }
 
 - (void)registerNavigator:(HBDNavigator *)navigator {
