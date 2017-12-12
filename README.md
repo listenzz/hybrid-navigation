@@ -22,8 +22,8 @@ npm start
 
 Then, in another CLI window:
 
-To run on iOS: npm run run:ios
+To run on iOS: `npm run run:ios`
 
-To run on Android: npm run run:android
+To run on Android: `npm run run:android`
 
 make sure that you have a  simulator or device when you run andriod
