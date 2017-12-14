@@ -15,8 +15,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.facebook.drawee.drawable.RoundedColorDrawable;
-import com.navigationhybrid.Garden;
 import com.navigationhybrid.R;
 
 /**
@@ -62,7 +60,7 @@ public class BottomBarTab extends FrameLayout {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(size, size);
         mIcon.setImageResource(icon);
         mIcon.setLayoutParams(params);
-        mIcon.setColorFilter(Garden.Global.tabBarItemColor);
+       // mIcon.setColorFilter(Garden.Global.tabBarItemColor);
         lLContainer.addView(mIcon);
 
         mTvTitle = new TextView(context);
@@ -70,7 +68,7 @@ public class BottomBarTab extends FrameLayout {
         LinearLayout.LayoutParams paramsTv = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         paramsTv.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
         mTvTitle.setTextSize(10);
-        mTvTitle.setTextColor(Garden.Global.tabBarItemColor);
+       // mTvTitle.setTextColor(Garden.Global.tabBarItemColor);
         mTvTitle.setLayoutParams(paramsTv);
         lLContainer.addView(mTvTitle);
 
@@ -79,9 +77,9 @@ public class BottomBarTab extends FrameLayout {
         int min = dip2px(context, 20);
         int padding = dip2px(context, 5);
         mTvUnreadCount = new TextView(context);
-        RoundedColorDrawable roundedColorDrawable = new RoundedColorDrawable(dip2px(context, 20), Garden.Global.tabBarItemBubbleColor);
-        roundedColorDrawable.setBorder(Garden.Global.tabBarItemBubbleBorderColor, dip2px(context, 1));
-        mTvUnreadCount.setBackground(roundedColorDrawable);
+       // RoundedColorDrawable roundedColorDrawable = new RoundedColorDrawable(dip2px(context, 20), Garden.Global.tabBarItemBubbleColor);
+       // roundedColorDrawable.setBorder(Garden.Global.tabBarItemBubbleBorderColor, dip2px(context, 1));
+       // mTvUnreadCount.setBackground(roundedColorDrawable);
         mTvUnreadCount.setMinWidth(min);
         mTvUnreadCount.setTextColor(Color.WHITE);
         mTvUnreadCount.setPadding(padding, 0, padding, 0);
@@ -100,11 +98,11 @@ public class BottomBarTab extends FrameLayout {
     public void setSelected(boolean selected) {
         super.setSelected(selected);
         if (selected) {
-            mIcon.setColorFilter(Garden.Global.tabBarItemSelectedColor);
-            mTvTitle.setTextColor(Garden.Global.tabBarItemSelectedColor);
+           // mIcon.setColorFilter(Garden.Global.tabBarItemSelectedColor);
+           // mTvTitle.setTextColor(Garden.Global.tabBarItemSelectedColor);
         } else {
-            mIcon.setColorFilter(Garden.Global.tabBarItemColor);
-            mTvTitle.setTextColor(Garden.Global.tabBarItemColor);
+            //mIcon.setColorFilter(Garden.Global.tabBarItemColor);
+            //mTvTitle.setTextColor(Garden.Global.tabBarItemColor);
         }
     }
 

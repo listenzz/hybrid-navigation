@@ -42,7 +42,7 @@ public class ReactAppCompatActivityDelegate {
             "Overlay permissions needs to be granted in order for react native apps to run in dev mode";
 
     private final @Nullable
-    Activity mActivity;
+    AppCompatActivity mActivity;
     private final ReactBridgeManager bridgeManager;
 
     private @Nullable

@@ -38,44 +38,84 @@ public class Garden {
 
     private static final String TAG = "ReactNative";
 
-    public static class Global {
+    static int INVALID_COLOR = Integer.MAX_VALUE;
 
-        public static int titleTextColor = Color.WHITE;
-        public static int titleTextSize = 18;
-        public static int barButtonItemTintColor = Color.WHITE;
-        public static int barButtonItemTextSize = 14;
-        public static String titleAlignment = "left"; // left, center, default is left
+    static class Global {
+
+        static int navigationBarBackgroundColor = INVALID_COLOR;
+        static int navigationBarTintColor = Color.WHITE;
+        static int titleTextColor = Color.WHITE;
+        static int titleTextSize = 18;
+        static String titleAlignment = "left"; // left, center, default is left
+
+        static int barButtonItemTintColor = Color.WHITE;
+        static int barButtonItemTextSize = 14;
 
         public static int tabBarItemColor = Color.parseColor("#c9c9c9");
         public static int tabBarItemSelectedColor = Color.parseColor("#F44336");
-        public static int tabBarItemFontSize;
+        public static int tabBarItemTextSize;
         public static int tabBarItemBubbleColor = Color.parseColor("#FF4040");
         public static int tabBarItemBubbleBorderColor = Color.WHITE;
+    }
+
+    public static void setNavigationBarBackgroundColor(int color) {
+        Global.navigationBarBackgroundColor = color;
+    }
+
+    public static int getNavigationBarBackgroundColor() {
+        return Global.navigationBarBackgroundColor;
     }
 
     public static void setTitleTextColor(int color) {
         Global.titleTextColor = color;
     }
 
+    public static int getTitleTextColor() {
+        if (Global.titleTextColor != 0) {
+            return Global.titleTextColor;
+        }
+        return Global.navigationBarTintColor;
+    }
+
     public static void setTitleTextSize(int dp) {
         Global.titleTextSize = dp;
+    }
+
+    public static int getTitleTextSizeDp() {
+        return Global.titleTextSize;
     }
 
     public static void setBarButtonItemTintColor(int color) {
         Global.barButtonItemTintColor = color;
     }
 
+    public static int getBarButtonItemTintColor() {
+        if (Global.barButtonItemTintColor != 0) {
+            return Global.barButtonItemTintColor;
+        }
+        return Global.navigationBarTintColor;
+    }
+
     public static void setBarButtonItemTextSize(int dp) {
         Global.barButtonItemTextSize = dp;
+    }
+
+    public static int  getBarButtonItemTextSizeDp() {
+        return Global.barButtonItemTextSize;
     }
 
     public static void setTitleAlignment(String alignment) {
         Global.titleAlignment = alignment;
     }
 
+    public static String getTitleAlignment() {
+        return Global.titleAlignment;
+    }
+
+
     private  final NavigationFragment fragment;
 
-    Garden(@NonNull NavigationFragment fragment) {
+    public Garden(@NonNull NavigationFragment fragment) {
         this.fragment = fragment;
     }
 
@@ -216,7 +256,7 @@ public class Garden {
         }
 
         if (drawable != null) {
-            drawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+            drawable.setColorFilter(Garden.getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
         }
 
         return drawable;

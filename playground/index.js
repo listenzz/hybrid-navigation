@@ -1,4 +1,3 @@
-import { AppRegistry } from 'react-native';
 import  { ReactRegistry } from 'react-native-navigation-hybrid'; 
 
 import App from './App';

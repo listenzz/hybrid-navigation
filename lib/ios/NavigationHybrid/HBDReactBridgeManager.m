@@ -39,7 +39,7 @@
         _nativeModules = [[NSMutableDictionary alloc] init];
         _reactModules = [[NSMutableDictionary alloc] init];
         _navigators = [[NSMutableDictionary alloc] init];
-        _isReactModuleInRegistry = NO;
+        _isReactModuleInRegistry = YES;
     }
     return self;
 }
@@ -82,7 +82,7 @@
 - (void)startRegisterReactModule {
     [_reactModules removeAllObjects];
     _isReactModuleInRegistry = YES;
-    [_navigators removeAllObjects];
+    [self clearNavigators];
 }
 
 - (void)endRegisterReactModule {
@@ -100,6 +100,10 @@
 
 - (void)unregisterNavigator:(HBDNavigator *)navigator {
     [_navigators removeObjectForKey:navigator.navId];
+}
+    
+- (void)clearNavigators {
+    [_navigators removeAllObjects];
 }
 
 - (HBDNavigator *)navigatorForNavId:(NSString *)navId {

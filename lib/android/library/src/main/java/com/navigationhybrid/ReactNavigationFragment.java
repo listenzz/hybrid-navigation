@@ -69,9 +69,14 @@ public class ReactNavigationFragment extends NavigationFragment {
         if (bridgeManager.isReactModuleInRegistry()) {
             bridgeManager.addReactModuleRegistryListener(new ReactBridgeManager.ReactModuleRegistryListener() {
                 @Override
-                public void onReactModuleRegistryCompleted() {
+                public void onStartRegisterReactModule() {
+
+                }
+
+                @Override
+                public void onEndRegisterReactModule() {
                     bridgeManager.removeReactModuleRegistryListener(this);
-                    Log.w(TAG, ReactNavigationFragment.this.toString() + " onReactModuleRegistryCompleted");
+                    Log.w(TAG, ReactNavigationFragment.this.toString() + " onEndRegisterReactModule");
                     initReactNative();
                 }
             });
@@ -102,21 +107,23 @@ public class ReactNavigationFragment extends NavigationFragment {
         startPostponedEnterTransition();
     }
 
-//    @Override
-//    public void postponeEnterTransition() {
-//        super.postponeEnterTransition();
-//        Log.d(TAG, "postponeEnterTransition");
-//        getActivity().supportPostponeEnterTransition();
-//    }
-//
-//    @Override
-//    public void startPostponedEnterTransition() {
-//        super.startPostponedEnterTransition();
-//        Log.d(TAG, "startPostponeEnterTransition");
-//        if (getActivity() != null) {
-//            getActivity().supportStartPostponedEnterTransition();
-//        }
-//    }
+    @Override
+    public void postponeEnterTransition() {
+        super.postponeEnterTransition();
+        Log.d(TAG, "postponeEnterTransition");
+        if (getActivity() != null) {
+            getActivity().supportPostponeEnterTransition();
+        }
+    }
+
+    @Override
+    public void startPostponedEnterTransition() {
+        super.startPostponedEnterTransition();
+        Log.d(TAG, "startPostponeEnterTransition");
+        if (getActivity() != null) {
+            getActivity().supportStartPostponedEnterTransition();
+        }
+    }
 
 
 }

@@ -10,5 +10,6 @@
 
 #import "HBDNavigator.h"
 #import "HBDViewController.h"
+#import "HBDReactBridgeManager.h"
 
 #endif /* NavigationHybrid_h */

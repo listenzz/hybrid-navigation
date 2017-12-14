@@ -547,9 +547,7 @@ public class Navigator implements LifecycleObserver {
             // 清空队列
             tasks.clear();
             lifecycleOwner.getLifecycle().removeObserver(this);
-            Log.d(TAG, sceneId + " lifecycle DESTROYED");
         } else {
-            Log.d(TAG, sceneId + " lifecycle state change:" + lifecycleOwner.getLifecycle().getCurrentState().name());
             activeStateChanged(isActiveState(lifecycleOwner.getLifecycle().getCurrentState()));
         }
     }

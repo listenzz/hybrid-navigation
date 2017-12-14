@@ -1,6 +1,8 @@
 package com.navigationhybrid;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,8 @@ import android.widget.LinearLayout;
 import com.navigationhybrid.view.TopBar;
 
 import java.util.List;
+
+import static com.navigationhybrid.Garden.INVALID_COLOR;
 
 /**
  * Created by Listen on 2017/11/20.
@@ -224,6 +228,11 @@ public class NavigationFragment extends Fragment {
     }
 
     protected void setupTopBar() {
+        if (Garden.getNavigationBarBackgroundColor() != INVALID_COLOR) {
+            Toolbar toolbar = topBar.getToolbar();
+            toolbar.setBackgroundColor(Garden.getNavigationBarBackgroundColor());
+        }
+
         Bundle options = getOptions();
         if (options == null) {
             options = new Bundle();
@@ -241,8 +250,9 @@ public class NavigationFragment extends Fragment {
         } else {
             if (!navigator.isRoot()) {
                 Toolbar toolbar = topBar.getToolbar();
-                // FIXME 根据不同主题选择不同颜色的返回按钮
-                toolbar.setNavigationIcon(R.drawable.nav_ic_arrow_back_white);
+                Drawable drawable = getResources().getDrawable(R.drawable.nav_ic_arrow_back_white);
+                drawable.setColorFilter(Garden.getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
+                toolbar.setNavigationIcon(drawable);
                 toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

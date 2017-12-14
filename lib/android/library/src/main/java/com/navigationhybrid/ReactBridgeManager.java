@@ -22,7 +22,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ReactBridgeManager {
 
     public interface ReactModuleRegistryListener {
-        void onReactModuleRegistryCompleted();
+        void onStartRegisterReactModule();
+        void onEndRegisterReactModule();
     }
 
     private static final String TAG = "ReactNative";
@@ -68,13 +69,16 @@ public class ReactBridgeManager {
     public void startRegisterReactModule() {
         reactModules.clear();
         isReactModuleInRegistry = true;
+        for (ReactModuleRegistryListener listener : reactModuleRegistryListeners) {
+            listener.onStartRegisterReactModule();
+        }
     }
 
     @UiThread
     public void endRegisterReactModule() {
         isReactModuleInRegistry = false;
         for (ReactModuleRegistryListener listener : reactModuleRegistryListeners) {
-            listener.onReactModuleRegistryCompleted();
+            listener.onEndRegisterReactModule();
         }
     }
 
