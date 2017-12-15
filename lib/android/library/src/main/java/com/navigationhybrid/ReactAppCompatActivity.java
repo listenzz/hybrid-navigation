@@ -99,7 +99,7 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
             }
         }
     }
-
+    
     @Override
     public void onEndRegisterReactModule() {
         onCreateMainComponent();
@@ -116,8 +116,6 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
         super.onResume();
         activityDelegate.onResume();
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

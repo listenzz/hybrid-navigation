@@ -14,7 +14,7 @@ export default styles = StyleSheet.create({
       justifyContent: 'flex-start',
       alignItems: 'stretch',
       backgroundColor: '#F5FCFF',
-      paddingTop: 112,
+      paddingTop: 56,
     },
     button: {
       alignItems: "center",

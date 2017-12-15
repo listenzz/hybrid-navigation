@@ -34,8 +34,7 @@ public class TopBar extends AppBarLayout {
         TypedValue typedValue = new TypedValue();
         int height = 0;
         if (context.getTheme().resolveAttribute(R.attr.actionBarSize, typedValue, true)) {
-            float px = TypedValue.complexToDimension(typedValue.data, context.getResources().getDisplayMetrics());
-            height = (int)(px);
+            height = (int) TypedValue.complexToDimension(typedValue.data, context.getResources().getDisplayMetrics());
         }
         addView(toolbar, LayoutParams.MATCH_PARENT, height);
         titleView = new TextView(context);
@@ -47,7 +46,7 @@ public class TopBar extends AppBarLayout {
         return toolbar;
     }
 
-    public TextView getCenterTitleView() {
+    public TextView getTitleView() {
         return titleView;
     }
 

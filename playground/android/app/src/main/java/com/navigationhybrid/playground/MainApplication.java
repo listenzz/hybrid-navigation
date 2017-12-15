@@ -1,7 +1,6 @@
 package com.navigationhybrid.playground;
 
 import android.app.Application;
-import android.graphics.Color;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -51,7 +50,9 @@ public class MainApplication extends Application implements ReactApplication{
         super.onCreate();
         SoLoader.init(this, false);
 
-        Garden.setNavigationBarBackgroundColor(Color.parseColor("#414449"));
+        //Garden.setTopBarStyle(Garden.TOP_BAR_STYLE_DARK_CONTENT);
+        // Garden.setStatusBarColor(Color.parseColor("#414449"));
+        // Garden.setTopBarBackgroundColor(Color.parseColor("#414449"));
 
 
         ReactBridgeManager bridgeManager = ReactBridgeManager.instance;

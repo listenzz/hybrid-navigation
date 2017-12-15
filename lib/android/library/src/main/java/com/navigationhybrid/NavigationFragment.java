@@ -19,8 +19,6 @@ import com.navigationhybrid.view.TopBar;
 
 import java.util.List;
 
-import static com.navigationhybrid.Garden.INVALID_COLOR;
-
 /**
  * Created by Listen on 2017/11/20.
  */
@@ -228,10 +226,7 @@ public class NavigationFragment extends Fragment {
     }
 
     protected void setupTopBar() {
-        if (Garden.getNavigationBarBackgroundColor() != INVALID_COLOR) {
-            Toolbar toolbar = topBar.getToolbar();
-            toolbar.setBackgroundColor(Garden.getNavigationBarBackgroundColor());
-        }
+        garden.setTopBarStyle();
 
         Bundle options = getOptions();
         if (options == null) {
@@ -250,7 +245,7 @@ public class NavigationFragment extends Fragment {
         } else {
             if (!navigator.isRoot()) {
                 Toolbar toolbar = topBar.getToolbar();
-                Drawable drawable = getResources().getDrawable(R.drawable.nav_ic_arrow_back_white);
+                Drawable drawable = getResources().getDrawable(R.drawable.nav_ic_arrow_back);
                 drawable.setColorFilter(Garden.getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
                 toolbar.setNavigationIcon(drawable);
                 toolbar.setNavigationOnClickListener(new View.OnClickListener() {
