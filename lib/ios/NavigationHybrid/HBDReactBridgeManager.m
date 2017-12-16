@@ -14,7 +14,6 @@
 @property(nonatomic, copy) NSURL *jsCodeLocation;
 @property(nonatomic, strong) NSMutableDictionary *nativeModules;
 @property(nonatomic, strong) NSMutableDictionary *reactModules;
-@property(nonatomic, strong) NSMutableDictionary *navigators;
 @property(nonatomic, assign) BOOL isReactModuleInRegistry;
 
 @end
@@ -38,7 +37,6 @@
     if (self = [super init]) {
         _nativeModules = [[NSMutableDictionary alloc] init];
         _reactModules = [[NSMutableDictionary alloc] init];
-        _navigators = [[NSMutableDictionary alloc] init];
         _isReactModuleInRegistry = YES;
     }
     return self;
@@ -80,34 +78,15 @@
 }
 
 - (void)startRegisterReactModule {
-    [_reactModules removeAllObjects];
     _isReactModuleInRegistry = YES;
-    [self clearNavigators];
+    [_reactModules removeAllObjects];
 }
 
 - (void)endRegisterReactModule {
     _isReactModuleInRegistry = NO;
-    dispatch_async(dispatch_get_main_queue(), ^{
-         if (self.delegate != nil) {
-             [self.delegate reactModuleRegistryDidCompleted:self];
-         }
-    });
-}
-
-- (void)registerNavigator:(HBDNavigator *)navigator {
-    [_navigators setObject:navigator forKey:navigator.navId];
-}
-
-- (void)unregisterNavigator:(HBDNavigator *)navigator {
-    [_navigators removeObjectForKey:navigator.navId];
-}
-    
-- (void)clearNavigators {
-    [_navigators removeAllObjects];
-}
-
-- (HBDNavigator *)navigatorForNavId:(NSString *)navId {
-    return [_navigators objectForKey:navId];
+    if (self.delegate != nil) {
+        [self.delegate reactModuleRegistryDidCompleted:self];
+    }
 }
 
 #pragma mark - bridge delegate

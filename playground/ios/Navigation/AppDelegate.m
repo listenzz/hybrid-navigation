@@ -11,8 +11,7 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLog.h>
 
-#import <NavigationHybrid/HBDReactBridgeManager.h>
-#import <NavigationHybrid/HBDNavigator.h>
+#import <NavigationHybrid/NavigationHybrid.h>
 
 #import "NativeNavigationViewController.h"
 #import "NativeResultViewController.h"
@@ -25,14 +24,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [[NSNotificationCenter defaultCenter] addObserverForName:RCTJavaScriptDidLoadNotification object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification * _Nonnull note) {
-        NSLog(@"RCTJavaScriptDidLoadNotification");
-        HBDNavigator *navigator = [[HBDNavigator alloc] initWithRootModule:@"ReactNavigation" props:nil options:nil reactBridgeManager:[HBDReactBridgeManager instance]];
-        [[HBDReactBridgeManager instance] registerNavigator:navigator];
-        self.window.rootViewController = navigator.navigationController;
-    }];
-    
     [HBDReactBridgeManager instance].delegate = self;
+    
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index.ios" fallbackResource:nil];
     [[HBDReactBridgeManager instance] installWithJsCodeLocation:jsCodeLocation launchOptions:launchOptions];
     
@@ -47,9 +40,10 @@
     return YES;
 }
 
-
 - (void)reactModuleRegistryDidCompleted:(HBDReactBridgeManager *)manager {
     NSLog(@"reactModuleRegistryDidCompleted");
+    HBDNavigationController *nav = [[HBDNavigationController alloc] initWithRootModule:@"ReactNavigation" props:nil options:nil];
+    self.window.rootViewController = nav;
 }
 
 

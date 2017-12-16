@@ -16,16 +16,14 @@ UIKIT_EXTERN NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT;
 
 @class HBDReactBridgeManager;
 @class HBDViewController;
+@class HBDNavigationController;
 
 @interface HBDNavigator : NSObject
 
-@property(nonatomic, strong, readonly) UINavigationController *navigationController;
++ (HBDNavigator *)navigatorForId:(NSString *)navId;
+
 @property(nonatomic, copy, readonly) NSString *navId;
-@property(nonatomic, strong, readonly) HBDReactBridgeManager *bridgeManager;
-
-- (instancetype)initWithRootModule:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options reactBridgeManager:(HBDReactBridgeManager *)manager;
-
-- (instancetype)initWithNavigationController:(UINavigationController *)nav reactBridgeManager:(HBDReactBridgeManager *)bridgeManager;
+@property(nonatomic, weak) UINavigationController *navigationController;
 
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options;
 
@@ -58,5 +56,7 @@ UIKIT_EXTERN NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT;
 - (BOOL)canDismiss;
 
 - (void)dismissAnimated:(BOOL)animated;
+
+- (UIViewController *)topViewController;
 
 @end

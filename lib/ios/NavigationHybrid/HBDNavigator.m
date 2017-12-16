@@ -6,10 +6,14 @@
 //
 
 #import "HBDNavigator.h"
+#import "HBDReactBridgeManager.h"
 #import "HBDViewController.h"
 #import "HBDReactViewController.h"
+#import "HBDNavigationController.h"
+
 #import <React/RCTBridge.h>
 #import <React/RCTLog.h>
+
 
 NSInteger const RESULT_OK = -1;
 NSInteger const RESULT_CANCEL = 0;
@@ -18,6 +22,8 @@ NSString * const ON_COMPONENT_RESULT_EVENT = @"ON_COMPONENT_RESULT";
 NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
 
 @interface HBDNavigator()
+
+@property(nonatomic, strong, readonly) HBDReactBridgeManager *bridgeManager;
 
 @property(nonatomic, assign) NSInteger requestCode;
 @property(nonatomic, assign) NSInteger resultCode;
@@ -28,31 +34,55 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
 
 @implementation HBDNavigator
 
-- (instancetype)initWithRootModule:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options  reactBridgeManager:(HBDReactBridgeManager *)bridgeManager {
++ (HBDNavigator *)navigatorForId:(NSString *)navId {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    UIViewController *controller = application.keyWindow.rootViewController;
+    HBDNavigator *navigator = [self findNavigatorForId:navId atController:controller];
+    return navigator;
+}
+
++ (HBDNavigator *)findNavigatorForId:(NSString *)navId atController:(UIViewController *)controller {
+    
+    HBDNavigator *navigator;
+    
+    if ([controller isKindOfClass:[HBDNavigationController class]]) {
+        HBDNavigationController *HDBNav = (HBDNavigationController *)controller;
+        if ([HDBNav.navigator.navId isEqualToString:navId]) {
+            navigator = HDBNav.navigator;
+        }
+    }
+    
+    if (!navigator) {
+        UIViewController *presentedController = controller.presentedViewController;
+        if(presentedController && ![presentedController isBeingDismissed]) {
+            navigator = [self findNavigatorForId:navId atController:presentedController];
+        }
+    }
+    
+    if (!navigator && controller.childViewControllers.count > 0) {
+        NSUInteger count = controller.childViewControllers.count;
+        for (NSUInteger i = 0; i < count; i ++) {
+            UIViewController *child = controller.childViewControllers[i];
+            navigator = [self findNavigatorForId:navId atController:child];
+            if (navigator) {
+                break;
+            }
+        }
+    }
+    
+    return navigator;
+}
+
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
     }
-    _bridgeManager = bridgeManager;
+    _bridgeManager = [HBDReactBridgeManager instance];
     _navId = [[NSUUID UUID] UUIDString];
-    HBDViewController *vc = [self controllerWithModuleName:moduleName props:props options:options];
-    _navigationController = [[UINavigationController alloc] initWithRootViewController:vc];
     _resultCode = RESULT_CANCEL;
     return self;
 }
-
-- (instancetype)initWithNavigationController:(UINavigationController *)nav reactBridgeManager:(HBDReactBridgeManager *)bridgeManager {
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    _bridgeManager = bridgeManager;
-    _navId = [[NSUUID UUID] UUIDString];
-    _navigationController = nav;
-    _resultCode = RESULT_CANCEL;
-    return self;
-}
-
 
 #pragma mark - public methods
 
@@ -121,11 +151,10 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
 }
 
 - (void)presentModule:(NSString *)moduleName requestCode:(NSInteger) requestCode props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL) animated {
-    HBDNavigator *navigator = [[HBDNavigator alloc] initWithRootModule:moduleName props:props options:options reactBridgeManager:self.bridgeManager];
-    navigator.requestCode = requestCode;
-    navigator.presentingNavId = self.navId;
-    [self.bridgeManager registerNavigator:navigator];
-    [self.navigationController presentViewController:navigator.navigationController animated:animated completion:^{
+    HBDNavigationController *presentedVC = [[HBDNavigationController alloc] initWithRootModule:moduleName props:props options:options];
+    presentedVC.navigator.requestCode = requestCode;
+    presentedVC.navigator.presentingNavId = self.navId;
+    [self.navigationController presentViewController:presentedVC animated:animated completion:^{
         
     }];
 }
@@ -144,10 +173,8 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
 }
 
 - (void)dismissAnimated:(BOOL)animated {
-    __weak typeof (self) weakSelf = self;
-    
     if (self.presentingNavId != nil) {
-        HBDNavigator *navigator = [self.bridgeManager navigatorForNavId:self.presentingNavId];
+        HBDNavigator *navigator = [HBDNavigator navigatorForId:self.presentingNavId];
         if (navigator != nil) {
             NSUInteger count = navigator.navigationController.childViewControllers.count;
             if (count > 0) {
@@ -161,8 +188,12 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
     }
     
     [self.navigationController dismissViewControllerAnimated:animated completion:^{
-        [weakSelf.bridgeManager unregisterNavigator:weakSelf];
+        
     }];
+}
+
+- (UIViewController *)topViewController {
+    return self.navigationController.topViewController;
 }
 
 #pragma mark - private methods

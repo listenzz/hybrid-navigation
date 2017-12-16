@@ -73,13 +73,15 @@ RCT_EXPORT_METHOD(popToRoot:(NSString *)navId sceneId:(NSString *)sceneId animat
 
 RCT_EXPORT_METHOD(isRoot:(NSString *)navId sceneId:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     HBDNavigator *navigator = [self navigatorForNavId:navId];
-    NSArray *children = navigator.navigationController.childViewControllers;
-    if (children.count > 0) {
-        HBDReactViewController *vc = children[0];
-        if ([vc.sceneId isEqualToString:sceneId]) {
-            resolve(@YES);
-        } else {
-            resolve(@NO);
+    if (navigator) {
+        NSArray *children = navigator.navigationController.childViewControllers;
+        if (children.count > 0) {
+            HBDReactViewController *vc = children[0];
+            if ([vc.sceneId isEqualToString:sceneId]) {
+                resolve(@YES);
+            } else {
+                resolve(@NO);
+            }
         }
     }
 }
@@ -110,9 +112,9 @@ RCT_EXPORT_METHOD(dismiss:(NSString *)navId sceneId:(NSString *)sceneId animated
 }
 
 - (HBDNavigator *)navigatorForNavId:(NSString *)navId {
-    HBDNavigator *navigator = [[HBDReactBridgeManager instance] navigatorForNavId:navId];
+    HBDNavigator *navigator = [HBDNavigator navigatorForId:navId];
     if (!navigator) {
-        RCTLogWarn(@"找不到对应的 navigator，似乎哪个地方出错了");
+        NSLog(@"找不到对应的 navigator，似乎哪个地方出错了");
     }
     return navigator;
 }

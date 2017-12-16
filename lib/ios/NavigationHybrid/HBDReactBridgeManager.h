@@ -44,12 +44,4 @@
 
 - (void)endRegisterReactModule;
 
-- (void)registerNavigator:(HBDNavigator *)navigator;
-
-- (void)unregisterNavigator:(HBDNavigator *)navigator;
-    
-- (void)clearNavigators;
-
-- (HBDNavigator *)navigatorForNavId:(NSString *)navId;
-
 @end

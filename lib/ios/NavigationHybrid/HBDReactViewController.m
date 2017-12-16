@@ -38,7 +38,7 @@
         [immediateProps setObject:self.sceneId forKey:@"sceneId"];
         _props = [immediateProps copy];
         
-        NSMutableDictionary *immediateOptions = [[self.navigator.bridgeManager reactModuleOptionsForKey:moduleName] mutableCopy];
+        NSMutableDictionary *immediateOptions = [[[HBDReactBridgeManager instance] reactModuleOptionsForKey:moduleName] mutableCopy];
         for (NSString *key in [options allKeys]) {
             [immediateOptions setObject:[options objectForKey:key] forKey:key];
         }
@@ -50,7 +50,7 @@
 }
 
 - (void)loadView {
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:self.navigator.bridgeManager.bridge moduleName:self.moduleName initialProperties:self.props];
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager instance].bridge moduleName:self.moduleName initialProperties:self.props];
     self.view = rootView;
 }
 
@@ -88,7 +88,7 @@
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
-    RCTEventEmitter *emitter = [self.navigator.bridgeManager.bridge moduleForName:@"NavigationHybrid"];
+    RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
     [emitter sendEventWithName:ON_COMPONENT_RESULT_EVENT body:@{@"requestCode": @(requestCode),
                                                                 @"resultCode": @(resultCode),
                                                                 @"data": data ?: [NSNull null],

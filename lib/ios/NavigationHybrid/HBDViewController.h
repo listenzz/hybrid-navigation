@@ -13,7 +13,7 @@
 @interface HBDViewController : UIViewController
 
 @property(nonatomic, copy, readonly) NSString *sceneId;
-@property(nonatomic, weak, readonly) HBDNavigator *navigator;
+@property(nonatomic, strong, readonly) HBDNavigator *navigator;
 
 @property(nonatomic, copy, readonly) NSDictionary *props;
 @property(nonatomic, copy, readonly) NSDictionary *options;
