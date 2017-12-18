@@ -28,7 +28,13 @@
 		"run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
 		"test": "jest"
 	},
+	"peerDependencies": {
+		"react": "*",
+		"react-native": "*"
+	},
 	"devDependencies": {
+		"react": "16.0.0",
+		"react-native": "0.50.3",
 		"babel-jest": "21.2.0",
 		"babel-preset-react-native": "4.0.0",
 		"jest": "21.2.1",
