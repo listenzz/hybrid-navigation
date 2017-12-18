@@ -44,8 +44,6 @@ public class Garden {
 
     private static final String TAG = "ReactNative";
     private static int INVALID_COLOR = Integer.MAX_VALUE;
-    private static int TOP_BAR_BACKGROUND_COLOR_LIGHT_CONTENT_DEFAULT = Color.parseColor("#414449");
-    private static int TOP_BAR_TINT_COLOR_DARK_CONTENT_DEFAULT = Color.parseColor("#666666");
 
     private static String topBarStyle = TOP_BAR_STYLE_LIGHT_CONTENT;
     private static int statusBarColor = INVALID_COLOR;
@@ -76,36 +74,35 @@ public class Garden {
         statusBarColor = color;
     }
 
-    public static int getStatusBarColor() {
+    public static int getStatusBarColor(Context context) {
         if (statusBarColor != INVALID_COLOR) {
             return statusBarColor;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getTopBarBackgroundColor();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            TypedValue typedValue = new TypedValue();
+            context.getTheme().resolveAttribute(android.R.attr.statusBarColor, typedValue, true);
+            statusBarColor = typedValue.data;
+            return statusBarColor;
         }
 
-        if (topBarStyle.equals(TOP_BAR_STYLE_LIGHT_CONTENT)) {
-            return getTopBarBackgroundColor();
-        } else {
-            return Color.BLACK;
-        }
+        return Color.BLACK;
     }
 
     public static void setTopBarBackgroundColor(int color) {
         topBarBackgroundColor = color;
     }
 
-    public static int getTopBarBackgroundColor() {
+    public static int getTopBarBackgroundColor(Context context) {
         if (topBarBackgroundColor != INVALID_COLOR) {
             return topBarBackgroundColor;
         }
 
-        if (topBarStyle.equals(TOP_BAR_STYLE_LIGHT_CONTENT)) {
-            return TOP_BAR_BACKGROUND_COLOR_LIGHT_CONTENT_DEFAULT;
-        } else {
-            return Color.WHITE;
-        }
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        topBarBackgroundColor = typedValue.data;
+
+        return topBarBackgroundColor;
     }
 
     public static void setTopBarTintColor(int color) {
@@ -120,7 +117,7 @@ public class Garden {
         if (topBarStyle.equals(TOP_BAR_STYLE_LIGHT_CONTENT)) {
             return Color.WHITE;
         } else {
-            return TOP_BAR_TINT_COLOR_DARK_CONTENT_DEFAULT;
+            return Color.BLACK;
         }
     }
 
@@ -132,6 +129,7 @@ public class Garden {
         if (titleTextColor != INVALID_COLOR) {
             return titleTextColor;
         }
+
         return getTopBarTintColor();
     }
 
@@ -180,21 +178,19 @@ public class Garden {
         this.fragment = fragment;
     }
 
-
     public void setTopBarStyle() {
         Toolbar toolbar = fragment.topBar.getToolbar();
-        toolbar.setBackgroundColor(Garden.getTopBarBackgroundColor());
+        toolbar.setBackgroundColor(Garden.getTopBarBackgroundColor(fragment.getContext()));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = fragment.getActivity().getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Garden.getStatusBarColor());
+            window.setStatusBarColor(Garden.getStatusBarColor(fragment.getContext()));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Garden.getTopBarStyle().equals(Garden.TOP_BAR_STYLE_DARK_CONTENT)) {
                     window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
                 }
             }
         }
-
     }
 
     public void setTitle(String title) {

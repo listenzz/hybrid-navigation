@@ -7,7 +7,6 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.navigationhybrid.Garden;
 import com.navigationhybrid.NavigationHybridPackage;
 import com.navigationhybrid.ReactBridgeManager;
 
@@ -50,7 +49,7 @@ public class MainApplication extends Application implements ReactApplication{
         super.onCreate();
         SoLoader.init(this, false);
 
-        //Garden.setTopBarStyle(Garden.TOP_BAR_STYLE_DARK_CONTENT);
+        // Garden.setTopBarStyle(Garden.TOP_BAR_STYLE_DARK_CONTENT);
         // Garden.setStatusBarColor(Color.parseColor("#414449"));
         // Garden.setTopBarBackgroundColor(Color.parseColor("#414449"));
 
