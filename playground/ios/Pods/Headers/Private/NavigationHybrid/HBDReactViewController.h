@@ -1,1 +1,1 @@
-../../../../../../lib/ios/NavigationHybrid/HBDReactViewController.h
+../../../../../../ios/NavigationHybrid/HBDReactViewController.h

@@ -1,1 +1,1 @@
-../../../../../../lib/ios/NavigationHybrid/HBDReactBridgeManager.h
+../../../../../../ios/NavigationHybrid/HBDReactBridgeManager.h

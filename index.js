@@ -1,6 +1,6 @@
-import Navigator from './lib/js/Navigator';
-import ReactRegistry from './lib/js/ReactRegistry';
-import { RESULT_OK, RESULT_CANCEL } from './lib/js/Navigator';
+import Navigator from './js/Navigator';
+import ReactRegistry from './js/ReactRegistry';
+import { RESULT_OK, RESULT_CANCEL } from './js/Navigator';
 
 export {
     Navigator,

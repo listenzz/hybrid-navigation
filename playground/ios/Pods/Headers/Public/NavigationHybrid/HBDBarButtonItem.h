@@ -1,1 +1,1 @@
-../../../../../../lib/ios/NavigationHybrid/HBDBarButtonItem.h
+../../../../../../ios/NavigationHybrid/HBDBarButtonItem.h

@@ -1,0 +1,333 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		910362F11FE931E000F4DA8E /* HBDGarden.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362DE1FE931DF00F4DA8E /* HBDGarden.m */; };
+		910362F21FE931E000F4DA8E /* HBDGardenModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362DF1FE931DF00F4DA8E /* HBDGardenModule.m */; };
+		910362F31FE931E000F4DA8E /* HBDBarButtonItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362E01FE931DF00F4DA8E /* HBDBarButtonItem.m */; };
+		910362F41FE931E000F4DA8E /* HBDNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362E11FE931DF00F4DA8E /* HBDNavigationController.m */; };
+		910362F51FE931E000F4DA8E /* HBDReactBridgeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362E41FE931DF00F4DA8E /* HBDReactBridgeManager.m */; };
+		910362F61FE931E000F4DA8E /* HBDNavigatorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362E91FE931DF00F4DA8E /* HBDNavigatorModule.m */; };
+		910362F71FE931E000F4DA8E /* HBDNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362EA1FE931DF00F4DA8E /* HBDNavigator.m */; };
+		910362F81FE931E000F4DA8E /* HBDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362EE1FE931DF00F4DA8E /* HBDViewController.m */; };
+		910362F91FE931E000F4DA8E /* HBDReactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362EF1FE931E000F4DA8E /* HBDReactViewController.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		910362D01FE9318600F4DA8E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		910362D21FE9318600F4DA8E /* libNavigationHybrid.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNavigationHybrid.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		910362DE1FE931DF00F4DA8E /* HBDGarden.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDGarden.m; sourceTree = "<group>"; };
+		910362DF1FE931DF00F4DA8E /* HBDGardenModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDGardenModule.m; sourceTree = "<group>"; };
+		910362E01FE931DF00F4DA8E /* HBDBarButtonItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDBarButtonItem.m; sourceTree = "<group>"; };
+		910362E11FE931DF00F4DA8E /* HBDNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDNavigationController.m; sourceTree = "<group>"; };
+		910362E21FE931DF00F4DA8E /* HBDReactBridgeManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDReactBridgeManager.h; sourceTree = "<group>"; };
+		910362E31FE931DF00F4DA8E /* HBDGardenModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDGardenModule.h; sourceTree = "<group>"; };
+		910362E41FE931DF00F4DA8E /* HBDReactBridgeManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDReactBridgeManager.m; sourceTree = "<group>"; };
+		910362E51FE931DF00F4DA8E /* HBDReactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDReactViewController.h; sourceTree = "<group>"; };
+		910362E61FE931DF00F4DA8E /* HBDGarden.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDGarden.h; sourceTree = "<group>"; };
+		910362E71FE931DF00F4DA8E /* HBDNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDNavigationController.h; sourceTree = "<group>"; };
+		910362E81FE931DF00F4DA8E /* NavigationHybrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationHybrid.h; sourceTree = "<group>"; };
+		910362E91FE931DF00F4DA8E /* HBDNavigatorModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDNavigatorModule.m; sourceTree = "<group>"; };
+		910362EA1FE931DF00F4DA8E /* HBDNavigator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDNavigator.m; sourceTree = "<group>"; };
+		910362EB1FE931DF00F4DA8E /* HBDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDViewController.h; sourceTree = "<group>"; };
+		910362EC1FE931DF00F4DA8E /* HBDNavigatorModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDNavigatorModule.h; sourceTree = "<group>"; };
+		910362ED1FE931DF00F4DA8E /* HBDBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDBarButtonItem.h; sourceTree = "<group>"; };
+		910362EE1FE931DF00F4DA8E /* HBDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDViewController.m; sourceTree = "<group>"; };
+		910362EF1FE931E000F4DA8E /* HBDReactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDReactViewController.m; sourceTree = "<group>"; };
+		910362F01FE931E000F4DA8E /* HBDNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDNavigator.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		910362CF1FE9318600F4DA8E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		910362C91FE9318600F4DA8E = {
+			isa = PBXGroup;
+			children = (
+				910362D41FE9318600F4DA8E /* NavigationHybrid */,
+				910362D31FE9318600F4DA8E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		910362D31FE9318600F4DA8E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				910362D21FE9318600F4DA8E /* libNavigationHybrid.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		910362D41FE9318600F4DA8E /* NavigationHybrid */ = {
+			isa = PBXGroup;
+			children = (
+				910362ED1FE931DF00F4DA8E /* HBDBarButtonItem.h */,
+				910362E01FE931DF00F4DA8E /* HBDBarButtonItem.m */,
+				910362E61FE931DF00F4DA8E /* HBDGarden.h */,
+				910362DE1FE931DF00F4DA8E /* HBDGarden.m */,
+				910362E31FE931DF00F4DA8E /* HBDGardenModule.h */,
+				910362DF1FE931DF00F4DA8E /* HBDGardenModule.m */,
+				910362E71FE931DF00F4DA8E /* HBDNavigationController.h */,
+				910362E11FE931DF00F4DA8E /* HBDNavigationController.m */,
+				910362F01FE931E000F4DA8E /* HBDNavigator.h */,
+				910362EA1FE931DF00F4DA8E /* HBDNavigator.m */,
+				910362EC1FE931DF00F4DA8E /* HBDNavigatorModule.h */,
+				910362E91FE931DF00F4DA8E /* HBDNavigatorModule.m */,
+				910362E21FE931DF00F4DA8E /* HBDReactBridgeManager.h */,
+				910362E41FE931DF00F4DA8E /* HBDReactBridgeManager.m */,
+				910362E51FE931DF00F4DA8E /* HBDReactViewController.h */,
+				910362EF1FE931E000F4DA8E /* HBDReactViewController.m */,
+				910362EB1FE931DF00F4DA8E /* HBDViewController.h */,
+				910362EE1FE931DF00F4DA8E /* HBDViewController.m */,
+				910362E81FE931DF00F4DA8E /* NavigationHybrid.h */,
+			);
+			path = NavigationHybrid;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		910362D11FE9318600F4DA8E /* NavigationHybrid */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 910362DB1FE9318600F4DA8E /* Build configuration list for PBXNativeTarget "NavigationHybrid" */;
+			buildPhases = (
+				910362CE1FE9318600F4DA8E /* Sources */,
+				910362CF1FE9318600F4DA8E /* Frameworks */,
+				910362D01FE9318600F4DA8E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NavigationHybrid;
+			productName = NavigationHybrid;
+			productReference = 910362D21FE9318600F4DA8E /* libNavigationHybrid.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		910362CA1FE9318600F4DA8E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = Listen;
+				TargetAttributes = {
+					910362D11FE9318600F4DA8E = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 910362CD1FE9318600F4DA8E /* Build configuration list for PBXProject "NavigationHybrid" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 910362C91FE9318600F4DA8E;
+			productRefGroup = 910362D31FE9318600F4DA8E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				910362D11FE9318600F4DA8E /* NavigationHybrid */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		910362CE1FE9318600F4DA8E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				910362F51FE931E000F4DA8E /* HBDReactBridgeManager.m in Sources */,
+				910362F11FE931E000F4DA8E /* HBDGarden.m in Sources */,
+				910362F61FE931E000F4DA8E /* HBDNavigatorModule.m in Sources */,
+				910362F91FE931E000F4DA8E /* HBDReactViewController.m in Sources */,
+				910362F81FE931E000F4DA8E /* HBDViewController.m in Sources */,
+				910362F21FE931E000F4DA8E /* HBDGardenModule.m in Sources */,
+				910362F41FE931E000F4DA8E /* HBDNavigationController.m in Sources */,
+				910362F31FE931E000F4DA8E /* HBDBarButtonItem.m in Sources */,
+				910362F71FE931E000F4DA8E /* HBDNavigator.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		910362D91FE9318600F4DA8E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		910362DA1FE9318600F4DA8E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		910362DC1FE9318600F4DA8E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9H9696K6NL;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		910362DD1FE9318600F4DA8E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9H9696K6NL;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		910362CD1FE9318600F4DA8E /* Build configuration list for PBXProject "NavigationHybrid" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				910362D91FE9318600F4DA8E /* Debug */,
+				910362DA1FE9318600F4DA8E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		910362DB1FE9318600F4DA8E /* Build configuration list for PBXNativeTarget "NavigationHybrid" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				910362DC1FE9318600F4DA8E /* Debug */,
+				910362DD1FE9318600F4DA8E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 910362CA1FE9318600F4DA8E /* Project object */;
+}

@@ -1,1 +1,1 @@
-../../../../../../lib/ios/NavigationHybrid/HBDNavigatorModule.h
+../../../../../../ios/NavigationHybrid/HBDNavigatorModule.h

@@ -1,1 +1,1 @@
-../../../../../../lib/ios/NavigationHybrid/HBDGardenModule.h
+../../../../../../ios/NavigationHybrid/HBDGardenModule.h
