@@ -17,4 +17,6 @@
 
 - (void)setTitleItem:(NSDictionary *)item forController:(HBDViewController *)controller;
 
+- (void)setHidesBackButton:(BOOL)hidden forController:(HBDViewController *)controller;
+
 @end

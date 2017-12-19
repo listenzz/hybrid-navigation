@@ -65,4 +65,8 @@
     }
 }
 
+- (void)setHidesBackButton:(BOOL)hidden forController:(HBDViewController *)controller {
+    controller.navigationItem.hidesBackButton = hidden;
+}
+
 @end

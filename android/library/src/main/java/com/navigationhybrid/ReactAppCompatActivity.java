@@ -151,9 +151,12 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
             Fragment fragment = fragmentManager.findFragmentByTag(entry.getName());
             if (fragment instanceof NavigationFragment) {
                 NavigationFragment navigationFragment = (NavigationFragment) fragment;
+
                 Navigator navigator = navigationFragment.getNavigator();
                 if (navigator.canPop()) {
-                    navigator.pop();
+                    if (!navigationFragment.hidesBackButton) {
+                        navigator.pop();
+                    }
                     return;
                 } else if (navigator.canDismiss()) {
                     navigator.dismiss();

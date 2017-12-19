@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -40,6 +41,8 @@ public class NavigationFragment extends Fragment {
     protected Navigator navigator;
     protected Garden garden;
     protected TopBar topBar;
+
+    protected boolean hidesBackButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class NavigationFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, toString() + "#onViewCreated");
         if (view instanceof LinearLayout) {
@@ -96,9 +99,11 @@ public class NavigationFragment extends Fragment {
         } else {
             throw new UnsupportedOperationException("NavigationFragment 还没适配 " + view.getClass().getSimpleName());
         }
+
         if (topBar != null) {
             setupTopBar();
         }
+
     }
 
     @Override
@@ -243,7 +248,9 @@ public class NavigationFragment extends Fragment {
         if (leftBarButtonItem != null) {
             garden.setLeftBarButtonItem(leftBarButtonItem);
         } else {
-            if (!navigator.isRoot()) {
+            boolean hidesBackButton =  options.getBoolean("hidesBackButton", false);
+            this.hidesBackButton = hidesBackButton;
+            if (!navigator.isRoot() && !hidesBackButton) {
                 Toolbar toolbar = topBar.getToolbar();
                 Drawable drawable = getResources().getDrawable(R.drawable.nav_ic_arrow_back);
                 drawable.setColorFilter(Garden.getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);

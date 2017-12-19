@@ -40,8 +40,14 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     HBDGarden *garden = [[HBDGarden alloc] init];
+    
     NSDictionary *titleItem = self.options[@"titleItem"];
     [garden setTitleItem:titleItem forController:self];
+    
+    NSNumber *hidden = self.options[@"hidesBackButton"];
+    if (hidden) {
+        [garden setHidesBackButton:[hidden boolValue] forController:self];
+    }
     
     NSDictionary *rightBarButtonItem = self.options[@"rightBarButtonItem"];
     [garden setRightBarButtonItem:rightBarButtonItem forController:self];
