@@ -108,12 +108,8 @@ export default ReactRegistry = {
 
         // build static options
         let options = {};
-        if (RealComponent.titleItem) {
-            options.titleItem = RealComponent.titleItem;
-        }
-
-        if (RealComponent.rightBarButtonItem) {
-            options.rightBarButtonItem = RealComponent.rightBarButtonItem;
+        if (RealComponent.navigationItem) {
+            options = RealComponent.navigationItem;
         }
 
         console.debug('register component:' + appKey + " options:" + JSON.stringify(options));

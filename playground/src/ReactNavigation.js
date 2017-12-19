@@ -20,8 +20,10 @@ const REQUEST_CODE = 1;
 
 export default class ReactNavigation extends Component {
 
-	static titleItem = {
-		title: 'RN navigation',
+	static navigationItem = {
+		titleItem: {
+			title: 'RN navigation',
+		}
 	}
 
 	constructor(props){

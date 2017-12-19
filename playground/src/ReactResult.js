@@ -20,14 +20,17 @@ import { RESULT_OK } from 'react-native-navigation-hybrid'
 
 export default class ReactResult extends Component {
 
-	static titleItem = {
-		title: 'RN result',
-	}
+	static navigationItem = {
+		hidesBackButton: true,
+		titleItem: {
+			title: 'RN result',
+		},
 
-	static rightBarButtonItem = {
-		title: '点我',
-		icon: Image.resolveAssetSource(require('./ic_settings.png')),
-		action: 'somthing happen',
+		rightBarButtonItem: {
+			title: '点我',
+			icon: Image.resolveAssetSource(require('./ic_settings.png')),
+			action: 'somthing happen',
+		}
 	}
 
 	constructor(props){
