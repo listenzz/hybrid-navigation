@@ -32,13 +32,12 @@ export default ReactRegistry = {
                 klass.apply(instance, arguments);
 
                 let events = [];
-                // 绑定监听事件
+        
                 const realComponentWillMount = instance.componentWillMount;
                 instance.componentWillMount = function() {
                     if (realComponentWillMount) {
                         realComponentWillMount.apply(instance);
                     }
-
                     let event = EventEmitter.addListener('ON_COMPONENT_RESULT', function(event){                             
                         if(instance.props.sceneId === event.sceneId) {
                             if(instance.onComponentResult){
@@ -65,6 +64,15 @@ export default ReactRegistry = {
                     events.push(event);
                 }
 
+                // 绑定监听事件
+                const realComponentDidMount = instance.componentDidMount;
+                instance.componentDidMount = function() {
+                    if(realComponentDidMount) {
+                        realComponentDidMount.apply(instance);
+                    }
+                    instance.props.navigator.signalFirstRenderComplete();
+                }
+
                 // 解绑监听事件
                 const realComponentWillUnmount = instance.componentWillUnmount;
                 instance.componentWillUnmount = function() {
@@ -74,13 +82,6 @@ export default ReactRegistry = {
                     events.forEach(function(event){
                         event.remove();
                     })
-                }
-
-                const realComponentDidMount = instance.componentDidMount;
-                instance.componentDidMount = function() {
-                    if(realComponentDidMount) {
-                        realComponentDidMount.apply(instance);
-                    }
                 }
 
                 return instance;
@@ -93,10 +94,6 @@ export default ReactRegistry = {
                 super(props);
                 this.navigator = new Navigator(props.navId, props.sceneId);
                 this.garden = new Garden(props.navId, props.sceneId);
-            }
-
-            componentDidMount() {
-                this.navigator.signalFirstRenderComplete();
             }
 
             render() {

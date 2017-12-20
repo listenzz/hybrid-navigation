@@ -125,5 +125,4 @@ public class ReactNavigationFragment extends NavigationFragment {
         }
     }
 
-
 }

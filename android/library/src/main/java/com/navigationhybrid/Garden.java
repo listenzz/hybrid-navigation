@@ -202,7 +202,7 @@ public class Garden {
         titleView.setTextColor(Garden.getTitleTextColor());
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Garden.getTitleTextSizeDp());
         titleView.setText(title);
-        titleView.getPaint().setFakeBoldText(true); // 粗体
+        //titleView.getPaint().setFakeBoldText(true); // 粗体
     }
 
     public void setTitleItem(Bundle titleItem) {
