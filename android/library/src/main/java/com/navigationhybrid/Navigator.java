@@ -6,6 +6,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -438,6 +439,10 @@ public class Navigator implements LifecycleObserver {
 
     void dismissTask(boolean animated) {
         if (!canDismiss()) {
+            NavigationFragment fragment = getRootFragment();
+            if (fragment.getActivity() != null ) {
+                ActivityCompat.finishAfterTransition(fragment.getActivity());
+            }
             return;
         }
 
