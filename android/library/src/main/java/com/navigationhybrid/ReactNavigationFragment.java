@@ -1,7 +1,6 @@
 package com.navigationhybrid;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +22,6 @@ public class ReactNavigationFragment extends NavigationFragment {
     ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
     ReactRootView reactRootView;
     ReactNavigationFragmentViewGroup containerLayout;
-    Handler handler = new Handler();
 
     @Nullable
     @Override
@@ -69,14 +67,9 @@ public class ReactNavigationFragment extends NavigationFragment {
         if (bridgeManager.isReactModuleInRegistry()) {
             bridgeManager.addReactModuleRegistryListener(new ReactBridgeManager.ReactModuleRegistryListener() {
                 @Override
-                public void onStartRegisterReactModule() {
-
-                }
-
-                @Override
-                public void onEndRegisterReactModule() {
+                public void onReactModuleRegistryCompleted() {
                     bridgeManager.removeReactModuleRegistryListener(this);
-                    Log.w(TAG, ReactNavigationFragment.this.toString() + " onEndRegisterReactModule");
+                    Log.w(TAG, ReactNavigationFragment.this.toString() + " onReactModuleRegistryCompleted");
                     initReactNative();
                 }
             });
@@ -93,12 +86,6 @@ public class ReactNavigationFragment extends NavigationFragment {
             String moduleName = getArguments().getString(NAVIGATION_MODULE_NAME);
             Bundle initialProps = getArguments().getBundle(NAVIGATION_PROPS);
             reactRootView.startReactApplication(bridgeManager.getReactInstanceManager(), moduleName, initialProps);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startPostponedEnterTransition();
-                }
-            }, 2000);
         }
     }
 

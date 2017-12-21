@@ -6,8 +6,6 @@ import com.navigationhybrid.ReactAppCompatActivity;
 
 public class MainActivity extends ReactAppCompatActivity {
 
-    public static final String TAG = "ReactNative";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

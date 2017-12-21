@@ -2,6 +2,7 @@ package com.navigationhybrid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,10 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
 
     final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
 
+    Handler handler = new Handler();
+
+    private Runnable createMainComponentTask;
+
     protected ReactAppCompatActivity() {
         activityDelegate = new ReactAppCompatActivityDelegate(this, ReactBridgeManager.instance);
     }
@@ -39,14 +44,36 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
         activityDelegate.onCreate(savedInstanceState);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         bridgeManager.addReactModuleRegistryListener(this);
-        if (savedInstanceState == null && !isReactModuleInRegistry()) {
-            onCreateMainComponent();
+        if (savedInstanceState == null) {
+            if (isReactModuleInRegistry()) {
+                scheduleCreateMainComponent();
+            } else {
+                onCreateMainComponent();
+            }
         }
+    }
+
+    private void scheduleCreateMainComponent() {
+        createMainComponentTask = new Runnable() {
+            @Override
+            public void run() {
+                createMainComponentTask = null;
+                if (isReactModuleInRegistry()) {
+                    scheduleCreateMainComponent();
+                } else {
+                    onCreateMainComponent();
+                }
+            }
+        };
+        handler.post(createMainComponentTask);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (createMainComponentTask != null) {
+            handler.removeCallbacks(createMainComponentTask);
+        }
         bridgeManager.removeReactModuleRegistryListener(this);
         getSupportFragmentManager().removeOnBackStackChangedListener(this);
         activityDelegate.onDestroy();
@@ -82,27 +109,8 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
     }
 
     @Override
-    public void onStartRegisterReactModule() {
-        // clear stack
-        FragmentManager fragmentManager =  getSupportFragmentManager();
-        int count = fragmentManager.getBackStackEntryCount();
-        for (int i = 0; i < count; i++) {
-            FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
-            if (entry.getName() != null) {
-                Fragment fragment =  fragmentManager.findFragmentByTag(entry.getName());
-                if (fragment instanceof NavigationFragment) {
-                    NavigationFragment navigationFragment = (NavigationFragment) fragment;
-                    navigationFragment.setCurrentAnimations(PresentAnimation.None);
-                    fragmentManager.popBackStackImmediate(entry.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                    break;
-                }
-            }
-        }
-    }
-    
-    @Override
-    public void onEndRegisterReactModule() {
-        onCreateMainComponent();
+    public void onReactModuleRegistryCompleted() {
+
     }
 
     @Override
@@ -194,10 +202,8 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
         return activityDelegate.getReactNativeHost();
     }
 
-
     protected final ReactInstanceManager getReactInstanceManager() {
         return activityDelegate.getReactInstanceManager();
     }
-
-
+    
 }
