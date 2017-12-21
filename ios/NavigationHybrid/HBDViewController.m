@@ -31,7 +31,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+
     HBDGarden *garden = [[HBDGarden alloc] init];
+    
+    if ([HBDGarden isBackTitleHidden]) {
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
+    }
     
     NSDictionary *titleItem = self.options[@"titleItem"];
     [garden setTitleItem:titleItem forController:self];

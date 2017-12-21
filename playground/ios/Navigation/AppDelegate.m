@@ -26,7 +26,7 @@
     
     [HBDReactBridgeManager instance].delegate = self;
     
-    NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index.ios" fallbackResource:nil];
+    NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
     [[HBDReactBridgeManager instance] installWithJsCodeLocation:jsCodeLocation launchOptions:launchOptions];
     
     // 注册 native 模块
@@ -37,6 +37,7 @@
     UIViewController *vc = [[UIStoryboard storyboardWithName:@"LaunchScreen" bundle:[NSBundle mainBundle]] instantiateInitialViewController];
     self.window.rootViewController = vc;
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 

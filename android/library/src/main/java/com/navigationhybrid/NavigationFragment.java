@@ -1,8 +1,6 @@
 package com.navigationhybrid;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -252,9 +250,7 @@ public class NavigationFragment extends Fragment {
             this.hidesBackButton = hidesBackButton;
             if (!navigator.isRoot() && !hidesBackButton) {
                 Toolbar toolbar = topBar.getToolbar();
-                Drawable drawable = getResources().getDrawable(R.drawable.nav_ic_arrow_back);
-                drawable.setColorFilter(Garden.getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
-                toolbar.setNavigationIcon(drawable);
+                toolbar.setNavigationIcon(Garden.getBackIcon(getContext()));
                 toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {

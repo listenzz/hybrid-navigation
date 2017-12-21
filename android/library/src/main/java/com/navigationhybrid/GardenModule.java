@@ -1,12 +1,12 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -33,6 +33,115 @@ public class GardenModule extends ReactContextBaseJavaModule{
         return "GardenHybrid";
     }
 
+
+    @ReactMethod
+    public void setTopBarStyle(final String style) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Garden.setTopBarStyle(style);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setStatusBarColor(final String color) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Garden.setStatusBarColor(Color.parseColor(color));
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setHideBackTitle(boolean hidden) {
+        // only for ios
+    }
+
+    @ReactMethod
+    public void setBackIcon(final ReadableMap icon) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Garden.setBackIcon(Arguments.toBundle(icon));
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTopBarBackgroundColor(final String color) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Garden.setTopBarBackgroundColor(Color.parseColor(color));
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTopBarTintColor(final String color) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Garden.setTopBarTintColor(Color.parseColor(color));
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTitleTextColor(final String color) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Garden.setTitleTextColor(Color.parseColor(color));
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTitleTextSize(final int dp) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Garden.setTitleTextSize(dp);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTitleAlignment(final String alignment) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Garden.setTitleAlignment(alignment);
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setBarButtonItemTintColor(final String color) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Garden.setBarButtonItemTintColor(Color.parseColor(color));
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setBarButtonItemTextSize(final int dp) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Garden.setBarButtonItemTextSize(dp);
+            }
+        });
+    }
+
+
+    // -------
+
     @ReactMethod
     public void setLeftBarButtonItem(final String navId, final String sceneId, final ReadableMap item) {
         handler.post(new Runnable() {
@@ -41,6 +150,32 @@ public class GardenModule extends ReactContextBaseJavaModule{
                 ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     fragment.garden.setLeftBarButtonItem(Arguments.toBundle(item));
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setRightBarButtonItem(final String navId, final String sceneId, final ReadableMap item) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    fragment.garden.setRightBarButtonItem(Arguments.toBundle(item));
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTitleItem(final String navId, final String sceneId, final ReadableMap item) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    fragment.garden.setTitleItem(Arguments.toBundle(item));
                 }
             }
         });

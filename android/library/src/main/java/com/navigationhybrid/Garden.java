@@ -46,6 +46,7 @@ public class Garden {
     private static int INVALID_COLOR = Integer.MAX_VALUE;
 
     private static String topBarStyle = TOP_BAR_STYLE_LIGHT_CONTENT;
+    private static Drawable backIcon;
     private static int statusBarColor = INVALID_COLOR;
     private static int topBarBackgroundColor = INVALID_COLOR;
     private static int topBarTintColor = INVALID_COLOR;
@@ -119,6 +120,20 @@ public class Garden {
         } else {
             return Color.BLACK;
         }
+    }
+
+    public static void setBackIcon(Bundle icon) {
+        backIcon = createDrawable(icon);
+    }
+
+    public static Drawable getBackIcon(Context context) {
+        if (backIcon != null) {
+            return backIcon;
+        }
+        Drawable drawable = context.getResources().getDrawable(R.drawable.nav_ic_arrow_back);
+        drawable.setColorFilter(Garden.getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
+        backIcon = drawable;
+        return backIcon;
     }
 
     public static void setTitleTextColor(int color) {
@@ -302,11 +317,11 @@ public class Garden {
     // "height":24,
     // "uri":"http://10.0.2.2:8081/assets/playground/src/ic_settings@3x.png?platform=android&hash=d12cb52d785444661bacffba8115fdda",
     // "scale":3}
-    public Drawable createDrawable(Bundle icon) {
+    public static Drawable createDrawable(Bundle icon) {
         String uri = icon.getString("uri");
         Drawable drawable = null;
         ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-        Context context =  bridgeManager.getReactInstanceManager().getCurrentReactContext();
+        Context context =  bridgeManager.getReactInstanceManager().getCurrentReactContext().getApplicationContext();
 
         if (uri.startsWith("http")) {
             try {
@@ -336,7 +351,7 @@ public class Garden {
         return drawable;
     }
 
-    public int getResourceDrawableId(Context context, @Nullable String name) {
+    public static int getResourceDrawableId(Context context, @Nullable String name) {
         if (name == null || name.isEmpty()) {
             return 0;
         }

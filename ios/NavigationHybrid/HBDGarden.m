@@ -12,8 +12,69 @@
 #import "HBDBarButtonItem.h"
 #import "HBDReactBridgeManager.h"
 
-
 @implementation HBDGarden
+
+static bool backTitleHidden = NO;
+
++ (void)setHideBackTitle:(BOOL)hidden {
+    backTitleHidden = hidden;
+}
+
++ (BOOL)isBackTitleHidden {
+    return backTitleHidden;
+}
+
++ (void)setTopBarStyle:(NSString *)style {
+    if ([style isEqualToString:@"light-content"]) {
+        [[UINavigationBar appearance] setBarStyle:UIBarStyleBlack];
+    } else {
+        [[UINavigationBar appearance] setBarStyle:UIBarStyleDefault];
+    }
+}
+
++ (void)setBackIcon:(NSDictionary *)icon {
+    UIImage *backIcon = [RCTConvert UIImage:icon];
+    [[UINavigationBar appearance] setBackIndicatorTransitionMaskImage:backIcon];
+    [[UINavigationBar appearance] setBackIndicatorImage:backIcon];
+}
+
++ (void)setTopBarBackgroundColor:(NSString *)color {
+    UIColor *c = [RCTConvert UIColor:color];
+    [[UINavigationBar appearance] setBackgroundImage:[self imageWithColor:c] forBarMetrics:UIBarMetricsDefault];
+}
+
++ (UIImage*)imageWithColor:(UIColor*)color {
+    CGRect rect = CGRectMake(0.0f, 0.0f, 8.0f, 8.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage*theImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return theImage;
+}
+
++ (void)setTopBarTintColor:(NSString *)color {
+    UIColor *c = [RCTConvert UIColor:color];
+    [[UINavigationBar appearance] setTintColor:c];
+}
+
++ (void)setTitleTextColor:(NSString *)color {
+    
+}
+
++ (void)setTitleTextSize:(NSUInteger)dp {
+    
+}
+
++ (void)setBarButtonItemTintColor:(NSString *)color {
+    UIColor *c = [RCTConvert UIColor:color];
+    [[UIBarButtonItem appearance] setTintColor:c];
+}
+
++ (void)setBarButtonItemTextSize:(NSUInteger)dp {
+    
+}
 
 - (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     if (item) {
