@@ -14,18 +14,10 @@
 
 @implementation HBDViewController
 
-- (instancetype)initWithNavigator:(HBDNavigator *)navigator props:(NSDictionary *)props options:(NSDictionary *)options; {
+- (instancetype)initWithNavigator:(HBDNavigator *)navigator props:(nonnull NSDictionary *)props options:(nonnull NSDictionary *)options; {
     if (self = [super init]) {
         _navigator = navigator;
-        _sceneId = [[NSUUID UUID] UUIDString];
-        
-        if (props == nil) {
-            props = @{};
-        }
-        
-        if (options == nil) {
-            options = @{};
-        }
+        _sceneId = props[@"sceneId"];
         _props = props;
         _options = options;
     }

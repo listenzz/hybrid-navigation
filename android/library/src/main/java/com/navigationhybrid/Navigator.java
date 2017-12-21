@@ -96,10 +96,14 @@ public class Navigator implements LifecycleObserver {
     public NavigationFragment createFragment(@NonNull String moduleName, @NonNull String sceneId, Bundle props, Bundle options) {
 
         NavigationFragment fragment = null;
-
         if (reactBridgeManager.hasReactModule(moduleName)) {
             fragment = new ReactNavigationFragment();
-            options = reactBridgeManager.reactModuleOptionsForKey(moduleName);
+            Bundle staticOptions = reactBridgeManager.reactModuleOptionsForKey(moduleName);
+            if (staticOptions == null) {
+                staticOptions = new Bundle();
+
+            }
+            options = mergeBundle(staticOptions, options);
         } else {
             Class<? extends NavigationFragment> fragmentClass = reactBridgeManager.nativeModuleClassForName(moduleName);
             if (fragmentClass == null) {
@@ -133,6 +137,41 @@ public class Navigator implements LifecycleObserver {
         }
 
         return fragment;
+    }
+
+    private Bundle mergeBundle(@NonNull Bundle target, Bundle bundle) {
+        if (bundle == null) {
+           return target;
+        }
+
+        target = (Bundle) target.clone();
+
+        for (String key : bundle.keySet()) {
+            Object o = bundle.get(key);
+            if (o == null) {
+                //ignore
+            } else if (o instanceof Bundle) {
+                Bundle subBundle = (Bundle) o;
+                Bundle subTarget = target.getBundle(key);
+                if (subTarget == null) {
+                    target.putBundle(key, subBundle);
+                } else {
+                    target.putBundle(key, mergeBundle(subTarget, subBundle));
+                }
+            } else if (o instanceof String) {
+                target.putString(key, (String)o);
+            } else if (o instanceof Integer) {
+                target.putInt(key, (Integer) o);
+            } else if (o instanceof Double) {
+                target.putDouble(key, (Double) o);
+            } else if (o instanceof Boolean) {
+                target.putBoolean(key, (Boolean) o);
+            } else {
+                Log.w(TAG, "未处理的类型");
+            }
+        }
+
+        return target;
     }
 
     public void push(@NonNull final String moduleName, final Bundle props, final Bundle options, final boolean animated) {

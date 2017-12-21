@@ -20,30 +20,8 @@
 
 @implementation HBDReactViewController
 
-@synthesize props = _props;
-@synthesize options = _options;
-
 - (instancetype)initWithNavigator:(HBDNavigator *)navigator moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
     if (self = [super initWithNavigator:navigator props:props options:options]) {
-        if (props == nil) {
-            props = @{};
-        }
-        
-        if (options == nil) {
-            options = @{};
-        }
-        
-        NSMutableDictionary *immediateProps = [props mutableCopy];
-        [immediateProps setObject:self.navigator.navId forKey:@"navId"];
-        [immediateProps setObject:self.sceneId forKey:@"sceneId"];
-        _props = [immediateProps copy];
-        
-        NSMutableDictionary *immediateOptions = [[[HBDReactBridgeManager instance] reactModuleOptionsForKey:moduleName] mutableCopy];
-        for (NSString *key in [options allKeys]) {
-            [immediateOptions setObject:[options objectForKey:key] forKey:key];
-        }
-        _options = [immediateOptions copy];
-    
         _moduleName = moduleName;
     }
     return self;

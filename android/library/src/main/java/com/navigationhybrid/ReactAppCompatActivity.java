@@ -205,5 +205,5 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
     protected final ReactInstanceManager getReactInstanceManager() {
         return activityDelegate.getReactInstanceManager();
     }
-    
+
 }

@@ -23,7 +23,6 @@ export default ReactRegistry = {
 
     registerComponent(appKey, componentProvider) {
         const RealComponent = componentProvider();
-
         function hookRealComponent(klass) {
             const Traits = function () {};
             Traits.prototype = klass.prototype;
