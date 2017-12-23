@@ -90,11 +90,12 @@ public class Garden {
             return statusBarColor;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            TypedValue typedValue = new TypedValue();
-            context.getTheme().resolveAttribute(android.R.attr.statusBarColor, typedValue, true);
-            statusBarColor = typedValue.data;
-            return statusBarColor;
+        if (topBarStyle.equals(TOP_BAR_STYLE_LIGHT_CONTENT)) {
+            return getTopBarBackgroundColor(context);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return getTopBarBackgroundColor(context);
         }
 
         return Color.BLACK;
@@ -109,11 +110,11 @@ public class Garden {
             return topBarBackgroundColor;
         }
 
-        TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        topBarBackgroundColor = typedValue.data;
-
-        return topBarBackgroundColor;
+        if (topBarStyle.equals(TOP_BAR_STYLE_LIGHT_CONTENT)) {
+            return Color.BLACK;
+        } else {
+            return Color.WHITE;
+        }
     }
 
     public static void setTopBarTintColor(int color) {
@@ -350,13 +351,13 @@ public class Garden {
             Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(uri).getPath());
             drawable = new BitmapDrawable(context.getResources(), bitmap);
         } else if (uri.startsWith("font")) {
-                Uri u = Uri.parse(uri);
-                String fontFamily = u.getHost();
-                List<String> fragments = u.getPathSegments();
-                String glyph = fragments.get(0);
-                Integer fontSize = Integer.valueOf(fragments.get(1));
-                Log.w(TAG, "fontFamily: " + u.getHost() + " glyph:" + glyph + " fontSize:" + fontSize);
-                drawable = getImageForFont(fontFamily, glyph, fontSize, Color.WHITE );
+            Uri u = Uri.parse(uri);
+            String fontFamily = u.getHost();
+            List<String> fragments = u.getPathSegments();
+            String glyph = fragments.get(0);
+            Integer fontSize = Integer.valueOf(fragments.get(1));
+            Log.w(TAG, "fontFamily: " + u.getHost() + " glyph:" + glyph + " fontSize:" + fontSize);
+            drawable = getImageForFont(fontFamily, glyph, fontSize, Color.WHITE );
         } else {
             int resId = getResourceDrawableId(context, uri);
             drawable =  resId > 0 ? context.getResources().getDrawable(resId) : null;

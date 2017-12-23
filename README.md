@@ -28,6 +28,21 @@ To run on Android: `npm run run:android`
 
 make sure that you have a  simulator or device when you run andriod
 
+## 集成
+
+在 package.json 中的 dependencies 中添加
+
+```json
+"react-native-navigation-hybrid": "0.1.0"
+```
+
+### link
+
+```
+react-native link
+```
+
+
 ## 导航 
 
 ### 导航栈
@@ -219,7 +234,21 @@ options 这个参数的作用我们会在其它地方讲解。
 
 在 A 或 E 中调用 `isRoot` 会返回 `true`，其它页面返回 `false`
 
-## 装饰顶部导航栏
+## 定制顶部导航栏
+
+在 iOS 中，导航栏是指 statusBar，UINavigationBar，在 Android 中，导航栏是指 statusBar，ToolBar。
+
+一个 APP 中的风格通常是一致的，使用 `Garden` 中的静态方法，可以全局设置 APP 的主题。
+
+### 设置全局主题
+
+- setTopBarStyle
+
+如果不设置 topBarStyle ，在 iOS 中，导航栏默认是白底黑字，在 Android 中，导航栏默认是黑（蓝）底白字。
+
+这个方法一共有两个常量可选 `TOP_BAR_STYLE_LIGHT_CONTENT` 和 `TOP_BAR_STYLE_DARK_CONTENT`。
+
+
 
 
 
