@@ -2,21 +2,22 @@ package com.navigationhybrid.view;
 
 import android.content.Context;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import com.facebook.react.views.view.ColorUtil;
 import com.navigationhybrid.R;
 
 /**
  * Created by Listen on 2017/11/22.
  */
 
-public class TopBar extends AppBarLayout {
+public class TopBar extends Toolbar {
 
-    private Toolbar toolbar;
     private TextView titleView;
 
     public TopBar(Context context) {
@@ -30,20 +31,9 @@ public class TopBar extends AppBarLayout {
     }
 
     private void init(Context context) {
-        toolbar = new Toolbar(context);
-        TypedValue typedValue = new TypedValue();
-        int height = 0;
-        if (context.getTheme().resolveAttribute(R.attr.actionBarSize, typedValue, true)) {
-            height = (int) TypedValue.complexToDimension(typedValue.data, context.getResources().getDisplayMetrics());
-        }
-        addView(toolbar, LayoutParams.MATCH_PARENT, height);
         titleView = new TextView(context);
         Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER_VERTICAL | Gravity.LEFT);
-        toolbar.addView(titleView, layoutParams);
-    }
-
-    public Toolbar getToolbar() {
-        return toolbar;
+        addView(titleView, layoutParams);
     }
 
     public TextView getTitleView() {

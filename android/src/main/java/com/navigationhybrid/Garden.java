@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -205,8 +206,7 @@ public class Garden {
     }
 
     public void setTopBarStyle() {
-        Toolbar toolbar = fragment.topBar.getToolbar();
-        toolbar.setBackgroundColor(Garden.getTopBarBackgroundColor(fragment.getContext()));
+        fragment.toolBar.setBackgroundColor(Garden.getTopBarBackgroundColor(fragment.getContext()));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = fragment.getActivity().getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -221,9 +221,9 @@ public class Garden {
 
     public void setTitle(String title) {
         if (fragment.getView() == null) return;
-        TextView titleView = fragment.topBar.getTitleView();
+        TextView titleView = fragment.toolBar.getTitleView();
         if (Garden.getTitleAlignment().equals("center")) { // default is 'left'
-            fragment.topBar.setTitleViewAlignment("center");
+            fragment.toolBar.setTitleViewAlignment("center");
         }
         titleView.setTextColor(Garden.getTitleTextColor());
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Garden.getTitleTextSizeDp());
@@ -249,19 +249,19 @@ public class Garden {
             String uri = icon.getString("uri");
             if (uri != null) {
                 Drawable drawable = createDrawable(icon);
-                fragment.topBar.getToolbar().setNavigationIcon(drawable);
+                fragment.toolBar.setNavigationIcon(drawable);
             }
         } else if (title != null) {
             TextDrawable textDrawable = new TextDrawable(fragment.getContext());
             textDrawable.setTextColor(Garden.getBarButtonItemTintColor());
             textDrawable.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Garden.getBarButtonItemTextSizeDp());
             textDrawable.setText(title);
-            fragment.topBar.getToolbar().setNavigationIcon(textDrawable);
+            fragment.toolBar.setNavigationIcon(textDrawable);
         }
 
         final String action = leftBarButtonItem.getString("action");
         if (action != null) {
-            fragment.topBar.getToolbar().setNavigationOnClickListener(new View.OnClickListener() {
+            fragment.toolBar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
@@ -279,7 +279,7 @@ public class Garden {
         if (fragment.getView() == null) return;
         if (rightBarButtonItem != null) {
             Log.d(TAG, rightBarButtonItem.toString());
-            Toolbar toolbar = fragment.topBar.getToolbar();
+            Toolbar toolbar = fragment.toolBar;
 
             Menu menu = toolbar.getMenu();
             menu.clear();

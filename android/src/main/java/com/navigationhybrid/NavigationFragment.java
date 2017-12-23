@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -38,7 +38,7 @@ public class NavigationFragment extends Fragment {
 
     protected Navigator navigator;
     protected Garden garden;
-    protected TopBar topBar;
+    protected TopBar toolBar;
 
     protected boolean hidesBackButton;
 
@@ -84,21 +84,26 @@ public class NavigationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, toString() + "#onViewCreated");
+        TypedValue typedValue = new TypedValue();
+        int height = 0;
+        if (getContext().getTheme().resolveAttribute(R.attr.actionBarSize, typedValue, true)) {
+            height = (int) TypedValue.complexToDimension(typedValue.data, getContext().getResources().getDisplayMetrics());
+        }
         if (view instanceof LinearLayout) {
             LinearLayout linearLayout = (LinearLayout) view;
             TopBar topBar = new TopBar(getContext());
-            this.topBar = topBar;
-            linearLayout.addView(topBar, 0, new LinearLayout.LayoutParams(-1, -2));
+            this.toolBar = topBar;
+            linearLayout.addView(topBar, 0, new LinearLayout.LayoutParams(-1, height));
         } else if (view instanceof FrameLayout) {
             FrameLayout frameLayout = (FrameLayout) view;
             TopBar topBar = new TopBar(getContext());
-            this.topBar = topBar;
-            frameLayout.addView(topBar,  new FrameLayout.LayoutParams(-1, -2));
+            this.toolBar = topBar;
+            frameLayout.addView(topBar,  new FrameLayout.LayoutParams(-1, height));
         } else {
             throw new UnsupportedOperationException("NavigationFragment 还没适配 " + view.getClass().getSimpleName());
         }
 
-        if (topBar != null) {
+        if (toolBar != null) {
             setupTopBar();
         }
 
@@ -107,7 +112,7 @@ public class NavigationFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        topBar = null;
+        toolBar = null;
         Log.d(TAG, toString() + "#onDestroyView");
     }
 
@@ -249,9 +254,8 @@ public class NavigationFragment extends Fragment {
             boolean hidesBackButton =  options.getBoolean("hidesBackButton", false);
             this.hidesBackButton = hidesBackButton;
             if (!navigator.isRoot() && !hidesBackButton) {
-                Toolbar toolbar = topBar.getToolbar();
-                toolbar.setNavigationIcon(Garden.getBackIcon(getContext()));
-                toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                toolBar.setNavigationIcon(Garden.getBackIcon(getContext()));
+                toolBar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         navigator.pop();

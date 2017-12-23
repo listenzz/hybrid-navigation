@@ -6,7 +6,7 @@ import ReactNavigation from './src/ReactNavigation';
 import ReactResult from './src/ReactResult';
 
 //Garden.setTopBarStyle(TOP_BAR_STYLE_LIGHT_CONTENT);
-Garden.setTopBarBackgroundColor('#778899')
+Garden.setTopBarBackgroundColor('#77889933')
 
 ReactRegistry.startRegisterComponent();
 
