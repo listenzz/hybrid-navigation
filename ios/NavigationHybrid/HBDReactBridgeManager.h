@@ -24,7 +24,7 @@
 
 + (instancetype)instance;
 
-- (void)installWithJsCodeLocation:(NSURL *)location launchOptions:(NSDictionary *)launchOptions;
+- (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions;
 
 - (void)registerNativeModule:(NSString *)moduleName forController:(Class)clazz;
 

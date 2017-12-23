@@ -27,7 +27,7 @@
     [HBDReactBridgeManager instance].delegate = self;
     
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
-    [[HBDReactBridgeManager instance] installWithJsCodeLocation:jsCodeLocation launchOptions:launchOptions];
+    [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
     
     // 注册 native 模块
     [[HBDReactBridgeManager instance] registerNativeModule:@"NativeNavigation" forController:[NativeNavigationViewController class]];

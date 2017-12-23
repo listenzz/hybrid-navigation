@@ -42,8 +42,8 @@
     return self;
 }
 
-- (void)installWithJsCodeLocation:(NSURL *)location launchOptions:(NSDictionary *)launchOptions {
-    _jsCodeLocation = location;
+- (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
+    _jsCodeLocation = jsCodeLocation;
     _bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 }
 
