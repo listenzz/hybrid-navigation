@@ -11,10 +11,10 @@ export default class Navigator {
         this.popToRoot = this.popToRoot.bind(this)
         this.isRoot = this.isRoot.bind(this)
         this.present = this.present.bind(this)
+        this.setResult = this.setResult.bind(this)
         this.dismiss = this.dismiss.bind(this)
         this.replace = this.replace.bind(this)
         this.replaceToRoot = this.replaceToRoot.bind(this)
-        this.setResult = this.setResult.bind(this)
     }
 
     push(moduleName, props={}, options={}, animated = true) {
@@ -49,12 +49,12 @@ export default class Navigator {
         Navigation.present(this.navId, this.sceneId, moduleName, requestCode, props, options, animated);
     }
 
-    dismiss(animated = true) {
-        Navigation.dismiss(this.navId, this.sceneId, animated);
-    }
-
     setResult(resultCode, data = {}) {
         Navigation.setResult(this.navId, this.sceneId, resultCode, data);
+    }
+
+    dismiss(animated = true) {
+        Navigation.dismiss(this.navId, this.sceneId, animated);
     }
 
     signalFirstRenderComplete() {

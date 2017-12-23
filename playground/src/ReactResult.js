@@ -28,7 +28,7 @@ export default class ReactResult extends Component {
 
 		rightBarButtonItem: {
 			title: '点我',
-			icon: Image.resolveAssetSource(require('./ic_settings.png')),
+			// icon: Image.resolveAssetSource(require('./ic_settings.png')),
 			action: 'somthing happen',
 		}
 	}
