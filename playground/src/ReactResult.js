@@ -27,9 +27,10 @@ export default class ReactResult extends Component {
 		},
 
 		rightBarButtonItem: {
-			title: '点我',
+			title: '按钮',
 			// icon: Image.resolveAssetSource(require('./ic_settings.png')),
 			action: 'somthing happen',
+			// enabled: false,
 		}
 	}
 
@@ -52,7 +53,11 @@ export default class ReactResult extends Component {
 		this.props.navigator.isRoot().then((isRoot) => {
 			if(isRoot) {
 				console.info('-------------------is root---------------');
-				this.props.garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
+				this.props.garden.setLeftBarButtonItem({
+					title: '取消', 
+					// icon: Image.resolveAssetSource(require('./ic_settings.png')), 
+					action: 'cancel'
+				});
 				this.setState({isRoot});
 			} else {
 				console.info('-------------------is not root---------------');

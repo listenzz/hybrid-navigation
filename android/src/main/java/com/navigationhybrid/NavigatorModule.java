@@ -15,6 +15,11 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.annotation.Nullable;
+
 
 /**
  * Created by Listen on 2017/11/20.
@@ -36,6 +41,15 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
     @Override
     public String getName() {
         return "NavigationHybrid";
+    }
+
+    @Nullable
+    @Override
+    public Map<String, Object> getConstants() {
+        HashMap<String, Object> constants = new HashMap<>();
+        constants.put("RESULT_OK", Activity.RESULT_OK);
+        constants.put("RESULT_CANCEL", Activity.RESULT_CANCELED);
+        return constants;
     }
 
     @ReactMethod

@@ -1,16 +1,10 @@
 package com.navigationhybrid.view;
 
 import android.content.Context;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.TextView;
-
-import com.facebook.react.views.view.ColorUtil;
-import com.navigationhybrid.R;
 
 /**
  * Created by Listen on 2017/11/22.
@@ -19,6 +13,12 @@ import com.navigationhybrid.R;
 public class TopBar extends Toolbar {
 
     private TextView titleView;
+
+    private TextView leftButton;
+
+    private TextView rightButton;
+
+    private int contentInset;
 
     public TopBar(Context context) {
         super(context);
@@ -31,13 +31,41 @@ public class TopBar extends Toolbar {
     }
 
     private void init(Context context) {
+        leftButton = new TextView(context);
+        leftButton.setGravity(Gravity.CENTER);
+        Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(-2, -1, Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        addView(leftButton, layoutParams);
+
+        rightButton = new TextView(context);
+        rightButton.setGravity(Gravity.CENTER);
+        layoutParams = new Toolbar.LayoutParams(-2, -1, Gravity.CENTER_VERTICAL | Gravity.RIGHT);
+        addView(rightButton, layoutParams);
+
         titleView = new TextView(context);
-        Toolbar.LayoutParams layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER_VERTICAL | Gravity.LEFT);
         addView(titleView, layoutParams);
+
+        contentInset = getContentInsetStart();
     }
 
     public TextView getTitleView() {
         return titleView;
+    }
+
+    public TextView getLeftButton() {
+        return leftButton;
+    }
+
+    public TextView getRightButton() {
+        return rightButton;
+    }
+
+    public void setContentInset(int inset) {
+        this.contentInset = inset;
+    }
+
+    public int getContentInset() {
+        return this.contentInset;
     }
 
     public void setTitleViewAlignment(String alignment) {

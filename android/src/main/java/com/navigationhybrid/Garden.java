@@ -11,7 +11,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -30,7 +29,7 @@ import android.widget.TextView;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.views.text.ReactFontManager;
-import com.navigationhybrid.view.TextDrawable;
+import com.navigationhybrid.view.TopBar;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,6 +62,8 @@ public class Garden {
     private static int topBarTintColor = INVALID_COLOR;
     private static int titleTextColor = INVALID_COLOR;
     private static int titleTextSize = 17;
+
+    private static float elevation = -1;
     private static String titleAlignment = "left"; // left, center, default is left
 
     private static int barButtonItemTintColor = INVALID_COLOR;
@@ -73,6 +74,76 @@ public class Garden {
     private static int tabBarItemTextSize;
     private static int tabBarItemBubbleColor = Color.parseColor("#FF4040");
     private static int tabBarItemBubbleBorderColor = Color.WHITE;
+
+
+    public static void setStyle(Bundle style) {
+        // topBarStyle
+        String topBarStyle = style.getString("topBarStyle");
+        if (topBarStyle != null) {
+            setTopBarStyle(topBarStyle);
+            backIcon = null;
+        }
+
+        // topBarBackgroundColor
+        String topBarBackgroundColor = style.getString("topBarBackgroundColor");
+        if (topBarBackgroundColor != null) {
+            setTopBarBackgroundColor(Color.parseColor(topBarBackgroundColor));
+        }
+
+        // statusBarColor
+        String statusBarColor = style.getString("statusBarColor");
+        if (statusBarColor != null) {
+            setStatusBarColor(Color.parseColor(statusBarColor));
+        }
+
+        // elevation
+        double elevation = style.getDouble("elevation", -1);
+        if (elevation != -1) {
+            setElevation(Float.valueOf(elevation + ""));
+        }
+
+        // backIcon
+        Bundle backIcon = style.getBundle("backIcon");
+        if (backIcon != null) {
+            setBackIcon(backIcon);
+        }
+
+        // topBarTintColor
+        String topBarTintColor = style.getString("topBarTintColor");
+        if (topBarTintColor != null) {
+            setTopBarTintColor(Color.parseColor(topBarTintColor));
+        }
+
+        // titleTextColor
+        String titleTextColor = style.getString("titleTextColor");
+        if (titleTextColor != null) {
+            setTitleTextColor(Color.parseColor(titleTextColor));
+        }
+
+        // titleTextSize
+        int titleTextSize = style.getInt("titleTextSize", -1);
+        if (titleTextSize != -1) {
+            setTitleTextSize(titleTextSize);
+        }
+
+        // titleAlignment
+        String titleAlignment = style.getString("titleAlignment");
+        if (titleAlignment != null) {
+            setTitleAlignment(titleAlignment);
+        }
+
+        // barButtonItemTintColor
+        String barButtonItemTintColor = style.getString("barButtonItemTintColor");
+        if (barButtonItemTintColor != null) {
+            setBarButtonItemTintColor(Color.parseColor(barButtonItemTintColor));
+        }
+
+        // barButtonItemTextSize
+        int barButtonItemTextSize = style.getInt("barButtonItemTextSize", -1);
+        if (barButtonItemTextSize != -1) {
+            setBarButtonItemTextSize(barButtonItemTextSize);
+        }
+    }
 
     public static void setTopBarStyle(String barStyle) {
         topBarStyle = barStyle;
@@ -118,6 +189,20 @@ public class Garden {
         }
     }
 
+    public static void setElevation(float elevation) {
+        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+        Context context =  bridgeManager.getReactInstanceManager().getCurrentReactContext().getApplicationContext();
+        Garden.elevation = elevation * context.getResources().getDisplayMetrics().density;
+    }
+
+    public static float getElevation(Context context) {
+        if (elevation != -1) {
+            return elevation;
+        }
+        elevation = 8 * context.getResources().getDisplayMetrics().density;
+        return  elevation;
+    }
+
     public static void setTopBarTintColor(int color) {
         topBarTintColor = color;
     }
@@ -130,6 +215,11 @@ public class Garden {
         if (topBarStyle.equals(TOP_BAR_STYLE_LIGHT_CONTENT)) {
             return Color.WHITE;
         } else {
+
+            if (topBarBackgroundColor == INVALID_COLOR) {
+                return Color.parseColor("#666666");
+            }
+
             return Color.BLACK;
         }
     }
@@ -207,6 +297,11 @@ public class Garden {
 
     public void setTopBarStyle() {
         fragment.toolBar.setBackgroundColor(Garden.getTopBarBackgroundColor(fragment.getContext()));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+           fragment.toolBar.setElevation(Garden.getElevation(fragment.getContext()));
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = fragment.getActivity().getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -243,82 +338,144 @@ public class Garden {
         if (leftBarButtonItem == null) { return; }
         Log.d(TAG, "leftBarButtonItem: " + leftBarButtonItem.toString());
 
+        TopBar topBar = fragment.toolBar;
+        topBar.setNavigationIcon(null);
+        topBar.setNavigationOnClickListener(null);
+        TextView leftButton = topBar.getLeftButton();
+        leftButton.setOnClickListener(null);
+        leftButton.setVisibility(View.GONE);
+
         Bundle icon = leftBarButtonItem.getBundle("icon");
         String title = leftBarButtonItem.getString("title");
+        final String action = leftBarButtonItem.getString("action");
+        boolean enabled = leftBarButtonItem.getBoolean("enabled", true);
+
         if (icon != null) {
             String uri = icon.getString("uri");
             if (uri != null) {
                 Drawable drawable = createDrawable(icon);
                 fragment.toolBar.setNavigationIcon(drawable);
             }
-        } else if (title != null) {
-            TextDrawable textDrawable = new TextDrawable(fragment.getContext());
-            textDrawable.setTextColor(Garden.getBarButtonItemTintColor());
-            textDrawable.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Garden.getBarButtonItemTextSizeDp());
-            textDrawable.setText(title);
-            fragment.toolBar.setNavigationIcon(textDrawable);
-        }
-
-        final String action = leftBarButtonItem.getString("action");
-        if (action != null) {
-            fragment.toolBar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-                    Bundle bundle = new Bundle();
-                    bundle.putString("action", action);
-                    bundle.putString(PROPS_NAV_ID, fragment.navigator.navId);
-                    bundle.putString(PROPS_SCENE_ID, fragment.navigator.sceneId);
-                    bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
-                }
-            });
-        }
-    }
-
-    public void setRightBarButtonItem(Bundle rightBarButtonItem) {
-        if (fragment.getView() == null) return;
-        if (rightBarButtonItem != null) {
-            Log.d(TAG, rightBarButtonItem.toString());
-            Toolbar toolbar = fragment.toolBar;
-
-            Menu menu = toolbar.getMenu();
-            menu.clear();
-            String title = rightBarButtonItem.getString("title");
-            MenuItem menuItem = menu.add(title);
-            menuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-            boolean enabled = rightBarButtonItem.getBoolean("enabled", true);
-            menuItem.setEnabled(enabled);
-
-            Bundle icon = rightBarButtonItem.getBundle("icon");
-            if (icon != null) {
-                String uri = icon.getString("uri");
-                if (uri != null) {
-                    Drawable drawable = createDrawable(icon);
-                    menuItem.setIcon(drawable);
-                }
-            } else if(title != null){
-                TextDrawable textDrawable = new TextDrawable(fragment.getContext());
-                textDrawable.setTextColor(Garden.getBarButtonItemTintColor());
-                textDrawable.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Garden.getBarButtonItemTextSizeDp());
-                textDrawable.setText(title);
-                menuItem.setIcon(textDrawable);
-            }
-
-            final String action = rightBarButtonItem.getString("action");
-            if (action != null) {
-                menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            if (action != null && enabled) {
+                fragment.toolBar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
+                    public void onClick(View view) {
                         ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
                         Bundle bundle = new Bundle();
                         bundle.putString("action", action);
                         bundle.putString(PROPS_NAV_ID, fragment.navigator.navId);
                         bundle.putString(PROPS_SCENE_ID, fragment.navigator.sceneId);
                         bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
-                        return true;
                     }
                 });
+            }
+
+        } else if (title != null) {
+            leftButton.setVisibility(View.VISIBLE);
+            leftButton.setText(title);
+            leftButton.setTextColor(getBarButtonItemTintColor());
+            leftButton.setTextSize(getBarButtonItemTextSizeDp());
+            leftButton.setEnabled(enabled);
+
+            int padding = topBar.getContentInsetStart();
+            leftButton.setPaddingRelative(padding, 0 , padding, 0);
+            topBar.setContentInsetsRelative(0, topBar.getContentInsetEnd());
+
+            TypedValue typedValue = new TypedValue();
+            if (fragment.getContext().getTheme().resolveAttribute(R.attr.actionBarItemBackground, typedValue, true)) {
+                leftButton.setBackgroundResource(typedValue.resourceId);
+            }
+
+            if (action != null && enabled) {
+                leftButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("action", action);
+                        bundle.putString(PROPS_NAV_ID, fragment.navigator.navId);
+                        bundle.putString(PROPS_SCENE_ID, fragment.navigator.sceneId);
+                        bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
+                    }
+                });
+            }
+        }
+
+    }
+
+    public void setRightBarButtonItem(Bundle rightBarButtonItem) {
+        if (fragment.getView() == null) return;
+        if (rightBarButtonItem != null) {
+            Log.d(TAG, rightBarButtonItem.toString());
+            TopBar topBar = fragment.toolBar;
+
+            TextView rightButton = topBar.getRightButton();
+            rightButton.setOnClickListener(null);
+            rightButton.setVisibility(View.GONE);
+            Menu menu = topBar.getMenu();
+            menu.clear();
+
+            String title = rightBarButtonItem.getString("title");
+            boolean enabled = rightBarButtonItem.getBoolean("enabled", true);
+            Bundle icon = rightBarButtonItem.getBundle("icon");
+            final String action = rightBarButtonItem.getString("action");
+
+            if (icon != null) {
+
+                MenuItem menuItem = menu.add(title);
+                menuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                menuItem.setEnabled(enabled);
+
+                String uri = icon.getString("uri");
+                if (uri != null) {
+                    Drawable drawable = createDrawable(icon);
+                    menuItem.setIcon(drawable);
+                }
+
+                if (action != null && enabled) {
+                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem menuItem) {
+                            ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+                            Bundle bundle = new Bundle();
+                            bundle.putString("action", action);
+                            bundle.putString(PROPS_NAV_ID, fragment.navigator.navId);
+                            bundle.putString(PROPS_SCENE_ID, fragment.navigator.sceneId);
+                            bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
+                            return true;
+                        }
+                    });
+                }
+            } else if(title != null){
+
+                rightButton.setVisibility(View.VISIBLE);
+                rightButton.setText(title);
+                rightButton.setTextColor(getBarButtonItemTintColor());
+                rightButton.setTextSize(getBarButtonItemTextSizeDp());
+                rightButton.setEnabled(enabled);
+
+                int padding = topBar.getContentInset();
+                rightButton.setPaddingRelative(padding, 0 , padding, 0);
+
+                TypedValue typedValue = new TypedValue();
+                if (fragment.getContext().getTheme().resolveAttribute(R.attr.actionBarItemBackground, typedValue, true)) {
+                    rightButton.setBackgroundResource(typedValue.resourceId);
+                }
+
+                if (action != null && enabled) {
+                    rightButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+                            Bundle bundle = new Bundle();
+                            bundle.putString("action", action);
+                            bundle.putString(PROPS_NAV_ID, fragment.navigator.navId);
+                            bundle.putString(PROPS_SCENE_ID, fragment.navigator.sceneId);
+                            bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
+                        }
+                    });
+                }
+
             }
         }
     }

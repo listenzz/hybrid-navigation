@@ -59,6 +59,7 @@ export default class ReactNavigation extends Component {
 	}
 
 	onComponentResult(requestCode, resultCode, data) {
+		console.info('----------resultCode:' + resultCode);
 		if(requestCode === REQUEST_CODE) {
 			if(resultCode === RESULT_OK) {
 				this.setState({text: data.text || '', error: undefined});

@@ -24,48 +24,15 @@ RCT_EXPORT_MODULE(GardenHybrid)
     return dispatch_get_main_queue();
 }
 
-RCT_EXPORT_METHOD(setTopBarStyle:(NSString *)style) {
-    [HBDGarden setTopBarStyle:style];
+- (NSDictionary *)constantsToExport {
+    return @{
+             @"DARK_CONTENT": @"dark-content",
+             @"LIGHT_CONTENT": @"lieht-content",
+             };
 }
 
-RCT_EXPORT_METHOD(setStatusBarColor:(NSString *)color) {
-    // only for android
-}
-
-RCT_EXPORT_METHOD(setHideBackTitle:(BOOL)hidden) {
-    [HBDGarden setHideBackTitle:hidden];
-}
-
-RCT_EXPORT_METHOD(setBackIcon:(NSDictionary *)icon) {
-    [HBDGarden setBackIcon:icon];
-}
-
-RCT_EXPORT_METHOD(setTopBarBackgroundColor:(NSString *)color) {
-    [HBDGarden setTopBarBackgroundColor:color];
-}
-
-RCT_EXPORT_METHOD(setTopBarTintColor:(NSString *)color) {
-    [HBDGarden setTopBarTintColor:color];
-}
-
-RCT_EXPORT_METHOD(setTitleTextColor:(NSString *)color) {
-    // TODO
-}
-
-RCT_EXPORT_METHOD(setTitleTextSize:(NSUInteger)dp) {
-    // TODO
-}
-
-RCT_EXPORT_METHOD(setTitleAlignment:(NSString *)alignment) {
-    // only for android
-}
-
-RCT_EXPORT_METHOD(setBarButtonItemTintColor:(NSString *)color) {
-    [HBDGarden setBarButtonItemTintColor:color];
-}
-
-RCT_EXPORT_METHOD(setBarButtonItemTextSize:(NSUInteger)dp) {
-    // only for android
+RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
+    [HBDGarden setStyle:style];
 }
 
 RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)navId sceneId:(NSString *)sceneId item:(NSDictionary *)item) {

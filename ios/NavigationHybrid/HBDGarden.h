@@ -11,25 +11,9 @@
 
 @interface HBDGarden : NSObject
 
-+ (void)setTopBarStyle:(NSString *)style;
-
-+ (void)setHideBackTitle:(BOOL)hidden;
++ (void)setStyle:(NSDictionary *)style;
 
 + (BOOL)isBackTitleHidden;
-
-+ (void)setBackIcon:(NSDictionary *)icon;
-
-+ (void)setTopBarBackgroundColor:(NSString *)color;
-
-+ (void)setTopBarTintColor:(NSString *)color;
-
-+ (void)setTitleTextColor:(NSString *)color;
-
-+ (void)setTitleTextSize:(NSUInteger)dp;
-
-+ (void)setBarButtonItemTintColor:(NSString *)color;
-
-+ (void)setBarButtonItemTextSize:(NSUInteger)dp;
 
 // ------
 

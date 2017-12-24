@@ -16,6 +16,77 @@
 
 static bool backTitleHidden = NO;
 
++ (void)setStyle:(NSDictionary *)style {
+    // topBarStyle
+    NSString *topBarStyle = style[@"topBarStyle"];
+    if (topBarStyle) {
+        [self setTopBarStyle:topBarStyle];
+    }
+    
+    // topBarBackgroundColor
+    NSString *topBarBackgroundColor = style[@"topBarBackgroundColor"];
+    if (topBarBackgroundColor) {
+        [self setTopBarBackgroundColor:topBarBackgroundColor];
+    }
+    
+    // hideBackTitle
+    NSNumber *hideBackTitle = style[@"hideBackTitle"];
+    if (hideBackTitle) {
+        [self setHideBackTitle:[hideBackTitle boolValue]];
+    }
+    
+    // backIcon
+    NSDictionary *backIcon = style[@"backIcon"];
+    if (backIcon) {
+        [self setBackIcon:backIcon];
+    }
+    
+    // topBarTintColor
+    NSString *topBarTintColor = style[@"topBarTintColor"];
+    if (topBarTintColor) {
+        [self setTopBarTintColor:topBarTintColor];
+    } else {
+        if ([topBarStyle isEqualToString:@"light-content"]) {
+            [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
+        } else {
+            [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
+        }
+    }
+    
+    // titleTextColor, titleTextSize
+    NSString *titleTextColor = style[@"titleTextColor"];
+    NSNumber *titleTextSize = style[@"titleTextSize"];
+    NSMutableDictionary *titleAttributes = [[NSMutableDictionary alloc] init];
+    
+    if (titleTextColor) {
+        [titleAttributes setObject:[self colorWithHexString:titleTextColor] forKey:NSForegroundColorAttributeName];
+    } else {
+        if (topBarTintColor) {
+            [titleAttributes setObject:[self colorWithHexString:topBarTintColor] forKey:NSForegroundColorAttributeName];
+        } else {
+            if ([topBarStyle isEqualToString:@"light-content"]) {
+                [titleAttributes setObject:[UIColor whiteColor] forKey:NSForegroundColorAttributeName];
+            } else {
+                [titleAttributes setObject:[UIColor blackColor] forKey:NSForegroundColorAttributeName];
+            }
+        }
+    }
+    
+    if (titleTextSize) {
+        [titleAttributes setObject:[UIFont systemFontOfSize:[titleTextSize floatValue]] forKey:NSFontAttributeName];
+    } else {
+         [titleAttributes setObject:[UIFont systemFontOfSize:17.0] forKey:NSFontAttributeName];
+    }
+    
+    [[UINavigationBar appearance] setTitleTextAttributes:titleAttributes];
+    
+    // barButtonItemTintColor, barButtonItemTextSize
+    NSString *barButtonItemTintColor = style[@"barButtonItemTintColor"];
+    if (barButtonItemTintColor) {
+        [self setBarButtonItemTintColor:barButtonItemTintColor];
+    }
+}
+
 + (void)setHideBackTitle:(BOOL)hidden {
     backTitleHidden = hidden;
 }
@@ -57,14 +128,6 @@ static bool backTitleHidden = NO;
 + (void)setTopBarTintColor:(NSString *)color {
     UIColor *c = [self colorWithHexString:color];
     [[UINavigationBar appearance] setTintColor:c];
-}
-
-+ (void)setTitleTextColor:(NSString *)color {
-    
-}
-
-+ (void)setTitleTextSize:(NSUInteger)dp {
-    
 }
 
 + (void)setBarButtonItemTintColor:(NSString *)color {
@@ -187,7 +250,7 @@ static bool backTitleHidden = NO;
             red   = 0.0f;
             green = 0.0f;
             blue  = 0.0f;
-            [NSException raise:@"Invalid color value" format: @"Color value %@ is invalid.  It should be a hex value of the form #RBG, #ARGB, #RRGGBB, or #AARRGGBB", hexString];
+            [NSException raise:@"Invalid color value" format: @"Color value %@ is invalid.  It should be a hex value of the form #RRGGBB, or #AARRGGBB", hexString];
             break;
     }
     return [UIColor colorWithRed: red green: green blue: blue alpha: alpha];
