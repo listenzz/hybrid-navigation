@@ -201,6 +201,14 @@ public class NavigationFragment extends Fragment {
         return args.getBundle(NAVIGATION_OPTIONS);
     }
 
+    protected void setOptions(Bundle options) {
+        Bundle args = getArguments();
+        if (args != null) {
+            args.putBundle(NAVIGATION_OPTIONS, options);
+            setArguments(args);
+        }
+    }
+
     public String getSceneId() {
         Bundle args = getArguments();
         Bundle props = args.getBundle(NAVIGATION_PROPS);

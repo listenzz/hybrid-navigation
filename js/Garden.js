@@ -22,7 +22,7 @@ export default class Garden {
     }
 
     setTitleItem(item) {
-        GardenModule.setTitleItem(item);
+        GardenModule.setTitleItem(this.navId, this.sceneId, item);
     }
 
 }

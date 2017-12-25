@@ -77,7 +77,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                reactBridgeManager.registerReactModule(appKey, Arguments.toBundle(options));
+                reactBridgeManager.registerReactModule(appKey, options);
             }
         });
     }

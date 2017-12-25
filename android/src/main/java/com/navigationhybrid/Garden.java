@@ -366,7 +366,6 @@ public class Garden {
     private void createBarButtonItem(TextView button, Bundle item) {
         if (fragment.getView() == null) return;
         if (item != null) {
-            Log.d(TAG, item.toString());
 
             button.setOnClickListener(null);
             button.setText(null);

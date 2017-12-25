@@ -1,9 +1,10 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +28,17 @@ import javax.annotation.Nullable;
 public class GardenModule extends ReactContextBaseJavaModule{
 
     private static final String TAG = "ReactNative";
+
+    static Bundle mergeOptions(@NonNull Bundle options, @NonNull String key, @NonNull ReadableMap readableMap) {
+        Bundle subBundle = options.getBundle(key);
+        if (subBundle == null) {
+            subBundle = new Bundle();
+        }
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(Arguments.fromBundle(subBundle));
+        writableMap.merge(readableMap);
+        return Arguments.toBundle(writableMap);
+    }
 
     private final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -58,39 +71,52 @@ public class GardenModule extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void setLeftBarButtonItem(final String navId, final String sceneId, final ReadableMap item) {
+    public void setLeftBarButtonItem(final String navId, final String sceneId, final ReadableMap readableMap) {
         handler.post(new Runnable() {
             @Override
             public void run() {
                 ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
                 if (fragment != null && fragment.getView() != null) {
-                    fragment.garden.setLeftBarButtonItem(Arguments.toBundle(item));
+                    Bundle options = fragment.getOptions();
+                    Bundle buttonItem = mergeOptions(options, "leftBarButtonItem", readableMap);
+                    options.putBundle("leftBarButtonItem", buttonItem);
+                    fragment.setOptions(options);
+                    fragment.garden.setLeftBarButtonItem(buttonItem);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void setRightBarButtonItem(final String navId, final String sceneId, final ReadableMap item) {
+    public void setRightBarButtonItem(final String navId, final String sceneId, final ReadableMap readableMap) {
         handler.post(new Runnable() {
             @Override
             public void run() {
                 ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
                 if (fragment != null && fragment.getView() != null) {
-                    fragment.garden.setRightBarButtonItem(Arguments.toBundle(item));
+                    Bundle options = fragment.getOptions();
+                    Bundle buttonItem = mergeOptions(options, "rightBarButtonItem", readableMap);
+                    options.putBundle("rightBarButtonItem", buttonItem);
+                    fragment.setOptions(options);
+                    fragment.garden.setRightBarButtonItem(buttonItem);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void setTitleItem(final String navId, final String sceneId, final ReadableMap item) {
+    public void setTitleItem(final String navId, final String sceneId, final ReadableMap readableMap) {
         handler.post(new Runnable() {
             @Override
             public void run() {
                 ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
                 if (fragment != null && fragment.getView() != null) {
-                    fragment.garden.setTitleItem(Arguments.toBundle(item));
+                    Bundle options = fragment.getOptions();
+                    Bundle titleItem = mergeOptions(options, "titleItem", readableMap);
+                    options.putBundle("titleItem", titleItem);
+                    fragment.setOptions(options);
+
+                    fragment.garden.setTitleItem(titleItem);
                 }
             }
         });

@@ -43,7 +43,7 @@
 
 - (void)reactModuleRegistryDidCompleted:(HBDReactBridgeManager *)manager {
     NSLog(@"reactModuleRegistryDidCompleted");
-    HBDNavigationController *nav = [[HBDNavigationController alloc] initWithRootModule:@"ReactNavigation" props:nil options:nil];
+    HBDNavigationController *nav = [[HBDNavigationController alloc] initWithRootModule:@"Navigation" props:nil options:nil];
     self.window.rootViewController = nav;
 }
 

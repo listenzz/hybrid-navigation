@@ -16,7 +16,7 @@
 @property(nonatomic, strong, readonly) HBDNavigator *navigator;
 
 @property(nonatomic, copy, readonly) NSDictionary *props;
-@property(nonatomic, copy, readonly) NSDictionary *options;
+@property(nonatomic, copy) NSDictionary *options;
 
 - (instancetype)initWithNavigator:(HBDNavigator *)navigator props:(NSDictionary *)props options:(NSDictionary *)options;
 

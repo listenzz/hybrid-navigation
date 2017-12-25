@@ -65,7 +65,11 @@ public class NativeNavigationFragment extends NavigationFragment {
         view.findViewById(R.id.request_from_react).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                navigator.present("ReactResult", REQUEST_CODE);
+                Bundle options = new Bundle();
+                Bundle titleItem = new Bundle();
+                titleItem.putString("title", "传过来的标题");
+                options.putBundle("titleItem", titleItem);
+                navigator.present("ReactResult", REQUEST_CODE, new Bundle(), options, true);
             }
         });
 

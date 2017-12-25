@@ -10,6 +10,7 @@
 #import "HBDViewController.h"
 #import "HBDReactViewController.h"
 #import "HBDNavigationController.h"
+#import "HBDUtils.h"
 
 #import <React/RCTBridge.h>
 #import <React/RCTLog.h>
@@ -216,7 +217,7 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
 
     if ([self.bridgeManager hasReactModuleForName:moduleName]) {
         NSDictionary *staticOptions = [[HBDReactBridgeManager instance] reactModuleOptionsForKey:moduleName];
-        options = [self mergeOptions:options withTarget:staticOptions];
+        options = [HBDUtils mergeItem:options withTarget:staticOptions];
         vc = [[HBDReactViewController alloc] initWithNavigator:self moduleName:moduleName props:props options:options];
     } else {
         Class clazz =  [self.bridgeManager nativeModuleClassFromName:moduleName];
@@ -224,27 +225,6 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
         vc = [[clazz alloc] initWithNavigator:self props:props options:options];
     }
     return vc;
-}
-
-- (NSDictionary *)mergeOptions:(NSDictionary *)options withTarget:(NSDictionary *)target {
-    NSMutableDictionary *mutableTarget = [target mutableCopy];
-    for (NSString *key in [options allKeys]) {
-        id obj = [options objectForKey:key];
-        if (obj == nil) {
-            //ignore
-        } else if ([obj isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *subTarget = [target objectForKey:key];
-            if (!subTarget) {
-                [mutableTarget setObject:obj forKey:key];
-            } else {
-                [mutableTarget setObject:[self mergeOptions:obj withTarget:subTarget] forKey:key];
-            }
-        } else {
-            [mutableTarget setObject:obj forKey:key];
-        }
-    }
-    
-    return [mutableTarget copy];
 }
 
 @end

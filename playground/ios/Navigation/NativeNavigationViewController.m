@@ -43,7 +43,10 @@ const NSInteger REQUEST_CODE = 1;
 }
 
 - (IBAction)requestFromRN:(UIButton *)sender {
-    [self.navigator presentModule:@"ReactResult" requestCode:REQUEST_CODE];
+    NSDictionary *options = @{
+                              @"titleItem" : @{ @"title": @"传过来的标题" }
+                              };
+    [self.navigator presentModule:@"ReactResult" requestCode:REQUEST_CODE props:nil options:options animated:YES];
 }
 
 - (IBAction)requestFromNative:(UIButton *)sender {

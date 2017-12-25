@@ -1,6 +1,5 @@
 package com.navigationhybrid;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.util.Log;
@@ -9,6 +8,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
@@ -30,7 +30,7 @@ public class ReactBridgeManager {
     public static ReactBridgeManager instance = new ReactBridgeManager();
 
     private HashMap<String, Class<? extends NavigationFragment>> nativeModules = new HashMap<>();
-    private HashMap<String, Bundle> reactModules = new HashMap<>();
+    private HashMap<String, ReadableMap> reactModules = new HashMap<>();
     private CopyOnWriteArrayList<ReactModuleRegistryListener> reactModuleRegistryListeners = new CopyOnWriteArrayList<>();
 
     private boolean isReactModuleInRegistry = true;
@@ -56,7 +56,7 @@ public class ReactBridgeManager {
         return nativeModules.get(moduleName);
     }
 
-    public void registerReactModule(String moduleName, Bundle options) {
+    public void registerReactModule(String moduleName, ReadableMap options) {
         reactModules.put(moduleName, options);
     }
 
@@ -92,7 +92,7 @@ public class ReactBridgeManager {
         return reactModules.containsKey(moduleName);
     }
 
-    public Bundle reactModuleOptionsForKey(String moduleName) {
+    public ReadableMap reactModuleOptionsForKey(String moduleName) {
         return reactModules.get(moduleName);
     }
 

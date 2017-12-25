@@ -28,22 +28,18 @@ export default class ReactResult extends Component {
 
 		rightBarButtonItem: {
 			title: '按钮',
-			icon: Image.resolveAssetSource(require('./ic_settings.png')),
+			// icon: Image.resolveAssetSource(require('./ic_settings.png')),
 			action: 'somthing happen',
 			// enabled: false,
 		}
-
-
-
-
 	}
 
-	constructor(props){
+	constructor(props) {
 		super(props);
 		this.pushToNative = this.pushToNative.bind(this);
 		this.pushToReact = this.pushToReact.bind(this);
-        this.sendResult = this.sendResult.bind(this);
-        this.onInputTextChanged = this.onInputTextChanged.bind(this);
+		this.sendResult = this.sendResult.bind(this);
+		this.onInputTextChanged = this.onInputTextChanged.bind(this);
 		this.replaceWithNative = this.replaceWithNative.bind(this);
 		this.replaceToRootWithNative = this.replaceToRootWithNative.bind(this);
 		this.returnHome = this.returnHome.bind(this);
@@ -56,21 +52,17 @@ export default class ReactResult extends Component {
 	componentWillMount() {
 		this.props.navigator.isRoot().then((isRoot) => {
 			if(isRoot) {
-				console.info('-------------------is root---------------');
 				this.props.garden.setLeftBarButtonItem({
 					title: '取消', 
-					icon: Image.resolveAssetSource(require('./ic_settings.png')), 
+					// icon: Image.resolveAssetSource(require('./ic_settings.png')), 
 					action: 'cancel'
 				});
 				this.setState({isRoot});
-			} else {
-				console.info('-------------------is not root---------------');
 			}
 		})
 	}
 
 	onBarButtonItemClick(action) {
-		console.info('-------------------' + action + '------------------');
 		if (action === 'cancel') {
 			this.props.navigator.dismiss();
 		}
@@ -113,53 +105,80 @@ export default class ReactResult extends Component {
 	}
 
 	sendResult() {
-        this.props.navigator.setResult(RESULT_OK, {text: this.state.text})
+    this.props.navigator.setResult(RESULT_OK, {text: this.state.text})
 		this.props.navigator.dismiss();
-    }
+  }
 
-    onInputTextChanged(text) {
-        this.setState({text: text})
-    }
+	onInputTextChanged(text) {
+		this.setState({text: text})
+	}
     
 	render() {
 		return (
 			<View style={styles.container}>
 				<Text style={styles.welcome}>
 					这是一个 React Native 页面:
-        		</Text>
+        </Text>
 
-				<TextInput style={styles.input} onChangeText={this.onInputTextChanged} value={this.state.text} 
-					placeholder={'请输入要返回的结果'} underlineColorAndroid='#00000000' textAlignVertical="center"/>
+				<TextInput style={styles.input} 
+					onChangeText={this.onInputTextChanged} 
+					value={this.state.text} 
+					placeholder={'请输入要返回的结果'} 
+					underlineColorAndroid='#00000000' 
+					textAlignVertical="center"/>
 
 				<TouchableOpacity onPress={this.sendResult} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						返回结果
-          			</Text>
+          </Text>
 				</TouchableOpacity>
+
 				<TouchableOpacity onPress={this.pushToReact} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						push 到 React Native 页面
-          			</Text>
+          </Text>
 				</TouchableOpacity>
+
 				<TouchableOpacity onPress={this.pushToNative} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						push 到 native 页面
-          			</Text>
+          </Text>
 				</TouchableOpacity>
+
 				<TouchableOpacity onPress={this.returnHome} activeOpacity={0.2} style={styles.button} disabled={this.state.isRoot}>
 					<Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
 						返回首页
-          			</Text>
+          </Text>
 				</TouchableOpacity>
 				<TouchableOpacity onPress={this.replaceWithNative} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						替换成 native 页面
-          			</Text>
+          </Text>
 				</TouchableOpacity>
 				<TouchableOpacity onPress={this.replaceToRootWithNative} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						替换成 native 页面到根部
-          			</Text>
+          </Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity onPress={() => {
+					this.props.garden.setLeftBarButtonItem({
+						icon: Image.resolveAssetSource(require('./ic_settings.png')), 
+					});
+				}} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>
+						改变按钮
+          </Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity onPress={() => {
+					this.props.garden.setTitleItem({
+						title: '改变后的标题', 
+					});
+				}} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>
+						改变标题
+          </Text>
 				</TouchableOpacity>
 			</View>
 		);

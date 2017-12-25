@@ -10,6 +10,8 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDReactViewController.h"
 #import "HBDGarden.h"
+#import "HBDUtils.h"
+
 #import <React/RCTLog.h>
 
 @interface HBDGardenModule()
@@ -17,6 +19,10 @@
 @end
 
 @implementation HBDGardenModule
+
++ (BOOL)requiresMainQueueSetup {
+    return YES;
+}
 
 RCT_EXPORT_MODULE(GardenHybrid)
 
@@ -38,18 +44,21 @@ RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
 RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)navId sceneId:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDReactViewController *vc = [self controllerForNavId:navId sceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
+    item = [self mergeItem:item key:@"leftBarButtonItem" forController:vc];
     [garden setLeftBarButtonItem:item forController:vc];
 }
 
 RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *)navId sceneId:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDReactViewController *vc = [self controllerForNavId:navId sceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
+    item = [self mergeItem:item key:@"rightBarButtonItem" forController:vc];
     [garden setRightBarButtonItem:item forController:vc];
 }
 
 RCT_EXPORT_METHOD(setTitleItem:(NSString *)navId sceneId:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDReactViewController *vc = [self controllerForNavId:navId sceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
+    item = [self mergeItem:item key:@"titleItem" forController:vc];
     [garden setTitleItem:item forController:vc];
 }
 
@@ -74,6 +83,20 @@ RCT_EXPORT_METHOD(setTitleItem:(NSString *)navId sceneId:(NSString *)sceneId ite
         NSLog(@"找不到对应的 navigator，似乎哪个地方出错了");
     }
     return navigator;
+}
+
+- (NSDictionary *)mergeItem:(NSDictionary *)item key:(NSString *)key forController:(HBDReactViewController *)vc {
+    NSDictionary *options = vc.options;
+    NSDictionary *target = options[key];
+    if (!target) {
+        target = @{};
+    }
+    target = [HBDUtils mergeItem:item withTarget:target];
+    NSMutableDictionary *mutable =  [options mutableCopy];
+    [mutable setObject:target forKey:key];
+    vc.options = [mutable copy];
+    
+    return target;
 }
 
 @end
