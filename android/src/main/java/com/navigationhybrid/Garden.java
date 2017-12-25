@@ -17,11 +17,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -336,147 +333,81 @@ public class Garden {
     public void setLeftBarButtonItem(Bundle leftBarButtonItem) {
         if (fragment.getView() == null) return;
         if (leftBarButtonItem == null) { return; }
-        Log.d(TAG, "leftBarButtonItem: " + leftBarButtonItem.toString());
 
+        Log.d(TAG, "leftBarButtonItem: " + leftBarButtonItem.toString());
         TopBar topBar = fragment.toolBar;
+        TextView leftButton = topBar.getLeftButton();
+
+        int padding = topBar.getContentInset();
+        leftButton.setPaddingRelative(padding, 0 , padding, 0);
+        topBar.setContentInsetsRelative(0, topBar.getContentInsetEnd());
+
         topBar.setNavigationIcon(null);
         topBar.setNavigationOnClickListener(null);
-        TextView leftButton = topBar.getLeftButton();
-        leftButton.setOnClickListener(null);
-        leftButton.setVisibility(View.GONE);
 
-        Bundle icon = leftBarButtonItem.getBundle("icon");
-        String title = leftBarButtonItem.getString("title");
-        final String action = leftBarButtonItem.getString("action");
-        boolean enabled = leftBarButtonItem.getBoolean("enabled", true);
-
-        if (icon != null) {
-            String uri = icon.getString("uri");
-            if (uri != null) {
-                Drawable drawable = createDrawable(icon);
-                fragment.toolBar.setNavigationIcon(drawable);
-            }
-            if (action != null && enabled) {
-                fragment.toolBar.setNavigationOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-                        Bundle bundle = new Bundle();
-                        bundle.putString("action", action);
-                        bundle.putString(PROPS_NAV_ID, fragment.navigator.navId);
-                        bundle.putString(PROPS_SCENE_ID, fragment.navigator.sceneId);
-                        bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
-                    }
-                });
-            }
-
-        } else if (title != null) {
-            leftButton.setVisibility(View.VISIBLE);
-            leftButton.setText(title);
-            leftButton.setTextColor(getBarButtonItemTintColor());
-            leftButton.setTextSize(getBarButtonItemTextSizeDp());
-            leftButton.setEnabled(enabled);
-
-            int padding = topBar.getContentInsetStart();
-            leftButton.setPaddingRelative(padding, 0 , padding, 0);
-            topBar.setContentInsetsRelative(0, topBar.getContentInsetEnd());
-
-            TypedValue typedValue = new TypedValue();
-            if (fragment.getContext().getTheme().resolveAttribute(R.attr.actionBarItemBackground, typedValue, true)) {
-                leftButton.setBackgroundResource(typedValue.resourceId);
-            }
-
-            if (action != null && enabled) {
-                leftButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-                        Bundle bundle = new Bundle();
-                        bundle.putString("action", action);
-                        bundle.putString(PROPS_NAV_ID, fragment.navigator.navId);
-                        bundle.putString(PROPS_SCENE_ID, fragment.navigator.sceneId);
-                        bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
-                    }
-                });
-            }
-        }
-
+        createBarButtonItem(leftButton, leftBarButtonItem);
     }
 
     public void setRightBarButtonItem(Bundle rightBarButtonItem) {
         if (fragment.getView() == null) return;
-        if (rightBarButtonItem != null) {
-            Log.d(TAG, rightBarButtonItem.toString());
-            TopBar topBar = fragment.toolBar;
+        if (rightBarButtonItem == null) { return; }
 
-            TextView rightButton = topBar.getRightButton();
-            rightButton.setOnClickListener(null);
-            rightButton.setVisibility(View.GONE);
-            Menu menu = topBar.getMenu();
-            menu.clear();
+        Log.d(TAG, "rightBarButtonItem: " + rightBarButtonItem.toString());
+        TopBar topBar = fragment.toolBar;
+        TextView rightButton = topBar.getRightButton();
 
-            String title = rightBarButtonItem.getString("title");
-            boolean enabled = rightBarButtonItem.getBoolean("enabled", true);
-            Bundle icon = rightBarButtonItem.getBundle("icon");
-            final String action = rightBarButtonItem.getString("action");
+        int padding = topBar.getContentInset();
+        rightButton.setPaddingRelative(padding, 0 , padding, 0);
+        topBar.setContentInsetsRelative(topBar.getContentInsetStart(), 0);
+
+        createBarButtonItem(rightButton, rightBarButtonItem);
+    }
+
+    private void createBarButtonItem(TextView button, Bundle item) {
+        if (fragment.getView() == null) return;
+        if (item != null) {
+            Log.d(TAG, item.toString());
+
+            button.setOnClickListener(null);
+            button.setText(null);
+            button.setCompoundDrawablesWithIntrinsicBounds(null, null, null,null);
+            button.setVisibility(View.VISIBLE);
+
+            String title = item.getString("title");
+            boolean enabled = item.getBoolean("enabled", true);
+            Bundle icon = item.getBundle("icon");
+            final String action = item.getString("action");
 
             if (icon != null) {
-
-                MenuItem menuItem = menu.add(title);
-                menuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
-                menuItem.setEnabled(enabled);
-
-                String uri = icon.getString("uri");
-                if (uri != null) {
-                    Drawable drawable = createDrawable(icon);
-                    menuItem.setIcon(drawable);
-                }
-
-                if (action != null && enabled) {
-                    menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-                            Bundle bundle = new Bundle();
-                            bundle.putString("action", action);
-                            bundle.putString(PROPS_NAV_ID, fragment.navigator.navId);
-                            bundle.putString(PROPS_SCENE_ID, fragment.navigator.sceneId);
-                            bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
-                            return true;
-                        }
-                    });
-                }
-            } else if(title != null){
-
-                rightButton.setVisibility(View.VISIBLE);
-                rightButton.setText(title);
-                rightButton.setTextColor(getBarButtonItemTintColor());
-                rightButton.setTextSize(getBarButtonItemTextSizeDp());
-                rightButton.setEnabled(enabled);
-
-                int padding = topBar.getContentInset();
-                rightButton.setPaddingRelative(padding, 0 , padding, 0);
-
-                TypedValue typedValue = new TypedValue();
-                if (fragment.getContext().getTheme().resolveAttribute(R.attr.actionBarItemBackground, typedValue, true)) {
-                    rightButton.setBackgroundResource(typedValue.resourceId);
-                }
-
-                if (action != null && enabled) {
-                    rightButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-                            Bundle bundle = new Bundle();
-                            bundle.putString("action", action);
-                            bundle.putString(PROPS_NAV_ID, fragment.navigator.navId);
-                            bundle.putString(PROPS_SCENE_ID, fragment.navigator.sceneId);
-                            bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
-                        }
-                    });
-                }
-
+                Drawable drawable = createDrawable(icon);
+                button.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+            } else {
+                button.setText(title);
+                button.setTextColor(getBarButtonItemTintColor());
+                button.setTextSize(getBarButtonItemTextSizeDp());
             }
+
+            button.setEnabled(enabled);
+
+            TypedValue typedValue = new TypedValue();
+            if (fragment.getContext().getTheme().resolveAttribute(R.attr.actionBarItemBackground, typedValue, true)) {
+                button.setBackgroundResource(typedValue.resourceId);
+            }
+
+            if (action != null && enabled) {
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("action", action);
+                        bundle.putString(PROPS_NAV_ID, fragment.navigator.navId);
+                        bundle.putString(PROPS_SCENE_ID, fragment.navigator.sceneId);
+                        bridgeManager.sendEvent(Navigator.ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
+                    }
+                });
+            }
+
         }
     }
 

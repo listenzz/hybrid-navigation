@@ -46,6 +46,7 @@ public class TopBar extends Toolbar {
         addView(titleView, layoutParams);
 
         contentInset = getContentInsetStart();
+        setContentInsetStartWithNavigation(getContentInsetStartWithNavigation() - contentInset);
     }
 
     public TextView getTitleView() {

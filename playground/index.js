@@ -6,7 +6,7 @@ import ReactNavigation from './src/ReactNavigation';
 import ReactResult from './src/ReactResult';
 
 Garden.setStyle({
-    // topBarStyle: 'light-content',
+     topBarStyle: 'dark-content',
     // topBarBackgroundColor: '#3F51B5',
     hideBackTitle: true,
     elevation: 8,
