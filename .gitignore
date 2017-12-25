@@ -35,7 +35,6 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
-package-lock.json
 
 # BUCK
 buck-out/
@@ -52,3 +51,10 @@ buck-out/
 */fastlane/report.xml
 */fastlane/Preview.html
 */fastlane/screenshots
+
+.vscode
+
+# Only apps should have lockfiles
+yarn.lock
+npm-shrinkwrap.json
+package-lock.json
