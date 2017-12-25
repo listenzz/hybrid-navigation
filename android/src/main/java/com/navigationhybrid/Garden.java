@@ -370,6 +370,7 @@ public class Garden {
             button.setOnClickListener(null);
             button.setText(null);
             button.setCompoundDrawablesWithIntrinsicBounds(null, null, null,null);
+            button.setAlpha(1.0f);
             button.setVisibility(View.VISIBLE);
 
             String title = item.getString("title");
@@ -377,16 +378,25 @@ public class Garden {
             Bundle icon = item.getBundle("icon");
             final String action = item.getString("action");
 
+            int color = getBarButtonItemTintColor();
+
+            if (!enabled) {
+                color = getDisableColor(color);
+                button.setAlpha(0.3f);
+            }
+            button.setEnabled(enabled);
+
             if (icon != null) {
                 Drawable drawable = createDrawable(icon);
+                if (!enabled) {
+                    drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                }
                 button.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
             } else {
                 button.setText(title);
-                button.setTextColor(getBarButtonItemTintColor());
+                button.setTextColor(color );
                 button.setTextSize(getBarButtonItemTextSizeDp());
             }
-
-            button.setEnabled(enabled);
 
             TypedValue typedValue = new TypedValue();
             if (fragment.getContext().getTheme().resolveAttribute(R.attr.actionBarItemBackground, typedValue, true)) {
@@ -408,6 +418,14 @@ public class Garden {
             }
 
         }
+    }
+
+    int getDisableColor(int color) {
+        int red = Color.red(color);
+        int blue = Color.blue(color);
+        int green = Color.green(color);
+        int gray = (red * 30 + blue * 59 + green * 11) / 100;
+        return Color.rgb( gray, gray, gray);
     }
 
     // {"__packager_asset":true,

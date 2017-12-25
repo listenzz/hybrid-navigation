@@ -291,6 +291,11 @@ static bool backTitleHidden = NO;
         barButtonItem = [[HBDBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain];
     }
     
+    NSNumber *enabled = item[@"enabled"];
+    if (enabled) {
+        barButtonItem.enabled = [enabled boolValue];
+    }
+    
     NSString *action = item[@"action"];
     NSString *navId = controller.navigator.navId;
     NSString *sceneId = controller.sceneId;

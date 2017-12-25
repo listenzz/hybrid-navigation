@@ -6,10 +6,11 @@ import ReactNavigation from './src/ReactNavigation';
 import ReactResult from './src/ReactResult';
 
 Garden.setStyle({
-     topBarStyle: 'dark-content',
-    // topBarBackgroundColor: '#3F51B5',
-    hideBackTitle: true,
-    elevation: 8,
+		topBarStyle: 'dark-content',
+		// topBarBackgroundColor: '#3F51B5',
+		// topBarTintColor: '#0000ff',
+		hideBackTitle: true,
+		elevation: 8,
 });
 
 ReactRegistry.startRegisterComponent();
