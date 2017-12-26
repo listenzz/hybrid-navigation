@@ -33,7 +33,7 @@ make sure that you have a  simulator or device when you run andriod
 在 package.json 中的 dependencies 中添加
 
 ```json
-"react-native-navigation-hybrid": "0.1.0"
+"react-native-navigation-hybrid": "0.1.12"
 ```
 
 ### link
@@ -282,7 +282,43 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 - statusBarColor
 
-	可选，仅对 Android 5.0 以上版本生效。如果不设置，默认取 `topBarBackgroundColor` 的值
+	可选，仅对 Android 5.0 以上版本生效。如果不设置，默认取 `topBarBackgroundColor` 的值。
+	
+	系统启动时，由于还没有设置 statusBarColor，状态栏颜色会出现前后不一致的情况，下图是应用还没启动好时，状态栏可能的颜色。和上面的黑白图对比，是不是有种违和感。
+	
+	![statusbar-inperfect](./screenshot/statusbar-inperfect.png) 
+		
+	为了提供一致的用户体验，你可以为 Android 5.0 以上版本配置 `andriod:statusBarColor` 样式。
+	
+	1.在 res 目录下新建一个名为 values-v21 的文件夹
+	
+	![statusbar-setup-step-1](./screenshot/statusbar-setup-step-1.png) 
+	
+	2.在 values-v21 文件夹新建一个名为 styles.xml 的资源文件
+	
+	![statusbar-setup-step-2](./screenshot/statusbar-setup-step-2.png) 
+	
+	3.双击打开 values-v21 目录中的 styles.xml 文件，把 App 主题样式 `andriod:statusBarColor` 的值设置成和你用 Garden 设置的一样。
+
+    ```javascript
+    import { Garden } from 'react-native-navigation-hybrid'
+                	
+    Garden.setStyle({
+        statusBarColor: '#ffffff'
+    })
+       
+    ```
+        
+    ```xml
+    <?xml version="1.0" encoding="utf-8"?>
+    <resources>
+        <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+            <item name="android:statusBarColor">#ffffff</item>
+        </style>
+    </resources>
+    ```
+            
+    现在，应用启动时和启动完成后的状态栏颜色是一致的了。
 
 - hideBackTitle
 
