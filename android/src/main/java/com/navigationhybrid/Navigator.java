@@ -228,6 +228,10 @@ public class Navigator implements LifecycleObserver {
         }
 
         fragmentManager.popBackStack();
+
+        if (result != null) {
+            previous.onFragmentResult(0, resultCode, result);
+        }
     }
 
     public void popTo(String sceneId) {
@@ -284,6 +288,10 @@ public class Navigator implements LifecycleObserver {
             }
             fragmentManager.popBackStack(tag, 0);
 
+            if (result != null) {
+                target.onFragmentResult(0, resultCode, result);
+            }
+
         } else {
             Log.w(TAG, "can't find the specified scene at current navigation bounds");
         }
@@ -311,6 +319,10 @@ public class Navigator implements LifecycleObserver {
         rootFragment.setCurrentAnimations(PresentAnimation.Push);
         anim = PresentAnimation.Push;
         fragmentManager.popBackStack(navId, 0);
+
+        if (result != null) {
+            rootFragment.onFragmentResult(0, resultCode, result);
+        }
     }
 
     public void replace(String moduleName) {

@@ -101,7 +101,18 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
 }
 
 - (void)popAnimated:(BOOL)animated {
+    if ([self canPop] && self.resultData) {
+        NSUInteger previous = self.navigationController.childViewControllers.count - 2;
+        HBDViewController *vc = self.navigationController.childViewControllers[previous];
+        [self sendResultTo:vc];
+    }
     [self.navigationController popViewControllerAnimated:animated];
+}
+
+- (void)sendResultTo:( HBDViewController *)vc {
+    [vc didReceiveResultCode:self.resultCode resultData:self.resultData requestCode:0];
+    self.resultCode = 0;
+    self.resultData = nil;
 }
 
 - (void)popToScene:(NSString *)sceneId animated:(BOOL)animated {
@@ -120,6 +131,9 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
     }
     
     if (targetController != nil) {
+        if (self.resultData) {
+            [self sendResultTo:targetController];
+        }
         [self.navigationController popToViewController:targetController animated:animated];
     } else {
         RCTLogWarn(@"can't find the specified scene at current navigator");
@@ -127,6 +141,10 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
 }
 
 - (void)popToRootAnimated:(BOOL)animated {
+    if ([self canPop] && self.resultData) {
+        HBDViewController *vc = self.navigationController.childViewControllers[0];
+        [self sendResultTo:vc];
+    }
     [self.navigationController popToRootViewControllerAnimated:animated];
 }
 

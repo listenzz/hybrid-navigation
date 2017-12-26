@@ -142,7 +142,7 @@ react-native link
 
 - present
 
-	present 是一种交互模式，类似于 Android 的 `startActivityForResult`，要求后面的页面返回结果给发起 present 的页面。
+	present 是一种模态交互模式，类似于 Android 的 `startActivityForResult`，要求后面的页面返回结果给发起 present 的页面。
 	
 	比如 A 页面 `present` 出 B 页面
 	
@@ -199,6 +199,8 @@ react-native link
 	```
 	
 	在 A 页面接收返回的结果（略）。
+	
+	> pop, popTo, popToRoot 也是可以返回结果给目标页面的，但是此时 `requestCode` 的值总是 0 。
 	
 - dismiss
 
@@ -488,7 +490,6 @@ class B extends Component {
 
 ```javascript
 // A.js
-
 this.props.navigator.push('B', {/*props*/}, {
     titleItem: {
         title: '来自 A 的标题'
