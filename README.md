@@ -250,10 +250,10 @@ setStyle 接受一个对象为参数，可配置字段如下：
 {
     topBarStyle: String // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
     topBarBackgroundColor: String // 顶部导航栏背景颜色
-    statusBarColor: String // 状态栏背景色，仅对 Android 21 以上版本生效
+    statusBarColor: String // 状态栏背景色，仅对 Android 5.0 以上版本生效
     hideBackTitle: Bool // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-    elevation: Number // 导航栏阴影高度， 仅对 Android 21 以上版本生效，默认值为 8 ，单位是 dp
-    shadowImage: Object // 导航栏阴影图片，仅对 iOS 和 较低版本的 Android 生效 
+    elevation: Number // 导航栏阴影高度， 仅对 Android 5.0 以上版本生效，默认值为 8dp
+    shadowImage: Object // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 
     backIcon: Object // 返回按钮图标，需要传递一个带有 uri 和其它字段的对象
     topBarTintColor: String // 顶部导航栏标题和按钮的颜色
     titleTextColor: String // 顶部导航栏标题颜色
@@ -270,7 +270,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 	可选，导航栏和状态栏前景色，在 iOS 中，默认是白底黑字，在 Android 中，默认是黑底白字。
 	
-	这个字段一共有两个常量可选： `dark-content` 和 `light-content`，在 Android-23 效果如下。
+	这个字段一共有两个常量可选： `dark-content` 和 `light-content`，在 Android 6.0 效果如下。
 	
 	![topbar-default](./screenshot/topbar-default.png)
 
@@ -282,7 +282,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 - statusBarColor
 
-	可选，仅对 Android 21 版本生效。如果不设置，默认取 `topBarBackgroundColor` 的值
+	可选，仅对 Android 5.0 以上版本生效。如果不设置，默认取 `topBarBackgroundColor` 的值
 
 - hideBackTitle
 
@@ -290,11 +290,35 @@ setStyle 接受一个对象为参数，可配置字段如下：
 	
 - elevation
 
-	可选，导航栏阴影高度，仅对 Android 21 以上版本生效，默认值为 8 ，单位是 dp
+	可选，导航栏阴影高度，仅对 Android 5.0 以上版本生效，默认值为 8dp
 	
 - shadowImage
 
-	导航栏阴影图片，暂不支持
+	可选，导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效。
+	
+    ```javascript
+    // index.js
+    	
+    import { Image } from 'react-native'
+    import { Garden } from 'react-native-navigation-hybrid'
+    	
+    Garden.setStyle({
+        shadowImage: {
+            // color 和 image 二选其一，如果选择 color ，默认生成 1 dp(pt) 高度的纯色图片
+            color: '#cccccc', 
+            // image: Image.resolveAssetSource(require('./divider.png'))
+        },
+    })
+	
+    ```
+    
+    shadowImage 会有一个默认值，如果你想去掉，可以这样设置 
+    
+    ```javascript
+    Garden.setStyle({
+        shadowImage: {},
+    })
+    ```
 
 - backIcon
 
@@ -324,7 +348,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 - titleTextSize
 
-	可选，顶部导航栏标题的字体大小，单位是 dp(pt)，默认是 17 dp(pt)。
+	可选，顶部导航栏标题的字体大小，默认是 17 dp(pt)。
 
 - titleAlignment
 
@@ -336,7 +360,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 - barButtonItemTextSize
 
-	可选，顶部导航栏按钮的字体大小，单位是 dp(pt)，默认是 15 dp(pt)
+	可选，顶部导航栏按钮的字体大小，默认是 15 dp(pt)
 
 ### 静态配置页面
 
@@ -360,7 +384,7 @@ class Screen extends Component {
             enabled: true,
         },
         	
-        rightBarButtonItem: {     // 导航栏左侧按钮
+        rightBarButtonItem: {     // 导航栏右侧按钮
             // 可配置项同 leftBarButtonItem
         }
     }

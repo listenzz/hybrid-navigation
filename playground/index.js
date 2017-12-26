@@ -9,8 +9,12 @@ Garden.setStyle({
 		topBarStyle: 'dark-content',
 		// topBarBackgroundColor: '#3F51B5',
 		// topBarTintColor: '#0000ff',
-		hideBackTitle: true,
-		elevation: 8,
+		shadowImage: {
+			color: '#dddddd',
+		 	//image: Image.resolveAssetSource(require('./src/divider.png'))
+		},
+		// hideBackTitle: true,
+		elevation: 2,
 });
 
 ReactRegistry.startRegisterComponent();

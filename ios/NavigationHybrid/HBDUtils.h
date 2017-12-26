@@ -11,4 +11,10 @@
 
 + (NSDictionary *)mergeItem:(NSDictionary *)item withTarget:(NSDictionary *)target;
 
++ (UIColor *)colorWithHexString: (NSString *) hexString;
+
++ (UIImage *)UIImage:(NSDictionary *)json;
+
++ (UIImage*)imageWithColor:(UIColor*)color;
+
 @end

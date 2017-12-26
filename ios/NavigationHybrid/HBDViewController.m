@@ -25,7 +25,7 @@
 }
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
-    NSLog(@"requestCode:%d, resultCode:%d, data:%@", requestCode, resultCode, data);
+    NSLog(@"requestCode:%ld, resultCode:%ld, data:%@", (long)requestCode, (long)resultCode, data);
 }
 
 - (void)viewDidLoad {

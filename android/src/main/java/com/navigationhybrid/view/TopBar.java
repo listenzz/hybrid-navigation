@@ -1,10 +1,15 @@
 package com.navigationhybrid.view;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.TextView;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Listen on 2017/11/22.
@@ -17,6 +22,8 @@ public class TopBar extends Toolbar {
     private TextView leftButton;
 
     private TextView rightButton;
+
+    private Drawable divider;
 
     private int contentInset;
 
@@ -47,6 +54,24 @@ public class TopBar extends Toolbar {
 
         contentInset = getContentInsetStart();
         setContentInsetStartWithNavigation(getContentInsetStartWithNavigation() - contentInset);
+
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (divider != null && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            int height = (int) getContext().getResources().getDisplayMetrics().density;
+            divider.setBounds(0, getHeight() - height, getWidth(), getHeight());
+            divider.draw(canvas);
+        }
+    }
+
+    public void setShadow(@Nullable Drawable drawable) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            divider = drawable;
+            postInvalidate();
+        }
     }
 
     public TextView getTitleView() {

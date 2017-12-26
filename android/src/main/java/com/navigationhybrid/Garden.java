@@ -2,20 +2,14 @@ package com.navigationhybrid;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.Typeface;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.TypedValue;
@@ -25,17 +19,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.views.text.ReactFontManager;
 import com.navigationhybrid.view.TopBar;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-
-import javax.annotation.Nullable;
 
 import static com.navigationhybrid.NavigationFragment.PROPS_NAV_ID;
 import static com.navigationhybrid.NavigationFragment.PROPS_SCENE_ID;
@@ -61,8 +45,11 @@ public class Garden {
     private static int titleTextSize = 17;
 
     private static float elevation = -1;
-    private static String titleAlignment = "left"; // left, center, default is left
 
+    private static Drawable shadowDrawable;
+    private static Drawable defaultShadow = new ColorDrawable(Color.parseColor("#DDDDDD"));
+
+    private static String titleAlignment = "left"; // left, center, default is left
     private static int barButtonItemTintColor = INVALID_COLOR;
     private static int barButtonItemTextSize = 15;
 
@@ -93,12 +80,35 @@ public class Garden {
             setStatusBarColor(Color.parseColor(statusBarColor));
         }
 
-        // elevation
-        double elevation = style.getDouble("elevation", -1);
-        if (elevation != -1) {
-            setElevation(Float.valueOf(elevation + ""));
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // elevation
+            double elevation = style.getDouble("elevation", -1);
+            if (elevation != -1) {
+                setElevation(Float.valueOf(elevation + ""));
+            }
+        } else {
+            // shadowDrawable
+            Bundle shadowImage = style.getBundle("shadowImage");
+            if (shadowImage == null) {
+                shadowDrawable = defaultShadow;
+            } else {
+                Bundle image = shadowImage.getBundle("image");
+                String color = shadowImage.getString("color");
 
+                if (image != null) {
+                    Drawable drawable = Utils.createDrawable(image);
+                    if (drawable instanceof BitmapDrawable) {
+                        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+                        bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
+                    }
+                    shadowDrawable = drawable;
+                } else if (color != null) {
+                    shadowDrawable = new ColorDrawable(Color.parseColor(color));
+                } else {
+                    shadowDrawable = null;
+                }
+            }
+        }
         // backIcon
         Bundle backIcon = style.getBundle("backIcon");
         if (backIcon != null) {
@@ -154,17 +164,17 @@ public class Garden {
         statusBarColor = color;
     }
 
-    public static int getStatusBarColor(Context context) {
+    public static int getStatusBarColor() {
         if (statusBarColor != INVALID_COLOR) {
             return statusBarColor;
         }
 
         if (topBarStyle.equals(TOP_BAR_STYLE_LIGHT_CONTENT)) {
-            return getTopBarBackgroundColor(context);
+            return getTopBarBackgroundColor();
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getTopBarBackgroundColor(context);
+            return getTopBarBackgroundColor();
         }
 
         return Color.BLACK;
@@ -174,7 +184,7 @@ public class Garden {
         topBarBackgroundColor = color;
     }
 
-    public static int getTopBarBackgroundColor(Context context) {
+    public static int getTopBarBackgroundColor() {
         if (topBarBackgroundColor != INVALID_COLOR) {
             return topBarBackgroundColor;
         }
@@ -222,7 +232,9 @@ public class Garden {
     }
 
     public static void setBackIcon(Bundle icon) {
-        backIcon = createDrawable(icon);
+        Drawable drawable = Utils.createDrawable(icon);
+        drawable.setColorFilter(getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
+        backIcon = drawable;
     }
 
     public static Drawable getBackIcon(Context context) {
@@ -293,16 +305,18 @@ public class Garden {
     }
 
     public void setTopBarStyle() {
-        fragment.toolBar.setBackgroundColor(Garden.getTopBarBackgroundColor(fragment.getContext()));
+        fragment.toolBar.setBackgroundColor(Garden.getTopBarBackgroundColor());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-           fragment.toolBar.setElevation(Garden.getElevation(fragment.getContext()));
+            fragment.toolBar.setElevation(Garden.getElevation(fragment.getContext()));
+        } else {
+            fragment.toolBar.setShadow(shadowDrawable);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = fragment.getActivity().getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Garden.getStatusBarColor(fragment.getContext()));
+            window.setStatusBarColor(Garden.getStatusBarColor());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (Garden.getTopBarStyle().equals(Garden.TOP_BAR_STYLE_DARK_CONTENT)) {
                     window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -381,15 +395,17 @@ public class Garden {
             int color = getBarButtonItemTintColor();
 
             if (!enabled) {
-                color = getDisableColor(color);
+                color = Utils.generateGrayColor(color);
                 button.setAlpha(0.3f);
             }
             button.setEnabled(enabled);
 
             if (icon != null) {
-                Drawable drawable = createDrawable(icon);
+                Drawable drawable = Utils.createDrawable(icon);
                 if (!enabled) {
                     drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    drawable.setColorFilter(getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
                 }
                 button.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
             } else {
@@ -420,131 +436,6 @@ public class Garden {
         }
     }
 
-    int getDisableColor(int color) {
-        int red = Color.red(color);
-        int blue = Color.blue(color);
-        int green = Color.green(color);
-        int gray = (red * 30 + blue * 59 + green * 11) / 100;
-        return Color.rgb( gray, gray, gray);
-    }
 
-    // {"__packager_asset":true,
-    // "width":24,
-    // "height":24,
-    // "uri":"http://10.0.2.2:8081/assets/playground/src/ic_settings@3x.png?platform=android&hash=d12cb52d785444661bacffba8115fdda",
-    // "scale":3}
-    public static Drawable createDrawable(Bundle icon) {
-        String uri = icon.getString("uri");
-        Drawable drawable = null;
-        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-        Context context =  bridgeManager.getReactInstanceManager().getCurrentReactContext().getApplicationContext();
-
-        if (uri.startsWith("http")) {
-            try {
-                StrictMode.ThreadPolicy threadPolicy = StrictMode.getThreadPolicy();
-                StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().permitNetwork().build());
-
-                URL url = new URL(uri);
-                Bitmap bitmap = BitmapFactory.decodeStream(url.openStream());
-                drawable = new BitmapDrawable(context.getResources(), bitmap);
-
-                StrictMode.setThreadPolicy(threadPolicy);
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-            }
-        } else if (uri.startsWith("file")){
-            Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(uri).getPath());
-            drawable = new BitmapDrawable(context.getResources(), bitmap);
-        } else if (uri.startsWith("font")) {
-            Uri u = Uri.parse(uri);
-            String fontFamily = u.getHost();
-            List<String> fragments = u.getPathSegments();
-            String glyph = fragments.get(0);
-            Integer fontSize = Integer.valueOf(fragments.get(1));
-            Log.w(TAG, "fontFamily: " + u.getHost() + " glyph:" + glyph + " fontSize:" + fontSize);
-            drawable = getImageForFont(fontFamily, glyph, fontSize, Color.WHITE );
-        } else {
-            int resId = getResourceDrawableId(context, uri);
-            drawable =  resId > 0 ? context.getResources().getDrawable(resId) : null;
-        }
-
-        if (drawable != null) {
-            drawable.setColorFilter(Garden.getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
-        }
-
-        return drawable;
-    }
-
-    public static int getResourceDrawableId(Context context, @Nullable String name) {
-        if (name == null || name.isEmpty()) {
-            return 0;
-        }
-        int id = context.getResources().getIdentifier(
-                name,
-                "drawable",
-                context.getPackageName());
-        return id;
-    }
-
-    public static Drawable getImageForFont(String fontFamily, String glyph, Integer fontSize, Integer color) {
-        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-        Context context =  bridgeManager.getReactInstanceManager().getCurrentReactContext().getApplicationContext();
-        File cacheFolder = context.getCacheDir();
-        String cacheFolderPath = cacheFolder.getAbsolutePath() + "/";
-
-        float scale = context.getResources().getDisplayMetrics().density;
-        String scaleSuffix = "@" + (scale == (int) scale ? Integer.toString((int) scale) : Float.toString(scale)) + "x";
-        int size = Math.round(fontSize*scale);
-        String cacheKey = fontFamily + ":" + glyph + ":" + color;
-        String hash = Integer.toString(cacheKey.hashCode(), 32);
-        String cacheFilePath = cacheFolderPath + hash + "_" + Integer.toString(fontSize) + scaleSuffix + ".png";
-        String cacheFileUrl = "file://" + cacheFilePath;
-        File cacheFile = new File(cacheFilePath);
-
-        if(cacheFile.exists()) {
-            Bitmap bitmap = BitmapFactory.decodeFile(Uri.parse(cacheFileUrl).getPath());
-            return new BitmapDrawable(context.getResources(), bitmap);
-
-        } else {
-            FileOutputStream fos = null;
-            Typeface typeface = ReactFontManager.getInstance().getTypeface(fontFamily, 0, context.getAssets());
-            Paint paint = new Paint();
-            paint.setTypeface(typeface);
-            paint.setColor(color);
-            paint.setTextSize(size);
-            paint.setAntiAlias(true);
-            Rect textBounds = new Rect();
-            paint.getTextBounds(glyph, 0, glyph.length(), textBounds);
-
-            Bitmap bitmap = Bitmap.createBitmap(textBounds.width(), textBounds.height(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawText(glyph, -textBounds.left, -textBounds.top, paint);
-
-            try {
-                fos = new FileOutputStream(cacheFile);
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                fos.flush();
-                fos.close();
-                fos = null;
-                return new BitmapDrawable(context.getResources(), bitmap);
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "", e);
-            } catch (IOException e) {
-                Log.e(TAG, "", e);
-            }
-            finally {
-                if (fos != null) {
-                    try {
-                        fos.close();
-                    }
-                    catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
 
 }

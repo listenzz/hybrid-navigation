@@ -28,7 +28,7 @@ export default class ReactResult extends Component {
 
 		rightBarButtonItem: {
 			title: '按钮',
-			icon: Image.resolveAssetSource(require('./ic_settings.png')),
+			// icon: Image.resolveAssetSource(require('./ic_settings.png')),
 			action: 'somthing happen',
 			enabled: false,
 		}
@@ -54,7 +54,7 @@ export default class ReactResult extends Component {
 			if(isRoot) {
 				this.props.garden.setLeftBarButtonItem({
 					title: '取消', 
-					// icon: Image.resolveAssetSource(require('./ic_settings.png')), 
+					icon: Image.resolveAssetSource(require('./ic_settings.png')), 
 					action: 'cancel'
 				});
 				this.setState({isRoot});
@@ -163,7 +163,7 @@ export default class ReactResult extends Component {
 
 				<TouchableOpacity onPress={() => {
 					this.props.garden.setLeftBarButtonItem({
-						icon: Image.resolveAssetSource(require('./ic_settings.png')), 
+						icon: null, 
 					});
 				}} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
