@@ -208,7 +208,7 @@ static bool backTitleHidden = NO;
     }
 }
 
-- (void)setHidesBackButton:(BOOL)hidden forController:(HBDViewController *)controller {
+- (void)setHideBackButton:(BOOL)hidden forController:(HBDViewController *)controller {
     controller.navigationItem.hidesBackButton = hidden;
 }
 

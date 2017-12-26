@@ -410,7 +410,8 @@ setStyle 接受一个对象为参数，可配置字段如下：
 class Screen extends Component {
 
     static navigationItem = {
-        hidesBackButton: true,     // 当前页面是否隐藏返回按钮
+        hideBackButton: true,     // 当前页面是否隐藏返回按钮
+        hideShadow: true,         // 当前页面是否隐藏 topBar 阴影
         titleItem: {               // 导航栏标题
             tilte: '这是标题', 
         },
@@ -434,17 +435,21 @@ class Screen extends Component {
 }
 ```
 
-- hidesBackButton
+- hideBackButton
 
-	可选，用来控制是否隐藏当前页面的返回按钮。一旦设置为 true，在 iOS 中将不能通过手势右滑返回，在 Android 中将不能通过返回键（物理）退出当前页面。
+    可选，用来控制是否隐藏当前页面的返回按钮。一旦设置为 true，在 iOS 中将不能通过手势右滑返回，在 Android 中将不能通过返回键（物理）退出当前页面。
+	
+- hideShadow
+
+    可选，默认是 false。用来控制当前页面是否隐藏 shadowImage 或是把 elevation 的值设置为 0。
 	
 - titleItem
 
-	可选，设置页面标题
+    可选，设置页面标题
 
 - leftBarButtonItem
 
-	可选，设置导航栏左侧按钮。通常用在根页面，一旦设置了 leftBarButtonItem，将取代返回按钮，在 iOS 中将不能通过手势右滑返回，但在 Andriod 中仍可以通过物理键返回。
+    可选，设置导航栏左侧按钮。通常用在根页面，一旦设置了 leftBarButtonItem，将取代返回按钮，在 iOS 中将不能通过手势右滑返回，但在 Andriod 中仍可以通过物理键返回。
 	
 	title 是按钮标题，icon 是按钮图标，两者设置其一则可，如果同时设置，则只会显示图标。
 	

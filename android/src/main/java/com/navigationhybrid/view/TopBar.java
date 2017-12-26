@@ -74,6 +74,14 @@ public class TopBar extends Toolbar {
         }
     }
 
+    public void hideShadow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setElevation(0);
+        } else {
+            setShadow(null);
+        }
+    }
+
     public TextView getTitleView() {
         return titleView;
     }

@@ -17,4 +17,6 @@
 
 + (UIImage*)imageWithColor:(UIColor*)color;
 
++ (UIImageView *)findShadowImageAt:(UINavigationBar *)bar;
+
 @end

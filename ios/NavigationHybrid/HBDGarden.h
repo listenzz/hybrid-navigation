@@ -23,6 +23,6 @@
 
 - (void)setTitleItem:(NSDictionary *)item forController:(HBDViewController *)controller;
 
-- (void)setHidesBackButton:(BOOL)hidden forController:(HBDViewController *)controller;
+- (void)setHideBackButton:(BOOL)hidden forController:(HBDViewController *)controller;
 
 @end

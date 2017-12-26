@@ -162,7 +162,7 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
 
                 Navigator navigator = navigationFragment.getNavigator();
                 if (navigator.canPop()) {
-                    if (!navigationFragment.hidesBackButton) {
+                    if (!navigationFragment.hideBackButton) {
                         navigator.pop();
                     }
                     return;

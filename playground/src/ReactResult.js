@@ -21,7 +21,8 @@ import { RESULT_OK } from 'react-native-navigation-hybrid'
 export default class ReactResult extends Component {
 
 	static navigationItem = {
-		hidesBackButton: true,
+		// hideBackButton: true,
+		hideShadow: true,
 		titleItem: {
 			title: 'RN result',
 		},

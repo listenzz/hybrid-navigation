@@ -325,6 +325,12 @@ public class Garden {
         }
     }
 
+    public void setHideShadow(boolean hidden) {
+        if (hidden) {
+            fragment.toolBar.hideShadow();
+        }
+    }
+
     public void setTitle(String title) {
         if (fragment.getView() == null) return;
         TextView titleView = fragment.toolBar.getTitleView();

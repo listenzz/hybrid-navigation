@@ -40,7 +40,7 @@ public class NavigationFragment extends Fragment {
     protected Garden garden;
     protected TopBar toolBar;
 
-    protected boolean hidesBackButton;
+    protected boolean hideBackButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -249,6 +249,9 @@ public class NavigationFragment extends Fragment {
             options = new Bundle();
         }
 
+        boolean hideShadow = options.getBoolean("hideShadow", false);
+        garden.setHideShadow(hideShadow);
+
         Bundle titleItem = options.getBundle("titleItem");
         garden.setTitleItem(titleItem);
 
@@ -259,9 +262,9 @@ public class NavigationFragment extends Fragment {
         if (leftBarButtonItem != null) {
             garden.setLeftBarButtonItem(leftBarButtonItem);
         } else {
-            boolean hidesBackButton =  options.getBoolean("hidesBackButton", false);
-            this.hidesBackButton = hidesBackButton;
-            if (!navigator.isRoot() && !hidesBackButton) {
+            boolean hideBackButton =  options.getBoolean("hideBackButton", false);
+            this.hideBackButton = hideBackButton;
+            if (!navigator.isRoot() && !hideBackButton) {
                 toolBar.setNavigationIcon(Garden.getBackIcon(getContext()));
                 toolBar.setNavigationOnClickListener(new View.OnClickListener() {
                     @Override
