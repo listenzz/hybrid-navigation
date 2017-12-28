@@ -19,7 +19,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.facebook.react.bridge.Arguments;
-import com.navigationhybrid.view.TopBar;
 
 import static com.navigationhybrid.NavigationFragment.PROPS_NAV_ID;
 import static com.navigationhybrid.NavigationFragment.PROPS_SCENE_ID;
@@ -35,6 +34,8 @@ public class Garden {
 
     private static final String TAG = "ReactNative";
     private static int INVALID_COLOR = Integer.MAX_VALUE;
+
+    private static int screenBackgroundColor = Color.WHITE;
 
     private static String topBarStyle = TOP_BAR_STYLE_LIGHT_CONTENT;
     private static Drawable backIcon;
@@ -61,6 +62,13 @@ public class Garden {
 
 
     public static void setStyle(Bundle style) {
+
+        // screenBackgroundColor
+        String screenBackgroundColor = style.getString("screenBackgroundColor");
+        if (screenBackgroundColor != null) {
+            setScreenBackgroundColor(Color.parseColor(screenBackgroundColor));
+        }
+
         // topBarStyle
         String topBarStyle = style.getString("topBarStyle");
         if (topBarStyle != null) {
@@ -96,7 +104,7 @@ public class Garden {
                 String color = shadowImage.getString("color");
 
                 if (image != null) {
-                    Drawable drawable = Utils.createDrawable(image);
+                    Drawable drawable = StyleUtils.createDrawable(image);
                     if (drawable instanceof BitmapDrawable) {
                         BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
                         bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
@@ -108,11 +116,6 @@ public class Garden {
                     shadowDrawable = null;
                 }
             }
-        }
-        // backIcon
-        Bundle backIcon = style.getBundle("backIcon");
-        if (backIcon != null) {
-            setBackIcon(backIcon);
         }
 
         // topBarTintColor
@@ -150,6 +153,20 @@ public class Garden {
         if (barButtonItemTextSize != -1) {
             setBarButtonItemTextSize(barButtonItemTextSize);
         }
+
+        // backIcon
+        Bundle backIcon = style.getBundle("backIcon");
+        if (backIcon != null) {
+            setBackIcon(backIcon);
+        }
+    }
+
+    public static void setScreenBackgroundColor(int color) {
+        screenBackgroundColor = color;
+    }
+
+    public static int getScreenBackgroundColor() {
+        return screenBackgroundColor;
     }
 
     public static void setTopBarStyle(String barStyle) {
@@ -206,7 +223,7 @@ public class Garden {
         if (elevation != -1) {
             return elevation;
         }
-        elevation = 8 * context.getResources().getDisplayMetrics().density;
+        elevation = 4 * context.getResources().getDisplayMetrics().density;
         return  elevation;
     }
 
@@ -232,7 +249,7 @@ public class Garden {
     }
 
     public static void setBackIcon(Bundle icon) {
-        Drawable drawable = Utils.createDrawable(icon);
+        Drawable drawable = StyleUtils.createDrawable(icon);
         drawable.setColorFilter(getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
         backIcon = drawable;
     }
@@ -355,17 +372,14 @@ public class Garden {
         if (leftBarButtonItem == null) { return; }
 
         Log.d(TAG, "leftBarButtonItem: " + leftBarButtonItem.toString());
+
         TopBar topBar = fragment.toolBar;
         TextView leftButton = topBar.getLeftButton();
-
-        int padding = topBar.getContentInset();
-        leftButton.setPaddingRelative(padding, 0 , padding, 0);
+        
         topBar.setContentInsetsRelative(0, topBar.getContentInsetEnd());
-
         topBar.setNavigationIcon(null);
         topBar.setNavigationOnClickListener(null);
-
-        createBarButtonItem(leftButton, leftBarButtonItem);
+        setBarButtonItem(topBar, leftButton, leftBarButtonItem);
     }
 
     public void setRightBarButtonItem(Bundle rightBarButtonItem) {
@@ -373,57 +387,27 @@ public class Garden {
         if (rightBarButtonItem == null) { return; }
 
         Log.d(TAG, "rightBarButtonItem: " + rightBarButtonItem.toString());
+
         TopBar topBar = fragment.toolBar;
         TextView rightButton = topBar.getRightButton();
 
-        int padding = topBar.getContentInset();
-        rightButton.setPaddingRelative(padding, 0 , padding, 0);
         topBar.setContentInsetsRelative(topBar.getContentInsetStart(), 0);
-
-        createBarButtonItem(rightButton, rightBarButtonItem);
+        setBarButtonItem(topBar, rightButton, rightBarButtonItem);
     }
 
-    private void createBarButtonItem(TextView button, Bundle item) {
-        if (fragment.getView() == null) return;
+    private void setBarButtonItem(TopBar topBar, TextView button, Bundle item) {
         if (item != null) {
-
-            button.setOnClickListener(null);
-            button.setText(null);
-            button.setCompoundDrawablesWithIntrinsicBounds(null, null, null,null);
-            button.setAlpha(1.0f);
-            button.setVisibility(View.VISIBLE);
-
             String title = item.getString("title");
             boolean enabled = item.getBoolean("enabled", true);
             Bundle icon = item.getBundle("icon");
+
+            Drawable drawable = null;
+            if (icon != null) {
+                drawable = StyleUtils.createDrawable(icon);
+            }
             final String action = item.getString("action");
 
-            int color = getBarButtonItemTintColor();
-
-            if (!enabled) {
-                color = Utils.generateGrayColor(color);
-                button.setAlpha(0.3f);
-            }
-            button.setEnabled(enabled);
-
-            if (icon != null) {
-                Drawable drawable = Utils.createDrawable(icon);
-                if (!enabled) {
-                    drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-                } else {
-                    drawable.setColorFilter(getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
-                }
-                button.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
-            } else {
-                button.setText(title);
-                button.setTextColor(color );
-                button.setTextSize(getBarButtonItemTextSizeDp());
-            }
-
-            TypedValue typedValue = new TypedValue();
-            if (fragment.getContext().getTheme().resolveAttribute(R.attr.actionBarItemBackground, typedValue, true)) {
-                button.setBackgroundResource(typedValue.resourceId);
-            }
+            topBar.setButton(button, drawable, title, enabled);
 
             if (action != null && enabled) {
                 button.setOnClickListener(new View.OnClickListener() {
@@ -438,10 +422,7 @@ public class Garden {
                     }
                 });
             }
-
         }
     }
-
-
 
 }

@@ -13,7 +13,7 @@ export default styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'flex-start',
       alignItems: 'stretch',
-      backgroundColor: '#F5FCFF',
+      // backgroundColor: '#F5FCFF',
       paddingTop: 56,
     },
     button: {
@@ -23,6 +23,33 @@ export default styles = StyleSheet.create({
     },
     buttonText: {
 
+    },
+
+    modalContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0,0,0, 0.5)'
+    },
+
+    modalContent: {
+      backgroundColor: 'white',
+      padding: 22,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 4,
+      width: 320,
+      borderColor: 'rgba(0, 0, 0, 0.3)',
+    },
+
+    modalButton: {
+      backgroundColor: 'lightblue',
+      padding: 12,
+      margin: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: 4,
+      borderColor: 'rgba(0, 0, 0, 0.1)',
     },
 
     buttonTextDisable: {

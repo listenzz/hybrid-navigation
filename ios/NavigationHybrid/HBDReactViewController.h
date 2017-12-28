@@ -1,6 +1,5 @@
 //
 //  HBDReactViewController.h
-//  Pods
 //
 //  Created by Listen on 2017/11/26.
 //

@@ -1,6 +1,5 @@
 //
 //  HBDGarden.h
-//  Pods
 //
 //  Created by Listen on 2017/11/26.
 //
@@ -14,6 +13,8 @@
 + (void)setStyle:(NSDictionary *)style;
 
 + (BOOL)isBackTitleHidden;
+
++ (UIColor *)screenBackgroundColor;
 
 // ------
 

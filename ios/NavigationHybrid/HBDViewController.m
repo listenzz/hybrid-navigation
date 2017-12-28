@@ -1,6 +1,5 @@
 //
 //  HBDViewController.m
-//  Pods
 //
 //  Created by Listen on 2017/11/25.
 //
@@ -34,6 +33,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    self.view.backgroundColor = [HBDGarden screenBackgroundColor];
 
     HBDGarden *garden = [[HBDGarden alloc] init];
     

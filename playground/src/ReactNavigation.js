@@ -9,7 +9,8 @@ import {
 	TouchableOpacity,
 	StyleSheet,
 	Text,
-	View
+	View,
+	StatusBar
 } from 'react-native';
 
 import styles from './Styles'

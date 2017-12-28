@@ -1,6 +1,5 @@
 //
 //  HBDGarden.m
-//  Pods
 //
 //  Created by Listen on 2017/11/26.
 //
@@ -16,8 +15,17 @@
 @implementation HBDGarden
 
 static bool backTitleHidden = NO;
+static UIColor *screenBackgroundColor;
 
 + (void)setStyle:(NSDictionary *)style {
+    
+    // screenBackgroundColor
+    
+    NSString *screenBackgroundColor = style[@"screenBackgroundColor"];
+    if (screenBackgroundColor) {
+        [self setScreenBackgroundColor:screenBackgroundColor];
+    }
+    
     // topBarStyle
     NSString *topBarStyle = style[@"topBarStyle"];
     BOOL isLightContentStyle = [topBarStyle isEqualToString:@"light-content"];
@@ -64,23 +72,12 @@ static bool backTitleHidden = NO;
         [self setBackIcon:backIcon];
     }
     
-    // topBarTintColor
-    NSString *topBarTintColor = style[@"topBarTintColor"];
-    if (topBarTintColor) {
-        [self setTopBarTintColor:topBarTintColor];
-    } else {
-        if (isLightContentStyle) {
-            [[UINavigationBar appearance] setTintColor:[UIColor whiteColor]];
-        } else {
-            [[UINavigationBar appearance] setTintColor:[UIColor blackColor]];
-        }
-    }
-    
     // titleTextColor, titleTextSize
     NSString *titleTextColor = style[@"titleTextColor"];
     NSNumber *titleTextSize = style[@"titleTextSize"];
-    NSMutableDictionary *titleAttributes = [[NSMutableDictionary alloc] init];
+    NSString *topBarTintColor = style[@"topBarTintColor"];
     
+    NSMutableDictionary *titleAttributes = [[NSMutableDictionary alloc] init];
     if (titleTextColor) {
         [titleAttributes setObject:[HBDUtils colorWithHexString:titleTextColor] forKey:NSForegroundColorAttributeName];
     } else {
@@ -103,11 +100,62 @@ static bool backTitleHidden = NO;
     
     [[UINavigationBar appearance] setTitleTextAttributes:titleAttributes];
     
-    // barButtonItemTintColor, barButtonItemTextSize
+    // topBarTintColor, barButtonItemTintColor, barButtonItemTextSize
     NSString *barButtonItemTintColor = style[@"barButtonItemTintColor"];
+    NSNumber *barButtonItemTextSize = style[@"barButtonItemTextSize"];
+    
+    UIColor *itemTintColor;
+    
     if (barButtonItemTintColor) {
-        [self setBarButtonItemTintColor:barButtonItemTintColor];
+        itemTintColor = [HBDUtils colorWithHexString:barButtonItemTintColor];
+    } else if (topBarTintColor){
+        itemTintColor = [HBDUtils colorWithHexString:topBarTintColor];
+    } else {
+        if (isLightContentStyle) {
+            itemTintColor = UIColor.whiteColor;
+        } else {
+            itemTintColor = UIColor.blackColor;
+        }
     }
+    
+    [[UIBarButtonItem appearance] setTintColor:itemTintColor];
+
+    NSInteger fontSize = 15;
+    if (barButtonItemTextSize) {
+        fontSize = [barButtonItemTextSize integerValue];
+    }
+    
+    NSDictionary *attributes = @{
+                                 NSFontAttributeName: [UIFont systemFontOfSize:fontSize],
+                                 };
+    
+    CGFloat red = 0;
+    CGFloat green = 0;
+    CGFloat blue = 0;
+    [itemTintColor getRed:&red green:&green blue:&blue alpha:nil];
+    
+    CGFloat gray = MAX(MAX(red, green), blue);
+    UIColor *disabledColor = [UIColor colorWithRed:gray green:gray blue:gray alpha:0.3];
+   
+    NSDictionary *disabled = @{
+                               NSFontAttributeName: [UIFont systemFontOfSize:fontSize],
+                               NSForegroundColorAttributeName: disabledColor,
+                               };
+    
+    [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateNormal];
+    [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
+    [[UIBarButtonItem appearance] setTitleTextAttributes:disabled forState:UIControlStateDisabled];
+}
+
++ (void)setScreenBackgroundColor:(NSString *)color {
+    screenBackgroundColor = [HBDUtils colorWithHexString:color];
+}
+
++ (UIColor *)screenBackgroundColor {
+    if (!screenBackgroundColor) {
+        screenBackgroundColor = UIColor.whiteColor;
+    }
+    return screenBackgroundColor;
 }
 
 + (void)setHideBackTitle:(BOOL)hidden {
@@ -137,20 +185,6 @@ static bool backTitleHidden = NO;
     [[UINavigationBar appearance] setBackgroundImage:[HBDUtils imageWithColor:c] forBarMetrics:UIBarMetricsDefault];
 }
 
-+ (void)setTopBarTintColor:(NSString *)color {
-    UIColor *c = [HBDUtils colorWithHexString:color];
-    [[UINavigationBar appearance] setTintColor:c];
-}
-
-+ (void)setBarButtonItemTintColor:(NSString *)color {
-    UIColor *c = [HBDUtils colorWithHexString:color];
-    [[UIBarButtonItem appearance] setTintColor:c];
-}
-
-+ (void)setBarButtonItemTextSize:(NSUInteger)dp {
-    
-}
-
 - (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     if (item) {
         controller.navigationItem.leftBarButtonItem = [self createBarButtonItem:item forController:controller];
@@ -169,13 +203,23 @@ static bool backTitleHidden = NO;
 
 - (HBDBarButtonItem *)createBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     HBDBarButtonItem *barButtonItem;
+    
+    NSDictionary *insetsOption = item[@"insets"];
+    UIEdgeInsets insets = UIEdgeInsetsZero;
+    if (insetsOption) {
+        insets =  [RCTConvert UIEdgeInsets:insetsOption];
+    }
+
     NSDictionary *icon = item[@"icon"];
-    if (icon && ![icon isEqual:NSNull.null]) {
+    BOOL hasIcon = icon && ![icon isEqual:NSNull.null];
+    if (hasIcon) {
         UIImage *iconImage = [HBDUtils UIImage:icon];
         barButtonItem = [[HBDBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain];
+        barButtonItem.imageInsets = insets;
     } else {
         NSString *title = item[@"title"];
         barButtonItem = [[HBDBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain];
+        [barButtonItem setTitlePositionAdjustment:UIOffsetMake(insets.left, 0) forBarMetrics:UIBarMetricsDefault];
     }
     
     NSNumber *enabled = item[@"enabled"];

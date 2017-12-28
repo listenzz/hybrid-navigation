@@ -1,4 +1,4 @@
-package com.navigationhybrid.view;
+package com.navigationhybrid;
 
 import android.content.Context;
 import android.content.res.TypedArray;

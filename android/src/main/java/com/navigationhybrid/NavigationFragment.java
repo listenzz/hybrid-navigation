@@ -14,8 +14,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import com.navigationhybrid.view.TopBar;
-
 import java.util.List;
 
 /**
@@ -102,6 +100,9 @@ public class NavigationFragment extends Fragment {
         } else {
             throw new UnsupportedOperationException("NavigationFragment 还没适配 " + view.getClass().getSimpleName());
         }
+
+        getActivity().getWindow().setBackgroundDrawable(null);
+        view.setBackgroundColor(Garden.getScreenBackgroundColor());
 
         if (toolBar != null) {
             setupTopBar();

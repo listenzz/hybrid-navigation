@@ -11,7 +11,9 @@ import {
 	Text,
 	View,
 	Image,
-	TextInput
+	TextInput,
+	Modal,
+	TouchableHighlight
 } from 'react-native';
 
 import styles from './Styles'
@@ -22,14 +24,15 @@ export default class ReactResult extends Component {
 
 	static navigationItem = {
 		// hideBackButton: true,
-		hideShadow: true,
+		// hideShadow: true,
 		titleItem: {
 			title: 'RN result',
 		},
 
 		rightBarButtonItem: {
 			title: '按钮',
-			// icon: Image.resolveAssetSource(require('./ic_settings.png')),
+			icon: Image.resolveAssetSource(require('./ic_settings.png')),
+			insets: {top: -1, left: 8, bottom: 0, right: -8},
 			action: 'somthing happen',
 			enabled: false,
 		}
@@ -47,8 +50,13 @@ export default class ReactResult extends Component {
 		this.state = {
 			text: '',
 			isRoot: false,
+			modalVisible: false,
 		}
 	}
+
+	setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
 
 	componentWillMount() {
 		this.props.navigator.isRoot().then((isRoot) => {
@@ -56,6 +64,7 @@ export default class ReactResult extends Component {
 				this.props.garden.setLeftBarButtonItem({
 					title: '取消', 
 					icon: Image.resolveAssetSource(require('./ic_settings.png')), 
+					insets: {top: -1, left: -8, bottom: 0, right: 8},
 					action: 'cancel'
 				});
 				this.setState({isRoot});
@@ -159,6 +168,38 @@ export default class ReactResult extends Component {
 				<TouchableOpacity onPress={this.replaceToRootWithNative} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						替换成 native 页面到根部
+          </Text>
+				</TouchableOpacity>
+
+				<Modal
+          animationType={"fade"}
+          transparent={true}
+					visible={this.state.modalVisible}
+					onRequestClose={() => {console.debug("Modal has been closed.")}}
+          >
+				<View style={styles.modalContainer}>
+				 <View style={styles.modalContent}
+					>
+          
+            <Text>Hello World!</Text>
+
+						<TouchableOpacity onPress={()=> {
+              this.setModalVisible(!this.state.modalVisible)
+            }}>
+      				<View style={styles.modalButton}>
+        				<Text>Hide Modal</Text>
+      				</View>
+    				</TouchableOpacity>
+
+         </View>
+				 </View>
+        </Modal>
+
+				<TouchableOpacity onPress={() => {
+						this.setModalVisible(true)
+					}} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>
+						show Modal
           </Text>
 				</TouchableOpacity>
 

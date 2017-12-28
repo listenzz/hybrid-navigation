@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
  * Created by Listen on 2017/12/26.
  */
 
-public class Utils {
+public class StyleUtils {
 
     private static final String TAG = "ReactNative";
 
@@ -149,14 +149,12 @@ public class Utils {
         return null;
     }
 
-
-    static int generateGrayColor(int color) {
+    public static int generateGrayColor(int color) {
         int red = Color.red(color);
-        int blue = Color.blue(color);
         int green = Color.green(color);
-        int gray = (red * 30 + blue * 59 + green * 11) / 100;
+        int blue = Color.blue(color);
+        int gray = Math.max(Math.max(red, green), blue);
         return Color.rgb( gray, gray, gray);
     }
-
 
 }

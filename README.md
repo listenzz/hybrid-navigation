@@ -250,23 +250,28 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 ```javascript
 {
+    screenBackgroundColor: String // 页面背景
     topBarStyle: String // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
     topBarBackgroundColor: String // 顶部导航栏背景颜色
     statusBarColor: String // 状态栏背景色，仅对 Android 5.0 以上版本生效
     hideBackTitle: Bool // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-    elevation: Number // 导航栏阴影高度， 仅对 Android 5.0 以上版本生效，默认值为 8dp
+    elevation: Number // 导航栏阴影高度， 仅对 Android 5.0 以上版本生效，默认值为 4 dp
     shadowImage: Object // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 
     backIcon: Object // 返回按钮图标，需要传递一个带有 uri 和其它字段的对象
     topBarTintColor: String // 顶部导航栏标题和按钮的颜色
     titleTextColor: String // 顶部导航栏标题颜色
-    titleTextSize: Int // 顶部导航栏标题字体大小，单位是 dp(pt)
+    titleTextSize: Int // 顶部导航栏标题字体大小，默认是 17 dp(pt)
     titleAlignment: String // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left
     barButtonItemTintColor: String // 顶部导航栏按钮颜色
-    barButtonItemTextSize: Int // 顶部导航栏按钮字体大小，单位是 dp(pt)
+    barButtonItemTextSize: Int // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
 }
 ```
 
 > 全局设置主题，有些样式需要重新运行原生应用才能看到效果。
+
+- screenBackgroundColor 
+
+    页面背景，仅支持 #RRGGBB 格式的字符串。
 
 - topBarStyle
 
@@ -328,7 +333,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 	
 - elevation
 
-	可选，导航栏阴影高度，仅对 Android 5.0 以上版本生效，默认值为 8dp
+	可选，导航栏阴影高度，仅对 Android 5.0 以上版本生效，默认值为 4 dp
 	
 - shadowImage
 
@@ -419,6 +424,7 @@ class Screen extends Component {
         leftBarButtonItem: {      // 导航栏左侧按钮
             title: '按钮',
             icon: Image.resolveAssetSource(require('./ic_settings.png')),
+            insets: {top: -1, left: -8, bottom: 0, right: 0},
             action: 'left-button-click',
             enabled: true,
         },
@@ -453,13 +459,15 @@ class Screen extends Component {
 	
 	title 是按钮标题，icon 是按钮图标，两者设置其一则可，如果同时设置，则只会显示图标。
 	
+	insets 仅对 iOS 生效，用于调整按钮 icon 或 title 的位置。
+	
 	action 是个字符串，用来标识用户在当前页面触发的是哪个行为，当用户点击按钮时，这个值会被作为参数传递到实例方法 `onBarButtonItemClick` 。
 	
 	enabled 是个布尔值，可选，用来标识按钮是否可以点击，默认是 true。
 
 - rightBarButtonItem
 
-	可选，导航栏右侧按钮。不会对页面有任何副作用。
+	可选，导航栏右侧按钮，可配置项同 leftBarButtonItem，不会对页面有任何副作用。
 	
 ### 动态配置页面
 
