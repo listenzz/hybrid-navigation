@@ -129,7 +129,7 @@ public class TopBar extends Toolbar {
             int width = getContentInsetStartWithNavigation();
             int padding = (width - icon.getIntrinsicWidth()) / 2;
             button.setMaxWidth(width);
-            button.setPadding(padding, 0, padding, 0);
+            button.setPaddingRelative(padding, 0, padding, 0);
         } else {
             int padding = getContentInset();
             button.setPaddingRelative(padding, 0, padding, 0);

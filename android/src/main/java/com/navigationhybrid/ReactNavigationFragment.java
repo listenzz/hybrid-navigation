@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
@@ -21,7 +22,7 @@ public class ReactNavigationFragment extends NavigationFragment {
 
     ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
     ReactRootView reactRootView;
-    ReactNavigationFragmentViewGroup containerLayout;
+    LinearLayout containerLayout;
 
     @Nullable
     @Override
@@ -42,9 +43,19 @@ public class ReactNavigationFragment extends NavigationFragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        reactRootView = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        reactRootView.unmountReactApplication();
     }
 
     @Override
@@ -82,7 +93,6 @@ public class ReactNavigationFragment extends NavigationFragment {
             reactRootView = new ReactRootView(getContext());
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             containerLayout.addView(reactRootView, layoutParams);
-            containerLayout.setReactRootView(reactRootView);
             String moduleName = getArguments().getString(NAVIGATION_MODULE_NAME);
             Bundle initialProps = getArguments().getBundle(NAVIGATION_PROPS);
             reactRootView.startReactApplication(bridgeManager.getReactInstanceManager(), moduleName, initialProps);
