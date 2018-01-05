@@ -30,8 +30,8 @@ export default class ReactResult extends Component {
 		},
 
 		rightBarButtonItem: {
-			title: '按钮',
-			icon: Image.resolveAssetSource(require('./ic_settings.png')),
+			title: '确定',
+			// icon: Image.resolveAssetSource(require('./ic_settings.png')),
 			insets: {top: -1, left: 8, bottom: 0, right: -8},
 			action: 'somthing happen',
 			enabled: false,
@@ -63,7 +63,7 @@ export default class ReactResult extends Component {
 			if(isRoot) {
 				this.props.garden.setLeftBarButtonItem({
 					title: '取消', 
-					icon: Image.resolveAssetSource(require('./ic_settings.png')), 
+					// icon: Image.resolveAssetSource(require('./ic_settings.png')), 
 					insets: {top: -1, left: -8, bottom: 0, right: 8},
 					action: 'cancel'
 				});
@@ -168,58 +168,6 @@ export default class ReactResult extends Component {
 				<TouchableOpacity onPress={this.replaceToRootWithNative} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						替换成 native 页面到根部
-          </Text>
-				</TouchableOpacity>
-
-				<Modal
-          animationType={"fade"}
-          transparent={true}
-					visible={this.state.modalVisible}
-					onRequestClose={() => {console.debug("Modal has been closed.")}}
-          >
-				<View style={styles.modalContainer}>
-				 <View style={styles.modalContent}
-					>
-          
-            <Text>Hello World!</Text>
-
-						<TouchableOpacity onPress={()=> {
-              this.setModalVisible(!this.state.modalVisible)
-            }}>
-      				<View style={styles.modalButton}>
-        				<Text>Hide Modal</Text>
-      				</View>
-    				</TouchableOpacity>
-
-         </View>
-				 </View>
-        </Modal>
-
-				<TouchableOpacity onPress={() => {
-						this.setModalVisible(true)
-					}} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>
-						show Modal
-          </Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity onPress={() => {
-					this.props.garden.setLeftBarButtonItem({
-						icon: null, 
-					});
-				}} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>
-						改变按钮
-          </Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity onPress={() => {
-					this.props.garden.setTitleItem({
-						title: '改变后的标题', 
-					});
-				}} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>
-						改变标题
           </Text>
 				</TouchableOpacity>
 			</View>

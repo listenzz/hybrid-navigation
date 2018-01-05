@@ -7,9 +7,9 @@ import ReactResult from './src/ReactResult';
 
 Garden.setStyle({
 		topBarStyle: 'dark-content',
-		 topBarBackgroundColor: '#3F51B5',
+		// topBarBackgroundColor: '#3F51B5',
 		// topBarTintColor: '#0000ff',
-		backIcon: Image.resolveAssetSource(require('./src/ic_settings.png')),
+		// backIcon: Image.resolveAssetSource(require('./src/ic_settings.png')),
 		shadowImage: {
 			color: '#dddddd',
 		 	//image: Image.resolveAssetSource(require('./src/divider.png'))

@@ -1,11 +1,20 @@
 # react-native-navigation-hybrid
-A native navigation for React Native which support navigation between native and react side
+A native navigation for React Native.
 
-## Running the Example Project
+## 特性
 
-![navigation-android](./screenshot/navigation-android.gif)
+- 使用原生导航组件
+- Android 使用了 Lifecycle 架构组件，解决了生命周期问题
+- 以 iOS 的导航系统为参照，因为 iOS 的导航系统设计得比较完善，支持 push, pop, popTo, popToRoot, present, dismiss, replace, replaceToRoot 等操作
+- 支持 statusBar, UINavigationBar(iOS), ToolBar(Android) 的全局样式配置以及局部调整
+- 支持原生页面和 RN 页面互相跳转和传值
+- 支持 vector icons
 
-To run the example project, first clone this repo:
+## Running the Playground Project
+
+![navigation-android](./screenshot/navigation-android.png)
+
+To run the playground project, first clone this repo:
 
 ```shell
 git clone git@github.com:listenzz/react-native-navigation-hybrid.git
@@ -28,20 +37,403 @@ To run on Android: `npm run run:android`
 
 make sure that you have a  simulator or device when you run andriod
 
-## 集成
+## 集成到以 RN 为主的项目
 
-在 package.json 中的 dependencies 中添加
+你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
+
+0.2.0 开始支持，开发中。
+
+0.2.0 还将支持 Tab、Drawer
+
+## 集成到已有原生项目
+
+你的大部分业务已经用原生代码实现，你想添加一些 RN 业务模块。
+
+添加 RN 业务模块的原生项目，和通过 `react-native init` 命令创建的项目，它们的目录结构往往是不同的。
+
+通过 `react-native init ReactNativeProject` 创建的项目，目录结构是这样的：
+
+```
+ReactNativeProject/
+|—— android/
+|—— ios/
+|—— node_modules/
+|—— package.json
+```
+
+添加 RN 业务模块的原生项目，目录结构可能是这样的：
+
+```
+AndroidProject/
+|—— settings.gradle
+|—— ReactNativeProject/
+|   |—— node_modules/
+|   |—— package.json
+
+iOSProject/
+|—— Podfile
+|—— ReactNativeProject/
+|   |—— node_modules/
+|   |—— package.json
+```
+
+以上，Android 和 iOS 项目使用 git submodule 的方式依赖同一个 RN 项目。
+
+也可能是这样的：
+
+```
+AndroidProject/
+|—— settings.gradle
+iOSProject/
+|—— Podfile
+ReactNativeProject/
+|—— node_modules/
+|—— package.json
+```
+
+以上，Android 和 iOS 项目使用 gradle 或者 cocopods 依赖本地 RN 项目。
+
+第二和第三种目录结构，在集成上没多大区别。 这里，我们以后者的目录结构来演示如何集成 react-native-navigaton-hybrid 到原生项目。
+
+### 创建 RN 项目并集成 Navigation Hybrid
+
+在和原生应用同级的目录下，使用 `react-native init ReactNativeProject` 命令创建 RN 业务模块。
+
+创建成功后，打开该目录，删除里面的 andriod 和 ios 文件夹，因为我们不会用到它们。
+
+打开 package.json 文件，在里面添加
 
 ```json
-"react-native-navigation-hybrid": "0.1.12"
+"dependencies": {
+    "react-native-navigation-hybrid": "0.1.24"
+}
 ```
 
-### link
+执行 `npm install` 或者 `yarn install`
+
+
+### RN 项目配置
+
+打开 index.js 这个文件，通常，它就在 package.json 旁边。
+
+你需要注册你的 React 组件
+
+以前，你是这么注册的
+
+```javascript
+AppRegistry.registerComponent('ReactNativeProject', () => App);
+```
+
+现在，你需要作出改变
+
+```javascript
+import { ReactRegistry, Garden } from 'react-native-navigation-hybrid';
+import Home from './HomeComponent';
+import Profile from './ProfileComponent';
+
+// 配置全局样式
+Garden.setStyle({
+    topBarStyle: 'dark-content',
+});
+
+ReactRegistry.startRegisterComponent();
+
+// 注意，你的每一个页面都需要注册
+ReactRegistry.registerComponent('Home', () => Home);
+ReactRegistry.registerComponent('Profile', () => Profile);
+
+ReactRegistry.endRegisterComponent();
+```
+
+### Android 项目配置
+
+现在，我们回到 Android 项目，在 settings.gradle 中添加如下配置
+
+```gradle
+include ':react-native-navigation-hybrid'
+// 注意把 ReactNativeProject 替换成你的 RN 项目
+project(':react-native-navigation-hybrid').projectDir = new File(rootProject.projectDir, '../ReactNativeProject/node_modules/react-native-navigation-hybrid/android')
+```
+
+在根项目的 build.gradle 文件中，确保以下配置或变更
+
+```diff
+ext {
++   minSdkVersion = 16
++   targetSdkVersion = 27
++   compileSdkVersion = 27
++   buildToolsVersion = '27.0.2'
++   // 必须保证支持包的版本 >= 26.1.0
++   supportLibraryVersion = '27.0.2'
++   // 注意把 ReactNativeProject 替换成你的 RN 项目
++   rn_root = "$rootDir/../ReactNativeProject"
+}
+
+buildscript {
+    repositories {
+        jcenter()
++       google()
+    }
+    dependencies {
+-        classpath 'com.android.tools.build:gradle:2.2.3'
++        classpath 'com.android.tools.build:gradle:3.0.1'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
++       google()
++       maven { url "${rn_root}/node_modules/react-native/android" }
+    }
+}
+```
+
+然后，在 app/build.gradle 文件中，作如下变更
+
+```diff
++ project.ext.react = [
++       entryFile                : "index.js",
++       root                     : "$rn_root"
++ ]
+
++ apply from: "$rn_root/node_modules/react-native/react.gradle"
+
+android {
++   compileSdkVersion rootProject.ext.compileSdkVersion
++   buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
++       minSdkVersion rootProject.ext.minSdkVersion
++       targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+}
+
+dependencies {
++   implementation fileTree(include: ['*.jar'], dir: 'libs')
+   
++   implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
++   implementation "com.android.support:support-v4:$rootProject.supportLibraryVersion"
++   implementation "com.android.support:design:$rootProject.supportLibraryVersion"
+   
++   implementation project(':react-native-navigation-hybrid')
++   implementation "com.facebook.react:react-native:+" // From node_modules
+}
+```
+
+在根项目下的 gradle/wrapper/gradle-wrapper.properties 文件中，确保你使用了正确的 gradle wrapper 版本。
+
+```diff
+- distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip
++ distributionUrl=https\://services.gradle.org/distributions/gradle-4.1-all.zip
+```
+
+修改 MainApplication.java 文件。在你的项目中，可能叫其它名字。
+
+```java
+public class MainApplication extends Application implements ReactApplication {
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+        @Override
+        public boolean getUseDeveloperSupport() {
+            return BuildConfig.DEBUG;
+        }
+        
+        @Override
+        protected List<ReactPackage> getPackages() {
+            return Arrays.<ReactPackage>asList(
+                new MainReactPackage(),
+                new NavigationHybridPackage()
+            );
+        }
+        
+        @Override
+        protected String getJSMainModuleName() {
+            return "index";
+        }
+    };
+    
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
+    }
+    
+    public void onCreate() {
+        super.onCreate();
+        // react native
+        SoLoader.init(this, /* native exopackage */ false);
+        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+        bridgeManager.install(getReactNativeHost());
+    }
+}
+```
+
+创建一个 Activity 作为 RN 业务模块的入口：
+
+```java
+public class ReactEntryActivity extends ReactAppCompatActivity {
+    @Override
+    protected String getMainComponentName() {
+        return "Home";
+    }
+}
+```
+
+注意，继承的是 ReactAppCompatActivity.
+
+为该 Activity 添加 NoActionBar 主题
+
+```xml
+<activity
+    android:name=".ReactEntryActivity"
+    android:theme="@style/Theme.AppCompat.NoActionBar"
+/>
+```
+
+在 AndroidManifest.xml 中添加如下权限
+
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+```
+
+同步构建版本。Navigation Hybrid 使用的构建版本是 27.0.2 ，你的项目可能使用了更高或稍低的版本。你也可能使用了 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 这样的库，它的构建版本是 26.0.1 ，我们需要用脚本把这些库的构建版本统一起来，否则编译项目时可能会出错。
+
+回到 RN 项目的根目录，创建一个叫 scripts 的文件夹，在里面创建一个叫 fix-build-version.js 的文件
+
+```javascript
+const fs = require('fs-extra')
+
+// 找到 NavigatonHybrid 的 build.gradle 文件
+const navigationHybrid = './node_modules/react-native-navigation-hybrid/android/build.gradle'
+
+// 其它使用了原生源码的库，例如：
+// const codePush = './node_modules/react-native-code-push/android/app/build.gradle'
+// const vectorIcons = './node_modules/react-native-vector-icons/android/build.gradle'
+
+const gradles = [
+  navigationHybrid,
+  // codePush,
+  // vectorIcons,
+]
+
+gradles.forEach(gradle => {
+  fs.readFile(gradle, 'utf8', function(err, data) {
+    let str = data.replace(/^(\s+compileSdkVersion).*$/gm, '$1 rootProject.ext.compileSdkVersion')
+    str = str.replace(/^(\s+buildToolsVersion).*$/gm, '$1 rootProject.ext.buildToolsVersion')
+    str = str.replace(/^(\s+targetSdkVersion).*$/gm, '$1 rootProject.ext.targetSdkVersion')
+    str = str.replace(/"(com\.android\.support:appcompat-v7:).*"/gm, '"$1$rootProject.ext.supportLibraryVersion"')
+    str = str.replace(/"(com\.android\.support:support-v4:).*"/gm, '"$1$rootProject.ext.supportLibraryVersion"')
+    str = str.replace(/"(com\.android\.support:design:).*"/gm, '"$1$rootProject.ext.supportLibraryVersion"')
+    fs.outputFile(gradle, str)
+  })
+})
 
 ```
-react-native link
+
+现在，让我们激活这个脚本。打开 package.json 文件，作如下修改
+
+```diff
+"scripts": {
+    "start": "react-native start",
++   "fbv": "node scripts/fix-build-version.js",
++   "postinstall": "npm run fbv"
+}
 ```
 
+执行一次 `npm install` 或 `yarn install`
+
+### iOS 项目配置
+
+假设你使用 cocopods 来管理依赖
+
+在 Podfile 文件中添加如下设置
+
+```ruby
+# 注意把 ReactNativeProject 替换成你的项目
+node_modules_path = '../ReactNativeProject/node_modules/'
+  
+pod 'React', :path => node_modules_path + 'react-native', :subspecs => [
+    'Core',
+    'CxxBridge',
+    'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
+    'RCTAnimation',
+    'RCTActionSheet',
+    'RCTText',
+    'RCTImage',
+    'RCTSettings',
+    'RCTCameraRoll',
+    'RCTVibration',
+    'RCTNetwork',
+    'RCTLinkingIOS',
+    'RCTWebSocket', # needed for debugging
+]
+
+# Explicitly include Yoga if you are using RN >= 0.42.0
+pod 'yoga', :path => node_modules_path +  'react-native/ReactCommon/yoga'
+pod 'DoubleConversion', :podspec => node_modules_path + 'react-native/third-party-podspecs/DoubleConversion.podspec'
+pod 'GLog', :podspec => node_modules_path + 'react-native/third-party-podspecs/GLog.podspec'
+pod 'Folly', :podspec => node_modules_path + 'react-native/third-party-podspecs/Folly.podspec'
+  
+pod 'NavigationHybrid', :path => node_modules_path + 'react-native-navigation-hybrid'
+```
+
+记得 `pod install` 一次。
+
+找到 Info.plist 文件，右键 -> Open As -> Source Code，添加如下内容
+
+```xml
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSExceptionDomains</key>
+    <dict>
+        <key>localhost</key>
+        <dict>
+            <key>NSExceptionAllowsInsecureHTTPLoads</key>
+            <true/>
+        </dict>
+    </dict>
+</dict>
+```
+
+在 Build Phases 中新建一个 Run Script
+
+![ios-run-script](./screenshot/ios-run-script.jpg)
+
+双击标题，将其更名为 Bundle React Native code and images
+
+点击三角图标展开，在其中填入
+
+```
+export NODE_BINARY=node
+../ReactNativeProject/node_modules/react-native/scripts/react-native-xcode.sh
+```
+
+注意将 ReactNativeProject 替换成你的 RN 项目名
+
+![ios-run-script](./screenshot/ios-react-script.png)
+
+像下面那样更改 AppDelegate.m 文件
+
+```objc
+#import <NavigationHybrid/NavigationHybrid.h>
+#import <React/RCTBundleURLProvider.h>
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // Override point for customization after application launch.
+    NSURL *jsCodeLocation;
+    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+    [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+
+    self.window.rootViewController = [[HBDNavigationController alloc] initWithRootModule:@"Home" props:nil options:nil];
+    [self.window makeKeyAndVisible];
+    return YES;
+}
+@end
+
+```
 
 ## 导航 
 
@@ -379,8 +771,6 @@ setStyle 接受一个对象为参数，可配置字段如下：
 	
     ```
 
-	> 支持 vector-font
-
 - topBarTintColor
 
 	可选，顶部导航栏标题和按钮的颜色。如果不设置，将根据 topBarStyle 来计算，如果 topBarStyle 的值是 dark-content，那么 topBarTintColor 的值是黑色，否则是白色。
@@ -517,8 +907,6 @@ this.props.navigator.push('B', {/*props*/}, {
 那么，如果 B 页面是从 A 跳过来的，那么 B 的导航栏标题就会变成 *来自 A 的标题* ，导航栏右侧按钮的标题就会变成 *点我*。
 
 
-> 注意：更改是增量的，你不需要配置一个完整的 item。
-
 #### 动态配置
 
 Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
@@ -546,8 +934,6 @@ Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
         enabled: false
     })
     ```
-
-> 注意：更改是增量的，你不需要配置一个完整的 item。
 
 
 

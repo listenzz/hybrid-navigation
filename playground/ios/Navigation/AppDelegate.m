@@ -8,23 +8,18 @@
 
 #import "AppDelegate.h"
 #import <React/RCTBundleURLProvider.h>
-#import <React/RCTRootView.h>
-#import <React/RCTLog.h>
-
 #import <NavigationHybrid/NavigationHybrid.h>
 
 #import "NativeNavigationViewController.h"
 #import "NativeResultViewController.h"
 
-@interface AppDelegate () <HBDReactBridgeManagerDelegate>
+@interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
-    [HBDReactBridgeManager instance].delegate = self;
     
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
     [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
@@ -34,27 +29,10 @@
     [[HBDReactBridgeManager instance] registerNativeModule:@"Navigation" forController:[NativeNavigationViewController class]];
     [[HBDReactBridgeManager instance] registerNativeModule:@"NativeResult" forController:[NativeResultViewController class]];
     
-    UIViewController *vc = [[UIStoryboard storyboardWithName:@"LaunchScreen" bundle:[NSBundle mainBundle]] instantiateInitialViewController];
-    self.window.rootViewController = vc;
+    self.window.rootViewController = [[HBDNavigationController alloc] initWithRootModule:@"Navigation" props:nil options:nil];
     [self.window makeKeyAndVisible];
     
     return YES;
-}
-
-- (void)reactModuleRegistryDidCompleted:(HBDReactBridgeManager *)manager {
-    NSLog(@"reactModuleRegistryDidCompleted");
-    if (self.window.rootViewController.presentedViewController) {
-        [self.window.rootViewController dismissViewControllerAnimated:NO completion:^{
-            [self performSelector:@selector(start) withObject:nil afterDelay:0];
-        }];
-    } else {
-        [self start];
-    }
-}
-
-- (void)start {
-    HBDNavigationController *nav = [[HBDNavigationController alloc] initWithRootModule:@"Navigation" props:nil options:nil];
-    self.window.rootViewController = nav;
 }
 
 

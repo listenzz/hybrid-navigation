@@ -16,6 +16,8 @@
 
 + (UIColor *)screenBackgroundColor;
 
++ (NSDictionary *)globalStyle;
+
 // ------
 
 - (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller;

@@ -16,9 +16,10 @@
 
 static bool backTitleHidden = NO;
 static UIColor *screenBackgroundColor;
+static NSDictionary *globalStyle;
 
 + (void)setStyle:(NSDictionary *)style {
-    
+    globalStyle = style;
     // screenBackgroundColor
     
     NSString *screenBackgroundColor = style[@"screenBackgroundColor"];
@@ -145,6 +146,10 @@ static UIColor *screenBackgroundColor;
     [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
     [[UIBarButtonItem appearance] setTitleTextAttributes:disabled forState:UIControlStateDisabled];
+}
+
++ (NSDictionary *)globalStyle {
+    return globalStyle;
 }
 
 + (void)setScreenBackgroundColor:(NSString *)color {
