@@ -205,7 +205,7 @@ NSString * const ON_BAR_BUTTON_ITEM_CLICK_EVENT = @"ON_BAR_BUTTON_ITEM_CLICK";
         }
     }
     
-    [self.navigationController dismissViewControllerAnimated:animated completion:^{
+    [self.navigationController.presentingViewController dismissViewControllerAnimated:animated completion:^{
         
     }];
 }
