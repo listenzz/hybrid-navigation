@@ -40,6 +40,9 @@
 		"jest": "21.2.1",
 		"react-test-renderer": "16.0.0"
 	},
+	"dependencies": {
+		"q": "^1.5.1"
+	},
 	"jest": {
 		"preset": "react-native"
 	}

@@ -1,4 +1,5 @@
 import Navigation from './NavigationModule';
+import ComponentResultHandler from './ComponentResultHandler';
 
 export default class Navigator {
 
@@ -45,8 +46,10 @@ export default class Navigator {
         Navigation.replaceToRoot(this.navId, this.sceneId, moduleName, props, options);
     }
 
-    present(moduleName, requestCode,  props={}, options={}, animated = true) {
+    present(moduleName,  props={}, options={}, animated = true) {
+        const requestCode = ComponentResultHandler.getRequestCode();
         Navigation.present(this.navId, this.sceneId, moduleName, requestCode, props, options, animated);
+        return ComponentResultHandler.register(requestCode);
     }
 
     setResult(resultCode, data = {}) {
