@@ -1,49 +1,49 @@
 {
-  "name": "react-native-navigation-hybrid",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
-  },
-  "version": "0.1.24",
-  "nativePackage": true,
-  "description": "A native navigation for React Native which support navigation between native and react side",
-  "author": "listen <listenzz@163.com>",
-  "license": "MIT",
-  "homepage": "https://github.com/listenzz/react-native-navigation-hybrid",
-  "keywords": [
-    "react native",
-    "navigation",
-    "navigator",
-    "iOS",
-    "Android"
-  ],
-  "publishConfig": {
-    "registry": "http://api.test.shundaojia.com:8081/repository/npm-packages/"
-  },
-  "main": "index.js",
-  "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "run:ios": "react-native run-ios --project-path ./playground/ios",
-    "start:android": "adb shell am start -n com.navigationhybrid.playground/.MainActivity",
-    "run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
-    "test": "jest"
-  },
-  "peerDependencies": {
-    "react": "*",
-    "react-native": "*"
-  },
-  "devDependencies": {
-    "react": "16.0.0",
-    "react-native": "0.50.3",
-    "babel-jest": "21.2.0",
-    "babel-preset-react-native": "4.0.0",
-    "jest": "21.2.1",
-    "react-test-renderer": "16.0.0"
-  },
-  "jest": {
-    "preset": "react-native"
-  },
-  "dependencies": {
-    "q": "^1.5.1"
-  }
+	"name": "react-native-navigation-hybrid",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
+	},
+	"version": "0.1.24",
+	"nativePackage": true,
+	"description": "A native navigation for React Native which support navigation between native and react side",
+	"author": "listen <listenzz@163.com>",
+	"license": "MIT",
+	"homepage": "https://github.com/listenzz/react-native-navigation-hybrid",
+	"keywords": [
+		"react native",
+		"navigation",
+		"navigator",
+		"iOS",
+		"Android"
+	],
+	"publishConfig": {
+		"registry": "http://api.test.shundaojia.com:8081/repository/npm-packages/"
+	},
+	"main": "index.js",
+	"scripts": {
+		"start": "node node_modules/react-native/local-cli/cli.js start",
+		"run:ios": "react-native run-ios --project-path ./playground/ios",
+		"start:android": "adb shell am start -n com.navigationhybrid.playground/.MainActivity",
+		"run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
+		"test": "jest"
+	},
+	"peerDependencies": {
+		"react": "*",
+		"react-native": "*"
+	},
+	"devDependencies": {
+		"react": "16.0.0",
+		"react-native": "0.50.3",
+		"babel-jest": "21.2.0",
+		"babel-preset-react-native": "4.0.0",
+		"jest": "21.2.1",
+		"react-test-renderer": "16.0.0"
+	},
+	"dependencies": {
+		"q": "^1.5.1"
+	},
+	"jest": {
+		"preset": "react-native"
+	}
 }
