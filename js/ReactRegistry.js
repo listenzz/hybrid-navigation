@@ -38,7 +38,7 @@ export default ReactRegistry = {
                         realComponentWillMount.apply(instance);
                     }
                     let event = EventEmitter.addListener('ON_COMPONENT_RESULT', function(event){                             
-                        if(instance.props.sceneId === event.sceneId) {
+                        if(0 === event.sceneId) { // pop, popTo, popToRoot
                             if(instance.onComponentResult){
                                 let data = event.data && JSON.stringify(event.data);
                                 console.info('requestCode:' + event.requestCode + ' resultCode:' + event.resultCode + ' data:' + data);
