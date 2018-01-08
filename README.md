@@ -540,7 +540,13 @@ export NODE_BINARY=node
 	
 	```javascript
     // A.js
-    this.navigator.present('B', 1)
+    this.navigator.present('B').then(({ code, data }) => {
+       if(resultCode === RESULT_OK) {
+            this.setState({text: data.text || '', error: undefined});
+        } else {
+            this.setState({text: undefined, error: 'ACTION CANCEL'});
+        } 
+    });
 	```
 	
 	B 页面返回结果给 A 页面 
@@ -550,20 +556,7 @@ export NODE_BINARY=node
     this.navigator.setResult(RESULT_OK, {text: 'greeting'})
     this.navigator.dismiss()
 	```
-	
-	A 页面实现 `onComponentResult` 来接收这个结果
-	
-	```javascript
-	// A.js
-    onComponentResult(requestCode, resultCode, data) {
-        if(requestCode === 1) { 
-            if(resultCode === RESULT_OK) {
-                this.setState({text: data.text || '', error: undefined});
-            } else {
-                this.setState({text: undefined, error: 'ACTION CANCEL'});
-            }
-        }
-    }
+
 	```
 	
 	有些时候，比如选择一张照片，我们先要跳到相册列表页面，然后进入某个相册选择相片返回。这也是没有问题的。
@@ -572,7 +565,9 @@ export NODE_BINARY=node
 	
 	```javascript
     //A.js
-    this.props.navigator.present('AlbumList', 1)
+    this.props.navigator.present('AlbumList').then(({ code, data }) => {
+        // 接收返回的结果（略）
+    });
 	```
 	
 	相册列表页面 `push` 到某个相册
@@ -589,8 +584,6 @@ export NODE_BINARY=node
     this.props.navigator.setResult(RESULT_OK, {uri: 'file://...'})
     this.props.navigator.dismiss()
 	```
-	
-	在 A 页面接收返回的结果（略）。
 	
 	> pop, popTo, popToRoot 也是可以返回结果给目标页面的，但是此时 `requestCode` 的值总是 0 。
 	

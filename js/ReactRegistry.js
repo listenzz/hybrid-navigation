@@ -37,20 +37,8 @@ export default ReactRegistry = {
                     if (realComponentWillMount) {
                         realComponentWillMount.apply(instance);
                     }
-                    let event = EventEmitter.addListener('ON_COMPONENT_RESULT', function(event){                             
-                        if(instance.props.sceneId === event.sceneId) {
-                            if(instance.onComponentResult){
-                                let data = event.data && JSON.stringify(event.data);
-                                console.info('requestCode:' + event.requestCode + ' resultCode:' + event.resultCode + ' data:' + data);
-                                instance.onComponentResult(event.requestCode, event.resultCode, event.data);
-                            } else {
-                                console.warn(RealComponent.name + " 似乎未实现 onComponentResult");
-                            }
-                        } 
-                    });
-                    events.push(event);
 
-                    evnet = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', function(event) {
+                    let evnet = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', function(event) {
                         if(instance.props.sceneId === event.sceneId) {
                             if(instance.onBarButtonItemClick) {
                                 instance.onBarButtonItemClick(event.action);
