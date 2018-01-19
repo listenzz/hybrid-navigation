@@ -7,6 +7,13 @@ project.ext.react = [
 
 apply from: "../../../node_modules/react-native/react.gradle"
 
+project.ext.vectoricons = [
+        iconFontsDir : "../../../node_modules/react-native-vector-icons/Fonts",
+        iconFontNames: ['FontAwesome.ttf'] // Name of the font files you want to copy
+]
+
+apply from: "../../../node_modules/react-native-vector-icons/fonts.gradle"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -40,10 +47,13 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     implementation "com.android.support:support-v4:$rootProject.supportLibraryVersion"
     implementation "com.android.support:design:$rootProject.supportLibraryVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
     implementation 'com.facebook.react:react-native:+'
     implementation project(':navigation-hybrid')
+    implementation project(':react-native-vector-icons')
+
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

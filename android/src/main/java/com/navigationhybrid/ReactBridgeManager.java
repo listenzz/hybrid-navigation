@@ -1,7 +1,10 @@
 package com.navigationhybrid;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.facebook.react.ReactInstanceManager;
@@ -21,6 +24,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ReactBridgeManager {
 
+    public static String REACT_MODULE_REGISTRY_COMPLETED_BROADCAST = "registry_completed";
+
     public interface ReactModuleRegistryListener {
         void onReactModuleRegistryCompleted();
     }
@@ -29,7 +34,7 @@ public class ReactBridgeManager {
 
     public static ReactBridgeManager instance = new ReactBridgeManager();
 
-    private HashMap<String, Class<? extends NavigationFragment>> nativeModules = new HashMap<>();
+    private HashMap<String, Class<? extends NativeFragment>> nativeModules = new HashMap<>();
     private HashMap<String, ReadableMap> reactModules = new HashMap<>();
     private CopyOnWriteArrayList<ReactModuleRegistryListener> reactModuleRegistryListeners = new CopyOnWriteArrayList<>();
 
@@ -44,7 +49,7 @@ public class ReactBridgeManager {
         this.setup();
     }
 
-    public void registerNativeModule(String moduleName, Class<? extends NavigationFragment> clazz) {
+    public void registerNativeModule(String moduleName, Class<? extends NativeFragment> clazz) {
         nativeModules.put(moduleName, clazz);
     }
 
@@ -52,7 +57,7 @@ public class ReactBridgeManager {
         return nativeModules.containsKey(moduleName);
     }
 
-    public Class<? extends NavigationFragment> nativeModuleClassForName(String moduleName) {
+    public Class<? extends NativeFragment> nativeModuleClassForName(String moduleName) {
         return nativeModules.get(moduleName);
     }
 
@@ -75,6 +80,11 @@ public class ReactBridgeManager {
         isReactModuleInRegistry = false;
         for (ReactModuleRegistryListener listener : reactModuleRegistryListeners) {
             listener.onReactModuleRegistryCompleted();
+        }
+        Context context = getReactInstanceManager().getCurrentReactContext();
+        if (context != null) {
+            Intent intent = new Intent(REACT_MODULE_REGISTRY_COMPLETED_BROADCAST);
+            LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
         }
     }
 

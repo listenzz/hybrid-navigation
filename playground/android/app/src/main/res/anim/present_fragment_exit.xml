@@ -19,6 +19,10 @@
 
 <set xmlns:android="http://schemas.android.com/apk/res/android"
        android:zAdjustment="normal">
+    <translate android:fromXDelta="0%" android:toXDelta="0%"
+        android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
+        android:interpolator="@android:anim/decelerate_interpolator"
+        android:duration="300"/>
     <alpha android:fromAlpha="1.0" android:toAlpha="0.9"
             android:fillEnabled="true" android:fillBefore="false" android:fillAfter="true"
             android:interpolator="@android:anim/decelerate_interpolator"

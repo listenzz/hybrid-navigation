@@ -3,10 +3,6 @@ package com.navigationhybrid;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 
@@ -15,16 +11,17 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
-
-import java.util.UUID;
+import com.navigationhybrid.androidnavigation.AwesomeActivity;
 
 /**
  * Created by Listen on 2017/11/17.
  */
 
-public class ReactAppCompatActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity, ReactBridgeManager.ReactModuleRegistryListener, FragmentManager.OnBackStackChangedListener {
+public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity, ReactBridgeManager.ReactModuleRegistryListener {
 
-    private static final String TAG = "ReactNative";
+    protected static final String TAG = "ReactNative";
+
+    private static final String GLOBAL_STYLE_KEY = "GlobalStyle";
 
     private final ReactAppCompatActivityDelegate activityDelegate;
 
@@ -42,7 +39,6 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityDelegate.onCreate(savedInstanceState);
-        getSupportFragmentManager().addOnBackStackChangedListener(this);
         bridgeManager.addReactModuleRegistryListener(this);
         if (savedInstanceState == null) {
             if (isReactModuleInRegistry()) {
@@ -50,6 +46,20 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
             } else {
                 onCreateMainComponent();
             }
+        } else {
+            Bundle style = savedInstanceState.getBundle(GLOBAL_STYLE_KEY);
+            if (style != null) {
+                Garden.setStyle(getApplicationContext(), style);
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Bundle style = Garden.getStyle();
+        if (style != null) {
+            outState.putBundle(GLOBAL_STYLE_KEY, style);
         }
     }
 
@@ -75,33 +85,18 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
             handler.removeCallbacks(createMainComponentTask);
         }
         bridgeManager.removeReactModuleRegistryListener(this);
-        getSupportFragmentManager().removeOnBackStackChangedListener(this);
         activityDelegate.onDestroy();
     }
 
     protected void onCreateMainComponent() {
         if (getMainComponentName() != null) {
-            Navigator navigator = new Navigator(this,
-                    UUID.randomUUID().toString(),
-                    UUID.randomUUID().toString(),
-                    getSupportFragmentManager(), android.R.id.content);
-            NavigationFragment root = navigator.createFragment(getMainComponentName(), navigator.sceneId, null, null);
-            navigator.setRoot(root, false);
+            ReactNavigationFragment reactNavigationFragment = ReactNavigationFragment.newInstance(getMainComponentName(), null, null);
+            setRootFragment(reactNavigationFragment);
         }
     }
 
     protected String getMainComponentName() {
         return null;
-    }
-
-    @Override
-    public void onBackStackChanged() {
-        FragmentManager fragmentManager =  getSupportFragmentManager();
-        int count = fragmentManager.getBackStackEntryCount();
-        for (int i = 0; i < count; i++) {
-            FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
-            Log.d(TAG, "Entry index:" + entry.getId() + " tag:" + entry.getName());
-        }
     }
 
     public boolean isReactModuleInRegistry() {
@@ -147,31 +142,6 @@ public class ReactAppCompatActivity extends AppCompatActivity implements Default
     @Override
     public void invokeDefaultOnBackPressed() {
         Log.i(TAG, getClass().getSimpleName() + "#invokeDefaultOnBackPressed");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        int count = fragmentManager.getBackStackEntryCount();
-        if (count <= 1) {
-            ActivityCompat.finishAfterTransition(this);
-            return;
-        }
-
-        FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(count -1);
-        if (entry.getName() != null) {
-            Fragment fragment = fragmentManager.findFragmentByTag(entry.getName());
-            if (fragment instanceof NavigationFragment) {
-                NavigationFragment navigationFragment = (NavigationFragment) fragment;
-
-                Navigator navigator = navigationFragment.getNavigator();
-                if (navigator.canPop()) {
-                    if (!navigationFragment.hideBackButton) {
-                        navigator.pop();
-                    }
-                    return;
-                } else if (navigator.canDismiss()) {
-                    navigator.dismiss();
-                    return;
-                }
-            }
-        }
         super.onBackPressed();
     }
 

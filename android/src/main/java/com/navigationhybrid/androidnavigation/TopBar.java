@@ -1,15 +1,12 @@
-package com.navigationhybrid;
+package com.navigationhybrid.androidnavigation;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.TextView;
 
 import javax.annotation.Nullable;
@@ -96,56 +93,7 @@ public class TopBar extends Toolbar {
         return rightButton;
     }
 
-    public void setLeftButton(Drawable icon, String title, boolean enabled) {
-        setContentInsetsRelative(0, getContentInsetEnd());
-        setNavigationIcon(null);
-        setNavigationOnClickListener(null);
-        setButton(leftButton, icon, title, enabled);
-    }
-
-    public void setRightButton(Drawable icon, String title, boolean enabled) {
-        setContentInsetsRelative(getContentInsetStart(), 0);
-        setButton(rightButton, icon, title, enabled);
-    }
-
-    void setButton(TextView button, Drawable icon, String title, boolean enabled) {
-        button.setOnClickListener(null);
-        button.setText(null);
-        button.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-        button.setMaxWidth(Integer.MAX_VALUE);
-        button.setAlpha(1.0f);
-        button.setVisibility(View.VISIBLE);
-
-        int color = Garden.getBarButtonItemTintColor();
-        if (!enabled) {
-            color = StyleUtils.generateGrayColor(color);
-            button.setAlpha(0.3f);
-        }
-        button.setEnabled(enabled);
-
-        if (icon != null) {
-            icon.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-            button.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-            int width = getContentInsetStartWithNavigation();
-            int padding = (width - icon.getIntrinsicWidth()) / 2;
-            button.setMaxWidth(width);
-            button.setPaddingRelative(padding, 0, padding, 0);
-        } else {
-            int padding = getContentInset();
-            button.setPaddingRelative(padding, 0, padding, 0);
-            button.setText(title);
-            button.setTextColor(color );
-            button.setTextSize(Garden.getBarButtonItemTextSizeDp());
-        }
-
-        TypedValue typedValue = new TypedValue();
-        if (getContext().getTheme().resolveAttribute(R.attr.actionBarItemBackground, typedValue, true)) {
-            button.setBackgroundResource(typedValue.resourceId);
-        }
-    }
-
-
-    protected int getContentInset() {
+    public int getContentInset() {
         return this.contentInset;
     }
 

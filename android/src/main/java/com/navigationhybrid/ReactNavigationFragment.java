@@ -2,123 +2,46 @@ package com.navigationhybrid;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
-import com.facebook.react.ReactRootView;
-import com.facebook.react.bridge.Arguments;
+import com.navigationhybrid.androidnavigation.AwesomeFragment;
+import com.navigationhybrid.androidnavigation.FragmentHelper;
+import com.navigationhybrid.androidnavigation.NavigationFragment;
+
+import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
+import static com.navigationhybrid.Constants.ARG_OPTIONS;
+import static com.navigationhybrid.Constants.ARG_PROPS;
 
 /**
- * Created by Listen on 2017/11/20.
+ * Created by Listen on 2018/1/15.
  */
 
 public class ReactNavigationFragment extends NavigationFragment {
 
-    protected static final String TAG = "ReactNative";
 
-    ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-    ReactRootView reactRootView;
-    LinearLayout containerLayout;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, toString() + "#onCreateView");
-        if (navigator.anim != PresentAnimation.None) {
-            postponeEnterTransition();
-        }
-        View view = inflater.inflate(R.layout.fragment_react, container, false);
-        containerLayout = view.findViewById(R.id.react_content);
-        return view;
+    public static ReactNavigationFragment newInstance(String moduleName, Bundle props, Bundle options) {
+        ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
+        Bundle args = FragmentHelper.getArguments(reactNavigationFragment);
+        args.putString(ARG_MODULE_NAME, moduleName);
+        args.putBundle(ARG_PROPS, props);
+        args.putBundle(ARG_OPTIONS, options);
+        return reactNavigationFragment;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initReactNative();
-    }
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
+        if (savedInstanceState == null) {
+            Bundle args = FragmentHelper.getArguments(this);
+            String rootModuleName = args.getString(ARG_MODULE_NAME);
+            Bundle rootModuleProps = args.getBundle(ARG_PROPS);
+            Bundle rootModuleOptions = args.getBundle(ARG_OPTIONS);
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        reactRootView.unmountReactApplication();
-    }
-
-    @Override
-    public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
-        super.onFragmentResult(requestCode, resultCode, data);
-        Bundle result = new Bundle();
-        result.putInt(Navigator.REQUEST_CODE_KEY, requestCode);
-        result.putInt(Navigator.RESULT_CODE_KEY, resultCode);
-        result.putBundle(Navigator.RESULT_DATA_KEY, data);
-        result.putString(PROPS_NAV_ID, navigator.navId);
-        result.putString(PROPS_SCENE_ID, navigator.sceneId);
-        bridgeManager.sendEvent(Navigator.ON_COMPONENT_RESULT_EVENT, Arguments.fromBundle(result));
-    }
-
-    private void initReactNative() {
-        if (reactRootView != null || getView() == null) {
-            return;
-        }
-
-        if (bridgeManager.isReactModuleInRegistry()) {
-            bridgeManager.addReactModuleRegistryListener(new ReactBridgeManager.ReactModuleRegistryListener() {
-                @Override
-                public void onReactModuleRegistryCompleted() {
-                    bridgeManager.removeReactModuleRegistryListener(this);
-                    Log.w(TAG, ReactNavigationFragment.this.toString() + " onReactModuleRegistryCompleted");
-                    initReactNative();
-                }
-            });
-            return;
-        }
-
-        Log.d(TAG, toString() + " bridge is initialized");
-
-        if (reactRootView == null && getView() != null) {
-            reactRootView = new ReactRootView(getContext());
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            containerLayout.addView(reactRootView, layoutParams);
-            String moduleName = getArguments().getString(NAVIGATION_MODULE_NAME);
-            Bundle initialProps = getArguments().getBundle(NAVIGATION_PROPS);
-            reactRootView.startReactApplication(bridgeManager.getReactInstanceManager(), moduleName, initialProps);
-        }
-    }
-
-    public void signalFirstRenderComplete() {
-        Log.d(TAG, "signalFirstRenderComplete");
-        startPostponedEnterTransition();
-    }
-
-    @Override
-    public void postponeEnterTransition() {
-        super.postponeEnterTransition();
-        Log.d(TAG, "postponeEnterTransition");
-        if (getActivity() != null) {
-            getActivity().supportPostponeEnterTransition();
-        }
-    }
-
-    @Override
-    public void startPostponedEnterTransition() {
-        super.startPostponedEnterTransition();
-        Log.d(TAG, "startPostponeEnterTransition");
-        if (getActivity() != null) {
-            getActivity().supportStartPostponedEnterTransition();
+            if (rootModuleName ==  null) {
+                throw new IllegalArgumentException("出错了，找不着 rootModuleName, 你是否没有正确初始化？");
+            }
+            AwesomeFragment awesomeFragment = ReactFragmentHelper.createFragment(rootModuleName, rootModuleProps, rootModuleOptions);
+            setRootFragment(awesomeFragment);
         }
     }
 

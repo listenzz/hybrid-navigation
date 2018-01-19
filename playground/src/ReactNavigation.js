@@ -14,8 +14,8 @@ import {
 } from 'react-native';
 
 import styles from './Styles'
-
 import { RESULT_OK } from 'react-native-navigation-hybrid'
+import fontUri from './FontUtil'
 
 const REQUEST_CODE = 1;
 
@@ -24,26 +24,34 @@ export default class ReactNavigation extends Component {
 	static navigationItem = {
 		titleItem: {
 			title: 'RN navigation',
+		},
+
+		tabItem: {
+			title: 'Navigation',
+			icon: { uri: fontUri('FontAwesome', 'location-arrow', 20) },
+			hideTabBarWhenPush: true,
 		}
 	}
 
 	constructor(props){
 		super(props);
-		this.pushToNative = this.pushToNative.bind(this);
-		this.pushToReact = this.pushToReact.bind(this);
+		this.push = this.push.bind(this);
+		this.pop = this.pop.bind(this);
+		this.popTo = this.popTo.bind(this);
 		this.popToRoot = this.popToRoot.bind(this);
-		this.requestFromNative = this.requestFromNative.bind(this);
-		this.requestFromReact = this.requestFromReact.bind(this);
-		this.replaceWithNative = this.replaceWithNative.bind(this);
+		this.replace = this.replace.bind(this);
+		this.replaceToRoot = this.replaceToRoot.bind(this);
+		this.present = this.present.bind(this);
+		this.switchToTab = this.switchToTab.bind(this);
 		this.state = {
 			text: undefined,
+			backId: undefined,
 			error: undefined,
 			isRoot: false,
 		}
 	}
 
 	componentWillMount() {
-		console.log('componentWillMount=' + this.props.sceneId );
 		this.props.navigator.isRoot().then((isRoot) => {
 			if(isRoot) {
 				this.setState({isRoot});
@@ -51,93 +59,121 @@ export default class ReactNavigation extends Component {
 		});
 	}
 
-	componentDidMount() {
-		console.log('componentDidMount =' + this.props.sceneId);
-	}
-
-	componentWillUnmount() {
-		console.log('componentWillUnmount=' + this.props.sceneId);
-	}
-
 	onComponentResult(requestCode, resultCode, data) {
 		if(requestCode === REQUEST_CODE) {
 			if(resultCode === RESULT_OK) {
-				this.setState({text: data.text || '', error: undefined});
+				this.setState({text: data.text || '', error: undefined, backId: data.backId || undefined});
 			} else {
 				this.setState({text: undefined, error: 'ACTION CANCEL'});
+			}
+		} else if (requestCode === 0) {
+			if(resultCode === RESULT_OK) {
+				this.setState({backId: data.backId || undefined})
 			}
 		}
 	}
 
-	pushToNative() {
-		this.props.navigator.push('NativeNavigation');
+	push() {
+		if (!this.state.isRoot) {
+			if (this.props.popToId !== undefined) {
+				this.props.navigator.push('ReactNavigation', {popToId: this.props.popToId});
+			} else {
+				this.props.navigator.push('ReactNavigation', {popToId: this.props.sceneId});
+			}
+		} else {
+			this.props.navigator.push('ReactNavigation');
+		}
 	}
 
-	pushToReact() {
-		this.props.navigator.push('ReactNavigation');
+	pop() {
+		this.props.navigator.setResult(RESULT_OK, {backId: this.props.sceneId});
+		this.props.navigator.pop();
+	}
+
+	popTo() {
+		this.props.navigator.setResult(RESULT_OK, {backId: this.props.sceneId});
+		this.props.navigator.popTo(this.props.popToId);
 	}
 
 	popToRoot() {
+		this.props.navigator.setResult(RESULT_OK, {backId: this.props.sceneId});
 		this.props.navigator.popToRoot();
 	}
 
-	replaceWithNative() {
-		this.props.navigator.replace("NativeNavigation");
+	replace() {
+		this.props.navigator.replace("ReactNavigation");
 	}
 
-	requestFromReact() {
+	replaceToRoot() {
+		this.props.navigator.replaceToRoot("ReactNavigation");
+	}
+
+	present() {
 		this.props.navigator.present("ReactResult", REQUEST_CODE);
 	}
 
-	requestFromNative() {
-		this.props.navigator.present("NativeResult", REQUEST_CODE);
-	}
+	switchToTab() {
+		this.props.navigator.switchToTab(1);
+  }
 
 	render() {
 		return (
 			<View style={styles.container}>
 				<Text style={styles.welcome}>
-					这是一个 React Native 页面
-        		</Text>
+					This's a React Native scene.
+        </Text>
 
-				<TouchableOpacity onPress={this.pushToNative} activeOpacity={0.2} style={styles.button}>
+				<TouchableOpacity onPress={this.push} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
-						push 到原生页面
-          			</Text>
-				</TouchableOpacity>
-				<TouchableOpacity onPress={this.pushToReact} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>
-						push 到 RN 页面
-          			</Text>
+						push
+          </Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={this.replaceWithNative} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>
-						replace 为原生页面
-          			</Text>
+				<TouchableOpacity onPress={this.pop} activeOpacity={0.2} style={styles.button} disabled={this.state.isRoot}>
+					<Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
+						pop
+          </Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity onPress={this.popTo} activeOpacity={0.2} style={styles.button} disabled={this.props.popToId == undefined}>
+					<Text style={this.props.popToId == undefined ? styles.buttonTextDisable : styles.buttonText} >
+						popTo last but one
+          </Text>
 				</TouchableOpacity>
 
 				<TouchableOpacity onPress={this.popToRoot} activeOpacity={0.2} style={styles.button} disabled={this.state.isRoot}>
 					<Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
 						popToRoot
-          			</Text>
+          </Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={this.requestFromReact} activeOpacity={0.2} style={styles.button}>
+				<TouchableOpacity onPress={this.replace} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
-						请求 React Native 返回结果
-          			</Text>
+						replace
+          </Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={this.requestFromNative} activeOpacity={0.2} style={styles.button}>
+				<TouchableOpacity onPress={this.replaceToRoot} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
-						请求 native 返回结果
-          			</Text>
+						replaceToRoot 
+          </Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity onPress={this.present} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>
+						present 
+          </Text>
+				</TouchableOpacity>
+
+				<TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>
+						switch to tab 'Style'
+          </Text>
 				</TouchableOpacity>
 
 				{this.state.text !== undefined && 
 					(<Text style={styles.result}>
-							返回的结果：{this.state.text}
+							received text：{this.state.text}
 					</Text>)
 				}
 			

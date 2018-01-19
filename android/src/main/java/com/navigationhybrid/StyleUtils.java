@@ -9,10 +9,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.facebook.react.views.text.ReactFontManager;
@@ -39,11 +41,9 @@ public class StyleUtils {
     // "height":24,
     // "uri":"http://10.0.2.2:8081/assets/playground/src/ic_settings@3x.png?platform=android&hash=d12cb52d785444661bacffba8115fdda",
     // "scale":3}
-    public static Drawable createDrawable(Bundle imageInfo) {
+    public static Drawable createDrawable(Context context, @NonNull Bundle imageInfo) {
         String uri = imageInfo.getString("uri");
         Drawable drawable = null;
-        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-        Context context =  bridgeManager.getReactInstanceManager().getCurrentReactContext().getApplicationContext();
 
         if (uri.startsWith("http")) {
             try {
@@ -65,10 +65,14 @@ public class StyleUtils {
             Uri u = Uri.parse(uri);
             String fontFamily = u.getHost();
             List<String> fragments = u.getPathSegments();
+            if (fragments.size() != 2) {
+                // FIXME return a meaning drawable
+                return new ColorDrawable();
+            }
             String glyph = fragments.get(0);
             Integer fontSize = Integer.valueOf(fragments.get(1));
             Log.w(TAG, "fontFamily: " + u.getHost() + " glyph:" + glyph + " fontSize:" + fontSize);
-            drawable = getImageForFont(fontFamily, glyph, fontSize, Color.WHITE );
+            drawable = getImageForFont(context, fontFamily, glyph, fontSize, Color.WHITE );
         } else {
             int resId = getResourceDrawableId(context, uri);
             drawable =  resId > 0 ? context.getResources().getDrawable(resId) : null;
@@ -88,9 +92,7 @@ public class StyleUtils {
         return id;
     }
 
-    public static Drawable getImageForFont(String fontFamily, String glyph, Integer fontSize, Integer color) {
-        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-        Context context =  bridgeManager.getReactInstanceManager().getCurrentReactContext().getApplicationContext();
+    public static Drawable getImageForFont(Context context, String fontFamily, String glyph, Integer fontSize, Integer color) {
         File cacheFolder = context.getCacheDir();
         String cacheFolderPath = cacheFolder.getAbsolutePath() + "/";
 

@@ -5,7 +5,7 @@ A native navigation for React Native.
 
 - 使用原生导航组件
 - Android 使用了 Lifecycle 架构组件，解决了生命周期问题
-- 以 iOS 的导航系统为参照，因为 iOS 的导航系统设计得比较完善，支持 push, pop, popTo, popToRoot, present, dismiss, replace, replaceToRoot 等操作
+- 以 iOS 的导航系统为参照，支持 push, pop, popTo, popToRoot, present, dismiss, replace, replaceToRoot 等操作
 - 支持 statusBar, UINavigationBar(iOS), ToolBar(Android) 的全局样式配置以及局部调整
 - 支持原生页面和 RN 页面互相跳转和传值
 - 支持 vector icons
@@ -439,7 +439,7 @@ export NODE_BINARY=node
 
 - 导航栈
 
-	我们先要理解一个叫**导航栈**的概念。在 iOS 中，一个导航栈对应一个 `UINavigationController`；在 Android 中，一个导航栈对应 `FragmentManager` 中的一段 `BackStackEntry`。
+	我们先要理解一个叫**导航栈**的概念。在 iOS 中，一个导航栈对应一个 `UINavigationController`；在 Android 中，一个导航栈对应一个 `FragmentManager`。
 
 - push
 

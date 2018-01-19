@@ -1,11 +1,11 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
@@ -20,6 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+
+import static com.navigationhybrid.Constants.TOP_BAR_STYLE_DARK_CONTENT;
+import static com.navigationhybrid.Constants.TOP_BAR_STYLE_LIGHT_CONTENT;
 
 /**
  * Created by Listen on 2017/11/22.
@@ -55,8 +58,8 @@ public class GardenModule extends ReactContextBaseJavaModule{
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
-        constants.put("DARK_CONTENT", Garden.TOP_BAR_STYLE_DARK_CONTENT);
-        constants.put("LIGHT_CONTENT", Garden.TOP_BAR_STYLE_LIGHT_CONTENT);
+        constants.put("DARK_CONTENT", TOP_BAR_STYLE_DARK_CONTENT);
+        constants.put("LIGHT_CONTENT",TOP_BAR_STYLE_LIGHT_CONTENT);
         return constants;
     }
 
@@ -65,7 +68,10 @@ public class GardenModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Garden.setStyle(Arguments.toBundle(style));
+                Context context = getReactApplicationContext();
+                if (context != null) {
+                    Garden.setStyle(context.getApplicationContext(), Arguments.toBundle(style));
+                }
             }
         });
     }
@@ -75,13 +81,13 @@ public class GardenModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
+                NativeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     Bundle buttonItem = mergeOptions(options, "leftBarButtonItem", readableMap);
                     options.putBundle("leftBarButtonItem", buttonItem);
                     fragment.setOptions(options);
-                    fragment.garden.setLeftBarButtonItem(buttonItem);
+                    fragment.getGarden().setLeftBarButtonItem(buttonItem);
                 }
             }
         });
@@ -92,13 +98,13 @@ public class GardenModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
+                NativeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     Bundle buttonItem = mergeOptions(options, "rightBarButtonItem", readableMap);
                     options.putBundle("rightBarButtonItem", buttonItem);
                     fragment.setOptions(options);
-                    fragment.garden.setRightBarButtonItem(buttonItem);
+                    fragment.getGarden().setRightBarButtonItem(buttonItem);
                 }
             }
         });
@@ -109,33 +115,28 @@ public class GardenModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
+                NativeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     Bundle titleItem = mergeOptions(options, "titleItem", readableMap);
                     options.putBundle("titleItem", titleItem);
                     fragment.setOptions(options);
-
-                    fragment.garden.setTitleItem(titleItem);
+                    fragment.getGarden().setTitleItem(titleItem);
                 }
             }
         });
     }
 
-    private ReactNavigationFragment findReactNavigationFragment(String navId, String sceneId) {
+
+    private NativeFragment findFragmentBySceneId(String sceneId) {
         Activity activity = getCurrentActivity();
         if (activity instanceof AppCompatActivity) {
             AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
             FragmentManager fragmentManager = appCompatActivity.getSupportFragmentManager();
-            Fragment fragment =  fragmentManager.findFragmentByTag(sceneId);
-            if (fragment == null) {
-                fragment =  fragmentManager.findFragmentByTag(navId);
-            }
-            if (fragment != null && fragment instanceof ReactNavigationFragment) {
-                return (ReactNavigationFragment) fragment;
-            }
+            return (NativeFragment) NavigatorModule.findFragmentBySceneId(fragmentManager, sceneId);
         }
         return null;
     }
+
 
 }

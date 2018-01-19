@@ -14,7 +14,7 @@ export default styles = StyleSheet.create({
       justifyContent: 'flex-start',
       alignItems: 'stretch',
       // backgroundColor: '#F5FCFF',
-      paddingTop: 56,
+      paddingTop: 16,
     },
     button: {
       alignItems: "center",
@@ -22,7 +22,11 @@ export default styles = StyleSheet.create({
       height: 40,
     },
     buttonText: {
+      color: 'rgb(34,88,220)'
+    },
 
+    buttonTextDisable: {
+      color: '#d1d1d1'
     },
 
     modalContainer: {
@@ -52,17 +56,15 @@ export default styles = StyleSheet.create({
       borderColor: 'rgba(0, 0, 0, 0.1)',
     },
 
-    buttonTextDisable: {
-      color: '#d1d1d1'
-    },
-
     result: {
       textAlign: 'center',
+      marginTop: 8,
       color: '#333333',
       fontSize: 13,
     },
     input: {
       height: 40,
+      marginTop: 156,
       marginLeft: 32,
       marginRight: 32,
       marginBottom: 16,
@@ -74,7 +76,7 @@ export default styles = StyleSheet.create({
     welcome: {
       fontSize: 17,
       textAlign: 'center',
-      margin: 16,
+      margin: 8,
     },
     instructions: {
       textAlign: 'center',

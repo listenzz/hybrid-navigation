@@ -1,6 +1,7 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
@@ -13,9 +14,19 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
+import com.navigationhybrid.androidnavigation.AwesomeActivity;
+import com.navigationhybrid.androidnavigation.AwesomeFragment;
+import com.navigationhybrid.androidnavigation.DrawerFragment;
+import com.navigationhybrid.androidnavigation.FragmentHelper;
+import com.navigationhybrid.androidnavigation.NavigationFragment;
+import com.navigationhybrid.androidnavigation.TabBarFragment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -25,7 +36,7 @@ import javax.annotation.Nullable;
  * Created by Listen on 2017/11/20.
  */
 
-public class NavigatorModule extends ReactContextBaseJavaModule{
+public class NavigatorModule extends ReactContextBaseJavaModule {
 
     static final String TAG = "ReactNative";
 
@@ -84,15 +95,45 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
 
     @ReactMethod
     public void signalFirstRenderComplete(final String navId, final String sceneId) {
-       handler.post(new Runnable() {
-           @Override
-           public void run() {
-               ReactNavigationFragment fragment = findReactNavigationFragment(navId, sceneId);
-               if (fragment != null) {
-                   fragment.signalFirstRenderComplete();
-               }
-           }
-       });
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ReactFragment fragment = (ReactFragment) findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    fragment.signalFirstRenderComplete();
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void switchToTab(final int index) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                TabBarFragment tabBarFragment = findTabBarFragment();
+                if (tabBarFragment != null) {
+                    AwesomeFragment presented = tabBarFragment.getPresentedFragment();
+                    if (presented != null) {
+                        presented.dismissFragment();
+                    }
+                    tabBarFragment.setSelectedIndex(index);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTabBadge(final int index, final String text) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                TabBarFragment tabBarFragment = findTabBarFragment();
+                if (tabBarFragment != null) {
+                    tabBarFragment.setBadge(index, text);
+                }
+            }
+        });
     }
 
     @ReactMethod
@@ -100,9 +141,13 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Navigator navigator = findNavigator(navId, sceneId);
-                if (navigator != null) {
-                    navigator.push(moduleName, Arguments.toBundle(props), Arguments.toBundle(options), animated);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    if (navigationFragment != null) {
+                        AwesomeFragment target = ReactFragmentHelper.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                        navigationFragment.pushFragment(target);
+                    }
                 }
             }
         });
@@ -113,9 +158,12 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Navigator navigator = findNavigator(navId, sceneId);
-                if (navigator != null) {
-                    navigator.pop(animated);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    if (navigationFragment != null) {
+                        navigationFragment.popFragment();
+                    }
                 }
             }
         });
@@ -126,9 +174,15 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Navigator navigator = findNavigator(navId, sceneId);
-                if (navigator != null) {
-                    navigator.popTo(targetId, animated);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    if (navigationFragment != null) {
+                        AwesomeFragment target = (AwesomeFragment) navigationFragment.getChildFragmentManager().findFragmentByTag(targetId);
+                        if (target != null) {
+                            navigationFragment.popToFragment(target);
+                        }
+                    }
                 }
             }
         });
@@ -139,9 +193,12 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Navigator navigator = findNavigator(navId, sceneId);
-                if (navigator != null) {
-                    navigator.popToRoot();
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    if (navigationFragment != null) {
+                        navigationFragment.popToRootFragment();
+                    }
                 }
             }
         });
@@ -152,9 +209,9 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Navigator navigator = findNavigator(navId, sceneId);
-                if (navigator != null) {
-                    promise.resolve(navigator.isRoot());
+                NativeFragment fragment = (NativeFragment) findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                   promise.resolve(fragment.isRoot());
                 }
             }
         });
@@ -165,9 +222,13 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Navigator navigator = findNavigator(navId, sceneId);
-                if (navigator != null) {
-                    navigator.replace(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    if (navigationFragment != null) {
+                        AwesomeFragment target = ReactFragmentHelper.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                        navigationFragment.replaceFragment(target);
+                    }
                 }
             }
         });
@@ -178,9 +239,13 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Navigator navigator = findNavigator(navId, sceneId);
-                if (navigator != null) {
-                    navigator.replaceToRoot(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    if (navigationFragment != null) {
+                        AwesomeFragment target = ReactFragmentHelper.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                        navigationFragment.replaceToRootFragment(target);
+                    }
                 }
             }
         });
@@ -191,9 +256,10 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Navigator navigator = findNavigator(navId, sceneId);
-                if (navigator != null) {
-                    navigator.present(moduleName, requestCode, Arguments.toBundle(props), Arguments.toBundle(options), animated);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    ReactNavigationFragment target = ReactNavigationFragment.newInstance(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                    fragment.presentFragment(target, requestCode);
                 }
             }
         });
@@ -204,9 +270,9 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Navigator navigator = findNavigator(navId, sceneId);
-                if (navigator != null) {
-                    navigator.setResult(resultCode, Arguments.toBundle(result));
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    fragment.setResult(resultCode, Arguments.toBundle(result));
                 }
             }
         });
@@ -217,46 +283,178 @@ public class NavigatorModule extends ReactContextBaseJavaModule{
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Navigator navigator = findNavigator(navId, sceneId);
-                if (navigator != null) {
-                    navigator.dismiss(animated);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    fragment.dismissFragment();
                 }
             }
         });
     }
 
-    private Navigator findNavigator(String navId, String sceneId) {
+    @ReactMethod
+    public void setRoot(final ReadableMap layout) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Activity activity = getCurrentActivity();
+                if (activity instanceof AwesomeActivity) {
+                    Log.w(TAG, "--------------- setRoot -----------------");
+                    AwesomeActivity awesomeActivity = (AwesomeActivity) activity;
+                    AwesomeFragment awesomeFragment = fragmentFormLayout(layout);
+                    awesomeActivity.setRootFragment(awesomeFragment);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void toggleMenu(final String sceneId) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
+                if (awesomeFragment != null) {
+                    DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
+                    if (drawerFragment != null) {
+                        drawerFragment.toggleMenu();
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void openMenu(final String sceneId ){
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
+                if (awesomeFragment != null) {
+                    DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
+                    if (drawerFragment != null) {
+                        drawerFragment.openMenu();
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void closeMenu(final String sceneId) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
+                if (awesomeFragment != null) {
+                    DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
+                    if (drawerFragment != null) {
+                        drawerFragment.closeMenu();
+                    }
+                }
+            }
+        });
+    }
+
+
+    private AwesomeFragment fragmentFormLayout(ReadableMap layout) {
+
+        if (layout.hasKey("screen")) {
+            String screen = layout.getString("screen");
+            return ReactFragmentHelper.createFragment(screen, null, null);
+        }
+
+        if (layout.hasKey("stack")) {
+            ReadableMap stack = layout.getMap("stack");
+            String module = stack.getString("screen");
+            return ReactNavigationFragment.newInstance(module, null, optionsByModuleName(module));
+        }
+
+        if (layout.hasKey("tabs")) {
+            ReadableArray tabs = layout.getArray("tabs");
+            List<AwesomeFragment> fragments = new ArrayList<>();
+            for (int i = 0, size = tabs.size(); i < size; i++) {
+                ReadableMap map = tabs.getMap(i);
+                AwesomeFragment awesomeFragment = fragmentFormLayout(map);
+                fragments.add(awesomeFragment);
+            }
+            ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
+            tabBarFragment.setFragments(fragments);
+            return tabBarFragment;
+        }
+
+        if (layout.hasKey("drawer")) {
+            ReadableArray drawer = layout.getArray("drawer");
+            if (drawer.size() != 2) {
+                ReadableMap content = drawer.getMap(0);
+                ReadableMap menu = drawer.getMap(1);
+                AwesomeFragment contentFragment = fragmentFormLayout(content);
+                AwesomeFragment menuFragment = fragmentFormLayout(menu);
+                ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
+                drawerFragment.setMenuFragment(menuFragment);
+                drawerFragment.setContentFragment(contentFragment);
+                return drawerFragment;
+            }
+        }
+
+        return null;
+
+    }
+
+    private Bundle optionsByModuleName(String moduleName) {
+        ReactBridgeManager reactBridgeManager = ReactBridgeManager.instance;
+        ReadableMap readableMap = reactBridgeManager.reactModuleOptionsForKey(moduleName);
+        if (readableMap == null) {
+            readableMap = Arguments.createMap();
+        }
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(readableMap);
+
+        return Arguments.toBundle(writableMap);
+    }
+
+
+    private NativeFragment findFragmentBySceneId(String sceneId) {
         Activity activity = getCurrentActivity();
         if (activity instanceof AppCompatActivity) {
             AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
             FragmentManager fragmentManager = appCompatActivity.getSupportFragmentManager();
-            Fragment fragment = fragmentManager.findFragmentByTag(sceneId);
-            if (fragment == null) {
-                fragment = fragmentManager.findFragmentByTag(navId);
-            }
-            if (fragment != null && fragment instanceof NavigationFragment) {
-                NavigationFragment navigationFragment = (NavigationFragment) fragment;
-                return navigationFragment.getNavigator();
-            }
+            return (NativeFragment) findFragmentBySceneId(fragmentManager, sceneId);
         }
-        Log.w(TAG, "navigator is null. navId:" + navId + " sceneId:" + sceneId);
         return null;
     }
 
-    private ReactNavigationFragment findReactNavigationFragment(String navId, String sceneId) {
+    private TabBarFragment findTabBarFragment() {
         Activity activity = getCurrentActivity();
         if (activity instanceof AppCompatActivity) {
             AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
             FragmentManager fragmentManager = appCompatActivity.getSupportFragmentManager();
-            Fragment fragment =  fragmentManager.findFragmentByTag(sceneId);
-            if (fragment == null) {
-                fragment =  fragmentManager.findFragmentByTag(navId);
-            }
-            if (fragment != null && fragment instanceof ReactNavigationFragment) {
-                return (ReactNavigationFragment) fragment;
-            }
+            return findTabBarFragment(fragmentManager);
         }
         return null;
     }
+
+    public static TabBarFragment findTabBarFragment(FragmentManager fragmentManager) {
+        List<Fragment> fragments = fragmentManager.getFragments();
+        TabBarFragment tabBarFragment = null;
+        for (int size = fragments.size(), i = size - 1; i > -1; i--) {
+            Fragment fragment = fragments.get(i);
+            if (fragment instanceof TabBarFragment) {
+                tabBarFragment = (TabBarFragment) fragment;
+            } else {
+                tabBarFragment = findTabBarFragment(fragment.getChildFragmentManager());
+            }
+
+            if (tabBarFragment != null) {
+                break;
+            }
+        }
+        return tabBarFragment;
+    }
+    
+    public static AwesomeFragment findFragmentBySceneId(FragmentManager fragmentManager, String sceneId) {
+        return (AwesomeFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
+    }
+
+
 
 }
