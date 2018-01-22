@@ -211,7 +211,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
             public void run() {
                 NativeFragment fragment = (NativeFragment) findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                   promise.resolve(fragment.isRoot());
+                    promise.resolve(fragment.isRoot());
                 }
             }
         });
@@ -324,7 +324,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void openMenu(final String sceneId ){
+    public void openMenu(final String sceneId) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -423,6 +423,10 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
         return null;
     }
 
+    static AwesomeFragment findFragmentBySceneId(FragmentManager fragmentManager, String sceneId) {
+        return (AwesomeFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
+    }
+
     private TabBarFragment findTabBarFragment() {
         Activity activity = getCurrentActivity();
         if (activity instanceof AppCompatActivity) {
@@ -433,7 +437,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
         return null;
     }
 
-    public static TabBarFragment findTabBarFragment(FragmentManager fragmentManager) {
+    private static TabBarFragment findTabBarFragment(FragmentManager fragmentManager) {
         List<Fragment> fragments = fragmentManager.getFragments();
         TabBarFragment tabBarFragment = null;
         for (int size = fragments.size(), i = size - 1; i > -1; i--) {
@@ -450,11 +454,6 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
         }
         return tabBarFragment;
     }
-    
-    public static AwesomeFragment findFragmentBySceneId(FragmentManager fragmentManager, String sceneId) {
-        return (AwesomeFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
-    }
-
 
 
 }

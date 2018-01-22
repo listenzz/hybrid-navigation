@@ -146,6 +146,9 @@ static NSDictionary *globalStyle;
     [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateNormal];
     [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
     [[UIBarButtonItem appearance] setTitleTextAttributes:disabled forState:UIControlStateDisabled];
+    
+    //
+    
 }
 
 + (NSDictionary *)globalStyle {
@@ -233,14 +236,12 @@ static NSDictionary *globalStyle;
     }
     
     NSString *action = item[@"action"];
-    NSString *navId = controller.navigator.navId;
     NSString *sceneId = controller.sceneId;
     if (action) {
         barButtonItem.actionBlock = ^{
             RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
-            [emitter sendEventWithName:ON_BAR_BUTTON_ITEM_CLICK_EVENT body:@{
+            [emitter sendEventWithName:@"ON_BAR_BUTTON_ITEM_CLICK" body:@{
                                                                              @"action": action,
-                                                                             @"navId": navId,
                                                                              @"sceneId": sceneId
                                                                              }];
         };

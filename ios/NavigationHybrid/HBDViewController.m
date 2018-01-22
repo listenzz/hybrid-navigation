@@ -7,6 +7,8 @@
 #import "HBDViewController.h"
 #import "HBDGarden.h"
 #import "HBDUtils.h"
+#import "HBDNavigationController.h"
+
 
 @interface HBDViewController ()
 
@@ -16,12 +18,12 @@
 
 @implementation HBDViewController
 
-- (instancetype)initWithNavigator:(HBDNavigator *)navigator props:(nonnull NSDictionary *)props options:(nonnull NSDictionary *)options; {
+- (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
     if (self = [super init]) {
-        _navigator = navigator;
-        _sceneId = props[@"sceneId"];
-        _props = props;
+        _sceneId = [[NSUUID UUID] UUIDString];
+        _moduleName = moduleName;
         _options = options;
+        _props = props;
     }
     return self;
 }
@@ -60,6 +62,7 @@
     
     NSDictionary *leftBarButtonItem = self.options[@"leftBarButtonItem"];
     [garden setLeftBarButtonItem:leftBarButtonItem forController:self];
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {

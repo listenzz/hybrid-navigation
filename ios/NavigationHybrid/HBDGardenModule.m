@@ -5,7 +5,6 @@
 //
 
 #import "HBDGardenModule.h"
-#import "HBDNavigator.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDReactViewController.h"
 #import "HBDGarden.h"
@@ -41,50 +40,62 @@ RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
 }
 
 RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)navId sceneId:(NSString *)sceneId item:(NSDictionary *)item) {
-    HBDReactViewController *vc = [self controllerForNavId:navId sceneId:sceneId];
+    HBDViewController *vc = [self controllerForSceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
     item = [self mergeItem:item key:@"leftBarButtonItem" forController:vc];
     [garden setLeftBarButtonItem:item forController:vc];
 }
 
 RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *)navId sceneId:(NSString *)sceneId item:(NSDictionary *)item) {
-    HBDReactViewController *vc = [self controllerForNavId:navId sceneId:sceneId];
+    HBDViewController *vc = [self controllerForSceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
     item = [self mergeItem:item key:@"rightBarButtonItem" forController:vc];
     [garden setRightBarButtonItem:item forController:vc];
 }
 
 RCT_EXPORT_METHOD(setTitleItem:(NSString *)navId sceneId:(NSString *)sceneId item:(NSDictionary *)item) {
-    HBDReactViewController *vc = [self controllerForNavId:navId sceneId:sceneId];
+    HBDViewController *vc = [self controllerForSceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
     item = [self mergeItem:item key:@"titleItem" forController:vc];
     [garden setTitleItem:item forController:vc];
 }
 
-- (HBDReactViewController *)controllerForNavId:(NSString *)navId sceneId:(NSString *)sceneId {
-    HBDNavigator *navigator = [self navigatorForNavId:navId];
-    if (navigator) {
-        UIViewController *vc = navigator.navigationController.topViewController;
-        if ([vc isKindOfClass:[HBDReactViewController class]]) {
-            HBDReactViewController *hbdvc = (HBDReactViewController *)vc;
-            if ([hbdvc.sceneId isEqualToString:sceneId]) {
-                return hbdvc;
+- (HBDViewController *)controllerForSceneId:(NSString *)sceneId {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    UIViewController *controller = application.keyWindow.rootViewController;
+    return [self controllerForSceneId:sceneId atController:controller];
+}
+
+- (HBDViewController *)controllerForSceneId:(NSString *)sceneId atController:(UIViewController *)controller {
+    HBDViewController *target;
+    if ([controller isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *vc = (HBDViewController *)controller;
+        if ([vc.sceneId isEqualToString:sceneId]) {
+            target = vc;
+        }
+    }
+    
+    if (!target) {
+        UIViewController *presentedController = controller.presentedViewController;
+        if (presentedController && ![presentedController isBeingDismissed]) {
+            target = [self controllerForSceneId:sceneId atController:presentedController];
+        }
+    }
+    
+    if (!target && controller.childViewControllers.count > 0) {
+        NSUInteger count = controller.childViewControllers.count;
+        for (NSUInteger i = 0; i < count; i ++) {
+            UIViewController *child = controller.childViewControllers[i];
+            target = [self controllerForSceneId:sceneId atController:child];
+            if (target) {
+                break;
             }
         }
-        RCTLogWarn(@"top controller 不是要找的 controller，似乎哪个地方出错了");
     }
-    return nil;
+    return target;
 }
 
-- (HBDNavigator *)navigatorForNavId:(NSString *)navId {
-    HBDNavigator *navigator = [HBDNavigator navigatorForId:navId];
-    if (!navigator) {
-        NSLog(@"找不到对应的 navigator，似乎哪个地方出错了");
-    }
-    return navigator;
-}
-
-- (NSDictionary *)mergeItem:(NSDictionary *)item key:(NSString *)key forController:(HBDReactViewController *)vc {
+- (NSDictionary *)mergeItem:(NSDictionary *)item key:(NSString *)key forController:(HBDViewController *)vc {
     NSDictionary *options = vc.options;
     NSDictionary *target = options[key];
     if (!target) {

@@ -8,6 +8,8 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
+@class HBDViewController;
+
 @interface HBDNavigatorModule : RCTEventEmitter <RCTBridgeModule>
 
 @end

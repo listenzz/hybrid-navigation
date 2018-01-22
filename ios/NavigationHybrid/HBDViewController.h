@@ -5,19 +5,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "HBDNavigator.h"
+#import "UIViewController+HBD.h"
 
 @class HBDNavigator;
 
 @interface HBDViewController : UIViewController
 
 @property(nonatomic, copy, readonly) NSString *sceneId;
-@property(nonatomic, strong, readonly) HBDNavigator *navigator;
-
+@property(nonatomic, copy, readonly) NSString *moduleName;
 @property(nonatomic, copy, readonly) NSDictionary *props;
 @property(nonatomic, copy) NSDictionary *options;
 
-- (instancetype)initWithNavigator:(HBDNavigator *)navigator props:(NSDictionary *)props options:(NSDictionary *)options;
+- (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options;
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode;
 

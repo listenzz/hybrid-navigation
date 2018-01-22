@@ -182,17 +182,12 @@ public class AwesomeActivity extends AppCompatActivity implements PresentableAct
 
     private void executeDismissFragment(AwesomeFragment fragment) {
         // 如果有 presented 就 dismiss presented, 否则就 dismiss 自己
-        AwesomeFragment presented = getPresentedFragment(fragment);
-        AwesomeFragment presenting;
-        if (presented != null) {
-            presenting = fragment;
-        } else {
-            presented = fragment;
-            presenting = getPresentingFragment(fragment);
-        }
+        AwesomeFragment top = (AwesomeFragment) getSupportFragmentManager().findFragmentById(android.R.id.content);
+        AwesomeFragment presenting = getPresentingFragment(fragment);
 
-        presented.setAnimation(PresentAnimation.Modal);
-        presented.getInnermostFragment().setAnimation(PresentAnimation.Modal);
+
+        top.setAnimation(PresentAnimation.Modal);
+        top.getInnermostFragment().setAnimation(PresentAnimation.Modal);
 
         if (presenting != null) {
             presenting.setAnimation(PresentAnimation.Modal);
@@ -202,7 +197,7 @@ public class AwesomeActivity extends AppCompatActivity implements PresentableAct
             ActivityCompat.finishAfterTransition(this);
         } else {
             presenting.onFragmentResult(fragment.getRequestCode(), fragment.getResultCode(), fragment.getResultData());
-            getSupportFragmentManager().popBackStack(presented.getSceneId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager().popBackStack(fragment.getSceneId(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
     }

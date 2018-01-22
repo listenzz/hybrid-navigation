@@ -10,10 +10,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <NavigationHybrid/NavigationHybrid.h>
 
-#import "NativeNavigationViewController.h"
-#import "NativeResultViewController.h"
-
-@interface AppDelegate ()
+@interface AppDelegate () <HBDReactBridgeManagerDelegate>
 
 @end
 
@@ -23,18 +20,34 @@
     
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
     [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+    [HBDReactBridgeManager instance].delegate = self;
     
-    // 注册 native 模块
-    [[HBDReactBridgeManager instance] registerNativeModule:@"NativeNavigation" forController:[NativeNavigationViewController class]];
-    [[HBDReactBridgeManager instance] registerNativeModule:@"Navigation" forController:[NativeNavigationViewController class]];
-    [[HBDReactBridgeManager instance] registerNativeModule:@"NativeResult" forController:[NativeResultViewController class]];
+    // FIXME:
+    [[UITabBar appearance] setTintColor:UIColor.redColor];
     
-    self.window.rootViewController = [[HBDNavigationController alloc] initWithRootModule:@"Navigation" props:nil options:nil];
+    UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+     self.window.rootViewController = [storyboard instantiateInitialViewController];
     [self.window makeKeyAndVisible];
     
     return YES;
 }
 
+- (void)reactModuleRegistryDidCompleted:(HBDReactBridgeManager *)manager {
+    
+    HBDNavigationController *navigation = [[HBDNavigationController alloc] initWithRootModule:@"Navigation" props:nil options:nil];
+    HBDNavigationController *style = [[HBDNavigationController alloc] initWithRootModule:@"CustomStyle" props:nil options:nil];
+    
+    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    [tabBarController setViewControllers:@[navigation, style]];
+    
+    HBDDrawerController *drawerController = [[HBDDrawerController alloc] init];
+    [drawerController setContentViewController:tabBarController];
+    HBDViewController *menu = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Menu" props:nil options:nil];
+    [drawerController setMenuViewController:menu];
+    
+    self.window.rootViewController = drawerController;
+    
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

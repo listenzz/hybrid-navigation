@@ -6,7 +6,10 @@
 
 #import "HBDReactBridgeManager.h"
 #import <React/RCTLog.h>
-#import "HBDNavigator.h"
+#import "HBDUtils.h"
+#import "HBDReactViewController.h"
+
+NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
 
 @interface HBDReactBridgeManager() <RCTBridgeDelegate>
 
@@ -83,10 +86,35 @@
 
 - (void)endRegisterReactModule {
     _isReactModuleInRegistry = NO;
+    [[NSNotificationCenter defaultCenter] postNotificationName:ReactModuleRegistryDidCompletedNotification object:nil];
     if (self.delegate != nil) {
         [self.delegate reactModuleRegistryDidCompleted:self];
     }
 }
+
+- (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
+    HBDViewController *vc = nil;
+    
+    if (!props) {
+        props = @{};
+    }
+    
+    if (!options) {
+        options = @{};
+    }
+    
+    if ([self hasReactModuleForName:moduleName]) {
+        NSDictionary *staticOptions = [[HBDReactBridgeManager instance] reactModuleOptionsForKey:moduleName];
+        options = [HBDUtils mergeItem:options withTarget:staticOptions];
+        vc = [[HBDReactViewController alloc] initWithModuleName:moduleName props:props options:options];
+    } else {
+        Class clazz =  [self nativeModuleClassFromName:moduleName];
+        NSCAssert([self hasNativeModule:moduleName], @"找不到名为 %@ 的模块，你是否忘了注册？", moduleName);
+        vc = [[clazz alloc] initWithModuleName:moduleName props:props options:options];
+    }
+    return vc;
+}
+
 
 #pragma mark - bridge delegate
 

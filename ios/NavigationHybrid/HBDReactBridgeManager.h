@@ -6,9 +6,12 @@
 
 #import <Foundation/Foundation.h>
 #import <React/RCTBridge.h>
+#import "HBDViewController.h"
+
+
+extern NSString * const ReactModuleRegistryDidCompletedNotification;
 
 @class HBDReactBridgeManager;
-@class HBDNavigator;
 
 @protocol HBDReactBridgeManagerDelegate <NSObject>
 
@@ -42,5 +45,7 @@
 - (void)startRegisterReactModule;
 
 - (void)endRegisterReactModule;
+
+- (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options;
 
 @end

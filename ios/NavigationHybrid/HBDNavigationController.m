@@ -22,31 +22,27 @@
 @implementation HBDNavigationController
 
 - (instancetype)initWithRootModule:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
-    _navigator = [[HBDNavigator alloc] init];
     _initialModuleName = moduleName;
     _initialProps = props;
     _initialOptions = options;
-    UIViewController *vc;
-    if ([[HBDReactBridgeManager instance] isReactModuleInRegistry]) {
-        vc = [[UIViewController alloc] init];
-        UIView *view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-        [view setBackgroundColor:UIColor.whiteColor];
-        UIActivityIndicatorView *indicator =  [[UIActivityIndicatorView alloc] init];
-        indicator.color = UIColor.grayColor;
-        _indicator = indicator;
-        [indicator startAnimating];
-        [view addSubview:indicator];
-        indicator.center = view.center;
-        vc.view = view;
-        vc.title = @"loading...";
-        [self performSelector:@selector(start) withObject:nil afterDelay:0.0];
-    } else {
-        vc = [_navigator controllerWithModuleName:moduleName props:props options:options];
-    }
+    
+    UIViewController *vc = [[UIViewController alloc] init];
+    UIView *view = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    [view setBackgroundColor:UIColor.whiteColor];
+    UIActivityIndicatorView *indicator =  [[UIActivityIndicatorView alloc] init];
+    indicator.color = UIColor.grayColor;
+    _indicator = indicator;
+    [indicator startAnimating];
+    [view addSubview:indicator];
+    indicator.center = view.center;
+    vc.view = view;
+    vc.title = @"loading...";
+    
     if (self = [super initWithRootViewController:vc]) {
-        _navigator.navigationController = self;
+        return self;
     }
-    return self;
+    
+    return nil;
 }
 
 - (void)start {
@@ -63,7 +59,22 @@
             [self setStyle:style];
         }
         
-        [self setViewControllers:@[[_navigator controllerWithModuleName:_initialModuleName props:_initialProps options:_initialOptions]] animated:NO];
+        [self setViewControllers:@[[[HBDReactBridgeManager instance] controllerWithModuleName:_initialModuleName props:_initialProps options:_initialOptions]] animated:NO];
+        
+        [self configTabItem];
+        
+    }
+}
+
+- (void)configTabItem {
+    NSDictionary *options = [[HBDReactBridgeManager instance] reactModuleOptionsForKey:_initialModuleName];
+    NSDictionary *tabItem = options[@"tabItem"];
+    if (tabItem) {
+        UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
+        tabBarItem.title = tabItem[@"title"];
+        tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
+        self.tabBarItem = tabBarItem;
+        self.hidesBottomBarWhenPushed = [tabItem[@"hideTabBarWhenPush"] boolValue];
     }
 }
 
@@ -144,10 +155,10 @@
     [self.navigationBar setTitleTextAttributes:titleAttributes];
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    [self performSelector:@selector(start) withObject:nil afterDelay:0.0];
 }
 
 - (void)didReceiveMemoryWarning {

@@ -13,29 +13,27 @@
 
 @interface HBDReactViewController ()
 
-@property(nonatomic, copy) NSString *moduleName;
-
 @end
 
 @implementation HBDReactViewController
 
-- (instancetype)initWithNavigator:(HBDNavigator *)navigator moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
-    if (self = [super initWithNavigator:navigator props:props options:options]) {
-        _moduleName = moduleName;
-    }
-    return self;
-}
-
 - (void)loadView {
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager instance].bridge moduleName:self.moduleName initialProperties:self.props];
+    NSMutableDictionary *props;
+    if (self.props) {
+        props = [self.props mutableCopy];
+    } else {
+        props = [@{} mutableCopy];
+    }
+    
+    [props setObject:self.sceneId forKey:@"sceneId"];
+    
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager instance].bridge moduleName:self.moduleName initialProperties:props];
     self.view = rootView;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -66,10 +64,9 @@
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
-    [emitter sendEventWithName:ON_COMPONENT_RESULT_EVENT body:@{@"requestCode": @(requestCode),
+    [emitter sendEventWithName:@"ON_COMPONENT_RESULT" body:@{@"requestCode": @(requestCode),
                                                                 @"resultCode": @(resultCode),
                                                                 @"data": data ?: [NSNull null],
-                                                                @"navId": self.navigator.navId,
                                                                 @"sceneId": self.sceneId,
                                                                 }];
 }

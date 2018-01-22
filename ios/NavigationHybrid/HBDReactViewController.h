@@ -8,6 +8,5 @@
 
 @interface HBDReactViewController : HBDViewController
 
-- (instancetype)initWithNavigator:(HBDNavigator *)navigator moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options;
 
 @end
