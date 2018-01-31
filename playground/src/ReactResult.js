@@ -31,7 +31,6 @@ export default class ReactResult extends Component {
 		super(props);
 		this.popToRoot = this.popToRoot.bind(this);
     this.pushToReact = this.pushToReact.bind(this);
-    this.switchToTab = this.switchToTab.bind(this);
 		this.sendResult = this.sendResult.bind(this);
 		this.onInputTextChanged = this.onInputTextChanged.bind(this);
 		this.state = {
@@ -67,10 +66,6 @@ export default class ReactResult extends Component {
 		this.props.navigator.push('ReactResult');
   }
   
-  switchToTab() {
-		this.props.navigator.switchToTab(1);
-  }
-
 	sendResult() {
     this.props.navigator.setResult(RESULT_OK, {text: this.state.text, backId: this.props.sceneId})
 		this.props.navigator.dismiss();
@@ -96,12 +91,6 @@ export default class ReactResult extends Component {
 				<TouchableOpacity onPress={this.popToRoot} activeOpacity={0.2} style={styles.button} disabled={this.state.isRoot}>
 					<Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
 						pop to home
-          </Text>
-				</TouchableOpacity>
-
-        <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>
-						switch to tab 'Style'
           </Text>
 				</TouchableOpacity>
 

@@ -14,6 +14,8 @@
 		914E8E781FC03AD300E5F241 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 914E8E771FC03AD300E5F241 /* Assets.xcassets */; };
 		914E8E7B1FC03AD300E5F241 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 914E8E791FC03AD300E5F241 /* LaunchScreen.storyboard */; };
 		914E8E7E1FC03AD300E5F241 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 914E8E7D1FC03AD300E5F241 /* main.m */; };
+		91BFD21C2020A6B900DFB5C6 /* OneNativeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91BFD21A2020A6B900DFB5C6 /* OneNativeViewController.m */; };
+		91BFD21D2020A6B900DFB5C6 /* OneNativeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 91BFD21B2020A6B900DFB5C6 /* OneNativeViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,9 @@
 		914E8E7A1FC03AD300E5F241 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		914E8E7C1FC03AD300E5F241 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		914E8E7D1FC03AD300E5F241 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		91BFD2192020A6B900DFB5C6 /* OneNativeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OneNativeViewController.h; sourceTree = "<group>"; };
+		91BFD21A2020A6B900DFB5C6 /* OneNativeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OneNativeViewController.m; sourceTree = "<group>"; };
+		91BFD21B2020A6B900DFB5C6 /* OneNativeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OneNativeViewController.xib; sourceTree = "<group>"; };
 		ACA1C6C7A54D9D81DCEBE8E9 /* libPods-Navigation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Navigation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -74,6 +79,9 @@
 				914E8E791FC03AD300E5F241 /* LaunchScreen.storyboard */,
 				914E8E7C1FC03AD300E5F241 /* Info.plist */,
 				914E8E7D1FC03AD300E5F241 /* main.m */,
+				91BFD2192020A6B900DFB5C6 /* OneNativeViewController.h */,
+				91BFD21A2020A6B900DFB5C6 /* OneNativeViewController.m */,
+				91BFD21B2020A6B900DFB5C6 /* OneNativeViewController.xib */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -157,6 +165,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91BFD21D2020A6B900DFB5C6 /* OneNativeViewController.xib in Resources */,
 				914E8E7B1FC03AD300E5F241 /* LaunchScreen.storyboard in Resources */,
 				914E8E781FC03AD300E5F241 /* Assets.xcassets in Resources */,
 				914E8E761FC03AD300E5F241 /* Main.storyboard in Resources */,
@@ -248,6 +257,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91BFD21C2020A6B900DFB5C6 /* OneNativeViewController.m in Sources */,
 				914E8E731FC03AD300E5F241 /* ViewController.m in Sources */,
 				914E8E7E1FC03AD300E5F241 /* main.m in Sources */,
 				914E8E701FC03AD300E5F241 /* AppDelegate.m in Sources */,

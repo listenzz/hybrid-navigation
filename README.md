@@ -6,13 +6,11 @@ A native navigation for React Native.
 - 使用原生导航组件
 - Android 使用了 Lifecycle 架构组件，解决了生命周期问题
 - 以 iOS 的导航系统为参照，支持 push, pop, popTo, popToRoot, present, dismiss, replace, replaceToRoot 等操作
-- 支持 statusBar, UINavigationBar(iOS), ToolBar(Android) 的全局样式配置以及局部调整
+- 支持 StatusBar, UINavigationBar(iOS), UITabBar(iOS), ToolBar(Android), BottomNavigationBar(Android) 的全局样式配置以及局部调整
 - 支持原生页面和 RN 页面互相跳转和传值
 - 支持 vector icons
 
 ## Running the Playground Project
-
-![navigation-android](./screenshot/navigation-android.png)
 
 To run the playground project, first clone this repo:
 
@@ -37,13 +35,33 @@ To run on Android: `npm run run:android`
 
 make sure that you have a  simulator or device when you run andriod
 
+## 版本记录
+
+### 0.1.x
+
+- 支持在现有原生项目基础上嵌入 RN 模块，并使得 RN 的导航栏和原生体验一致，即使是程序员，也无法区分哪些页面是由原生代码编写，哪些页面是由 RN 代码编写
+- 支持同一个导航栈内，原生页面和 RN 页面互相跳转、传值、接收返回值
+- 支持 push, pop, popTo, popToRoot, replace, replaceToRoot, present, dismiss 等导航操作
+- 支持对导航栏以及状态栏的全局样式配置
+- 每个页面都可以单独设置导航栏的标题，背景，左右按钮
+- 导航栏可以使用 vector fonts 作为按钮图标
+- 支持 npm link
+ 
+### 0.2.x
+![navigation-android](./screenshot/navigation-android.png)
+
+- 支持 tab, drawer
+- 可配置 tabBar 部分属性
+- 对 0.1.x 代码作了大量重构，以适应本版本的需求
+- 方便接入 redux、mobx 等框架
+
 ## 集成到以 RN 为主的项目
 
 你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
 
-0.2.0 开始支持，开发中。
+> 如果你对原生开发一无所知，建议你使用 [React Navigation](https://reactnavigation.org/docs/intro/)，避免踩一些无能为力的坑。如果你熟悉原生开发，欢迎贡献代码。
 
-0.2.0 还将支持 Tab、Drawer
+请参考下一章节
 
 ## 集成到已有原生项目
 
@@ -435,7 +453,9 @@ export NODE_BINARY=node
 
 ```
 
-## 导航 
+## 容器
+
+### Stack 
 
 - 导航栈
 
@@ -629,10 +649,34 @@ export NODE_BINARY=node
 	同理，在 F 调用 `replaceToRoot` 只能替换到 E 页面。
 	
 	在 A 或 E 中调用 `isRoot` 会返回 `true`，其它页面返回 `false`
+	
 
-## 定制顶部导航栏
+### Tab
 
-在 iOS 中，导航栏是指 statusBar，UINavigationBar，在 Android 中，导航栏是指 statusBar，ToolBar。
+- switchToTab
+    
+    切换到指定 tab
+    
+- setTabBadge
+
+    设置指定 tab 的 badge
+
+### Drawer
+
+- toggleMenu
+
+    切换抽屉的开关状态
+    
+- openMenu
+
+    打开抽屉
+    
+- closeMenu
+
+    关闭抽屉
+
+
+## 设置样式或主题
 
 一个 APP 中的风格通常是一致的，使用 `Garden.setStyle` 可以全局设置 APP 的主题。
 
@@ -656,6 +700,10 @@ setStyle 接受一个对象为参数，可配置字段如下：
     titleAlignment: String // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left
     barButtonItemTintColor: String // 顶部导航栏按钮颜色
     barButtonItemTextSize: Int // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
+    
+    bottomBarBackgroundColor: String // 底部 TabBar 背景颜色
+    bottomBarShadowImage: Object // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 。对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
+    bottomBarButtonItemTintColor: String // 底部 TabBarItem 选中效果
 }
 ```
 
@@ -795,6 +843,20 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 	可选，顶部导航栏按钮的字体大小，默认是 15 dp(pt)
 
+- bottomBarBackgroundColor
+
+    可选，UITabBar(iOS)、BottomNavigationBar(Android) 的背景颜色。
+    
+- bottomBarShadowImage
+
+    可选，UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。仅对 iOS 和 Android 4.4 以下版本生效 ，对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
+    配置方式请参考 `shadowImage`
+    
+- bottomBarButtonItemTintColor
+
+    可选，底部 TabBarItem 选中效果
+    
+    
 ### 静态配置页面
 
 每个页面的标题、按钮，通常是固定的，我们可以通过静态的方式来配置。
@@ -821,6 +883,12 @@ class Screen extends Component {
         	
         rightBarButtonItem: {     // 导航栏右侧按钮
             // 可配置项同 leftBarButtonItem
+        },
+        
+        tabItem: {               // 底部 TabBarItem 可配置项
+            title: 'Style',
+            icon: { uri: fontUri('FontAwesome', 'leaf', 20) },
+            hideTabBarWhenPush: true,
         }
     }
     	
@@ -859,6 +927,12 @@ class Screen extends Component {
 
 	可选，导航栏右侧按钮，可配置项同 leftBarButtonItem，不会对页面有任何副作用。
 	
+- tabItem 
+
+    可选，设置 UITabBar(iOS)、BottomNavigationBar(Android) 的 tab 标题和 icon。
+       
+    hideTabBarWhenPush, 当 Stack 嵌套在 Tab 的时候，push 到另一个页面时是否隐藏 TabBar
+      
 ### 动态配置页面
 
 有时，需要根据业务状态来动态改变导航栏中的项目。比如 rightBarButtonItem 是否可以点击，就是个很好的例子。
@@ -934,6 +1008,7 @@ Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
         enabled: false
     })
     ```
+
 
 
 

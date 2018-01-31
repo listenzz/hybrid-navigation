@@ -15,6 +15,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+import com.navigationhybrid.androidnavigation.AwesomeFragment;
+import com.navigationhybrid.androidnavigation.FragmentHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,11 +79,11 @@ public class GardenModule extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void setLeftBarButtonItem(final String navId, final String sceneId, final ReadableMap readableMap) {
+    public void setLeftBarButtonItem(final String sceneId, final ReadableMap readableMap) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                NativeFragment fragment = findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     Bundle buttonItem = mergeOptions(options, "leftBarButtonItem", readableMap);
@@ -94,11 +96,11 @@ public class GardenModule extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void setRightBarButtonItem(final String navId, final String sceneId, final ReadableMap readableMap) {
+    public void setRightBarButtonItem(final String sceneId, final ReadableMap readableMap) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                NativeFragment fragment = findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     Bundle buttonItem = mergeOptions(options, "rightBarButtonItem", readableMap);
@@ -111,11 +113,11 @@ public class GardenModule extends ReactContextBaseJavaModule{
     }
 
     @ReactMethod
-    public void setTitleItem(final String navId, final String sceneId, final ReadableMap readableMap) {
+    public void setTitleItem(final String sceneId, final ReadableMap readableMap) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                NativeFragment fragment = findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     Bundle titleItem = mergeOptions(options, "titleItem", readableMap);
@@ -128,14 +130,18 @@ public class GardenModule extends ReactContextBaseJavaModule{
     }
 
 
-    private NativeFragment findFragmentBySceneId(String sceneId) {
+    private HybridFragment findFragmentBySceneId(String sceneId) {
         Activity activity = getCurrentActivity();
         if (activity instanceof AppCompatActivity) {
             AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
             FragmentManager fragmentManager = appCompatActivity.getSupportFragmentManager();
-            return (NativeFragment) NavigatorModule.findFragmentBySceneId(fragmentManager, sceneId);
+            return findFragmentBySceneId(fragmentManager, sceneId);
         }
         return null;
+    }
+
+    private HybridFragment findFragmentBySceneId(FragmentManager fragmentManager, String sceneId) {
+        return (HybridFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
     }
 
 

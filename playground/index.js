@@ -21,8 +21,14 @@ Garden.setStyle({
 		},
 		// hideBackTitle: true,
 		elevation: 1,
-		// tabBarItemSelectedColor: '#FF0000',
-		// tabBarBackgroundColor: '#00FF00',
+
+		bottomBarBackgroundColor: '#ffffff',
+		//bottomBarShadowImage: {
+			//color: '#ff0000',
+		// 	image: Image.resolveAssetSource(require('./src/divider.png'))
+		//},
+		// bottomBarButtonItemTintColor: '#00FF00'
+		
 });
 
 ReactRegistry.startRegisterComponent();

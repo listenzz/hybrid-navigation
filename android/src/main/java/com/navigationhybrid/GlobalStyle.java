@@ -9,7 +9,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.graphics.ColorUtils;
+
+import com.navigationhybrid.androidnavigation.DrawableUtils;
 
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_LIGHT_CONTENT;
 
@@ -44,13 +45,9 @@ public class GlobalStyle {
 
 
     // ---- tabBar ------
-    private int tabBarBackgroundColor = INVALID_COLOR;
-
-    private int tabItemTextSize = 10;
-    private int tabItemColor = INVALID_COLOR;
-    private int tabItemSelectedColor = INVALID_COLOR;
-    private int tabBadgeColor = Color.parseColor("#FF4040");
-    private int tabBadgeBorderColor = Color.WHITE;
+    private String bottomBarBackgroundColor;
+    private String bottomBarButtonItemTintColor;
+    private Drawable bottomBarShadow;
 
     private Bundle style;
 
@@ -99,10 +96,13 @@ public class GlobalStyle {
                 String color = shadowImage.getString("color");
 
                 if (image != null) {
-                    drawable = StyleUtils.createDrawable(context, image);
-                    if (drawable instanceof BitmapDrawable) {
-                        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-                        bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
+                    String uri = image.getString("uri");
+                    if (uri != null) {
+                        drawable = DrawableUtils.fromUri(context, uri);
+                        if (drawable instanceof BitmapDrawable) {
+                            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+                            bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
+                        }
                     }
                 } else if (color != null) {
                     drawable = new ColorDrawable(Color.parseColor(color));
@@ -150,30 +150,59 @@ public class GlobalStyle {
         // backIcon
         Bundle backIcon = style.getBundle("backIcon");
         if (backIcon != null) {
-            Drawable drawable = StyleUtils.createDrawable(context, backIcon);
-            drawable.setColorFilter(getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
-            setBackIcon(drawable);
+            String uri = backIcon.getString("uri");
+            if (uri != null) {
+                Drawable drawable = DrawableUtils.fromUri(context, uri);
+                drawable.setColorFilter(getBarButtonItemTintColor(), PorterDuff.Mode.SRC_ATOP);
+                setBackIcon(drawable);
+            }
         }
 
         // --------- tabBar ------------
         // -----------------------------
 
         // tabBarBackgroundColor
-        String tabBarBackgroundColor = style.getString("tabBarBackgroundColor");
-        if (tabBarBackgroundColor != null) {
-            setTabBarBackgroundColor(Color.parseColor(tabBarBackgroundColor));
+        String bottomBarBackgroundColor = style.getString("bottomBarBackgroundColor");
+        if (bottomBarBackgroundColor != null) {
+            setBottomBarBackgroundColor(bottomBarBackgroundColor);
         }
 
-        // tabItemColor
-        String tabItemColor = style.getString("tabItemColor");
-        if (tabItemColor != null) {
-            setTabItemColor(Color.parseColor(tabItemColor));
+        String bottomBarButtonItemTintColor = style.getString("bottomBarButtonItemTintColor");
+        if (bottomBarButtonItemTintColor != null) {
+            setBottomBarButtonItemTintColor(bottomBarButtonItemTintColor);
         }
 
-        // tabItemSelectedColor
-        String tabItemSelectedColor = style.getString("tabItemSelectedColor");
-        if (tabItemSelectedColor != null) {
-            setTabItemSelectedColor(Color.parseColor(tabItemSelectedColor));
+        // bottomBarShadowImage
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // elevation
+            //double elevation = style.getDouble("elevation", -1);
+            //if (elevation != -1) {
+            //    setElevation(context, Float.valueOf(elevation + ""));
+            //}
+        } else {
+            // shadow
+            Bundle shadowImage = style.getBundle("bottomBarShadowImage");
+            Drawable drawable = null;
+            if (shadowImage == null) {
+                drawable = defaultShadow;
+            } else {
+                Bundle image = shadowImage.getBundle("image");
+                String color = shadowImage.getString("color");
+
+                if (image != null) {
+                    String uri = image.getString("uri");
+                    if (uri != null) {
+                        drawable = DrawableUtils.fromUri(context, uri);
+                        if (drawable instanceof BitmapDrawable) {
+                            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+                            bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
+                        }
+                    }
+                } else if (color != null) {
+                    drawable = new ColorDrawable(Color.parseColor(color));
+                }
+            }
+            setBottomBarShadow(drawable);
         }
 
     }
@@ -193,74 +222,20 @@ public class GlobalStyle {
 
     // ----- tabBar  -----
 
-    public void setTabBarBackgroundColor(int color) {
-        tabBarBackgroundColor = color;
+    public void setBottomBarBackgroundColor(String bottomBarBackgroundColor) {
+        this.bottomBarBackgroundColor = bottomBarBackgroundColor;
     }
 
-    public int getTabBarBackgroundColor() {
-        if (tabBarBackgroundColor != INVALID_COLOR) {
-            return tabBarBackgroundColor;
-        }
-
-        if (topBarStyle.equals(TOP_BAR_STYLE_LIGHT_CONTENT)) {
-            return Color.BLACK;
-        } else {
-            return Color.WHITE;
-        }
+    public String getBottomBarBackgroundColor() {
+        return bottomBarBackgroundColor;
     }
 
-    public void setTabItemColor(int color) {
-        tabItemColor = color;
+    public void setBottomBarButtonItemTintColor(String bottomBarButtonItemTintColor) {
+        this.bottomBarButtonItemTintColor = bottomBarButtonItemTintColor;
     }
 
-    public int getTabItemColor() {
-        if (tabItemColor != INVALID_COLOR) {
-            return tabItemColor;
-        } else {
-            return ColorUtils.setAlphaComponent(getTabItemSelectedColor(), 127);
-        }
-    }
-
-    public void setTabItemSelectedColor(int color) {
-        tabItemSelectedColor = color;
-    }
-
-    public int getTabItemSelectedColor() {
-        if (tabItemSelectedColor != INVALID_COLOR) {
-            return tabItemSelectedColor;
-        }
-        if (topBarStyle.equals(TOP_BAR_STYLE_LIGHT_CONTENT)) {
-            return Color.WHITE;
-        } else {
-            if (tabBarBackgroundColor == INVALID_COLOR) {
-                return Color.parseColor("#666666");
-            }
-            return Color.BLACK;
-        }
-    }
-
-    public void setTabBadgeColor(int color) {
-        tabBadgeColor = color;
-    }
-
-    public int getTabBadgeColor() {
-        return tabBadgeColor;
-    }
-
-    public void setTabBadgeBorderColor(int color) {
-        tabBadgeBorderColor = color;
-    }
-
-    public int getTabBadgeBorderColor() {
-        return tabBadgeBorderColor;
-    }
-
-    public int getTabItemTextSize() {
-        return tabItemTextSize;
-    }
-
-    public void setTabItemTextSize(int dp) {
-        this.tabItemTextSize = dp;
+    public String getBottomBarButtonItemTintColor() {
+        return bottomBarButtonItemTintColor;
     }
 
     // ------- topBar ---------
@@ -385,7 +360,13 @@ public class GlobalStyle {
         this.shadow = drawable;
     }
 
+    public Drawable getBottomBarShadow() {
+        return bottomBarShadow;
+    }
 
+    public void setBottomBarShadow(Drawable drawable) {
+        this.bottomBarShadow = drawable;
+    }
 
     public void setBarButtonItemTintColor(int color) {
         barButtonItemTintColor = color;

@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -40,8 +41,7 @@ public class ReactAppCompatActivityDelegate {
     private static final String REDBOX_PERMISSION_MESSAGE =
             "Overlay permissions needs to be granted in order for react native apps to run in dev mode";
 
-    private final @Nullable
-    AppCompatActivity mActivity;
+    private final AppCompatActivity mActivity;
     private final ReactBridgeManager bridgeManager;
 
     private @Nullable
@@ -51,7 +51,7 @@ public class ReactAppCompatActivityDelegate {
     private @Nullable
     Callback mPermissionsCallback;
 
-    public ReactAppCompatActivityDelegate(AppCompatActivity activity, ReactBridgeManager bridgeManager) {
+    public ReactAppCompatActivityDelegate(@NonNull AppCompatActivity activity, ReactBridgeManager bridgeManager) {
         this.mActivity = activity;
         this.bridgeManager = bridgeManager;
     }
@@ -73,7 +73,7 @@ public class ReactAppCompatActivityDelegate {
 
     protected void onCreate(Bundle savedInstanceState) {
         if (getReactNativeHost().getUseDeveloperSupport() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.w(TAG,"check overlay permission");
+            Log.w(TAG, "check overlay permission");
             // Get permission to show redbox in dev builds.
             if (!Settings.canDrawOverlays(getContext())) {
                 Log.w(TAG, "request overlay permission");

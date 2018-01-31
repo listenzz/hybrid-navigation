@@ -54,6 +54,13 @@
     } else if ([self isKindOfClass:[HBDDrawerController class]]) {
         UIViewController *child = ((HBDDrawerController *)self).contentController;
         [child didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
+    } else {
+        NSArray *children = self.childViewControllers;
+        if (children) {
+            for (UIViewController *vc in children) {
+                [vc didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
+            }
+        }
     }
 }
 

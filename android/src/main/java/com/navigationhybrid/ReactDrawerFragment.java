@@ -1,5 +1,7 @@
 package com.navigationhybrid;
 
+import android.support.annotation.NonNull;
+
 import com.navigationhybrid.androidnavigation.DrawerFragment;
 
 /**
@@ -8,5 +10,10 @@ import com.navigationhybrid.androidnavigation.DrawerFragment;
 
 public class ReactDrawerFragment extends DrawerFragment {
 
+    private final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+
+    public @NonNull ReactBridgeManager getReactBridgeManager() {
+        return bridgeManager;
+    }
 
 }

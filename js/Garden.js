@@ -2,8 +2,7 @@ import { NativeModules } from 'react-native';
 
 const GardenModule = NativeModules.GardenHybrid;
 export default class Garden {
-  constructor(navId, sceneId) {
-    this.navId = navId;
+  constructor(sceneId) {
     this.sceneId =sceneId;
   }
 
@@ -27,6 +26,12 @@ export default class Garden {
    *  titleAlignment: String // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left
    *  barButtonItemTintColor: String // 顶部导航栏按钮颜色
    *  barButtonItemTextSize: Int // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
+   *  
+   *  // BottomBar
+   *  bottomBarBackgroundColor: String // 底部 TabBar 背景
+   *  bottomBarShadowImage: Object // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 ，对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
+   *  bottomBarButtonItemTintColor: String // 底部 TabBarItem 选中效果
+   * 
    * }
    * ```
    */
@@ -50,7 +55,7 @@ export default class Garden {
    * ```
    */
   setLeftBarButtonItem(item) {
-    GardenModule.setLeftBarButtonItem(this.navId, this.sceneId, item);
+    GardenModule.setLeftBarButtonItem(this.sceneId, item);
   }
 
   /**
@@ -67,7 +72,7 @@ export default class Garden {
    * ```
    */
   setRightBarButtonItem(item) {
-    GardenModule.setRightBarButtonItem(this.navId, this.sceneId, item);
+    GardenModule.setRightBarButtonItem(this.sceneId, item);
   }
 
   /**
@@ -82,7 +87,7 @@ export default class Garden {
    * @param {*} item 
    */
   setTitleItem(item) {
-    GardenModule.setTitleItem(this.navId, this.sceneId, item);
+    GardenModule.setTitleItem(this.sceneId, item);
   }
 
 }

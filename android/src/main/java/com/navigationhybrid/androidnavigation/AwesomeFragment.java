@@ -309,9 +309,20 @@ public class AwesomeFragment extends Fragment implements LifecycleObserver, Frag
 
     public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
         //Log.i(TAG, toString() + "#onFragmentResult requestCode=" + requestCode + " resultCode=" + resultCode + " data=" + data);
-        List<AwesomeFragment> fragments = getFragments();
-        for (AwesomeFragment child : fragments) {
+        if (this instanceof TabBarFragment) {
+            AwesomeFragment child = ((TabBarFragment)this).getSelectedFragment();
             child.onFragmentResult(requestCode, resultCode, data);
+        } else if (this instanceof NavigationFragment) {
+            AwesomeFragment child = ((NavigationFragment)this).getTopFragment();
+            child.onFragmentResult(requestCode, resultCode, data);
+        } else if (this instanceof DrawerFragment) {
+            AwesomeFragment child = ((DrawerFragment)this).getContentFragment();
+            child.onFragmentResult(requestCode, resultCode, data);
+        } else {
+            List<AwesomeFragment> fragments = getFragments();
+            for (AwesomeFragment child : fragments) {
+                child.onFragmentResult(requestCode, resultCode, data);
+            }
         }
     }
 
@@ -651,7 +662,7 @@ public class AwesomeFragment extends Fragment implements LifecycleObserver, Frag
                     if (transit == FragmentTransaction.TRANSIT_FRAGMENT_OPEN) {
                         if (enter) {
                             if (index == 0) {
-                                tabBarFragment.getBottomNavigationBar().setVisibility(View.VISIBLE);
+                                tabBarFragment.getBottomBar().setVisibility(View.VISIBLE);
                             } else if (index == 1 && shouldHideBottomBarWhenPushed()) {
                                 tabBarFragment.hideBottomNavigationBarAnimatedWhenPush(animation.exit);
                             }

@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.facebook.react.bridge.Arguments;
+import com.navigationhybrid.androidnavigation.DrawableUtils;
 import com.navigationhybrid.androidnavigation.TopBar;
 
 import static com.navigationhybrid.Constants.ON_BAR_BUTTON_ITEM_CLICK_EVENT;
@@ -29,7 +30,7 @@ public class Garden {
 
     private static GlobalStyle globalStyle = new GlobalStyle();
 
-    public static void setStyle(Context context, Bundle style) {
+    static void setStyle(Context context, Bundle style) {
         globalStyle = new GlobalStyle();
         globalStyle.setStyle(context, style);
     }
@@ -38,32 +39,32 @@ public class Garden {
         return globalStyle == null ? null : globalStyle.getStyle();
     }
 
-    public static GlobalStyle getGlobalStyle() {
+    static GlobalStyle getGlobalStyle() {
         return globalStyle;
     }
 
-    private final NativeFragment fragment;
+    private final HybridFragment fragment;
 
     boolean hideBackButton;
 
-    public Garden(@NonNull NativeFragment fragment) {
+    Garden(@NonNull HybridFragment fragment) {
         this.fragment = fragment;
     }
 
 
-    public String statusBarStyle() {
+    String statusBarStyle() {
         return globalStyle.getTopBarStyle();
     }
 
-    public int statusBarColor() {
+    int statusBarColor() {
         return globalStyle.getTopBarBackgroundColor() == globalStyle.getStatusBarColor() ? Color.TRANSPARENT : globalStyle.getStatusBarColor();
     }
 
-    public int backgroundColor() {
+    int backgroundColor() {
         return globalStyle.getScreenBackgroundColor();
     }
 
-    public void setTopBarStyle() {
+    void setTopBarStyle() {
         if (fragment.getView() == null || fragment.getContext() == null) return;
 
         TopBar topBar = fragment.getTopBar();
@@ -115,13 +116,19 @@ public class Garden {
 
     }
 
-    public void setHideShadow(@NonNull TopBar topBar, boolean hidden) {
+    void setHideShadow(@NonNull TopBar topBar, boolean hidden) {
         if (hidden) {
             topBar.hideShadow();
         }
     }
 
-    public void setTitle(@NonNull TopBar topBar, String title) {
+    public void setTitle(String title) {
+        if (fragment.getTopBar() != null) {
+            setTitle(fragment.getTopBar(), title);
+        }
+    }
+
+    void setTitle(@NonNull TopBar topBar, String title) {
         TextView titleView = topBar.getTitleView();
         if (globalStyle.getTitleAlignment().equals("center")) { // default is 'left'
             topBar.setTitleViewAlignment("center");
@@ -132,40 +139,46 @@ public class Garden {
         //titleView.getPaint().setFakeBoldText(true); // 粗体
     }
 
-    public void setTitleItem(@NonNull Bundle titleItem) {
+    void setTitleItem(@NonNull Bundle titleItem) {
         if (fragment.getTopBar() != null) {
             setTitleItem(fragment.getTopBar(), titleItem);
         }
     }
 
-    public void setTitleItem(@NonNull TopBar topBar, @NonNull Bundle titleItem) {
+    void setTitleItem(@NonNull TopBar topBar, @NonNull Bundle titleItem) {
         String title = titleItem.getString("title");
         setTitle(topBar, title);
     }
 
-    public void setLeftButton(@NonNull TopBar topBar, Drawable icon, String title, boolean enabled, View.OnClickListener onClickListener) {
-        TextView leftButton = topBar.getLeftButton();
-        topBar.setContentInsetsRelative(0, topBar.getContentInsetEnd());
-        topBar.setNavigationIcon(null);
-        topBar.setNavigationOnClickListener(null);
-        setButton(leftButton, icon, title, enabled);
-        leftButton.setOnClickListener(onClickListener);
+    void setLeftButton(Drawable icon, String title, boolean enabled, View.OnClickListener onClickListener) {
+        TopBar topBar = fragment.getTopBar();
+        if (topBar != null) {
+            TextView leftButton = topBar.getLeftButton();
+            topBar.setContentInsetsRelative(0, topBar.getContentInsetEnd());
+            topBar.setNavigationIcon(null);
+            topBar.setNavigationOnClickListener(null);
+            setButton(leftButton, icon, title, enabled);
+            leftButton.setOnClickListener(onClickListener);
+        }
     }
 
-    public void setRightButton(@NonNull TopBar topBar, Drawable icon, String title, boolean enabled, View.OnClickListener onClickListener) {
-        TextView rightButton = topBar.getRightButton();
-        topBar.setContentInsetsRelative(topBar.getContentInsetStart(), 0);
-        setButton(rightButton, icon, title, enabled);
-        rightButton.setOnClickListener(onClickListener);
+    void setRightButton(Drawable icon, String title, boolean enabled, View.OnClickListener onClickListener) {
+        TopBar topBar = fragment.getTopBar();
+        if (topBar != null) {
+            TextView rightButton = topBar.getRightButton();
+            topBar.setContentInsetsRelative(topBar.getContentInsetStart(), 0);
+            setButton(rightButton, icon, title, enabled);
+            rightButton.setOnClickListener(onClickListener);
+        }
     }
 
-    public void setLeftBarButtonItem(@NonNull Bundle leftBarButtonItem) {
+    void setLeftBarButtonItem(@NonNull Bundle leftBarButtonItem) {
         if (fragment.getTopBar() != null) {
             setLeftBarButtonItem(fragment.getTopBar(), leftBarButtonItem);
         }
     }
 
-    public void setLeftBarButtonItem(@NonNull TopBar topBar, @NonNull Bundle leftBarButtonItem) {
+    void setLeftBarButtonItem(@NonNull TopBar topBar, @NonNull Bundle leftBarButtonItem) {
         Log.d(TAG, "leftBarButtonItem: " + leftBarButtonItem.toString());
         TextView leftButton = topBar.getLeftButton();
         topBar.setContentInsetsRelative(0, topBar.getContentInsetEnd());
@@ -174,13 +187,13 @@ public class Garden {
         setBarButtonItem(leftButton, leftBarButtonItem);
     }
 
-    public void setRightBarButtonItem(@NonNull Bundle rightBarButtonItem) {
+    void setRightBarButtonItem(@NonNull Bundle rightBarButtonItem) {
         if (fragment.getTopBar() != null) {
             setRightBarButtonItem(fragment.getTopBar(), rightBarButtonItem);
         }
     }
 
-    public void setRightBarButtonItem(@NonNull TopBar topBar, @NonNull Bundle rightBarButtonItem) {
+    void setRightBarButtonItem(@NonNull TopBar topBar, @NonNull Bundle rightBarButtonItem) {
         Log.d(TAG, "rightBarButtonItem: " + rightBarButtonItem.toString());
         TextView rightButton = topBar.getRightButton();
         topBar.setContentInsetsRelative(topBar.getContentInsetStart(), 0);
@@ -195,7 +208,10 @@ public class Garden {
 
             Drawable drawable = null;
             if (icon != null) {
-                drawable = StyleUtils.createDrawable(button.getContext().getApplicationContext(), icon);
+                String uri = icon.getString("uri");
+                if (uri != null) {
+                    drawable = DrawableUtils.fromUri(button.getContext().getApplicationContext(), uri);
+                }
             }
             final String action = item.getString("action");
 
@@ -226,7 +242,7 @@ public class Garden {
 
         int color = globalStyle.getBarButtonItemTintColor();
         if (!enabled) {
-            color = StyleUtils.generateGrayColor(color);
+            color = DrawableUtils.generateGrayColor(color);
             button.setAlpha(0.3f);
         }
         button.setEnabled(enabled);

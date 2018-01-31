@@ -62,5 +62,8 @@ public class MainApplication extends Application implements ReactApplication{
         ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
         bridgeManager.install(getReactNativeHost());
 
+        // register native modules
+        bridgeManager.registerNativeModule("OneNative", OneNativeFragment.class);
+
     }
 }

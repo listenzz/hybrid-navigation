@@ -21,10 +21,10 @@ import java.util.List;
 
 public class DrawerFragment extends AwesomeFragment implements DrawerLayout.DrawerListener {
 
-    DrawerLayout drawerLayout;
+    private DrawerLayout drawerLayout;
 
-    AwesomeFragment contentFragment;
-    AwesomeFragment menuFragment;
+    private AwesomeFragment contentFragment;
+    private AwesomeFragment menuFragment;
 
     @Nullable
     @Override
@@ -106,16 +106,16 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
     }
 
     private NavigationFragment findClosestNavigationFragment(AwesomeFragment fragment) {
-        if (fragment instanceof  NavigationFragment) {
+        if (fragment instanceof NavigationFragment) {
             return (NavigationFragment) fragment;
         }
         AwesomeFragment primary = (AwesomeFragment) fragment.getChildFragmentManager().getPrimaryNavigationFragment();
         if (primary != null) {
             return findClosestNavigationFragment(primary);
         }
-        List<AwesomeFragment> children =  fragment.getFragments();
+        List<AwesomeFragment> children = fragment.getFragments();
         if (children != null && children.size() > 0) {
-            return findClosestNavigationFragment(children.get(children.size() -1));
+            return findClosestNavigationFragment(children.get(children.size() - 1));
         }
         return null;
     }
@@ -130,33 +130,33 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
     }
 
     private TabBarFragment findClosestTabBarFragment(AwesomeFragment fragment) {
-        if (fragment instanceof  TabBarFragment) {
+        if (fragment instanceof TabBarFragment) {
             return (TabBarFragment) fragment;
         }
         AwesomeFragment primary = (AwesomeFragment) fragment.getChildFragmentManager().getPrimaryNavigationFragment();
         if (primary != null) {
             return findClosestTabBarFragment(primary);
         }
-        List<AwesomeFragment> children =  fragment.getFragments();
+        List<AwesomeFragment> children = fragment.getFragments();
         if (children != null && children.size() > 0) {
-            return findClosestTabBarFragment(children.get(children.size() -1));
+            return findClosestTabBarFragment(children.get(children.size() - 1));
         }
         return null;
     }
 
     @Override
-    public void onDrawerSlide(View drawerView, float slideOffset) {
-
+    public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+        setStatusBarHidden(slideOffset != 0);
     }
 
     @Override
-    public void onDrawerOpened(View drawerView) {
+    public void onDrawerOpened(@NonNull View drawerView) {
         setNeedsStatusBarAppearanceUpdate();
         getChildFragmentManager().beginTransaction().setPrimaryNavigationFragment(getMenuFragment()).commit();
     }
 
     @Override
-    public void onDrawerClosed(View drawerView) {
+    public void onDrawerClosed(@NonNull View drawerView) {
         setNeedsStatusBarAppearanceUpdate();
         getChildFragmentManager().beginTransaction().setPrimaryNavigationFragment(getContentFragment()).commit();
     }
@@ -208,7 +208,6 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
     public void closeMenu() {
         if (drawerLayout != null) {
             drawerLayout.closeDrawer(Gravity.START);
-            setStatusBarHidden(false);
         }
     }
 

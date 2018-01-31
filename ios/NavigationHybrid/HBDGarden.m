@@ -147,7 +147,33 @@ static NSDictionary *globalStyle;
     [[UIBarButtonItem appearance] setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
     [[UIBarButtonItem appearance] setTitleTextAttributes:disabled forState:UIControlStateDisabled];
     
-    //
+    // tabBar
+
+    // bottomBarBackgroundColor
+    NSString *bottomBarBackgroundColor = style[@"bottomBarBackgroundColor"];
+    if (bottomBarBackgroundColor) {
+        [self setBottomBarBackgroundColor:bottomBarBackgroundColor];
+    }
+   
+    // shadowImeage
+    NSDictionary *bottomBarShadowImage = style[@"bottomBarShadowImage"];
+    if (bottomBarShadowImage && ![bottomBarShadowImage isEqual:NSNull.null]) {
+        UIImage *image = [UIImage new];
+        NSDictionary *imageItem = bottomBarShadowImage[@"image"];
+        NSString *color = bottomBarShadowImage[@"color"];
+        if (imageItem) {
+            image = [HBDUtils UIImage:imageItem];
+        } else if (color) {
+            image = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:color]];
+        }
+        [[UITabBar appearance] setShadowImage:image];
+    }
+    
+    // tabBar tintColor
+    NSString *bottomBarButtonItemTintColor = style[@"bottomBarButtonItemTintColor"];
+    if (bottomBarButtonItemTintColor) {
+        [[UITabBar appearance] setTintColor:[HBDUtils colorWithHexString:bottomBarButtonItemTintColor]];
+    }
     
 }
 
@@ -191,6 +217,11 @@ static NSDictionary *globalStyle;
 + (void)setTopBarBackgroundColor:(NSString *)color {
     UIColor *c = [HBDUtils colorWithHexString:color];
     [[UINavigationBar appearance] setBackgroundImage:[HBDUtils imageWithColor:c] forBarMetrics:UIBarMetricsDefault];
+}
+
++ (void)setBottomBarBackgroundColor:(NSString *)color {
+    UIColor *c = [HBDUtils colorWithHexString:color];
+    [[UITabBar appearance] setBackgroundImage:[HBDUtils imageWithColor:c]];
 }
 
 - (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {

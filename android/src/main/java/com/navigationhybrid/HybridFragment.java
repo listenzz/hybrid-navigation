@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -19,7 +20,9 @@ import static com.navigationhybrid.ReactBridgeManager.REACT_MODULE_REGISTRY_COMP
  * Created by Listen on 2018/1/15.
  */
 
-public class NativeFragment extends AwesomeFragment {
+public class HybridFragment extends AwesomeFragment {
+
+    private final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
 
     private Garden garden;
 
@@ -30,9 +33,6 @@ public class NativeFragment extends AwesomeFragment {
         }
     };
 
-    protected void updateStyle(Garden garden) {
-        garden.setTopBarStyle();
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,19 +63,6 @@ public class NativeFragment extends AwesomeFragment {
         Log.d(TAG, toString() + "#onDestroyView");
     }
 
-    public Garden getGarden() {
-        return garden;
-    }
-
-    protected boolean isRoot() {
-        NavigationFragment navigationFragment = getNavigationFragment();
-        if (navigationFragment != null) {
-            AwesomeFragment awesomeFragment = navigationFragment.getRootFragment();
-            return awesomeFragment == this;
-        }
-        return true;
-    }
-
     @Override
     protected boolean shouldHideBackButton() {
         return garden.hideBackButton;
@@ -103,10 +90,26 @@ public class NativeFragment extends AwesomeFragment {
         return garden.backgroundColor();
     }
 
-    public void setTitle(String title) {
-        if (garden != null && getTopBar() != null) {
-            garden.setTitle(getTopBar(), title);
+    public Garden getGarden() {
+        return garden;
+    }
+
+    protected boolean isRoot() {
+        NavigationFragment navigationFragment = getNavigationFragment();
+        if (navigationFragment != null) {
+            AwesomeFragment awesomeFragment = navigationFragment.getRootFragment();
+            return awesomeFragment == this;
         }
+        return true;
+    }
+
+    protected void updateStyle(Garden garden) {
+        garden.setTopBarStyle();
+    }
+
+    public @NonNull
+    ReactBridgeManager getReactBridgeManager() {
+        return bridgeManager;
     }
 
     protected Bundle getOptions() {

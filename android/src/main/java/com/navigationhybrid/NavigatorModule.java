@@ -1,10 +1,8 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,7 +14,6 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableMap;
 import com.navigationhybrid.androidnavigation.AwesomeActivity;
 import com.navigationhybrid.androidnavigation.AwesomeFragment;
 import com.navigationhybrid.androidnavigation.DrawerFragment;
@@ -94,7 +91,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void signalFirstRenderComplete(final String navId, final String sceneId) {
+    public void signalFirstRenderComplete(final String sceneId) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -107,37 +104,23 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void switchToTab(final int index) {
+    public void setRoot(final ReadableMap layout) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                TabBarFragment tabBarFragment = findTabBarFragment();
-                if (tabBarFragment != null) {
-                    AwesomeFragment presented = tabBarFragment.getPresentedFragment();
-                    if (presented != null) {
-                        presented.dismissFragment();
-                    }
-                    tabBarFragment.setSelectedIndex(index);
+                Activity activity = getCurrentActivity();
+                if (activity instanceof AwesomeActivity) {
+                    Log.w(TAG, "--------------- setRoot -----------------");
+                    AwesomeActivity awesomeActivity = (AwesomeActivity) activity;
+                    AwesomeFragment awesomeFragment = fragmentFormLayout(layout);
+                    awesomeActivity.setRootFragment(awesomeFragment);
                 }
             }
         });
     }
 
     @ReactMethod
-    public void setTabBadge(final int index, final String text) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                TabBarFragment tabBarFragment = findTabBarFragment();
-                if (tabBarFragment != null) {
-                    tabBarFragment.setBadge(index, text);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void push(final String navId, final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options, final boolean animated) {
+    public void push(final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options, final boolean animated) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -145,7 +128,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
                 if (fragment != null) {
                     NavigationFragment navigationFragment = fragment.getNavigationFragment();
                     if (navigationFragment != null) {
-                        AwesomeFragment target = ReactFragmentHelper.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                        AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
                         navigationFragment.pushFragment(target);
                     }
                 }
@@ -154,7 +137,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void pop(final String navId, final String sceneId, final boolean animated) {
+    public void pop(final String sceneId, final boolean animated) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -170,7 +153,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void popTo(final String navId, final String sceneId, final String targetId, final boolean animated) {
+    public void popTo(final String sceneId, final String targetId, final boolean animated) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -189,7 +172,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void popToRoot(final String navId, final String sceneId, boolean animated) {
+    public void popToRoot(final String sceneId, boolean animated) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -205,11 +188,11 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void isRoot(final String navId, final String sceneId, final Promise promise) {
+    public void isRoot(final String sceneId, final Promise promise) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                NativeFragment fragment = (NativeFragment) findFragmentBySceneId(sceneId);
+                HybridFragment fragment = (HybridFragment) findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     promise.resolve(fragment.isRoot());
                 }
@@ -218,7 +201,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void replace(final String navId, final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options) {
+    public void replace(final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -226,7 +209,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
                 if (fragment != null) {
                     NavigationFragment navigationFragment = fragment.getNavigationFragment();
                     if (navigationFragment != null) {
-                        AwesomeFragment target = ReactFragmentHelper.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                        AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
                         navigationFragment.replaceFragment(target);
                     }
                 }
@@ -235,7 +218,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void replaceToRoot(final String navId, final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options) {
+    public void replaceToRoot(final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -243,7 +226,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
                 if (fragment != null) {
                     NavigationFragment navigationFragment = fragment.getNavigationFragment();
                     if (navigationFragment != null) {
-                        AwesomeFragment target = ReactFragmentHelper.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                        AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
                         navigationFragment.replaceToRootFragment(target);
                     }
                 }
@@ -252,7 +235,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void present(final String navId, final String sceneId, final String moduleName, final int requestCode, final ReadableMap props, final ReadableMap options, final boolean animated) {
+    public void present(final String sceneId, final String moduleName, final int requestCode, final ReadableMap props, final ReadableMap options, final boolean animated) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -266,7 +249,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setResult(final String navId, final String sceneId, final int resultCode, final ReadableMap result) {
+    public void setResult(final String sceneId, final int resultCode, final ReadableMap result) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -279,7 +262,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void dismiss(final String navId, final String sceneId, final boolean animated) {
+    public void dismiss(final String sceneId, final boolean animated) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -291,17 +274,42 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
         });
     }
 
+
     @ReactMethod
-    public void setRoot(final ReadableMap layout) {
+    public void switchToTab(final String sceneId, final int index) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Activity activity = getCurrentActivity();
-                if (activity instanceof AwesomeActivity) {
-                    Log.w(TAG, "--------------- setRoot -----------------");
-                    AwesomeActivity awesomeActivity = (AwesomeActivity) activity;
-                    AwesomeFragment awesomeFragment = fragmentFormLayout(layout);
-                    awesomeActivity.setRootFragment(awesomeFragment);
+                ReactFragment fragment = (ReactFragment) findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                    if (tabBarFragment != null) {
+                        AwesomeFragment presented = tabBarFragment.getPresentedFragment();
+                        if (presented != null) {
+                            presented.dismissFragment();
+                        }
+                        tabBarFragment.setSelectedIndex(index);
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTabBadge(final String sceneId, final int index, final String text) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ReactFragment fragment = (ReactFragment) findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                    if (tabBarFragment != null) {
+                        AwesomeFragment presented = tabBarFragment.getPresentedFragment();
+                        if (presented != null) {
+                            presented.dismissFragment();
+                        }
+                        tabBarFragment.setBadge(index, text);
+                    }
                 }
             }
         });
@@ -360,13 +368,13 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
 
         if (layout.hasKey("screen")) {
             String screen = layout.getString("screen");
-            return ReactFragmentHelper.createFragment(screen, null, null);
+            return reactBridgeManager.createFragment(screen, null, null);
         }
 
         if (layout.hasKey("stack")) {
             ReadableMap stack = layout.getMap("stack");
             String module = stack.getString("screen");
-            return ReactNavigationFragment.newInstance(module, null, optionsByModuleName(module));
+            return ReactNavigationFragment.newInstance(module, null, reactBridgeManager.optionsByModuleName(module));
         }
 
         if (layout.hasKey("tabs")) {
@@ -395,65 +403,21 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
                 return drawerFragment;
             }
         }
-
         return null;
-
     }
 
-    private Bundle optionsByModuleName(String moduleName) {
-        ReactBridgeManager reactBridgeManager = ReactBridgeManager.instance;
-        ReadableMap readableMap = reactBridgeManager.reactModuleOptionsForKey(moduleName);
-        if (readableMap == null) {
-            readableMap = Arguments.createMap();
-        }
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.merge(readableMap);
-
-        return Arguments.toBundle(writableMap);
-    }
-
-
-    private NativeFragment findFragmentBySceneId(String sceneId) {
+    private HybridFragment findFragmentBySceneId(String sceneId) {
         Activity activity = getCurrentActivity();
         if (activity instanceof AppCompatActivity) {
             AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
             FragmentManager fragmentManager = appCompatActivity.getSupportFragmentManager();
-            return (NativeFragment) findFragmentBySceneId(fragmentManager, sceneId);
+            return findFragmentBySceneId(fragmentManager, sceneId);
         }
         return null;
     }
 
-    static AwesomeFragment findFragmentBySceneId(FragmentManager fragmentManager, String sceneId) {
-        return (AwesomeFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
+    private HybridFragment findFragmentBySceneId(FragmentManager fragmentManager, String sceneId) {
+        return (HybridFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
     }
-
-    private TabBarFragment findTabBarFragment() {
-        Activity activity = getCurrentActivity();
-        if (activity instanceof AppCompatActivity) {
-            AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
-            FragmentManager fragmentManager = appCompatActivity.getSupportFragmentManager();
-            return findTabBarFragment(fragmentManager);
-        }
-        return null;
-    }
-
-    private static TabBarFragment findTabBarFragment(FragmentManager fragmentManager) {
-        List<Fragment> fragments = fragmentManager.getFragments();
-        TabBarFragment tabBarFragment = null;
-        for (int size = fragments.size(), i = size - 1; i > -1; i--) {
-            Fragment fragment = fragments.get(i);
-            if (fragment instanceof TabBarFragment) {
-                tabBarFragment = (TabBarFragment) fragment;
-            } else {
-                tabBarFragment = findTabBarFragment(fragment.getChildFragmentManager());
-            }
-
-            if (tabBarFragment != null) {
-                break;
-            }
-        }
-        return tabBarFragment;
-    }
-
 
 }

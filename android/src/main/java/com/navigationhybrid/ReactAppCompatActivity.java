@@ -18,7 +18,7 @@ import com.navigationhybrid.androidnavigation.AwesomeActivity;
  * Created by Listen on 2017/11/17.
  */
 
-public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity, ReactBridgeManager.ReactModuleRegistryListener {
+public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity {
 
     protected static final String TAG = "ReactNative";
 
@@ -26,9 +26,9 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     private final ReactAppCompatActivityDelegate activityDelegate;
 
-    final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+    private final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
 
-    Handler handler = new Handler();
+    private Handler handler = new Handler();
 
     private Runnable createMainComponentTask;
 
@@ -40,7 +40,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityDelegate.onCreate(savedInstanceState);
-        bridgeManager.addReactModuleRegistryListener(this);
         if (savedInstanceState == null) {
             if (isReactModuleInRegistry()) {
                 scheduleCreateMainComponent();
@@ -85,7 +84,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         if (createMainComponentTask != null) {
             handler.removeCallbacks(createMainComponentTask);
         }
-        bridgeManager.removeReactModuleRegistryListener(this);
         activityDelegate.onDestroy();
     }
 
@@ -102,11 +100,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     public boolean isReactModuleInRegistry() {
         return bridgeManager.isReactModuleInRegistry();
-    }
-
-    @Override
-    public void onReactModuleRegistryCompleted() {
-
     }
 
     @Override
@@ -135,7 +128,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     public void onBackPressed() {
         if (!activityDelegate.onBackPressed()) {
-            Log.i(TAG, getClass().getSimpleName() +  "#onBackPressed");
+            Log.i(TAG, getClass().getSimpleName() + "#onBackPressed");
             super.onBackPressed();
         }
     }
@@ -174,4 +167,8 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         return activityDelegate.getReactInstanceManager();
     }
 
+    public @NonNull
+    ReactBridgeManager getReactBridgeManager() {
+        return bridgeManager;
+    }
 }

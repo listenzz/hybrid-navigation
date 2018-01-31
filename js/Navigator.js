@@ -2,14 +2,6 @@ import Navigation from './NavigationModule';
 
 export default class Navigator {
 
-  static switchToTab(index) {
-    Navigation.switchToTab(index);
-  }
-
-  static setTabBadge(index, text) {
-    Navigation.setTabBadge(index, text);
-  }
-
   /**
    * ```
    * {
@@ -30,9 +22,8 @@ export default class Navigator {
     Navigation.setRoot(layout);
   }
 
-  constructor(navId, sceneId) {
-    this.navId = navId;
-    this.sceneId =sceneId;
+  constructor(sceneId) {
+    this.sceneId = sceneId;
     this.push = this.push.bind(this)
     this.pop = this.pop.bind(this)
     this.popTo = this.popTo.bind(this)
@@ -46,51 +37,51 @@ export default class Navigator {
   }
 
   push(moduleName, props={}, options={}, animated = true) {
-    Navigation.push(this.navId, this.sceneId, moduleName, props, options, animated);
+    Navigation.push(this.sceneId, moduleName, props, options, animated);
   }
 
   pop(animated = true) {
-    Navigation.pop(this.navId, this.sceneId, animated);
+    Navigation.pop(this.sceneId, animated);
   }
 
   popTo(sceneId, animated = true) {
-    Navigation.popTo(this.navId, this.sceneId, sceneId, animated);
+    Navigation.popTo(this.sceneId, sceneId, animated);
   }
 
   popToRoot(animated = true) {
-    Navigation.popToRoot(this.navId, this.sceneId, animated);
+    Navigation.popToRoot(this.sceneId, animated);
   }
 
   isRoot() {
-    return Navigation.isRoot(this.navId, this.sceneId);
+    return Navigation.isRoot(this.sceneId);
   }
 
   replace(moduleName, props={}, options={}) {
-    Navigation.replace(this.navId, this.sceneId, moduleName, props, options);
+    Navigation.replace(this.sceneId, moduleName, props, options);
   }
 
   replaceToRoot(moduleName, props={}, options={}) {
-    Navigation.replaceToRoot(this.navId, this.sceneId, moduleName, props, options);
+    Navigation.replaceToRoot(this.sceneId, moduleName, props, options);
   }
 
   present(moduleName, requestCode,  props={}, options={}, animated = true) {
-    Navigation.present(this.navId, this.sceneId, moduleName, requestCode, props, options, animated);
+    Navigation.present(this.sceneId, moduleName, requestCode, props, options, animated);
   }
 
   setResult(resultCode, data = {}) {
-    Navigation.setResult(this.navId, this.sceneId, resultCode, data);
+    Navigation.setResult(this.sceneId, resultCode, data);
   }
 
   dismiss(animated = true) {
-    Navigation.dismiss(this.navId, this.sceneId, animated);
+    Navigation.dismiss(this.sceneId, animated);
   }
 
   switchToTab(index) {
-    Navigator.switchToTab(index);
+    Navigation.switchToTab(this.sceneId, index);
   }
 
   setTabBadge(index, text) {
-    Navigator.setTabBadge(index, text);
+    Navigation.setTabBadge(this.sceneId, index, text);
   }
 
   toggleMenu() {
@@ -106,7 +97,7 @@ export default class Navigator {
   }
 
   signalFirstRenderComplete() {
-    Navigation.signalFirstRenderComplete(this.navId, this.sceneId);
+    Navigation.signalFirstRenderComplete(this.sceneId);
   }
 
 }

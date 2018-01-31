@@ -142,11 +142,11 @@
     UIViewController *menu = self.menuController;
     float menuWidth = [self menuWidth];
     
-    [UIView animateWithDuration:0.3 delay:0. options:UIViewAnimationOptionCurveEaseOut animations:^{
+    [UIView animateWithDuration:0.2 delay:0. options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.menuOpened = YES;
         menu.view.frame = CGRectMake(0, 0, menuWidth, CGRectGetHeight(self.view.bounds));
     } completion:^(BOOL finished) {
-        [menu didMoveToParentViewController:self];
+       
     }];
 }
 
@@ -172,6 +172,7 @@
     
     [self.view insertSubview:self.menuDimmingView aboveSubview:aboveView];
     [self addGestureRecognizerToMenuDimmingView];
+    [menu didMoveToParentViewController:self];
 }
 
 - (void)addGestureRecognizerToMenuDimmingView {
@@ -193,6 +194,11 @@
     if (UIGestureRecognizerStateBegan == recognizer.state) {
         [self addMenuView];
         self.menuController.view.frame = CGRectMake(-width + dx, 0, width, CGRectGetHeight(self.view.bounds));
+        [UIView animateWithDuration:0.35 delay:0. options:UIViewAnimationOptionCurveEaseOut animations:^{
+            self.menuOpened = YES;
+        } completion:^(BOOL finished) {
+            
+        }];
     } else if(UIGestureRecognizerStateChanged == recognizer.state) {
         self.menuController.view.frame = CGRectMake(-width + dx, 0, width, CGRectGetHeight(self.view.bounds));
     } else {
@@ -230,10 +236,9 @@
     CGFloat width = CGRectGetWidth(self.menuController.view.frame);
     CGFloat dx = 0 - CGRectGetMinX(self.menuController.view.frame);
     CGRect rect = CGRectOffset(self.menuController.view.frame, dx, 0);
-    CGFloat duration = (dx/width) * 0.3;
-    [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionCurveLinear animations:^{
+    CGFloat duration = (dx/width) * 0.2;
+    [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         self.menuController.view.frame = rect;
-        self.menuOpened = YES;
     } completion:^(BOOL finished) {
         
     }];
@@ -243,7 +248,7 @@
     float menuWidth = [self menuWidth];
     CGFloat dx = -menuWidth - CGRectGetMinX(self.menuController.view.frame);
     CGRect rect = CGRectOffset(self.menuController.view.frame, dx, 0);
-    CGFloat duration = ( 1- (dx + menuWidth)/menuWidth ) * 0.25;
+    CGFloat duration = ( 1- (dx + menuWidth)/menuWidth ) * 0.2;
     [self.menuController willMoveToParentViewController:nil];
     [UIView animateWithDuration:duration delay:0. options:UIViewAnimationOptionCurveEaseIn animations:^{
         self.menuController.view.frame = rect;

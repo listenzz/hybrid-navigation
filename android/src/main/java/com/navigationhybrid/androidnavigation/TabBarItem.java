@@ -12,15 +12,16 @@ public class TabBarItem implements Parcelable {
 
     public String title;
 
-    public Bundle icon;
+    public String icon;
 
     public boolean hideTabBarWhenPush;
 
-    public TabBarItem(Bundle icon, String title, boolean hideTabBarWhenPush) {
-        this.icon = icon;
+    public TabBarItem(String iconUri, String title, boolean hideTabBarWhenPush) {
+        this.icon = iconUri;
         this.title = title;
         this.hideTabBarWhenPush = hideTabBarWhenPush;
     }
+
 
     @Override
     public int describeContents() {
@@ -30,13 +31,13 @@ public class TabBarItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.title);
-        dest.writeBundle(this.icon);
+        dest.writeString(this.icon);
         dest.writeByte(this.hideTabBarWhenPush ? (byte) 1 : (byte) 0);
     }
 
     protected TabBarItem(Parcel in) {
         this.title = in.readString();
-        this.icon = in.readBundle(getClass().getClassLoader());
+        this.icon = in.readString();
         this.hideTabBarWhenPush = in.readByte() != 0;
     }
 

@@ -50,11 +50,15 @@ RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionar
     [[HBDReactBridgeManager instance] registerReactModule:appKey options:options];
 }
 
-RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)navId sceneId:(NSString *)sceneId) {
-    NSLog(@"signalFirstRenderComplete navId:%@ sceneId:%@", navId, sceneId);
+RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
+    NSLog(@"signalFirstRenderComplete sceneId:%@",sceneId);
 }
 
-RCT_EXPORT_METHOD(push:(NSString *)navId sceneId:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL)animated) {
+RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout) {
+    
+}
+
+RCT_EXPORT_METHOD(push:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL)animated) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     UINavigationController *nav;
     if (vc.drawerController) {
@@ -70,7 +74,7 @@ RCT_EXPORT_METHOD(push:(NSString *)navId sceneId:(NSString *)sceneId moduleName:
     }
 }
 
-RCT_EXPORT_METHOD(pop:(NSString *)navId sceneId:(NSString *)sceneId animated:(BOOL) animated) {
+RCT_EXPORT_METHOD(pop:(NSString *)sceneId animated:(BOOL) animated) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     if (vc.navigationController) {
         NSArray *children = vc.navigationController.childViewControllers;
@@ -83,7 +87,7 @@ RCT_EXPORT_METHOD(pop:(NSString *)navId sceneId:(NSString *)sceneId animated:(BO
     }
 }
 
-RCT_EXPORT_METHOD(popTo:(NSString *)navId sceneId:(NSString *)sceneId targetId:(NSString *)targetId animated:(BOOL) animated) {
+RCT_EXPORT_METHOD(popTo:(NSString *)sceneId targetId:(NSString *)targetId animated:(BOOL) animated) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     if (vc.navigationController) {
         NSArray *children = vc.navigationController.childViewControllers;
@@ -106,7 +110,7 @@ RCT_EXPORT_METHOD(popTo:(NSString *)navId sceneId:(NSString *)sceneId targetId:(
     }
 }
 
-RCT_EXPORT_METHOD(popToRoot:(NSString *)navId sceneId:(NSString *)sceneId animated:(BOOL) animated) {
+RCT_EXPORT_METHOD(popToRoot:(NSString *)sceneId animated:(BOOL) animated) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     if (vc.navigationController) {
         NSArray *children = vc.navigationController.childViewControllers;
@@ -118,7 +122,7 @@ RCT_EXPORT_METHOD(popToRoot:(NSString *)navId sceneId:(NSString *)sceneId animat
     }
 }
 
-RCT_EXPORT_METHOD(isRoot:(NSString *)navId sceneId:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(isRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     if (vc.navigationController) {
         NSArray *children = vc.navigationController.childViewControllers;
@@ -133,7 +137,7 @@ RCT_EXPORT_METHOD(isRoot:(NSString *)navId sceneId:(NSString *)sceneId resolver:
     }
 }
 
-RCT_EXPORT_METHOD(replace:(NSString *)navId sceneId:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
+RCT_EXPORT_METHOD(replace:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     if (vc.navigationController) {
         HBDViewController *target = [[HBDReactBridgeManager instance] controllerWithModuleName:moduleName props:props options:options];
@@ -144,7 +148,7 @@ RCT_EXPORT_METHOD(replace:(NSString *)navId sceneId:(NSString *)sceneId moduleNa
     }
 }
 
-RCT_EXPORT_METHOD(replaceToRoot:(NSString *)navId sceneId:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
+RCT_EXPORT_METHOD(replaceToRoot:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     if (vc.navigationController) {
         HBDViewController *target = [[HBDReactBridgeManager instance] controllerWithModuleName:moduleName props:props options:options];
@@ -152,7 +156,7 @@ RCT_EXPORT_METHOD(replaceToRoot:(NSString *)navId sceneId:(NSString *)sceneId mo
     }
 }
 
-RCT_EXPORT_METHOD(present:(NSString *)navId sceneId:(NSString *)sceneId moduleName:(NSString *)moduleName requestCode:(NSInteger)requestCode props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL)animated) {
+RCT_EXPORT_METHOD(present:(NSString *)sceneId moduleName:(NSString *)moduleName requestCode:(NSInteger)requestCode props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL)animated) {
     HBDViewController *vc = [self controllerForSceneId:sceneId];
     if (vc) {
         HBDNavigationController *presented = [[HBDNavigationController alloc] initWithRootModule:moduleName props:props options:options];
@@ -163,12 +167,12 @@ RCT_EXPORT_METHOD(present:(NSString *)navId sceneId:(NSString *)sceneId moduleNa
     }
 }
 
-RCT_EXPORT_METHOD(setResult:(NSString *)navId sceneId:(NSString *)sceneId resultCode:(NSInteger)resultCode data:(NSDictionary *)data) {
+RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode data:(NSDictionary *)data) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     [vc setResultCode:resultCode resultData:data];
 }
 
-RCT_EXPORT_METHOD(dismiss:(NSString *)navId sceneId:(NSString *)sceneId animated:(BOOL)animated) {
+RCT_EXPORT_METHOD(dismiss:(NSString *)sceneId animated:(BOOL)animated) {
     HBDViewController *vc = [self controllerForSceneId:sceneId];
     if (vc) {
         UIViewController *presenting = vc.presentingViewController;
@@ -182,12 +186,9 @@ RCT_EXPORT_METHOD(dismiss:(NSString *)navId sceneId:(NSString *)sceneId animated
     }
 }
 
-RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout) {
-    
-}
-
-RCT_EXPORT_METHOD(switchToTab:(NSInteger)index) {
-    UITabBarController *tabBarController = [self tabBarController];
+RCT_EXPORT_METHOD(switchToTab:(NSString *)sceneId index:(NSInteger)index) {
+    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    UITabBarController *tabBarController = vc.tabBarController;
     if (tabBarController) {
         if (tabBarController.presentedViewController) {
             [tabBarController.presentedViewController dismissViewControllerAnimated:YES completion:^{
@@ -198,8 +199,9 @@ RCT_EXPORT_METHOD(switchToTab:(NSInteger)index) {
     }
 }
 
-RCT_EXPORT_METHOD(setTabBadge:(NSInteger)index text:(NSString *)text) {
-    UITabBarController *tabBarController = [self tabBarController];
+RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId index:(NSInteger)index text:(NSString *)text) {
+    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    UITabBarController *tabBarController = vc.tabBarController;
     if (tabBarController) {
         UIViewController *vc = tabBarController.viewControllers[index];
         vc.tabBarItem.badgeValue = text;
@@ -264,38 +266,5 @@ RCT_EXPORT_METHOD(closeMenu:(NSString *)sceneId) {
     }
     return target;
 }
-
-- (UITabBarController *)tabBarController {
-    UIViewController *vc = RCTPresentedViewController();
-    return [self tabBarControllerAtController:vc];
-}
-
-- (UITabBarController *)tabBarControllerAtController:(UIViewController *)controller {
-    UITabBarController *tabBarController;
-    if ([controller isKindOfClass:[UITabBarController class]]) {
-        tabBarController = (UITabBarController *)controller;
-    }
-    
-    if (!tabBarController && controller.childViewControllers.count > 0) {
-        NSUInteger count = controller.childViewControllers.count;
-        for (NSUInteger i = 0; i < count; i ++) {
-            UIViewController *child = controller.childViewControllers[i];
-            tabBarController = [self tabBarControllerAtController:child];
-            if (tabBarController) {
-                break;
-            }
-        }
-    }
-    
-    if (!tabBarController) {
-        UIViewController *presenting = controller.presentingViewController;
-        if (presenting) {
-            tabBarController = [self tabBarControllerAtController:presenting];
-        }
-    }
-    
-    return tabBarController;
-}
-
 
 @end

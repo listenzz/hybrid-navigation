@@ -39,21 +39,21 @@ RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
     [HBDGarden setStyle:style];
 }
 
-RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)navId sceneId:(NSString *)sceneId item:(NSDictionary *)item) {
+RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDViewController *vc = [self controllerForSceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
     item = [self mergeItem:item key:@"leftBarButtonItem" forController:vc];
     [garden setLeftBarButtonItem:item forController:vc];
 }
 
-RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *)navId sceneId:(NSString *)sceneId item:(NSDictionary *)item) {
+RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDViewController *vc = [self controllerForSceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
     item = [self mergeItem:item key:@"rightBarButtonItem" forController:vc];
     [garden setRightBarButtonItem:item forController:vc];
 }
 
-RCT_EXPORT_METHOD(setTitleItem:(NSString *)navId sceneId:(NSString *)sceneId item:(NSDictionary *)item) {
+RCT_EXPORT_METHOD(setTitleItem:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDViewController *vc = [self controllerForSceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
     item = [self mergeItem:item key:@"titleItem" forController:vc];

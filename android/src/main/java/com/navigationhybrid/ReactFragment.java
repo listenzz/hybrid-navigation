@@ -26,13 +26,12 @@ import static com.navigationhybrid.Constants.RESULT_DATA_KEY;
  * Created by Listen on 2018/1/15.
  */
 
-public class ReactFragment extends NativeFragment {
+public class ReactFragment extends HybridFragment {
 
     protected static final String TAG = "ReactNative";
 
-    ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-    ReactRootView reactRootView;
-    LinearLayout containerLayout;
+    private ReactRootView reactRootView;
+    private LinearLayout containerLayout;
 
     @Nullable
     @Override
@@ -63,7 +62,7 @@ public class ReactFragment extends NativeFragment {
         result.putInt(RESULT_CODE_KEY, resultCode);
         result.putBundle(RESULT_DATA_KEY, data);
         result.putString(ARGS_SCENE_ID, getSceneId());
-        bridgeManager.sendEvent(ON_COMPONENT_RESULT_EVENT, Arguments.fromBundle(result));
+        getReactBridgeManager().sendEvent(ON_COMPONENT_RESULT_EVENT, Arguments.fromBundle(result));
     }
 
     private void initReactNative() {
@@ -71,11 +70,12 @@ public class ReactFragment extends NativeFragment {
             return;
         }
 
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
         if (bridgeManager.isReactModuleInRegistry()) {
             bridgeManager.addReactModuleRegistryListener(new ReactBridgeManager.ReactModuleRegistryListener() {
                 @Override
                 public void onReactModuleRegistryCompleted() {
-                    bridgeManager.removeReactModuleRegistryListener(this);
+                    getReactBridgeManager().removeReactModuleRegistryListener(this);
                     Log.w(TAG, ReactFragment.this.toString() + " onReactModuleRegistryCompleted");
                     initReactNative();
                 }

@@ -1,4 +1,4 @@
-package com.navigationhybrid;
+package com.navigationhybrid.androidnavigation;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,12 +12,9 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.util.Log;
-
-import com.facebook.react.views.text.ReactFontManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,19 +29,12 @@ import javax.annotation.Nullable;
  * Created by Listen on 2017/12/26.
  */
 
-public class StyleUtils {
+public class DrawableUtils {
 
-    private static final String TAG = "ReactNative";
+    private static final String TAG = "AndroidNavigation";
 
-    // {"__packager_asset":true,
-    // "width":24,
-    // "height":24,
-    // "uri":"http://10.0.2.2:8081/assets/playground/src/ic_settings@3x.png?platform=android&hash=d12cb52d785444661bacffba8115fdda",
-    // "scale":3}
-    public static Drawable createDrawable(Context context, @NonNull Bundle imageInfo) {
-        String uri = imageInfo.getString("uri");
+    public static Drawable fromUri(@NonNull Context context, @NonNull String uri) {
         Drawable drawable = null;
-
         if (uri.startsWith("http")) {
             try {
                 StrictMode.ThreadPolicy threadPolicy = StrictMode.getThreadPolicy();
@@ -65,23 +55,31 @@ public class StyleUtils {
             Uri u = Uri.parse(uri);
             String fontFamily = u.getHost();
             List<String> fragments = u.getPathSegments();
-            if (fragments.size() != 2) {
-                // FIXME return a meaning drawable
+            if (fragments.size() < 2) {
                 return new ColorDrawable();
             }
             String glyph = fragments.get(0);
             Integer fontSize = Integer.valueOf(fragments.get(1));
-            Log.w(TAG, "fontFamily: " + u.getHost() + " glyph:" + glyph + " fontSize:" + fontSize);
-            drawable = getImageForFont(context, fontFamily, glyph, fontSize, Color.WHITE );
+
+            int color = Color.WHITE;
+
+            if (fragments.size() == 3) {
+                String hex = fragments.get(2);
+                color = Color.parseColor("#" + hex);
+            }
+
+            Log.d(TAG, "fontFamily: " + u.getHost() + " glyph:" + glyph + " fontSize:" + fontSize + " color:" + color);
+            drawable = fromFont(context, fontFamily, glyph, fontSize, color );
         } else {
-            int resId = getResourceDrawableId(context, uri);
+            int resId = fromResourceDrawableId(context, uri);
             drawable =  resId > 0 ? context.getResources().getDrawable(resId) : null;
         }
 
         return drawable;
+
     }
 
-    public static int getResourceDrawableId(Context context, @Nullable String name) {
+    public static int fromResourceDrawableId(Context context, @Nullable String name) {
         if (name == null || name.isEmpty()) {
             return 0;
         }
@@ -92,7 +90,7 @@ public class StyleUtils {
         return id;
     }
 
-    public static Drawable getImageForFont(Context context, String fontFamily, String glyph, Integer fontSize, Integer color) {
+    public static Drawable fromFont(Context context, String fontFamily, String glyph, Integer fontSize, Integer color) {
         File cacheFolder = context.getCacheDir();
         String cacheFolderPath = cacheFolder.getAbsolutePath() + "/";
 
@@ -111,7 +109,7 @@ public class StyleUtils {
 
         } else {
             FileOutputStream fos = null;
-            Typeface typeface = ReactFontManager.getInstance().getTypeface(fontFamily, 0, context.getAssets());
+            Typeface typeface = FontManager.getInstance().getTypeface(fontFamily, 0, context.getAssets());
             Paint paint = new Paint();
             paint.setTypeface(typeface);
             paint.setColor(color);

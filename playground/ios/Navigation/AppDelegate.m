@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import <React/RCTBundleURLProvider.h>
 #import <NavigationHybrid/NavigationHybrid.h>
+#import "OneNativeViewController.h"
 
 @interface AppDelegate () <HBDReactBridgeManagerDelegate>
 
@@ -22,8 +23,8 @@
     [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
     [HBDReactBridgeManager instance].delegate = self;
     
-    // FIXME:
-    [[UITabBar appearance] setTintColor:UIColor.redColor];
+    // register native modules
+    [[HBDReactBridgeManager instance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
     
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
      self.window.rootViewController = [storyboard instantiateInitialViewController];

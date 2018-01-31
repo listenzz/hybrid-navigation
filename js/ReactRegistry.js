@@ -90,8 +90,8 @@ export default ReactRegistry = {
       class Screen extends Component {
         constructor(props){
           super(props);
-          this.navigator = new Navigator(props.navId, props.sceneId);
-          this.garden = new Garden(props.navId, props.sceneId);
+          this.navigator = new Navigator(props.sceneId);
+          this.garden = new Garden(props.sceneId);
         }
 
         componentWillMount() {
