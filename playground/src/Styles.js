@@ -64,7 +64,7 @@ export default styles = StyleSheet.create({
     },
     input: {
       height: 40,
-      marginTop: 156,
+      marginTop: 170,
       marginLeft: 32,
       marginRight: 32,
       marginBottom: 16,

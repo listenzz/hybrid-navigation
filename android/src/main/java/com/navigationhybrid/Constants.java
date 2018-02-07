@@ -12,6 +12,7 @@ public class Constants {
     public static String ARG_MODULE_NAME = "module_name";
     public static String ARG_PROPS = "props";
     public static String ARG_OPTIONS = "options";
+    public static String ARG_SCENE_ID = "sceneId";
 
     public static final String ON_COMPONENT_RESULT_EVENT = "ON_COMPONENT_RESULT";
     public static final String ON_BAR_BUTTON_ITEM_CLICK_EVENT = "ON_BAR_BUTTON_ITEM_CLICK";

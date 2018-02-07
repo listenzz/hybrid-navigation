@@ -16,11 +16,12 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.navigationhybrid.androidnavigation.AwesomeFragment;
-import com.navigationhybrid.androidnavigation.FragmentHelper;
 
 import java.util.HashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import me.listenzz.navigation.AwesomeFragment;
+import me.listenzz.navigation.FragmentHelper;
 
 /**
  * Created by Listen on 2017/11/17.

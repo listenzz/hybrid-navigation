@@ -36,7 +36,8 @@
 		"react": "16.0.0",
 		"react-native": "0.50.3",
 		"react-test-renderer": "16.0.0",
-		"react-native-vector-icons": "^4.4.3"
+		"react-native-vector-icons": "^4.4.3",
+		"react-native-keyboard-aware-scroll-view": "0.4.1"
 	},
 	"jest": {
 		"preset": "react-native"

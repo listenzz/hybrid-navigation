@@ -6,13 +6,17 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.WindowManager;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
-import com.navigationhybrid.androidnavigation.AwesomeActivity;
+
+import me.listenzz.navigation.AwesomeActivity;
+import me.listenzz.navigation.Style;
+
 
 /**
  * Created by Listen on 2017/11/17.
@@ -22,7 +26,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     protected static final String TAG = "ReactNative";
 
-    private static final String GLOBAL_STYLE_KEY = "GlobalStyle";
+    private static final String GLOBAL_STYLE_OPTIONS_KEY = "GlobalStyle";
 
     private final ReactAppCompatActivityDelegate activityDelegate;
 
@@ -39,17 +43,20 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentUnderStatusBar(true);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         activityDelegate.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             if (isReactModuleInRegistry()) {
                 scheduleCreateMainComponent();
             } else {
-                onCreateMainComponent();
+                createMainComponent();
             }
         } else {
-            Bundle style = savedInstanceState.getBundle(GLOBAL_STYLE_KEY);
-            if (style != null) {
-                Garden.setStyle(getApplicationContext(), style);
+            Bundle options = savedInstanceState.getBundle(GLOBAL_STYLE_OPTIONS_KEY);
+            if (options != null) {
+                Garden.setStyleOptions(options);
+                onCustomStyle(getStyle());
             }
         }
     }
@@ -57,10 +64,15 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Bundle style = Garden.getStyle();
+        Bundle style = Garden.getStyleOptions();
         if (style != null) {
-            outState.putBundle(GLOBAL_STYLE_KEY, style);
+            outState.putBundle(GLOBAL_STYLE_OPTIONS_KEY, style);
         }
+    }
+
+    @Override
+    protected void onCustomStyle(Style style) {
+        Garden.getGlobalStyle().inflateStyle(this, style);
     }
 
     private void scheduleCreateMainComponent() {
@@ -71,7 +83,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
                 if (isReactModuleInRegistry()) {
                     scheduleCreateMainComponent();
                 } else {
-                    onCreateMainComponent();
+                    createMainComponent();
                 }
             }
         };
@@ -85,6 +97,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             handler.removeCallbacks(createMainComponentTask);
         }
         activityDelegate.onDestroy();
+    }
+
+    private void createMainComponent() {
+        onCustomStyle(getStyle());
+        onCreateMainComponent();
     }
 
     protected void onCreateMainComponent() {

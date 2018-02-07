@@ -6,7 +6,9 @@ import com.navigationhybrid.ReactAppCompatActivity;
 import com.navigationhybrid.ReactDrawerFragment;
 import com.navigationhybrid.ReactNavigationFragment;
 import com.navigationhybrid.ReactTabBarFragment;
-import com.navigationhybrid.androidnavigation.AwesomeFragment;
+
+import me.listenzz.navigation.AwesomeFragment;
+
 
 public class MainActivity extends ReactAppCompatActivity {
 

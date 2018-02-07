@@ -12,11 +12,13 @@ import android.widget.LinearLayout;
 
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
-import com.navigationhybrid.androidnavigation.FragmentHelper;
-import com.navigationhybrid.androidnavigation.PresentAnimation;
+
+import me.listenzz.navigation.FragmentHelper;
+import me.listenzz.navigation.PresentAnimation;
 
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
 import static com.navigationhybrid.Constants.ARG_PROPS;
+import static com.navigationhybrid.Constants.ARG_SCENE_ID;
 import static com.navigationhybrid.Constants.ON_COMPONENT_RESULT_EVENT;
 import static com.navigationhybrid.Constants.REQUEST_CODE_KEY;
 import static com.navigationhybrid.Constants.RESULT_CODE_KEY;
@@ -37,7 +39,8 @@ public class ReactFragment extends HybridFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        // FIXME 动画判断精确
+        // FIXME 动画判断精确，为什么需要有这样的设置呢？
+
         if (getAnimation() != PresentAnimation.Delay || getAnimation() != PresentAnimation.None) {
             postponeEnterTransition();
         }
@@ -61,7 +64,7 @@ public class ReactFragment extends HybridFragment {
         result.putInt(REQUEST_CODE_KEY, requestCode);
         result.putInt(RESULT_CODE_KEY, resultCode);
         result.putBundle(RESULT_DATA_KEY, data);
-        result.putString(ARGS_SCENE_ID, getSceneId());
+        result.putString(ARG_SCENE_ID, getSceneId());
         getReactBridgeManager().sendEvent(ON_COMPONENT_RESULT_EVENT, Arguments.fromBundle(result));
     }
 
@@ -94,7 +97,7 @@ public class ReactFragment extends HybridFragment {
         if (initialProps == null) {
             initialProps = new Bundle();
         }
-        initialProps.putString(ARGS_SCENE_ID, getSceneId());
+        initialProps.putString(ARG_SCENE_ID, getSceneId());
 
         reactRootView.startReactApplication(bridgeManager.getReactInstanceManager(), moduleName, initialProps);
 
@@ -122,6 +125,5 @@ public class ReactFragment extends HybridFragment {
             getActivity().supportStartPostponedEnterTransition();
         }
     }
-
 
 }

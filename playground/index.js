@@ -12,7 +12,9 @@ import Menu from './src/Menu';
 
 Garden.setStyle({
 		topBarStyle: 'dark-content',
-		// topBarBackgroundColor: '#3F51B5',
+		// statusBarColor: '#FFFFFF',
+		// topBarBackgroundColor: '#FFFFFF',
+		
 		// topBarTintColor: '#0000ff',
 		// backIcon: Image.resolveAssetSource(require('./src/ic_settings.png')),
 		shadowImage: {

@@ -14,12 +14,6 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
-import com.navigationhybrid.androidnavigation.AwesomeActivity;
-import com.navigationhybrid.androidnavigation.AwesomeFragment;
-import com.navigationhybrid.androidnavigation.DrawerFragment;
-import com.navigationhybrid.androidnavigation.FragmentHelper;
-import com.navigationhybrid.androidnavigation.NavigationFragment;
-import com.navigationhybrid.androidnavigation.TabBarFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +21,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+
+import me.listenzz.navigation.AwesomeActivity;
+import me.listenzz.navigation.AwesomeFragment;
+import me.listenzz.navigation.DrawerFragment;
+import me.listenzz.navigation.FragmentHelper;
+import me.listenzz.navigation.NavigationFragment;
+import me.listenzz.navigation.TabBarFragment;
 
 
 /**
@@ -194,7 +195,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
             public void run() {
                 HybridFragment fragment = (HybridFragment) findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                    promise.resolve(fragment.isRoot());
+                    promise.resolve(fragment.isNavigationRoot());
                 }
             }
         });

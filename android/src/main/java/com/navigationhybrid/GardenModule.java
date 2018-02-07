@@ -15,13 +15,13 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
-import com.navigationhybrid.androidnavigation.AwesomeFragment;
-import com.navigationhybrid.androidnavigation.FragmentHelper;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+
+import me.listenzz.navigation.FragmentHelper;
 
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_DARK_CONTENT;
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_LIGHT_CONTENT;
@@ -72,7 +72,7 @@ public class GardenModule extends ReactContextBaseJavaModule{
             public void run() {
                 Context context = getReactApplicationContext();
                 if (context != null) {
-                    Garden.setStyle(context.getApplicationContext(), Arguments.toBundle(style));
+                    Garden.setStyleOptions(Arguments.toBundle(style));
                 }
             }
         });

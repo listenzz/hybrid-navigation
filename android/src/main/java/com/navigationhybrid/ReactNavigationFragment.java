@@ -3,11 +3,10 @@ package com.navigationhybrid;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.navigationhybrid.androidnavigation.AwesomeFragment;
-import com.navigationhybrid.androidnavigation.FragmentHelper;
-import com.navigationhybrid.androidnavigation.NavigationFragment;
-import com.navigationhybrid.androidnavigation.TabBarItem;
+import me.listenzz.navigation.AwesomeFragment;
+import me.listenzz.navigation.FragmentHelper;
+import me.listenzz.navigation.NavigationFragment;
+import me.listenzz.navigation.TabBarItem;
 
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
@@ -39,8 +38,7 @@ public class ReactNavigationFragment extends NavigationFragment {
             if (icon != null) {
                 uri = icon.getString("uri");
             }
-            boolean hideTabBarWhenPush = tabItem.getBoolean("hideTabBarWhenPush", true);
-            TabBarItem tabBarItem = new TabBarItem(uri, title, hideTabBarWhenPush);
+            TabBarItem tabBarItem = new TabBarItem(uri, title);
             navigationFragment.setTabBarItem(tabBarItem);
         }
 

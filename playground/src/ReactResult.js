@@ -5,7 +5,9 @@
  */
 
 import React, { Component } from 'react';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {
+	KeyboardAvoidingView,
 	TouchableOpacity,
 	StyleSheet,
 	Text,
@@ -77,6 +79,10 @@ export default class ReactResult extends Component {
     
 	render() {
 		return (
+			<KeyboardAwareScrollView  
+			style={{ flex: 1 }}
+			automaticallyAdjustContentInsets={false}
+			showsHorizontalScrollIndicator={false}>
 			<View style={styles.container}>
 				<Text style={styles.welcome}>
 					This's a React Native scene.
@@ -94,20 +100,21 @@ export default class ReactResult extends Component {
           </Text>
 				</TouchableOpacity>
 
+				
 				<TextInput style={styles.input} 
 					onChangeText={this.onInputTextChanged} 
 					value={this.state.text} 
 					placeholder={'enter your text'} 
 					underlineColorAndroid='#00000000' 
 					textAlignVertical="center"/>
-
+				
 				<TouchableOpacity onPress={this.sendResult} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>
 						send data back
           </Text>
 				</TouchableOpacity>
-
-			</View>
+				</View>
+				</KeyboardAwareScrollView>
 		);
 	}
 }
