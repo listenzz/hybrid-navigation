@@ -39,9 +39,7 @@ public class ReactFragment extends HybridFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        // FIXME 动画判断精确，为什么需要有这样的设置呢？
-
-        if (getAnimation() != PresentAnimation.Delay || getAnimation() != PresentAnimation.None) {
+        if (getAnimation() != PresentAnimation.Delay && getAnimation() != PresentAnimation.None) {
             postponeEnterTransition();
         }
 
