@@ -26,12 +26,12 @@ public class GlobalStyle {
 
     private Bundle options;
 
-    public void setOptions(Bundle options) {
-        this.options = options;
-    }
-
     public Bundle getOptions() {
         return options;
+    }
+
+    public GlobalStyle(Bundle options) {
+        this.options = options;
     }
 
     public void inflateStyle(Context context, Style style) {

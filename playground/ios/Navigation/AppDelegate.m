@@ -46,8 +46,7 @@
     HBDViewController *menu = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Menu" props:nil options:nil];
     [drawerController setMenuViewController:menu];
     
-    self.window.rootViewController = drawerController;
-    
+    [[HBDReactBridgeManager instance] setRootViewController:drawerController];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

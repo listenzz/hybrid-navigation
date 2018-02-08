@@ -7,16 +7,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "HBDViewController.h"
+#import "GlobalStyle.h"
 
 @interface HBDGarden : NSObject
 
-+ (void)setStyle:(NSDictionary *)style;
++ (void)createGlobalStyleWithOptions:(NSDictionary *)options;
 
-+ (BOOL)isBackTitleHidden;
-
-+ (UIColor *)screenBackgroundColor;
-
-+ (NSDictionary *)globalStyle;
++ (GlobalStyle *)globalStyle;
 
 // ------
 

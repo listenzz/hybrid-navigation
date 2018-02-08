@@ -48,4 +48,6 @@ extern NSString * const ReactModuleRegistryDidCompletedNotification;
 
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options;
 
+- (void)setRootViewController:(UIViewController *)rootViewController;
+
 @end

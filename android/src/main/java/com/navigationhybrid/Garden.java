@@ -25,15 +25,10 @@ public class Garden {
 
     private static final String TAG = "ReactNative";
 
-    private static GlobalStyle globalStyle = new GlobalStyle();
+    private static GlobalStyle globalStyle;
 
-    static void setStyleOptions(Bundle style) {
-        globalStyle = new GlobalStyle();
-        globalStyle.setOptions(style);
-    }
-
-    public static Bundle getStyleOptions() {
-        return globalStyle == null ? null : globalStyle.getOptions();
+    static void createGlobalStyle(Bundle options) {
+        globalStyle = new GlobalStyle(options);
     }
 
     static GlobalStyle getGlobalStyle() {
@@ -85,7 +80,7 @@ public class Garden {
         }
     }
 
-    void setHideShadow(boolean hidden) {
+    public void setHideShadow(boolean hidden) {
         if (hidden) {
             Toolbar toolbar = fragment.getToolbar();
             if (toolbar != null && toolbar instanceof AwesomeToolbar) {

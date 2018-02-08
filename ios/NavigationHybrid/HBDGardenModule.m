@@ -36,7 +36,7 @@ RCT_EXPORT_MODULE(GardenHybrid)
 }
 
 RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
-    [HBDGarden setStyle:style];
+    [HBDGarden createGlobalStyleWithOptions:style];
 }
 
 RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)sceneId item:(NSDictionary *)item) {

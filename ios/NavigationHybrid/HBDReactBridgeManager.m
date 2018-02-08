@@ -32,7 +32,7 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
 }
 
 - (void)dealloc {
-    // FIXME 反注册通知
+
 }
 
 - (instancetype)init {
@@ -86,10 +86,10 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
 
 - (void)endRegisterReactModule {
     _isReactModuleInRegistry = NO;
-    [[NSNotificationCenter defaultCenter] postNotificationName:ReactModuleRegistryDidCompletedNotification object:nil];
     if (self.delegate != nil) {
         [self.delegate reactModuleRegistryDidCompleted:self];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:ReactModuleRegistryDidCompletedNotification object:nil];
 }
 
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
@@ -115,6 +115,21 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
     return vc;
 }
 
+- (void)setRootViewController:(UIViewController *)rootViewController {
+    UIWindow *keyWindow = RCTKeyWindow();
+    if (keyWindow.rootViewController.presentedViewController) {
+        [keyWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
+            [self performSelector:@selector(performSetRootViewController:) withObject:rootViewController afterDelay:0];
+        }];
+    } else {
+        [self performSetRootViewController:rootViewController];
+    }
+}
+
+- (void)performSetRootViewController:(UIViewController *)rootViewController {
+    UIWindow *keyWindow = RCTKeyWindow();
+    keyWindow.rootViewController = rootViewController;
+}
 
 #pragma mark - bridge delegate
 

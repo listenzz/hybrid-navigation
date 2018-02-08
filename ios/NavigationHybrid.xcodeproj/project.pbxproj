@@ -13,9 +13,13 @@
 		910362F41FE931E000F4DA8E /* HBDNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362E11FE931DF00F4DA8E /* HBDNavigationController.m */; };
 		910362F51FE931E000F4DA8E /* HBDReactBridgeManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362E41FE931DF00F4DA8E /* HBDReactBridgeManager.m */; };
 		910362F61FE931E000F4DA8E /* HBDNavigatorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362E91FE931DF00F4DA8E /* HBDNavigatorModule.m */; };
-		910362F71FE931E000F4DA8E /* HBDNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362EA1FE931DF00F4DA8E /* HBDNavigator.m */; };
 		910362F81FE931E000F4DA8E /* HBDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362EE1FE931DF00F4DA8E /* HBDViewController.m */; };
 		910362F91FE931E000F4DA8E /* HBDReactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362EF1FE931E000F4DA8E /* HBDReactViewController.m */; };
+		91C884A3202C3E8600EC0A20 /* HBDDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C8849D202C3E8600EC0A20 /* HBDDrawerController.m */; };
+		91C884A4202C3E8600EC0A20 /* UIViewController+HBD.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C8849E202C3E8600EC0A20 /* UIViewController+HBD.m */; };
+		91C884A5202C3E8600EC0A20 /* HBDTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C884A0202C3E8600EC0A20 /* HBDTabBarController.m */; };
+		91C884A6202C3E8600EC0A20 /* HBDUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C884A1202C3E8600EC0A20 /* HBDUtils.m */; };
+		91C884A9202C3F9200EC0A20 /* GlobalStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C884A8202C3F9200EC0A20 /* GlobalStyle.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -44,13 +48,21 @@
 		910362E71FE931DF00F4DA8E /* HBDNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDNavigationController.h; sourceTree = "<group>"; };
 		910362E81FE931DF00F4DA8E /* NavigationHybrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NavigationHybrid.h; sourceTree = "<group>"; };
 		910362E91FE931DF00F4DA8E /* HBDNavigatorModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDNavigatorModule.m; sourceTree = "<group>"; };
-		910362EA1FE931DF00F4DA8E /* HBDNavigator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDNavigator.m; sourceTree = "<group>"; };
 		910362EB1FE931DF00F4DA8E /* HBDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDViewController.h; sourceTree = "<group>"; };
 		910362EC1FE931DF00F4DA8E /* HBDNavigatorModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDNavigatorModule.h; sourceTree = "<group>"; };
 		910362ED1FE931DF00F4DA8E /* HBDBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDBarButtonItem.h; sourceTree = "<group>"; };
 		910362EE1FE931DF00F4DA8E /* HBDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDViewController.m; sourceTree = "<group>"; };
 		910362EF1FE931E000F4DA8E /* HBDReactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDReactViewController.m; sourceTree = "<group>"; };
-		910362F01FE931E000F4DA8E /* HBDNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDNavigator.h; sourceTree = "<group>"; };
+		91C8849B202C3E8600EC0A20 /* HBDDrawerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDDrawerController.h; sourceTree = "<group>"; };
+		91C8849C202C3E8600EC0A20 /* UIViewController+HBD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HBD.h"; sourceTree = "<group>"; };
+		91C8849D202C3E8600EC0A20 /* HBDDrawerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDDrawerController.m; sourceTree = "<group>"; };
+		91C8849E202C3E8600EC0A20 /* UIViewController+HBD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+HBD.m"; sourceTree = "<group>"; };
+		91C8849F202C3E8600EC0A20 /* HBDTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDTabBarController.h; sourceTree = "<group>"; };
+		91C884A0202C3E8600EC0A20 /* HBDTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDTabBarController.m; sourceTree = "<group>"; };
+		91C884A1202C3E8600EC0A20 /* HBDUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDUtils.m; sourceTree = "<group>"; };
+		91C884A2202C3E8600EC0A20 /* HBDUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDUtils.h; sourceTree = "<group>"; };
+		91C884A7202C3F9200EC0A20 /* GlobalStyle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlobalStyle.h; sourceTree = "<group>"; };
+		91C884A8202C3F9200EC0A20 /* GlobalStyle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GlobalStyle.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +95,14 @@
 		910362D41FE9318600F4DA8E /* NavigationHybrid */ = {
 			isa = PBXGroup;
 			children = (
+				91C8849B202C3E8600EC0A20 /* HBDDrawerController.h */,
+				91C8849D202C3E8600EC0A20 /* HBDDrawerController.m */,
+				91C8849F202C3E8600EC0A20 /* HBDTabBarController.h */,
+				91C884A0202C3E8600EC0A20 /* HBDTabBarController.m */,
+				91C884A2202C3E8600EC0A20 /* HBDUtils.h */,
+				91C884A1202C3E8600EC0A20 /* HBDUtils.m */,
+				91C8849C202C3E8600EC0A20 /* UIViewController+HBD.h */,
+				91C8849E202C3E8600EC0A20 /* UIViewController+HBD.m */,
 				910362ED1FE931DF00F4DA8E /* HBDBarButtonItem.h */,
 				910362E01FE931DF00F4DA8E /* HBDBarButtonItem.m */,
 				910362E61FE931DF00F4DA8E /* HBDGarden.h */,
@@ -91,8 +111,6 @@
 				910362DF1FE931DF00F4DA8E /* HBDGardenModule.m */,
 				910362E71FE931DF00F4DA8E /* HBDNavigationController.h */,
 				910362E11FE931DF00F4DA8E /* HBDNavigationController.m */,
-				910362F01FE931E000F4DA8E /* HBDNavigator.h */,
-				910362EA1FE931DF00F4DA8E /* HBDNavigator.m */,
 				910362EC1FE931DF00F4DA8E /* HBDNavigatorModule.h */,
 				910362E91FE931DF00F4DA8E /* HBDNavigatorModule.m */,
 				910362E21FE931DF00F4DA8E /* HBDReactBridgeManager.h */,
@@ -102,6 +120,8 @@
 				910362EB1FE931DF00F4DA8E /* HBDViewController.h */,
 				910362EE1FE931DF00F4DA8E /* HBDViewController.m */,
 				910362E81FE931DF00F4DA8E /* NavigationHybrid.h */,
+				91C884A7202C3F9200EC0A20 /* GlobalStyle.h */,
+				91C884A8202C3F9200EC0A20 /* GlobalStyle.m */,
 			);
 			path = NavigationHybrid;
 			sourceTree = "<group>";
@@ -163,15 +183,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91C884A6202C3E8600EC0A20 /* HBDUtils.m in Sources */,
+				91C884A3202C3E8600EC0A20 /* HBDDrawerController.m in Sources */,
 				910362F51FE931E000F4DA8E /* HBDReactBridgeManager.m in Sources */,
 				910362F11FE931E000F4DA8E /* HBDGarden.m in Sources */,
+				91C884A5202C3E8600EC0A20 /* HBDTabBarController.m in Sources */,
 				910362F61FE931E000F4DA8E /* HBDNavigatorModule.m in Sources */,
 				910362F91FE931E000F4DA8E /* HBDReactViewController.m in Sources */,
+				91C884A9202C3F9200EC0A20 /* GlobalStyle.m in Sources */,
+				91C884A4202C3E8600EC0A20 /* UIViewController+HBD.m in Sources */,
 				910362F81FE931E000F4DA8E /* HBDViewController.m in Sources */,
 				910362F21FE931E000F4DA8E /* HBDGardenModule.m in Sources */,
 				910362F41FE931E000F4DA8E /* HBDNavigationController.m in Sources */,
 				910362F31FE931E000F4DA8E /* HBDBarButtonItem.m in Sources */,
-				910362F71FE931E000F4DA8E /* HBDNavigator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

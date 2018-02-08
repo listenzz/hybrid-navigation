@@ -24,7 +24,7 @@
     } else {
         props = [@{} mutableCopy];
     }
-    
+
     [props setObject:self.sceneId forKey:@"sceneId"];
     
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager instance].bridge moduleName:self.moduleName initialProperties:props];

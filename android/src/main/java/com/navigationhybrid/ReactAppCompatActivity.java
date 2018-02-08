@@ -2,7 +2,6 @@ package com.navigationhybrid;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,7 +21,7 @@ import me.listenzz.navigation.Style;
  * Created by Listen on 2017/11/17.
  */
 
-public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity {
+public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity, ReactBridgeManager.ReactModuleRegistryListener {
 
     protected static final String TAG = "ReactNative";
 
@@ -31,10 +30,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     private final ReactAppCompatActivityDelegate activityDelegate;
 
     private final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-
-    private Handler handler = new Handler();
-
-    private Runnable createMainComponentTask;
 
     protected ReactAppCompatActivity() {
         activityDelegate = new ReactAppCompatActivityDelegate(this, ReactBridgeManager.instance);
@@ -46,16 +41,17 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         setContentUnderStatusBar(true);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         activityDelegate.onCreate(savedInstanceState);
+
+        bridgeManager.addReactModuleRegistryListener(this);
+
         if (savedInstanceState == null) {
-            if (isReactModuleInRegistry()) {
-                scheduleCreateMainComponent();
-            } else {
+            if (!isReactModuleInRegistry()) {
                 createMainComponent();
             }
         } else {
             Bundle options = savedInstanceState.getBundle(GLOBAL_STYLE_OPTIONS_KEY);
             if (options != null) {
-                Garden.setStyleOptions(options);
+                Garden.createGlobalStyle(options);
                 onCustomStyle(getStyle());
             }
         }
@@ -64,39 +60,33 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Bundle style = Garden.getStyleOptions();
-        if (style != null) {
-            outState.putBundle(GLOBAL_STYLE_OPTIONS_KEY, style);
+        GlobalStyle globalStyle = Garden.getGlobalStyle();
+        if (globalStyle != null) {
+            Bundle style = globalStyle.getOptions();
+            if (style != null) {
+                outState.putBundle(GLOBAL_STYLE_OPTIONS_KEY, style);
+            }
         }
     }
 
     @Override
     protected void onCustomStyle(Style style) {
-        Garden.getGlobalStyle().inflateStyle(this, style);
-    }
-
-    private void scheduleCreateMainComponent() {
-        createMainComponentTask = new Runnable() {
-            @Override
-            public void run() {
-                createMainComponentTask = null;
-                if (isReactModuleInRegistry()) {
-                    scheduleCreateMainComponent();
-                } else {
-                    createMainComponent();
-                }
-            }
-        };
-        handler.post(createMainComponentTask);
+        GlobalStyle globalStyle = Garden.getGlobalStyle();
+        if (globalStyle != null) {
+            globalStyle.inflateStyle(this, style);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (createMainComponentTask != null) {
-            handler.removeCallbacks(createMainComponentTask);
-        }
         activityDelegate.onDestroy();
+        bridgeManager.removeReactModuleRegistryListener(this);
+    }
+
+    @Override
+    public void onReactModuleRegistryCompleted() {
+        createMainComponent();
     }
 
     private void createMainComponent() {
@@ -184,8 +174,10 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         return activityDelegate.getReactInstanceManager();
     }
 
-    public @NonNull
-    ReactBridgeManager getReactBridgeManager() {
+    @NonNull
+    public ReactBridgeManager getReactBridgeManager() {
         return bridgeManager;
     }
+
+
 }

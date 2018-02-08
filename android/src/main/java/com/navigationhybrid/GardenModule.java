@@ -72,7 +72,7 @@ public class GardenModule extends ReactContextBaseJavaModule{
             public void run() {
                 Context context = getReactApplicationContext();
                 if (context != null) {
-                    Garden.setStyleOptions(Arguments.toBundle(style));
+                    Garden.createGlobalStyle(Arguments.toBundle(style));
                 }
             }
         });
