@@ -38,7 +38,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentUnderStatusBar(true);
+        setStatusBarTranslucent(true);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         activityDelegate.onCreate(savedInstanceState);
 
@@ -91,12 +91,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     private void createMainComponent() {
         onCustomStyle(getStyle());
-        scheduleTaskAtStarted(new Runnable() {
-            @Override
-            public void run() {
-                onCreateMainComponent();
-            }
-        });
+        onCreateMainComponent();
     }
 
     protected void onCreateMainComponent() {

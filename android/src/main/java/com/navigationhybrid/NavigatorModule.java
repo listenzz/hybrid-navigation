@@ -114,7 +114,9 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
                     Log.w(TAG, "--------------- setRoot -----------------");
                     AwesomeActivity awesomeActivity = (AwesomeActivity) activity;
                     AwesomeFragment awesomeFragment = fragmentFormLayout(layout);
-                    awesomeActivity.setRootFragment(awesomeFragment);
+                    if (awesomeFragment != null) {
+                        awesomeActivity.setRootFragment(awesomeFragment);
+                    }
                 }
             }
         });
@@ -384,24 +386,30 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
             for (int i = 0, size = tabs.size(); i < size; i++) {
                 ReadableMap map = tabs.getMap(i);
                 AwesomeFragment awesomeFragment = fragmentFormLayout(map);
-                fragments.add(awesomeFragment);
+                if (awesomeFragment != null) {
+                    fragments.add(awesomeFragment);
+                }
             }
-            ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
-            tabBarFragment.setFragments(fragments);
-            return tabBarFragment;
+            if (fragments.size() > 0) {
+                ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
+                tabBarFragment.setFragments(fragments);
+                return tabBarFragment;
+            }
         }
 
         if (layout.hasKey("drawer")) {
             ReadableArray drawer = layout.getArray("drawer");
-            if (drawer.size() != 2) {
+            if (drawer.size() == 2) {
                 ReadableMap content = drawer.getMap(0);
                 ReadableMap menu = drawer.getMap(1);
                 AwesomeFragment contentFragment = fragmentFormLayout(content);
                 AwesomeFragment menuFragment = fragmentFormLayout(menu);
-                ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
-                drawerFragment.setMenuFragment(menuFragment);
-                drawerFragment.setContentFragment(contentFragment);
-                return drawerFragment;
+                if (contentFragment != null && menuFragment != null) {
+                    ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
+                    drawerFragment.setMenuFragment(menuFragment);
+                    drawerFragment.setContentFragment(contentFragment);
+                    return drawerFragment;
+                }
             }
         }
         return null;
