@@ -91,7 +91,12 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     private void createMainComponent() {
         onCustomStyle(getStyle());
-        onCreateMainComponent();
+        scheduleTaskAtStarted(new Runnable() {
+            @Override
+            public void run() {
+                onCreateMainComponent();
+            }
+        });
     }
 
     protected void onCreateMainComponent() {
