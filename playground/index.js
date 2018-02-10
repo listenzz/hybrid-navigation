@@ -47,8 +47,14 @@ ReactRegistry.registerComponent('Menu', () => Menu);
 
 ReactRegistry.endRegisterComponent();
 
-// Navigator.setRoot({drawer: [{tabs: [
-// 																		{stack: {screen: 'ReactNavigation'}}, 
-// 																		{stack: {screen: 'CustomStyle'}}]},
-// 														{screen: 'Menu'}
-// ]});
+Navigator.setRoot({
+	drawer: [
+		{
+			tabs: [
+				{stack: {screen: 'ReactNavigation'}}, 
+				{stack: {screen: 'CustomStyle'}}
+			]
+		},
+		{screen: 'Menu'}
+	]
+});

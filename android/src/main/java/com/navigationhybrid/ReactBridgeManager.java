@@ -8,16 +8,18 @@ import android.support.annotation.UiThread;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import me.listenzz.navigation.AwesomeFragment;
@@ -44,6 +46,8 @@ public class ReactBridgeManager {
     private CopyOnWriteArrayList<ReactModuleRegistryListener> reactModuleRegistryListeners = new CopyOnWriteArrayList<>();
 
     private boolean isReactModuleInRegistry = true;
+
+    private ReadableMap rootLayout;
 
     public ReactBridgeManager() {
 
@@ -136,12 +140,11 @@ public class ReactBridgeManager {
 
 
     private void setup() {
-        Log.w(TAG, toString() + " bridge manager setup");
         final ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         reactInstanceManager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
             @Override
             public void onReactContextInitialized(ReactContext context) {
-                Log.w(TAG, toString() + " react context initialized");
+                Log.i(TAG, toString() + " react context initialized");
             }
         });
         reactInstanceManager.createReactContextInBackground();
@@ -151,6 +154,66 @@ public class ReactBridgeManager {
         if (reactNativeHost == null) {
             throw new IllegalStateException("must call ReactBridgeManager#install first");
         }
+    }
+
+    public void setRootLayout(ReadableMap root) {
+        this.rootLayout = root;
+    }
+
+    public ReadableMap getRootLayout() {
+        return this.rootLayout;
+    }
+
+    public boolean hasRootLayout() {
+        return rootLayout != null;
+    }
+
+    public AwesomeFragment createFragment(ReadableMap layout) {
+
+        if (layout.hasKey("screen")) {
+            String screen = layout.getString("screen");
+            return createFragment(screen, null, null);
+        }
+
+        if (layout.hasKey("stack")) {
+            ReadableMap stack = layout.getMap("stack");
+            String module = stack.getString("screen");
+            return ReactNavigationFragment.newInstance(module, null, optionsByModuleName(module));
+        }
+
+        if (layout.hasKey("tabs")) {
+            ReadableArray tabs = layout.getArray("tabs");
+            List<AwesomeFragment> fragments = new ArrayList<>();
+            for (int i = 0, size = tabs.size(); i < size; i++) {
+                ReadableMap tab = tabs.getMap(i);
+                AwesomeFragment awesomeFragment = createFragment(tab);
+                if (awesomeFragment != null) {
+                    fragments.add(awesomeFragment);
+                }
+            }
+            if (fragments.size() > 0) {
+                ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
+                tabBarFragment.setFragments(fragments);
+                return tabBarFragment;
+            }
+        }
+
+        if (layout.hasKey("drawer")) {
+            ReadableArray drawer = layout.getArray("drawer");
+            if (drawer.size() == 2) {
+                ReadableMap content = drawer.getMap(0);
+                ReadableMap menu = drawer.getMap(1);
+                AwesomeFragment contentFragment = createFragment(content);
+                AwesomeFragment menuFragment = createFragment(menu);
+                if (contentFragment != null && menuFragment != null) {
+                    ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
+                    drawerFragment.setMenuFragment(menuFragment);
+                    drawerFragment.setContentFragment(contentFragment);
+                    return drawerFragment;
+                }
+            }
+        }
+        return null;
     }
 
     public AwesomeFragment createFragment(@NonNull String moduleName) {
@@ -165,8 +228,7 @@ public class ReactBridgeManager {
         } else {
             Class<? extends HybridFragment> fragmentClass = nativeModuleClassForName(moduleName);
             if (fragmentClass == null) {
-                //throw new IllegalArgumentException("未能找到名为 " + moduleName + " 的模块，你是否忘了注册？");
-                FLog.e(TAG, "未能找到名为 " + moduleName + " 的模块，你是否忘了注册？");
+                throw new IllegalArgumentException("未能找到名为 " + moduleName + " 的模块，你是否忘了注册？");
             }
             try {
                 fragment = fragmentClass.newInstance();

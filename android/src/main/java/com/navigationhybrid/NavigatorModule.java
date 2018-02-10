@@ -4,25 +4,19 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import me.listenzz.navigation.AwesomeActivity;
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.DrawerFragment;
 import me.listenzz.navigation.FragmentHelper;
@@ -41,6 +35,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private final ReactBridgeManager reactBridgeManager;
+
 
     NavigatorModule(ReactApplicationContext reactContext, ReactBridgeManager reactBridgeManager) {
         super(reactContext);
@@ -109,13 +104,13 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
+                reactBridgeManager.setRootLayout(layout);
                 Activity activity = getCurrentActivity();
-                if (activity instanceof AwesomeActivity) {
-                    Log.w(TAG, "--------------- setRoot -----------------");
-                    AwesomeActivity awesomeActivity = (AwesomeActivity) activity;
-                    AwesomeFragment awesomeFragment = fragmentFormLayout(layout);
+                if (activity instanceof ReactAppCompatActivity) {
+                    ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                    AwesomeFragment awesomeFragment = reactBridgeManager.createFragment(layout);
                     if (awesomeFragment != null) {
-                        awesomeActivity.setRootFragment(awesomeFragment);
+                        reactAppCompatActivity.setRootFragment(awesomeFragment);
                     }
                 }
             }
@@ -366,60 +361,11 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
         });
     }
 
-
-    private AwesomeFragment fragmentFormLayout(ReadableMap layout) {
-
-        if (layout.hasKey("screen")) {
-            String screen = layout.getString("screen");
-            return reactBridgeManager.createFragment(screen, null, null);
-        }
-
-        if (layout.hasKey("stack")) {
-            ReadableMap stack = layout.getMap("stack");
-            String module = stack.getString("screen");
-            return ReactNavigationFragment.newInstance(module, null, reactBridgeManager.optionsByModuleName(module));
-        }
-
-        if (layout.hasKey("tabs")) {
-            ReadableArray tabs = layout.getArray("tabs");
-            List<AwesomeFragment> fragments = new ArrayList<>();
-            for (int i = 0, size = tabs.size(); i < size; i++) {
-                ReadableMap map = tabs.getMap(i);
-                AwesomeFragment awesomeFragment = fragmentFormLayout(map);
-                if (awesomeFragment != null) {
-                    fragments.add(awesomeFragment);
-                }
-            }
-            if (fragments.size() > 0) {
-                ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
-                tabBarFragment.setFragments(fragments);
-                return tabBarFragment;
-            }
-        }
-
-        if (layout.hasKey("drawer")) {
-            ReadableArray drawer = layout.getArray("drawer");
-            if (drawer.size() == 2) {
-                ReadableMap content = drawer.getMap(0);
-                ReadableMap menu = drawer.getMap(1);
-                AwesomeFragment contentFragment = fragmentFormLayout(content);
-                AwesomeFragment menuFragment = fragmentFormLayout(menu);
-                if (contentFragment != null && menuFragment != null) {
-                    ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
-                    drawerFragment.setMenuFragment(menuFragment);
-                    drawerFragment.setContentFragment(contentFragment);
-                    return drawerFragment;
-                }
-            }
-        }
-        return null;
-    }
-
     private HybridFragment findFragmentBySceneId(String sceneId) {
         Activity activity = getCurrentActivity();
-        if (activity instanceof AppCompatActivity) {
-            AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
-            FragmentManager fragmentManager = appCompatActivity.getSupportFragmentManager();
+        if (activity instanceof ReactAppCompatActivity) {
+            ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+            FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
             return findFragmentBySceneId(fragmentManager, sceneId);
         }
         return null;

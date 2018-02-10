@@ -14,6 +14,7 @@ import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
 
 import me.listenzz.navigation.AwesomeActivity;
+import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.Style;
 
 
@@ -98,6 +99,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         if (getMainComponentName() != null) {
             ReactNavigationFragment reactNavigationFragment = ReactNavigationFragment.newInstance(getMainComponentName(), null, null);
             setRootFragment(reactNavigationFragment);
+        } else if (bridgeManager.hasRootLayout()) {
+            AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getRootLayout());
+            if (fragment != null) {
+                setRootFragment(fragment);
+            }
         }
     }
 

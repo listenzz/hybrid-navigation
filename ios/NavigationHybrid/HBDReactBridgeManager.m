@@ -8,6 +8,9 @@
 #import <React/RCTLog.h>
 #import "HBDUtils.h"
 #import "HBDReactViewController.h"
+#import "HBDNavigationController.h"
+#import "HBDTabBarController.h"
+#import "HBDDrawerController.h"
 
 NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
 
@@ -90,6 +93,54 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
         [self.delegate reactModuleRegistryDidCompleted:self];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:ReactModuleRegistryDidCompletedNotification object:nil];
+}
+
+- (UIViewController *)controllerWithLayout:(NSDictionary *)layout {
+    NSString *screen = [layout objectForKey:@"screen"];
+    if (screen) {
+        return [self controllerWithModuleName:screen props:nil options:nil];
+    }
+    
+    NSDictionary *stack = [layout objectForKey:@"stack"];
+    if (stack) {
+        NSString *moduleName = [stack objectForKey:@"screen"];
+        return [[HBDNavigationController alloc] initWithRootModule:moduleName props:nil options:nil];
+    }
+    
+    NSArray *tabs = [layout objectForKey:@"tabs"];
+    if (tabs) {
+        NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:4];
+        for (NSDictionary *tab in tabs) {
+            UIViewController *vc = [self controllerWithLayout:tab];
+            if (vc) {
+                [controllers addObject:vc];
+            }
+        }
+        
+        if (controllers.count > 0) {
+            HBDTabBarController *tabBarController = [[HBDTabBarController alloc] init];
+            [tabBarController setViewControllers:controllers];
+            return tabBarController;
+        }
+    }
+    
+    NSArray *drawer = [layout objectForKey:@"drawer"];
+    if (drawer && drawer.count == 2) {
+        NSDictionary *content = [drawer objectAtIndex:0];
+        NSDictionary *menu = [drawer objectAtIndex:1];
+        
+        UIViewController *contentController = [self controllerWithLayout:content];
+        UIViewController *menuController = [self controllerWithLayout:menu];
+        
+        if (contentController && menuController) {
+            HBDDrawerController *drawerController = [[HBDDrawerController alloc] init];
+            [drawerController setContentViewController:contentController];
+            [drawerController setMenuViewController:menuController];
+            return drawerController;
+        }
+    }
+    
+    return nil;
 }
 
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {

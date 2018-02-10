@@ -19,6 +19,7 @@ export default class Navigator {
    * ```
    */
   static setRoot(layout) {
+    console.info('root:' + JSON.stringify(layout));
     Navigation.setRoot(layout);
   }
 

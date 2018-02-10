@@ -55,7 +55,10 @@ RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
 }
 
 RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout) {
-    
+    HBDViewController *vc = [[HBDReactBridgeManager instance] controllerWithLayout:layout];
+    if (vc) {
+        [[HBDReactBridgeManager instance] setRootViewController:vc];
+    }
 }
 
 RCT_EXPORT_METHOD(push:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL)animated) {

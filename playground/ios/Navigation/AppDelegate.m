@@ -35,18 +35,18 @@
 
 - (void)reactModuleRegistryDidCompleted:(HBDReactBridgeManager *)manager {
     
-    HBDNavigationController *navigation = [[HBDNavigationController alloc] initWithRootModule:@"Navigation" props:nil options:nil];
-    HBDNavigationController *style = [[HBDNavigationController alloc] initWithRootModule:@"CustomStyle" props:nil options:nil];
-    
-    UITabBarController *tabBarController = [[UITabBarController alloc] init];
-    [tabBarController setViewControllers:@[navigation, style]];
-    
-    HBDDrawerController *drawerController = [[HBDDrawerController alloc] init];
-    [drawerController setContentViewController:tabBarController];
-    HBDViewController *menu = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Menu" props:nil options:nil];
-    [drawerController setMenuViewController:menu];
-    
-    [[HBDReactBridgeManager instance] setRootViewController:drawerController];
+//    HBDNavigationController *navigation = [[HBDNavigationController alloc] initWithRootModule:@"Navigation" props:nil options:nil];
+//    HBDNavigationController *style = [[HBDNavigationController alloc] initWithRootModule:@"CustomStyle" props:nil options:nil];
+//
+//    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+//    [tabBarController setViewControllers:@[navigation, style]];
+//
+//    HBDDrawerController *drawerController = [[HBDDrawerController alloc] init];
+//    [drawerController setContentViewController:tabBarController];
+//    HBDViewController *menu = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Menu" props:nil options:nil];
+//    [drawerController setMenuViewController:menu];
+//
+//    [[HBDReactBridgeManager instance] setRootViewController:drawerController];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
