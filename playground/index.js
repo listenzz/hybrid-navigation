@@ -1,5 +1,9 @@
 import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid'; 
-import { Image } from 'react-native'
+import { Image } from 'react-native';
+import React, { Component } from 'react';
+
+import { Provider } from 'react-redux';
+import { store } from './src/Counter';
 
 import App from './App';
 import ReactNavigation from './src/ReactNavigation';
@@ -9,6 +13,7 @@ import HideBackButton from './src/HideBackButton';
 import HideTopBarShadow from './src/HideTopBarShadow';
 import PassOptions from './src/PassOptions';
 import Menu from './src/Menu';
+import Counter from './src/Counter';
 
 Garden.setStyle({
 		topBarStyle: 'dark-content',
@@ -33,7 +38,21 @@ Garden.setStyle({
 		
 });
 
-ReactRegistry.startRegisterComponent();
+function componentWrapper(componentProvider) {
+	const InnerComponent = componentProvider();
+	class Wrapper extends Component { 
+		render() {
+			return(
+				<Provider store={store}>
+					<InnerComponent {...this.props} />
+				</ Provider>
+			);
+		}
+	}
+	return Wrapper;
+}
+
+ReactRegistry.startRegisterComponent(componentWrapper);
 
 ReactRegistry.registerComponent('Navigator', () => App);
 ReactRegistry.registerComponent('ReactNavigation', () => ReactNavigation);
@@ -44,6 +63,7 @@ ReactRegistry.registerComponent('HideBackButton', () => HideBackButton)
 ReactRegistry.registerComponent('HideTopBarShadow', () => HideTopBarShadow)
 ReactRegistry.registerComponent('PassOptions', () => PassOptions)
 ReactRegistry.registerComponent('Menu', () => Menu);
+ReactRegistry.registerComponent('Counter', () => Counter);
 
 ReactRegistry.endRegisterComponent();
 

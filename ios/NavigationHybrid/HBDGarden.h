@@ -4,7 +4,6 @@
 //  Created by Listen on 2017/11/26.
 //
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "HBDViewController.h"
 #import "GlobalStyle.h"

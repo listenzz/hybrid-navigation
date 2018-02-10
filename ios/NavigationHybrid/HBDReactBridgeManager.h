@@ -4,10 +4,8 @@
 //  Created by Listen on 2017/11/25.
 //
 
-#import <Foundation/Foundation.h>
 #import <React/RCTBridge.h>
 #import "HBDViewController.h"
-
 
 extern NSString * const ReactModuleRegistryDidCompletedNotification;
 

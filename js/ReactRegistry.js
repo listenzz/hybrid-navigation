@@ -9,10 +9,13 @@ const EventEmitter = Platform.select({
   android: DeviceEventEmitter,
 });
 
+let componentWrapperFunc;
+
 export default ReactRegistry = {
-  
-    startRegisterComponent() {
+
+    startRegisterComponent(componentWrapper) {
       console.info('begin register react component');
+      componentWrapperFunc = componentWrapper;
       NavigationModule.startRegisterReactComponent();
     },
 
@@ -22,99 +25,77 @@ export default ReactRegistry = {
     },
 
     registerComponent(appKey, componentProvider) {
+      
       const RealComponent = componentProvider();
-      function hookRealComponent(klass) {
-        const Traits = function () {};
-        Traits.prototype = klass.prototype;
-        return function () {
-          var instance = new Traits();
-          klass.apply(instance, arguments);
 
-          let events = [];
-  
-          const realComponentWillMount = instance.componentWillMount;
-          instance.componentWillMount = function() {
-            if (realComponentWillMount) {
-              realComponentWillMount.apply(instance);
-            }
-            let event = EventEmitter.addListener('ON_COMPONENT_RESULT', function(event){                             
-              if(instance.props.sceneId === event.sceneId) {
-                if(instance.onComponentResult){
-                  let data = event.data && JSON.stringify(event.data);
-                  console.info('requestCode:' + event.requestCode + ' resultCode:' + event.resultCode + ' data:' + data);
-                  instance.onComponentResult(event.requestCode, event.resultCode, event.data);
-                } else {
-                  // console.warn(RealComponent.name + " 似乎未实现 onComponentResult");
-                }
-              } 
-            });
-            events.push(event);
-
-            evnet = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', function(event) {
-              if(instance.props.sceneId === event.sceneId) {
-                if(instance.onBarButtonItemClick) {
-                  instance.onBarButtonItemClick(event.action);
-                } else {
-                  console.warn(RealComponent.name + " 似乎未实现 onBarButtonItemClick");
-                }
-              }
-            });    
-
-            events.push(event);
-          }
-
-          // 绑定监听事件
-          const realComponentDidMount = instance.componentDidMount;
-          instance.componentDidMount = function() {
-            if(realComponentDidMount) {
-              realComponentDidMount.apply(instance);
-            }
-            instance.props.navigator.signalFirstRenderComplete();
-          }
-
-          // 解绑监听事件
-          const realComponentWillUnmount = instance.componentWillUnmount;
-          instance.componentWillUnmount = function() {
-            if(realComponentWillUnmount) {
-              realComponentWillUnmount.apply(instance);
-            }
-            events.forEach(function(event){
-              event.remove();
-            })
-          }
-          return instance;
-        };
-      }
-
-      const ProxiedComponent =  hookRealComponent(RealComponent);
       class Screen extends Component {
         constructor(props){
           super(props);
           this.navigator = new Navigator(props.sceneId);
           this.garden = new Garden(props.sceneId);
+          this.events = [];
+        }
+
+        handleBarButtonItemClick() {
+          let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', (event) => {
+            if(this.props.sceneId === event.sceneId) {
+              if(this.refs.onlychild.onBarButtonItemClick) {
+                this.refs.onlychild.onBarButtonItemClick(event.action);
+              } else {
+                console.warn(RealComponent.name + " 似乎未实现 onBarButtonItemClick");
+              }
+            }
+          });    
+          this.events.push(event);
+        }
+
+        handleComponentResultEvent() {
+          let event = EventEmitter.addListener('ON_COMPONENT_RESULT', (event) => {                             
+            if(this.props.sceneId === event.sceneId) {
+              if(this.refs.onlychild.onComponentResult){
+                this.refs.onlychild.onComponentResult(event.requestCode, event.resultCode, event.data);
+              } else {
+                // console.warn(RealComponent.name + " 似乎未实现 onComponentResult");
+              }
+            } 
+          });
+          this.events.push(event);
         }
 
         componentWillMount() {
-          console.log('componentWillMount   = ' + this.props.sceneId );
+          console.debug('componentWillMount   = ' + this.props.sceneId );
+          this.handleComponentResultEvent();
+          this.handleBarButtonItemClick();
         }
 
         componentDidMount() {
-          console.log('componentDidMount    = ' + this.props.sceneId);
+          console.debug('componentDidMount    = ' + this.props.sceneId);
+          this.navigator.signalFirstRenderComplete();
         }
 
         componentWillUnmount() {
-          console.log('componentWillUnmount = ' + this.props.sceneId);
+          console.debug('componentWillUnmount = ' + this.props.sceneId);
+          this.events.forEach((event) => {
+            event.remove();
+          })
         }
 
         render() {
           return(
-            <ProxiedComponent{...this.props} navigator={this.navigator} garden={this.garden}/>
+            <RealComponent ref='onlychild' {...this.props} navigator={this.navigator} garden={this.garden}/>
           )
         }
       }
 
-      AppRegistry.registerComponent(appKey, () => Screen );
+      let RootComponent;
+      if (componentWrapperFunc) {
+        RootComponent = componentWrapperFunc(() => Screen);
+      } else {
+        RootComponent = Screen;
+      }
 
+      AppRegistry.registerComponent(appKey, () => RootComponent);
+  
       // build static options
       let options = {};
       if (RealComponent.navigationItem) {

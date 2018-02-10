@@ -45,7 +45,6 @@
 }
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
-    NSLog(@"分类 requestCode:%ld, resultCode:%ld, data:%@", (long)requestCode, (long)resultCode, data);
     if ([self isKindOfClass:[UITabBarController class]]) {
         UIViewController *child = ((UITabBarController *)self).selectedViewController;
         [child didReceiveResultCode:resultCode resultData:data requestCode:requestCode];

@@ -6,7 +6,7 @@
 //  Copyright © 2018年 Listen. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface GlobalStyle : NSObject
 

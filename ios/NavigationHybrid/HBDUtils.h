@@ -5,7 +5,7 @@
 //  Created by Listen on 2017/12/25.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface HBDUtils : NSObject
 
