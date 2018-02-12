@@ -171,14 +171,30 @@ public class ReactBridgeManager {
     public AwesomeFragment createFragment(ReadableMap layout) {
 
         if (layout.hasKey("screen")) {
-            String screen = layout.getString("screen");
-            return createFragment(screen, null, null);
+            ReadableMap screen = layout.getMap("screen");
+            String moduleName = screen.getString("moduleName");
+            Bundle props = null;
+            if (screen.hasKey("props")) {
+                ReadableMap map = screen.getMap("props");
+                props = Arguments.toBundle(map);
+            }
+
+            Bundle options = null;
+            if (screen.hasKey("options")) {
+                ReadableMap map = screen.getMap("options");
+                options = Arguments.toBundle(map);
+            }
+            return createFragment(moduleName, props, options);
         }
 
         if (layout.hasKey("stack")) {
             ReadableMap stack = layout.getMap("stack");
-            String module = stack.getString("screen");
-            return ReactNavigationFragment.newInstance(module, null, optionsByModuleName(module));
+            AwesomeFragment awesomeFragment = createFragment(stack);
+            if (awesomeFragment != null) {
+                ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
+                reactNavigationFragment.setRootFragment(awesomeFragment);
+                return reactNavigationFragment;
+            }
         }
 
         if (layout.hasKey("tabs")) {

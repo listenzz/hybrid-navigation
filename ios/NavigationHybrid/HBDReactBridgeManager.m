@@ -96,15 +96,20 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
 }
 
 - (UIViewController *)controllerWithLayout:(NSDictionary *)layout {
-    NSString *screen = [layout objectForKey:@"screen"];
+    NSDictionary *screen = [layout objectForKey:@"screen"];
     if (screen) {
-        return [self controllerWithModuleName:screen props:nil options:nil];
+        NSString *moduleName = [screen objectForKey:@"moduleName"];
+        NSDictionary *props = [screen objectForKey:@"props"];
+        NSDictionary *options = [screen objectForKey:@"options"];
+        return [self controllerWithModuleName:moduleName props:props options:options];
     }
     
     NSDictionary *stack = [layout objectForKey:@"stack"];
     if (stack) {
-        NSString *moduleName = [stack objectForKey:@"screen"];
-        return [[HBDNavigationController alloc] initWithRootModule:moduleName props:nil options:nil];
+        UIViewController *root = [self controllerWithLayout:stack];
+        if (root) {
+            return [[HBDNavigationController alloc] initWithRootViewController:root];
+        }
     }
     
     NSArray *tabs = [layout objectForKey:@"tabs"];

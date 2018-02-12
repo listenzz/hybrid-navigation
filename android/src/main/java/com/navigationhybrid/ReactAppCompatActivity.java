@@ -97,7 +97,9 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     protected void onCreateMainComponent() {
         if (getMainComponentName() != null) {
-            ReactNavigationFragment reactNavigationFragment = ReactNavigationFragment.newInstance(getMainComponentName(), null, null);
+            AwesomeFragment awesomeFragment = bridgeManager.createFragment(getMainComponentName());
+            ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
+            reactNavigationFragment.setRootFragment(awesomeFragment);
             setRootFragment(reactNavigationFragment);
         } else if (bridgeManager.hasRootLayout()) {
             AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getRootLayout());

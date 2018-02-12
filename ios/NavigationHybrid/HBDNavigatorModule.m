@@ -55,7 +55,7 @@ RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
 }
 
 RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout) {
-    HBDViewController *vc = [[HBDReactBridgeManager instance] controllerWithLayout:layout];
+    UIViewController *vc = [[HBDReactBridgeManager instance] controllerWithLayout:layout];
     if (vc) {
         [[HBDReactBridgeManager instance] setRootViewController:vc];
     }
@@ -162,7 +162,9 @@ RCT_EXPORT_METHOD(replaceToRoot:(NSString *)sceneId moduleName:(NSString *)modul
 RCT_EXPORT_METHOD(present:(NSString *)sceneId moduleName:(NSString *)moduleName requestCode:(NSInteger)requestCode props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL)animated) {
     HBDViewController *vc = [self controllerForSceneId:sceneId];
     if (vc) {
-        HBDNavigationController *presented = [[HBDNavigationController alloc] initWithRootModule:moduleName props:props options:options];
+        HBDViewController *root = [[HBDReactBridgeManager instance] controllerWithModuleName:moduleName props:props options:options];
+        HBDNavigationController *presented = [[HBDNavigationController alloc] initWithRootViewController:root];
+        
         [presented setRequestCode:requestCode];
         [vc presentViewController:presented animated:animated completion:^{
             

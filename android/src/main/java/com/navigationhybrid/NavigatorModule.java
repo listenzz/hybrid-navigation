@@ -239,8 +239,10 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                    ReactNavigationFragment target = ReactNavigationFragment.newInstance(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
-                    fragment.presentFragment(target, requestCode);
+                    ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
+                    AwesomeFragment awesomeFragment = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                    reactNavigationFragment.setRootFragment(awesomeFragment);
+                    fragment.presentFragment(reactNavigationFragment, requestCode);
                 }
             }
         });

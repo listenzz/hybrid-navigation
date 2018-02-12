@@ -8,6 +8,4 @@
 
 @interface HBDNavigationController : UINavigationController
 
-- (instancetype)initWithRootModule:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options;
-
 @end

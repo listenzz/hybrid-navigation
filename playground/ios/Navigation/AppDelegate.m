@@ -35,18 +35,20 @@
 
 - (void)reactModuleRegistryDidCompleted:(HBDReactBridgeManager *)manager {
     
-//    HBDNavigationController *navigation = [[HBDNavigationController alloc] initWithRootModule:@"Navigation" props:nil options:nil];
-//    HBDNavigationController *style = [[HBDNavigationController alloc] initWithRootModule:@"CustomStyle" props:nil options:nil];
-//
-//    UITabBarController *tabBarController = [[UITabBarController alloc] init];
-//    [tabBarController setViewControllers:@[navigation, style]];
-//
-//    HBDDrawerController *drawerController = [[HBDDrawerController alloc] init];
-//    [drawerController setContentViewController:tabBarController];
-//    HBDViewController *menu = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Menu" props:nil options:nil];
-//    [drawerController setMenuViewController:menu];
-//
-//    [[HBDReactBridgeManager instance] setRootViewController:drawerController];
+    HBDViewController *react = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Navigation" props:nil options:nil];
+    HBDNavigationController *reactNavigation = [[HBDNavigationController alloc] initWithRootViewController:react];
+    HBDViewController *style = [[HBDReactBridgeManager instance] controllerWithModuleName:@"CustomStyle" props:nil options:nil];
+    HBDNavigationController *styleNavigation = [[HBDNavigationController alloc] initWithRootViewController:style];
+
+    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+    [tabBarController setViewControllers:@[reactNavigation, styleNavigation]];
+
+    HBDDrawerController *drawerController = [[HBDDrawerController alloc] init];
+    [drawerController setContentViewController:tabBarController];
+    HBDViewController *menu = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Menu" props:nil options:nil];
+    [drawerController setMenuViewController:menu];
+
+    [[HBDReactBridgeManager instance] setRootViewController:drawerController];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
