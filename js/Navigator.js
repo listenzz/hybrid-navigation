@@ -35,6 +35,8 @@ export default class Navigator {
     this.dismiss = this.dismiss.bind(this)
     this.replace = this.replace.bind(this)
     this.replaceToRoot = this.replaceToRoot.bind(this)
+    this.onBarButtonItemClick = undefined;
+    this.onComponentResult = undefined;
   }
 
   push(moduleName, props={}, options={}, animated = true) {

@@ -38,12 +38,8 @@ export default ReactRegistry = {
 
         handleBarButtonItemClick() {
           let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', (event) => {
-            if(this.props.sceneId === event.sceneId) {
-              if(this.refs.onlychild.onBarButtonItemClick) {
-                this.refs.onlychild.onBarButtonItemClick(event.action);
-              } else {
-                console.warn(RealComponent.name + " 似乎未实现 onBarButtonItemClick");
-              }
+            if(this.props.sceneId === event.sceneId && this.navigator.onBarButtonItemClick) {
+              this.navigator.onBarButtonItemClick(event.action);
             }
           });    
           this.events.push(event);
@@ -51,12 +47,8 @@ export default ReactRegistry = {
 
         handleComponentResultEvent() {
           let event = EventEmitter.addListener('ON_COMPONENT_RESULT', (event) => {                             
-            if(this.props.sceneId === event.sceneId) {
-              if(this.refs.onlychild.onComponentResult){
-                this.refs.onlychild.onComponentResult(event.requestCode, event.resultCode, event.data);
-              } else {
-                // console.warn(RealComponent.name + " 似乎未实现 onComponentResult");
-              }
+            if(this.props.sceneId === event.sceneId && this.navigator.onComponentResult) {
+              this.navigator.onComponentResult(event.requestCode, event.resultCode, event.data);
             } 
           });
           this.events.push(event);
@@ -81,20 +73,19 @@ export default ReactRegistry = {
         }
 
         render() {
+          let RootComponent;
+          if (componentWrapperFunc) {
+            RootComponent = componentWrapperFunc(() => RealComponent);
+          } else {
+            RootComponent = RealComponent;
+          }
           return(
-            <RealComponent ref='onlychild' {...this.props} navigator={this.navigator} garden={this.garden}/>
+            <RootComponent {...this.props} navigator={this.navigator} garden={this.garden}/>
           )
         }
       }
 
-      let RootComponent;
-      if (componentWrapperFunc) {
-        RootComponent = componentWrapperFunc(() => Screen);
-      } else {
-        RootComponent = Screen;
-      }
-
-      AppRegistry.registerComponent(appKey, () => RootComponent);
+      AppRegistry.registerComponent(appKey, () => Screen);
   
       // build static options
       let options = {};

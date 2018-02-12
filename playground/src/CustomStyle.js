@@ -60,7 +60,12 @@ export default class CustomStyle extends Component {
       badge: null,
     }
 	}
-  
+
+	componentWillMount() {
+		this.props.navigator.onBarButtonItemClick = this.onBarButtonItemClick.bind(this);
+		this.props.navigator.onComponentResult = this.onComponentResult.bind(this);
+	}
+
   onBarButtonItemClick(action) {
 		console.info(action)
 		if(ON_MENU_CLICK === action) {

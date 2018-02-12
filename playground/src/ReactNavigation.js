@@ -52,6 +52,7 @@ export default class ReactNavigation extends Component {
 	}
 
 	componentWillMount() {
+		this.props.navigator.onComponentResult = this.onComponentResult.bind(this);
 		this.props.navigator.isRoot().then((isRoot) => {
 			if(isRoot) {
 				this.setState({isRoot});

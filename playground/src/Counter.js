@@ -6,10 +6,13 @@ import {
   Image,
 } from 'react-native';
 
-import { createStore } from 'redux'
-import { Provider, connect } from 'react-redux'
+import { createStore } from 'redux';
+import { Provider, connect } from 'react-redux';
 
-import styles from './Styles'
+import styles from './Styles';
+import fontUri from './FontUtil';
+
+const ON_MINUS_CLICK = 'minus';
 
 // React component
 class Counter extends Component {
@@ -20,6 +23,17 @@ class Counter extends Component {
 			title: 'Redux Counter',
 		},
 
+		rightBarButtonItem: {
+      icon: {uri: fontUri('FontAwesome', 'minus', 24)},
+      title: 'MINUS',
+      action: ON_MINUS_CLICK,
+    },
+
+	}
+
+	componentWillMount() {
+		const { navigator, onDecreaseClick } = this.props;
+		navigator.onBarButtonItemClick = onDecreaseClick;
 	}
 
 	render() {
@@ -38,22 +52,24 @@ class Counter extends Component {
 			</ View>
 		);
 	}
-
 }
 
 // Action
-const increaseAction = { type: 'increase' }
+const increaseAction = { type: 'increase' };
+const decreaseAction = { type: 'decrease' };
 
 // Reducer
 function counter(state = { count: 0 }, action) {
   const count = state.count
   switch (action.type) {
     case 'increase':
-      return { count: count + 1 }
+			return { count: count + 1 }
+		case 'decrease':
+			return {count: count - 1}
     default:
       return state
   }
-}
+};
 
 // Store
 const store = createStore(counter)
@@ -68,7 +84,8 @@ function mapStateToProps(state) {
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch) {
   return {
-    onIncreaseClick: () => dispatch(increaseAction)
+		onIncreaseClick: () => dispatch(increaseAction),
+		onDecreaseClick: () => dispatch(decreaseAction),
   }
 }
 

@@ -42,6 +42,8 @@ export default class ReactResult extends Component {
 	}
 
 	componentWillMount() {
+		this.props.navigator.onBarButtonItemClick = this.onBarButtonItemClick.bind(this);
+
 		this.props.navigator.isRoot().then((isRoot) => {
 			if(isRoot) {
 				this.props.garden.setLeftBarButtonItem({
