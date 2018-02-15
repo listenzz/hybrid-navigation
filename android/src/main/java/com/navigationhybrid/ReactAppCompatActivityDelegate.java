@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -134,6 +135,7 @@ public class ReactAppCompatActivityDelegate {
             boolean didDoubleTapR = Assertions.assertNotNull(mDoubleTapReloadRecognizer)
                     .didDoubleTapR(keyCode, getPlainActivity().getCurrentFocus());
             if (didDoubleTapR) {
+                clearFragments();
                 getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();
                 return true;
             }
@@ -182,6 +184,15 @@ public class ReactAppCompatActivityDelegate {
                 }
             }
         };
+    }
+
+    public void clearFragments() {
+        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
+        int count = fragmentManager.getBackStackEntryCount();
+        if (count > 0) {
+            String tag = fragmentManager.getBackStackEntryAt(0).getName();
+            fragmentManager.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 
     private Context getContext() {

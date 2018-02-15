@@ -17,6 +17,7 @@ import Counter from './src/Counter';
 
 Garden.setStyle({
 		topBarStyle: 'dark-content',
+		titleTextSize: 17,
 		// statusBarColor: '#FFFFFF',
 		// topBarBackgroundColor: '#FFFFFF',
 		
@@ -34,7 +35,8 @@ Garden.setStyle({
 			//color: '#ff0000',
 		// 	image: Image.resolveAssetSource(require('./src/divider.png'))
 		//},
-		// bottomBarButtonItemTintColor: '#00FF00'
+		// bottomBarButtonItemActiveColor: '#00FF00'
+		bottomBarButtonItemInActiveColor: '#CCCCCC'
 		
 });
 
@@ -67,18 +69,18 @@ ReactRegistry.registerComponent('Counter', () => Counter);
 
 ReactRegistry.endRegisterComponent();
 
-// Navigator.setRoot({
-// 	drawer: [
-// 		{
-// 			tabs: [
-// 				{stack: {
-// 					screen: {moduleName: 'ReactNavigation'}, 
-// 				}}, 
-// 				{stack: {
-// 					screen: {moduleName: 'CustomStyle'} 
-// 				}}
-// 			]
-// 		},
-// 		{screen: {moduleName: 'Menu'}}
-// 	]
-// });
+Navigator.setRoot({
+	drawer: [
+		{
+			tabs: [
+				{stack: {
+					screen: {moduleName: 'ReactNavigation'}, 
+				}}, 
+				{stack: {
+					screen: {moduleName: 'CustomStyle'} 
+				}}
+			]
+		},
+		{screen: {moduleName: 'Menu'}}
+	]
+});

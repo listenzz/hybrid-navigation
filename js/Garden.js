@@ -30,7 +30,8 @@ export default class Garden {
    *  // BottomBar
    *  bottomBarBackgroundColor: String // 底部 TabBar 背景
    *  bottomBarShadowImage: Object // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 ，对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
-   *  bottomBarButtonItemTintColor: String // 底部 TabBarItem 选中效果
+   *  bottomBarButtonItemActiveColor: String // 底部 TabBarItem 选中效果
+   *  bottomBarButtonItemInActiveColor: String // 底部 TabBarItem 未选中效果
    * 
    * }
    * ```

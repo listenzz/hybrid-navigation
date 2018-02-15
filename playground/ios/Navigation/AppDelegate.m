@@ -27,7 +27,7 @@
     [[HBDReactBridgeManager instance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
     
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
-     self.window.rootViewController = [storyboard instantiateInitialViewController];
+    self.window.rootViewController = [storyboard instantiateInitialViewController];
     [self.window makeKeyAndVisible];
     
     return YES;

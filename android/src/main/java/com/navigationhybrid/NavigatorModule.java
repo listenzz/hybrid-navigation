@@ -101,7 +101,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setRoot(final ReadableMap layout) {
-        handler.post(new Runnable() {
+        Runnable setRootTask = new Runnable() {
             @Override
             public void run() {
                 reactBridgeManager.setRootLayout(layout);
@@ -112,9 +112,12 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
                     if (awesomeFragment != null) {
                         reactAppCompatActivity.setRootFragment(awesomeFragment);
                     }
+                } else {
+                    handler.post(this);
                 }
             }
-        });
+        };
+        handler.post(setRootTask);
     }
 
     @ReactMethod

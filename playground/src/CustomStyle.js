@@ -38,7 +38,7 @@ export default class CustomStyle extends Component {
 
 		tabItem: {
       title: 'Style',
-			icon: { uri: fontUri('FontAwesome', 'leaf', 20) },
+			icon: { uri: fontUri('FontAwesome', 'leaf', 24) },
 			hideTabBarWhenPush: false,
     }
 	}

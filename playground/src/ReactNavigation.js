@@ -28,7 +28,7 @@ export default class ReactNavigation extends Component {
 
 		tabItem: {
 			title: 'Navigation',
-			icon: { uri: fontUri('FontAwesome', 'location-arrow', 20) },
+			icon: { uri: fontUri('FontAwesome', 'location-arrow', 24) },
 			hideTabBarWhenPush: true,
 		}
 	}

@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 import com.facebook.react.bridge.Arguments;
@@ -96,7 +95,7 @@ public class Garden {
     }
 
     void setLeftBarButtonItem(@NonNull Bundle item) {
-        Log.d(TAG, "leftBarButtonItem: " + item.toString());
+        // Log.d(TAG, "leftBarButtonItem: " + item.toString());
         Context context = fragment.getContext();
         if (context == null) return;
 
@@ -125,7 +124,7 @@ public class Garden {
     }
 
     void setRightBarButtonItem( @NonNull Bundle item) {
-        Log.d(TAG, "rightBarButtonItem: " + item.toString());
+        // Log.d(TAG, "rightBarButtonItem: " + item.toString());
         Context context = fragment.getContext();
         if (context == null) return;
 

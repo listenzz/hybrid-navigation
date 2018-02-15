@@ -35,7 +35,7 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
 }
 
 - (void)dealloc {
-
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (instancetype)init {
@@ -43,8 +43,24 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
         _nativeModules = [[NSMutableDictionary alloc] init];
         _reactModules = [[NSMutableDictionary alloc] init];
         _isReactModuleInRegistry = YES;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWillReload) name:RCTBridgeWillReloadNotification object:nil];
     }
     return self;
+}
+
+- (void)handleWillReload {
+    RCTLog(@"---------- willReload -----------");
+    UIWindow *keyWindow = RCTKeyWindow();
+    if (keyWindow.backgroundColor == UIColor.blackColor) {
+        keyWindow.backgroundColor = UIColor.whiteColor;
+    }
+    if (keyWindow.rootViewController.presentedViewController) {
+        [keyWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
+            keyWindow.rootViewController = nil;
+        }];
+    } else {
+        keyWindow.rootViewController = nil;
+    }
 }
 
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions {

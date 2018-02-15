@@ -39,19 +39,24 @@ public class ReactFragment extends HybridFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        if (getAnimation() != PresentAnimation.Delay && getAnimation() != PresentAnimation.None) {
-            postponeEnterTransition();
-        }
-
         View view = inflater.inflate(R.layout.fragment_react, container, false);
         containerLayout = view.findViewById(R.id.react_content);
-        initReactNative();
+
+        if (!getReactBridgeManager().isReactModuleInRegistry()) {
+            if (getAnimation() != PresentAnimation.Delay && getAnimation() != PresentAnimation.None) {
+                postponeEnterTransition();
+            }
+            initReactNative();
+        }
+
         return view;
     }
 
     @Override
     public void onDestroy() {
-        reactRootView.unmountReactApplication();
+        if (reactRootView != null) {
+            reactRootView.unmountReactApplication();
+        }
         super.onDestroy();
     }
 
@@ -67,24 +72,9 @@ public class ReactFragment extends HybridFragment {
     }
 
     private void initReactNative() {
-        if (reactRootView != null) {
+        if (reactRootView != null || getContext() == null) {
             return;
         }
-
-        ReactBridgeManager bridgeManager = getReactBridgeManager();
-        if (bridgeManager.isReactModuleInRegistry()) {
-            bridgeManager.addReactModuleRegistryListener(new ReactBridgeManager.ReactModuleRegistryListener() {
-                @Override
-                public void onReactModuleRegistryCompleted() {
-                    getReactBridgeManager().removeReactModuleRegistryListener(this);
-                    Log.w(TAG, ReactFragment.this.toString() + " onReactModuleRegistryCompleted");
-                    initReactNative();
-                }
-            });
-            return;
-        }
-
-        Log.d(TAG, toString() + " bridge is initialized");
 
         reactRootView = new ReactRootView(getContext());
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -96,9 +86,7 @@ public class ReactFragment extends HybridFragment {
             initialProps = new Bundle();
         }
         initialProps.putString(ARG_SCENE_ID, getSceneId());
-
-        reactRootView.startReactApplication(bridgeManager.getReactInstanceManager(), moduleName, initialProps);
-
+        reactRootView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, initialProps);
     }
 
     public void signalFirstRenderComplete() {

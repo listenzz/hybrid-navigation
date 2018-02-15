@@ -189,10 +189,18 @@
     }
     
     // tabBar tintColor
-    NSString *bottomBarButtonItemTintColor = self.options[@"bottomBarButtonItemTintColor"];
-    if (bottomBarButtonItemTintColor) {
-        [tabBar setTintColor:[HBDUtils colorWithHexString:bottomBarButtonItemTintColor]];
+    NSString *bottomBarButtonItemActiveColor = self.options[@"bottomBarButtonItemActiveColor"];
+    if (bottomBarButtonItemActiveColor) {
+        [tabBar setTintColor:[HBDUtils colorWithHexString:bottomBarButtonItemActiveColor]];
     }
+    
+    NSString *bottomBarButtonItemInActiveColor = self.options[@"bottomBarButtonItemInActiveColor"];
+    if (bottomBarButtonItemInActiveColor) {
+        if (@available(iOS 10.0, *)) {
+            [tabBar setUnselectedItemTintColor:[HBDUtils colorWithHexString:bottomBarButtonItemInActiveColor]];
+        }
+    }
+    
 }
 
 - (void)setNavigationBar:(UINavigationBar *)bar backgroundColor:(NSString *)color {

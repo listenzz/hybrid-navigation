@@ -157,7 +157,9 @@ public class ReactBridgeManager {
     }
 
     public void setRootLayout(ReadableMap root) {
-        this.rootLayout = root;
+        if (!hasRootLayout()) {
+            this.rootLayout = root;
+        }
     }
 
     public ReadableMap getRootLayout() {
@@ -283,16 +285,5 @@ public class ReactBridgeManager {
 
         return fragment;
     }
-
-    public Bundle optionsByModuleName(String moduleName) {
-        ReadableMap readableMap = reactModuleOptionsForKey(moduleName);
-        if (readableMap == null) {
-            readableMap = Arguments.createMap();
-        }
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.merge(readableMap);
-        return Arguments.toBundle(writableMap);
-    }
-
 
 }

@@ -116,9 +116,9 @@ public class GlobalStyle {
         }
 
         // titleTextSize
-        int titleTextSize = options.getInt("titleTextSize", -1);
+        double titleTextSize = options.getDouble("titleTextSize", -1);
         if (titleTextSize != -1) {
-            style.setTitleTextSize(titleTextSize);
+            style.setTitleTextSize((int)titleTextSize);
         }
 
         // titleAlignment
@@ -134,9 +134,9 @@ public class GlobalStyle {
         }
 
         // barButtonItemTextSize
-        int barButtonItemTextSize = options.getInt("barButtonItemTextSize", -1);
+        double barButtonItemTextSize = options.getDouble("barButtonItemTextSize", -1);
         if (barButtonItemTextSize != -1) {
-            style.setToolbarButtonTextSize(barButtonItemTextSize);
+            style.setToolbarButtonTextSize((int) barButtonItemTextSize);
         }
 
         // backIcon
@@ -159,9 +159,14 @@ public class GlobalStyle {
             style.setBottomBarBackgroundColor(bottomBarBackgroundColor);
         }
 
-        String bottomBarButtonItemTintColor = options.getString("bottomBarButtonItemTintColor");
-        if (bottomBarButtonItemTintColor != null) {
-            style.setBottomBarActiveColor(bottomBarButtonItemTintColor);
+        String bottomBarButtonItemActiveColor = options.getString("bottomBarButtonItemActiveColor");
+        if (bottomBarButtonItemActiveColor != null) {
+            style.setBottomBarActiveColor(bottomBarButtonItemActiveColor);
+        }
+
+        String bottomBarButtonItemInActiveColor = options.getString("bottomBarButtonItemInActiveColor");
+        if (bottomBarButtonItemInActiveColor != null) {
+            style.setBottomBarInActiveColor(bottomBarButtonItemInActiveColor);
         }
 
         // bottomBarShadowImage
