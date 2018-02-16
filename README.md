@@ -1,14 +1,7 @@
 # react-native-navigation-hybrid
 A native navigation for React Native.
 
-## 特性
-
-- 使用原生导航组件
-- Android 使用了 Lifecycle 架构组件，解决了生命周期问题
-- 以 iOS 的导航系统为参照，支持 push, pop, popTo, popToRoot, present, dismiss, replace, replaceToRoot 等操作
-- 支持 StatusBar, UINavigationBar(iOS), UITabBar(iOS), ToolBar(Android), BottomNavigationBar(Android) 的全局样式配置以及局部调整
-- 支持原生页面和 RN 页面互相跳转和传值
-- 支持 vector icons
+![navigation-android](./screenshot/navigation-android.png)
 
 ## Running the Playground Project
 
@@ -35,35 +28,313 @@ To run on Android: `npm run run:android`
 
 make sure that you have a  simulator or device when you run andriod
 
-## 版本记录
+## 特性
 
-### 0.1.x
+<a name="migrate-react"></a>
 
-- 支持在现有原生项目基础上嵌入 RN 模块，并使得 RN 的导航栏和原生体验一致，即使是程序员，也无法区分哪些页面是由原生代码编写，哪些页面是由 RN 代码编写
-- 支持同一个导航栈内，原生页面和 RN 页面互相跳转、传值、接收返回值
-- 支持 push, pop, popTo, popToRoot, replace, replaceToRoot, present, dismiss 等导航操作
-- 支持对导航栏以及状态栏的全局样式配置
-- 每个页面都可以单独设置导航栏的标题，背景，左右按钮
-- 导航栏可以使用 vector fonts 作为按钮图标
-- 支持 npm link
- 
-### 0.2.x
-![navigation-android](./screenshot/navigation-android.png)
+- 使得 React Native 应用更具原生质感
+- 支持 Stack、Tabs、Drawer 等容器
+- 以 iOS 的导航系统为参照，支持 push, pop, popTo, popToRoot, present, dismiss 等操作
+- 支持 StatusBar, UINavigationBar(iOS), UITabBar(iOS), Toolbar(Android), BottomNavigationBar(Android) 的全局样式配置以及局部调整
+- 支持原生页面和 RN 页面互相跳转和传值
 
-- 支持 tab, drawer
-- 可配置 tabBar 部分属性
-- 对 0.1.x 代码作了大量重构，以适应本版本的需求
-- 方便接入 redux、mobx 等框架
+## 目录
+
+#### [集成到以 RN 为主的项目](#migrate-react)
+
+#### [为原生项目添加 RN 模块](#migrate-native)
+
+#### [容器](#container)
+
+#### [设置样式](#style)
+
 
 ## 集成到以 RN 为主的项目
 
 你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
 
-> 如果你对原生开发一无所知，建议你使用 [React Navigation](https://reactnavigation.org/docs/intro/)，避免踩一些无能为力的坑。如果你熟悉原生开发，欢迎贡献代码。
+假设你是通过 `react-native init AwesomeProject` 创建的项目，目录结构是这样的：
 
-请参考下一章节
+```
+AwesomeProject/
+|—— android/
+|—— ios/
+|—— node_modules/
+|—— package.json
+```
 
-## 集成到已有原生项目
+### 添加依赖
+
+```
+npm install react-native-navigation-hybrid --save
+```
+
+### Link
+
+```
+$ react-native link react-native-navigation-hybrid
+```
+
+### RN 项目配置
+
+打开 index.js 这个文件，通常，它就在 package.json 旁边。
+
+以前，你是这么注册 React 组件
+
+```javascript
+AppRegistry.registerComponent('ReactNativeProject', () => App);
+```
+
+现在，你需要像下面那样
+
+```javascript
+import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid';
+import Home from './HomeComponent';
+import Profile from './ProfileComponent';
+
+// 配置全局样式
+Garden.setStyle({
+    topBarStyle: 'dark-content',
+});
+
+// 重要必须
+ReactRegistry.startRegisterComponent();
+
+// 注意，你的每一个页面都需要注册
+ReactRegistry.registerComponent('Home', () => Home);
+ReactRegistry.registerComponent('Profile', () => Profile);
+
+// 重要必须
+ReactRegistry.endRegisterComponent();
+```
+
+设置入口页面布局
+
+```javascript
+Navigator.setRoot({
+	drawer: [
+		{
+			tabs: [
+				{stack: {
+					screen: {moduleName: 'Home'}, 
+				}}, 
+				{stack: {
+					screen: {moduleName: 'Profile'} 
+				}}
+			]
+		},
+		{screen: {moduleName: 'Menu'}}
+	]
+});
+```
+
+根布局一共有四种类型的布局: screen, stack, tabs 以及 drawer
+
+screen 对象有三个属性，分别是 moduleName, props, options，其中 moduleName 是必须的，它就是我们上面注册的那些模块名，props 是我们要传递给该页面的初始属性，options 是 navigationItem，参看[静态配置页面](#static-options)。
+
+stack 对象包含一个其它布局对象作为根页面，通常是 screen.
+
+tabs 对象是一个数组，成员是一个包含其它布局对象的对象
+
+drawer 对象也是一个数组，长度固定为 2 ，第一个对象是抽屉的内容，第二个对象是抽屉的侧边栏。
+
+可以先通过 `Navigator.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigator.setRoot` 决定要进入哪个页面。
+
+#### 支持 Redux
+
+想要为每个页面都注入相同的属性，可以利用 `ReactRegistry.startRegisterComponent()` 这个方法，它接受一个函数作为参数，该函数的参数是一个返回我们将要构建的组件的函数，返回值是一个新的组件。
+
+想要支持 Redux，像下面这样配置即可
+
+```javascript
+function componentWrapper(componentProvider) {
+    const InnerComponent = componentProvider();
+    class WrapperComponent extends Component {
+        render() {
+            return(
+                <Provider store={store}>
+                <InnerComponent {...this.props}/>
+                </Provider>
+            );
+        }
+    }
+    return WrapperComponent;
+}
+
+ReactRegistry.startRegisterComponent(componentWrapper)
+
+```
+
+不要忘了 `...this.props`, 很重要。
+
+### Android 项目配置
+
+假设你已经配置好了 React 项目
+
+修改 android/build.gradle 文件
+
+```diff
+buildscript {
+    repositories {
+        jcenter()
++       google()
+    }
+    dependencies {
+-        classpath 'com.android.tools.build:gradle:2.2.3'
++        classpath 'com.android.tools.build:gradle:3.0.1'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven {
+            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+            url "$rootDir/../node_modules/react-native/android"
+        }
++       google()
+    }
+}
+
++ ext {
++   minSdkVersion = 16
++   targetSdkVersion = 27
++   compileSdkVersion = 27
++   buildToolsVersion = '27.0.2'
++   // 必须保证支持包的版本 >= 26.1.0
++   supportLibraryVersion = '27.0.2'
++ }
+
+```
+
+修改 android/app/build.gradle 文件
+
+```diff
+
+android {
+-   compileSdkVersion 23
+-   buildToolsVersion "23.0.1"
++   compileSdkVersion rootProject.ext.compileSdkVersion
++   buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+-       minSdkVersion 16
+-       targetSdkVersion 22
++       minSdkVersion rootProject.ext.minSdkVersion
++       targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+}
+
+dependencies {  
++    compile project(':react-native-navigation-hybrid')
+     compile fileTree(dir: "libs", include: ["*.jar"])
+-    compile "com.android.support:appcompat-v7:23.0.1"
++    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+     compile "com.facebook.react:react-native:+" // From node_modules
+     
++    configurations.all {
++    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
++        def requested = details.requested
++            if (requested.group == 'com.android.support') {
++                if (!requested.name.startsWith("multidex")) {
++                    details.useVersion rootProject.supportLibraryVersion
++                }
++            }
++        }
++    }
+
+}
+```
+
+修改 android/gradle/wrapper/gradle-wrapper.properties 文件
+
+```diff
+- distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip
++ distributionUrl=https\://services.gradle.org/distributions/gradle-4.1-all.zip
+```
+
+修改 MainActivity.java 文件
+
+```diff
+- import com.facebook.react.ReactActivity;
++ import com.navigationhybrid.ReactAppCompatActivity;
+
+- public class MainActivity extends ReactActivity {
++ public class MainActivity extends ReactAppCompatActivity {
+ 
+-    @Override
+-    protected String getMainComponentName() {
+-        return "AwesomeProject";
+-    }
+ }
+
+```
+
+修改 MainApplication.java 文件
+
+```diff
+
++ import com.navigationhybrid.ReactBridgeManager;
+
+ public void onCreate() {
+     super.onCreate();
+     SoLoader.init(this, /* native exopackage */ false);
+
++    ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
++    bridgeManager.install(getReactNativeHost());
+    
+ }
+
+```
+
+同步构建版本，参看[这里](#sync-build-version)
+
+### iOS 项目配置
+
+修改 Header Search Paths
+
+![header-search-paths](./screenshot/header-search-paths.jpg)
+
+修改 AppDelegate.m 文件
+
+```objc
+
+#import "AppDelegate.h"
+
+#import <React/RCTBundleURLProvider.h>
+#import <NavigationHybrid/NavigationHybrid.h>
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+  NSURL *jsCodeLocation;
+
+  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+
+  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+  UIViewController *rootViewController = [UIViewController new];
+  self.window.rootViewController = rootViewController;
+  [self.window makeKeyAndVisible];
+  return YES;
+}
+
+@end
+```
+
+修改 Info.plist 文件
+
+![controller-base](./screenshot/controller-base.jpg)
+
+### 关于闪屏
+
+<a name="migrate-native"></a>
+
+可以像 playgroud 这个 demo 那样设置闪屏，也可以使用 react-native-splash-screen 设置闪屏
+
+## 为原生项目添加 RN 模块
 
 你的大部分业务已经用原生代码实现，你想添加一些 RN 业务模块。
 
@@ -123,7 +394,7 @@ ReactNativeProject/
 
 ```json
 "dependencies": {
-    "react-native-navigation-hybrid": "0.1.24"
+    "react-native-navigation-hybrid": "^0.2.0"
 }
 ```
 
@@ -286,7 +557,9 @@ public class MainApplication extends Application implements ReactApplication {
 }
 ```
 
-创建一个 Activity 作为 RN 业务模块的入口：
+创建一个 Activity 继承 ReactAppCompatActivity
+
+重写 `getMainComponentName` 方法
 
 ```java
 public class ReactEntryActivity extends ReactAppCompatActivity {
@@ -297,7 +570,38 @@ public class ReactEntryActivity extends ReactAppCompatActivity {
 }
 ```
 
-注意，继承的是 ReactAppCompatActivity.
+或者 `onCreateMainComponent` 方法
+
+```java
+@Override
+protected void onCreateMainComponent() {
+    AwesomeFragment react = getReactBridgeManager().createFragment("ReactNavigation");
+    ReactNavigationFragment reactNavigation = new ReactNavigationFragment();
+    reactNavigation.setRootFragment(react);
+
+    AwesomeFragment custom = getReactBridgeManager().createFragment("CustomStyle");
+    ReactNavigationFragment customNavigation = new ReactNavigationFragment();
+    customNavigation.setRootFragment(custom);
+
+    ReactTabBarFragment reactTabBarFragment = new ReactTabBarFragment();
+    reactTabBarFragment.setFragments(reactNavigation, customNavigation);
+
+    setRootFragment(reactTabBarFragment);
+}
+```
+
+第一种写法相当于
+
+```java
+@Override
+protected void onCreateMainComponent() {
+    AwesomeFragment home = getReactBridgeManager().createFragment("Home");
+    ReactNavigationFragment navigation = new ReactNavigationFragment();
+    navigation.setRootFragment(home);
+    
+    setRootFragment(navigation);
+}
+```
 
 为该 Activity 添加 NoActionBar 主题
 
@@ -308,6 +612,8 @@ public class ReactEntryActivity extends ReactAppCompatActivity {
 />
 ```
 
+<a name="sync-build-version"></a>
+
 在 AndroidManifest.xml 中添加如下权限
 
 ```xml
@@ -315,7 +621,9 @@ public class ReactEntryActivity extends ReactAppCompatActivity {
 <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 ```
 
-同步构建版本。Navigation Hybrid 使用的构建版本是 27.0.2 ，你的项目可能使用了更高或稍低的版本。你也可能使用了 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 这样的库，它的构建版本是 26.0.1 ，我们需要用脚本把这些库的构建版本统一起来，否则编译项目时可能会出错。
+#### 同步构建版本
+
+Navigation Hybrid 使用的构建版本是 27.0.2 ，你的项目可能使用了更高或稍低的版本。你也可能使用了 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 这样的库，它的构建版本是 26.0.1 ，我们需要用脚本把这些库的构建版本统一起来，否则编译项目时可能会出错。
 
 回到 RN 项目的根目录，创建一个叫 scripts 的文件夹，在里面创建一个叫 fix-build-version.js 的文件
 
@@ -340,9 +648,9 @@ gradles.forEach(gradle => {
     let str = data.replace(/^(\s+compileSdkVersion).*$/gm, '$1 rootProject.ext.compileSdkVersion')
     str = str.replace(/^(\s+buildToolsVersion).*$/gm, '$1 rootProject.ext.buildToolsVersion')
     str = str.replace(/^(\s+targetSdkVersion).*$/gm, '$1 rootProject.ext.targetSdkVersion')
-    str = str.replace(/"(com\.android\.support:appcompat-v7:).*"/gm, '"$1$rootProject.ext.supportLibraryVersion"')
-    str = str.replace(/"(com\.android\.support:support-v4:).*"/gm, '"$1$rootProject.ext.supportLibraryVersion"')
-    str = str.replace(/"(com\.android\.support:design:).*"/gm, '"$1$rootProject.ext.supportLibraryVersion"')
+    str = str.replace(/["'](com\.android\.support:appcompat-v7:).*["']/gm, '"$1$rootProject.ext.supportLibraryVersion"')
+    str = str.replace(/["'](com\.android\.support:support-v4:).*["']/gm, '"$1$rootProject.ext.supportLibraryVersion"')
+    str = str.replace(/["'](com\.android\.support:design:).*["']/gm, '"$1$rootProject.ext.supportLibraryVersion"')
     fs.outputFile(gradle, str)
   })
 })
@@ -433,6 +741,8 @@ export NODE_BINARY=node
 
 像下面那样更改 AppDelegate.m 文件
 
+<a name="container"></a>
+
 ```objc
 #import <NavigationHybrid/NavigationHybrid.h>
 #import <React/RCTBundleURLProvider.h>
@@ -445,7 +755,8 @@ export NODE_BINARY=node
     jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
     [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
 
-    self.window.rootViewController = [[HBDNavigationController alloc] initWithRootModule:@"Home" props:nil options:nil];
+    UIViewController *rootViewController = [UIViewController new];
+    self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -571,10 +882,13 @@ export NODE_BINARY=node
     this.navigator.dismiss()
 	```
 	
-	A 页面实现 `onComponentResult` 来接收这个结果
+	A 页面通过以下方式来接收结果
 	
 	```javascript
-	// A.js
+    // A.js
+    componentWillMount() {
+        this.props.navigator.onComponentResult = this.onComponentResult.bind(this);
+    }
     onComponentResult(requestCode, resultCode, data) {
         if(requestCode === 1) { 
             if(resultCode === RESULT_OK) {
@@ -666,6 +980,8 @@ export NODE_BINARY=node
 - toggleMenu
 
     切换抽屉的开关状态
+
+<a name="style"></a>
     
 - openMenu
 
@@ -703,7 +1019,8 @@ setStyle 接受一个对象为参数，可配置字段如下：
     
     bottomBarBackgroundColor: String // 底部 TabBar 背景颜色
     bottomBarShadowImage: Object // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 。对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
-    bottomBarButtonItemTintColor: String // 底部 TabBarItem 选中效果
+    bottomBarButtonItemActiveColor: String // 底部 TabBarItem 选中效果
+    bottomBarButtonItemInActiveColor: String // 底部 TabBarItem 未选中效果
 }
 ```
 
@@ -852,9 +1169,13 @@ setStyle 接受一个对象为参数，可配置字段如下：
     可选，UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。仅对 iOS 和 Android 4.4 以下版本生效 ，对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
     配置方式请参考 `shadowImage`
     
-- bottomBarButtonItemTintColor
+- bottomBarButtonItemActiveColor
 
     可选，底部 TabBarItem 选中效果
+
+- bottomBarButtonItemInActiveColor
+
+    可选，底部 TabBarItem 未选中效果
     
     
 ### 静态配置页面
@@ -892,10 +1213,6 @@ class Screen extends Component {
         }
     }
     	
-    onBarButtonItemClick(action) {
-    	// do something
-    }
-	
 }
 ```
 
@@ -919,8 +1236,21 @@ class Screen extends Component {
 	
 	insets 仅对 iOS 生效，用于调整按钮 icon 或 title 的位置。
 	
-	action 是个字符串，用来标识用户在当前页面触发的是哪个行为，当用户点击按钮时，这个值会被作为参数传递到实例方法 `onBarButtonItemClick` 。
+	action 是个字符串，用来标识用户在当前页面触发的是哪个行为，通过以下方式处理用户触发的行为
 	
+	```javascript
+    componentWillMount() {
+        this.props.navigator.onBarButtonItemClick = this.onBarButtonItemClick.bind(this);
+   }
+    
+    onBarButtonItemClick(action) {
+        console.info(action)
+        if(ON_MENU_CLICK === action) {
+        	this.props.navigator.toggleMenu();
+        }
+    }
+	```
+		
 	enabled 是个布尔值，可选，用来标识按钮是否可以点击，默认是 true。
 
 - rightBarButtonItem
@@ -954,9 +1284,6 @@ class B extends Component {
             title: '按钮',
             action: 'left-button-click',
         },
-    }
-    onBarButtonItemClick(action) {
-        // do something
     }
 }
 ```
