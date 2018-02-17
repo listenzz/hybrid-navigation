@@ -11,7 +11,7 @@
 #import <NavigationHybrid/NavigationHybrid.h>
 #import "OneNativeViewController.h"
 
-@interface AppDelegate () <HBDReactBridgeManagerDelegate>
+@interface AppDelegate ()
 
 @end
 
@@ -21,20 +21,11 @@
     
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
     [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
-    [HBDReactBridgeManager instance].delegate = self;
     
     // register native modules
     [[HBDReactBridgeManager instance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
     
-    UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
-    self.window.rootViewController = [storyboard instantiateInitialViewController];
-    [self.window makeKeyAndVisible];
-    
-    return YES;
-}
-
-- (void)reactModuleRegistryDidCompleted:(HBDReactBridgeManager *)manager {
-    
+    // build root
     HBDViewController *react = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Navigation" props:nil options:nil];
     HBDNavigationController *reactNavigation = [[HBDNavigationController alloc] initWithRootViewController:react];
     HBDViewController *style = [[HBDReactBridgeManager instance] controllerWithModuleName:@"CustomStyle" props:nil options:nil];
@@ -47,8 +38,16 @@
     [drawerController setContentViewController:tabBarController];
     HBDViewController *menu = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Menu" props:nil options:nil];
     [drawerController setMenuViewController:menu];
+    UIViewController *rootViewController = drawerController;
+    
+//    UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+//    UIViewController *rootViewController = [storyboard instantiateInitialViewController];
 
-    [[HBDReactBridgeManager instance] setRootViewController:drawerController];
+    // set root
+    self.window.rootViewController = rootViewController;
+    [self.window makeKeyAndVisible];
+    
+    return YES;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {

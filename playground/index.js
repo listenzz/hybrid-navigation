@@ -69,18 +69,18 @@ ReactRegistry.registerComponent('Counter', () => Counter);
 
 ReactRegistry.endRegisterComponent();
 
-Navigator.setRoot({
-	drawer: [
-		{
-			tabs: [
-				{stack: {
-					screen: {moduleName: 'ReactNavigation'}, 
-				}}, 
-				{stack: {
-					screen: {moduleName: 'CustomStyle'} 
-				}}
-			]
-		},
-		{screen: {moduleName: 'Menu'}}
-	]
-});
+// Navigator.setRoot({
+// 	drawer: [
+// 		{
+// 			tabs: [
+// 				{stack: {
+// 					screen: {moduleName: 'ReactNavigation'}, 
+// 				}}, 
+// 				{stack: {
+// 					screen: {moduleName: 'CustomStyle'} 
+// 				}}
+// 			]
+// 		},
+// 		{screen: {moduleName: 'Menu'}}
+// 	]
+// });

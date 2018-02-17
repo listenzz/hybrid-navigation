@@ -167,6 +167,11 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
     HBDViewController *vc = nil;
     
+    while ([self isReactModuleInRegistry]) {
+        NSDate* later = [NSDate dateWithTimeIntervalSinceNow:0.1];
+        [[NSRunLoop mainRunLoop] runUntilDate:later];
+    }
+    
     if (!props) {
         props = @{};
     }
