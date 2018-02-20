@@ -53,6 +53,8 @@ make sure that you have a  simulator or device when you run andriod
 
 你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
 
+可以参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目。
+
 假设你是通过 `react-native init AwesomeProject` 创建的项目，目录结构是这样的：
 
 ```
@@ -112,19 +114,19 @@ ReactRegistry.endRegisterComponent();
 
 ```javascript
 Navigator.setRoot({
-	drawer: [
-		{
-			tabs: [
-				{stack: {
-					screen: {moduleName: 'Home'}, 
-				}}, 
-				{stack: {
-					screen: {moduleName: 'Profile'} 
-				}}
-			]
-		},
-		{screen: {moduleName: 'Menu'}}
-	]
+  drawer: [
+    {
+      tabs: [
+        {
+          stack: { screen: {moduleName: 'Home'}, }
+        }, 
+        {
+          stack: { screen: {moduleName: 'Profile'} }
+        }
+      ]
+    },
+    {screen: {moduleName: 'Menu'}}
+  ]
 });
 ```
 
@@ -1168,6 +1170,8 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
     可选，UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。仅对 iOS 和 Android 4.4 以下版本生效 ，对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
     配置方式请参考 `shadowImage`
+    
+    <a name="static-options"></a>
     
 - bottomBarButtonItemActiveColor
 
