@@ -46,6 +46,8 @@ make sure that you have a  simulator or device when you run andriod
 
 #### [容器](#container)
 
+#### [RN 页面与原生页面相互跳转和传值](#navigation-hybrid)
+
 #### [设置样式](#style)
 
 
@@ -983,7 +985,7 @@ export NODE_BINARY=node
 
     切换抽屉的开关状态
 
-<a name="style"></a>
+<a name="navigation-hybrid"></a>
     
 - openMenu
 
@@ -993,6 +995,173 @@ export NODE_BINARY=node
 
     关闭抽屉
 
+
+
+## RN 页面与原生页面相互跳转和传值
+
+我们为原生和 RN 页面提供了一致的转场和传值方式。
+
+### 创建原生页面
+
+Android 需要继承 `HybridFragment`，具体可以参考 playground 项目中 `OneNativeFragment` 这个类：
+
+```java
+public class OneNativeFragment extends HybridFragment {
+
+}
+```
+
+HybridFragment 继承于 `AwesomeFragment`，关于 AwesomeFragment 更多细节，请看 [AndroidNavigation](https://github.com/listenzz/AndroidNavigation) 这个子项目。
+
+iOS 需要继承 `HBDViewController`，具体可以参考 playground 项目中 `OneNativeViewController` 这个类：
+
+```objc
+#import <NavigationHybrid/NavigationHybrid.h>
+
+@interface OneNativeViewController : HBDViewController
+
+@end
+```
+
+### 注册原生页面
+
+Android 注册方式如下
+
+```java
+public class MainApplication extends Application implements ReactApplication{
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        SoLoader.init(this, false);
+
+        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+        bridgeManager.install(getReactNativeHost());
+
+        // 注册原生模块
+        bridgeManager.registerNativeModule("OneNative", OneNativeFragment.class);
+    }
+}
+
+```
+
+iOS 注册方式如下
+
+```objc
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
+    [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+    
+    // 注册原生模块
+    [[HBDReactBridgeManager instance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
+    
+    return YES;
+}
+
+@end
+```
+
+> 如果 RN 和原生都注册了同样的模块，即模块名相同，会优先采用 RN 模块
+
+### 从 RN 页面跳转到其它页面
+
+```javascript
+this.props.navigator.push('moduleName');
+```
+
+就这样，不管这个模块是 RN 还是 原生。
+
+### 从原生页面跳转到其它页面
+
+首先实例化目标页面
+
+```java
+// android
+AwesomeFragment fragment = getReactBridgeManager().createFragment("moduleName");
+```
+
+```objc
+// ios
+HBDViewController *vc = [[HBDReactBridgeManager instance] controllerWithModuleName:@"moduleName" props:nil options:nil];
+```
+
+就这样实例化目标页面，不管这个页面是 RN 的还是原生的。
+
+接下来使用原生方式跳转
+
+```java
+NavigationFragment navigationFragment = getNavigationFragment();
+if (navigationFragment != null) {
+    navigationFragment.pushFragment(fragment);
+}
+```
+
+关于 NavigationFragment 的更多细节，请看 [AndroidNavigation](https://github.com/listenzz/AndroidNavigation) 这个子项目。
+
+```objc
+[self.navigationController pushViewController:vc animated:YES];
+```
+
+> 从原生页面跳转和传值到原生页面，除了上面的方式，你还可以用纯粹原生的方式来实现，就和引入 RN 之前那样
+
+### 传值和接收返回值
+
+RN 页面如何传值和接收返回值，[容器](#container) 一章中已经提及。
+
+#### Android 传值和接收返回值
+
+实例化时传值即可，不管目标页面是 RN 还是原生的
+
+```java
+Bundle props = new Bundle();
+props.putInt("user_id", 1);
+AwesomeFragment fragment = getReactBridgeManager().createFragment("moduleName", props, null);
+```
+
+通过以下方式获取其它页面传递过来的值，不管这个页面是原生还是RN的
+
+```java
+Bundle props = getArguments().getBundle(Constants.ARG_PROPS);
+```
+
+通过重写以下方法来接收返回值，不管这个结果是来自原生还是RN页面
+
+```java
+public void onFragmentResult(int requestCode, int resultCode, Bundle data) { 
+
+}
+```
+
+是不是很眼熟？
+
+更多细节，请看 [AndroidNavigation](https://github.com/listenzz/AndroidNavigation) 这个子项目。
+
+#### iOS 传值和接收返回值
+
+实例化时传值，不管目标页面是 RN 还是原生的
+
+
+```objc
+NSDictionary *props = @{@"user_id": @1};
+HBDViewController *vc = [[HBDReactBridgeManager instance] controllerWithModuleName:@"moduleName" props:props options:nil];
+```
+
+通过以下方式获取其它页面传递过来的值，不管这个页面是原生还是RN的
+
+<a name="style"></a>
+
+```objc
+self.props
+```
+
+通过重写以下方法来接收返回值，不管这个结果是来自原生还是RN页面
+
+```objc
+- (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode;
+```
 
 ## 设置样式或主题
 
