@@ -1,20 +1,27 @@
+/**
+ * react-native-navigation-hybrid
+ * https://github.com/listenzz/react-native-navigation-hybrid
+ * @flow
+ */
+
 import Navigation from './NavigationModule';
 
 export default class Navigator {
-
   /**
    * ```
    * {
-   *  drawer: [ { tabs: [ {stack: 
-   *                              { screen: "Home"} 
-   *                      }, 
-   *                      { stack: 
-   *                              { screen: "Profile"} 
-   *                      }, 
-   *                    ]
-   *            }, 
-   *            { screen: "Setting"}
-   *          ]
+   *  drawer: [
+   *    { tabs: [
+   *        { stack:
+   *          { screen: "Home" }
+   *        },
+   *        { stack:
+   *          { screen: "Profile" }
+   *        },
+   *      ]
+   *    },
+   *    { screen: "Setting" }
+   *  ]
    * }
    * ```
    */
@@ -25,21 +32,21 @@ export default class Navigator {
 
   constructor(sceneId) {
     this.sceneId = sceneId;
-    this.push = this.push.bind(this)
-    this.pop = this.pop.bind(this)
-    this.popTo = this.popTo.bind(this)
-    this.popToRoot = this.popToRoot.bind(this)
-    this.isRoot = this.isRoot.bind(this)
-    this.present = this.present.bind(this)
-    this.setResult = this.setResult.bind(this)
-    this.dismiss = this.dismiss.bind(this)
-    this.replace = this.replace.bind(this)
-    this.replaceToRoot = this.replaceToRoot.bind(this)
+    this.push = this.push.bind(this);
+    this.pop = this.pop.bind(this);
+    this.popTo = this.popTo.bind(this);
+    this.popToRoot = this.popToRoot.bind(this);
+    this.isRoot = this.isRoot.bind(this);
+    this.present = this.present.bind(this);
+    this.setResult = this.setResult.bind(this);
+    this.dismiss = this.dismiss.bind(this);
+    this.replace = this.replace.bind(this);
+    this.replaceToRoot = this.replaceToRoot.bind(this);
     this.onBarButtonItemClick = undefined;
     this.onComponentResult = undefined;
   }
 
-  push(moduleName, props={}, options={}, animated = true) {
+  push(moduleName, props = {}, options = {}, animated = true) {
     Navigation.push(this.sceneId, moduleName, props, options, animated);
   }
 
@@ -59,15 +66,15 @@ export default class Navigator {
     return Navigation.isRoot(this.sceneId);
   }
 
-  replace(moduleName, props={}, options={}) {
+  replace(moduleName, props = {}, options = {}) {
     Navigation.replace(this.sceneId, moduleName, props, options);
   }
 
-  replaceToRoot(moduleName, props={}, options={}) {
+  replaceToRoot(moduleName, props = {}, options = {}) {
     Navigation.replaceToRoot(this.sceneId, moduleName, props, options);
   }
 
-  present(moduleName, requestCode,  props={}, options={}, animated = true) {
+  present(moduleName, requestCode, props = {}, options = {}, animated = true) {
     Navigation.present(this.sceneId, moduleName, requestCode, props, options, animated);
   }
 
@@ -102,5 +109,4 @@ export default class Navigator {
   signalFirstRenderComplete() {
     Navigation.signalFirstRenderComplete(this.sceneId);
   }
-
 }
