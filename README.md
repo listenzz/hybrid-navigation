@@ -1001,6 +1001,10 @@ export NODE_BINARY=node
 
 我们为原生和 RN 页面提供了一致的转场和传值方式。
 
+RN 页面如何跳转和传值，我们 [容器](#container) 一章已经提及，你不需要理会目标页面是原生的还是 RN 的，只要当前页面是 RN 的，处理方式都一样。
+
+下面我们来说原生页面的跳转和传值方式：
+
 ### 创建原生页面
 
 Android 需要继承 `HybridFragment`，具体可以参考 playground 项目中 `OneNativeFragment` 这个类：
@@ -1066,15 +1070,8 @@ iOS 注册方式如下
 
 > 如果 RN 和原生都注册了同样的模块，即模块名相同，会优先采用 RN 模块
 
-### 从 RN 页面跳转到其它页面
 
-```javascript
-this.props.navigator.push('moduleName');
-```
-
-就这样，不管这个模块是 RN 还是 原生。
-
-### 从原生页面跳转到其它页面
+### 原生页面的跳转
 
 首先实例化目标页面
 
@@ -1107,13 +1104,11 @@ if (navigationFragment != null) {
 
 > 从原生页面跳转和传值到原生页面，除了上面的方式，你还可以用纯粹原生的方式来实现，就和引入 RN 之前那样
 
-### 传值和接收返回值
+### 原生页面传值和返回结果
 
-RN 页面如何传值和接收返回值，[容器](#container) 一章中已经提及。
+#### Android
 
-#### Android 传值和接收返回值
-
-实例化时传值即可，不管目标页面是 RN 还是原生的
+实例化时传值即可，不管这个页面是原生的还是 RN 的
 
 ```java
 Bundle props = new Bundle();
@@ -1121,13 +1116,19 @@ props.putInt("user_id", 1);
 AwesomeFragment fragment = getReactBridgeManager().createFragment("moduleName", props, null);
 ```
 
-通过以下方式获取其它页面传递过来的值，不管这个页面是原生还是RN的
+通过以下方式获取其它页面传递过来的值，不管这个页面是原生的还是 RN 的
 
 ```java
 Bundle props = getArguments().getBundle(Constants.ARG_PROPS);
 ```
 
-通过重写以下方法来接收返回值，不管这个结果是来自原生还是RN页面
+通过调用以下方法返回结果给之前的页面，不管这个页面是原生的还是 RN 的
+
+```java
+public void setResult(int resultCode, Bundle data);
+```
+
+通过重写以下方法来接收结果，不管这个页面是原生的还是 RN 的
 
 ```java
 public void onFragmentResult(int requestCode, int resultCode, Bundle data) { 
@@ -1135,21 +1136,18 @@ public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
 }
 ```
 
-是不是很眼熟？
-
 更多细节，请看 [AndroidNavigation](https://github.com/listenzz/AndroidNavigation) 这个子项目。
 
-#### iOS 传值和接收返回值
+#### iOS 
 
-实例化时传值，不管目标页面是 RN 还是原生的
-
+实例化时传值，不管这个页面是原生的还是 RN 的
 
 ```objc
 NSDictionary *props = @{@"user_id": @1};
 HBDViewController *vc = [[HBDReactBridgeManager instance] controllerWithModuleName:@"moduleName" props:props options:nil];
 ```
 
-通过以下方式获取其它页面传递过来的值，不管这个页面是原生还是RN的
+通过以下方式获取其它页面传递过来的值，不管这个页面是原生的还是 RN 的
 
 <a name="style"></a>
 
@@ -1157,7 +1155,13 @@ HBDViewController *vc = [[HBDReactBridgeManager instance] controllerWithModuleNa
 self.props
 ```
 
-通过重写以下方法来接收返回值，不管这个结果是来自原生还是RN页面
+通过调用以下方法返回结果给之前的页面，不管这个页面是原生的还是 RN 的
+
+```objc
+- (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data;
+```
+
+通过重写以下方法来接收结果，不管这个页面是原生的还是 RN 的
 
 ```objc
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode;
