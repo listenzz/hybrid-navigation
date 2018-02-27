@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.FragmentHelper;
 
+import static com.navigationhybrid.Constants.ARG_PROPS;
+
 /**
  * Created by Listen on 2018/1/15.
  */
@@ -49,17 +51,26 @@ public class HybridFragment extends AwesomeFragment {
         return bridgeManager;
     }
 
-    protected Bundle getOptions() {
+    public Bundle getOptions() {
         Bundle args = FragmentHelper.getArguments(this);
         return args.getBundle(Constants.ARG_OPTIONS);
     }
 
-    protected void setOptions(Bundle options) {
+    public void setOptions(Bundle options) {
         Bundle args = getArguments();
         if (args != null) {
             args.putBundle(Constants.ARG_OPTIONS, options);
             setArguments(args);
         }
+    }
+
+    public Bundle getProps() {
+        Bundle args = FragmentHelper.getArguments(this);
+        Bundle initialProps = args.getBundle(ARG_PROPS);
+        if (initialProps == null) {
+            initialProps = new Bundle();
+        }
+        return initialProps;
     }
 
 }

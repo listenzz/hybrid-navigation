@@ -38,6 +38,7 @@
     [drawerController setContentViewController:tabBarController];
     HBDViewController *menu = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Menu" props:nil options:nil];
     [drawerController setMenuViewController:menu];
+    
     UIViewController *rootViewController = drawerController;
     
 //    UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];

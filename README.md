@@ -1119,7 +1119,7 @@ AwesomeFragment fragment = getReactBridgeManager().createFragment("moduleName", 
 通过以下方式获取其它页面传递过来的值，不管这个页面是原生的还是 RN 的
 
 ```java
-Bundle props = getArguments().getBundle(Constants.ARG_PROPS);
+Bundle props = getProps();
 ```
 
 通过调用以下方法返回结果给之前的页面，不管这个页面是原生的还是 RN 的
