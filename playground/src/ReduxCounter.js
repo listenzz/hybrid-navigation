@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
 
 import { createStore } from 'redux';
 import { connect } from 'react-redux';
@@ -16,7 +16,7 @@ import fontUri from './FontUtil';
 const ON_MINUS_CLICK = 'minus';
 
 // React component
-class Counter extends Component {
+class ReduxCounter extends Component {
   static navigationItem = {
     titleItem: {
       title: 'Redux Counter',
@@ -37,13 +37,15 @@ class Counter extends Component {
   render() {
     const { value, onIncreaseClick } = this.props;
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>{value}</Text>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <View style={styles.container}>
+          <Text style={styles.welcome}>{value}</Text>
 
-        <TouchableOpacity onPress={onIncreaseClick} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>Increase</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity onPress={onIncreaseClick} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>Increase</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     );
   }
 }
@@ -84,6 +86,6 @@ function mapDispatchToProps(dispatch) {
 }
 
 // Connected Component
-export default connect(mapStateToProps, mapDispatchToProps)(Counter);
+export default connect(mapStateToProps, mapDispatchToProps)(ReduxCounter);
 
 export { store };

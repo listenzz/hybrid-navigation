@@ -28,7 +28,7 @@ public class OneNativeFragment extends HybridFragment {
             public void onClick(View view) {
                 NavigationFragment navigationFragment = getNavigationFragment();
                 if (navigationFragment != null) {
-                    AwesomeFragment fragment = getReactBridgeManager().createFragment("ReactNavigation");
+                    AwesomeFragment fragment = getReactBridgeManager().createFragment("Navigation");
                     navigationFragment.pushFragment(fragment);
                 }
 

@@ -3,11 +3,15 @@ package com.navigationhybrid;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.FragmentHelper;
 
 import static com.navigationhybrid.Constants.ARG_PROPS;
+import static com.navigationhybrid.Constants.ARG_SCENE_ID;
 
 /**
  * Created by Listen on 2018/1/15.
@@ -20,10 +24,10 @@ public class HybridFragment extends AwesomeFragment {
     private Garden garden;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // 为什么要放这里初始化呢？因为创建 view 时就需要用到 garden 中的值了
+    public LayoutInflater onGetLayoutInflater(Bundle savedInstanceState) {
+        LayoutInflater layoutInflater = super.onGetLayoutInflater(savedInstanceState);
         garden = new Garden(this);
+        return layoutInflater;
     }
 
     @Override
@@ -32,9 +36,18 @@ public class HybridFragment extends AwesomeFragment {
         garden.configTopBar();
     }
 
+    public Garden getGarden() {
+        return garden;
+    }
+
     @Override
     protected boolean shouldHideBackButton() {
-        return garden.hideBackButton;
+        return garden.backBackHidden;
+    }
+
+    @Override
+    protected boolean backInteractive() {
+        return garden.backInteractive;
     }
 
     @Override
@@ -42,8 +55,12 @@ public class HybridFragment extends AwesomeFragment {
         return garden.hidesBottomBarWhenPushed;
     }
 
-    public Garden getGarden() {
-        return garden;
+    @Override
+    protected Toolbar onCreateToolbar(View parent) {
+        if (garden.topBarHidden) {
+            return null;
+        }
+        return super.onCreateToolbar(parent);
     }
 
     @NonNull
@@ -70,6 +87,7 @@ public class HybridFragment extends AwesomeFragment {
         if (initialProps == null) {
             initialProps = new Bundle();
         }
+        initialProps.putString(ARG_SCENE_ID, getSceneId());
         return initialProps;
     }
 

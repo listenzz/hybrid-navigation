@@ -1,11 +1,14 @@
 //
 //  HBDReactViewController.m
+//  NavigationHybrid
 //
 //  Created by Listen on 2017/11/26.
+//  Copyright © 2018年 Listen. All rights reserved.
 //
 
 #import "HBDReactViewController.h"
 #import "HBDReactBridgeManager.h"
+#import "HBDTitleView.h"
 
 #import <React/RCTRootView.h>
 #import <React/RCTEventEmitter.h>
@@ -18,22 +21,43 @@
 @implementation HBDReactViewController
 
 - (void)loadView {
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager instance].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
+    self.view = rootView;
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    NSDictionary *titleItem = self.options[@"titleItem"];
+    if (titleItem && self.navigationController) {
+        if (self.topBarHidden) {
+            return;
+        }
+        NSString *moduleName = titleItem[@"moduleName"];
+        if (moduleName) {
+            NSString *fitting = titleItem[@"layoutFitting"];
+            CGSize size;
+            if ([fitting isEqualToString:@"expanded"]) {
+                size = UILayoutFittingExpandedSize;
+            } else {
+                size = UILayoutFittingCompressedSize;
+            }
+            RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager instance].bridge moduleName:moduleName initialProperties:[self propsWithSceneId]];
+            HBDTitleView *titleView = [[HBDTitleView alloc] initWithRootView:rootView layoutFittingSize:size navigationBarBounds:self.navigationController.navigationBar.bounds];
+            self.navigationItem.titleView = titleView;
+        }
+    }
+}
+
+- (NSDictionary *)propsWithSceneId {
     NSMutableDictionary *props;
     if (self.props) {
         props = [self.props mutableCopy];
     } else {
         props = [@{} mutableCopy];
     }
-
     [props setObject:self.sceneId forKey:@"sceneId"];
-    
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager instance].bridge moduleName:self.moduleName initialProperties:props];
-    self.view = rootView;
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    return props;
 }
 
 - (void)viewWillAppear:(BOOL)animated {

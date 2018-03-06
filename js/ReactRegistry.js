@@ -17,6 +17,8 @@ const EventEmitter = Platform.select({
 
 let componentWrapperFunc;
 
+let navigators = new Map();
+
 export default {
   startRegisterComponent(componentWrapper) {
     console.info('begin register react component');
@@ -35,7 +37,12 @@ export default {
     class Screen extends Component {
       constructor(props) {
         super(props);
-        this.navigator = new Navigator(props.sceneId);
+        if (navigators.has(props.sceneId)) {
+          this.navigator = navigators.get(props.sceneId);
+        } else {
+          this.navigator = new Navigator(props.sceneId);
+          navigators.set(props.sceneId, this.navigator);
+        }
         this.garden = new Garden(props.sceneId);
         this.events = [];
       }
@@ -59,18 +66,19 @@ export default {
       }
 
       componentWillMount() {
-        console.debug('componentWillMount   = ' + this.props.sceneId);
+        // console.debug('componentWillMount   = ' + this.props.sceneId);
         this.handleComponentResultEvent();
         this.handleBarButtonItemClick();
       }
 
       componentDidMount() {
-        console.debug('componentDidMount    = ' + this.props.sceneId);
+        // console.debug('componentDidMount    = ' + this.props.sceneId);
         this.navigator.signalFirstRenderComplete();
       }
 
       componentWillUnmount() {
-        console.debug('componentWillUnmount = ' + this.props.sceneId);
+        // console.debug('componentWillUnmount = ' + this.props.sceneId);
+        navigators.delete(this.props.sceneId);
         this.events.forEach(event => {
           event.remove();
         });
@@ -93,7 +101,7 @@ export default {
       options = RealComponent.navigationItem;
     }
 
-    console.debug('register component:' + appKey + ' options:' + JSON.stringify(options));
+    // console.debug('register component:' + appKey + ' options:' + JSON.stringify(options));
 
     AppRegistry.registerComponent(appKey, () => Screen);
     NavigationModule.registerReactComponent(appKey, options);

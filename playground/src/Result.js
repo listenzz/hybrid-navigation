@@ -12,7 +12,7 @@ import styles from './Styles';
 
 import { RESULT_OK } from 'react-native-navigation-hybrid';
 
-export default class ReactResult extends Component {
+export default class Result extends Component {
   static navigationItem = {
     titleItem: {
       title: 'RN result',
@@ -57,7 +57,7 @@ export default class ReactResult extends Component {
   }
 
   pushToReact() {
-    this.props.navigator.push('ReactResult');
+    this.props.navigator.push('Result');
   }
 
   sendResult() {
@@ -76,8 +76,8 @@ export default class ReactResult extends Component {
     return (
       <KeyboardAwareScrollView
         style={{ flex: 1 }}
-        automaticallyAdjustContentInsets={false}
         showsHorizontalScrollIndicator={false}
+        contentInsetAdjustmentBehavior="automatic"
       >
         <View style={styles.container}>
           <Text style={styles.welcome}>This's a React Native scene.</Text>

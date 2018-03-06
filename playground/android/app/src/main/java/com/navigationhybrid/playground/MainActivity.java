@@ -20,11 +20,11 @@ public class MainActivity extends ReactAppCompatActivity {
     @Override
     protected void onCreateMainComponent() {
 
-        AwesomeFragment react = getReactBridgeManager().createFragment("ReactNavigation");
+        AwesomeFragment react = getReactBridgeManager().createFragment("Navigation");
         ReactNavigationFragment reactNavigation = new ReactNavigationFragment();
         reactNavigation.setRootFragment(react);
 
-        AwesomeFragment custom = getReactBridgeManager().createFragment("CustomStyle");
+        AwesomeFragment custom = getReactBridgeManager().createFragment("Options");
         ReactNavigationFragment customNavigation = new ReactNavigationFragment();
         customNavigation.setRootFragment(custom);
 

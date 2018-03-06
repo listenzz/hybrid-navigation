@@ -4,21 +4,29 @@
  * @flow
  */
 
-import { StyleSheet } from 'react-native';
+import { StyleSheet, StatusBar, Platform } from 'react-native';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    // backgroundColor: '#F5FCFF',
-    paddingTop: 16,
+    ...Platform.select({
+      ios: { paddingTop: 16 },
+      android: { paddingTop: 16 + StatusBar.currentHeight + 48 },
+    }),
   },
+
+  safeArea: {
+    flex: 1,
+  },
+
   button: {
     alignItems: 'center',
     justifyContent: 'center',
     height: 40,
   },
+
   buttonText: {
     color: 'rgb(34,88,220)',
   },
@@ -60,6 +68,7 @@ export default StyleSheet.create({
     color: '#333333',
     fontSize: 13,
   },
+
   input: {
     height: 40,
     marginTop: 170,
@@ -71,11 +80,13 @@ export default StyleSheet.create({
     borderColor: '#cccccc',
     borderWidth: 1,
   },
+
   welcome: {
     fontSize: 17,
     textAlign: 'center',
     margin: 8,
   },
+
   instructions: {
     textAlign: 'center',
     color: '#333333',

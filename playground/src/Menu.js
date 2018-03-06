@@ -23,7 +23,7 @@ export default class Menu extends Component {
 
   pushToRedux() {
     this.props.navigator.closeMenu();
-    this.props.navigator.push('Counter');
+    this.props.navigator.push('ReduxCounter');
   }
 
   render() {

@@ -20,7 +20,7 @@ PODS:
     - DoubleConversion
     - GLog
   - GLog (0.3.4)
-  - NavigationHybrid (0.2.0):
+  - NavigationHybrid (0.2.1):
     - React
   - React (0.50.3):
     - React/Core (= 0.50.3)
@@ -63,7 +63,7 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
-  - RNVectorIcons (4.4.3):
+  - RNVectorIcons (4.5.0):
     - React
   - yoga (0.50.3.React)
 
@@ -107,9 +107,9 @@ SPEC CHECKSUMS:
   DoubleConversion: ebb6747c5b66026ad4f97b789c3ceac6f18e57a6
   Folly: b7255b29f1d693c375d642d0f04f0592181156d9
   GLog: 3e4e4ae9746ce6bf6e9420c7fc1e08ad59c8ba1a
-  NavigationHybrid: 1ad3f1feacdf3e7afe52242392d9395404cb513c
+  NavigationHybrid: e48906d8e1b4fee7eb3c3ac2706f359bae417d97
   React: 0ba6cae888dc82dc47d6d5f3090615e1b5f6f3e7
-  RNVectorIcons: c071c813b86302163f687c0a8209ce37f054212f
+  RNVectorIcons: 00632755ab42ae7b7d1a5877c9840d71e808efad
   yoga: faecc6be81ca7823ccbb470b93a1b228499fa1c0
 
 PODFILE CHECKSUM: ddef008e0aa0fd544e380defa75c5fcb0823553e

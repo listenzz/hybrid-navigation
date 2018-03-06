@@ -2,12 +2,14 @@ package com.navigationhybrid;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -21,6 +23,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import me.listenzz.navigation.BarStyle;
 import me.listenzz.navigation.FragmentHelper;
 
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_DARK_CONTENT;
@@ -129,6 +132,103 @@ public class GardenModule extends ReactContextBaseJavaModule{
         });
     }
 
+    @ReactMethod
+    public void setStatusBarColor(final String sceneId, final ReadableMap readableMap) {
+        Log.i(TAG, "setStatusBarColor:" + readableMap);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    Bundle options = fragment.getOptions();
+                    if (readableMap.hasKey("statusBarColor")) {
+                        String statusBarColor = readableMap.getString("statusBarColor");
+                        options.putString("statusBarColor", statusBarColor);
+                        fragment.getGarden().setStatusBarColor(Color.parseColor(statusBarColor));
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTopBarStyle(final String sceneId, final ReadableMap readableMap) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    Bundle options = fragment.getOptions();
+                    if (readableMap.hasKey("topBarStyle")) {
+                        String barStyle = readableMap.getString("topBarStyle");
+                        options.putString("topBarStyle", barStyle);
+                        if (barStyle.equals("dark-content")) {
+                            fragment.getGarden().setTopBarStyle(BarStyle.DarkContent);
+                        } else {
+                            fragment.getGarden().setTopBarStyle(BarStyle.LightContent);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTopBarAlpha(final String sceneId, final ReadableMap readableMap) {
+        Log.i(TAG, "setTopBarAlpha:" + readableMap);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    Bundle options = fragment.getOptions();
+                    if (readableMap.hasKey("topBarAlpha")) {
+                        double topBarAlpha = readableMap.getDouble("topBarAlpha");
+                        options.putDouble("topBarAlpha", topBarAlpha);
+                        fragment.getGarden().setToolbarAlpha((float)topBarAlpha);
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTopBarColor(final String sceneId, final ReadableMap readableMap) {
+        Log.i(TAG, "setTopBarColor:" + readableMap);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    Bundle options = fragment.getOptions();
+                    if (readableMap.hasKey("topBarColor")) {
+                        String topBarColor = readableMap.getString("topBarColor");
+                        options.putString("topBarColor", topBarColor);
+                        fragment.getGarden().setTopBarColor(Color.parseColor(topBarColor));
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTopBarShadowHidden(final String sceneId, final ReadableMap readableMap) {
+        Log.i(TAG, "setTopBarShadowHidden:" + readableMap);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    Bundle options = fragment.getOptions();
+                    if (readableMap.hasKey("topBarShadowHidden")) {
+                        boolean topBarShadowHidden = readableMap.getBoolean("topBarShadowHidden");
+                        options.putBoolean("topBarShadowHidden", topBarShadowHidden);
+                        fragment.getGarden().setToolbarShadowHidden(topBarShadowHidden);
+                    }
+                }
+            }
+        });
+    }
 
     private HybridFragment findFragmentBySceneId(String sceneId) {
         Activity activity = getCurrentActivity();

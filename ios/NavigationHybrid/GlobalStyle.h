@@ -14,6 +14,8 @@
 
 @property (nonatomic, assign, readonly, getter=isBackTitleHidden) BOOL backTitleHidden;
 
+@property (nonatomic, strong, readonly) UIColor *topBarColor;
+
 - (instancetype)initWithOptions:(NSDictionary *)options;
 
 - (void)inflateNavigationBar:(UINavigationBar *)navigationBar;

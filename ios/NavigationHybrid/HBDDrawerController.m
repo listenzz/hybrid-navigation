@@ -1,12 +1,10 @@
 //
 //  HBDDrawerController.m
+//  NavigationHybrid
 //
 //  Created by Listen on 2018/1/25.
+//  Copyright © 2018年 Listen. All rights reserved.
 //
-
-#define IS_PORTRAIT UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)
-#define IS_IPHONE    (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
-#define IS_IPHONE_X    (IS_IPHONE && MAX([[UIScreen mainScreen] bounds].size.width, [[UIScreen mainScreen] bounds].size.height) == 812.0)
 
 #import "HBDDrawerController.h"
 
@@ -17,7 +15,6 @@
 
 @property (nonatomic, assign, getter=isMenuOpened) BOOL menuOpened;
 @property (nonatomic, strong) UIView             *menuDimmingView;          // 侧边栏半透明黑底
-@property (nonatomic, strong) UIImageView        *statusBarView;
 
 @end
 
@@ -74,28 +71,11 @@
 
 - (void)setMenuOpened:(BOOL)menuOpened {
     _menuOpened = menuOpened;
-    [self setNeedsStatusBarAppearanceUpdate];
-}
-
-- (void)viewWillLayoutSubviews {
-    [super viewWillLayoutSubviews];
-    if (!self.statusBarView && self.navigationController) {
-        self.contentController.view.frame = CGRectMake(0, [self statusBarHeight], CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - [self statusBarHeight]);
-        
-        UIImageView *statusView = [[UIImageView alloc] init];
-        statusView.image = [self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault];
-        statusView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), [self statusBarHeight]);
-        [self.view insertSubview:statusView aboveSubview:self.contentController.view];
-        self.statusBarView = statusView;
+    if (menuOpened) {
+        [UIApplication sharedApplication].keyWindow.windowLevel = UIWindowLevelStatusBar +1;
+    } else {
+        [UIApplication sharedApplication].keyWindow.windowLevel = UIWindowLevelNormal;
     }
-}
-
-- (BOOL)prefersStatusBarHidden {
-    return _menuOpened;
-}
-
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-    return UIStatusBarAnimationSlide;
 }
 
 - (UIViewController *)childViewControllerForStatusBarStyle {
@@ -162,15 +142,7 @@
     dimmingView.frame = self.view.bounds;
     self.menuDimmingView = dimmingView;
     [self.menuDimmingView addSubview:menu.view];
-    
-    UIView *aboveView;
-    if (self.navigationController) {
-        aboveView = self.statusBarView;
-    } else {
-        aboveView = self.contentController.view;
-    }
-    
-    [self.view insertSubview:self.menuDimmingView aboveSubview:aboveView];
+    [self.view insertSubview:self.menuDimmingView aboveSubview:self.contentController.view];
     [self addGestureRecognizerToMenuDimmingView];
     [menu didMoveToParentViewController:self];
 }
@@ -268,22 +240,6 @@
             self.menuDimmingView = nil;
         }];
     }];
-}
-
-- (float)statusBarHeight {
-    if (IS_PORTRAIT) {
-        if (IS_IPHONE_X) {
-            return 44;
-        } else {
-            return 20;
-        }
-    } else {
-        if (IS_IPHONE_X) {
-            return 0;
-        } else {
-            return 20;
-        }
-    }
 }
 
 - (float)menuWidth {

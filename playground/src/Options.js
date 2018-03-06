@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, Image } from 'react-native';
+import { TouchableOpacity, Text, View, Image, ScrollView, SafeAreaView } from 'react-native';
 
 import styles from './Styles';
 import fontUri from './FontUtil';
@@ -13,7 +13,7 @@ import fontUri from './FontUtil';
 const ON_MENU_CLICK = 'on_menu_click';
 const ON_SETTING_CLICK = 'on_setting_click';
 
-export default class CustomStyle extends Component {
+export default class Options extends Component {
   static navigationItem = {
     titleItem: {
       title: 'Style',
@@ -26,16 +26,16 @@ export default class CustomStyle extends Component {
     },
 
     rightBarButtonItem: {
-      icon: Image.resolveAssetSource(require('./ic_settings.png')),
+      icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
       title: 'SETTING',
       action: ON_SETTING_CLICK,
       enabled: false,
     },
 
     tabItem: {
-      title: 'Style',
+      title: 'Options',
       icon: { uri: fontUri('FontAwesome', 'leaf', 24) },
-      hideTabBarWhenPush: false,
+      hideTabBarWhenPush: true,
     },
   };
 
@@ -44,8 +44,7 @@ export default class CustomStyle extends Component {
     this.changeLeftButton = this.changeLeftButton.bind(this);
     this.changeRightButton = this.changeRightButton.bind(this);
     this.changeTitle = this.changeTitle.bind(this);
-    this.hideBackButton = this.hideBackButton.bind(this);
-    this.hideShadow = this.hideShadow.bind(this);
+    this.topBarMisc = this.topBarMisc.bind(this);
     this.passOptions = this.passOptions.bind(this);
     this.switchToTab = this.switchToTab.bind(this);
     this.toggleTabBadge = this.toggleTabBadge.bind(this);
@@ -94,14 +93,6 @@ export default class CustomStyle extends Component {
     this.setState({ title: this.state.title === 'Style' ? '样式' : 'Style' });
   }
 
-  hideBackButton() {
-    this.props.navigator.push('HideBackButton');
-  }
-
-  hideShadow() {
-    this.props.navigator.push('HideTopBarShadow');
-  }
-
   passOptions() {
     this.props.navigator.push('PassOptions', {}, { titleItem: { title: 'The Passing Title' } });
   }
@@ -120,55 +111,72 @@ export default class CustomStyle extends Component {
     }
   }
 
+  topBarMisc() {
+    this.props.navigator.push('TopBarMisc');
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>This's a React Native scene.</Text>
-
-        <TouchableOpacity onPress={this.passOptions} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>pass options to another scene</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.hideShadow} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>hide shadow</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.hideBackButton} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>hide back button</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.changeLeftButton} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>
-            {this.state.leftButtonShowText
-              ? 'change left button to icon'
-              : 'change left button to text'}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={this.changeRightButton}
-          activeOpacity={0.2}
-          style={styles.button}
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="never"
+          overScrollMode={'always'}
+          style={{ flex: 1 }}
+          contentContainerStyle={{ flex: 1 }}
         >
-          <Text style={styles.buttonText}>
-            {this.state.rightButtonEnabled ? 'disable right button' : 'enable right button'}
-          </Text>
-        </TouchableOpacity>
+          <View style={styles.container}>
+            <Text style={styles.welcome}>This's a React Native scene.</Text>
 
-        <TouchableOpacity onPress={this.changeTitle} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>{`change title to '${this.state.title}'`}</Text>
-        </TouchableOpacity>
+            <TouchableOpacity onPress={this.topBarMisc} activeOpacity={0.2} style={styles.button}>
+              <Text style={styles.buttonText}>topBar miscellaneous</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.toggleTabBadge} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>
-            {this.state.badge ? 'hide tab badge' : 'show tab badge'}
-          </Text>
-        </TouchableOpacity>
+            <TouchableOpacity onPress={this.passOptions} activeOpacity={0.2} style={styles.button}>
+              <Text style={styles.buttonText}>pass options to another scene</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity
+              onPress={this.changeLeftButton}
+              activeOpacity={0.2}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>
+                {this.state.leftButtonShowText
+                  ? 'change left button to icon'
+                  : 'change left button to text'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={this.changeRightButton}
+              activeOpacity={0.2}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>
+                {this.state.rightButtonEnabled ? 'disable right button' : 'enable right button'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={this.changeTitle} activeOpacity={0.2} style={styles.button}>
+              <Text style={styles.buttonText}>{`change title to '${this.state.title}'`}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={this.toggleTabBadge}
+              activeOpacity={0.2}
+              style={styles.button}
+            >
+              <Text style={styles.buttonText}>
+                {this.state.badge ? 'hide tab badge' : 'show tab badge'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
+              <Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 }

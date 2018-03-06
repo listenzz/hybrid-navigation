@@ -1,7 +1,9 @@
 //
 //  HBDReactBridgeManager.h
+//  NavigationHybrid
 //
 //  Created by Listen on 2017/11/25.
+//  Copyright © 2018年 Listen. All rights reserved.
 //
 
 #import <React/RCTBridge.h>

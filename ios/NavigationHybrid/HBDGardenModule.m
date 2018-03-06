@@ -1,7 +1,9 @@
 //
 //  HBDGardenModule.m
+//  NavigationHybrid
 //
 //  Created by Listen on 2017/11/26.
+//  Copyright © 2018年 Listen. All rights reserved.
 //
 
 #import "HBDGardenModule.h"
@@ -58,6 +60,70 @@ RCT_EXPORT_METHOD(setTitleItem:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDGarden *garden = [[HBDGarden alloc] init];
     item = [self mergeItem:item key:@"titleItem" forController:vc];
     [garden setTitleItem:item forController:vc];
+}
+
+RCT_EXPORT_METHOD(setStatusBarColor:(NSString *)sceneId item:(NSDictionary *)item) {
+    NSLog(@"setStatusBarColor: %@", item);
+}
+
+RCT_EXPORT_METHOD(setTopBarStyle:(NSString *)sceneId item:(NSDictionary *)item) {
+    NSLog(@"setTopBarStyle: %@", item);
+    NSString *topBarStyle = [item objectForKey:@"topBarStyle"];
+    if (topBarStyle) {
+        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        NSDictionary *options = vc.options;
+        NSMutableDictionary *mutable =  [options mutableCopy];
+        [mutable setObject:topBarStyle forKey:@"topBarStyle"];
+        vc.options = [mutable copy];
+        HBDGarden *garden = [[HBDGarden alloc] init];
+        if ([topBarStyle isEqualToString:@"dark-content"]) {
+            [garden setTopBarStyle:UIBarStyleDefault forController:vc];
+        } else {
+            [garden setTopBarStyle:UIBarStyleBlack forController:vc];
+        }
+    }
+}
+
+RCT_EXPORT_METHOD(setTopBarAlpha:(NSString *)sceneId item:(NSDictionary *)item) {
+    NSNumber *topBarAlpha = [item objectForKey:@"topBarAlpha"];
+    if (topBarAlpha) {
+        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        NSDictionary *options = vc.options;
+        NSMutableDictionary *mutable =  [options mutableCopy];
+        [mutable setObject:topBarAlpha forKey:@"topBarAlpha"];
+        vc.options = [mutable copy];
+        HBDGarden *garden = [[HBDGarden alloc] init];
+        [garden setTopBarAlpha:[topBarAlpha floatValue] forController:vc];
+    }
+    NSLog(@"setTopBarAlpha: %@", item);
+}
+
+RCT_EXPORT_METHOD(setTopBarColor:(NSString *)sceneId item:(NSDictionary *)item) {
+    NSString *topBarColor = [item objectForKey:@"topBarColor"];
+    if (topBarColor) {
+        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        NSDictionary *options = vc.options;
+        NSMutableDictionary *mutable =  [options mutableCopy];
+        [mutable setObject:topBarColor forKey:@"topBarColor"];
+        vc.options = [mutable copy];
+        HBDGarden *garden = [[HBDGarden alloc] init];
+        [garden setTopBarColor:[HBDUtils colorWithHexString:topBarColor] forController:vc];
+    }
+    NSLog(@"setTopBarColor: %@", item);
+}
+
+RCT_EXPORT_METHOD(setTopBarShadowHidden:(NSString *)sceneId item:(NSDictionary *)item) {
+    NSNumber *topBarShadowHidden = [item objectForKey:@"topBarShadowHidden"];
+    if (topBarShadowHidden) {
+        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        NSDictionary *options = vc.options;
+        NSMutableDictionary *mutable =  [options mutableCopy];
+        [mutable setObject:topBarShadowHidden forKey:@"topBarShadowHidden"];
+        vc.options = [mutable copy];
+        HBDGarden *garden = [[HBDGarden alloc] init];
+        [garden setTopBarShadowHidden:[topBarShadowHidden boolValue] forController:vc];
+    }
+    NSLog(@"setTopBarShadowHidden: %@", item);
 }
 
 - (HBDViewController *)controllerForSceneId:(NSString *)sceneId {

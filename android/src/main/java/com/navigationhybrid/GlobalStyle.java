@@ -55,9 +55,9 @@ public class GlobalStyle {
         }
 
         // topBarBackgroundColor
-        String topBarBackgroundColor = options.getString("topBarBackgroundColor");
-        if (topBarBackgroundColor != null) {
-            style.setToolbarBackgroundColor(Color.parseColor(topBarBackgroundColor));
+        String topBarColor = options.getString("topBarColor");
+        if (topBarColor != null) {
+            style.setToolbarBackgroundColor(Color.parseColor(topBarColor));
         } else {
             if (style.getToolbarStyle() == BarStyle.LightContent) {
                 style.setToolbarBackgroundColor(Color.BLACK);

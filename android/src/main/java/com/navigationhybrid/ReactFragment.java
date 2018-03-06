@@ -1,14 +1,16 @@
 package com.navigationhybrid;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
@@ -17,7 +19,6 @@ import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.PresentAnimation;
 
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
-import static com.navigationhybrid.Constants.ARG_PROPS;
 import static com.navigationhybrid.Constants.ARG_SCENE_ID;
 import static com.navigationhybrid.Constants.ON_COMPONENT_RESULT_EVENT;
 import static com.navigationhybrid.Constants.REQUEST_CODE_KEY;
@@ -33,13 +34,21 @@ public class ReactFragment extends HybridFragment {
     protected static final String TAG = "ReactNative";
 
     private ReactRootView reactRootView;
-    private LinearLayout containerLayout;
+    private ViewGroup containerLayout;
+    private ReactRootView reactTitleView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_react, container, false);
+        int layoutRes;
+        if (getGarden().topBarAlpha < 1.0 || Color.alpha(getStyle().getToolbarBackgroundColor()) < 255) {
+            layoutRes = R.layout.nav_fragment_react_fl;
+        } else {
+            layoutRes = R.layout.nav_fragment_react_ll;
+        }
+
+        View view = inflater.inflate(layoutRes, container, false);
         containerLayout = view.findViewById(R.id.react_content);
 
         if (!getReactBridgeManager().isReactModuleInRegistry()) {
@@ -53,9 +62,18 @@ public class ReactFragment extends HybridFragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        initTitleViewIfNeeded();
+    }
+
+    @Override
     public void onDestroy() {
         if (reactRootView != null) {
             reactRootView.unmountReactApplication();
+        }
+        if (reactTitleView != null) {
+            reactTitleView.unmountReactApplication();
         }
         super.onDestroy();
     }
@@ -75,18 +93,38 @@ public class ReactFragment extends HybridFragment {
         if (reactRootView != null || getContext() == null) {
             return;
         }
-
         reactRootView = new ReactRootView(getContext());
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         containerLayout.addView(reactRootView, layoutParams);
         Bundle args = FragmentHelper.getArguments(this);
         String moduleName = args.getString(ARG_MODULE_NAME);
-        Bundle initialProps = args.getBundle(ARG_PROPS);
-        if (initialProps == null) {
-            initialProps = new Bundle();
+        reactRootView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+    }
+
+    private void initTitleViewIfNeeded() {
+        if (!getReactBridgeManager().isReactModuleInRegistry()) {
+            if (reactTitleView != null || getContext() == null) {
+                return;
+            }
+
+            Bundle titleItem = getOptions().getBundle("titleItem");
+            if (titleItem != null) {
+                String moduleName = titleItem.getString("moduleName");
+                if (moduleName != null) {
+                    String fitting = titleItem.getString("layoutFitting");
+                    boolean expanded = "expanded".equals(fitting);
+                    reactTitleView = new ReactRootView(getContext());
+                    Toolbar.LayoutParams layoutParams;
+                    if (expanded) {
+                        layoutParams = new Toolbar.LayoutParams(-1, -1, Gravity.CENTER);
+                    } else {
+                        layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
+                    }
+                    getToolbar().addView(reactTitleView, layoutParams);
+                    reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+                }
+            }
         }
-        initialProps.putString(ARG_SCENE_ID, getSceneId());
-        reactRootView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, initialProps);
     }
 
     public void signalFirstRenderComplete() {

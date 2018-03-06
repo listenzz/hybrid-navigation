@@ -1,7 +1,9 @@
 //
 //  HBDGarden.m
+//  NavigationHybrid
 //
 //  Created by Listen on 2017/11/26.
+//  Copyright © 2018年 Listen. All rights reserved.
 //
 
 #import "HBDGarden.h"
@@ -11,6 +13,8 @@
 #import "HBDBarButtonItem.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDUtils.h"
+#import "HBDTitleView.h"
+#import "HBDNavigationController.h"
 
 
 @implementation HBDGarden
@@ -91,10 +95,42 @@ static GlobalStyle *globalStyle;
     } else {
         controller.navigationItem.title = nil;
     }
+    
+    if (controller.topBarHidden) {
+        controller.navigationItem.title = nil;
+        controller.title = nil;
+    }
 }
 
 - (void)setHideBackButton:(BOOL)hidden forController:(HBDViewController *)controller {
     controller.navigationItem.hidesBackButton = hidden;
+}
+
+- (void)setTopBarStyle:(UIBarStyle)barStyle forController:(HBDViewController *)controller {
+    controller.statusBarStyle = barStyle == UIBarStyleDefault ? UIStatusBarStyleDefault : UIStatusBarStyleLightContent;
+    [controller.navigationController.navigationBar setBarStyle:barStyle];
+}
+
+- (void)setTopBarAlpha:(float)alpha forController:(HBDViewController *)controller {
+    controller.topBarAlpha = alpha;
+    UINavigationController *nav = controller.navigationController;
+    if ([nav isKindOfClass:[HBDNavigationController class]]) {
+        [((HBDNavigationController *)nav) updateNavigationBarAlpha:alpha];
+        [((HBDNavigationController *)nav) hideTopBarShadowImageIfNeededWithAlpha:controller.topBarAlpha forViewController:controller];
+    }
+}
+
+- (void)setTopBarColor:(UIColor *)color forController:(HBDViewController *)controller {
+    controller.topBarColor = color;
+    [controller.navigationController.navigationBar setBarTintColor:color];
+}
+
+- (void)setTopBarShadowHidden:(BOOL)hidden forController:(HBDViewController *)controller {
+    controller.topBarShadowHidden = hidden;
+    UINavigationController *nav = controller.navigationController;
+    if ([nav isKindOfClass:[HBDNavigationController class]]) {
+        [((HBDNavigationController *)nav) hideTopBarShadowImageIfNeededWithAlpha:controller.topBarAlpha forViewController:controller];
+    }
 }
 
 @end

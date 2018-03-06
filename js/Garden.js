@@ -20,7 +20,7 @@ export default class Garden {
    * {
    *  screenBackgroundColor: String // 页面背景，支持 #RRGGBB 格式的色值
    *  topBarStyle: String // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
-   *  topBarBackgroundColor: String // 顶部导航栏背景颜色
+   *  topBarColor: String // 顶部导航栏背景颜色
    *  statusBarColor: String // 状态栏背景色，仅对 Android 5.0 以上版本生效
    *  hideBackTitle: Bool // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
    *  elevation: Number // 导航栏阴影高度， 仅对 Android 5.0 以上版本生效，默认值为 4 dp
@@ -95,5 +95,80 @@ export default class Garden {
    */
   setTitleItem(item) {
     GardenModule.setTitleItem(this.sceneId, item);
+  }
+
+  /**
+   *
+   * 设置 TopBar 样式
+   *
+   * ```
+   * {
+   *   topBarStyle: 'dark-content'
+   * }
+   * ```
+   * @param {*} item
+   */
+  setTopBarStyle(item) {
+    GardenModule.setTopBarStyle(this.sceneId, item);
+  }
+
+  /**
+   *
+   * 设置状态栏背景颜色，仅对 Android 生效
+   *
+   * ```
+   * {
+   *   statusBarColor: '#FFFFFF'
+   * }
+   * ```
+   * @param {*} item
+   */
+  setStatusBarColor(item) {
+    GardenModule.setStatusBarColor(this.sceneId, item);
+  }
+
+  /**
+   *
+   * 设置 TopBar 背景的 alpha 值[0-1.0]，但 TopBar 上的控件仍清晰可见
+   *
+   * ```
+   * {
+   *   topBarAlpha: 0.5
+   * }
+   * ```
+   * @param {*} item
+   */
+  setTopBarAlpha(item) {
+    GardenModule.setTopBarAlpha(this.sceneId, item);
+  }
+
+  /**
+   *
+   * 设置 TopBar 背景颜色，这会覆盖全局设置的 topBarBackgroundColor
+   *
+   * ```
+   * {
+   *   topBarColor: '#FFFFFF'
+   * }
+   * ```
+   * @param {*} item
+   */
+  setTopBarColor(item) {
+    GardenModule.setTopBarColor(this.sceneId, item);
+  }
+
+  /**
+   *
+   * 设置是否隐藏 TopBar 阴影
+   *
+   * ```
+   * {
+   *   topBarShadowHidden: true
+   * }
+   * ```
+   * @param {*} item
+   */
+  setTopBarShadowHidden(item) {
+    GardenModule.setTopBarShadowHidden(this.sceneId, item);
   }
 }

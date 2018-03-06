@@ -15,6 +15,8 @@
 		910362F61FE931E000F4DA8E /* HBDNavigatorModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362E91FE931DF00F4DA8E /* HBDNavigatorModule.m */; };
 		910362F81FE931E000F4DA8E /* HBDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362EE1FE931DF00F4DA8E /* HBDViewController.m */; };
 		910362F91FE931E000F4DA8E /* HBDReactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362EF1FE931E000F4DA8E /* HBDReactViewController.m */; };
+		910BA6E9204E29E3004CB741 /* HBDNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 910BA6E8204E29E3004CB741 /* HBDNavigationBar.m */; };
+		910BA6EC204E8157004CB741 /* HBDTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 910BA6EB204E8157004CB741 /* HBDTitleView.m */; };
 		91C884A3202C3E8600EC0A20 /* HBDDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C8849D202C3E8600EC0A20 /* HBDDrawerController.m */; };
 		91C884A4202C3E8600EC0A20 /* UIViewController+HBD.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C8849E202C3E8600EC0A20 /* UIViewController+HBD.m */; };
 		91C884A5202C3E8600EC0A20 /* HBDTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C884A0202C3E8600EC0A20 /* HBDTabBarController.m */; };
@@ -53,6 +55,10 @@
 		910362ED1FE931DF00F4DA8E /* HBDBarButtonItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDBarButtonItem.h; sourceTree = "<group>"; };
 		910362EE1FE931DF00F4DA8E /* HBDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDViewController.m; sourceTree = "<group>"; };
 		910362EF1FE931E000F4DA8E /* HBDReactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDReactViewController.m; sourceTree = "<group>"; };
+		910BA6E7204E29E3004CB741 /* HBDNavigationBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HBDNavigationBar.h; sourceTree = "<group>"; };
+		910BA6E8204E29E3004CB741 /* HBDNavigationBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HBDNavigationBar.m; sourceTree = "<group>"; };
+		910BA6EA204E8157004CB741 /* HBDTitleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HBDTitleView.h; sourceTree = "<group>"; };
+		910BA6EB204E8157004CB741 /* HBDTitleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HBDTitleView.m; sourceTree = "<group>"; };
 		91C8849B202C3E8600EC0A20 /* HBDDrawerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDDrawerController.h; sourceTree = "<group>"; };
 		91C8849C202C3E8600EC0A20 /* UIViewController+HBD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HBD.h"; sourceTree = "<group>"; };
 		91C8849D202C3E8600EC0A20 /* HBDDrawerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDDrawerController.m; sourceTree = "<group>"; };
@@ -122,6 +128,10 @@
 				910362E81FE931DF00F4DA8E /* NavigationHybrid.h */,
 				91C884A7202C3F9200EC0A20 /* GlobalStyle.h */,
 				91C884A8202C3F9200EC0A20 /* GlobalStyle.m */,
+				910BA6E7204E29E3004CB741 /* HBDNavigationBar.h */,
+				910BA6E8204E29E3004CB741 /* HBDNavigationBar.m */,
+				910BA6EA204E8157004CB741 /* HBDTitleView.h */,
+				910BA6EB204E8157004CB741 /* HBDTitleView.m */,
 			);
 			path = NavigationHybrid;
 			sourceTree = "<group>";
@@ -183,12 +193,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				910BA6EC204E8157004CB741 /* HBDTitleView.m in Sources */,
 				91C884A6202C3E8600EC0A20 /* HBDUtils.m in Sources */,
 				91C884A3202C3E8600EC0A20 /* HBDDrawerController.m in Sources */,
 				910362F51FE931E000F4DA8E /* HBDReactBridgeManager.m in Sources */,
 				910362F11FE931E000F4DA8E /* HBDGarden.m in Sources */,
 				91C884A5202C3E8600EC0A20 /* HBDTabBarController.m in Sources */,
 				910362F61FE931E000F4DA8E /* HBDNavigatorModule.m in Sources */,
+				910BA6E9204E29E3004CB741 /* HBDNavigationBar.m in Sources */,
 				910362F91FE931E000F4DA8E /* HBDReactViewController.m in Sources */,
 				91C884A9202C3F9200EC0A20 /* GlobalStyle.m in Sources */,
 				91C884A4202C3E8600EC0A20 /* UIViewController+HBD.m in Sources */,

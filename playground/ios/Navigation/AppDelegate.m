@@ -28,7 +28,7 @@
     // build root
     HBDViewController *react = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Navigation" props:nil options:nil];
     HBDNavigationController *reactNavigation = [[HBDNavigationController alloc] initWithRootViewController:react];
-    HBDViewController *style = [[HBDReactBridgeManager instance] controllerWithModuleName:@"CustomStyle" props:nil options:nil];
+    HBDViewController *style = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Options" props:nil options:nil];
     HBDNavigationController *styleNavigation = [[HBDNavigationController alloc] initWithRootViewController:style];
 
     UITabBarController *tabBarController = [[UITabBarController alloc] init];

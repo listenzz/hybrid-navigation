@@ -1179,7 +1179,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 {
     screenBackgroundColor: String // 页面背景
     topBarStyle: String // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
-    topBarBackgroundColor: String // 顶部导航栏背景颜色
+    topBarColor: String // 顶部导航栏背景颜色
     statusBarColor: String // 状态栏背景色，仅对 Android 5.0 以上版本生效
     hideBackTitle: Bool // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
     elevation: Number // 导航栏阴影高度， 仅对 Android 5.0 以上版本生效，默认值为 4 dp
@@ -1213,9 +1213,9 @@ setStyle 接受一个对象为参数，可配置字段如下：
 	
 	![topbar-default](./screenshot/topbar-default.png)
 
-- topBarBackgroundColor
+- topBarColor
 
-	可选，导航栏（UINavigationBar | ToolBar）背景颜色。如果不设置，将根据 topBarStyle 来计算，如果 topBarStyle 的值是 dark-content，那么 topBarBackgroundColor 的值是白色，否则是黑色。
+	可选，导航栏（UINavigationBar | ToolBar）背景颜色。如果不设置，将根据 topBarStyle 来计算，如果 topBarStyle 的值是 dark-content，那么 topBarColor 的值是白色，否则是黑色。
 	
 	> 注意，可配置的颜色仅支持 #AARRGGBB 或者 #RRGGBB 格式的字符
 
@@ -1365,10 +1365,17 @@ setStyle 接受一个对象为参数，可配置字段如下：
 class Screen extends Component {
 
     static navigationItem = {
-        hideBackButton: true,     // 当前页面是否隐藏返回按钮
-        hideShadow: true,         // 当前页面是否隐藏 topBar 阴影
+        topBarAlpha: 0.5,          // 当前页面 topBar 背景透明度
+        topBarColor: '#FDFF0000',  // 当前页面 topBar 背景颜色，可以是透明颜色 
+        topBarShadowHidden: true,  // 是否隐藏当前页面 topBar 的阴影
+        topBarHidden: true,        // 是否隐藏当前页面 topBar
+        backButtonHidden: true,    // 当前页面是否隐藏返回按钮
+        backInteractive: true,     // 当前页面在隐藏返回按钮后，是否可以通过右滑或返回键返回
+        
         titleItem: {               // 导航栏标题
-            tilte: '这是标题', 
+            tilte: '这是标题',
+            moduleName: 'ModuleName',  // 自定义标题栏模块名
+            layoutFitting: 'expanded', // 自定义标题栏填充模式，expanded 或 compressed
         },
         	
         leftBarButtonItem: {      // 导航栏左侧按钮
@@ -1393,17 +1400,44 @@ class Screen extends Component {
 }
 ```
 
-- hideBackButton
+- topBarAlpha
 
-    可选，用来控制是否隐藏当前页面的返回按钮。一旦设置为 true，在 iOS 中将不能通过手势右滑返回，在 Android 中将不能通过返回键（物理）退出当前页面。
+    可选，默认值是 1.0。 当前页面 topBar 背景透明度，如果想调整 topBar 透明度，请使用该配置项
+    
+- topBarColor
+
+    可选，该设置会在当前页面覆盖全局设置中 topBarColor 的值，颜色可以是透明的，如果单纯只想调整透明度，请使用 topBarAlpha
+    
+- topBarShadowHidden
+
+    可选，默认是 false。用来控制当前页面是否隐藏 topBar 的阴影
+    
+- topBarHidden
+
+    可选，默认值是 false。当前页面是否隐藏 topBar，同时会隐藏 topBar 的阴影
+    
+
+- backButtonHidden
+
+    可选，默认值是 false。用来控制是否隐藏当前页面的返回按钮。一旦设置为 true，在 iOS 中将不能通过手势右滑返回，在 Android 中将不能通过返回键（物理）退出当前页面。
 	
-- hideShadow
+- backInteractive
 
-    可选，默认是 false。用来控制当前页面是否隐藏 shadowImage 或是把 elevation 的值设置为 0。
+    可选，默认值是 false。配合 backButtonHidden 使用，当 backButtonHidden 设置为 true，同时希望可以通过右滑或返回键返回，将此值设置为 true
 	
 - titleItem
 
-    可选，设置页面标题
+    可选，设置页面标题。
+    
+    title 设置页面标题。
+    
+    moduleName 如果希望自定义标题栏，那么通过此配置项设置模块名，模块需要通过 ReactRegistry.registerComponent 注册。一旦设置了 moduleName，title 字段将失效
+    
+    layoutFitting 配合 moduleName 使用，自定义标题栏的布局模式，有 expanded 和 compressed 两个可选值，默认是 compressed。 expanded 是指尽可能占据更多的空间， compressed 是指刚好能包裹自身内容。
+    
+    当自定义标题栏时，可能需要将 backButtonHidden 和 backInteractive 设置为 true，以为标题栏提供更多的空间。
+    
+    自定义标题栏和所属页面共享同一个 navigator，你可以在所属页面的构造函数中绑定属性供标题栏使用，详情请参考 playground 中 TopBarTitleView.js 这个文件。
 
 - leftBarButtonItem
 

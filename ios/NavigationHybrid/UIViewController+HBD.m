@@ -1,13 +1,23 @@
 //
 //  UIViewController+HBD.m
+//  NavigationHybrid
 //
 //  Created by Listen on 2018/1/22.
+//  Copyright © 2018年 Listen. All rights reserved.
 //
 
 #import "UIViewController+HBD.h"
 #import <objc/runtime.h>
 
 @implementation UIViewController (HBD)
+
+@dynamic topBarColor;
+@dynamic topBarAlpha;
+@dynamic topBarHidden;
+@dynamic topBarShadowHidden;
+@dynamic backButtonHidden;
+@dynamic backInteractive;
+@dynamic statusBarStyle;
 
 - (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data {
     [self setResultCode:@(resultCode)];

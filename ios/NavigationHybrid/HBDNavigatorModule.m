@@ -1,7 +1,9 @@
 //
 //  HBDNavigatorModule.m
+//  NavigationHybrid
 //
 //  Created by Listen on 2017/11/19.
+//  Copyright © 2018年 Listen. All rights reserved.
 //
 
 #import "HBDNavigatorModule.h"
@@ -51,7 +53,7 @@ RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionar
 }
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
-    NSLog(@"signalFirstRenderComplete sceneId:%@",sceneId);
+    // NSLog(@"signalFirstRenderComplete sceneId:%@",sceneId);
 }
 
 RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout) {

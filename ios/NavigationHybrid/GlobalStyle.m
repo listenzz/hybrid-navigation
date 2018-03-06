@@ -53,9 +53,9 @@
     }
     
     // topBarBackgroundColor
-    NSString *topBarBackgroundColor = self.options[@"topBarBackgroundColor"];
-    if (topBarBackgroundColor) {
-        [self setNavigationBar:navigationBar backgroundColor:topBarBackgroundColor];
+    NSString *topBarColor = self.options[@"topBarColor"];
+    if (topBarColor) {
+        [self setNavigationBar:navigationBar backgroundColor:topBarColor];
     } else {
         if (isLightContentStyle) {
             [self setNavigationBar:navigationBar backgroundColor:@"#000000"];
@@ -204,8 +204,9 @@
 }
 
 - (void)setNavigationBar:(UINavigationBar *)bar backgroundColor:(NSString *)color {
-    UIColor *c = [HBDUtils colorWithHexString:color];
-    [bar setBackgroundImage:[HBDUtils imageWithColor:c] forBarMetrics:UIBarMetricsDefault];
+    UIColor *topBarColor = [HBDUtils colorWithHexString:color];
+    _topBarColor = topBarColor;
+    [bar setBarTintColor:topBarColor];
 }
 
 @end

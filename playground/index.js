@@ -9,36 +9,43 @@ import { Image } from 'react-native';
 import React, { Component } from 'react';
 
 import { Provider } from 'react-redux';
-import Counter, { store } from './src/Counter';
 
-import App from './App';
-import ReactNavigation from './src/ReactNavigation';
-import ReactResult from './src/ReactResult';
-import CustomStyle from './src/CustomStyle';
-import HideBackButton from './src/HideBackButton';
-import HideTopBarShadow from './src/HideTopBarShadow';
-import PassOptions from './src/PassOptions';
+import Navigation from './src/Navigation';
+import Result from './src/Result';
+import Options from './src/Options';
 import Menu from './src/Menu';
+import PassOptions from './src/PassOptions';
+import ReduxCounter, { store } from './src/ReduxCounter';
+
+import TopBarMisc from './src/TopBarMisc';
+import TopBarBackButtonHidden from './src/TopBarBackButtonHidden';
+import TopBarShadowHidden from './src/TopBarShadowHidden';
+import TopBarHidden from './src/TopBarHidden';
+import TopBarColor from './src/TopBarColor';
+import TopBarAlpha from './src/TopBarAlpha';
+import TopBarTitleView, { CustomTitleView } from './src/TopBarTitleView';
+import TopBarStyle from './src/TopBarStyle';
+import StatusBarColor from './src/StatusBarColor';
 
 Garden.setStyle({
   topBarStyle: 'dark-content',
   titleTextSize: 17,
-  // statusBarColor: '#FFFFFF',
-  // topBarBackgroundColor: '#FFFFFF',
+  statusBarColor: '#FDFFFFFF',
+  topBarColor: '#FDFFFFFF',
 
   // topBarTintColor: '#0000ff',
-  // backIcon: Image.resolveAssetSource(require('./src/ic_settings.png')),
+  // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
   shadowImage: {
     color: '#dddddd',
-    //image: Image.resolveAssetSource(require('./src/divider.png'))
+    //image: Image.resolveAssetSource(require('./src/images/divider.png'))
   },
   // hideBackTitle: true,
   elevation: 1,
 
-  bottomBarBackgroundColor: '#ffffff',
+  bottomBarBackgroundColor: '#FFFFFF',
   //bottomBarShadowImage: {
   //color: '#ff0000',
-  // 	image: Image.resolveAssetSource(require('./src/divider.png'))
+  // 	image: Image.resolveAssetSource(require('./src/images/divider.png'))
   //},
   // bottomBarButtonItemActiveColor: '#00FF00'
   bottomBarButtonItemInActiveColor: '#CCCCCC',
@@ -60,16 +67,24 @@ function componentWrapper(componentProvider) {
 
 ReactRegistry.startRegisterComponent(componentWrapper);
 
-ReactRegistry.registerComponent('Navigator', () => App);
-ReactRegistry.registerComponent('ReactNavigation', () => ReactNavigation);
-ReactRegistry.registerComponent('Navigation', () => ReactNavigation);
-ReactRegistry.registerComponent('ReactResult', () => ReactResult);
-ReactRegistry.registerComponent('CustomStyle', () => CustomStyle);
-ReactRegistry.registerComponent('HideBackButton', () => HideBackButton);
-ReactRegistry.registerComponent('HideTopBarShadow', () => HideTopBarShadow);
-ReactRegistry.registerComponent('PassOptions', () => PassOptions);
+ReactRegistry.registerComponent('Navigation', () => Navigation);
+ReactRegistry.registerComponent('Result', () => Result);
+ReactRegistry.registerComponent('Options', () => Options);
 ReactRegistry.registerComponent('Menu', () => Menu);
-ReactRegistry.registerComponent('Counter', () => Counter);
+ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter);
+ReactRegistry.registerComponent('PassOptions', () => PassOptions);
+
+ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc);
+ReactRegistry.registerComponent('TopBarBackButtonHidden', () => TopBarBackButtonHidden);
+ReactRegistry.registerComponent('TopBarShadowHidden', () => TopBarShadowHidden);
+ReactRegistry.registerComponent('TopBarHidden', () => TopBarHidden);
+ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha);
+ReactRegistry.registerComponent('TopBarColor', () => TopBarColor);
+ReactRegistry.registerComponent('TopBarTitleView', () => TopBarTitleView);
+ReactRegistry.registerComponent('CustomTitleView', () => CustomTitleView);
+
+ReactRegistry.registerComponent('StatusBarColor', () => StatusBarColor);
+ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle);
 
 ReactRegistry.endRegisterComponent();
 
