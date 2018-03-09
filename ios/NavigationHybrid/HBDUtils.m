@@ -107,7 +107,7 @@
     NSString *uri = json[@"uri"];
     if (uri && [uri hasPrefix:@"font:"]) {
         uri = [uri substringFromIndex:7];
-        NSLog(@"font uri:%@", uri);
+        // NSLog(@"font uri:%@", uri);
         NSArray *components = [uri componentsSeparatedByString:@"/"];
         if (components.count != 3) {
             return nil;
@@ -116,7 +116,7 @@
         NSString *glyph = components[1];
         CGFloat size = [components[2] floatValue];
         NSString *path = [self imagePathForFont:font withGlyph:glyph withFontSize:size withColor:[UIColor whiteColor]];
-        NSLog(@"font path:%@", path);
+        // NSLog(@"font path:%@", path);
         UIImage *image = [UIImage imageWithContentsOfFile:path];
         return image;
     } else {

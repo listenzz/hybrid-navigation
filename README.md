@@ -1,7 +1,7 @@
 # react-native-navigation-hybrid
 A native navigation for React Native.
 
-![navigation-android](./screenshot/navigation-android.png)
+![navigation-android](./screenshot/android.png)
 
 ## Running the Playground Project
 

@@ -47,7 +47,7 @@ export default {
         this.events = [];
       }
 
-      handleBarButtonItemClick() {
+      listenBarButtonItemClickEvent() {
         let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', event => {
           if (this.props.sceneId === event.sceneId && this.navigator.onBarButtonItemClick) {
             this.navigator.onBarButtonItemClick(event.action);
@@ -56,7 +56,7 @@ export default {
         this.events.push(event);
       }
 
-      handleComponentResultEvent() {
+      listenComponentResultEvent() {
         let event = EventEmitter.addListener('ON_COMPONENT_RESULT', event => {
           if (this.props.sceneId === event.sceneId && this.navigator.onComponentResult) {
             this.navigator.onComponentResult(event.requestCode, event.resultCode, event.data);
@@ -65,14 +65,31 @@ export default {
         this.events.push(event);
       }
 
-      componentWillMount() {
-        // console.debug('componentWillMount   = ' + this.props.sceneId);
-        this.handleComponentResultEvent();
-        this.handleBarButtonItemClick();
+      listenComponentResumeEvent() {
+        console.info('listenComponentResumeEvent');
+        let event = EventEmitter.addListener('ON_COMPONENT_APPEAR', event => {
+          if (this.props.sceneId === event.sceneId && this.refs.real.componentDidAppear) {
+            this.refs.real.componentDidAppear();
+          }
+        });
+        this.events.push(event);
+      }
+
+      listenComponentPauseEvent() {
+        let event = EventEmitter.addListener('ON_COMPONENT_DISAPPEAR', event => {
+          if (this.props.sceneId === event.sceneId && this.refs.real.componentDidDisappear) {
+            this.refs.real.componentDidDisappear();
+          }
+        });
+        this.events.push(event);
       }
 
       componentDidMount() {
         // console.debug('componentDidMount    = ' + this.props.sceneId);
+        this.listenComponentResultEvent();
+        this.listenBarButtonItemClickEvent();
+        this.listenComponentResumeEvent();
+        this.listenComponentPauseEvent();
         this.navigator.signalFirstRenderComplete();
       }
 
@@ -85,13 +102,14 @@ export default {
       }
 
       render() {
-        let RootComponent;
-        if (componentWrapperFunc) {
-          RootComponent = componentWrapperFunc(() => RealComponent);
-        } else {
-          RootComponent = RealComponent;
-        }
-        return <RootComponent {...this.props} navigator={this.navigator} garden={this.garden} />;
+        return (
+          <RealComponent
+            ref="real"
+            {...this.props}
+            navigator={this.navigator}
+            garden={this.garden}
+          />
+        );
       }
     }
 
@@ -101,9 +119,15 @@ export default {
       options = RealComponent.navigationItem;
     }
 
-    // console.debug('register component:' + appKey + ' options:' + JSON.stringify(options));
+    console.debug('register component:' + appKey + ' options:' + JSON.stringify(options));
+    let RootComponent;
+    if (componentWrapperFunc) {
+      RootComponent = componentWrapperFunc(() => Screen);
+    } else {
+      RootComponent = Screen;
+    }
 
-    AppRegistry.registerComponent(appKey, () => Screen);
+    AppRegistry.registerComponent(appKey, () => RootComponent);
     NavigationModule.registerReactComponent(appKey, options);
   },
 };

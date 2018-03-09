@@ -10,5 +10,6 @@
 
 @interface HBDReactViewController : HBDViewController
 
+- (void)signalFirstRenderComplete;
 
 @end

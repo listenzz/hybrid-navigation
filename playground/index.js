@@ -16,6 +16,7 @@ import Options from './src/Options';
 import Menu from './src/Menu';
 import PassOptions from './src/PassOptions';
 import ReduxCounter, { store } from './src/ReduxCounter';
+import Lifecycle from './src/Lifecycle';
 
 import TopBarMisc from './src/TopBarMisc';
 import TopBarBackButtonHidden from './src/TopBarBackButtonHidden';
@@ -73,6 +74,7 @@ ReactRegistry.registerComponent('Options', () => Options);
 ReactRegistry.registerComponent('Menu', () => Menu);
 ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter);
 ReactRegistry.registerComponent('PassOptions', () => PassOptions);
+ReactRegistry.registerComponent('Lifecycle', () => Lifecycle);
 
 ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc);
 ReactRegistry.registerComponent('TopBarBackButtonHidden', () => TopBarBackButtonHidden);

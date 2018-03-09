@@ -36,7 +36,9 @@ RCT_EXPORT_MODULE(NavigationHybrid)
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[@"ON_COMPONENT_RESULT",
-             @"ON_BAR_BUTTON_ITEM_CLICK"
+             @"ON_BAR_BUTTON_ITEM_CLICK",
+             @"ON_COMPONENT_APPEAR",
+             @"ON_COMPONENT_DISAPPEAR",
              ];
 }
 
@@ -54,6 +56,8 @@ RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionar
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
     // NSLog(@"signalFirstRenderComplete sceneId:%@",sceneId);
+    HBDReactViewController *vc =  (HBDReactViewController *)[self controllerForSceneId:sceneId];
+    [vc signalFirstRenderComplete];
 }
 
 RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout) {

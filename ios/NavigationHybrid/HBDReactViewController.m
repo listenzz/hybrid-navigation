@@ -16,6 +16,9 @@
 
 @interface HBDReactViewController ()
 
+@property(nonatomic, assign) BOOL firstRenderComplete;
+@property(nonatomic, assign) BOOL viewAppeared;
+
 @end
 
 @implementation HBDReactViewController
@@ -60,29 +63,34 @@
     return props;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    //NSLog(@"viewWillAppear");
-}
-
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    //NSLog(@"viewDidAppear");
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    //NSLog(@"viewWillDisappear");
+    self.viewAppeared = YES;
+    if (self.firstRenderComplete) {
+        RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
+        [emitter sendEventWithName:@"ON_COMPONENT_APPEAR" body:@{
+                                                                 @"sceneId": self.sceneId,
+                                                                 }];
+    }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    //NSLog(@"viewDidDisappear");
+    self.viewAppeared = NO;
+    RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
+    [emitter sendEventWithName:@"ON_COMPONENT_DISAPPEAR" body:@{
+                                                             @"sceneId": self.sceneId,
+                                                             }];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)signalFirstRenderComplete {
+    self.firstRenderComplete = YES;
+    if (self.viewAppeared) {
+        RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
+        [emitter sendEventWithName:@"ON_COMPONENT_APPEAR" body:@{
+                                                                 @"sceneId": self.sceneId,
+                                                                 }];
+    }
 }
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
@@ -95,14 +103,5 @@
                                                                 }];
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

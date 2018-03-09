@@ -48,6 +48,7 @@ export default class Options extends Component {
     this.passOptions = this.passOptions.bind(this);
     this.switchToTab = this.switchToTab.bind(this);
     this.toggleTabBadge = this.toggleTabBadge.bind(this);
+    this.lifecycle = this.lifecycle.bind(this);
     this.state = {
       leftButtonShowText: true,
       rightButtonEnabled: false,
@@ -115,6 +116,10 @@ export default class Options extends Component {
     this.props.navigator.push('TopBarMisc');
   }
 
+  lifecycle() {
+    this.props.navigator.push('Lifecycle');
+  }
+
   render() {
     return (
       <SafeAreaView style={styles.safeArea}>
@@ -128,7 +133,11 @@ export default class Options extends Component {
             <Text style={styles.welcome}>This's a React Native scene.</Text>
 
             <TouchableOpacity onPress={this.topBarMisc} activeOpacity={0.2} style={styles.button}>
-              <Text style={styles.buttonText}>topBar miscellaneous</Text>
+              <Text style={styles.buttonText}>topBar options</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={this.lifecycle} activeOpacity={0.2} style={styles.button}>
+              <Text style={styles.buttonText}>Lifecycle</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={this.passOptions} activeOpacity={0.2} style={styles.button}>

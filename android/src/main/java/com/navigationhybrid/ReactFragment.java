@@ -20,7 +20,9 @@ import me.listenzz.navigation.PresentAnimation;
 
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
 import static com.navigationhybrid.Constants.ARG_SCENE_ID;
+import static com.navigationhybrid.Constants.ON_COMPONENT_DISAPPEAR;
 import static com.navigationhybrid.Constants.ON_COMPONENT_RESULT_EVENT;
+import static com.navigationhybrid.Constants.ON_COMPONENT_APPEAR;
 import static com.navigationhybrid.Constants.REQUEST_CODE_KEY;
 import static com.navigationhybrid.Constants.RESULT_CODE_KEY;
 import static com.navigationhybrid.Constants.RESULT_DATA_KEY;
@@ -36,6 +38,7 @@ public class ReactFragment extends HybridFragment {
     private ReactRootView reactRootView;
     private ViewGroup containerLayout;
     private ReactRootView reactTitleView;
+    private boolean appear;
 
     @Nullable
     @Override
@@ -76,6 +79,27 @@ public class ReactFragment extends HybridFragment {
             reactTitleView.unmountReactApplication();
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onViewAppear() {
+        super.onViewAppear();
+        sendViewAppearEvent(true);
+    }
+
+    @Override
+    protected void onViewDisappear() {
+        super.onViewDisappear();
+        sendViewAppearEvent(false);
+    }
+
+    private void sendViewAppearEvent(boolean appear) {
+        if (this.appear != appear) {
+            this.appear = appear;
+            Bundle bundle = new Bundle();
+            bundle.putString(Constants.ARG_SCENE_ID, getSceneId());
+            getReactBridgeManager().sendEvent(appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR, Arguments.fromBundle(bundle));
+        }
     }
 
     @Override
