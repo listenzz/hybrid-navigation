@@ -398,7 +398,7 @@ ReactNativeProject/
 
 ```json
 "dependencies": {
-    "react-native-navigation-hybrid": "^0.2.1"
+    "react-native-navigation-hybrid": "^0.3.0"
 }
 ```
 
