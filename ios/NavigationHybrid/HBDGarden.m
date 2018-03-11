@@ -35,16 +35,12 @@ static GlobalStyle *globalStyle;
 - (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     if (item) {
         controller.navigationItem.leftBarButtonItem = [self createBarButtonItem:item forController:controller];
-    } else {
-        controller.navigationItem.leftBarButtonItem = nil;
     }
 }
 
 - (void)setRightBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     if (item) {
         controller.navigationItem.rightBarButtonItem = [self createBarButtonItem:item forController:controller];
-    } else {
-        controller.navigationItem.rightBarButtonItem = nil;
     }
 }
 

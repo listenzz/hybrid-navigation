@@ -66,7 +66,7 @@ export default {
       }
 
       listenComponentResumeEvent() {
-        console.info('listenComponentResumeEvent');
+        // console.info('listenComponentResumeEvent');
         let event = EventEmitter.addListener('ON_COMPONENT_APPEAR', event => {
           if (this.props.sceneId === event.sceneId && this.refs.real.componentDidAppear) {
             this.refs.real.componentDidAppear();

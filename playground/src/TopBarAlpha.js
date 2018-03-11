@@ -5,13 +5,23 @@
  */
 
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, ScrollView, Slider } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView, Slider, Image, Alert } from 'react-native';
 
 import styles from './Styles';
 
 export default class TopBarAlpha extends Component {
   static navigationItem = {
     topBarAlpha: 0.5,
+    // titleItem: {
+    //   title: '出 BUG 了',
+    //   moduleName: 'CustomTitleView',
+    //   layoutFitting: 'expanded', // expanded or compressed, default is compressed
+    // },
+    // rightBarButtonItem: {
+    //   icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+    //   title: 'SETTING',
+    //   action: 'ON_SETTING_CLICK',
+    // },
   };
 
   constructor(props) {
@@ -21,7 +31,17 @@ export default class TopBarAlpha extends Component {
     this.topBarColor = this.topBarColor.bind(this);
     this.topBarAlpha = this.topBarAlpha.bind(this);
     this.onAlphaChange = this.onAlphaChange.bind(this);
+    this.props.navigator.onFackbookButtonClick = this.onFackbookButtonClick.bind(this);
     this.state = { alpha: 0.5 };
+  }
+
+  onFackbookButtonClick() {
+    Alert.alert(
+      'Hello!',
+      'Fackbook button is clicked.',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      { cancelable: false }
+    );
   }
 
   topBarHidden() {

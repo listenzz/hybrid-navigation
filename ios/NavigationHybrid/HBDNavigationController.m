@@ -16,12 +16,13 @@
 
 @interface HBDNavigationController () <UIGestureRecognizerDelegate, UINavigationControllerDelegate>
 
-@property (nonatomic, strong) UIImageView *shadowImage;
-@property (nonatomic, strong) UIView *topBarBackgroundView;
+@property (nonatomic, readonly) HBDNavigationBar *navigationBar;
 
 @end
 
 @implementation HBDNavigationController
+
+@dynamic navigationBar;
 
 - (void)dealloc {
     NSLog(@"%s", __FUNCTION__);
@@ -44,10 +45,6 @@
     
     self.interactivePopGestureRecognizer.delegate = self;
     self.delegate = self;
-    
-    self.shadowImage = [HBDUtils findShadowImageAt:self.navigationBar];
-    self.topBarBackgroundView = ((HBDNavigationBar *)self.navigationBar).alphaView;
-    
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -61,6 +58,8 @@
     id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     if (coordinator) {
         float toAlpha = viewController.topBarHidden ? 0 : viewController.topBarAlpha;
+        [self hideTopBarShadowImageIfNeededWithAlpha:self.topViewController.topBarAlpha forViewController:self.topViewController];
+        
         [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
             [self updateNavigationBarStyle:viewController.statusBarStyle];
             [self updateNavigationBarAlpha:toAlpha];
@@ -86,12 +85,12 @@
 }
 
 - (void)updateNavigationBarAlpha:(float)alpha {
-    self.topBarBackgroundView.alpha = alpha;
-    self.shadowImage.alpha = alpha;
+    self.navigationBar.alphaView.alpha = alpha;
+    self.navigationBar.shadowAlpha = alpha;
 }
 
 - (void)hideTopBarShadowImageIfNeededWithAlpha:(float)alpha forViewController:(UIViewController *)vc {
-    self.shadowImage.hidden = alpha == 0 || vc.topBarShadowHidden;
+    self.navigationBar.shadowImageView.hidden = alpha == 0 || vc.topBarShadowHidden;
 }
 
 - (void)updateNavigationBarStyle:(UIStatusBarStyle)statusBarStyle {

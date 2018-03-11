@@ -79,7 +79,12 @@
     NSNumber *topBarHidden = self.options[@"topBarHidden"];
     if ([topBarHidden boolValue]) {
         self.topBarHidden = YES;
-        [self.navigationItem setHidesBackButton:YES animated:NO];
+        if (@available(iOS 11, *)) {
+            [self.navigationItem setHidesBackButton:YES];
+        } else {
+            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
+        }
     }
     
     if ([HBDGarden globalStyle].isBackTitleHidden) {
@@ -100,7 +105,12 @@
     NSNumber *hidden = self.options[@"backButtonHidden"];
     if ([hidden boolValue]) {
         self.backButtonHidden = YES;
-        [self.navigationItem setHidesBackButton:YES animated:NO];
+        if (@available(iOS 11, *)) {
+             [self.navigationItem setHidesBackButton:YES];
+        } else {
+            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
+        }
     }
     
     NSNumber *interactive = self.options[@"backInteractive"];

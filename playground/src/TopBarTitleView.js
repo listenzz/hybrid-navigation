@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import styles from './Styles';
@@ -42,6 +42,11 @@ export default class TopBarTitleView extends Component {
       title: '出 BUG 了',
       moduleName: 'CustomTitleView',
       layoutFitting: 'expanded', // expanded or compressed, default is compressed
+    },
+    rightBarButtonItem: {
+      icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+      title: 'SETTING',
+      action: 'ON_SETTING_CLICK',
     },
   };
 

@@ -24,8 +24,8 @@
         _rootView = rootView;
         _fittingSize = fittingSize;
         if (CGSizeEqualToSize(fittingSize, UILayoutFittingCompressedSize)) {
-            rootView.sizeFlexibility = RCTRootViewSizeFlexibilityWidthAndHeight;
             rootView.delegate = self;
+            rootView.sizeFlexibility = RCTRootViewSizeFlexibilityWidthAndHeight;
         } else {
             self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
             rootView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -38,10 +38,30 @@
 }
 
 - (void)setFrame:(CGRect)frame {
-    if (self.superview.bounds.size.width == [UIScreen mainScreen].bounds.size.width - 16) {
-        frame = CGRectInset(self.superview.bounds, -8, 0);
+    
+    if (@available(iOS 11.0, *)) {
+        // nothing to do
+    } else {
+        if (CGSizeEqualToSize(self.fittingSize, UILayoutFittingCompressedSize)) {
+            UINavigationBar *bar = [self navigationBarInView:self.superview];
+            if (bar) {
+               frame = CGRectOffset(frame, (bar.bounds.size.width - frame.size.width + 0.5)/2 - frame.origin.x, (bar.bounds.size.height - frame.size.height + 0.5)/2 - frame.origin.y);
+            }
+        }
     }
+    
     [super setFrame:frame];
+}
+
+- (UINavigationBar *)navigationBarInView:(UIView *)view {
+    if (!view) {
+        return nil;
+    }
+    if ([view isKindOfClass:[UINavigationBar class]]) {
+        return (UINavigationBar *)view;
+    } else {
+        return [self navigationBarInView:view.superview];
+    }
 }
 
 - (CGSize)intrinsicContentSize {
@@ -49,8 +69,8 @@
 }
 
 - (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView {
-    self.rootView.frame = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);
     self.frame = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);
+    self.rootView.frame = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);
 }
 
 @end
