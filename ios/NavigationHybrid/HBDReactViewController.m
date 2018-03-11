@@ -50,6 +50,8 @@
             self.navigationItem.titleView = titleView;
         }
     }
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
 - (NSDictionary *)propsWithSceneId {
@@ -65,22 +67,26 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    self.viewAppeared = YES;
-    if (self.firstRenderComplete) {
-        RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
-        [emitter sendEventWithName:@"ON_COMPONENT_APPEAR" body:@{
-                                                                 @"sceneId": self.sceneId,
-                                                                 }];
+    if (!self.viewAppeared) {
+        self.viewAppeared = YES;
+        if (self.firstRenderComplete) {
+            RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
+            [emitter sendEventWithName:@"ON_COMPONENT_APPEAR" body:@{
+                                                                     @"sceneId": self.sceneId,
+                                                                     }];
+        }
     }
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    self.viewAppeared = NO;
-    RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
-    [emitter sendEventWithName:@"ON_COMPONENT_DISAPPEAR" body:@{
-                                                             @"sceneId": self.sceneId,
-                                                             }];
+    if (self.viewAppeared) {
+        self.viewAppeared = NO;
+        RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
+        [emitter sendEventWithName:@"ON_COMPONENT_DISAPPEAR" body:@{
+                                                                    @"sceneId": self.sceneId,
+                                                                    }];
+    }
 }
 
 - (void)signalFirstRenderComplete {
