@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView, SafeAreaView } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
 
 import styles from './Styles';
 import { RESULT_OK } from 'react-native-navigation-hybrid';
@@ -120,82 +120,76 @@ export default class Navigation extends Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView contentInsetAdjustmentBehavior="never">
-          <View style={styles.container}>
-            <Text style={styles.welcome}>This's a React Native scene.</Text>
+      <ScrollView
+        contentInsetAdjustmentBehavior="never"
+        automaticallyAdjustContentInsets={false}
+        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+      >
+        <View style={styles.container}>
+          <Text style={styles.welcome}>This's a React Native scene.</Text>
 
-            <TouchableOpacity onPress={this.push} activeOpacity={0.2} style={styles.button}>
-              <Text style={styles.buttonText}>push</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.push} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>push</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={this.pop}
-              activeOpacity={0.2}
-              style={styles.button}
-              disabled={this.state.isRoot}
+          <TouchableOpacity
+            onPress={this.pop}
+            activeOpacity={0.2}
+            style={styles.button}
+            disabled={this.state.isRoot}
+          >
+            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
+              pop
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={this.popTo}
+            activeOpacity={0.2}
+            style={styles.button}
+            disabled={this.props.popToId == undefined}
+          >
+            <Text
+              style={this.props.popToId == undefined ? styles.buttonTextDisable : styles.buttonText}
             >
-              <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
-                pop
-              </Text>
-            </TouchableOpacity>
+              popTo last but one
+            </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={this.popTo}
-              activeOpacity={0.2}
-              style={styles.button}
-              disabled={this.props.popToId == undefined}
-            >
-              <Text
-                style={
-                  this.props.popToId == undefined ? styles.buttonTextDisable : styles.buttonText
-                }
-              >
-                popTo last but one
-              </Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.popToRoot}
+            activeOpacity={0.2}
+            style={styles.button}
+            disabled={this.state.isRoot}
+          >
+            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
+              popToRoot
+            </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={this.popToRoot}
-              activeOpacity={0.2}
-              style={styles.button}
-              disabled={this.state.isRoot}
-            >
-              <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
-                popToRoot
-              </Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.replace} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>replace</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.replace} activeOpacity={0.2} style={styles.button}>
-              <Text style={styles.buttonText}>replace</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.replaceToRoot} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>replaceToRoot</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={this.replaceToRoot}
-              activeOpacity={0.2}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>replaceToRoot</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.present} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>present</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.present} activeOpacity={0.2} style={styles.button}>
-              <Text style={styles.buttonText}>present</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>switch to tab 'Style'</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
-              <Text style={styles.buttonText}>switch to tab 'Style'</Text>
-            </TouchableOpacity>
+          {this.state.text !== undefined && (
+            <Text style={styles.result}>received text：{this.state.text}</Text>
+          )}
 
-            {this.state.text !== undefined && (
-              <Text style={styles.result}>received text：{this.state.text}</Text>
-            )}
-
-            {this.state.error !== undefined && (
-              <Text style={styles.result}>{this.state.error}</Text>
-            )}
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+          {this.state.error !== undefined && <Text style={styles.result}>{this.state.error}</Text>}
+        </View>
+      </ScrollView>
     );
   }
 }

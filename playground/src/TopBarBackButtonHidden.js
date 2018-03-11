@@ -30,7 +30,11 @@ export default class TopBarBackButtonHidden extends Component {
 
   render() {
     return (
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        contentInsetAdjustmentBehavior="never"
+        automaticallyAdjustContentInsets={false}
+        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+      >
         <View style={styles.container}>
           <Text style={styles.welcome}>现在，你只能通过下面的按钮返回</Text>
 

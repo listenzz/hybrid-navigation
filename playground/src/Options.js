@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, Image, ScrollView, SafeAreaView } from 'react-native';
+import { TouchableOpacity, Text, View, Image, ScrollView } from 'react-native';
 
 import styles from './Styles';
 import fontUri from './FontUtil';
@@ -122,70 +122,63 @@ export default class Options extends Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <ScrollView
-          contentInsetAdjustmentBehavior="never"
-          overScrollMode={'always'}
-          style={{ flex: 1 }}
-          contentContainerStyle={{ flex: 1 }}
-        >
-          <View style={styles.container}>
-            <Text style={styles.welcome}>This's a React Native scene.</Text>
+      <ScrollView
+        contentInsetAdjustmentBehavior="never"
+        automaticallyAdjustContentInsets={false}
+        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+      >
+        <View style={styles.container}>
+          <Text style={styles.welcome}>This's a React Native scene.</Text>
 
-            <TouchableOpacity onPress={this.topBarMisc} activeOpacity={0.2} style={styles.button}>
-              <Text style={styles.buttonText}>topBar options</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.topBarMisc} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>topBar options</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.lifecycle} activeOpacity={0.2} style={styles.button}>
-              <Text style={styles.buttonText}>Lifecycle</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.lifecycle} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>Lifecycle</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.passOptions} activeOpacity={0.2} style={styles.button}>
-              <Text style={styles.buttonText}>pass options to another scene</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.passOptions} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>pass options to another scene</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={this.changeLeftButton}
-              activeOpacity={0.2}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>
-                {this.state.leftButtonShowText
-                  ? 'change left button to icon'
-                  : 'change left button to text'}
-              </Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.changeLeftButton}
+            activeOpacity={0.2}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>
+              {this.state.leftButtonShowText
+                ? 'change left button to icon'
+                : 'change left button to text'}
+            </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={this.changeRightButton}
-              activeOpacity={0.2}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>
-                {this.state.rightButtonEnabled ? 'disable right button' : 'enable right button'}
-              </Text>
-            </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this.changeRightButton}
+            activeOpacity={0.2}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>
+              {this.state.rightButtonEnabled ? 'disable right button' : 'enable right button'}
+            </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.changeTitle} activeOpacity={0.2} style={styles.button}>
-              <Text style={styles.buttonText}>{`change title to '${this.state.title}'`}</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.changeTitle} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>{`change title to '${this.state.title}'`}</Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={this.toggleTabBadge}
-              activeOpacity={0.2}
-              style={styles.button}
-            >
-              <Text style={styles.buttonText}>
-                {this.state.badge ? 'hide tab badge' : 'show tab badge'}
-              </Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={this.toggleTabBadge} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>
+              {this.state.badge ? 'hide tab badge' : 'show tab badge'}
+            </Text>
+          </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
-              <Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+          <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     );
   }
 }

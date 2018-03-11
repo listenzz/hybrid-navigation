@@ -5,6 +5,7 @@
  */
 
 import { StyleSheet, StatusBar, Platform } from 'react-native';
+import { ifIphoneX } from 'react-native-iphone-x-helper';
 
 export default StyleSheet.create({
   container: {
@@ -12,7 +13,16 @@ export default StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'stretch',
     ...Platform.select({
-      ios: { paddingTop: 16 },
+      ios: {
+        ...ifIphoneX(
+          {
+            paddingTop: 16 + 88,
+          },
+          {
+            paddingTop: 16 + 64,
+          }
+        ),
+      },
       android: { paddingTop: 16 + StatusBar.currentHeight + 48 },
     }),
   },
