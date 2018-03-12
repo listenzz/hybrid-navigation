@@ -394,16 +394,11 @@ ReactNativeProject/
 
 创建成功后，打开该目录，删除里面的 andriod 和 ios 文件夹，因为我们不会用到它们。
 
-打开 package.json 文件，在里面添加
+cd 到 ReactNativeProject，执行如下命令添加依赖
 
-```json
-"dependencies": {
-    "react-native-navigation-hybrid": "^0.3.0"
-}
 ```
-
-执行 `npm install` 或者 `yarn install`
-
+npm install react-native-navigation-hybrid --save
+```
 
 ### RN 项目配置
 
