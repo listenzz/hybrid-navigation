@@ -157,7 +157,7 @@ function componentWrapper(componentProvider) {
         render() {
             return(
                 <Provider store={store}>
-                <InnerComponent {...this.props}/>
+                    <InnerComponent {...this.props}/>
                 </Provider>
             );
         }
@@ -1097,7 +1097,7 @@ if (navigationFragment != null) {
 [self.navigationController pushViewController:vc animated:YES];
 ```
 
-> 从原生页面跳转和传值到原生页面，除了上面的方式，你还可以用纯粹原生的方式来实现，就和引入 RN 之前那样
+> 从原生页面跳转和传值到原生页面，除了上面的方式，你还可以用纯粹原生的方式来实现，就像引入 RN 之前那样
 
 ### 原生页面传值和返回结果
 
@@ -1216,7 +1216,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 - statusBarColor
 
-	可选，仅对 Android 5.0 以上版本生效。如果不设置，默认取 `topBarBackgroundColor` 的值。
+	可选，仅对 Android 5.0 以上版本生效。如果不设置，默认取 `topBarColor` 的值。
 	
 	系统启动时，由于还没有设置 statusBarColor，状态栏颜色会出现前后不一致的情况，下图是应用还没启动好时，状态栏可能的颜色。和上面的黑白图对比，是不是有种违和感。
 	
