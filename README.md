@@ -1190,7 +1190,7 @@ self.props
     
     会占用主线程，导致卡顿，并且没有缓存
     
-4. 使用 font icon
+4. 使用 icon font
 
     ```javascript
     icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
@@ -1218,10 +1218,10 @@ setStyle 接受一个对象为参数，可配置字段如下：
     barButtonItemTintColor: String // 顶部导航栏按钮颜色
     barButtonItemTextSize: Int // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
     
-    bottomBarBackgroundColor: String // 底部 TabBar 背景颜色
+    bottomBarColor: String // 底部 TabBar 背景颜色
     bottomBarShadowImage: Object // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 。对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
     bottomBarButtonItemActiveColor: String // 底部 TabBarItem 选中效果
-    bottomBarButtonItemInActiveColor: String // 底部 TabBarItem 未选中效果
+    bottomBarButtonItemInactiveColor: String // 底部 TabBarItem 未选中效果
 }
 ```
 
@@ -1361,7 +1361,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 	可选，顶部导航栏按钮的字体大小，默认是 15 dp(pt)
 
-- bottomBarBackgroundColor
+- bottomBarColor
 
     可选，UITabBar(iOS)、BottomNavigationBar(Android) 的背景颜色。
     
@@ -1376,7 +1376,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
     可选，底部 TabBarItem 选中效果
 
-- bottomBarButtonItemInActiveColor
+- bottomBarButtonItemInactiveColor
 
     可选，底部 TabBarItem 未选中效果
     
@@ -1419,6 +1419,7 @@ class Screen extends Component {
         tabItem: {               // 底部 TabBarItem 可配置项
             title: 'Style',
             icon: { uri: fontUri('FontAwesome', 'leaf', 20) },
+            inactiveIcon: { uri: fontUri('FontAwesome', 'leaf', 20) },
             hideTabBarWhenPush: true,
         }
     }
@@ -1489,7 +1490,9 @@ class Screen extends Component {
 - tabItem 
 
     可选，设置 UITabBar(iOS)、BottomNavigationBar(Android) 的 tab 标题和 icon。
-       
+    
+    如果设置了 inactiveIcon，tab 未选中时，会展示该图片，否则改变 icon 的颜色为 bottomBarButtonItemInactiveColor
+    
     hideTabBarWhenPush, 当 Stack 嵌套在 Tab 的时候，push 到另一个页面时是否隐藏 TabBar
       
 ### 动态配置页面

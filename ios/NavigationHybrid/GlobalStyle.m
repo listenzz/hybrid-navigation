@@ -167,10 +167,10 @@
 }
 
 - (void)inflateTabBar:(UITabBar *)tabBar {
-    // bottomBarBackgroundColor
-    NSString *bottomBarBackgroundColor = self.options[@"bottomBarBackgroundColor"];
-    if (bottomBarBackgroundColor) {
-        UIColor *color = [HBDUtils colorWithHexString:bottomBarBackgroundColor];
+    // tabBarColor
+    NSString *tabBarColor = self.options[@"bottomBarColor"];
+    if (tabBarColor) {
+        UIColor *color = [HBDUtils colorWithHexString:tabBarColor];
         [tabBar setBackgroundImage:[HBDUtils imageWithColor:color]];
     }
     
@@ -194,10 +194,10 @@
         [tabBar setTintColor:[HBDUtils colorWithHexString:bottomBarButtonItemActiveColor]];
     }
     
-    NSString *bottomBarButtonItemInActiveColor = self.options[@"bottomBarButtonItemInActiveColor"];
-    if (bottomBarButtonItemInActiveColor) {
+    NSString *bottomBarButtonItemInactiveColor = self.options[@"bottomBarButtonItemInactiveColor"];
+    if (bottomBarButtonItemInactiveColor) {
         if (@available(iOS 10.0, *)) {
-            [tabBar setUnselectedItemTintColor:[HBDUtils colorWithHexString:bottomBarButtonItemInActiveColor]];
+            [tabBar setUnselectedItemTintColor:[HBDUtils colorWithHexString:bottomBarButtonItemInactiveColor]];
         }
     }
     

@@ -153,10 +153,10 @@ public class GlobalStyle {
         // --------- tabBar ------------
         // -----------------------------
 
-        // tabBarBackgroundColor
-        String bottomBarBackgroundColor = options.getString("bottomBarBackgroundColor");
-        if (bottomBarBackgroundColor != null) {
-            style.setBottomBarBackgroundColor(bottomBarBackgroundColor);
+        // bottomBarColor
+        String bottomBarColor = options.getString("bottomBarColor");
+        if (bottomBarColor != null) {
+            style.setBottomBarBackgroundColor(bottomBarColor);
         }
 
         String bottomBarButtonItemActiveColor = options.getString("bottomBarButtonItemActiveColor");
@@ -164,9 +164,9 @@ public class GlobalStyle {
             style.setBottomBarActiveColor(bottomBarButtonItemActiveColor);
         }
 
-        String bottomBarButtonItemInActiveColor = options.getString("bottomBarButtonItemInActiveColor");
-        if (bottomBarButtonItemInActiveColor != null) {
-            style.setBottomBarInActiveColor(bottomBarButtonItemInActiveColor);
+        String bottomBarButtonItemInactiveColor = options.getString("bottomBarButtonItemInactiveColor");
+        if (bottomBarButtonItemInactiveColor != null) {
+            style.setBottomBarInActiveColor(bottomBarButtonItemInactiveColor);
         }
 
         // bottomBarShadowImage

@@ -4,7 +4,7 @@
 		"type": "git",
 		"url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
 	},
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"nativePackage": true,
 	"description": "A native navigation for React Native which support navigation between native and react side",
 	"author": "listen <listenzz@163.com>",
@@ -16,9 +16,6 @@
 		"navigator"
 	],
 	"main": "index.js",
-	"publishConfig": {
-        "registry": "http://api.test.shundaojia.com:8081/repository/npm-packages/"
-    },
 	"scripts": {
 		"start": "npm run syncfp && node node_modules/react-native/local-cli/cli.js start",
 		"lint": "./node_modules/.bin/eslint --fix --ext .js ./ && echo \"lint finished\" ",

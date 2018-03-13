@@ -101,7 +101,15 @@
     if (tabItem) {
         UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
         tabBarItem.title = tabItem[@"title"];
-        tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
+        
+        NSDictionary *inactiveIcon = tabItem[@"inactiveIcon"];
+        if (inactiveIcon) {
+            tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            tabBarItem.image = [[HBDUtils UIImage:inactiveIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        } else {
+            tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
+        }
+        
         self.tabBarItem = tabBarItem;
         self.hidesBottomBarWhenPushed = [tabItem[@"hideTabBarWhenPush"] boolValue];
     }

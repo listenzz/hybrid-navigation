@@ -35,6 +35,12 @@ public class ReactNavigationFragment extends NavigationFragment {
                     uri = icon.getString("uri");
                 }
                 TabBarItem tabBarItem = new TabBarItem(uri, title);
+
+                Bundle inactiveIcon = tabItem.getBundle("inactiveIcon");
+                if (inactiveIcon != null) {
+                    tabBarItem.inactiveIconUri = inactiveIcon.getString("uri");
+                }
+
                 setTabBarItem(tabBarItem);
             }
         }

@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView, PixelRatio } from 'react-native';
 
 import styles from './Styles';
 import { RESULT_OK } from 'react-native-navigation-hybrid';
@@ -22,6 +22,8 @@ export default class Navigation extends Component {
     tabItem: {
       title: 'Navigation',
       icon: { uri: fontUri('FontAwesome', 'location-arrow', 24) },
+      // icon: { uri: 'red_ring', scale: PixelRatio.get() },
+      // inactiveIcon: { uri: 'blue_solid', scale: PixelRatio.get() },
       hideTabBarWhenPush: true,
     },
   };
