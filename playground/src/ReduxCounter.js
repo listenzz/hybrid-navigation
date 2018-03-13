@@ -13,8 +13,6 @@ import { connect } from 'react-redux';
 import styles from './Styles';
 import fontUri from './FontUtil';
 
-const ON_MINUS_CLICK = 'minus';
-
 // React component
 class ReduxCounter extends Component {
   static navigationItem = {
@@ -25,13 +23,15 @@ class ReduxCounter extends Component {
     rightBarButtonItem: {
       icon: { uri: fontUri('FontAwesome', 'minus', 24) },
       title: 'MINUS',
-      action: ON_MINUS_CLICK,
+      action: navigation => {
+        navigation.state.params.onDecreaseClick();
+      },
     },
   };
 
   componentWillMount() {
-    const { navigator, onDecreaseClick } = this.props;
-    navigator.onBarButtonItemClick = onDecreaseClick;
+    const { navigation, onDecreaseClick } = this.props;
+    navigation.setParams({ onDecreaseClick });
   }
 
   render() {

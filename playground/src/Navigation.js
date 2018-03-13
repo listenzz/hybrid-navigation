@@ -45,8 +45,7 @@ export default class Navigation extends Component {
   }
 
   componentWillMount() {
-    this.props.navigator.onComponentResult = this.onComponentResult.bind(this);
-    this.props.navigator.isRoot().then(isRoot => {
+    this.props.navigation.isRoot().then(isRoot => {
       if (isRoot) {
         this.setState({ isRoot });
       }
@@ -74,48 +73,48 @@ export default class Navigation extends Component {
   push() {
     if (!this.state.isRoot) {
       if (this.props.popToId !== undefined) {
-        this.props.navigator.push('Navigation', {
+        this.props.navigation.push('Navigation', {
           popToId: this.props.popToId,
         });
       } else {
-        this.props.navigator.push('Navigation', {
+        this.props.navigation.push('Navigation', {
           popToId: this.props.sceneId,
         });
       }
     } else {
-      this.props.navigator.push('Navigation');
+      this.props.navigation.push('Navigation');
     }
   }
 
   pop() {
-    this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
-    this.props.navigator.pop();
+    this.props.navigation.setResult(RESULT_OK, { backId: this.props.sceneId });
+    this.props.navigation.pop();
   }
 
   popTo() {
-    this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
-    this.props.navigator.popTo(this.props.popToId);
+    this.props.navigation.setResult(RESULT_OK, { backId: this.props.sceneId });
+    this.props.navigation.popTo(this.props.popToId);
   }
 
   popToRoot() {
-    this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
-    this.props.navigator.popToRoot();
+    this.props.navigation.setResult(RESULT_OK, { backId: this.props.sceneId });
+    this.props.navigation.popToRoot();
   }
 
   replace() {
-    this.props.navigator.replace('Navigation');
+    this.props.navigation.replace('Navigation');
   }
 
   replaceToRoot() {
-    this.props.navigator.replaceToRoot('Navigation');
+    this.props.navigation.replaceToRoot('Navigation');
   }
 
   present() {
-    this.props.navigator.present('Result', REQUEST_CODE);
+    this.props.navigation.present('Result', REQUEST_CODE);
   }
 
   switchToTab() {
-    this.props.navigator.switchToTab(1);
+    this.props.navigation.switchToTab(1);
   }
 
   render() {

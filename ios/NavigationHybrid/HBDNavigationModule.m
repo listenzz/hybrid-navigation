@@ -6,17 +6,17 @@
 //  Copyright © 2018年 Listen. All rights reserved.
 //
 
-#import "HBDNavigatorModule.h"
+#import "HBDNavigationModule.h"
 #import <React/RCTLog.h>
 #import "HBDReactBridgeManager.h"
 #import "HBDReactViewController.h"
 #import "HBDNavigationController.h"
 
-@interface HBDNavigatorModule()
+@interface HBDNavigationModule()
 
 @end
 
-@implementation HBDNavigatorModule
+@implementation HBDNavigationModule
 
 + (BOOL)requiresMainQueueSetup {
     return YES;
@@ -43,15 +43,15 @@ RCT_EXPORT_MODULE(NavigationHybrid)
 }
 
 RCT_EXPORT_METHOD(startRegisterReactComponent) {
-    [[HBDReactBridgeManager instance] startRegisterReactModule];
+    [[HBDReactBridgeManager sharedInstance] startRegisterReactModule];
 }
 
 RCT_EXPORT_METHOD(endRegisterReactComponent) {
-    [[HBDReactBridgeManager instance] endRegisterReactModule];
+    [[HBDReactBridgeManager sharedInstance] endRegisterReactModule];
 }
 
 RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionary *)options) {
-    [[HBDReactBridgeManager instance] registerReactModule:appKey options:options];
+    [[HBDReactBridgeManager sharedInstance] registerReactModule:appKey options:options];
 }
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
@@ -61,9 +61,9 @@ RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
 }
 
 RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout) {
-    UIViewController *vc = [[HBDReactBridgeManager instance] controllerWithLayout:layout];
+    UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
     if (vc) {
-        [[HBDReactBridgeManager instance] setRootViewController:vc];
+        [[HBDReactBridgeManager sharedInstance] setRootViewController:vc];
     }
 }
 
@@ -77,7 +77,7 @@ RCT_EXPORT_METHOD(push:(NSString *)sceneId moduleName:(NSString *)moduleName pro
     }
     
     if (nav) {
-        HBDViewController *target = [[HBDReactBridgeManager instance] controllerWithModuleName:moduleName props:props options:options];
+        HBDViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
         target.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
         [nav pushViewController:target animated:animated];
     }
@@ -149,7 +149,7 @@ RCT_EXPORT_METHOD(isRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)re
 RCT_EXPORT_METHOD(replace:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     if (vc.navigationController) {
-        HBDViewController *target = [[HBDReactBridgeManager instance] controllerWithModuleName:moduleName props:props options:options];
+        HBDViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
         NSMutableArray *children = [vc.navigationController.childViewControllers mutableCopy];
         [children removeObjectAtIndex:children.count - 1];
         [children addObject:target];
@@ -160,7 +160,7 @@ RCT_EXPORT_METHOD(replace:(NSString *)sceneId moduleName:(NSString *)moduleName 
 RCT_EXPORT_METHOD(replaceToRoot:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     if (vc.navigationController) {
-        HBDViewController *target = [[HBDReactBridgeManager instance] controllerWithModuleName:moduleName props:props options:options];
+        HBDViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
         [vc.navigationController setViewControllers:@[target] animated:NO];
     }
 }
@@ -168,7 +168,7 @@ RCT_EXPORT_METHOD(replaceToRoot:(NSString *)sceneId moduleName:(NSString *)modul
 RCT_EXPORT_METHOD(present:(NSString *)sceneId moduleName:(NSString *)moduleName requestCode:(NSInteger)requestCode props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL)animated) {
     HBDViewController *vc = [self controllerForSceneId:sceneId];
     if (vc) {
-        HBDViewController *root = [[HBDReactBridgeManager instance] controllerWithModuleName:moduleName props:props options:options];
+        HBDViewController *root = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
         HBDNavigationController *presented = [[HBDNavigationController alloc] initWithRootViewController:root];
         
         [presented setRequestCode:requestCode];

@@ -28,7 +28,7 @@ import me.listenzz.navigation.TabBarFragment;
  * Created by Listen on 2017/11/20.
  */
 
-public class NavigatorModule extends ReactContextBaseJavaModule {
+public class NavigationModule extends ReactContextBaseJavaModule {
 
     static final String TAG = "ReactNative";
 
@@ -37,7 +37,7 @@ public class NavigatorModule extends ReactContextBaseJavaModule {
     private final ReactBridgeManager reactBridgeManager;
 
 
-    NavigatorModule(ReactApplicationContext reactContext, ReactBridgeManager reactBridgeManager) {
+    NavigationModule(ReactApplicationContext reactContext, ReactBridgeManager reactBridgeManager) {
         super(reactContext);
         this.reactBridgeManager = reactBridgeManager;
     }

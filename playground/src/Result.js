@@ -32,40 +32,34 @@ export default class Result extends Component {
   }
 
   componentWillMount() {
-    this.props.navigator.onBarButtonItemClick = this.onBarButtonItemClick.bind(this);
-
-    this.props.navigator.isRoot().then(isRoot => {
+    this.props.navigation.isRoot().then(isRoot => {
       if (isRoot) {
         this.props.garden.setLeftBarButtonItem({
           title: 'Cancel',
           insets: { top: -1, left: -8, bottom: 0, right: 8 },
-          action: 'cancel',
+          action: navigation => {
+            navigation.dismiss();
+          },
         });
         this.setState({ isRoot: isRoot });
       }
     });
   }
 
-  onBarButtonItemClick(action) {
-    if (action === 'cancel') {
-      this.props.navigator.dismiss();
-    }
-  }
-
   popToRoot() {
-    this.props.navigator.popToRoot();
+    this.props.navigation.popToRoot();
   }
 
   pushToReact() {
-    this.props.navigator.push('Result');
+    this.props.navigation.push('Result');
   }
 
   sendResult() {
-    this.props.navigator.setResult(RESULT_OK, {
+    this.props.navigation.setResult(RESULT_OK, {
       text: this.state.text,
       backId: this.props.sceneId,
     });
-    this.props.navigator.dismiss();
+    this.props.navigation.dismiss();
   }
 
   onInputTextChanged(text) {

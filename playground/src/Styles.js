@@ -38,10 +38,12 @@ export default StyleSheet.create({
   },
 
   buttonText: {
+    backgroundColor: 'transparent',
     color: 'rgb(34,88,220)',
   },
 
   buttonTextDisable: {
+    backgroundColor: 'transparent',
     color: '#d1d1d1',
   },
 
@@ -73,6 +75,7 @@ export default StyleSheet.create({
   },
 
   result: {
+    backgroundColor: 'transparent',
     textAlign: 'center',
     marginTop: 8,
     color: '#333333',
@@ -92,6 +95,7 @@ export default StyleSheet.create({
   },
 
   welcome: {
+    backgroundColor: 'transparent',
     fontSize: 17,
     textAlign: 'center',
     margin: 8,

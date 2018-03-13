@@ -4,9 +4,9 @@
  * @flow
  */
 
-import Navigation from './NavigationModule';
+import NavigationModule from './NavigationModule';
 
-export default class Navigator {
+export default class Navigattion {
   /**
    * ```
    * {
@@ -26,8 +26,8 @@ export default class Navigator {
    * ```
    */
   static setRoot(layout) {
-    console.info('root:' + JSON.stringify(layout));
-    Navigation.setRoot(layout);
+    // console.info('root:' + JSON.stringify(layout));
+    NavigationModule.setRoot(layout);
   }
 
   constructor(sceneId) {
@@ -44,69 +44,74 @@ export default class Navigator {
     this.replaceToRoot = this.replaceToRoot.bind(this);
     this.onBarButtonItemClick = undefined;
     this.onComponentResult = undefined;
+    this.state = { params: {} };
+  }
+
+  setParams(params = {}) {
+    this.state.params = { ...this.state.params, ...params };
   }
 
   push(moduleName, props = {}, options = {}, animated = true) {
-    Navigation.push(this.sceneId, moduleName, props, options, animated);
+    NavigationModule.push(this.sceneId, moduleName, props, options, animated);
   }
 
   pop(animated = true) {
-    Navigation.pop(this.sceneId, animated);
+    NavigationModule.pop(this.sceneId, animated);
   }
 
   popTo(sceneId, animated = true) {
-    Navigation.popTo(this.sceneId, sceneId, animated);
+    NavigationModule.popTo(this.sceneId, sceneId, animated);
   }
 
   popToRoot(animated = true) {
-    Navigation.popToRoot(this.sceneId, animated);
+    NavigationModule.popToRoot(this.sceneId, animated);
   }
 
   isRoot() {
-    return Navigation.isRoot(this.sceneId);
+    return NavigationModule.isRoot(this.sceneId);
   }
 
   replace(moduleName, props = {}, options = {}) {
-    Navigation.replace(this.sceneId, moduleName, props, options);
+    NavigationModule.replace(this.sceneId, moduleName, props, options);
   }
 
   replaceToRoot(moduleName, props = {}, options = {}) {
-    Navigation.replaceToRoot(this.sceneId, moduleName, props, options);
+    NavigationModule.replaceToRoot(this.sceneId, moduleName, props, options);
   }
 
   present(moduleName, requestCode, props = {}, options = {}, animated = true) {
-    Navigation.present(this.sceneId, moduleName, requestCode, props, options, animated);
+    NavigationModule.present(this.sceneId, moduleName, requestCode, props, options, animated);
   }
 
   setResult(resultCode, data = {}) {
-    Navigation.setResult(this.sceneId, resultCode, data);
+    NavigationModule.setResult(this.sceneId, resultCode, data);
   }
 
   dismiss(animated = true) {
-    Navigation.dismiss(this.sceneId, animated);
+    NavigationModule.dismiss(this.sceneId, animated);
   }
 
   switchToTab(index) {
-    Navigation.switchToTab(this.sceneId, index);
+    NavigationModule.switchToTab(this.sceneId, index);
   }
 
   setTabBadge(index, text) {
-    Navigation.setTabBadge(this.sceneId, index, text);
+    NavigationModule.setTabBadge(this.sceneId, index, text);
   }
 
   toggleMenu() {
-    Navigation.toggleMenu(this.sceneId);
+    NavigationModule.toggleMenu(this.sceneId);
   }
 
   openMenu() {
-    Navigation.openMenu(this.sceneId);
+    NavigationModule.openMenu(this.sceneId);
   }
 
   closeMenu() {
-    Navigation.closeMenu(this.sceneId);
+    NavigationModule.closeMenu(this.sceneId);
   }
 
   signalFirstRenderComplete() {
-    Navigation.signalFirstRenderComplete(this.sceneId);
+    NavigationModule.signalFirstRenderComplete(this.sceneId);
   }
 }

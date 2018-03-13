@@ -4,13 +4,13 @@
  * @flow
  */
 
-import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid';
+import { ReactRegistry, Garden, Navigation } from 'react-native-navigation-hybrid';
 import { Image } from 'react-native';
 import React, { Component } from 'react';
 
 import { Provider } from 'react-redux';
 
-import Navigation from './src/Navigation';
+import ReactNavigation from './src/Navigation';
 import Result from './src/Result';
 import Options from './src/Options';
 import Menu from './src/Menu';
@@ -68,7 +68,7 @@ function componentWrapper(componentProvider) {
 
 ReactRegistry.startRegisterComponent(componentWrapper);
 
-ReactRegistry.registerComponent('Navigation', () => Navigation);
+ReactRegistry.registerComponent('Navigation', () => ReactNavigation);
 ReactRegistry.registerComponent('Result', () => Result);
 ReactRegistry.registerComponent('Options', () => Options);
 ReactRegistry.registerComponent('Menu', () => Menu);
@@ -90,7 +90,7 @@ ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle);
 
 ReactRegistry.endRegisterComponent();
 
-// Navigator.setRoot({
+// Navigation.setRoot({
 //   drawer: [
 //     {
 //       tabs: [

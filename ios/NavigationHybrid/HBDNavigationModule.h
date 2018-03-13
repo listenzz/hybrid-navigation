@@ -12,7 +12,7 @@
 
 @class HBDViewController;
 
-@interface HBDNavigatorModule : RCTEventEmitter <RCTBridgeModule>
+@interface HBDNavigationModule : RCTEventEmitter <RCTBridgeModule>
 
 @end
 

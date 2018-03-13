@@ -10,11 +10,10 @@
 
 @interface HBDDrawerController : UIViewController
 
-@property (nonatomic, strong, readonly) UIViewController *contentController;
-@property (nonatomic, strong, readonly) UIViewController *menuController;
+@property (nonatomic, strong, readonly) UIViewController *contentViewController;
+@property (nonatomic, strong, readonly) UIViewController *menuViewController;
 
-- (void)setContentViewController:(UIViewController *)contentViewController;
-- (void)setMenuViewController:(UIViewController *)menuViewController;
+- (instancetype)initWithContentViewController:(UIViewController *)content menuViewController:(UIViewController *)menu;
 
 - (void)openMenu;
 - (void)closeMenu;

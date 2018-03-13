@@ -25,7 +25,7 @@ export default class TopBarBackButtonHidden extends Component {
   }
 
   onBackButtonClick() {
-    this.props.navigator.pop();
+    this.props.navigation.pop();
   }
 
   render() {

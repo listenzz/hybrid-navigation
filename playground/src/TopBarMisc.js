@@ -29,35 +29,35 @@ export default class TopBarColor extends Component {
   }
 
   topBarBackButtonHidden() {
-    this.props.navigator.push('TopBarBackButtonHidden');
+    this.props.navigation.push('TopBarBackButtonHidden');
   }
 
   topBarShadowHidden() {
-    this.props.navigator.push('TopBarShadowHidden');
+    this.props.navigation.push('TopBarShadowHidden');
   }
 
   topBarHidden() {
-    this.props.navigator.push('TopBarHidden');
+    this.props.navigation.push('TopBarHidden');
   }
 
   topBarColor() {
-    this.props.navigator.push('TopBarColor');
+    this.props.navigation.push('TopBarColor');
   }
 
   topBarAlpha() {
-    this.props.navigator.push('TopBarAlpha');
+    this.props.navigation.push('TopBarAlpha');
   }
 
   topBarTitleView() {
-    this.props.navigator.push('TopBarTitleView');
+    this.props.navigation.push('TopBarTitleView');
   }
 
   statusBarColor() {
-    this.props.navigator.push('StatusBarColor');
+    this.props.navigation.push('StatusBarColor');
   }
 
   topBarStyle() {
-    this.props.navigator.push('TopBarStyle');
+    this.props.navigation.push('TopBarStyle');
   }
 
   render() {

@@ -62,7 +62,7 @@
         UIViewController *child = ((UINavigationController *)self).topViewController;
         [child didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     } else if ([self isKindOfClass:[HBDDrawerController class]]) {
-        UIViewController *child = ((HBDDrawerController *)self).contentController;
+        UIViewController *child = ((HBDDrawerController *)self).contentViewController;
         [child didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     } else {
         NSArray *children = self.childViewControllers;

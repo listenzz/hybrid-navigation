@@ -92,7 +92,7 @@ AppRegistry.registerComponent('ReactNativeProject', () => App);
 现在，你需要像下面那样
 
 ```javascript
-import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid';
+import { ReactRegistry, Garden, Navigation } from 'react-native-navigation-hybrid';
 import Home from './HomeComponent';
 import Profile from './ProfileComponent';
 
@@ -115,7 +115,7 @@ ReactRegistry.endRegisterComponent();
 设置入口页面布局
 
 ```javascript
-Navigator.setRoot({
+Navigation.setRoot({
   drawer: [
     {
       tabs: [
@@ -142,7 +142,7 @@ tabs 对象是一个数组，成员是一个包含其它布局对象的对象
 
 drawer 对象也是一个数组，长度固定为 2 ，第一个对象是抽屉的内容，第二个对象是抽屉的侧边栏。
 
-可以先通过 `Navigator.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigator.setRoot` 决定要进入哪个页面。
+可以先通过 `Navigation.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigation.setRoot` 决定要进入哪个页面。
 
 #### 支持 Redux
 
@@ -316,7 +316,7 @@ dependencies {
   NSURL *jsCodeLocation;
 
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-  [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+  [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [UIViewController new];
@@ -752,7 +752,7 @@ export NODE_BINARY=node
     // Override point for customization after application launch.
     NSURL *jsCodeLocation;
     jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-    [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+    [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
 
     UIViewController *rootViewController = [UIViewController new];
     self.window.rootViewController = rootViewController;
@@ -777,7 +777,7 @@ export NODE_BINARY=node
 	
 	```javascript
     // A.js
-    this.props.navigator.push('B')
+    this.props.navigation.push('B')
 	```
 
 - pop
@@ -786,7 +786,7 @@ export NODE_BINARY=node
 	
 	```javascript
     // B.js
-    this.props.navigator.pop()
+    this.props.navigation.pop()
 	```
 
 - popTo
@@ -797,21 +797,21 @@ export NODE_BINARY=node
 	
 	```javascript
     // B.js
-    this.props.navigator.push('C', {bId: this.props.sceneId})
+    this.props.navigation.push('C', {bId: this.props.sceneId})
 	```
 	
 	从 C 页面跳到 D 页面时 
 	
 	```javascript
     // C.js
-    this.props.navigator.push('D', {bId: this.props.bId})
+    this.props.navigation.push('D', {bId: this.props.bId})
 	```
 	
 	现在想从 D 页面 返回到 B 页面
 	
 	```javascript
     // D.js
-    this.props.navigator.popTo(this.props.bId)
+    this.props.navigation.popTo(this.props.bId)
 	```
 	
 - popToRoot
@@ -820,7 +820,7 @@ export NODE_BINARY=node
 	
 	```javascript
     // D.js
-    this.props.navigator.popToRoot()
+    this.props.navigation.popToRoot()
 	```
 
 - isRoot
@@ -829,7 +829,7 @@ export NODE_BINARY=node
 	
 	```javascript
     componentWillMount() {
-        this.props.navigator.isRoot().then((isRoot) => {
+        this.props.navigation.isRoot().then((isRoot) => {
             if(isRoot) {
                 this.props.garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
                 this.setState({isRoot});
@@ -844,7 +844,7 @@ export NODE_BINARY=node
 	
 	```javascript
     // A.js
-    this.props.navigator.replace('B')
+    this.props.navigation.replace('B')
 	```
 	
 	现在导航栈里没有 A 页面了，被替换成了 B。
@@ -857,7 +857,7 @@ export NODE_BINARY=node
 	
 	```javascript
     // D.js
-    this.props.navigator.replaceToRoot('E')
+    this.props.navigation.replaceToRoot('E')
 	```
 	
 	现在导航栈里只有 E 页面了。
@@ -870,24 +870,21 @@ export NODE_BINARY=node
 	
 	```javascript
     // A.js
-    this.navigator.present('B', 1)
+    this.navigation.present('B', 1)
 	```
 	
 	B 页面返回结果给 A 页面 
 	
 	```javascript
     // B.js
-    this.navigator.setResult(RESULT_OK, {text: 'greeting'})
-    this.navigator.dismiss()
+    this.navigation.setResult(RESULT_OK, {text: 'greeting'})
+    this.navigation.dismiss()
 	```
 	
-	A 页面通过以下方式来接收结果
+	A 页面通过实现 `onComponentResult` 方法来接收结果
 	
 	```javascript
     // A.js
-    componentWillMount() {
-        this.props.navigator.onComponentResult = this.onComponentResult.bind(this);
-    }
     onComponentResult(requestCode, resultCode, data) {
         if(requestCode === 1) { 
             if(resultCode === RESULT_OK) {
@@ -905,22 +902,22 @@ export NODE_BINARY=node
 	
 	```javascript
     //A.js
-    this.props.navigator.present('AlbumList', 1)
+    this.props.navigation.present('AlbumList', 1)
 	```
 	
 	相册列表页面 `push` 到某个相册
 	
 	```javascript
     // AlbumList.js
-    this.props.navigator.push('Album')
+    this.props.navigation.push('Album')
 	```
 	
 	在相册页面选好相片后返回结果给 A 页面
 	
 	```javascript
     // Album.js
-    this.props.navigator.setResult(RESULT_OK, {uri: 'file://...'})
-    this.props.navigator.dismiss()
+    this.props.navigation.setResult(RESULT_OK, {uri: 'file://...'})
+    this.props.navigation.dismiss()
 	```
 	
 	在 A 页面接收返回的结果（略）。
@@ -1052,10 +1049,10 @@ iOS 注册方式如下
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
-    [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+    [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
     
     // 注册原生模块
-    [[HBDReactBridgeManager instance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
+    [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
     
     return YES;
 }
@@ -1077,7 +1074,7 @@ AwesomeFragment fragment = getReactBridgeManager().createFragment("moduleName");
 
 ```objc
 // ios
-HBDViewController *vc = [[HBDReactBridgeManager instance] controllerWithModuleName:@"moduleName" props:nil options:nil];
+HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"moduleName" props:nil options:nil];
 ```
 
 就这样实例化目标页面，不管这个页面是 RN 的还是原生的。
@@ -1139,7 +1136,7 @@ public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
 
 ```objc
 NSDictionary *props = @{@"user_id": @1};
-HBDViewController *vc = [[HBDReactBridgeManager instance] controllerWithModuleName:@"moduleName" props:props options:nil];
+HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"moduleName" props:props options:nil];
 ```
 
 通过以下方式获取其它页面传递过来的值，不管这个页面是原生的还是 RN 的
@@ -1165,6 +1162,40 @@ self.props
 ## 设置样式或主题
 
 一个 APP 中的风格通常是一致的，使用 `Garden.setStyle` 可以全局设置 APP 的主题。
+
+我们提供了三种设置图片的方式
+
+1. 加载静态图片
+    
+    ```javascript
+    import { Image } from 'react-native';
+    
+    icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+    
+    ```
+    
+2. 加载原生图片
+    
+    ```javascript
+    import { PixelRatio } from 'react-native';
+    
+    icon: { uri: 'flower', scale: PixelRatio.get() },
+    ```
+
+3. 加载网络图片（不推荐）
+    
+    ```javascript
+    icon: { uri: 'http://xxx.xx/?width=24&height=24&scale=3'}
+    ```
+    
+    会占用主线程，导致卡顿，并且没有缓存
+    
+4. 使用 font icon
+
+    ```javascript
+    icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
+    ```
+    如果项目中使用了 react-native-vector-icons 这样的库，请参考 playground 中 Options.js 这个文件
 
 ### 设置全局主题
 
@@ -1377,7 +1408,7 @@ class Screen extends Component {
             title: '按钮',
             icon: Image.resolveAssetSource(require('./ic_settings.png')),
             insets: {top: -1, left: -8, bottom: 0, right: 0},
-            action: 'left-button-click',
+            action: navigation => { navigation.toggleMenu(); },
             enabled: true,
         },
         	
@@ -1418,7 +1449,7 @@ class Screen extends Component {
 	
 - backInteractive
 
-    可选，默认值是 false。配合 backButtonHidden 使用，当 backButtonHidden 设置为 true，同时希望可以通过右滑或返回键返回，将此值设置为 true
+    可选，默认值是 false。 配合 backButtonHidden 使用，当 backButtonHidden 设置为 true，同时希望可以通过右滑或返回键返回，将此值设置为 true
 	
 - titleItem
 
@@ -1432,36 +1463,28 @@ class Screen extends Component {
     
     当自定义标题栏时，可能需要将 backButtonHidden 和 backInteractive 设置为 true，以为标题栏提供更多的空间。
     
-    自定义标题栏和所属页面共享同一个 navigator，你可以在所属页面的构造函数中绑定属性供标题栏使用，详情请参考 playground 中 TopBarTitleView.js 这个文件。
+    标题栏和所属页面共享同一个 navigation 对象，你可以在所属页面通过以下方式传递参数给标题栏使用
+    
+    ```javascript
+    this.props.navigation.setParams({}) 
+    ```
+    详情请参考 playground 中 TopBarTitleView.js 这个文件。
 
 - leftBarButtonItem
 
-    可选，设置导航栏左侧按钮。通常用在根页面，一旦设置了 leftBarButtonItem，将取代返回按钮，在 iOS 中将不能通过手势右滑返回，但在 Andriod 中仍可以通过物理键返回。
+    可选，设置导航栏左侧按钮。
 	
 	title 是按钮标题，icon 是按钮图标，两者设置其一则可，如果同时设置，则只会显示图标。
 	
 	insets 仅对 iOS 生效，用于调整按钮 icon 或 title 的位置。
 	
-	action 是个字符串，用来标识用户在当前页面触发的是哪个行为，通过以下方式处理用户触发的行为
+	action 是个函数，它接收 navigation 作为参数，当按钮被点击时调用。
 	
-	```javascript
-    componentWillMount() {
-        this.props.navigator.onBarButtonItemClick = this.onBarButtonItemClick.bind(this);
-   }
-    
-    onBarButtonItemClick(action) {
-        console.info(action)
-        if(ON_MENU_CLICK === action) {
-        	this.props.navigator.toggleMenu();
-        }
-    }
-	```
-		
 	enabled 是个布尔值，可选，用来标识按钮是否可以点击，默认是 true。
 
 - rightBarButtonItem
 
-	可选，导航栏右侧按钮，可配置项同 leftBarButtonItem，不会对页面有任何副作用。
+	可选，导航栏右侧按钮，可配置项同 leftBarButtonItem。
 	
 - tabItem 
 
@@ -1488,7 +1511,7 @@ class B extends Component {
         },
         rightBarButtonItem: {      
             title: '按钮',
-            action: 'left-button-click',
+            action: navigation => {},
         },
     }
 }
@@ -1500,7 +1523,7 @@ class B extends Component {
 
 ```javascript
 // A.js
-this.props.navigator.push('B', {/*props*/}, {
+this.props.navigation.push('B', {/*props*/}, {
     titleItem: {
         title: '来自 A 的标题'
     },
@@ -1531,6 +1554,16 @@ Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
 - setLeftBarButtonItem
 
 	更改左侧按钮
+	
+	```javascript
+	this.props.garden.setLeftBarButtonItem({
+          title: 'Cancel',
+          insets: { top: -1, left: -8, bottom: 0, right: 8 },
+          action: navigation => {
+            navigation.dismiss();
+          },
+        });
+	```
 
 - setRightBarButtonItem
 

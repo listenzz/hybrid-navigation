@@ -17,13 +17,13 @@ export default class Menu extends Component {
   }
 
   push() {
-    this.props.navigator.closeMenu();
-    this.props.navigator.push('OneNative');
+    this.props.navigation.closeMenu();
+    this.props.navigation.push('OneNative');
   }
 
   pushToRedux() {
-    this.props.navigator.closeMenu();
-    this.props.navigator.push('ReduxCounter');
+    this.props.navigation.closeMenu();
+    this.props.navigation.push('ReduxCounter');
   }
 
   render() {

@@ -5,30 +5,31 @@
  */
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, Image, ScrollView } from 'react-native';
+import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native';
 
 import styles from './Styles';
 import fontUri from './FontUtil';
 
-const ON_MENU_CLICK = 'on_menu_click';
-const ON_SETTING_CLICK = 'on_setting_click';
-
 export default class Options extends Component {
   static navigationItem = {
     titleItem: {
-      title: 'Style',
+      title: 'Options',
     },
 
     leftBarButtonItem: {
       // icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
       title: 'Menu',
-      action: ON_MENU_CLICK,
+      action: navigation => {
+        navigation.toggleMenu();
+      },
     },
 
     rightBarButtonItem: {
       icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
       title: 'SETTING',
-      action: ON_SETTING_CLICK,
+      action: navigation => {
+        console.info('setting button is clicked.');
+      },
       enabled: false,
     },
 
@@ -52,32 +53,19 @@ export default class Options extends Component {
     this.state = {
       leftButtonShowText: true,
       rightButtonEnabled: false,
-      title: '样式',
+      title: '配置',
       badge: null,
     };
   }
-
-  componentWillMount() {
-    this.props.navigator.onBarButtonItemClick = this.onBarButtonItemClick.bind(this);
-    this.props.navigator.onComponentResult = this.onComponentResult.bind(this);
-  }
-
-  onBarButtonItemClick(action) {
-    console.info(action);
-    if (ON_MENU_CLICK === action) {
-      this.props.navigator.toggleMenu();
-    }
-  }
-
-  onComponentResult(requestCode, resultCode, data) {}
 
   changeLeftButton() {
     if (this.state.leftButtonShowText) {
       this.props.garden.setLeftBarButtonItem({
         icon: { uri: fontUri('FontAwesome', 'navicon', 24) },
+        // icon: { uri: 'flower', scale: PixelRatio.get() },
       });
     } else {
-      this.props.garden.setLeftBarButtonItem({ title: 'Menu', icon: null });
+      this.props.garden.setLeftBarButtonItem({ icon: null });
     }
     this.setState({ leftButtonShowText: !this.state.leftButtonShowText });
   }
@@ -91,33 +79,33 @@ export default class Options extends Component {
 
   changeTitle() {
     this.props.garden.setTitleItem({ title: this.state.title });
-    this.setState({ title: this.state.title === 'Style' ? '样式' : 'Style' });
+    this.setState({ title: this.state.title === 'Options' ? '配置' : 'Options' });
   }
 
   passOptions() {
-    this.props.navigator.push('PassOptions', {}, { titleItem: { title: 'The Passing Title' } });
+    this.props.navigation.push('PassOptions', {}, { titleItem: { title: 'The Passing Title' } });
   }
 
   switchToTab() {
-    this.props.navigator.switchToTab(0);
+    this.props.navigation.switchToTab(0);
   }
 
   toggleTabBadge() {
     if (this.state.badge) {
       this.setState({ badge: null });
-      this.props.navigator.setTabBadge(1, null);
+      this.props.navigation.setTabBadge(1, null);
     } else {
       this.setState({ badge: '5' });
-      this.props.navigator.setTabBadge(1, '99');
+      this.props.navigation.setTabBadge(1, '99');
     }
   }
 
   topBarMisc() {
-    this.props.navigator.push('TopBarMisc');
+    this.props.navigation.push('TopBarMisc');
   }
 
   lifecycle() {
-    this.props.navigator.push('Lifecycle');
+    this.props.navigation.push('Lifecycle');
   }
 
   render() {

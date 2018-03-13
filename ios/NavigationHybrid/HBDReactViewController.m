@@ -24,7 +24,7 @@
 @implementation HBDReactViewController
 
 - (void)loadView {
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager instance].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
     self.view = rootView;
 }
 
@@ -45,7 +45,7 @@
             } else {
                 size = UILayoutFittingCompressedSize;
             }
-            RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager instance].bridge moduleName:moduleName initialProperties:[self propsWithSceneId]];
+            RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:moduleName initialProperties:[self propsWithSceneId]];
             HBDTitleView *titleView = [[HBDTitleView alloc] initWithRootView:rootView layoutFittingSize:size navigationBarBounds:self.navigationController.navigationBar.bounds];
             self.navigationItem.titleView = titleView;
         }
@@ -70,7 +70,7 @@
     if (!self.viewAppeared) {
         self.viewAppeared = YES;
         if (self.firstRenderComplete) {
-            RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
+            RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
             [emitter sendEventWithName:@"ON_COMPONENT_APPEAR" body:@{
                                                                      @"sceneId": self.sceneId,
                                                                      }];
@@ -82,7 +82,7 @@
     [super viewDidDisappear:animated];
     if (self.viewAppeared) {
         self.viewAppeared = NO;
-        RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
+        RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
         [emitter sendEventWithName:@"ON_COMPONENT_DISAPPEAR" body:@{
                                                                     @"sceneId": self.sceneId,
                                                                     }];
@@ -92,7 +92,7 @@
 - (void)signalFirstRenderComplete {
     self.firstRenderComplete = YES;
     if (self.viewAppeared) {
-        RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
+        RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
         [emitter sendEventWithName:@"ON_COMPONENT_APPEAR" body:@{
                                                                  @"sceneId": self.sceneId,
                                                                  }];
@@ -101,7 +101,7 @@
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
-    RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
+    RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
     [emitter sendEventWithName:@"ON_COMPONENT_RESULT" body:@{@"requestCode": @(requestCode),
                                                                 @"resultCode": @(resultCode),
                                                                 @"data": data ?: [NSNull null],

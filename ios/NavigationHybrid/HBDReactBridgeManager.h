@@ -24,7 +24,7 @@ extern NSString * const ReactModuleRegistryDidCompletedNotification;
 @property(nonatomic, strong, readonly) RCTBridge *bridge;
 @property(nonatomic, weak) id<HBDReactBridgeManagerDelegate> delegate;
 
-+ (instancetype)instance;
++ (instancetype)sharedInstance;
 
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions;
 

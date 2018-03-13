@@ -6,7 +6,7 @@
 
 import { AppRegistry, DeviceEventEmitter, NativeEventEmitter, Platform } from 'react-native';
 import React, { Component } from 'react';
-import Navigator from './Navigator';
+import Navigation from './Navigation';
 import NavigationModule from './NavigationModule';
 import Garden from './Garden';
 
@@ -17,7 +17,20 @@ const EventEmitter = Platform.select({
 
 let componentWrapperFunc;
 
-let navigators = new Map();
+let navigations = new Map();
+
+function copy(obj = {}) {
+  let target = {};
+  for (const key of Object.keys(obj)) {
+    const value = obj[key];
+    if (value && typeof value === 'object') {
+      target[key] = copy(value);
+    } else {
+      target[key] = value;
+    }
+  }
+  return target;
+}
 
 export default {
   startRegisterComponent(componentWrapper) {
@@ -37,20 +50,27 @@ export default {
     class Screen extends Component {
       constructor(props) {
         super(props);
-        if (navigators.has(props.sceneId)) {
-          this.navigator = navigators.get(props.sceneId);
+        if (navigations.has(props.sceneId)) {
+          this.navigation = navigations.get(props.sceneId);
         } else {
-          this.navigator = new Navigator(props.sceneId);
-          navigators.set(props.sceneId, this.navigator);
+          this.navigation = new Navigation(props.sceneId);
+          navigations.set(props.sceneId, this.navigation);
         }
-        this.garden = new Garden(props.sceneId);
+        this.options = copy(RealComponent.navigationItem);
+        this.garden = new Garden(props.sceneId, this.options);
         this.events = [];
       }
 
       listenBarButtonItemClickEvent() {
         let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', event => {
-          if (this.props.sceneId === event.sceneId && this.navigator.onBarButtonItemClick) {
-            this.navigator.onBarButtonItemClick(event.action);
+          if (this.props.sceneId === event.sceneId) {
+            if (event.action === 'function_right_bar_button') {
+              this.options.rightBarButtonItem.action(this.navigation);
+            } else if (event.action === 'function_left_bar_button') {
+              this.options.leftBarButtonItem.action(this.navigation);
+            } else if (this.refs.real.onBarButtonItemClick) {
+              this.refs.real.onBarButtonItemClick(event.action); // 向后兼容
+            }
           }
         });
         this.events.push(event);
@@ -58,8 +78,8 @@ export default {
 
       listenComponentResultEvent() {
         let event = EventEmitter.addListener('ON_COMPONENT_RESULT', event => {
-          if (this.props.sceneId === event.sceneId && this.navigator.onComponentResult) {
-            this.navigator.onComponentResult(event.requestCode, event.resultCode, event.data);
+          if (this.props.sceneId === event.sceneId && this.refs.real.onComponentResult) {
+            this.refs.real.onComponentResult(event.requestCode, event.resultCode, event.data);
           }
         });
         this.events.push(event);
@@ -90,12 +110,12 @@ export default {
         this.listenBarButtonItemClickEvent();
         this.listenComponentResumeEvent();
         this.listenComponentPauseEvent();
-        this.navigator.signalFirstRenderComplete();
+        this.navigation.signalFirstRenderComplete();
       }
 
       componentWillUnmount() {
         // console.debug('componentWillUnmount = ' + this.props.sceneId);
-        navigators.delete(this.props.sceneId);
+        navigations.delete(this.props.sceneId);
         this.events.forEach(event => {
           event.remove();
         });
@@ -106,26 +126,32 @@ export default {
           <RealComponent
             ref="real"
             {...this.props}
-            navigator={this.navigator}
+            navigation={this.navigation}
+            navigator={this.navigation} // 向后兼容
             garden={this.garden}
           />
         );
       }
     }
 
-    // build static options
-    let options = {};
-    if (RealComponent.navigationItem) {
-      options = RealComponent.navigationItem;
-    }
-
-    console.debug('register component:' + appKey + ' options:' + JSON.stringify(options));
     let RootComponent;
     if (componentWrapperFunc) {
       RootComponent = componentWrapperFunc(() => Screen);
     } else {
       RootComponent = Screen;
     }
+
+    // build static options
+    let options = copy(RealComponent.navigationItem);
+    if (options.leftBarButtonItem && typeof options.leftBarButtonItem.action === 'function') {
+      options.leftBarButtonItem.action = 'function_left_bar_button';
+    }
+
+    if (options.rightBarButtonItem && typeof options.rightBarButtonItem.action === 'function') {
+      options.rightBarButtonItem.action = 'function_right_bar_button';
+    }
+
+    // console.debug('register component:' + appKey + ' options:' + JSON.stringify(options));
 
     AppRegistry.registerComponent(appKey, () => RootComponent);
     NavigationModule.registerReactComponent(appKey, options);

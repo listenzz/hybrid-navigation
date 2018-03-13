@@ -20,24 +20,22 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
-    [[HBDReactBridgeManager instance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+    [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
     
     // register native modules
-    [[HBDReactBridgeManager instance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
+    [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
     
     // build root
-    HBDViewController *react = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Navigation" props:nil options:nil];
-    HBDNavigationController *reactNavigation = [[HBDNavigationController alloc] initWithRootViewController:react];
-    HBDViewController *style = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Options" props:nil options:nil];
-    HBDNavigationController *styleNavigation = [[HBDNavigationController alloc] initWithRootViewController:style];
+    HBDViewController *navigation = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Navigation" props:nil options:nil];
+    HBDNavigationController *navigationNav = [[HBDNavigationController alloc] initWithRootViewController:navigation];
+    HBDViewController *options = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Options" props:nil options:nil];
+    HBDNavigationController *optionsNav = [[HBDNavigationController alloc] initWithRootViewController:options];
 
     UITabBarController *tabBarController = [[UITabBarController alloc] init];
-    [tabBarController setViewControllers:@[reactNavigation, styleNavigation]];
+    [tabBarController setViewControllers:@[navigationNav, optionsNav]];
 
-    HBDDrawerController *drawerController = [[HBDDrawerController alloc] init];
-    [drawerController setContentViewController:tabBarController];
-    HBDViewController *menu = [[HBDReactBridgeManager instance] controllerWithModuleName:@"Menu" props:nil options:nil];
-    [drawerController setMenuViewController:menu];
+    HBDViewController *menuController = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Menu" props:nil options:nil];
+    HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:tabBarController menuViewController:menuController];
     
     UIViewController *rootViewController = drawerController;
     

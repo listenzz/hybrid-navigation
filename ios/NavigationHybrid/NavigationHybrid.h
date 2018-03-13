@@ -15,5 +15,8 @@
 #import "HBDNavigationController.h"
 #import "HBDTabBarController.h"
 #import "HBDDrawerController.h"
+#import "UIViewController+HBD.h"
+#import "HBDBarButtonItem.h"
+#import "HBDNavigationBar.h"
 
 #endif /* NavigationHybrid_h */

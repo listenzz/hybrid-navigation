@@ -396,7 +396,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 9H9696K6NL;
+				DEVELOPMENT_TEAM = RJX3H8KBAF;
 				INFOPLIST_FILE = Navigation/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -409,7 +409,7 @@
 					"\"JavaScriptCore\"",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.navigationhybrid.playground;
+				PRODUCT_BUNDLE_IDENTIFIER = com.navigation.playground;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -421,7 +421,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 9H9696K6NL;
+				DEVELOPMENT_TEAM = RJX3H8KBAF;
 				INFOPLIST_FILE = Navigation/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -434,7 +434,7 @@
 					"\"JavaScriptCore\"",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.navigationhybrid.playground;
+				PRODUCT_BUNDLE_IDENTIFIER = com.navigation.playground;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

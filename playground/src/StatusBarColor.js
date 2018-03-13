@@ -39,7 +39,7 @@ export default class StatusBarColor extends Component {
   }
 
   topBarStyle() {
-    this.props.navigator.push('TopBarStyle');
+    this.props.navigation.push('TopBarStyle');
   }
 
   render() {

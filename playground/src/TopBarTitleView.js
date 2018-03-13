@@ -12,6 +12,7 @@ import styles from './Styles';
 
 class CustomTitleView extends Component {
   render() {
+    let { params } = this.props.navigation.state;
     return (
       <View
         style={{
@@ -25,7 +26,7 @@ class CustomTitleView extends Component {
         <Icon.Button
           name="facebook"
           backgroundColor="#3b5998"
-          onPress={this.props.navigator.onFackbookButtonClick}
+          onPress={params.onFackbookButtonClick}
         />
       </View>
     );
@@ -43,11 +44,6 @@ export default class TopBarTitleView extends Component {
       moduleName: 'CustomTitleView',
       layoutFitting: 'expanded', // expanded or compressed, default is compressed
     },
-    rightBarButtonItem: {
-      icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
-      title: 'SETTING',
-      action: 'ON_SETTING_CLICK',
-    },
   };
 
   constructor(props) {
@@ -56,7 +52,9 @@ export default class TopBarTitleView extends Component {
     this.topBarHidden = this.topBarHidden.bind(this);
     this.topBarColor = this.topBarColor.bind(this);
     this.topBarAlpha = this.topBarAlpha.bind(this);
-    this.props.navigator.onFackbookButtonClick = this.onFackbookButtonClick.bind(this);
+    this.props.navigation.setParams({
+      onFackbookButtonClick: this.onFackbookButtonClick.bind(this),
+    });
   }
 
   onFackbookButtonClick() {
@@ -69,19 +67,19 @@ export default class TopBarTitleView extends Component {
   }
 
   topBarHidden() {
-    this.props.navigator.push('TopBarHidden');
+    this.props.navigation.push('TopBarHidden');
   }
 
   topBarColor() {
-    this.props.navigator.push('TopBarColor');
+    this.props.navigation.push('TopBarColor');
   }
 
   topBarAlpha() {
-    this.props.navigator.push('TopBarAlpha');
+    this.props.navigation.push('TopBarAlpha');
   }
 
   topBarTitleView() {
-    this.props.navigator.push('TopBarTitleView');
+    this.props.navigation.push('TopBarTitleView');
   }
 
   render() {

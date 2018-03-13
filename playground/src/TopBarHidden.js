@@ -26,19 +26,19 @@ export default class topBarHidden extends Component {
   }
 
   topBarHidden() {
-    this.props.navigator.push('TopBarHidden');
+    this.props.navigation.push('TopBarHidden');
   }
 
   topBarColor() {
-    this.props.navigator.push('TopBarColor');
+    this.props.navigation.push('TopBarColor');
   }
 
   topBarAlpha() {
-    this.props.navigator.push('TopBarAlpha');
+    this.props.navigation.push('TopBarAlpha');
   }
 
   topBarTitleView() {
-    this.props.navigator.push('TopBarTitleView');
+    this.props.navigation.push('TopBarTitleView');
   }
 
   render() {

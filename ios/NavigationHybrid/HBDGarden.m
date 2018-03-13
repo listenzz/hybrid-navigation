@@ -74,7 +74,7 @@ static GlobalStyle *globalStyle;
     NSString *sceneId = controller.sceneId;
     if (action) {
         barButtonItem.actionBlock = ^{
-            RCTEventEmitter *emitter = [[HBDReactBridgeManager instance].bridge moduleForName:@"NavigationHybrid"];
+            RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
             [emitter sendEventWithName:@"ON_BAR_BUTTON_ITEM_CLICK" body:@{
                                                                              @"action": action,
                                                                              @"sceneId": sceneId

@@ -27,7 +27,7 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
 
 @implementation HBDReactBridgeManager
 
-+ (instancetype)instance {
++ (instancetype)sharedInstance {
     static dispatch_once_t onceToken;
     static HBDReactBridgeManager *manager;
     dispatch_once(&onceToken, ^{
@@ -135,9 +135,7 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
         UIViewController *menuController = [self controllerWithLayout:menu];
         
         if (contentController && menuController) {
-            HBDDrawerController *drawerController = [[HBDDrawerController alloc] init];
-            [drawerController setContentViewController:contentController];
-            [drawerController setMenuViewController:menuController];
+            HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:contentController menuViewController:menuController];
             return drawerController;
         }
     }
@@ -162,7 +160,7 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
     }
     
     if ([self hasReactModuleForName:moduleName]) {
-        NSDictionary *staticOptions = [[HBDReactBridgeManager instance] reactModuleOptionsForKey:moduleName];
+        NSDictionary *staticOptions = [[HBDReactBridgeManager sharedInstance] reactModuleOptionsForKey:moduleName];
         options = [HBDUtils mergeItem:options withTarget:staticOptions];
         vc = [[HBDReactViewController alloc] initWithModuleName:moduleName props:props options:options];
     } else {

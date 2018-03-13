@@ -40,7 +40,7 @@ export default class Lifecycle extends Component {
   }
 
   topBarTitleView() {
-    this.props.navigator.push('TopBarTitleView');
+    this.props.navigation.push('TopBarTitleView');
   }
 
   render() {
