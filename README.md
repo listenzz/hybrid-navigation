@@ -1559,13 +1559,13 @@ Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
 	更改左侧按钮
 	
 	```javascript
-	this.props.garden.setLeftBarButtonItem({
-          title: 'Cancel',
-          insets: { top: -1, left: -8, bottom: 0, right: 8 },
-          action: navigation => {
+    this.props.garden.setLeftBarButtonItem({
+        title: 'Cancel',
+        insets: { top: -1, left: -8, bottom: 0, right: 8 },
+        action: navigation => {
             navigation.dismiss();
-          },
-        });
+        },
+    });
 	```
 
 - setRightBarButtonItem
