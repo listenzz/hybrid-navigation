@@ -21,6 +21,7 @@
     if (self = [super init]) {
         _contentViewController = content;
         _menuViewController = menu;
+        _interactive = YES;
     }
     return self;
 }
@@ -111,7 +112,7 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if ([gestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]]) {
-        return !self.menuDimmingView;
+        return  self.interactive && !self.menuDimmingView;
     } else if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)gestureRecognizer;
         return [pan velocityInView:self.menuDimmingView].x < 0;

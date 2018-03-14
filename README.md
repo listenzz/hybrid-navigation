@@ -986,6 +986,20 @@ export NODE_BINARY=node
 - closeMenu
 
     关闭抽屉
+    
+- setMenuInteractive
+
+    是否允许通过手势打开 Menu
+
+    ```javascript
+    componentDidAppear() {
+        this.props.navigation.setMenuInteractive(true);
+    }
+    
+    componentDidDisappear() {
+        this.props.navigation.setMenuInteractive(false);
+    }
+    ```
 
 
 

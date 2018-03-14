@@ -111,6 +111,10 @@ export default class Navigattion {
     NavigationModule.closeMenu(this.sceneId);
   }
 
+  setMenuInteractive(enabled) {
+    NavigationModule.setMenuInteractive(this.sceneId, enabled);
+  }
+
   signalFirstRenderComplete() {
     NavigationModule.signalFirstRenderComplete(this.sceneId);
   }

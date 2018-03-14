@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -360,6 +361,22 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
                     if (drawerFragment != null) {
                         drawerFragment.closeMenu();
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setMenuInteractive(final String sceneId, final boolean enabled) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
+                if (awesomeFragment != null) {
+                    DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
+                    if (drawerFragment != null) {
+                        drawerFragment.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                     }
                 }
             }

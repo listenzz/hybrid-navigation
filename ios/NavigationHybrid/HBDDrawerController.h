@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong, readonly) UIViewController *contentViewController;
 @property (nonatomic, strong, readonly) UIViewController *menuViewController;
+@property (nonatomic, assign) BOOL interactive;
 
 - (instancetype)initWithContentViewController:(UIViewController *)content menuViewController:(UIViewController *)menu;
 
