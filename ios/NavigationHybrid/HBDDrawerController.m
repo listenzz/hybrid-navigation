@@ -34,6 +34,8 @@
     [self.view addSubview:self.contentViewController.view];
     [self.contentViewController didMoveToParentViewController:self];
     
+    [self setNeedsStatusBarAppearanceUpdate];
+    
     UIScreenEdgePanGestureRecognizer *edgePanGestureRecogizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handleEdgePanGestureRecognizer:)];
     edgePanGestureRecogizer.edges = UIRectEdgeLeft;
     edgePanGestureRecogizer.delegate = self;
@@ -57,6 +59,8 @@
 
 - (void)openMenu {
     if (!self.isMenuOpened) {
+        // [self.menuViewController beginAppearanceTransition:YES animated:YES];
+       //  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         [self presentMenuView];
     }
 }
@@ -77,19 +81,15 @@
 
 - (void)setMenuOpened:(BOOL)menuOpened {
     _menuOpened = menuOpened;
-    if (menuOpened) {
-        [UIApplication sharedApplication].keyWindow.windowLevel = UIWindowLevelStatusBar +1;
-    } else {
-        [UIApplication sharedApplication].keyWindow.windowLevel = UIWindowLevelNormal;
-    }
+    [self setStatusBarHidden:menuOpened];
 }
 
 - (UIViewController *)childViewControllerForStatusBarStyle {
-    UINavigationController *nav = [super navigationController];
-    if (!nav) {
-        return [self closestNavigationController:self.contentViewController];
-    }
-    return nil;
+    return self.contentViewController;
+}
+
+- (UIViewController *)childViewControllerForStatusBarHidden {
+    return self.contentViewController;
 }
 
 - (UINavigationController *)navigationController {
@@ -253,14 +253,15 @@
     return CGRectGetWidth(self.view.bounds) - 60;
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)setStatusBarHidden:(BOOL)hidden {
+    UIWindow *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
+    if (!statusBar) {
+        return;
+    }
+    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+    [UIView animateWithDuration:0.4 animations:^{
+        statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
+    }];
 }
-*/
 
 @end
