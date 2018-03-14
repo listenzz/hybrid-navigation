@@ -19,7 +19,7 @@ import ReduxCounter, { store } from './src/ReduxCounter';
 import Lifecycle from './src/Lifecycle';
 
 import TopBarMisc from './src/TopBarMisc';
-import TopBarBackButtonHidden from './src/TopBarBackButtonHidden';
+import Noninteractive from './src/Noninteractive';
 import TopBarShadowHidden from './src/TopBarShadowHidden';
 import TopBarHidden from './src/TopBarHidden';
 import TopBarColor from './src/TopBarColor';
@@ -77,7 +77,7 @@ ReactRegistry.registerComponent('PassOptions', () => PassOptions);
 ReactRegistry.registerComponent('Lifecycle', () => Lifecycle);
 
 ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc);
-ReactRegistry.registerComponent('TopBarBackButtonHidden', () => TopBarBackButtonHidden);
+ReactRegistry.registerComponent('Noninteractive', () => Noninteractive);
 ReactRegistry.registerComponent('TopBarShadowHidden', () => TopBarShadowHidden);
 ReactRegistry.registerComponent('TopBarHidden', () => TopBarHidden);
 ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha);

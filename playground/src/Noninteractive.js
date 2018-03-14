@@ -9,13 +9,15 @@ import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
 
 import styles from './Styles';
 
-export default class TopBarBackButtonHidden extends Component {
+export default class Noninteractive extends Component {
   static navigationItem = {
     // 注意这行代码，隐藏返回按钮
     backButtonHidden: true,
+    // 不允许通过右滑（iOS）或者返回键（Android）返回
+    backInteractive: false,
 
     titleItem: {
-      title: 'Hide Back Button',
+      title: 'Noninteractive',
     },
   };
 

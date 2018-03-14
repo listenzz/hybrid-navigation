@@ -51,7 +51,7 @@ public class GlobalStyle {
         // topBarStyle
         String topBarStyle = options.getString("topBarStyle");
         if (topBarStyle != null) {
-            style.setToolbarStyle(topBarStyle.equals("dark-content") ? BarStyle.DarkContent : BarStyle.LightContent);
+            style.setStatusBarStyle(topBarStyle.equals("dark-content") ? BarStyle.DarkContent : BarStyle.LightContent);
         }
 
         // topBarBackgroundColor
@@ -59,7 +59,7 @@ public class GlobalStyle {
         if (topBarColor != null) {
             style.setToolbarBackgroundColor(Color.parseColor(topBarColor));
         } else {
-            if (style.getToolbarStyle() == BarStyle.LightContent) {
+            if (style.getStatusBarStyle() == BarStyle.LightContent) {
                 style.setToolbarBackgroundColor(Color.BLACK);
             } else {
                 style.setToolbarBackgroundColor(Color.WHITE);
@@ -166,7 +166,7 @@ public class GlobalStyle {
 
         String bottomBarButtonItemInactiveColor = options.getString("bottomBarButtonItemInactiveColor");
         if (bottomBarButtonItemInactiveColor != null) {
-            style.setBottomBarInActiveColor(bottomBarButtonItemInactiveColor);
+            style.setBottomBarInactiveColor(bottomBarButtonItemInactiveColor);
         }
 
         // bottomBarShadowImage

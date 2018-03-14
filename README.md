@@ -1396,7 +1396,7 @@ class Screen extends Component {
         topBarShadowHidden: true,  // 是否隐藏当前页面 topBar 的阴影
         topBarHidden: true,        // 是否隐藏当前页面 topBar
         backButtonHidden: true,    // 当前页面是否隐藏返回按钮
-        backInteractive: true,     // 当前页面在隐藏返回按钮后，是否可以通过右滑或返回键返回
+        backInteractive: true,     // 当前页面是否可以通过右滑或返回键返回
         
         titleItem: {               // 导航栏标题
             tilte: '这是标题',
@@ -1450,7 +1450,7 @@ class Screen extends Component {
 	
 - backInteractive
 
-    可选，默认值是 false。 配合 backButtonHidden 使用，当 backButtonHidden 设置为 true，同时希望可以通过右滑或返回键返回，将此值设置为 true
+    可选，默认值是 true。 禁止用户通过右滑（iOS）或返回键（Android）退出当前页面，通常用于有重要信息需要用户确认后才可退出当前页面的场景。
 	
 - titleItem
 

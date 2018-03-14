@@ -37,6 +37,7 @@
         _props = props;
         _topBarAlpha = 1.0;
         _statusBarStyle = UIStatusBarStyleDefault;
+        _backInteractive = YES;
     }
     return self;
 }
@@ -114,7 +115,9 @@
     }
     
     NSNumber *interactive = self.options[@"backInteractive"];
-    if ([interactive boolValue]) {
+    if (interactive) {
+        self.backInteractive = [interactive boolValue];
+    } else {
         self.backInteractive = YES;
     }
     

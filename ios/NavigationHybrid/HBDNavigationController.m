@@ -49,7 +49,7 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if (self.viewControllers.count > 1) {
-        return self.topViewController.backInteractive || !self.topViewController.backButtonHidden;
+        return self.topViewController.backInteractive;
     }
     return NO;
 }

@@ -69,7 +69,7 @@ public class Garden {
         this.options = options;
 
         this.backBackHidden = options.getBoolean("backButtonHidden", false);
-        this.backInteractive = options.getBoolean("backInteractive", false);
+        this.backInteractive = options.getBoolean("backInteractive", true);
         this.topBarHidden = options.getBoolean("topBarHidden", false);
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush");
@@ -82,9 +82,9 @@ public class Garden {
         String barStyle = options.getString("topBarStyle");
         if (barStyle != null) {
             if (barStyle.equals("dark-content")) {
-                style.setToolbarStyle(BarStyle.DarkContent);
+                style.setStatusBarStyle(BarStyle.DarkContent);
             } else {
-                style.setToolbarStyle(BarStyle.LightContent);
+                style.setStatusBarStyle(BarStyle.LightContent);
             }
         }
 
@@ -210,7 +210,7 @@ public class Garden {
     }
 
     void setTopBarStyle(BarStyle barStyle) {
-        style.setToolbarStyle(barStyle);
+        style.setStatusBarStyle(barStyle);
         fragment.setNeedsStatusBarAppearanceUpdate();
     }
 

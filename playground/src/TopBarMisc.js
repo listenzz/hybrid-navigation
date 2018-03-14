@@ -22,14 +22,14 @@ export default class TopBarColor extends Component {
     this.topBarHidden = this.topBarHidden.bind(this);
     this.topBarColor = this.topBarColor.bind(this);
     this.topBarAlpha = this.topBarAlpha.bind(this);
-    this.topBarBackButtonHidden = this.topBarBackButtonHidden.bind(this);
+    this.noninteractive = this.noninteractive.bind(this);
     this.topBarShadowHidden = this.topBarShadowHidden.bind(this);
     this.statusBarColor = this.statusBarColor.bind(this);
     this.topBarStyle = this.topBarStyle.bind(this);
   }
 
-  topBarBackButtonHidden() {
-    this.props.navigation.push('TopBarBackButtonHidden');
+  noninteractive() {
+    this.props.navigation.push('Noninteractive');
   }
 
   topBarShadowHidden() {
@@ -97,12 +97,8 @@ export default class TopBarColor extends Component {
             <Text style={styles.buttonText}>TopBar title view</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.topBarBackButtonHidden}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>hide back button</Text>
+          <TouchableOpacity onPress={this.noninteractive} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>Noninteractive</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.statusBarColor} activeOpacity={0.2} style={styles.button}>
