@@ -42,17 +42,22 @@
     edgePanGestureRecogizer.edges = UIRectEdgeLeft;
     edgePanGestureRecogizer.delegate = self;
     [self.view addGestureRecognizer:edgePanGestureRecogizer];
-    
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        if (self.menuOpened) {
+            self.menuHolderView.frame = CGRectMake(0, 0, size.width, size.height);
+            self.menuDimmingView.frame = self.menuHolderView.bounds;
+            self.menuViewController.view.frame = CGRectMake(0, 0, [self menuWidth], size.height);
+        }
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        [self setStatusBarHidden:self.menuOpened];
+    }];
 }
 
 - (void)setContentViewController:(UIViewController *)contentViewController {
     _contentViewController = contentViewController;
-   
 }
 
 - (void)setMenuViewController:(UIViewController *)menuViewController {
@@ -181,6 +186,19 @@
     }];
 }
 
+- (void)settleMuneView {
+    CGFloat width = CGRectGetWidth(self.menuViewController.view.frame);
+    CGFloat dx = 0 - CGRectGetMinX(self.menuViewController.view.frame);
+    CGRect rect = CGRectOffset(self.menuViewController.view.frame, dx, 0);
+    CGFloat duration = (dx/width) * 0.2;
+    [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        self.menuViewController.view.frame = rect;
+        self.menuDimmingView.alpha = 0.5;
+    } completion:^(BOOL finished) {
+        
+    }];
+}
+
 - (void)addGestureRecognizerToMenuHolderView {
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGestureRecognizer:)];
     panGestureRecognizer.delegate = self;
@@ -206,7 +224,7 @@
         self.menuViewController.view.frame = CGRectMake(-width + dx, 0, width, CGRectGetHeight(self.view.bounds));
         self.menuDimmingView.alpha = dx * 0.5 / width;
     } else {
-        if ( dx / width < 0.1) {
+        if ( dx / width < 0.3) {
             [self dismissMenuView];
         } else {
             [self settleMuneView];
@@ -236,19 +254,6 @@
 
 - (void)handleTapGestureRecognizer:(UITapGestureRecognizer *)recognizer {
     [self dismissMenuView];
-}
-
-- (void)settleMuneView {
-    CGFloat width = CGRectGetWidth(self.menuViewController.view.frame);
-    CGFloat dx = 0 - CGRectGetMinX(self.menuViewController.view.frame);
-    CGRect rect = CGRectOffset(self.menuViewController.view.frame, dx, 0);
-    CGFloat duration = (dx/width) * 0.2;
-    [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
-        self.menuViewController.view.frame = rect;
-        self.menuDimmingView.alpha = 0.5;
-    } completion:^(BOOL finished) {
-        
-    }];
 }
 
 - (float)menuWidth {
