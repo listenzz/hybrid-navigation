@@ -11,7 +11,8 @@
 @interface HBDDrawerController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, assign, getter=isMenuOpened) BOOL menuOpened;
-@property (nonatomic, strong) UIView             *menuDimmingView;          // 侧边栏半透明黑底
+@property (nonatomic, strong) UIView *menuDimmingView;          // 侧边栏半透明黑底
+@property (nonatomic, strong) UIView *menuHolderView;
 
 @end
 
@@ -22,6 +23,7 @@
         _contentViewController = content;
         _menuViewController = menu;
         _interactive = YES;
+        _minDrawerMargin = 64;
     }
     return self;
 }
@@ -131,6 +133,7 @@
     
     [UIView animateWithDuration:0.2 delay:0. options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.menuOpened = YES;
+        self.menuDimmingView.alpha = 0.5;
         menu.view.frame = CGRectMake(0, 0, menuWidth, CGRectGetHeight(self.view.bounds));
     } completion:^(BOOL finished) {
        
@@ -144,17 +147,41 @@
     menu.view.frame = CGRectMake(-menuWidth, 0, menuWidth, CGRectGetHeight(self.view.bounds));
     [self addChildViewController:menu];
     
-    UIView *dimmingView = [[UIView alloc] init];
-    dimmingView.backgroundColor = [UIColor colorWithRed:0. green:0. blue:0. alpha:0.5];
-    dimmingView.frame = self.view.bounds;
+    UIView *menuHolderView = [[UIView alloc] initWithFrame:self.view.bounds];
+    self.menuHolderView = menuHolderView;
+    UIView *dimmingView = [[UIView alloc] initWithFrame:self.view.bounds];
+    dimmingView.backgroundColor = [UIColor colorWithRed:0. green:0. blue:0. alpha:1.0];
+    dimmingView.alpha = 0;
     self.menuDimmingView = dimmingView;
-    [self.menuDimmingView addSubview:menu.view];
-    [self.view insertSubview:self.menuDimmingView aboveSubview:self.contentViewController.view];
-    [self addGestureRecognizerToMenuDimmingView];
+    
+    [self.view insertSubview:menuHolderView aboveSubview:self.contentViewController.view];
+    [menuHolderView addSubview:dimmingView];
+    [self addGestureRecognizerToMenuHolderView];
+    [menuHolderView addSubview:menu.view];
     [menu didMoveToParentViewController:self];
 }
 
-- (void)addGestureRecognizerToMenuDimmingView {
+- (void)dismissMenuView {
+    float menuWidth = [self menuWidth];
+    CGFloat dx = -menuWidth - CGRectGetMinX(self.menuViewController.view.frame);
+    CGRect rect = CGRectOffset(self.menuViewController.view.frame, dx, 0);
+    CGFloat duration = ( 1- (dx + menuWidth)/menuWidth ) * 0.2;
+    [self.menuViewController willMoveToParentViewController:nil];
+    [UIView animateWithDuration:duration delay:0. options:UIViewAnimationOptionCurveEaseIn animations:^{
+        self.menuViewController.view.frame = rect;
+        self.menuDimmingView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self.menuViewController removeFromParentViewController];
+        [self.menuViewController.view removeFromSuperview];
+        [self.menuDimmingView removeFromSuperview];
+        self.menuDimmingView = nil;
+        [self.menuHolderView removeFromSuperview];
+        self.menuHolderView = nil;
+        self.menuOpened = NO;
+    }];
+}
+
+- (void)addGestureRecognizerToMenuHolderView {
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGestureRecognizer:)];
     panGestureRecognizer.delegate = self;
     
@@ -162,8 +189,8 @@
     tapGestureRecognizer.delegate = self;
     [tapGestureRecognizer requireGestureRecognizerToFail:panGestureRecognizer];
     
-    [self.menuDimmingView addGestureRecognizer:panGestureRecognizer];
-    [self.menuDimmingView addGestureRecognizer:tapGestureRecognizer];
+    [self.menuHolderView addGestureRecognizer:panGestureRecognizer];
+    [self.menuHolderView addGestureRecognizer:tapGestureRecognizer];
 }
 
 - (void)handleEdgePanGestureRecognizer:(UIScreenEdgePanGestureRecognizer *)recognizer {
@@ -173,13 +200,11 @@
     if (UIGestureRecognizerStateBegan == recognizer.state) {
         [self addMenuView];
         self.menuViewController.view.frame = CGRectMake(-width + dx, 0, width, CGRectGetHeight(self.view.bounds));
-        [UIView animateWithDuration:0.35 delay:0. options:UIViewAnimationOptionCurveEaseOut animations:^{
-            self.menuOpened = YES;
-        } completion:^(BOOL finished) {
-            
-        }];
+        self.menuDimmingView.alpha = dx * 0.5 / width;
+        self.menuOpened = YES;
     } else if(UIGestureRecognizerStateChanged == recognizer.state) {
         self.menuViewController.view.frame = CGRectMake(-width + dx, 0, width, CGRectGetHeight(self.view.bounds));
+        self.menuDimmingView.alpha = dx * 0.5 / width;
     } else {
         if ( dx / width < 0.1) {
             [self dismissMenuView];
@@ -196,8 +221,10 @@
     dx = MIN(0, MAX(-width, dx));
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         self.menuViewController.view.frame = CGRectMake(dx, 0, width, height);
+        self.menuDimmingView.alpha = (dx + width) * 0.5 / width;
     } else if (recognizer.state == UIGestureRecognizerStateChanged) {
         self.menuViewController.view.frame = CGRectMake(dx, 0, width, height);
+        self.menuDimmingView.alpha = (dx + width) * 0.5 / width;
     } else if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
         if (dx / -width > 0.1) {
             [self dismissMenuView];
@@ -218,39 +245,26 @@
     CGFloat duration = (dx/width) * 0.2;
     [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         self.menuViewController.view.frame = rect;
+        self.menuDimmingView.alpha = 0.5;
     } completion:^(BOOL finished) {
         
     }];
 }
 
-- (void)dismissMenuView {
-    float menuWidth = [self menuWidth];
-    CGFloat dx = -menuWidth - CGRectGetMinX(self.menuViewController.view.frame);
-    CGRect rect = CGRectOffset(self.menuViewController.view.frame, dx, 0);
-    CGFloat duration = ( 1- (dx + menuWidth)/menuWidth ) * 0.2;
-    [self.menuViewController willMoveToParentViewController:nil];
-    [UIView animateWithDuration:duration delay:0. options:UIViewAnimationOptionCurveEaseIn animations:^{
-        self.menuViewController.view.frame = rect;
-    } completion:^(BOOL finished) {
-        [self.menuViewController removeFromParentViewController];
-        [self.menuViewController.view removeFromSuperview];
-        [UIView animateWithDuration:0.2 animations:^{
-            self.menuDimmingView.alpha = 0;
-            self.menuOpened = NO;
-        } completion:^(BOOL finished) {
-            [self.menuDimmingView removeFromSuperview];
-            NSArray *gestureRecognizers = self.menuDimmingView.gestureRecognizers;
-            for (UIGestureRecognizer *recognizer in gestureRecognizers) {
-                [recognizer removeTarget:self action:@selector(handlePanGestureRecognizer:)];
-                [recognizer removeTarget:self action:@selector(handleTapGestureRecognizer:)];
-            }
-            self.menuDimmingView = nil;
-        }];
-    }];
-}
-
 - (float)menuWidth {
-    return CGRectGetWidth(self.view.bounds) - 60;
+    CGFloat maxWidth = CGRectGetWidth(self.view.bounds);
+    CGFloat margin1 = self.minDrawerMargin;
+    if (margin1 > maxWidth) {
+        margin1 = maxWidth;
+    } else if (margin1 < 0) {
+        margin1 = 0;
+    }
+    if (self.maxDrawerWidth <=0 || self.maxDrawerWidth > maxWidth) {
+        self.maxDrawerWidth = maxWidth;
+    }
+    CGFloat margin2 = maxWidth - self.maxDrawerWidth;
+    CGFloat margin = MAX(margin1, margin2);
+    return maxWidth - margin;
 }
 
 - (void)setStatusBarHidden:(BOOL)hidden {

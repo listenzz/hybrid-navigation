@@ -13,6 +13,8 @@
 @property (nonatomic, strong, readonly) UIViewController *contentViewController;
 @property (nonatomic, strong, readonly) UIViewController *menuViewController;
 @property (nonatomic, assign) BOOL interactive;
+@property (nonatomic, assign) CGFloat minDrawerMargin;
+@property (nonatomic, assign) CGFloat maxDrawerWidth;
 
 - (instancetype)initWithContentViewController:(UIViewController *)content menuViewController:(UIViewController *)menu;
 
