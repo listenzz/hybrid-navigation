@@ -34,8 +34,8 @@ Garden.setStyle({
   statusBarColor: '#FDFFFFFF',
   topBarColor: '#FDFFFFFF',
 
-  topBarTintColor: '#0000ff',
-  titleTextColor: '#00ff00',
+  // topBarTintColor: '#0000ff',
+  // titleTextColor: '#00ff00',
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
   shadowImage: {
     //color: '#00ff00',
