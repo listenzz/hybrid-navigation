@@ -11,7 +11,7 @@ import styles from './Styles';
 
 export default class StatusBarColor extends Component {
   static navigationItem = {
-    statusBarColor: '#00FFFF',
+    statusBarColor: '#0000FF',
 
     titleItem: {
       title: '状态栏颜色',
