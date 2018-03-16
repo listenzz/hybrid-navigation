@@ -109,10 +109,12 @@ static GlobalStyle *globalStyle;
 
 - (void)setTopBarAlpha:(float)alpha forController:(HBDViewController *)controller {
     controller.topBarAlpha = alpha;
+    controller.topBarShadowAlpha = alpha;
     UINavigationController *nav = controller.navigationController;
     if ([nav isKindOfClass:[HBDNavigationController class]]) {
         [((HBDNavigationController *)nav) updateNavigationBarAlpha:alpha];
-        [((HBDNavigationController *)nav) hideTopBarShadowImageIfNeededWithAlpha:controller.topBarAlpha forViewController:controller];
+        [((HBDNavigationController *)nav) updateNavigationBarShadowImageAlpha:alpha];
+        [((HBDNavigationController *)nav) hideNavigationBarShadowImageIfNeededForViewController:controller];
     }
 }
 
@@ -123,9 +125,11 @@ static GlobalStyle *globalStyle;
 
 - (void)setTopBarShadowHidden:(BOOL)hidden forController:(HBDViewController *)controller {
     controller.topBarShadowHidden = hidden;
+    controller.topBarShadowAlpha = hidden ? 0 : 1.0;
     UINavigationController *nav = controller.navigationController;
     if ([nav isKindOfClass:[HBDNavigationController class]]) {
-        [((HBDNavigationController *)nav) hideTopBarShadowImageIfNeededWithAlpha:controller.topBarAlpha forViewController:controller];
+        [((HBDNavigationController *)nav) updateNavigationBarShadowImageAlpha:controller.topBarShadowAlpha];
+        [((HBDNavigationController *)nav) hideNavigationBarShadowImageIfNeededForViewController:controller];
     }
 }
 

@@ -57,40 +57,41 @@
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     if (coordinator) {
-        float toAlpha = viewController.topBarHidden ? 0 : viewController.topBarAlpha;
-        [self hideTopBarShadowImageIfNeededWithAlpha:self.topViewController.topBarAlpha forViewController:self.topViewController];
-        
         [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-            [self updateNavigationBarStyle:viewController.statusBarStyle];
-            [self updateNavigationBarAlpha:toAlpha];
-            [self hideTopBarShadowImageIfNeededWithAlpha:toAlpha forViewController:viewController];
+            [self updateNavigationBarForController:viewController];
         } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
             UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
             UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
             if ([from isKindOfClass:[HBDViewController class]]) {
                 if (context.isCancelled) {
-                    float fromAlpha  =  from.topBarHidden ? 0 : from.topBarAlpha;
-                    [self updateNavigationBarStyle:from.statusBarStyle];
-                    [self updateNavigationBarAlpha:fromAlpha];
-                    [self hideTopBarShadowImageIfNeededWithAlpha:fromAlpha forViewController:from];
+                    [self updateNavigationBarForController:from];
                 } else {
-                    float toAlpha = to.topBarHidden ? 0 : to.topBarAlpha;
-                    [self updateNavigationBarStyle:to.statusBarStyle];
-                    [self updateNavigationBarAlpha:toAlpha];
-                    [self hideTopBarShadowImageIfNeededWithAlpha:toAlpha forViewController:to];
+                    [self updateNavigationBarForController:to];
                 }
             }
         }];
     }
 }
 
-- (void)updateNavigationBarAlpha:(float)alpha {
-    self.navigationBar.alphaView.alpha = alpha;
-    self.navigationBar.shadowAlpha = alpha;
+- (void)updateNavigationBarForController:(UIViewController *)vc {
+    [self updateNavigationBarStyle:vc.statusBarStyle];
+    [self updateNavigationBarAlpha:vc.topBarAlpha];
+    [self updateNavigationBarShadowImageAlpha:vc.topBarShadowAlpha];
+    [self hideNavigationBarShadowImageIfNeededForViewController:vc];
 }
 
-- (void)hideTopBarShadowImageIfNeededWithAlpha:(float)alpha forViewController:(UIViewController *)vc {
-    self.navigationBar.shadowImageView.hidden = alpha == 0 || vc.topBarShadowHidden;
+- (void)updateNavigationBarAlpha:(float)alpha {
+    self.navigationBar.alphaView.alpha = alpha;
+}
+
+- (void)updateNavigationBarShadowImageAlpha:(float)alpha {
+    self.navigationBar.shadowImageAlpha = alpha;
+}
+
+- (void)hideNavigationBarShadowImageIfNeededForViewController:(UIViewController *)vc {
+    if (@available(iOS 11.0, *)) {
+        self.navigationBar.hbd_shadowImageView.hidden = vc.topBarShadowHidden || vc.topBarShadowAlpha <= 0.01;
+    }
 }
 
 - (void)updateNavigationBarStyle:(UIStatusBarStyle)statusBarStyle {

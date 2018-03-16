@@ -29,7 +29,7 @@ export default class Menu extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={[styles.welcome, { marginTop: 80 }]}>This's a React Native Menu.</Text>
+        <Text style={styles.welcome}>This's a React Native Menu.</Text>
 
         <TouchableOpacity onPress={this.push} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>push to native</Text>

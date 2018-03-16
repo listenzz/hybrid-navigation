@@ -11,9 +11,10 @@
 
 @interface UIViewController (HBD)
 
-@property (nonatomic, assign) float topBarAlpha;
 @property (nonatomic, strong) UIColor *topBarColor;
+@property (nonatomic, assign) float topBarAlpha;
 @property (nonatomic, assign) BOOL topBarHidden;
+@property (nonatomic, assign) float topBarShadowAlpha;
 @property (nonatomic, assign) BOOL topBarShadowHidden;
 @property (nonatomic, assign) BOOL backButtonHidden;
 @property (nonatomic, assign) BOOL backInteractive;

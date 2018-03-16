@@ -37,8 +37,8 @@ Garden.setStyle({
   // topBarTintColor: '#0000ff',
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
   shadowImage: {
-    color: '#dddddd',
-    //image: Image.resolveAssetSource(require('./src/images/divider.png'))
+    //color: '#00ff00',
+    image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
   // hideBackTitle: true,
   elevation: 1,

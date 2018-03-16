@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,13 +20,13 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="这是一个原生页面" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dbA-fd-7NV">
-                    <rect key="frame" x="117.5" y="92" width="139" height="21"/>
+                    <rect key="frame" x="117.5" y="96" width="139" height="21"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FeH-0o-wRC">
-                    <rect key="frame" x="36" y="129" width="303" height="40"/>
+                    <rect key="frame" x="36" y="133" width="303" height="40"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="qmy-fB-JAF"/>
                     </constraints>
@@ -39,14 +38,13 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="dbA-fd-7NV" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="72" id="0Bb-5n-E0B"/>
+                <constraint firstItem="dbA-fd-7NV" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="96" id="0Bb-5n-E0B"/>
                 <constraint firstItem="dbA-fd-7NV" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="2Xj-xV-bMg"/>
                 <constraint firstItem="FeH-0o-wRC" firstAttribute="top" secondItem="dbA-fd-7NV" secondAttribute="bottom" constant="16" id="5J6-TI-gYq"/>
-                <constraint firstItem="Q5M-cg-NOt" firstAttribute="trailing" secondItem="FeH-0o-wRC" secondAttribute="trailing" constant="36" id="Ivk-DE-cl2"/>
-                <constraint firstItem="FeH-0o-wRC" firstAttribute="leading" secondItem="Q5M-cg-NOt" secondAttribute="leading" constant="36" id="t4q-Oy-1CY"/>
+                <constraint firstAttribute="trailing" secondItem="FeH-0o-wRC" secondAttribute="trailing" constant="36" id="Ivk-DE-cl2"/>
+                <constraint firstItem="FeH-0o-wRC" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="36" id="t4q-Oy-1CY"/>
                 <constraint firstItem="FeH-0o-wRC" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="xRx-5v-uGC"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
         </view>
     </objects>
 </document>

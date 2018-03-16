@@ -13,14 +13,6 @@
 
 @interface HBDViewController ()
 
-@property (nonatomic, assign) float topBarAlpha;
-@property (nonatomic, strong) UIColor *topBarColor;
-@property (nonatomic, assign) BOOL topBarHidden;
-@property (nonatomic, assign) BOOL topBarShadowHidden;
-@property (nonatomic, assign) BOOL backButtonHidden;
-@property (nonatomic, assign) BOOL backInteractive;
-@property (nonatomic, assign) UIStatusBarStyle statusBarStyle;
-
 @end
 
 @implementation HBDViewController
@@ -35,9 +27,6 @@
         _moduleName = moduleName;
         _options = options;
         _props = props;
-        _topBarAlpha = 1.0;
-        _statusBarStyle = UIStatusBarStyleDefault;
-        _backInteractive = YES;
     }
     return self;
 }
@@ -63,23 +52,26 @@
     NSString *topBarColor = self.options[@"topBarColor"];
     if (topBarColor) {
         self.topBarColor = [HBDUtils colorWithHexString:topBarColor];
-    } else {
-        self.topBarColor = [HBDGarden globalStyle].topBarColor;
-    }
-    
-    NSNumber *hideShadow = self.options[@"topBarShadowHidden"];
-    if ([hideShadow boolValue]) {
-        self.topBarShadowHidden = YES;
     }
     
     NSNumber *topBarAlpha = self.options[@"topBarAlpha"];
     if (topBarAlpha) {
         self.topBarAlpha = [topBarAlpha floatValue];
+        self.topBarShadowAlpha = [topBarAlpha floatValue];
+    }
+    
+    NSNumber *hideShadow = self.options[@"topBarShadowHidden"];
+    if ([hideShadow boolValue]) {
+        self.topBarShadowHidden = YES;
+        self.topBarShadowAlpha = 0.;
     }
     
     NSNumber *topBarHidden = self.options[@"topBarHidden"];
     if ([topBarHidden boolValue]) {
         self.topBarHidden = YES;
+        self.topBarAlpha = 0.0;
+        self.topBarShadowHidden = YES;
+        self.topBarShadowAlpha = 0.0;
         if (@available(iOS 11, *)) {
             [self.navigationItem setHidesBackButton:YES];
         } else {

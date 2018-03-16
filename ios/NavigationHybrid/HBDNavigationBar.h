@@ -12,8 +12,8 @@
 
 @property (nonatomic, strong, readonly) UIView *alphaView;
 
-@property (nonatomic, strong, readonly) UIImageView *shadowImageView;
+@property (nonatomic, strong, readonly) UIImageView *hbd_shadowImageView;
 
-@property (nonatomic, assign) float shadowAlpha;
+@property (nonatomic, assign) float shadowImageAlpha;
 
 @end

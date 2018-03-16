@@ -14,7 +14,7 @@
 
 @property (nonatomic, strong, readwrite) UIView *alphaView;
 
-@property (nonatomic, strong, readwrite) UIImageView *shadowImageView;
+@property (nonatomic, strong, readwrite) UIImageView *hbd_shadowImageView;
 
 @end
 
@@ -22,14 +22,14 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        _shadowAlpha = 1.0;
+        _shadowImageAlpha = 1.0;
     }
     return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super initWithCoder:aDecoder]) {
-        _shadowAlpha = 1.0;
+        _shadowImageAlpha = 1.0;
     }
     return self;
 }
@@ -66,20 +66,21 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.shadowImageView.alpha = self.shadowAlpha;
-}
-
-- (void)setShadowAlpha:(float)shadowAlpha {
-    _shadowAlpha = shadowAlpha;
-    self.shadowImageView.alpha = shadowAlpha;
-}
-
-- (UIImageView *)shadowImageView {
-    if (_shadowImageView) {
-        return _shadowImageView;
+    if (@available(iOS 11.0, *)) {
+        self.hbd_shadowImageView.alpha = self.shadowImageAlpha;
     }
-    _shadowImageView = [HBDUtils findShadowImageAt:self];
-    return _shadowImageView;
+}
+
+- (void)setShadowImageAlpha:(float)shadowAlpha {
+    _shadowImageAlpha = shadowAlpha;
+    self.hbd_shadowImageView.alpha = shadowAlpha;
+}
+
+- (UIImageView *)hbd_shadowImageView {
+    if (!_hbd_shadowImageView) {
+        _hbd_shadowImageView = [HBDUtils findShadowImageAt:self];
+    }
+    return _hbd_shadowImageView;
 }
 
 - (UIView *)alphaView {

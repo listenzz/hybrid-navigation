@@ -11,13 +11,77 @@
 
 @implementation UIViewController (HBD)
 
-@dynamic topBarColor;
-@dynamic topBarAlpha;
-@dynamic topBarHidden;
-@dynamic topBarShadowHidden;
-@dynamic backButtonHidden;
-@dynamic backInteractive;
-@dynamic statusBarStyle;
+- (UIColor *)topBarColor {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ?: [UINavigationBar appearance].barTintColor;
+}
+
+- (void)setTopBarColor:(UIColor *)topBarColor {
+    objc_setAssociatedObject(self, @selector(topBarColor), topBarColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (float)topBarAlpha {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj floatValue] : 1.0f;
+}
+
+- (void)setTopBarAlpha:(float)topBarAlpha {
+    objc_setAssociatedObject(self, @selector(topBarAlpha), @(topBarAlpha), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (BOOL)topBarHidden {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj boolValue] : NO;
+}
+
+- (void)setTopBarHidden:(BOOL)topBarHidden {
+    objc_setAssociatedObject(self, @selector(topBarHidden), @(topBarHidden), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (float)topBarShadowAlpha {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj floatValue] : 1.0f;
+}
+
+- (void)setTopBarShadowAlpha:(float)topBarShadowAlpha {
+    objc_setAssociatedObject(self, @selector(topBarShadowAlpha), @(topBarShadowAlpha), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (BOOL)topBarShadowHidden {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj boolValue] : NO;
+}
+
+- (void)setTopBarShadowHidden:(BOOL)topBarShadowHidden {
+    objc_setAssociatedObject(self, @selector(topBarShadowHidden), @(topBarShadowHidden), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (BOOL)backButtonHidden {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj boolValue] : NO;
+}
+
+- (void)setBackButtonHidden:(BOOL)backButtonHidden {
+    objc_setAssociatedObject(self, @selector(backButtonHidden), @(backButtonHidden), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (BOOL)backInteractive {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj boolValue] : YES;
+}
+
+- (void)setBackInteractive:(BOOL)backInteractive {
+    objc_setAssociatedObject(self, @selector(backInteractive), @(backInteractive), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UIStatusBarStyle)statusBarStyle {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj integerValue] : [UINavigationBar appearance].barStyle == UIBarStyleDefault ? UIStatusBarStyleDefault : UIStatusBarStyleLightContent;
+}
+
+- (void)setStatusBarStyle:(UIStatusBarStyle)statusBarStyle {
+    objc_setAssociatedObject(self, @selector(statusBarStyle), @(statusBarStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
 - (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data {
     [self setResultCode:@(resultCode)];
@@ -90,3 +154,4 @@
 }
 
 @end
+

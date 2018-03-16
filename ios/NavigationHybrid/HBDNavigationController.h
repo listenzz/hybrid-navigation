@@ -12,6 +12,8 @@
 
 - (void)updateNavigationBarAlpha:(float)alpha;
 
-- (void)hideTopBarShadowImageIfNeededWithAlpha:(float)alpha forViewController:(UIViewController *)vc;
+- (void)updateNavigationBarShadowImageAlpha:(float)alpha;
+
+- (void)hideNavigationBarShadowImageIfNeededForViewController:(UIViewController *)vc;
 
 @end

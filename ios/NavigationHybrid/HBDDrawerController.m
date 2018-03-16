@@ -224,7 +224,7 @@
         self.menuViewController.view.frame = CGRectMake(-width + dx, 0, width, CGRectGetHeight(self.view.bounds));
         self.menuDimmingView.alpha = dx * 0.5 / width;
     } else {
-        if ( dx / width < 0.3) {
+        if ( dx / width < 0.2) {
             [self dismissMenuView];
         } else {
             [self settleMuneView];
@@ -244,7 +244,7 @@
         self.menuViewController.view.frame = CGRectMake(dx, 0, width, height);
         self.menuDimmingView.alpha = (dx + width) * 0.5 / width;
     } else if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
-        if (dx / -width > 0.1) {
+        if (dx / -width > 0.2) {
             [self dismissMenuView];
         } else {
             [self settleMuneView];

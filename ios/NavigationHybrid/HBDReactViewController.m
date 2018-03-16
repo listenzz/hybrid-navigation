@@ -51,7 +51,7 @@
         }
     }
     
-    self.automaticallyAdjustsScrollViewInsets = NO;
+   
 }
 
 - (NSDictionary *)propsWithSceneId {
@@ -63,6 +63,11 @@
     }
     [props setObject:self.sceneId forKey:@"sceneId"];
     return props;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+     self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
