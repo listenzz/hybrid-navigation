@@ -103,7 +103,7 @@ static GlobalStyle *globalStyle;
 }
 
 - (void)setTopBarStyle:(UIBarStyle)barStyle forController:(HBDViewController *)controller {
-    controller.statusBarStyle = barStyle == UIBarStyleDefault ? UIStatusBarStyleDefault : UIStatusBarStyleLightContent;
+    controller.barStyle = barStyle;
     [controller.navigationController.navigationBar setBarStyle:barStyle];
 }
 

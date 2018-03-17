@@ -16,9 +16,7 @@
 @property (nonatomic, assign) BOOL topBarHidden;
 @property (nonatomic, assign) float topBarShadowAlpha;
 @property (nonatomic, assign) BOOL topBarShadowHidden;
-@property (nonatomic, assign) BOOL backButtonHidden;
 @property (nonatomic, assign) BOOL backInteractive;
-@property (nonatomic, assign) UIStatusBarStyle statusBarStyle;
 
 - (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data;
 

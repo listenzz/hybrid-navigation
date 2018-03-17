@@ -27,6 +27,7 @@
         _moduleName = moduleName;
         _options = options;
         _props = props;
+        _barStyle = [UINavigationBar appearance].barStyle;
     }
     return self;
 }
@@ -43,9 +44,9 @@
     NSString *topBarStyle = self.options[@"topBarStyle"];
     if (topBarStyle) {
         if ([topBarStyle isEqualToString:@"dark-content"]) {
-            self.statusBarStyle = UIStatusBarStyleDefault;
+            self.barStyle = UIBarStyleDefault;
         } else {
-            self.statusBarStyle = UIStatusBarStyleLightContent;
+            self.barStyle = UIBarStyleBlack;
         }
     }
     
@@ -120,11 +121,6 @@
     
     NSDictionary *leftBarButtonItem = self.options[@"leftBarButtonItem"];
     [garden setLeftBarButtonItem:leftBarButtonItem forController:self];
-    
-}
-
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    return self.statusBarStyle;
 }
 
 - (void)willMoveToParentViewController:(UIViewController *)parent {
@@ -141,6 +137,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.navigationController.navigationBar setBarTintColor:self.topBarColor];
+    [self.navigationController.navigationBar setBarStyle:self.barStyle];
 }
 
 - (UIViewController *)previousViewController {

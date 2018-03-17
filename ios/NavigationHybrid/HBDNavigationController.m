@@ -74,7 +74,6 @@
 }
 
 - (void)updateNavigationBarForController:(UIViewController *)vc {
-    [self updateNavigationBarStyle:vc.statusBarStyle];
     [self updateNavigationBarAlpha:vc.topBarAlpha];
     [self updateNavigationBarShadowImageAlpha:vc.topBarShadowAlpha];
     [self hideNavigationBarShadowImageIfNeededForViewController:vc];
@@ -90,12 +89,8 @@
 
 - (void)hideNavigationBarShadowImageIfNeededForViewController:(UIViewController *)vc {
     if (@available(iOS 11.0, *)) {
-        self.navigationBar.hbd_shadowImageView.hidden = vc.topBarShadowHidden || vc.topBarShadowAlpha <= 0.01;
+        self.navigationBar.shadowImageView.hidden = vc.topBarShadowHidden || vc.topBarShadowAlpha <= 0.01;
     }
-}
-
-- (void)updateNavigationBarStyle:(UIStatusBarStyle)statusBarStyle {
-    [self.navigationBar setBarStyle:statusBarStyle == UIStatusBarStyleDefault ? UIBarStyleDefault : UIBarStyleBlack];
 }
 
 - (void)configTabItemWithDict:(NSDictionary *)tabItem {

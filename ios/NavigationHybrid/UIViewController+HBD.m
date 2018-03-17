@@ -56,15 +56,6 @@
     objc_setAssociatedObject(self, @selector(topBarShadowHidden), @(topBarShadowHidden), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (BOOL)backButtonHidden {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    return obj ? [obj boolValue] : NO;
-}
-
-- (void)setBackButtonHidden:(BOOL)backButtonHidden {
-    objc_setAssociatedObject(self, @selector(backButtonHidden), @(backButtonHidden), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
 - (BOOL)backInteractive {
     id obj = objc_getAssociatedObject(self, _cmd);
     return obj ? [obj boolValue] : YES;
@@ -72,15 +63,6 @@
 
 - (void)setBackInteractive:(BOOL)backInteractive {
     objc_setAssociatedObject(self, @selector(backInteractive), @(backInteractive), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (UIStatusBarStyle)statusBarStyle {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    return obj ? [obj integerValue] : [UINavigationBar appearance].barStyle == UIBarStyleDefault ? UIStatusBarStyleDefault : UIStatusBarStyleLightContent;
-}
-
-- (void)setStatusBarStyle:(UIStatusBarStyle)statusBarStyle {
-    objc_setAssociatedObject(self, @selector(statusBarStyle), @(statusBarStyle), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data {

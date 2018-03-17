@@ -40,7 +40,7 @@ export default class TopBarTitleView extends Component {
     backButtonHidden: true,
     titleItem: {
       title: '出 BUG 了',
-      moduleName: 'CustomTitleView',
+      moduleName: 'CustomTitleView', // registered component name
       layoutFitting: 'expanded', // expanded or compressed, default is compressed
     },
   };

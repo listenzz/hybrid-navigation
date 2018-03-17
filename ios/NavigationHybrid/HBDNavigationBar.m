@@ -14,7 +14,7 @@
 
 @property (nonatomic, strong, readwrite) UIView *alphaView;
 
-@property (nonatomic, strong, readwrite) UIImageView *hbd_shadowImageView;
+@property (nonatomic, strong, readwrite) UIImageView *shadowImageView;
 
 @end
 
@@ -70,20 +70,20 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     if (@available(iOS 11.0, *)) {
-        self.hbd_shadowImageView.alpha = self.shadowImageAlpha;
+        self.shadowImageView.alpha = self.shadowImageAlpha;
     }
 }
 
 - (void)setShadowImageAlpha:(float)shadowAlpha {
     _shadowImageAlpha = shadowAlpha;
-    self.hbd_shadowImageView.alpha = shadowAlpha;
+    self.shadowImageView.alpha = shadowAlpha;
 }
 
-- (UIImageView *)hbd_shadowImageView {
-    if (!_hbd_shadowImageView) {
-        _hbd_shadowImageView = [HBDUtils findShadowImageAt:self];
+- (UIImageView *)shadowImageView {
+    if (!_shadowImageView) {
+        _shadowImageView = [HBDUtils findShadowImageAt:self];
     }
-    return _hbd_shadowImageView;
+    return _shadowImageView;
 }
 
 - (UIView *)alphaView {
