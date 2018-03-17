@@ -39,15 +39,18 @@
         return nil;
     }
     UIView *view = [super hitTest:point withEvent:event];
-
     NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-    if ([viewName isEqualToString:@"HBDNavigationBar"]) {
+    if (view && [viewName isEqualToString:@"HBDNavigationBar"]) {
         for (UIView *subview in self.subviews) {
             NSString *viewName = [[[subview classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
             NSArray *array = @[ @"UINavigationItemButtonView" ];
             if ([array containsObject:viewName]) {
                 CGPoint convertedPoint = [self convertPoint:point toView:subview];
-                if (CGRectContainsPoint(subview.bounds, convertedPoint)) {
+                CGRect bounds = subview.bounds;
+                if (bounds.size.width < 80) {
+                    bounds = CGRectInset(bounds, bounds.size.width - 80, 0);
+                }
+                if (CGRectContainsPoint(bounds, convertedPoint)) {
                     return view;
                 }
             }

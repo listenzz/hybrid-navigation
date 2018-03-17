@@ -41,7 +41,7 @@ Garden.setStyle({
     color: '#EEEEEE',
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
-  // hideBackTitle: true,
+  hideBackTitle: true,
   elevation: 1,
 
   bottomBarColor: '#FFFFFF',
