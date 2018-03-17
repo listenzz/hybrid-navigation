@@ -26,22 +26,22 @@
     [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
     
     // build root
-    HBDViewController *navigation = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Navigation" props:nil options:nil];
-    HBDNavigationController *navigationNav = [[HBDNavigationController alloc] initWithRootViewController:navigation];
-    HBDViewController *options = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Options" props:nil options:nil];
-    HBDNavigationController *optionsNav = [[HBDNavigationController alloc] initWithRootViewController:options];
-
-    UITabBarController *tabBarController = [[UITabBarController alloc] init];
-    [tabBarController setViewControllers:@[navigationNav, optionsNav]];
-
-    HBDViewController *menuController = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Menu" props:nil options:nil];
-    HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:tabBarController menuViewController:menuController];
-    drawerController.maxDrawerWidth = 280;
+//    HBDViewController *navigation = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Navigation" props:nil options:nil];
+//    HBDNavigationController *navigationNav = [[HBDNavigationController alloc] initWithRootViewController:navigation];
+//    HBDViewController *options = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Options" props:nil options:nil];
+//    HBDNavigationController *optionsNav = [[HBDNavigationController alloc] initWithRootViewController:options];
+//
+//    UITabBarController *tabBarController = [[UITabBarController alloc] init];
+//    [tabBarController setViewControllers:@[navigationNav, optionsNav]];
+//
+//    HBDViewController *menuController = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Menu" props:nil options:nil];
+//    HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:tabBarController menuViewController:menuController];
+//    drawerController.maxDrawerWidth = 280;
+//
+//    UIViewController *rootViewController = drawerController;
     
-    UIViewController *rootViewController = drawerController;
-    
-//    UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
-//    UIViewController *rootViewController = [storyboard instantiateInitialViewController];
+    UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+    UIViewController *rootViewController = [storyboard instantiateInitialViewController];
 
     // set root
     self.window.rootViewController = rootViewController;

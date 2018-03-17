@@ -120,15 +120,25 @@ Navigation.setRoot({
     {
       tabs: [
         {
-          stack: { screen: {moduleName: 'Home'}, }
-        }, 
+          stack: {
+            screen: { moduleName: 'Navigation' },
+          },
+        },
         {
-          stack: { screen: {moduleName: 'Profile'} }
-        }
-      ]
+          stack: {
+            screen: { moduleName: 'Options' },
+          },
+        },
+      ],
     },
-    {screen: {moduleName: 'Menu'}}
-  ]
+    {
+      screen: { moduleName: 'Menu' },
+      options: {
+        maxDrawerWidth: 280,
+        minDrawerMargin: 64,
+      },
+    },
+  ],
 });
 ```
 
@@ -141,6 +151,10 @@ stack 对象包含一个其它布局对象作为根页面，通常是 screen.
 tabs 对象是一个数组，成员是一个包含其它布局对象的对象
 
 drawer 对象也是一个数组，长度固定为 2 ，第一个对象是抽屉的内容，第二个对象是抽屉的侧边栏。
+
+可以在表示侧边栏的对象中添加 options 属性来配置侧边栏的宽度
+
+`maxDrawerWidth` 表示侧边栏的最大宽度，`minDrawerMargin` 表示侧边栏距屏幕边缘的最小空隙，这两个属性可以单独使用，也可以一起指定。
 
 可以先通过 `Navigation.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigation.setRoot` 决定要进入哪个页面。
 

@@ -10,18 +10,23 @@ export default class Navigattion {
   /**
    * ```
    * {
-   *  drawer: [
-   *    { tabs: [
-   *        { stack:
-   *          { screen: "Home" }
-   *        },
-   *        { stack:
-   *          { screen: "Profile" }
-   *        },
-   *      ]
-   *    },
-   *    { screen: "Setting" }
-   *  ]
+   *   drawer: [
+   *     {
+   *       tabs: [
+   *         {
+   *           stack: {
+   *             screen: { moduleName: 'ReactNavigation' },
+   *           },
+   *         },
+   *         {
+   *           stack: {
+   *             screen: { moduleName: 'CustomStyle' },
+   *           },
+   *         },
+   *       ],
+   *     },
+   *     { screen: { moduleName: 'Menu' } },
+   *   ],
    * }
    * ```
    */

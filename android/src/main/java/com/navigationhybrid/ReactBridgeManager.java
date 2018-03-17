@@ -227,6 +227,19 @@ public class ReactBridgeManager {
                     ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
                     drawerFragment.setMenuFragment(menuFragment);
                     drawerFragment.setContentFragment(contentFragment);
+                    if (menu.hasKey("options")) {
+                        ReadableMap options = menu.getMap("options");
+                        if (options.hasKey("maxDrawerWidth")) {
+                            int maxDrawerWidth = options.getInt("maxDrawerWidth");
+                            drawerFragment.setMaxDrawerWidth(maxDrawerWidth);
+                        }
+
+                        if (options.hasKey("minDrawerMargin")) {
+                            int minDrawerMargin = options.getInt("minDrawerMargin");
+                            drawerFragment.setMinDrawerMargin(minDrawerMargin);
+                        }
+                    }
+
                     return drawerFragment;
                 }
             }

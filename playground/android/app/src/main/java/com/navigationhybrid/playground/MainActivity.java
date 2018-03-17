@@ -3,11 +3,6 @@ package com.navigationhybrid.playground;
 import android.os.Bundle;
 
 import com.navigationhybrid.ReactAppCompatActivity;
-import com.navigationhybrid.ReactDrawerFragment;
-import com.navigationhybrid.ReactNavigationFragment;
-import com.navigationhybrid.ReactTabBarFragment;
-
-import me.listenzz.navigation.AwesomeFragment;
 
 
 public class MainActivity extends ReactAppCompatActivity {
@@ -17,27 +12,27 @@ public class MainActivity extends ReactAppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    protected void onCreateMainComponent() {
-
-        AwesomeFragment react = getReactBridgeManager().createFragment("Navigation");
-        ReactNavigationFragment reactNavigation = new ReactNavigationFragment();
-        reactNavigation.setRootFragment(react);
-
-        AwesomeFragment custom = getReactBridgeManager().createFragment("Options");
-        ReactNavigationFragment customNavigation = new ReactNavigationFragment();
-        customNavigation.setRootFragment(custom);
-
-        ReactTabBarFragment reactTabBarFragment = new ReactTabBarFragment();
-        reactTabBarFragment.setFragments(reactNavigation, customNavigation);
-
-        ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
-        drawerFragment.setContentFragment(reactTabBarFragment);
-        AwesomeFragment menuFragment = getReactBridgeManager().createFragment("Menu");
-        drawerFragment.setMenuFragment(menuFragment);
-
-        setRootFragment(drawerFragment);
-
-    }
+//    @Override
+//    protected void onCreateMainComponent() {
+//
+//        AwesomeFragment react = getReactBridgeManager().createFragment("Navigation");
+//        ReactNavigationFragment reactNavigation = new ReactNavigationFragment();
+//        reactNavigation.setRootFragment(react);
+//
+//        AwesomeFragment custom = getReactBridgeManager().createFragment("Options");
+//        ReactNavigationFragment customNavigation = new ReactNavigationFragment();
+//        customNavigation.setRootFragment(custom);
+//
+//        ReactTabBarFragment reactTabBarFragment = new ReactTabBarFragment();
+//        reactTabBarFragment.setFragments(reactNavigation, customNavigation);
+//
+//        ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
+//        drawerFragment.setContentFragment(reactTabBarFragment);
+//        AwesomeFragment menuFragment = getReactBridgeManager().createFragment("Menu");
+//        drawerFragment.setMenuFragment(menuFragment);
+//
+//        setRootFragment(drawerFragment);
+//
+//    }
 
 }

@@ -136,6 +136,18 @@ NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegi
         
         if (contentController && menuController) {
             HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:contentController menuViewController:menuController];
+            NSDictionary *menuOptions = [menu objectForKey:@"options"];
+            if (menuOptions) {
+                NSNumber *maxDrawerWidth = [menuOptions objectForKey:@"maxDrawerWidth"];
+                NSNumber *minDrawerMargin = [menuOptions objectForKey:@"minDrawerMargin"];
+                if (maxDrawerWidth) {
+                    [drawerController setMaxDrawerWidth:[maxDrawerWidth floatValue]];
+                }
+                
+                if (minDrawerMargin) {
+                    [drawerController setMinDrawerMargin:[minDrawerMargin floatValue]];
+                }
+            }
             return drawerController;
         }
     }
