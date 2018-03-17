@@ -13,6 +13,7 @@
 @property (nonatomic, assign, getter=isMenuOpened) BOOL menuOpened;
 @property (nonatomic, strong) UIView *menuDimmingView;          // 侧边栏半透明黑底
 @property (nonatomic, strong) UIView *menuHolderView;
+@property (nonatomic, assign) BOOL inCall;
 
 @end
 
@@ -24,6 +25,7 @@
         _menuViewController = menu;
         _interactive = YES;
         _minDrawerMargin = 64;
+        _inCall = [UIApplication sharedApplication].statusBarFrame.size.height == 40;
     }
     return self;
 }
@@ -44,6 +46,32 @@
     [self.view addGestureRecognizer:edgePanGestureRecogizer];
 }
 
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:)name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+}
+
+-(void) viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationBackgroundRefreshStatusDidChangeNotification object:nil];
+}
+
+- (void)statusBarFrameWillChange:(NSNotification*)notification {
+    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation) && statusBarHeight != 0) {
+        self.inCall = (statusBarHeight == 40);
+        [self setStatusBarHidden:self.menuOpened && !self.inCall];
+        if (self.menuOpened) {
+            [UIView animateWithDuration:0.35 animations:^{
+                CGFloat dy = self.inCall ? -20 : 20;
+                self.menuHolderView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) + dy);
+                self.menuDimmingView.frame = self.menuHolderView.bounds;
+                self.menuViewController.view.frame = CGRectMake(0, 0, [self menuWidth], self.menuHolderView.bounds.size.height);
+            }];
+        }
+    }
+}
+
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         if (self.menuOpened) {
@@ -52,7 +80,7 @@
             self.menuViewController.view.frame = CGRectMake(0, 0, [self menuWidth], size.height);
         }
     } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-        [self setStatusBarHidden:self.menuOpened];
+        [self setStatusBarHidden:self.menuOpened && !self.inCall];
     }];
 }
 
@@ -66,8 +94,6 @@
 
 - (void)openMenu {
     if (!self.isMenuOpened) {
-        // [self.menuViewController beginAppearanceTransition:YES animated:YES];
-       //  [[UIApplication sharedApplication] beginIgnoringInteractionEvents];
         [self presentMenuView];
     }
 }
@@ -88,7 +114,7 @@
 
 - (void)setMenuOpened:(BOOL)menuOpened {
     _menuOpened = menuOpened;
-    [self setStatusBarHidden:menuOpened];
+    [self setStatusBarHidden:self.menuOpened && !self.inCall];
 }
 
 - (UIViewController *)childViewControllerForStatusBarStyle {
@@ -278,7 +304,7 @@
         return;
     }
     CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-    [UIView animateWithDuration:0.4 animations:^{
+    [UIView animateWithDuration:0.35 animations:^{
         statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
     }];
 }
