@@ -22,7 +22,7 @@ class CustomTitleView extends Component {
           alignItems: 'center',
         }}
       >
-        <Text style={styles.welcome}>-标题-</Text>
+        <Text style={styles.welcome}>--标题--</Text>
         <Icon.Button
           name="facebook"
           backgroundColor="#3b5998"
@@ -38,7 +38,6 @@ export { CustomTitleView };
 export default class TopBarTitleView extends Component {
   static navigationItem = {
     backButtonHidden: true,
-    backInteractive: true, //隐藏返回按钮后，仍然希望可以右滑或者返回按钮返回
     titleItem: {
       title: '出 BUG 了',
       moduleName: 'CustomTitleView',

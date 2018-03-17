@@ -37,20 +37,33 @@
     return self;
 }
 
-- (void)setFrame:(CGRect)frame {
+- (CGSize)intrinsicContentSize {
+    return self.fittingSize;
+}
+
+- (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView {
+    CGPoint center = self.center;
+    self.bounds = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);
+    self.rootView.frame = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);
+    self.center = center;
     
-    if (@available(iOS 11.0, *)) {
-        // nothing to do
-    } else {
-        if (CGSizeEqualToSize(self.fittingSize, UILayoutFittingCompressedSize)) {
-            UINavigationBar *bar = [self navigationBarInView:self.superview];
-            if (bar) {
-               frame = CGRectOffset(frame, (bar.bounds.size.width - frame.size.width + 0.5)/2 - frame.origin.x, (bar.bounds.size.height - frame.size.height + 0.5)/2 - frame.origin.y);
+    // 修正版本在 10.0 的情况
+    NSString *version = [UIDevice currentDevice].systemVersion;
+    if (version.doubleValue < 11.0) {
+        UINavigationBar *bar = [self navigationBarInView:self];
+        if (bar) {
+            for (UIView *subview in bar.subviews) {
+                NSString *viewName = [[[subview classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
+                if ([viewName isEqualToString:@"UINavigationItemButtonView"]) {
+                    CGFloat dx = subview.frame.origin.x + subview.frame.size.width + self.bounds.size.width /2 + 6 - center.x;
+                    if (dx > 0) {
+                        self.center = CGPointMake(center.x + dx, center.y);
+                    }
+                    break;
+                }
             }
         }
     }
-    
-    [super setFrame:frame];
 }
 
 - (UINavigationBar *)navigationBarInView:(UIView *)view {
@@ -62,15 +75,6 @@
     } else {
         return [self navigationBarInView:view.superview];
     }
-}
-
-- (CGSize)intrinsicContentSize {
-    return self.fittingSize;
-}
-
-- (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView {
-    self.frame = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);
-    self.rootView.frame = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);
 }
 
 @end

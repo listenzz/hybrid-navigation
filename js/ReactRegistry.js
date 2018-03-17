@@ -63,7 +63,7 @@ export default {
 
       listenBarButtonItemClickEvent() {
         let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', event => {
-          if (this.props.sceneId === event.sceneId) {
+          if (this.props.sceneId === event.sceneId && RealComponent.navigationItem) {
             if (event.action === 'function_right_bar_button') {
               this.options.rightBarButtonItem.action(this.navigation);
             } else if (event.action === 'function_left_bar_button') {

@@ -17,6 +17,13 @@ export default class TopBarAlpha extends Component {
       moduleName: 'CustomTitleView',
       layoutFitting: 'compressed', // expanded or compressed, default is compressed
     },
+    rightBarButtonItem: {
+      icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+      title: 'SETTING',
+      action: navigation => {
+        console.info('setting button is clicked.');
+      },
+    },
   };
 
   constructor(props) {

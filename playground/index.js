@@ -38,8 +38,8 @@ Garden.setStyle({
   // titleTextColor: '#00ff00',
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
   shadowImage: {
-    //color: '#00ff00',
-    image: Image.resolveAssetSource(require('./src/images/divider.png')),
+    color: '#EEEEEE',
+    // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
   // hideBackTitle: true,
   elevation: 1,
