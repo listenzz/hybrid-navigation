@@ -5,7 +5,7 @@
  */
 
 import { ReactRegistry, Garden, Navigation } from 'react-native-navigation-hybrid';
-import { Image } from 'react-native';
+import { Image, Platform } from 'react-native';
 import React, { Component } from 'react';
 
 import { Provider } from 'react-redux';
@@ -31,8 +31,8 @@ import StatusBarColor from './src/StatusBarColor';
 Garden.setStyle({
   topBarStyle: 'dark-content',
   titleTextSize: 17,
-  statusBarColor: '#FDFFFFFF',
-  topBarColor: '#FDFFFFFF',
+  statusBarColor: '#FFFFFF',
+  topBarColor: '#FFFFFF',
 
   // topBarTintColor: '#0000ff',
   // titleTextColor: '#00ff00',

@@ -5,13 +5,21 @@
  */
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView, Platform } from 'react-native';
 
 import styles from './Styles';
 
 export default class TopBarStyle extends Component {
   static navigationItem = {
     topBarStyle: 'light-content',
+    ...Platform.select({
+      ios: {
+        topBarColor: '#FF344C',
+      },
+      android: {
+        topBarColor: '#F94D53',
+      },
+    }),
 
     titleItem: {
       title: 'TopBar Style',

@@ -1,6 +1,5 @@
 package com.navigationhybrid;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,9 +19,9 @@ import me.listenzz.navigation.PresentAnimation;
 
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
 import static com.navigationhybrid.Constants.ARG_SCENE_ID;
+import static com.navigationhybrid.Constants.ON_COMPONENT_APPEAR;
 import static com.navigationhybrid.Constants.ON_COMPONENT_DISAPPEAR;
 import static com.navigationhybrid.Constants.ON_COMPONENT_RESULT_EVENT;
-import static com.navigationhybrid.Constants.ON_COMPONENT_APPEAR;
 import static com.navigationhybrid.Constants.REQUEST_CODE_KEY;
 import static com.navigationhybrid.Constants.RESULT_CODE_KEY;
 import static com.navigationhybrid.Constants.RESULT_DATA_KEY;
@@ -43,15 +42,7 @@ public class ReactFragment extends HybridFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        int layoutRes;
-        if (getGarden().topBarAlpha < 1.0 || Color.alpha(getStyle().getToolbarBackgroundColor()) < 255) {
-            layoutRes = R.layout.nav_fragment_react_fl;
-        } else {
-            layoutRes = R.layout.nav_fragment_react_ll;
-        }
-
-        View view = inflater.inflate(layoutRes, container, false);
+        View view = inflater.inflate(R.layout.nav_fragment_react, container, false);
         containerLayout = view.findViewById(R.id.react_content);
 
         if (!getReactBridgeManager().isReactModuleInRegistry()) {
