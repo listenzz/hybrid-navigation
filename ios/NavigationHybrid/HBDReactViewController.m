@@ -23,6 +23,22 @@
 
 @implementation HBDReactViewController
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillReloadNotification object:nil];
+}
+
+- (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
+    if (self = [super initWithModuleName:moduleName props:props options:options]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReload)
+                                                     name:RCTBridgeWillReloadNotification object:nil];
+    }
+    return self;
+}
+
+- (void)handleReload {
+    self.firstRenderComplete = NO;
+}
+
 - (void)loadView {
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
     self.view = rootView;
@@ -30,7 +46,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     NSDictionary *titleItem = self.options[@"titleItem"];
     if (titleItem && self.navigationController) {
         if (self.topBarHidden) {
@@ -50,8 +66,6 @@
             self.navigationItem.titleView = titleView;
         }
     }
-    
-   
 }
 
 - (NSDictionary *)propsWithSceneId {
@@ -87,10 +101,12 @@
     [super viewDidDisappear:animated];
     if (self.viewAppeared) {
         self.viewAppeared = NO;
-        RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-        [emitter sendEventWithName:@"ON_COMPONENT_DISAPPEAR" body:@{
-                                                                    @"sceneId": self.sceneId,
-                                                                    }];
+        if (self.firstRenderComplete) {
+            RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
+            [emitter sendEventWithName:@"ON_COMPONENT_DISAPPEAR" body:@{
+                                                                        @"sceneId": self.sceneId,
+                                                                        }];
+        }
     }
 }
 
