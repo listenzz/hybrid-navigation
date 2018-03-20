@@ -38,8 +38,10 @@
     if (!self.isUserInteractionEnabled || self.isHidden || self.alpha <= 0.01) {
         return nil;
     }
+    
     UIView *view = [super hitTest:point withEvent:event];
     NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
+
     if (view && [viewName isEqualToString:@"HBDNavigationBar"]) {
         for (UIView *subview in self.subviews) {
             NSString *viewName = [[[subview classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
@@ -62,6 +64,10 @@
         if (self.alphaView.alpha < 0.01) {
             return nil;
         }
+    }
+    
+    if (CGRectEqualToRect(view.bounds, CGRectZero)) {
+        return nil;
     }
 
     return view;
