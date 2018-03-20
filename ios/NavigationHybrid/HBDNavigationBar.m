@@ -13,8 +13,8 @@
 @interface HBDNavigationBar()
 
 @property (nonatomic, strong, readwrite) UIView *alphaView;
-
 @property (nonatomic, strong, readwrite) UIImageView *shadowImageView;
+@property (nonatomic, strong) UIView *fakeView;
 
 @end
 
@@ -63,7 +63,7 @@
             return nil;
         }
     }
-    
+
     return view;
 }
 
@@ -72,6 +72,23 @@
     if (@available(iOS 11.0, *)) {
         self.shadowImageView.alpha = self.shadowImageAlpha;
     }
+    self.fakeView.frame = self.fakeView.superview.bounds;
+}
+
+- (UIView *)fakeView {
+    if (!_fakeView) {
+        [self setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
+        _fakeView = [[UIView alloc] init];
+        _fakeView.userInteractionEnabled = NO;
+        _fakeView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [[self.subviews firstObject] insertSubview:_fakeView atIndex:0];
+    }
+    return _fakeView;
+}
+
+- (void)setBarTintColor:(UIColor *)barTintColor {
+    [super setBarTintColor:barTintColor];
+    self.fakeView.backgroundColor = barTintColor;
 }
 
 - (void)setShadowImageAlpha:(float)shadowAlpha {
@@ -106,7 +123,7 @@
     }
     
     if (!alphaView) {
-        alphaView = backgroundView;
+        alphaView = self.fakeView;
     }
     
     _alphaView = alphaView;

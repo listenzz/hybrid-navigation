@@ -31,8 +31,8 @@ import StatusBarColor from './src/StatusBarColor';
 Garden.setStyle({
   topBarStyle: 'dark-content',
   titleTextSize: 17,
-  statusBarColor: '#FFFFFF',
-  topBarColor: '#FFFFFF',
+  statusBarColor: '#F0FFFFFF',
+  topBarColor: '#F0FFFFFF',
 
   // topBarTintColor: '#0000ff',
   // titleTextColor: '#00ff00',

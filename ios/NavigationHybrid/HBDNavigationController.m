@@ -45,6 +45,8 @@
     
     self.interactivePopGestureRecognizer.delegate = self;
     self.delegate = self;
+    
+    [self.navigationBar setBarTintColor:[UINavigationBar appearance].barTintColor];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -77,6 +79,7 @@
     [self updateNavigationBarAlpha:vc.topBarAlpha];
     [self updateNavigationBarShadowImageAlpha:vc.topBarShadowAlpha];
     [self hideNavigationBarShadowImageIfNeededForViewController:vc];
+    self.navigationBar.barTintColor = vc.topBarColor;
 }
 
 - (void)updateNavigationBarAlpha:(float)alpha {

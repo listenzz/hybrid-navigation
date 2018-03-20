@@ -164,6 +164,7 @@
     
     [navigationBar setBarStyle:self.barStyle];
     [navigationBar setBarTintColor:self.barTintColor];
+    
     if (self.shadowImage) {
         [navigationBar setShadowImage:self.shadowImage];
     }

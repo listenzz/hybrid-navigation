@@ -123,28 +123,9 @@
     [garden setLeftBarButtonItem:leftBarButtonItem forController:self];
 }
 
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-    UIViewController *previous = [self previousViewController];
-    if (parent == nil && previous) {
-        if (previous.topBarHidden) {
-            previous.topBarColor = previous.view.backgroundColor;
-        }
-        [self.navigationController.navigationBar setBarTintColor:previous.topBarColor];
-    }
-    [super willMoveToParentViewController:parent];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self.navigationController.navigationBar setBarTintColor:self.topBarColor];
     [self.navigationController.navigationBar setBarStyle:self.barStyle];
-}
-
-- (UIViewController *)previousViewController {
-    if (self.navigationController.viewControllers.count > 1) {
-        return self.navigationController.viewControllers[self.navigationController.viewControllers.count -2];
-    }
-    return nil;
 }
 
 @end
