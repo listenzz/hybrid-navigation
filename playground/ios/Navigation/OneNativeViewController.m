@@ -11,16 +11,27 @@
 
 @interface OneNativeViewController ()
 
+@property (nonatomic, copy) NSString *greeting;
+
 @end
 
 @implementation OneNativeViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-    self.title = @"Native";
+- (instancetype)init {
+    if (self = [super init]) {
+        _greeting = @"Hello, Native";
+    }
+    return self;
 }
 
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.title = self.greeting ?: @"Native";
+    
+    if (self.greeting) {
+        self.topBarColor = [UIColor redColor];
+    }
+}
 
 - (IBAction)pushToRN:(UIButton *)sender {
     if (self.navigationController) {
@@ -29,19 +40,11 @@
     }
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (IBAction)pushToNative:(UIButton *)sender {
+    if (self.navigationController) {
+        OneNativeViewController *vc = [[OneNativeViewController alloc] init];
+        [self.navigationController pushViewController:vc animated:YES];
+    }
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

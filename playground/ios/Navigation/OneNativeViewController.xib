@@ -30,9 +30,19 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="qmy-fB-JAF"/>
                     </constraints>
-                    <state key="normal" title="push"/>
+                    <state key="normal" title="push to rn"/>
                     <connections>
                         <action selector="pushToRN:" destination="-1" eventType="touchUpInside" id="yob-We-YkZ"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xri-vd-0Ep">
+                    <rect key="frame" x="36" y="181" width="303" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="EYk-8N-5zP"/>
+                    </constraints>
+                    <state key="normal" title="push to native"/>
+                    <connections>
+                        <action selector="pushToNative:" destination="-1" eventType="touchUpInside" id="cvI-ZJ-Yvd"/>
                     </connections>
                 </button>
             </subviews>
@@ -42,7 +52,10 @@
                 <constraint firstItem="dbA-fd-7NV" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="2Xj-xV-bMg"/>
                 <constraint firstItem="FeH-0o-wRC" firstAttribute="top" secondItem="dbA-fd-7NV" secondAttribute="bottom" constant="16" id="5J6-TI-gYq"/>
                 <constraint firstAttribute="trailing" secondItem="FeH-0o-wRC" secondAttribute="trailing" constant="36" id="Ivk-DE-cl2"/>
+                <constraint firstItem="Xri-vd-0Ep" firstAttribute="trailing" secondItem="FeH-0o-wRC" secondAttribute="trailing" id="OOG-Ce-scg"/>
+                <constraint firstItem="Xri-vd-0Ep" firstAttribute="leading" secondItem="FeH-0o-wRC" secondAttribute="leading" id="aqn-cb-cyQ"/>
                 <constraint firstItem="FeH-0o-wRC" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="36" id="t4q-Oy-1CY"/>
+                <constraint firstItem="Xri-vd-0Ep" firstAttribute="top" secondItem="FeH-0o-wRC" secondAttribute="bottom" constant="8" id="vRI-Jf-eIl"/>
                 <constraint firstItem="FeH-0o-wRC" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="xRx-5v-uGC"/>
             </constraints>
         </view>

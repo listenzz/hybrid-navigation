@@ -21,8 +21,16 @@
     NSLog(@"%s", __FUNCTION__);
 }
 
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    return [self initWithModuleName:nil props:nil options:nil];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    return [self initWithModuleName:nil props:nil options:nil];
+}
+
 - (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
-    if (self = [super init]) {
+    if (self = [super initWithNibName:nil bundle:nil]) {
         _sceneId = [[NSUUID UUID] UUIDString];
         _moduleName = moduleName;
         _options = options;

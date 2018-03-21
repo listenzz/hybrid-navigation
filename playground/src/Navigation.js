@@ -181,7 +181,7 @@ export default class Navigation extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>switch to tab 'Style'</Text>
+            <Text style={styles.buttonText}>switch to tab 'Options'</Text>
           </TouchableOpacity>
 
           {this.state.text !== undefined && (
