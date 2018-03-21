@@ -12,11 +12,11 @@ import styles from './Styles';
 export default class TopBarAlpha extends Component {
   static navigationItem = {
     topBarAlpha: 0.5,
-    titleItem: {
-      title: '出 BUG 了',
-      moduleName: 'CustomTitleView',
-      layoutFitting: 'compressed', // expanded or compressed, default is compressed
-    },
+    // titleItem: {
+    //   title: '出 BUG 了',
+    //   moduleName: 'CustomTitleView',
+    //   layoutFitting: 'compressed', // expanded or compressed, default is compressed
+    // },
     rightBarButtonItem: {
       icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
       title: 'SETTING',
