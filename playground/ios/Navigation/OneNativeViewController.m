@@ -35,7 +35,7 @@
 
 - (IBAction)pushToRN:(UIButton *)sender {
     if (self.navigationController) {
-        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Navigation" props:nil options:nil];
+        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Options" props:nil options:nil];
         [self.navigationController pushViewController:vc animated:YES];
     }
 }

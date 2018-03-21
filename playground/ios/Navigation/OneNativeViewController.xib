@@ -30,7 +30,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="qmy-fB-JAF"/>
                     </constraints>
-                    <state key="normal" title="push to rn"/>
+                    <state key="normal" title="push to RN"/>
                     <connections>
                         <action selector="pushToRN:" destination="-1" eventType="touchUpInside" id="yob-We-YkZ"/>
                     </connections>
@@ -40,7 +40,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="EYk-8N-5zP"/>
                     </constraints>
-                    <state key="normal" title="push to native"/>
+                    <state key="normal" title="push to Native"/>
                     <connections>
                         <action selector="pushToNative:" destination="-1" eventType="touchUpInside" id="cvI-ZJ-Yvd"/>
                     </connections>
