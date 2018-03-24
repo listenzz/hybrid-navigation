@@ -49,7 +49,7 @@
 
     NSDictionary *titleItem = self.options[@"titleItem"];
     if (titleItem && self.navigationController) {
-        if (self.topBarHidden) {
+        if (self.hbd_barHidden) {
             return;
         }
         NSString *moduleName = titleItem[@"moduleName"];

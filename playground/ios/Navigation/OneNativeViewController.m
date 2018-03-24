@@ -29,7 +29,7 @@
     self.title = self.greeting ?: @"Native";
     
     if (self.greeting) {
-        self.topBarColor = [UIColor redColor];
+        self.hbd_barTintColor = [UIColor redColor];
     }
 }
 

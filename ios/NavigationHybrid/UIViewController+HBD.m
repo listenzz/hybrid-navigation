@@ -8,61 +8,89 @@
 
 #import "UIViewController+HBD.h"
 #import <objc/runtime.h>
+#import "HBDNavigationController.h"
 
 @implementation UIViewController (HBD)
 
-- (UIColor *)topBarColor {
+
+- (UIColor *)hbd_barTintColor {
     id obj = objc_getAssociatedObject(self, _cmd);
     return obj ?: [UINavigationBar appearance].barTintColor;
 }
 
-- (void)setTopBarColor:(UIColor *)topBarColor {
-    objc_setAssociatedObject(self, @selector(topBarColor), topBarColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setHbd_barTintColor:(UIColor *)tintColor {
+    objc_setAssociatedObject(self, @selector(hbd_barTintColor), tintColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (float)topBarAlpha {
+- (float)hbd_barAlpha {
     id obj = objc_getAssociatedObject(self, _cmd);
+    if (self.hbd_barHidden) {
+        return 0;
+    }
     return obj ? [obj floatValue] : 1.0f;
 }
 
-- (void)setTopBarAlpha:(float)topBarAlpha {
-    objc_setAssociatedObject(self, @selector(topBarAlpha), @(topBarAlpha), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setHbd_barAlpha:(float)alpha {
+    objc_setAssociatedObject(self, @selector(hbd_barAlpha), @(alpha), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (BOOL)topBarHidden {
+- (BOOL)hbd_barHidden {
     id obj = objc_getAssociatedObject(self, _cmd);
     return obj ? [obj boolValue] : NO;
 }
 
-- (void)setTopBarHidden:(BOOL)topBarHidden {
-    objc_setAssociatedObject(self, @selector(topBarHidden), @(topBarHidden), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setHbd_barHidden:(BOOL)hidden {
+    if (hidden) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
+        self.navigationItem.titleView = [UIView new];
+    } else {
+        self.navigationItem.leftBarButtonItem = nil;
+        self.navigationItem.titleView = nil;
+    }
+    objc_setAssociatedObject(self, @selector(hbd_barHidden), @(hidden), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (float)topBarShadowAlpha {
+- (float)hbd_barShadowAlpha {
+    return  self.hbd_barShadowHidden ? 0 : self.hbd_barAlpha;
+}
+
+- (BOOL)hbd_barShadowHidden {
     id obj = objc_getAssociatedObject(self, _cmd);
-    return obj ? [obj floatValue] : 1.0f;
+    return  self.hbd_barHidden || obj ? [obj boolValue] : NO;
 }
 
-- (void)setTopBarShadowAlpha:(float)topBarShadowAlpha {
-    objc_setAssociatedObject(self, @selector(topBarShadowAlpha), @(topBarShadowAlpha), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setHbd_barShadowHidden:(BOOL)hidden {
+    objc_setAssociatedObject(self, @selector(hbd_barShadowHidden), @(hidden), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (BOOL)topBarShadowHidden {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    return obj ? [obj boolValue] : NO;
-}
-
-- (void)setTopBarShadowHidden:(BOOL)topBarShadowHidden {
-    objc_setAssociatedObject(self, @selector(topBarShadowHidden), @(topBarShadowHidden), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (BOOL)backInteractive {
+- (BOOL)hbd_backInteractive {
     id obj = objc_getAssociatedObject(self, _cmd);
     return obj ? [obj boolValue] : YES;
 }
 
-- (void)setBackInteractive:(BOOL)backInteractive {
-    objc_setAssociatedObject(self, @selector(backInteractive), @(backInteractive), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+-(void)setHbd_backInteractive:(BOOL)interactive {
+    objc_setAssociatedObject(self, @selector(hbd_backInteractive), @(interactive), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+-(void)hbd_setNeedsUpdateNavigationBarAlpha {
+    if (self.navigationController && [self.navigationController isKindOfClass:[HBDNavigationController class]]) {
+        HBDNavigationController *nav = (HBDNavigationController *)self.navigationController;
+        [nav updateNavigationBarAlphaForViewController:self];
+    }
+}
+
+- (void)hbd_setNeedsUpdateNavigationBarColor {
+    if (self.navigationController && [self.navigationController isKindOfClass:[HBDNavigationController class]]) {
+        HBDNavigationController *nav = (HBDNavigationController *)self.navigationController;
+        [nav updateNavigationBarColorForViewController:self];
+    }
+}
+
+- (void)hbd_setNeedsUpdateNavigationBarShadowImageAlpha {
+    if (self.navigationController && [self.navigationController isKindOfClass:[HBDNavigationController class]]) {
+        HBDNavigationController *nav = (HBDNavigationController *)self.navigationController;
+        [nav updateNavigationBarShadowImageAlphaForViewController:self];
+    }
 }
 
 - (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data {

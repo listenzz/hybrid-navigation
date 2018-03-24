@@ -42,16 +42,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     self.interactivePopGestureRecognizer.delegate = self;
     self.delegate = self;
-    
-    [self.navigationBar setBarTintColor:self.topViewController.topBarColor];
+    [self.navigationBar setBarTintColor:self.topViewController.hbd_barTintColor];
+    [self.navigationBar setShadowImage:[UINavigationBar appearance].shadowImage];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if (self.viewControllers.count > 1) {
-        return self.topViewController.backInteractive;
+        return self.topViewController.hbd_backInteractive;
     }
     return NO;
 }
@@ -64,36 +63,32 @@
         } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
             UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
             UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
-            if ([from isKindOfClass:[HBDViewController class]]) {
-                if (context.isCancelled) {
-                    [self updateNavigationBarForController:from];
-                } else {
-                    [self updateNavigationBarForController:to];
-                }
+            if (context.isCancelled) {
+                [self updateNavigationBarForController:from];
+            } else {
+                [self updateNavigationBarForController:to];
             }
         }];
     }
 }
 
 - (void)updateNavigationBarForController:(UIViewController *)vc {
-    [self updateNavigationBarAlpha:vc.topBarAlpha];
-    [self updateNavigationBarShadowImageAlpha:vc.topBarShadowAlpha];
-    [self hideNavigationBarShadowImageIfNeededForViewController:vc];
-    self.navigationBar.barTintColor = vc.topBarColor;
+    [self updateNavigationBarAlphaForViewController:vc];
+    [self updateNavigationBarColorForViewController:vc];
+    [self updateNavigationBarShadowImageAlphaForViewController:vc];
 }
 
-- (void)updateNavigationBarAlpha:(float)alpha {
-    self.navigationBar.alphaView.alpha = alpha;
+- (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc {
+    self.navigationBar.alphaView.alpha = vc.hbd_barAlpha;
+    self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
 }
 
-- (void)updateNavigationBarShadowImageAlpha:(float)alpha {
-    self.navigationBar.shadowImageAlpha = alpha;
+- (void)updateNavigationBarColorForViewController:(UIViewController *)vc {
+    self.navigationBar.barTintColor = vc.hbd_barTintColor;
 }
 
-- (void)hideNavigationBarShadowImageIfNeededForViewController:(UIViewController *)vc {
-    if (@available(iOS 11.0, *)) {
-        self.navigationBar.shadowImageView.hidden = vc.topBarShadowHidden || vc.topBarShadowAlpha <= 0.01;
-    }
+- (void)updateNavigationBarShadowImageAlphaForViewController:(UIViewController *)vc {
+    self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
 }
 
 - (void)configTabItemWithDict:(NSDictionary *)tabItem {

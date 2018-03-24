@@ -10,10 +10,10 @@
 
 @interface HBDNavigationController : UINavigationController
 
-- (void)updateNavigationBarAlpha:(float)alpha;
+- (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc;
 
-- (void)updateNavigationBarShadowImageAlpha:(float)alpha;
+- (void)updateNavigationBarColorForViewController:(UIViewController *)vc;
 
-- (void)hideNavigationBarShadowImageIfNeededForViewController:(UIViewController *)vc;
+- (void)updateNavigationBarShadowImageAlphaForViewController:(UIViewController *)vc;
 
 @end

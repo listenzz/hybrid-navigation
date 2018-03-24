@@ -60,33 +60,22 @@
     
     NSString *topBarColor = self.options[@"topBarColor"];
     if (topBarColor) {
-        self.topBarColor = [HBDUtils colorWithHexString:topBarColor];
+        self.hbd_barTintColor = [HBDUtils colorWithHexString:topBarColor];
     }
     
     NSNumber *topBarAlpha = self.options[@"topBarAlpha"];
     if (topBarAlpha) {
-        self.topBarAlpha = [topBarAlpha floatValue];
-        self.topBarShadowAlpha = [topBarAlpha floatValue];
+        self.hbd_barAlpha = [topBarAlpha floatValue];
     }
     
     NSNumber *hideShadow = self.options[@"topBarShadowHidden"];
     if ([hideShadow boolValue]) {
-        self.topBarShadowHidden = YES;
-        self.topBarShadowAlpha = 0.;
+        self.hbd_barShadowHidden = YES;
     }
     
     NSNumber *topBarHidden = self.options[@"topBarHidden"];
     if ([topBarHidden boolValue]) {
-        self.topBarHidden = YES;
-        self.topBarAlpha = 0.0;
-        self.topBarShadowHidden = YES;
-        self.topBarShadowAlpha = 0.0;
-        if (@available(iOS 11, *)) {
-            [self.navigationItem setHidesBackButton:YES];
-        } else {
-            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
-        }
+        self.hbd_barHidden = YES;
     }
     
     if ([HBDGarden globalStyle].isBackTitleHidden) {
@@ -95,9 +84,6 @@
     
     NSDictionary *titleItem = self.options[@"titleItem"];
     if (titleItem) {
-        if (self.topBarHidden) {
-            return;
-        }
         NSString *moduleName = titleItem[@"moduleName"];
         if (!moduleName) {
             self.navigationItem.title = titleItem[@"title"];
@@ -117,9 +103,9 @@
     
     NSNumber *interactive = self.options[@"backInteractive"];
     if (interactive) {
-        self.backInteractive = [interactive boolValue];
+        self.hbd_backInteractive = [interactive boolValue];
     } else {
-        self.backInteractive = YES;
+        self.hbd_backInteractive = YES;
     }
     
     HBDGarden *garden = [[HBDGarden alloc] init];

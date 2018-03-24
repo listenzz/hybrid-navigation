@@ -91,11 +91,6 @@ static GlobalStyle *globalStyle;
     } else {
         controller.navigationItem.title = nil;
     }
-    
-    if (controller.topBarHidden) {
-        controller.navigationItem.title = nil;
-        controller.title = nil;
-    }
 }
 
 - (void)setHideBackButton:(BOOL)hidden forController:(HBDViewController *)controller {
@@ -108,29 +103,18 @@ static GlobalStyle *globalStyle;
 }
 
 - (void)setTopBarAlpha:(float)alpha forController:(HBDViewController *)controller {
-    controller.topBarAlpha = alpha;
-    controller.topBarShadowAlpha = alpha;
-    UINavigationController *nav = controller.navigationController;
-    if ([nav isKindOfClass:[HBDNavigationController class]]) {
-        [((HBDNavigationController *)nav) updateNavigationBarAlpha:alpha];
-        [((HBDNavigationController *)nav) updateNavigationBarShadowImageAlpha:alpha];
-        [((HBDNavigationController *)nav) hideNavigationBarShadowImageIfNeededForViewController:controller];
-    }
+    controller.hbd_barAlpha = alpha;
+    [controller hbd_setNeedsUpdateNavigationBarAlpha];
 }
 
 - (void)setTopBarColor:(UIColor *)color forController:(HBDViewController *)controller {
-    controller.topBarColor = color;
-    [controller.navigationController.navigationBar setBarTintColor:color];
+    controller.hbd_barTintColor = color;
+    [controller hbd_setNeedsUpdateNavigationBarColor];
 }
 
 - (void)setTopBarShadowHidden:(BOOL)hidden forController:(HBDViewController *)controller {
-    controller.topBarShadowHidden = hidden;
-    controller.topBarShadowAlpha = hidden ? 0 : 1.0;
-    UINavigationController *nav = controller.navigationController;
-    if ([nav isKindOfClass:[HBDNavigationController class]]) {
-        [((HBDNavigationController *)nav) updateNavigationBarShadowImageAlpha:controller.topBarShadowAlpha];
-        [((HBDNavigationController *)nav) hideNavigationBarShadowImageIfNeededForViewController:controller];
-    }
+    controller.hbd_barShadowHidden = hidden;
+    [controller hbd_setNeedsUpdateNavigationBarShadowImageAlpha];
 }
 
 @end

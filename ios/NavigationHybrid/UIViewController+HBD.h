@@ -11,12 +11,18 @@
 
 @interface UIViewController (HBD)
 
-@property (nonatomic, strong) UIColor *topBarColor;
-@property (nonatomic, assign) float topBarAlpha;
-@property (nonatomic, assign) BOOL topBarHidden;
-@property (nonatomic, assign) float topBarShadowAlpha;
-@property (nonatomic, assign) BOOL topBarShadowHidden;
-@property (nonatomic, assign) BOOL backInteractive;
+@property (nonatomic, strong) UIColor *hbd_barTintColor;
+@property (nonatomic, assign) float hbd_barAlpha;
+@property (nonatomic, assign) BOOL hbd_barHidden;
+@property (nonatomic, assign, readonly) float hbd_barShadowAlpha;
+@property (nonatomic, assign) BOOL hbd_barShadowHidden;
+@property (nonatomic, assign) BOOL hbd_backInteractive;
+
+- (void)hbd_setNeedsUpdateNavigationBarAlpha;
+
+- (void)hbd_setNeedsUpdateNavigationBarColor;
+
+- (void)hbd_setNeedsUpdateNavigationBarShadowImageAlpha;
 
 - (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data;
 

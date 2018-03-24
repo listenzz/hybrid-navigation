@@ -38,7 +38,7 @@ Garden.setStyle({
   // titleTextColor: '#00ff00',
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
   shadowImage: {
-    color: '#EEEEEE',
+    color: '#DDDDDD',
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
   hideBackTitle: true,

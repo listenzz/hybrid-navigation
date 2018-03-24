@@ -20,20 +20,6 @@
 
 @implementation HBDNavigationBar
 
-- (instancetype)initWithFrame:(CGRect)frame {
-    if (self = [super initWithFrame:frame]) {
-        _shadowImageAlpha = 1.0;
-    }
-    return self;
-}
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder {
-    if (self = [super initWithCoder:aDecoder]) {
-        _shadowImageAlpha = 1.0;
-    }
-    return self;
-}
-
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     if (!self.isUserInteractionEnabled || self.isHidden || self.alpha <= 0.01) {
         return nil;
@@ -41,7 +27,7 @@
     
     UIView *view = [super hitTest:point withEvent:event];
     NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-
+    
     if (view && [viewName isEqualToString:@"HBDNavigationBar"]) {
         for (UIView *subview in self.subviews) {
             NSString *viewName = [[[subview classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
@@ -69,16 +55,28 @@
     if (CGRectEqualToRect(view.bounds, CGRectZero)) {
         return nil;
     }
-
+    
     return view;
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    if (@available(iOS 11.0, *)) {
-        self.shadowImageView.alpha = self.shadowImageAlpha;
-    }
     self.fakeView.frame = self.fakeView.superview.bounds;
+    self.shadowImageView.frame = CGRectMake(0, CGRectGetHeight(self.shadowImageView.superview.bounds), CGRectGetWidth(self.shadowImageView.superview.bounds), 0.5);
+}
+
+- (void)setBarTintColor:(UIColor *)barTintColor {
+    [super setBarTintColor:barTintColor];
+    self.fakeView.backgroundColor = barTintColor;
+}
+
+- (void)setShadowImage:(UIImage *)shadowImage {
+    self.shadowImageView.image = shadowImage;
+    if (shadowImage) {
+        self.shadowImageView.backgroundColor = nil;
+    } else {
+        self.shadowImageView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:77.0/255];
+    }
 }
 
 - (UIView *)fakeView {
@@ -92,19 +90,13 @@
     return _fakeView;
 }
 
-- (void)setBarTintColor:(UIColor *)barTintColor {
-    [super setBarTintColor:barTintColor];
-    self.fakeView.backgroundColor = barTintColor;
-}
-
-- (void)setShadowImageAlpha:(float)shadowAlpha {
-    _shadowImageAlpha = shadowAlpha;
-    self.shadowImageView.alpha = shadowAlpha;
-}
-
 - (UIImageView *)shadowImageView {
     if (!_shadowImageView) {
-        _shadowImageView = [HBDUtils findShadowImageAt:self];
+        [super setShadowImage:[UIImage new]];
+        _shadowImageView = [[UIImageView alloc] init];
+        _shadowImageView.userInteractionEnabled = NO;
+        _shadowImageView.contentScaleFactor = 1;
+        [[self.subviews firstObject] insertSubview:_shadowImageView aboveSubview:self.fakeView];
     }
     return _shadowImageView;
 }
@@ -113,7 +105,7 @@
     if (_alphaView) {
         return _alphaView;
     }
-
+    
     id backgroundView = self.subviews[0];
     UIView *alphaView;
     if ([self isTranslucent]) {
