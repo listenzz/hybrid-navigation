@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.FragmentHelper;
+import me.listenzz.navigation.Style;
 
 import static com.navigationhybrid.Constants.ARG_PROPS;
 import static com.navigationhybrid.Constants.ARG_SCENE_ID;
@@ -24,16 +24,15 @@ public class HybridFragment extends AwesomeFragment {
     private Garden garden;
 
     @Override
-    public LayoutInflater onGetLayoutInflater(Bundle savedInstanceState) {
-        LayoutInflater layoutInflater = super.onGetLayoutInflater(savedInstanceState);
-        garden = new Garden(this);
-        return layoutInflater;
+    protected void onCustomStyle(Style style) {
+        super.onCustomStyle(style);
+        garden = new Garden(this, style);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        garden.configTopBar();
+        garden.configureToolbar();
     }
 
     public Garden getGarden() {
@@ -42,7 +41,7 @@ public class HybridFragment extends AwesomeFragment {
 
     @Override
     protected boolean shouldHideBackButton() {
-        return garden.backBackHidden;
+        return garden.backButtonHidden;
     }
 
     @Override
@@ -57,7 +56,7 @@ public class HybridFragment extends AwesomeFragment {
 
     @Override
     protected Toolbar onCreateToolbar(View parent) {
-        if (garden.topBarHidden) {
+        if (garden.toolbarHidden) {
             return null;
         }
         return super.onCreateToolbar(parent);

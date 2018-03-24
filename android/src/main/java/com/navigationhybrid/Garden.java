@@ -45,21 +45,19 @@ public class Garden {
 
     private Bundle options;
 
-    boolean backBackHidden;
+    boolean backButtonHidden;
 
     boolean backInteractive;
 
     boolean hidesBottomBarWhenPushed;
 
-    boolean topBarHidden;
+    boolean toolbarHidden;
 
-    float topBarAlpha = 1.0f;
-
-    Garden(@NonNull HybridFragment fragment) {
+    Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
         this.fragment = fragment;
-        this.style = fragment.getStyle();
+        this.style = style;
 
         Bundle options = fragment.getOptions();
         if (options == null) {
@@ -68,16 +66,11 @@ public class Garden {
 
         this.options = options;
 
-        this.backBackHidden = options.getBoolean("backButtonHidden", false);
+        this.backButtonHidden = options.getBoolean("backButtonHidden", false);
         this.backInteractive = options.getBoolean("backInteractive", true);
-        this.topBarHidden = options.getBoolean("topBarHidden", false);
+        this.toolbarHidden = options.getBoolean("topBarHidden", false);
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush");
-
-        double topBarAlpha = options.getDouble("topBarAlpha", -1);
-        if (topBarAlpha != -1) {
-            this.topBarAlpha = (float) topBarAlpha;
-        }
 
         String barStyle = options.getString("topBarStyle");
         if (barStyle != null) {
@@ -101,7 +94,7 @@ public class Garden {
         }
     }
 
-    void configTopBar() {
+    void configureToolbar() {
 
         if (fragment.getView() == null || fragment.getContext() == null) {
             return;
@@ -206,7 +199,7 @@ public class Garden {
 
     void setStatusBarColor(int color) {
         style.setStatusBarColor(color);
-        fragment.setStatusBarColor(color, false);
+        fragment.setNeedsStatusBarAppearanceUpdate();
     }
 
     void setTopBarStyle(BarStyle barStyle) {
@@ -217,20 +210,13 @@ public class Garden {
     void setToolbarAlpha(float alpha) {
         Toolbar toolbar = fragment.getToolbar();
         if (toolbar != null && toolbar instanceof AwesomeToolbar) {
-            this.topBarAlpha = alpha;
             toolbar.setAlpha(alpha);
         }
     }
 
     void setTopBarColor(int color) {
-        if (style.getToolbarBackgroundColor() == style.getStatusBarColor()) {
-            style.setStatusBarColor(color);
-        }
         style.setToolbarBackgroundColor(color);
-        Toolbar toolbar = fragment.getToolbar();
-        if (toolbar != null && toolbar instanceof AwesomeToolbar) {
-            toolbar.setBackgroundColor(color);
-        }
+        fragment.setNeedsToolbarAppearanceUpdate();
     }
 
     void setToolbarShadowHidden(boolean hidden) {
@@ -241,9 +227,9 @@ public class Garden {
                 awesomeToolbar.hideShadow();
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    awesomeToolbar.setElevation(fragment.getStyle().getElevation());
+                    awesomeToolbar.setElevation(style.getElevation());
                 } else {
-                    awesomeToolbar.setShadow(fragment.getStyle().getShadow());
+                    awesomeToolbar.setShadow(style.getShadow());
                 }
             }
         }
