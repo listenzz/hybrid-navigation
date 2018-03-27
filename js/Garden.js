@@ -208,4 +208,8 @@ export default class Garden {
   setTopBarShadowHidden(item) {
     GardenModule.setTopBarShadowHidden(this.sceneId, item);
   }
+
+  replaceTabIcon(index, icon, inactiveIcon) {
+    GardenModule.replaceTabIcon(this.sceneId, index, icon, inactiveIcon);
+  }
 }

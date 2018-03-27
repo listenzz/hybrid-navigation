@@ -3,11 +3,13 @@ package com.navigationhybrid;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -24,7 +26,10 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import me.listenzz.navigation.BarStyle;
+import me.listenzz.navigation.BottomBar;
+import me.listenzz.navigation.DrawableUtils;
 import me.listenzz.navigation.FragmentHelper;
+import me.listenzz.navigation.TabBarFragment;
 
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_DARK_CONTENT;
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_LIGHT_CONTENT;
@@ -228,6 +233,38 @@ public class GardenModule extends ReactContextBaseJavaModule{
                 }
             }
         });
+    }
+
+    @ReactMethod
+    public void replaceTabIcon(final String sceneId, final int index, final ReadableMap icon, final ReadableMap inactiveIcon) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                    if (tabBarFragment != null) {
+                        BottomBar bottomBar = tabBarFragment.getBottomBar();
+                        if (bottomBar != null) {
+                            Drawable drawable = drawableFromReadableMap(bottomBar.getContext(), icon);
+                            if (drawable == null) {
+                                return;
+                            }
+                            Drawable inactiveDrawable = drawableFromReadableMap(bottomBar.getContext(), inactiveIcon);
+                            bottomBar.setTabIcon(index, drawable, inactiveDrawable);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private Drawable drawableFromReadableMap(Context context, ReadableMap icon) {
+        if (icon != null && icon.hasKey("uri")) {
+            String uri = icon.getString("uri");
+            return DrawableCompat.wrap(DrawableUtils.fromUri(context, uri));
+        }
+        return null;
     }
 
     private HybridFragment findFragmentBySceneId(String sceneId) {

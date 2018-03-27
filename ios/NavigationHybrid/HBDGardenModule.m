@@ -126,6 +126,23 @@ RCT_EXPORT_METHOD(setTopBarShadowHidden:(NSString *)sceneId item:(NSDictionary *
     NSLog(@"setTopBarShadowHidden: %@", item);
 }
 
+RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon:(NSDictionary *)icon inactiveIcon:(NSDictionary *)inactiveIcon) {
+    HBDViewController *vc = [self controllerForSceneId:sceneId];
+    UITabBarController *tabBarVC = vc.tabBarController;
+    if (tabBarVC) {
+        UIViewController *tab = [tabBarVC.viewControllers objectAtIndex:index];
+        UITabBarItem *tabBarItem = nil;
+        if (inactiveIcon) {
+            UIImage *selectedImage = [[HBDUtils UIImage:icon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            UIImage *image = [[HBDUtils UIImage:inactiveIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            tabBarItem = [[UITabBarItem alloc] initWithTitle:tab.tabBarItem.title image:image selectedImage:selectedImage];
+        } else {
+            tabBarItem = [[UITabBarItem alloc] initWithTitle:tab.tabBarItem.title image:[HBDUtils UIImage:icon] selectedImage:nil];
+        }
+        tab.tabBarItem = tabBarItem;
+    }
+}
+
 - (HBDViewController *)controllerForSceneId:(NSString *)sceneId {
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     UIViewController *controller = application.keyWindow.rootViewController;

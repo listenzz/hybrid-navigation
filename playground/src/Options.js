@@ -50,6 +50,7 @@ export default class Options extends Component {
     this.switchToTab = this.switchToTab.bind(this);
     this.toggleTabBadge = this.toggleTabBadge.bind(this);
     this.lifecycle = this.lifecycle.bind(this);
+    this.replaceTabIcon = this.replaceTabIcon.bind(this);
     this.state = {
       leftButtonShowText: true,
       rightButtonEnabled: false,
@@ -116,6 +117,14 @@ export default class Options extends Component {
     this.props.navigation.push('Lifecycle');
   }
 
+  replaceTabIcon() {
+    this.props.garden.replaceTabIcon(
+      1,
+      { uri: 'blue_solid', scale: PixelRatio.get() }
+      // { uri: 'red_ring', scale: PixelRatio.get() }
+    );
+  }
+
   render() {
     return (
       <ScrollView
@@ -172,6 +181,10 @@ export default class Options extends Component {
 
           <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.replaceTabIcon} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>replalce tab icon</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
