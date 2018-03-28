@@ -199,7 +199,7 @@ buildscript {
     }
     dependencies {
 -        classpath 'com.android.tools.build:gradle:2.2.3'
-+        classpath 'com.android.tools.build:gradle:3.0.1'
++        classpath 'com.android.tools.build:gradle:3.1.0'
     }
 }
 
@@ -219,9 +219,9 @@ allprojects {
 +   minSdkVersion = 16
 +   targetSdkVersion = 27
 +   compileSdkVersion = 27
-+   buildToolsVersion = '27.0.2'
++   buildToolsVersion = '27.0.3'
 +   // 必须保证支持包的版本 >= 26.1.0
-+   supportLibraryVersion = '27.0.2'
++   supportLibraryVersion = '27.1.0'
 + }
 
 ```
@@ -269,7 +269,7 @@ dependencies {
 
 ```diff
 - distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip
-+ distributionUrl=https\://services.gradle.org/distributions/gradle-4.1-all.zip
++ distributionUrl=https\://services.gradle.org/distributions/gradle-4.4-all.zip
 ```
 
 修改 MainActivity.java 文件
@@ -464,9 +464,9 @@ ext {
 +   minSdkVersion = 16
 +   targetSdkVersion = 27
 +   compileSdkVersion = 27
-+   buildToolsVersion = '27.0.2'
++   buildToolsVersion = '27.0.3'
 +   // 必须保证支持包的版本 >= 26.1.0
-+   supportLibraryVersion = '27.0.2'
++   supportLibraryVersion = '27.1.0'
 +   // 注意把 ReactNativeProject 替换成你的 RN 项目
 +   rn_root = "$rootDir/../ReactNativeProject"
 }
@@ -478,7 +478,7 @@ buildscript {
     }
     dependencies {
 -        classpath 'com.android.tools.build:gradle:2.2.3'
-+        classpath 'com.android.tools.build:gradle:3.0.1'
++        classpath 'com.android.tools.build:gradle:3.1.0'
     }
 }
 
@@ -528,7 +528,7 @@ dependencies {
 
 ```diff
 - distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip
-+ distributionUrl=https\://services.gradle.org/distributions/gradle-4.1-all.zip
++ distributionUrl=https\://services.gradle.org/distributions/gradle-4.4-all.zip
 ```
 
 修改 MainApplication.java 文件。在你的项目中，可能叫其它名字。
@@ -636,7 +636,7 @@ protected void onCreateMainComponent() {
 
 #### 同步构建版本
 
-Navigation Hybrid 使用的构建版本是 27.0.2 ，你的项目可能使用了更高或稍低的版本。你也可能使用了 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 这样的库，它的构建版本是 26.0.1 ，我们需要用脚本把这些库的构建版本统一起来，否则编译项目时可能会出错。
+Navigation Hybrid 使用的构建版本是 27.1.0 ，你的项目可能使用了更高或稍低的版本。你也可能使用了 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 这样的库，它的构建版本是 26.0.1 ，我们需要用脚本把这些库的构建版本统一起来，否则编译项目时可能会出错。
 
 回到 RN 项目的根目录，创建一个叫 scripts 的文件夹，在里面创建一个叫 fix-build-version.js 的文件
 
@@ -1030,6 +1030,7 @@ RN 页面如何跳转和传值，我们 [容器](#container) 一章已经提及�
 Android 需要继承 `HybridFragment`，具体可以参考 playground 项目中 `OneNativeFragment` 这个类：
 
 ```java
+// android
 public class OneNativeFragment extends HybridFragment {
 
 }
@@ -1040,6 +1041,7 @@ HybridFragment 继承于 `AwesomeFragment`，关于 AwesomeFragment 更多细节
 iOS 需要继承 `HBDViewController`，具体可以参考 playground 项目中 `OneNativeViewController` 这个类：
 
 ```objc
+// ios
 #import <NavigationHybrid/NavigationHybrid.h>
 
 @interface OneNativeViewController : HBDViewController
@@ -1088,7 +1090,7 @@ iOS 注册方式如下
 @end
 ```
 
-> 如果 RN 和原生都注册了同样的模块，即模块名相同，会优先采用 RN 模块
+> 如果 RN 和原生都注册了同样的模块，即模块名相同，会优先采用 RN 模块。一个应用场景是，如果线上原生模块有严重 BUG，可以通过热更新用 RN 模块临时替换，并指引用户升级版本。
 
 
 ### 原生页面的跳转
@@ -1110,6 +1112,7 @@ HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithMo
 接下来使用原生方式跳转
 
 ```java
+// android
 NavigationFragment navigationFragment = getNavigationFragment();
 if (navigationFragment != null) {
     navigationFragment.pushFragment(fragment);
@@ -1119,6 +1122,7 @@ if (navigationFragment != null) {
 关于 NavigationFragment 的更多细节，请看 [AndroidNavigation](https://github.com/listenzz/AndroidNavigation) 这个子项目。
 
 ```objc
+// ios
 [self.navigationController pushViewController:vc animated:YES];
 ```
 
@@ -1474,7 +1478,7 @@ class Screen extends Component {
 
 - backButtonHidden
 
-    可选，默认值是 false。用来控制是否隐藏当前页面的返回按钮。一旦设置为 true，在 iOS 中将不能通过手势右滑返回，在 Android 中将不能通过返回键（物理）退出当前页面。
+    可选，默认值是 false。用来控制是否隐藏当前页面的返回按钮。
 	
 - backInteractive
 
@@ -1490,7 +1494,7 @@ class Screen extends Component {
     
     layoutFitting 配合 moduleName 使用，自定义标题栏的布局模式，有 expanded 和 compressed 两个可选值，默认是 compressed。 expanded 是指尽可能占据更多的空间， compressed 是指刚好能包裹自身内容。
     
-    当自定义标题栏时，可能需要将 backButtonHidden 和 backInteractive 设置为 true，以为标题栏提供更多的空间。
+    当自定义标题栏时，可能需要将 backButtonHidden 设置为 true，以为标题栏提供更多的空间。
     
     标题栏和所属页面共享同一个 navigation 对象，你可以在所属页面通过以下方式传递参数给标题栏使用
     
@@ -1541,14 +1545,14 @@ class B extends Component {
             tilte: 'B 的标题', 
         },
         rightBarButtonItem: {      
-            title: '按钮',
+            title: 'B 的按钮',
             action: navigation => {},
         },
     }
 }
 ```
 
-正常情况下，B 的导航栏标题是 *B 的标题*，导航栏右侧按钮的标题是 *按钮*。
+正常情况下，B 的导航栏标题是 *B 的标题*，导航栏右侧按钮的标题是 *B 的按钮*。
 
 从 A 页面跳转到 B 页面时，我们可以改变 B 页面中的静态设置
 
@@ -1559,13 +1563,13 @@ this.props.navigation.push('B', {/*props*/}, {
         title: '来自 A 的标题'
     },
     rightBarButtonItem: {
-        title: '点我'
+        title: '来自 A 的按钮'
     }
 })
 
 ```
 
-那么，如果 B 页面是从 A 跳过来的，那么 B 的导航栏标题就会变成 *来自 A 的标题* ，导航栏右侧按钮的标题就会变成 *点我*。
+那么，如果 B 页面是从 A 跳过来的，那么 B 的导航栏标题就会变成 *来自 A 的标题* ，导航栏右侧按钮的标题就会变成 *来自 A 的按钮*。
 
 
 #### 动态配置
