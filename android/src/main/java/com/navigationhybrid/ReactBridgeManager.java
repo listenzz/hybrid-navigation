@@ -145,6 +145,7 @@ public class ReactBridgeManager {
             @Override
             public void onReactContextInitialized(ReactContext context) {
                 Log.i(TAG, toString() + " react context initialized");
+                rootLayout = null;
             }
         });
         reactInstanceManager.createReactContextInBackground();
