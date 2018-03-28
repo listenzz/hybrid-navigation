@@ -10,7 +10,6 @@ import com.facebook.soloader.SoLoader;
 import com.navigationhybrid.NavigationHybridPackage;
 import com.navigationhybrid.ReactBridgeManager;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,13 +49,6 @@ public class MainApplication extends Application implements ReactApplication{
     @Override
     public void onCreate() {
         super.onCreate();
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
-        LeakCanary.install(this);
-
         SoLoader.init(this, false);
 
         ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
