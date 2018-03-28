@@ -144,7 +144,7 @@ public class ReactBridgeManager {
         reactInstanceManager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
             @Override
             public void onReactContextInitialized(ReactContext context) {
-                Log.i(TAG, toString() + " react context initialized");
+                Log.i(TAG, toString() + " react context initialized:" + Thread.currentThread().getName());
                 rootLayout = null;
             }
         });

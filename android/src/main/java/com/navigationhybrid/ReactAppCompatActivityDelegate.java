@@ -74,10 +74,10 @@ public class ReactAppCompatActivityDelegate {
 
     protected void onCreate(Bundle savedInstanceState) {
         if (getReactNativeHost().getUseDeveloperSupport() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.w(TAG, "check overlay permission");
+            Log.i(TAG, "check overlay permission");
             // Get permission to show redbox in dev builds.
             if (!Settings.canDrawOverlays(getContext())) {
-                Log.w(TAG, "request overlay permission");
+                Log.i(TAG, "request overlay permission");
                 Intent serviceIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
                 FLog.w(ReactConstants.TAG, REDBOX_PERMISSION_MESSAGE);
                 Toast.makeText(getContext(), REDBOX_PERMISSION_MESSAGE, Toast.LENGTH_LONG).show();
@@ -144,9 +144,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public boolean onBackPressed() {
-        Log.i(TAG, getClass().getSimpleName() + "#onBackPressed");
         if (getReactNativeHost().hasInstance()) {
-            Log.i(TAG, getClass().getSimpleName() + " hasInstance");
             getReactNativeHost().getReactInstanceManager().onBackPressed();
             return true;
         }
@@ -174,12 +172,12 @@ public class ReactAppCompatActivityDelegate {
             final int requestCode,
             final String[] permissions,
             final int[] grantResults) {
-        Log.w(TAG, getClass().getSimpleName() + "#onRequestPermissionsResult");
+        Log.i(TAG, getClass().getSimpleName() + "#onRequestPermissionsResult");
         mPermissionsCallback = new Callback() {
             @Override
             public void invoke(Object... args) {
                 if (mPermissionListener != null && mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-                    Log.w(TAG, "call permission listener");
+                    Log.i(TAG, "call permission listener");
                     mPermissionListener = null;
                 }
             }

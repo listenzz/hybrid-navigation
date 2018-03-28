@@ -40,7 +40,7 @@ public class GlobalStyle {
             return;
         }
 
-        Log.i(TAG, "begin custom global style");
+        Log.i(TAG, "custom global style");
 
         // screenBackgroundColor
         String screenBackgroundColor = options.getString("screenBackgroundColor");

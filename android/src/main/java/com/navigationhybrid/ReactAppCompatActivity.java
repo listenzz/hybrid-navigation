@@ -3,7 +3,6 @@ package com.navigationhybrid;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 
@@ -26,8 +25,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     protected static final String TAG = "ReactNative";
 
-    private static final String GLOBAL_STYLE_OPTIONS_KEY = "GlobalStyle";
-
     private final ReactAppCompatActivityDelegate activityDelegate;
 
     private final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
@@ -49,32 +46,16 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             if (!isReactModuleInRegistry()) {
                 createMainComponent();
             }
-        } else {
-            Bundle options = savedInstanceState.getBundle(GLOBAL_STYLE_OPTIONS_KEY);
-            if (options != null) {
-                Garden.createGlobalStyle(options);
-                onCustomStyle(getStyle());
-            }
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        GlobalStyle globalStyle = Garden.getGlobalStyle();
-        if (globalStyle != null) {
-            Bundle style = globalStyle.getOptions();
-            if (style != null) {
-                outState.putBundle(GLOBAL_STYLE_OPTIONS_KEY, style);
-            }
         }
     }
 
     @Override
     protected void onCustomStyle(Style style) {
-        GlobalStyle globalStyle = Garden.getGlobalStyle();
-        if (globalStyle != null) {
-            globalStyle.inflateStyle(this, style);
+        if (!getReactBridgeManager().isReactModuleInRegistry()) {
+            GlobalStyle globalStyle = Garden.getGlobalStyle();
+            if (globalStyle != null) {
+                globalStyle.inflateStyle(this, style);
+            }
         }
     }
 
@@ -87,11 +68,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     public void onReactModuleRegistryCompleted() {
+        onCustomStyle(getStyle());
         createMainComponent();
     }
 
     private void createMainComponent() {
-        onCustomStyle(getStyle());
         onCreateMainComponent();
     }
 
@@ -136,21 +117,18 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        Log.i(TAG, "onKeyUp keyCode:" + keyCode);
         return activityDelegate.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
     @Override
     public void onBackPressed() {
         if (!activityDelegate.onBackPressed()) {
-            Log.i(TAG, getClass().getSimpleName() + "#onBackPressed");
             super.onBackPressed();
         }
     }
 
     @Override
     public void invokeDefaultOnBackPressed() {
-        Log.i(TAG, getClass().getSimpleName() + "#invokeDefaultOnBackPressed");
         super.onBackPressed();
     }
 
