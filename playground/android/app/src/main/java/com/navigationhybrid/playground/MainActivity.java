@@ -30,6 +30,7 @@ public class MainActivity extends ReactAppCompatActivity {
 //        drawerFragment.setContentFragment(reactTabBarFragment);
 //        AwesomeFragment menuFragment = getReactBridgeManager().createFragment("Menu");
 //        drawerFragment.setMenuFragment(menuFragment);
+//        drawerFragment.setMaxDrawerWidth(280);
 //
 //        setRootFragment(drawerFragment);
 //

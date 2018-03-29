@@ -148,12 +148,16 @@ RCT_EXPORT_METHOD(isRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)re
 
 RCT_EXPORT_METHOD(replace:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
-    if (vc.navigationController) {
+    UINavigationController *nav = vc.navigationController;
+    if (nav) {
         HBDViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
-        NSMutableArray *children = [vc.navigationController.childViewControllers mutableCopy];
-        [children removeObjectAtIndex:children.count - 1];
-        [children addObject:target];
-        [vc.navigationController setViewControllers:[children copy] animated:NO];
+        if (nav.childViewControllers.count > 1) {
+            [nav popViewControllerAnimated:NO];
+            target.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
+            [nav pushViewController:target animated:NO];
+        } else {
+            [nav setViewControllers:@[ target ] animated:NO];
+        }
     }
 }
 

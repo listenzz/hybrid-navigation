@@ -104,7 +104,13 @@ export default class Navigation extends Component {
   }
 
   replace() {
-    this.props.navigation.replace('Navigation');
+    if (this.props.popToId !== undefined) {
+      this.props.navigation.replace('Navigation', {
+        popToId: this.props.popToId,
+      });
+    } else {
+      this.props.navigation.replace('Navigation');
+    }
   }
 
   replaceToRoot() {
