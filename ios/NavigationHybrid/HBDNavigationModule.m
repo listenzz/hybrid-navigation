@@ -151,6 +151,10 @@ RCT_EXPORT_METHOD(replace:(NSString *)sceneId moduleName:(NSString *)moduleName 
     UINavigationController *nav = vc.navigationController;
     if (nav) {
         HBDViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.25;
+        transition.type = kCATransitionFade;
+        [nav.view.layer addAnimation:transition forKey:kCATransition];
         if (nav.childViewControllers.count > 1) {
             [nav popViewControllerAnimated:NO];
             target.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
@@ -163,6 +167,10 @@ RCT_EXPORT_METHOD(replace:(NSString *)sceneId moduleName:(NSString *)moduleName 
 
 RCT_EXPORT_METHOD(replaceToRoot:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.25;
+    transition.type = kCATransitionFade;
+    [vc.navigationController.view.layer addAnimation:transition forKey:kCATransition];
     if (vc.navigationController) {
         HBDViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
         [vc.navigationController setViewControllers:@[target] animated:NO];
