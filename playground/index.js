@@ -36,6 +36,7 @@ Garden.setStyle({
 
   // topBarTintColor: '#0000ff',
   // titleTextColor: '#00ff00',
+  titleAlignment: 'center',
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
   shadowImage: {
     color: '#DDDDDD',

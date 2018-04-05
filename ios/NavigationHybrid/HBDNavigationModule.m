@@ -69,11 +69,17 @@ RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout) {
 
 RCT_EXPORT_METHOD(push:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options animated:(BOOL)animated) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
-    UINavigationController *nav;
-    if (vc.drawerController) {
-        nav = vc.drawerController.navigationController;
-    } else  {
-        nav = vc.navigationController;
+    UINavigationController *nav = vc.navigationController;;
+    if (!nav && vc.drawerController) {
+        HBDDrawerController *drawer = vc.drawerController;
+        if ([drawer.contentController isKindOfClass:[UITabBarController class]]) {
+            UITabBarController *tabBar = (UITabBarController *)drawer.contentController;
+            if ([tabBar.selectedViewController isKindOfClass:[UINavigationController class]]) {
+                nav = tabBar.selectedViewController;
+            }
+        } else if ([drawer.contentController isKindOfClass:[UINavigationController class]]){
+            nav = (UINavigationController *)drawer.contentController;
+        }
     }
     
     if (nav) {

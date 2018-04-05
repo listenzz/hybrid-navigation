@@ -85,7 +85,7 @@ export default class Garden {
     const buttonItem = copy(item);
 
     if (typeof buttonItem.action === 'function') {
-      buttonItem.action = 'function_left_bar_button';
+      buttonItem.action = 'left_bar_button_item_click';
     }
 
     GardenModule.setLeftBarButtonItem(this.sceneId, buttonItem);
@@ -113,7 +113,7 @@ export default class Garden {
 
     const buttonItem = copy(item);
     if (typeof buttonItem.action === 'function') {
-      buttonItem.action = 'function_right_bar_button';
+      buttonItem.action = 'right_bar_button_item_click';
     }
 
     GardenModule.setRightBarButtonItem(this.sceneId, buttonItem);

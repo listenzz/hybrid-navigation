@@ -212,7 +212,7 @@ public class ReactBridgeManager {
             }
             if (fragments.size() > 0) {
                 ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
-                tabBarFragment.setFragments(fragments);
+                tabBarFragment.setChildFragments(fragments);
                 return tabBarFragment;
             }
         }

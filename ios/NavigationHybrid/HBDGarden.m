@@ -44,6 +44,28 @@ static GlobalStyle *globalStyle;
     }
 }
 
+- (void)setLeftBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller {
+    if (items) {
+        controller.navigationItem.leftBarButtonItems = [self createBarButtonItems:items forController:controller];
+    }
+}
+
+- (void)setRightBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller {
+    if (items) {
+        controller.navigationItem.rightBarButtonItems = [self createBarButtonItems:items forController:controller];
+    }
+}
+
+- (NSArray *)createBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller {
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (NSUInteger i =0; i < items.count; i++) {
+        NSDictionary *item = [items objectAtIndex:i];
+        HBDBarButtonItem *barButtonItem = [self createBarButtonItem:item forController:controller];
+        [array addObject:barButtonItem];
+    }
+    return array;
+}
+
 - (HBDBarButtonItem *)createBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     HBDBarButtonItem *barButtonItem;
     

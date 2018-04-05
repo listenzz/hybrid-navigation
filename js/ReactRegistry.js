@@ -24,7 +24,15 @@ function copy(obj = {}) {
   for (const key of Object.keys(obj)) {
     const value = obj[key];
     if (value && typeof value === 'object') {
-      target[key] = copy(value);
+      if (value.constructor === Array) {
+        let array = [];
+        target[key] = array;
+        for (let i = 0; i < value.length; i++) {
+          array.push(copy(value[i]));
+        }
+      } else {
+        target[key] = copy(value);
+      }
     } else {
       target[key] = value;
     }
@@ -64,10 +72,17 @@ export default {
       listenBarButtonItemClickEvent() {
         let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', event => {
           if (this.props.sceneId === event.sceneId && RealComponent.navigationItem) {
-            if (event.action === 'function_right_bar_button') {
+            // console.info(JSON.stringify(event));
+            if (event.action === 'right_bar_button_item_click') {
               this.options.rightBarButtonItem.action(this.navigation);
-            } else if (event.action === 'function_left_bar_button') {
+            } else if (event.action === 'left_bar_button_item_click') {
               this.options.leftBarButtonItem.action(this.navigation);
+            } else if (event.action.startsWith('right_bar_button_item_click_')) {
+              let index = event.action.replace('right_bar_button_item_click_', '');
+              this.options.rightBarButtonItems[index].action(this.navigation);
+            } else if (event.action.startsWith('left_bar_button_item_click_')) {
+              let index = event.action.replace('left_bar_button_item_click_', '');
+              this.options.leftBarButtonItems[index].action(this.navigation);
             } else if (this.refs.real.onBarButtonItemClick) {
               this.refs.real.onBarButtonItemClick(event.action); // 向后兼容
             }
@@ -144,14 +159,34 @@ export default {
     // build static options
     let options = copy(RealComponent.navigationItem);
     if (options.leftBarButtonItem && typeof options.leftBarButtonItem.action === 'function') {
-      options.leftBarButtonItem.action = 'function_left_bar_button';
+      options.leftBarButtonItem.action = 'left_bar_button_item_click';
     }
 
     if (options.rightBarButtonItem && typeof options.rightBarButtonItem.action === 'function') {
-      options.rightBarButtonItem.action = 'function_right_bar_button';
+      options.rightBarButtonItem.action = 'right_bar_button_item_click';
     }
 
-    // console.debug('register component:' + appKey + ' options:' + JSON.stringify(options));
+    if (options.leftBarButtonItems) {
+      let items = options.leftBarButtonItems;
+      for (let i = 0; i < items.length; i++) {
+        let item = items[i];
+        if (typeof item.action === 'function') {
+          item.action = 'left_bar_button_item_click_' + i;
+        }
+      }
+    }
+
+    if (options.rightBarButtonItems) {
+      let items = options.rightBarButtonItems;
+      for (let i = 0; i < items.length; i++) {
+        let item = items[i];
+        if (typeof item.action === 'function') {
+          item.action = 'right_bar_button_item_click_' + i;
+        }
+      }
+    }
+
+    // console.info('register component:' + appKey + ' options:' + JSON.stringify(options));
 
     AppRegistry.registerComponent(appKey, () => RootComponent);
     NavigationModule.registerReactComponent(appKey, options);

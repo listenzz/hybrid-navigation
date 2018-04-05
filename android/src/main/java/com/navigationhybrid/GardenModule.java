@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.BarStyle;
 import me.listenzz.navigation.BottomBar;
 import me.listenzz.navigation.DrawableUtils;
@@ -252,6 +253,12 @@ public class GardenModule extends ReactContextBaseJavaModule{
                             }
                             Drawable inactiveDrawable = drawableFromReadableMap(bottomBar.getContext(), inactiveIcon);
                             bottomBar.setTabIcon(index, drawable, inactiveDrawable);
+
+                            AwesomeFragment f = tabBarFragment.getChildFragments().get(index);
+                            f.getTabBarItem().iconUri = icon.getString("uri");
+                            if (inactiveIcon!= null && inactiveIcon.hasKey("uri")) {
+                                f.getTabBarItem().inactiveIconUri = inactiveIcon.getString("uri");
+                            }
                         }
                     }
                 }

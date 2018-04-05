@@ -125,6 +125,8 @@ public class GlobalStyle {
         String titleAlignment = options.getString("titleAlignment");
         if (titleAlignment != null) {
             style.setTitleGravity(titleAlignment.equals("center") ? Gravity.CENTER : Gravity.START);
+        } else {
+            style.setTitleGravity(Gravity.START);
         }
 
         // barButtonItemTintColor

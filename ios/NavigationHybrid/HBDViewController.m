@@ -115,6 +115,12 @@
     
     NSDictionary *leftBarButtonItem = self.options[@"leftBarButtonItem"];
     [garden setLeftBarButtonItem:leftBarButtonItem forController:self];
+    
+    NSArray *rightBarButtonItems = self.options[@"rightBarButtonItems"];
+    [garden setRightBarButtonItems:rightBarButtonItems forController:self];
+    
+    NSArray *leftBarButtonItems = self.options[@"leftBarButtonItems"];
+    [garden setLeftBarButtonItems:leftBarButtonItems forController:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

@@ -126,6 +126,17 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     NavigationFragment navigationFragment = fragment.getNavigationFragment();
+
+                    if (navigationFragment == null && fragment.getDrawerFragment() != null) {
+                        DrawerFragment drawerFragment = fragment.getDrawerFragment();
+                        TabBarFragment tabBarFragment = drawerFragment.getContentFragment().getTabBarFragment();
+                        if (tabBarFragment != null) {
+                            navigationFragment = tabBarFragment.getSelectedFragment().getNavigationFragment();
+                        } else {
+                            navigationFragment = drawerFragment.getContentFragment().getNavigationFragment();
+                        }
+                    }
+
                     if (navigationFragment != null) {
                         AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
                         navigationFragment.pushFragment(target);

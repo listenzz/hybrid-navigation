@@ -22,6 +22,10 @@
 
 - (void)setRightBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller;
 
+- (void)setLeftBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller;
+
+- (void)setRightBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller;
+
 - (void)setTitleItem:(NSDictionary *)item forController:(HBDViewController *)controller;
 
 - (void)setTopBarStyle:(UIBarStyle)barStyle forController:(HBDViewController *)controller;

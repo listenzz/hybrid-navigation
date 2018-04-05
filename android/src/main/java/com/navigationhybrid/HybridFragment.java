@@ -3,10 +3,10 @@ package com.navigationhybrid;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import me.listenzz.navigation.AwesomeFragment;
+import me.listenzz.navigation.AwesomeToolbar;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.Style;
 
@@ -55,11 +55,11 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     @Override
-    protected Toolbar onCreateToolbar(View parent) {
+    protected AwesomeToolbar onCreateAwesomeToolbar(View parent) {
         if (garden.toolbarHidden) {
             return null;
         }
-        return super.onCreateToolbar(parent);
+        return super.onCreateAwesomeToolbar(parent);
     }
 
     @NonNull

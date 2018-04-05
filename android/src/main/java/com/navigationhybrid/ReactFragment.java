@@ -135,7 +135,7 @@ public class ReactFragment extends HybridFragment {
                     } else {
                         layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
                     }
-                    getToolbar().addView(reactTitleView, layoutParams);
+                    getAwesomeToolbar().addView(reactTitleView, layoutParams);
                     reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
                 }
             }

@@ -3,20 +3,20 @@ package com.navigationhybrid;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.facebook.react.bridge.Arguments;
 
+import java.util.ArrayList;
+
 import me.listenzz.navigation.AwesomeToolbar;
 import me.listenzz.navigation.BarStyle;
-import me.listenzz.navigation.DrawableUtils;
 import me.listenzz.navigation.Style;
+import me.listenzz.navigation.ToolbarButtonItem;
 
 import static com.navigationhybrid.Constants.ARG_SCENE_ID;
 import static com.navigationhybrid.Constants.ON_BAR_BUTTON_ITEM_CLICK_EVENT;
@@ -100,14 +100,14 @@ public class Garden {
             return;
         }
 
-        Toolbar toolbar = fragment.getToolbar();
+        AwesomeToolbar toolbar = fragment.getAwesomeToolbar();
         if (toolbar == null) {
             return;
         }
 
         double topBarAlpha = options.getDouble("topBarAlpha", -1);
         if (topBarAlpha != -1) {
-            setToolbarAlpha((float)topBarAlpha);
+            setToolbarAlpha((float) topBarAlpha);
         }
 
         boolean topBarShadowHidden = options.getBoolean("topBarShadowHidden", false);
@@ -119,12 +119,18 @@ public class Garden {
         }
 
         Bundle rightBarButtonItem = options.getBundle("rightBarButtonItem");
-        if (rightBarButtonItem != null) {
+        ArrayList<Bundle> rightBarButtonItems = options.getParcelableArrayList("rightBarButtonItems");
+        if (rightBarButtonItems != null) {
+            setRightBarButtonItems(rightBarButtonItems);
+        } else if (rightBarButtonItem != null) {
             setRightBarButtonItem(rightBarButtonItem);
         }
 
         Bundle leftBarButtonItem = options.getBundle("leftBarButtonItem");
-        if (leftBarButtonItem != null) {
+        ArrayList<Bundle> leftBarButtonItems = options.getParcelableArrayList("leftBarButtonItems");
+        if (leftBarButtonItems != null) {
+            setLeftBarButtonItems(leftBarButtonItems);
+        } else if (leftBarButtonItem != null) {
             setLeftBarButtonItem(leftBarButtonItem);
         }
     }
@@ -137,54 +143,43 @@ public class Garden {
         }
     }
 
-    void setLeftBarButtonItem(@NonNull Bundle item) {
-        // Log.d(TAG, "leftBarButtonItem: " + item.toString());
-        Context context = fragment.getContext();
-        if (context == null) return;
+    void setLeftBarButtonItems(ArrayList<Bundle> items) {
+        fragment.setLeftBarButtonItems(barButtonItemsFromBundle(items));
+    }
 
-        String title = item.getString("title");
-        boolean enabled = item.getBoolean("enabled", true);
-        Bundle icon = item.getBundle("icon");
+    void setRightBarButtonItems(ArrayList<Bundle> items) {
+        fragment.setRightBarButtonItems(barButtonItemsFromBundle(items));
+    }
 
-        Drawable drawable = null;
-        if (icon != null) {
-            String uri = icon.getString("uri");
-            if (uri != null) {
-                drawable = DrawableUtils.fromUri(context, uri);
-            }
+    private ToolbarButtonItem[] barButtonItemsFromBundle(ArrayList<Bundle> items) {
+        ArrayList<ToolbarButtonItem> buttonItems = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            Bundle item = items.get(i);
+            buttonItems.add(barButtonItemFromBundle(item));
         }
-        final String action = item.getString("action");
-        fragment.setToolbarLeftButton(drawable, title, enabled, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-                Bundle bundle = new Bundle();
-                bundle.putString("action", action);
-                bundle.putString(ARG_SCENE_ID, fragment.getSceneId());
-                bridgeManager.sendEvent(ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
-            }
-        });
+        return buttonItems.toArray(new ToolbarButtonItem[buttonItems.size()]);
+    }
+
+    void setLeftBarButtonItem(@NonNull Bundle item) {
+        fragment.setLeftBarButtonItem(barButtonItemFromBundle(item));
     }
 
     void setRightBarButtonItem(@NonNull Bundle item) {
-        // Log.d(TAG, "rightBarButtonItem: " + item.toString());
-        Context context = fragment.getContext();
-        if (context == null) return;
+        fragment.setRightBarButtonItem(barButtonItemFromBundle(item));
+    }
 
+    private ToolbarButtonItem barButtonItemFromBundle(@NonNull Bundle item) {
+        Context context = fragment.getContext();
+        if (context == null) return null;
         String title = item.getString("title");
         boolean enabled = item.getBoolean("enabled", true);
         Bundle icon = item.getBundle("icon");
-
-        Drawable drawable = null;
+        String uri = null;
         if (icon != null) {
-            String uri = icon.getString("uri");
-            if (uri != null) {
-                drawable = DrawableUtils.fromUri(context, uri);
-            }
+            uri = icon.getString("uri");
         }
         final String action = item.getString("action");
-
-        fragment.setToolbarRightButton(drawable, title, enabled, new View.OnClickListener() {
+        return new ToolbarButtonItem(uri, title, enabled, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
@@ -194,7 +189,6 @@ public class Garden {
                 bridgeManager.sendEvent(ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
             }
         });
-
     }
 
     void setStatusBarColor(int color) {
@@ -208,8 +202,8 @@ public class Garden {
     }
 
     void setToolbarAlpha(float alpha) {
-        Toolbar toolbar = fragment.getToolbar();
-        if (toolbar != null && toolbar instanceof AwesomeToolbar) {
+        AwesomeToolbar toolbar = fragment.getAwesomeToolbar();
+        if (toolbar != null) {
             toolbar.setAlpha(alpha);
         }
     }
@@ -220,16 +214,15 @@ public class Garden {
     }
 
     void setToolbarShadowHidden(boolean hidden) {
-        Toolbar toolbar = fragment.getToolbar();
-        if (toolbar != null && toolbar instanceof AwesomeToolbar) {
-            AwesomeToolbar awesomeToolbar = (AwesomeToolbar) toolbar;
+        AwesomeToolbar toolbar = fragment.getAwesomeToolbar();
+        if (toolbar != null) {
             if (hidden) {
-                awesomeToolbar.hideShadow();
+                toolbar.hideShadow();
             } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    awesomeToolbar.setElevation(style.getElevation());
+                    toolbar.setElevation(style.getElevation());
                 } else {
-                    awesomeToolbar.setShadow(style.getShadow());
+                    toolbar.setShadow(style.getShadow());
                 }
             }
         }

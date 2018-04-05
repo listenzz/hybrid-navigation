@@ -1448,6 +1448,24 @@ class Screen extends Component {
             // 可配置项同 leftBarButtonItem
         },
         
+        leftBarButtonItems: [
+            {
+                // 可配置项同 leftBarButtonItem
+            },
+            {
+                // 可配置项同 leftBarButtonItem
+            },
+        ],
+        
+        rightBarButtonItems: [
+            {
+                // 可配置项同 leftBarButtonItem
+            },
+            {
+                // 可配置项同 leftBarButtonItem
+            },
+        ],
+        
         tabItem: {               // 底部 TabBarItem 可配置项
             title: 'Style',
             icon: { uri: fontUri('FontAwesome', 'leaf', 20) },
@@ -1507,17 +1525,25 @@ class Screen extends Component {
 
     可选，设置导航栏左侧按钮。
 	
-	title 是按钮标题，icon 是按钮图标，两者设置其一则可，如果同时设置，则只会显示图标。
+    title 是按钮标题，icon 是按钮图标，两者设置其一则可，如果同时设置，则只会显示图标。
 	
-	insets 仅对 iOS 生效，用于调整按钮 icon 或 title 的位置。
+    insets 仅对 iOS 生效，用于调整按钮 icon 或 title 的位置。
 	
-	action 是个函数，它接收 navigation 作为参数，当按钮被点击时调用。
+    action 是个函数，它接收 navigation 作为参数，当按钮被点击时调用。
 	
-	enabled 是个布尔值，可选，用来标识按钮是否可以点击，默认是 true。
+    enabled 是个布尔值，可选，用来标识按钮是否可以点击，默认是 true。
 
 - rightBarButtonItem
 
-	可选，导航栏右侧按钮，可配置项同 leftBarButtonItem。
+    可选，导航栏右侧按钮，可配置项同 leftBarButtonItem。
+	
+- leftBarButtonItems
+
+    可选，导航栏左侧按钮，配置项是个数组，当有多个左侧按钮时使用。一旦设置此值，leftBarButtonItem 将会失效
+    
+- rightBarButtonItems
+
+    可选，导航栏右侧按钮，配置项是个数组，当有多个右侧按钮时使用。一旦设置此值，rightBarButtonItem 将会失效
 	
 - tabItem 
 

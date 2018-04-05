@@ -17,7 +17,7 @@ export default class Options extends Component {
     },
 
     leftBarButtonItem: {
-      // icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
+      icon: { uri: fontUri('FontAwesome', 'navicon', 24) },
       title: 'Menu',
       action: navigation => {
         navigation.toggleMenu();
