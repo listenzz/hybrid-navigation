@@ -10,6 +10,8 @@
 #import "HBDViewController.h"
 
 extern NSString * const ReactModuleRegistryDidCompletedNotification;
+extern const NSInteger ResultOK;
+extern const NSInteger ResultCancel;
 
 @class HBDReactBridgeManager;
 

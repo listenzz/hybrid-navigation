@@ -29,8 +29,8 @@ RCT_EXPORT_MODULE(NavigationHybrid)
 }
 
 - (NSDictionary *)constantsToExport {
-    return @{ @"RESULT_OK": @(-1),
-              @"RESULT_CANCEL": @(0)
+    return @{ @"RESULT_OK": @(ResultOK),
+              @"RESULT_CANCEL": @(ResultCancel)
               };
 }
 

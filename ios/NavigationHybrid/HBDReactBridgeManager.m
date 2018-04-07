@@ -15,6 +15,8 @@
 #import "HBDDrawerController.h"
 
 NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
+const NSInteger ResultOK = -1;
+const NSInteger ResultCancel = 0;
 
 @interface HBDReactBridgeManager() <RCTBridgeDelegate>
 
