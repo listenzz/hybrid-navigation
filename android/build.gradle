@@ -9,7 +9,7 @@ def computeVersionName() {
 
 buildscript {
     repositories {
-        maven { url 'https://maven.google.com' }
+        google()
         jcenter()
     }
 
@@ -33,17 +33,17 @@ android {
 }
 
 repositories {
-    maven { url 'https://maven.google.com' }
+    google()
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7:27.1.0"
-    implementation "com.android.support:support-v4:27.1.0"
-    implementation "com.android.support:design:27.1.0"
+    implementation "com.android.support:appcompat-v7:27.1.1"
+    implementation "com.android.support:support-v4:27.1.1"
+    implementation "com.android.support:design:27.1.1"
     implementation 'com.facebook.react:react-native:+'
 
-    // api project(':navigation')
-    api 'me.listenzz:navigation:0.1.36'
+    //api project(':navigation')
+    api 'me.listenzz:navigation:1.0.0'
     api 'com.ashokvarma.android:bottom-navigation-bar:2.0.4'
 
 }
