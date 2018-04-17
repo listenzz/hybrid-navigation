@@ -24,9 +24,10 @@ public class MainActivity extends ReactAppCompatActivity {
 //        customNavigation.setRootFragment(custom);
 //
 //        ReactTabBarFragment reactTabBarFragment = new ReactTabBarFragment();
-//        reactTabBarFragment.setFragments(reactNavigation, customNavigation);
+//        reactTabBarFragment.setChildFragments(reactNavigation, customNavigation);
 //
 //        ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
+//
 //        drawerFragment.setContentFragment(reactTabBarFragment);
 //        AwesomeFragment menuFragment = getReactBridgeManager().createFragment("Menu");
 //        drawerFragment.setMenuFragment(menuFragment);
