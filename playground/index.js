@@ -56,16 +56,11 @@ Garden.setStyle({
 
 function componentWrapper(componentProvider) {
   const InnerComponent = componentProvider();
-  class Wrapper extends Component {
-    render() {
-      return (
-        <Provider store={store}>
-          <InnerComponent {...this.props} />
-        </Provider>
-      );
-    }
-  }
-  return Wrapper;
+  return props => (
+    <Provider store={store}>
+      <InnerComponent {...props} />
+    </Provider>
+  );
 }
 
 ReactRegistry.startRegisterComponent(componentWrapper);
