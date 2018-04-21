@@ -120,8 +120,8 @@ static GlobalStyle *globalStyle;
 }
 
 - (void)setTopBarStyle:(UIBarStyle)barStyle forController:(HBDViewController *)controller {
-    controller.barStyle = barStyle;
-    [controller.navigationController.navigationBar setBarStyle:barStyle];
+    controller.hbd_barStyle = barStyle;
+    [controller hbd_setNeedsUpdateNavigationBar];
 }
 
 - (void)setTopBarAlpha:(float)alpha forController:(HBDViewController *)controller {
