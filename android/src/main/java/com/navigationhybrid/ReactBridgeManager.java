@@ -152,9 +152,7 @@ public class ReactBridgeManager {
     }
 
     public void setRootLayout(ReadableMap root) {
-        if (!hasRootLayout()) {
-            this.rootLayout = root;
-        }
+        this.rootLayout = root;
     }
 
     public ReadableMap getRootLayout() {
