@@ -158,6 +158,9 @@ drawer 对象也是一个数组，长度固定为 2 ，第一个对象是抽屉�
 
 可以先通过 `Navigation.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigation.setRoot` 决定要进入哪个页面。
 
+> Navigation.setRoot 还接受第二个参数，是个 boolean，用来决定 Android 按返回键退出 app 后，再次打开时，是否恢复到首次将该参数设置为 true 时的那个 layout。通常用来决定按返回键退出 app 后重新打开时，要不要走闪屏逻辑。请参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目对 Navigation.setRoot 的使用
+
+
 #### 支持 Redux
 
 想要为每个页面都注入相同的属性，可以利用 `ReactRegistry.startRegisterComponent()` 这个方法，它接受一个函数作为参数，该函数的参数是一个返回我们将要构建的组件的函数，返回值是一个新的组件。

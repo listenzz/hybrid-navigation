@@ -3,19 +3,16 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item>
-        <shape >
+        <shape>
             <solid android:color="@color/colorAccent" />
         </shape>
     </item>
 
     <item android:gravity="center">
-        <shape android:shape="oval">
+        <shape android:shape="ring" android:innerRadius="0dp" android:thickness="120dp">
             <solid android:color="@color/colorPrimary"/>
-            <size android:width="240dp"/>
-            <size android:height="240dp"/>
         </shape>
     </item>
-
 
 </layer-list>
 

@@ -101,17 +101,17 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setRoot(final ReadableMap layout) {
+    public void setRoot(final ReadableMap layout, final boolean sticky) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                reactBridgeManager.setRootLayout(layout);
+                reactBridgeManager.setRootLayout(layout, sticky);
                 Activity activity = getCurrentActivity();
                 if (activity instanceof ReactAppCompatActivity) {
                     ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                    AwesomeFragment awesomeFragment = reactBridgeManager.createFragment(layout);
-                    if (awesomeFragment != null) {
-                        reactAppCompatActivity.setRootFragment(awesomeFragment);
+                    AwesomeFragment fragment = reactBridgeManager.createFragment(layout);
+                    if (fragment != null) {
+                        reactAppCompatActivity.setRootFragment(fragment);
                     }
                 }
             }

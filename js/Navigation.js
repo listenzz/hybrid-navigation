@@ -30,9 +30,9 @@ export default class Navigattion {
    * }
    * ```
    */
-  static setRoot(layout) {
+  static setRoot(layout, sticky = false) {
     // console.info('root:' + JSON.stringify(layout));
-    NavigationModule.setRoot(layout);
+    NavigationModule.setRoot(layout, sticky);
   }
 
   constructor(sceneId) {

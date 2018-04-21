@@ -61,6 +61,7 @@ public class ReactBridgeManager {
             public void onReactContextInitialized(ReactContext context) {
                 Log.i(TAG, toString() + " react context initialized:" + Thread.currentThread().getName());
                 rootLayout = null;
+                sticky = false;
             }
         });
         reactInstanceManager.createReactContextInBackground();
@@ -151,8 +152,13 @@ public class ReactBridgeManager {
         sendEvent(eventName, Arguments.createMap());
     }
 
-    public void setRootLayout(ReadableMap root) {
-        this.rootLayout = root;
+    private boolean sticky;
+
+    public void setRootLayout(ReadableMap root, boolean sticky) {
+        if (!this.sticky) {
+            this.sticky = sticky;
+            this.rootLayout = root;
+        }
     }
 
     public ReadableMap getRootLayout() {
