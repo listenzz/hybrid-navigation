@@ -27,8 +27,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     private final ReactAppCompatActivityDelegate activityDelegate;
 
-    private final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-
     protected ReactAppCompatActivity() {
         activityDelegate = new ReactAppCompatActivityDelegate(this, ReactBridgeManager.instance);
     }
@@ -40,7 +38,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         activityDelegate.onCreate(savedInstanceState);
 
-        bridgeManager.addReactModuleRegistryListener(this);
+        getReactBridgeManager().addReactModuleRegistryListener(this);
 
         if (savedInstanceState == null) {
             if (!isReactModuleInRegistry()) {
@@ -51,7 +49,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     protected void onCustomStyle(Style style) {
-        if (!getReactBridgeManager().isReactModuleInRegistry()) {
+        if (!isReactModuleInRegistry()) {
             GlobalStyle globalStyle = Garden.getGlobalStyle();
             if (globalStyle != null) {
                 globalStyle.inflateStyle(this, style);
@@ -61,9 +59,9 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         activityDelegate.onDestroy();
-        bridgeManager.removeReactModuleRegistryListener(this);
+        getReactBridgeManager().removeReactModuleRegistryListener(this);
+        super.onDestroy();
     }
 
     @Override
@@ -77,6 +75,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     }
 
     protected void onCreateMainComponent() {
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
         if (getMainComponentName() != null) {
             AwesomeFragment awesomeFragment = bridgeManager.createFragment(getMainComponentName());
             ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
@@ -92,10 +91,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     protected String getMainComponentName() {
         return null;
-    }
-
-    public boolean isReactModuleInRegistry() {
-        return bridgeManager.isReactModuleInRegistry();
     }
 
     @Override
@@ -140,10 +135,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     }
 
     @Override
-    public void requestPermissions(
-            String[] permissions,
-            int requestCode,
-            PermissionListener listener) {
+    public void requestPermissions(String[] permissions, int requestCode, PermissionListener listener) {
         activityDelegate.requestPermissions(permissions, requestCode, listener);
     }
 
@@ -162,8 +154,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @NonNull
     public ReactBridgeManager getReactBridgeManager() {
-        return bridgeManager;
+        return activityDelegate.getReactBridgeManager();
     }
 
+    public boolean isReactModuleInRegistry() {
+        return getReactBridgeManager().isReactModuleInRegistry();
+    }
 
 }

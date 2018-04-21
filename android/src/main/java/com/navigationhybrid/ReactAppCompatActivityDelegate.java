@@ -72,6 +72,10 @@ public class ReactAppCompatActivityDelegate {
         return bridgeManager.getReactInstanceManager();
     }
 
+    protected ReactBridgeManager getReactBridgeManager() {
+        return bridgeManager;
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         if (getReactNativeHost().getUseDeveloperSupport() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Log.i(TAG, "check overlay permission");
@@ -160,18 +164,12 @@ public class ReactAppCompatActivityDelegate {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    public void requestPermissions(
-            String[] permissions,
-            int requestCode,
-            PermissionListener listener) {
+    public void requestPermissions(String[] permissions, int requestCode, PermissionListener listener) {
         mPermissionListener = listener;
         getPlainActivity().requestPermissions(permissions, requestCode);
     }
 
-    public void onRequestPermissionsResult(
-            final int requestCode,
-            final String[] permissions,
-            final int[] grantResults) {
+    public void onRequestPermissionsResult(final int requestCode, final String[] permissions, final int[] grantResults) {
         Log.i(TAG, getClass().getSimpleName() + "#onRequestPermissionsResult");
         mPermissionsCallback = new Callback() {
             @Override

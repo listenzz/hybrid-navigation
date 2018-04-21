@@ -38,24 +38,48 @@ public class ReactBridgeManager {
     }
 
     private static final String TAG = "ReactNative";
-
     public static ReactBridgeManager instance = new ReactBridgeManager();
+
+    private ReactBridgeManager() {}
 
     private HashMap<String, Class<? extends HybridFragment>> nativeModules = new HashMap<>();
     private HashMap<String, ReadableMap> reactModules = new HashMap<>();
     private CopyOnWriteArrayList<ReactModuleRegistryListener> reactModuleRegistryListeners = new CopyOnWriteArrayList<>();
 
-    private boolean isReactModuleInRegistry = true;
-
     private ReadableMap rootLayout;
-
-    public ReactBridgeManager() {
-
-    }
+    private ReactNativeHost reactNativeHost;
 
     public void install(@NonNull ReactNativeHost reactNativeHost) {
         this.reactNativeHost = reactNativeHost;
         this.setup();
+    }
+
+    private void setup() {
+        final ReactInstanceManager reactInstanceManager = getReactInstanceManager();
+        reactInstanceManager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
+            @Override
+            public void onReactContextInitialized(ReactContext context) {
+                Log.i(TAG, toString() + " react context initialized:" + Thread.currentThread().getName());
+                rootLayout = null;
+            }
+        });
+        reactInstanceManager.createReactContextInBackground();
+    }
+
+    ReactNativeHost getReactNativeHost() {
+        checkReactNativeHost();
+        return reactNativeHost;
+    }
+
+    public ReactInstanceManager getReactInstanceManager() {
+        checkReactNativeHost();
+        return reactNativeHost.getReactInstanceManager();
+    }
+
+    private void checkReactNativeHost() {
+        if (reactNativeHost == null) {
+            throw new IllegalStateException("must call ReactBridgeManager#install first");
+        }
     }
 
     public void registerNativeModule(String moduleName, Class<? extends HybridFragment> clazz) {
@@ -73,6 +97,16 @@ public class ReactBridgeManager {
     public void registerReactModule(String moduleName, ReadableMap options) {
         reactModules.put(moduleName, options);
     }
+
+    public boolean hasReactModule(String moduleName) {
+        return reactModules.containsKey(moduleName);
+    }
+
+    public ReadableMap reactModuleOptionsForKey(String moduleName) {
+        return reactModules.get(moduleName);
+    }
+
+    private boolean isReactModuleInRegistry = true;
 
     public boolean isReactModuleInRegistry() {
         return isReactModuleInRegistry;
@@ -107,14 +141,6 @@ public class ReactBridgeManager {
         reactModuleRegistryListeners.remove(listener);
     }
 
-    public boolean hasReactModule(String moduleName) {
-        return reactModules.containsKey(moduleName);
-    }
-
-    public ReadableMap reactModuleOptionsForKey(String moduleName) {
-        return reactModules.get(moduleName);
-    }
-
     public void sendEvent(String eventName, WritableMap data) {
         DeviceEventManagerModule.RCTDeviceEventEmitter emitter = getReactInstanceManager().getCurrentReactContext()
                 .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
@@ -123,38 +149,6 @@ public class ReactBridgeManager {
 
     public void sendEvent(String eventName) {
         sendEvent(eventName, Arguments.createMap());
-    }
-
-
-    ReactNativeHost getReactNativeHost() {
-        checkReactNativeHost();
-        return reactNativeHost;
-    }
-
-    public ReactInstanceManager getReactInstanceManager() {
-        checkReactNativeHost();
-        return reactNativeHost.getReactInstanceManager();
-    }
-
-    private ReactNativeHost reactNativeHost;
-
-
-    private void setup() {
-        final ReactInstanceManager reactInstanceManager = getReactInstanceManager();
-        reactInstanceManager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
-            @Override
-            public void onReactContextInitialized(ReactContext context) {
-                Log.i(TAG, toString() + " react context initialized:" + Thread.currentThread().getName());
-                rootLayout = null;
-            }
-        });
-        reactInstanceManager.createReactContextInBackground();
-    }
-
-    private void checkReactNativeHost() {
-        if (reactNativeHost == null) {
-            throw new IllegalStateException("must call ReactBridgeManager#install first");
-        }
     }
 
     public void setRootLayout(ReadableMap root) {

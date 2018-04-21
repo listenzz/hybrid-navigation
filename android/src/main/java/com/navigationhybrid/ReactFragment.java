@@ -117,27 +117,25 @@ public class ReactFragment extends HybridFragment {
     }
 
     private void initTitleViewIfNeeded() {
-        if (!getReactBridgeManager().isReactModuleInRegistry()) {
-            if (reactTitleView != null || getContext() == null) {
-                return;
-            }
+        if (getReactBridgeManager().isReactModuleInRegistry() || reactTitleView != null || getContext() == null) {
+            return;
+        }
 
-            Bundle titleItem = getOptions().getBundle("titleItem");
-            if (titleItem != null) {
-                String moduleName = titleItem.getString("moduleName");
-                if (moduleName != null) {
-                    String fitting = titleItem.getString("layoutFitting");
-                    boolean expanded = "expanded".equals(fitting);
-                    reactTitleView = new ReactRootView(getContext());
-                    Toolbar.LayoutParams layoutParams;
-                    if (expanded) {
-                        layoutParams = new Toolbar.LayoutParams(-1, -1, Gravity.CENTER);
-                    } else {
-                        layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
-                    }
-                    getAwesomeToolbar().addView(reactTitleView, layoutParams);
-                    reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+        Bundle titleItem = getOptions().getBundle("titleItem");
+        if (titleItem != null) {
+            String moduleName = titleItem.getString("moduleName");
+            if (moduleName != null) {
+                String fitting = titleItem.getString("layoutFitting");
+                boolean expanded = "expanded".equals(fitting);
+                reactTitleView = new ReactRootView(getContext());
+                Toolbar.LayoutParams layoutParams;
+                if (expanded) {
+                    layoutParams = new Toolbar.LayoutParams(-1, -1, Gravity.CENTER);
+                } else {
+                    layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
                 }
+                getAwesomeToolbar().addView(reactTitleView, layoutParams);
+                reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
             }
         }
     }

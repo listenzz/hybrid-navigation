@@ -276,9 +276,9 @@ public class GardenModule extends ReactContextBaseJavaModule{
 
     private HybridFragment findFragmentBySceneId(String sceneId) {
         Activity activity = getCurrentActivity();
-        if (activity instanceof AppCompatActivity) {
-            AppCompatActivity appCompatActivity = (AppCompatActivity) activity;
-            FragmentManager fragmentManager = appCompatActivity.getSupportFragmentManager();
+        if (activity instanceof ReactAppCompatActivity) {
+            ReactAppCompatActivity reactActivity = (ReactAppCompatActivity) activity;
+            FragmentManager fragmentManager = reactActivity.getSupportFragmentManager();
             return findFragmentBySceneId(fragmentManager, sceneId);
         }
         return null;
