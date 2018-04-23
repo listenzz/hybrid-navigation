@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 
@@ -71,6 +72,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     public void onReactModuleRegistryCompleted() {
+        Log.w(TAG, "---------onReactModuleRegistryCompleted----------");
         onCustomStyle(getStyle());
         createMainComponent();
     }
@@ -86,12 +88,30 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
             reactNavigationFragment.setRootFragment(awesomeFragment);
             setActivityRootFragment(reactNavigationFragment);
+        } else if (bridgeManager.hasPendingLayout()) {
+            Log.w(TAG, "---------set root from pending----------");
+            AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getRootLayout());
+            bridgeManager.setPendingLayout(null);
+            if (fragment != null) {
+                setActivityRootFragment(fragment);
+            }
+        } else if (bridgeManager.hasStickyLayout()) {
+            Log.w(TAG, "---------set root from sticky----------");
+            AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getStickyLayout());
+            if (fragment != null) {
+                setActivityRootFragment(fragment);
+            }
         } else if (bridgeManager.hasRootLayout()) {
+            Log.w(TAG, "---------set root on create main component----------");
             AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getRootLayout());
             if (fragment != null) {
                 setActivityRootFragment(fragment);
             }
         }
+    }
+
+    private void setRootLayout(ReactBridgeManager bridgeManager) {
+
     }
 
     protected String getMainComponentName() {
@@ -108,6 +128,15 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     protected void onResume() {
         super.onResume();
         activityDelegate.onResume();
+        if (getReactBridgeManager().hasPendingLayout()) {
+            Log.w(TAG, "---------set root on resume pending----------");
+            ReactBridgeManager bridgeManager = getReactBridgeManager();
+            AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getRootLayout());
+            bridgeManager.setPendingLayout(null);
+            if (fragment != null) {
+                setActivityRootFragment(fragment);
+            }
+        }
     }
 
     @Override

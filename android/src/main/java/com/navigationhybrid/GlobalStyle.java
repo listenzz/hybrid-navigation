@@ -48,6 +48,12 @@ public class GlobalStyle {
             style.setScreenBackgroundColor(Color.parseColor(screenBackgroundColor));
         }
 
+        // toolbarHeight
+        double toolbarHeight = options.getDouble("toolbarHeight", -1);
+        if (toolbarHeight != -1) {
+            style.setToolbarHeight((int) toolbarHeight);
+        }
+
         // topBarStyle
         String topBarStyle = options.getString("topBarStyle");
         if (topBarStyle != null) {

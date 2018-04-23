@@ -47,6 +47,9 @@ public class ReactBridgeManager {
     private CopyOnWriteArrayList<ReactModuleRegistryListener> reactModuleRegistryListeners = new CopyOnWriteArrayList<>();
 
     private ReadableMap rootLayout;
+    private ReadableMap stickyLayout;
+    private ReadableMap pendingLayout;
+
     private ReactNativeHost reactNativeHost;
 
     public void install(@NonNull ReactNativeHost reactNativeHost) {
@@ -61,7 +64,8 @@ public class ReactBridgeManager {
             public void onReactContextInitialized(ReactContext context) {
                 Log.i(TAG, toString() + " react context initialized:" + Thread.currentThread().getName());
                 rootLayout = null;
-                sticky = false;
+                stickyLayout = null;
+                pendingLayout = null;
             }
         });
         reactInstanceManager.createReactContextInBackground();
@@ -152,13 +156,12 @@ public class ReactBridgeManager {
         sendEvent(eventName, Arguments.createMap());
     }
 
-    private boolean sticky;
 
     public void setRootLayout(ReadableMap root, boolean sticky) {
-        if (!this.sticky) {
-            this.sticky = sticky;
-            this.rootLayout = root;
+        if (sticky && !hasStickyLayout()) {
+            this.stickyLayout = root;
         }
+        this.rootLayout = root;
     }
 
     public ReadableMap getRootLayout() {
@@ -167,6 +170,26 @@ public class ReactBridgeManager {
 
     public boolean hasRootLayout() {
         return rootLayout != null;
+    }
+
+    public ReadableMap getStickyLayout() {
+        return stickyLayout;
+    }
+
+    public boolean hasStickyLayout() {
+        return stickyLayout != null;
+    }
+
+    public void setPendingLayout(ReadableMap pendingLayout) {
+        this.pendingLayout = pendingLayout;
+    }
+
+    public ReadableMap getPendingLayout() {
+        return pendingLayout;
+    }
+
+    public boolean hasPendingLayout() {
+        return pendingLayout != null;
     }
 
     public AwesomeFragment createFragment(ReadableMap layout) {

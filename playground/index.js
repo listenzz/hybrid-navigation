@@ -87,28 +87,31 @@ ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle);
 
 ReactRegistry.endRegisterComponent();
 
-Navigation.setRoot({
-  drawer: [
-    {
-      tabs: [
-        {
-          stack: {
-            screen: { moduleName: 'Navigation' },
+Navigation.setRoot(
+  {
+    drawer: [
+      {
+        tabs: [
+          {
+            stack: {
+              screen: { moduleName: 'Navigation' },
+            },
           },
-        },
-        {
-          stack: {
-            screen: { moduleName: 'Options' },
+          {
+            stack: {
+              screen: { moduleName: 'Options' },
+            },
           },
-        },
-      ],
-    },
-    {
-      screen: { moduleName: 'Menu' },
-      options: {
-        maxDrawerWidth: 280,
-        minDrawerMargin: 64,
+        ],
       },
-    },
-  ],
-});
+      {
+        screen: { moduleName: 'Menu' },
+        options: {
+          maxDrawerWidth: 280,
+          minDrawerMargin: 64,
+        },
+      },
+    ],
+  },
+  true
+);

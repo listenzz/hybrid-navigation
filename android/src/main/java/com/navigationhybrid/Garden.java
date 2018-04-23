@@ -125,7 +125,6 @@ public class Garden {
         } else if (rightBarButtonItem != null) {
             setRightBarButtonItem(rightBarButtonItem);
         }
-
         Bundle leftBarButtonItem = options.getBundle("leftBarButtonItem");
         ArrayList<Bundle> leftBarButtonItems = options.getParcelableArrayList("leftBarButtonItems");
         if (leftBarButtonItems != null) {

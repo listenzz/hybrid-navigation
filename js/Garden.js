@@ -58,7 +58,12 @@ export default class Garden {
    */
   static setStyle(style = {}) {
     GardenModule.setStyle(style);
+    if (style.toolbarHeight) {
+      toolbarHeight = Number(style.toolbarHeight);
+    }
   }
+
+  static toolbarHeight = 56;
 
   // --------------- instance method --------------
 

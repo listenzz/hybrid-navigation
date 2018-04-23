@@ -6,7 +6,7 @@
 
 import { StyleSheet, StatusBar, Platform } from 'react-native';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
-import { Navigation } from 'react-native-navigation-hybrid';
+import { Garden } from 'react-native-navigation-hybrid';
 
 function ifLollipop(obj1 = {}, obj2 = {}) {
   return Platform.Version > 20 ? obj1 : obj2;
@@ -31,10 +31,10 @@ export default StyleSheet.create({
       android: {
         ...ifLollipop(
           {
-            paddingTop: 16 + StatusBar.currentHeight + Navigation.toolbarHeight,
+            paddingTop: 16 + StatusBar.currentHeight + Garden.toolbarHeight,
           },
           {
-            paddingTop: 16 + Navigation.toolbarHeight,
+            paddingTop: 16 + Garden.toolbarHeight,
           }
         ),
       },
