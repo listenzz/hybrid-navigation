@@ -35,6 +35,12 @@ export default class Navigattion {
     NavigationModule.setRoot(layout, sticky);
   }
 
+  static result_ok = NavigationModule.RESULT_OK;
+
+  static result_cancel = NavigationModule.RESULT_CANCEL;
+
+  static toolbarHeight = NavigationModule.TOOLBAR_HEIGHT;
+
   constructor(sceneId) {
     this.sceneId = sceneId;
     this.push = this.push.bind(this);

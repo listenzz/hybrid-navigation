@@ -12,31 +12,29 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.uimanager.PixelUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import me.listenzz.navigation.AppUtils;
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.DrawerFragment;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.NavigationFragment;
 import me.listenzz.navigation.TabBarFragment;
 
-
 /**
  * Created by Listen on 2017/11/20.
  */
-
 public class NavigationModule extends ReactContextBaseJavaModule {
 
     static final String TAG = "ReactNative";
-
+    private static final String TOOLBAR_HEIGHT = "TOOLBAR_HEIGHT";
     private final Handler handler = new Handler(Looper.getMainLooper());
-
     private final ReactBridgeManager reactBridgeManager;
-
 
     NavigationModule(ReactApplicationContext reactContext, ReactBridgeManager reactBridgeManager) {
         super(reactContext);
@@ -54,6 +52,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         HashMap<String, Object> constants = new HashMap<>();
         constants.put("RESULT_OK", Activity.RESULT_OK);
         constants.put("RESULT_CANCEL", Activity.RESULT_CANCELED);
+        int height = AppUtils.fetchContextDimension(getReactApplicationContext(), android.R.attr.actionBarSize);
+        constants.put(TOOLBAR_HEIGHT, PixelUtil.toDIPFromPixel(height));
         return constants;
     }
 

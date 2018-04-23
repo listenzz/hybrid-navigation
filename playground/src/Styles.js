@@ -6,6 +6,11 @@
 
 import { StyleSheet, StatusBar, Platform } from 'react-native';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
+import { Navigation } from 'react-native-navigation-hybrid';
+
+function ifKitKat(obj1 = {}, obj2 = {}) {
+  return Platform.Version > 18 ? obj1 : obj2;
+}
 
 export default StyleSheet.create({
   container: {
@@ -23,7 +28,16 @@ export default StyleSheet.create({
           }
         ),
       },
-      android: { paddingTop: 16 + StatusBar.currentHeight + 48 },
+      android: {
+        ...ifKitKat(
+          {
+            paddingTop: 16 + StatusBar.currentHeight + Navigation.toolbarHeight,
+          },
+          {
+            paddingTop: 16 + Navigation.toolbarHeight,
+          }
+        ),
+      },
     }),
   },
 
