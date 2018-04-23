@@ -8,8 +8,8 @@ import { StyleSheet, StatusBar, Platform } from 'react-native';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 import { Navigation } from 'react-native-navigation-hybrid';
 
-function ifKitKat(obj1 = {}, obj2 = {}) {
-  return Platform.Version > 18 ? obj1 : obj2;
+function ifLollipop(obj1 = {}, obj2 = {}) {
+  return Platform.Version > 20 ? obj1 : obj2;
 }
 
 export default StyleSheet.create({
@@ -29,7 +29,7 @@ export default StyleSheet.create({
         ),
       },
       android: {
-        ...ifKitKat(
+        ...ifLollipop(
           {
             paddingTop: 16 + StatusBar.currentHeight + Navigation.toolbarHeight,
           },
