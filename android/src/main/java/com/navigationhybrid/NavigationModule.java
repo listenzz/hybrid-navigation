@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -113,6 +114,10 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     if (fragment != null) {
                         reactAppCompatActivity.setRootFragment(fragment);
                     }
+                } else if (!reactBridgeManager.isReactModuleInRegistry()) {
+                    handler.postDelayed(this, 1000);
+                } else {
+                    FLog.e(TAG, "something wrong");
                 }
             }
         });
