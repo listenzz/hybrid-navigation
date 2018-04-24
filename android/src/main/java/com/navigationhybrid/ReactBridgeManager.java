@@ -126,6 +126,7 @@ public class ReactBridgeManager {
     @UiThread
     public void endRegisterReactModule() {
         isReactModuleInRegistry = false;
+        Log.i(TAG, "react module registry completed");
         for (ReactModuleRegistryListener listener : reactModuleRegistryListeners) {
             listener.onReactModuleRegistryCompleted();
         }
