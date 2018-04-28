@@ -92,6 +92,22 @@ public class Garden {
         if (!TextUtils.isEmpty(statusBarColor)) {
             style.setStatusBarColor(Color.parseColor(statusBarColor));
         }
+
+        String topBarTintColor = options.getString("topBarTintColor");
+        if (!TextUtils.isEmpty(topBarTintColor)) {
+            style.setToolbarTintColor(Color.parseColor(topBarTintColor));
+        }
+
+        String titleTextColor = options.getString("titleTextColor");
+        if (!TextUtils.isEmpty(titleTextColor)) {
+            style.setTitleTextColor(Color.parseColor(titleTextColor));
+        }
+
+        String barButtonItemTintColor = options.getString("barButtonItemTintColor");
+        if (!TextUtils.isEmpty(barButtonItemTintColor)) {
+            style.setToolbarButtonTintColor(Color.parseColor(barButtonItemTintColor));
+        }
+
     }
 
     void configureToolbar() {
@@ -178,7 +194,12 @@ public class Garden {
             uri = icon.getString("uri");
         }
         final String action = item.getString("action");
-        return new ToolbarButtonItem(uri, title, enabled, new View.OnClickListener() {
+        int tintColor = 0;
+        String color = item.getString("tintColor");
+        if (color != null) {
+            tintColor = Color.parseColor(color);
+        }
+        return new ToolbarButtonItem(uri, 0, title, tintColor, enabled, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ReactBridgeManager bridgeManager = ReactBridgeManager.instance;

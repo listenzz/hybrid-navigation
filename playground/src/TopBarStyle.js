@@ -12,6 +12,9 @@ import styles from './Styles';
 export default class TopBarStyle extends Component {
   static navigationItem = {
     topBarStyle: 'light-content',
+    topBarTintColor: '#FFFFFF',
+    titleTextColor: '#FFFF00',
+    barButtonItemTintColor: '#00FFFF',
     ...Platform.select({
       ios: {
         topBarColor: '#FF344C',
