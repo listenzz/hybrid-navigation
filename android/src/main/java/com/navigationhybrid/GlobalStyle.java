@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 
+import com.facebook.react.uimanager.PixelUtil;
+
 import me.listenzz.navigation.BarStyle;
 import me.listenzz.navigation.DrawableUtils;
 import me.listenzz.navigation.Style;
@@ -51,7 +53,7 @@ public class GlobalStyle {
         // toolbarHeight
         double toolbarHeight = options.getDouble("toolbarHeight", -1);
         if (toolbarHeight != -1) {
-            style.setToolbarHeight((int) toolbarHeight);
+            style.setToolbarHeight((int) PixelUtil.toPixelFromDIP(toolbarHeight));
         }
 
         // topBarStyle

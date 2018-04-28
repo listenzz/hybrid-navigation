@@ -10,7 +10,6 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -71,6 +70,7 @@ public class GardenModule extends ReactContextBaseJavaModule{
         final Map<String, Object> constants = new HashMap<>();
         constants.put("DARK_CONTENT", TOP_BAR_STYLE_DARK_CONTENT);
         constants.put("LIGHT_CONTENT",TOP_BAR_STYLE_LIGHT_CONTENT);
+        constants.put("TOOLBAR_HEIGHT", 56);
         return constants;
     }
 

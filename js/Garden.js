@@ -63,7 +63,7 @@ export default class Garden {
     }
   }
 
-  static toolbarHeight = 56;
+  static toolbarHeight = GardenModule.TOOLBAR_HEIGHT;
 
   // --------------- instance method --------------
 
