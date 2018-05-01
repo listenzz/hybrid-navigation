@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView, Platform } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native';
 
 import styles from './Styles';
 
@@ -14,7 +14,6 @@ export default class TopBarStyle extends Component {
     topBarStyle: 'light-content',
     topBarTintColor: '#FFFFFF',
     titleTextColor: '#FFFF00',
-    barButtonItemTintColor: '#00FFFF',
     ...Platform.select({
       ios: {
         topBarColor: '#FF344C',
@@ -26,6 +25,18 @@ export default class TopBarStyle extends Component {
 
     titleItem: {
       title: 'TopBar Style',
+    },
+    backItem: {
+      title: 'Back',
+      tintColor: '#000000',
+    },
+    rightBarButtonItem: {
+      icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+      title: 'SETTING',
+      action: navigation => {
+        console.info('setting button is clicked.');
+      },
+      tintColor: '#FFFFFF',
     },
   };
 

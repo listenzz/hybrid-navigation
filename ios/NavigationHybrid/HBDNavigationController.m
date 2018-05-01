@@ -49,7 +49,6 @@
     self.interactivePopGestureRecognizer.delegate = self;
     self.delegate = self;
     [self.navigationBar setShadowImage:[UINavigationBar appearance].shadowImage];
-    [self.navigationBar setTranslucent:YES]; // make sure translucent 
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -61,6 +60,7 @@
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     self.navigationBar.barStyle = viewController.hbd_barStyle;
+    self.navigationBar.titleTextAttributes = viewController.hbd_titleTextAttributes;
     id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     if (coordinator) {
         UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
@@ -68,6 +68,7 @@
         [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
             BOOL shouldFake = to == viewController && (![from.hbd_barTintColor.description  isEqual:to.hbd_barTintColor.description] || ABS(from.hbd_barAlpha - to.hbd_barAlpha) > 0.1);
             if (shouldFake) {
+                self.navigationBar.tintColor = viewController.hbd_tintColor;
                 [UIView setAnimationsEnabled:NO];
                 self.navigationBar.fakeView.alpha = 0;
                 self.navigationBar.shadowImageView.alpha = 0;
@@ -112,21 +113,28 @@
     }
 }
 
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    [self updateNavigationBarForController:viewController];
+}
+
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
     UIViewController *vc = [super popViewControllerAnimated:animated];
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
+    self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
     return vc;
 }
 
 - (NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
     NSArray *array = [super popToViewController:viewController animated:animated];
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
+    self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
     return array;
 }
 
 - (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated {
     NSArray *array = [super popToRootViewControllerAnimated:animated];
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
+    self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
     return array;
 }
 
@@ -182,10 +190,13 @@
 }
 
 - (void)updateNavigationBarForController:(UIViewController *)vc {
+   
     [self updateNavigationBarAlphaForViewController:vc];
     [self updateNavigationBarColorForViewController:vc];
     [self updateNavigationBarShadowImageAlphaForViewController:vc];
     self.navigationBar.barStyle = vc.hbd_barStyle;
+    self.navigationBar.tintColor = vc.hbd_tintColor;
+    self.navigationBar.titleTextAttributes = vc.hbd_titleTextAttributes;
 }
 
 - (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc {

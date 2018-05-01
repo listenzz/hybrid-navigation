@@ -66,7 +66,9 @@
 
 - (void)setBarTintColor:(UIColor *)barTintColor {
     [super setBarTintColor:barTintColor];
-    self.fakeView.subviews[1].backgroundColor =  barTintColor;
+    if (self.fakeView.subviews.count > 1) {
+        self.fakeView.subviews[1].backgroundColor =  barTintColor;
+    }
 }
 
 - (UIView *)fakeView {
@@ -78,6 +80,10 @@
         [[self.subviews firstObject] insertSubview:_fakeView atIndex:0];
     }
     return _fakeView;
+}
+
+- (void)setTranslucent:(BOOL)translucent {
+    // prevent default behavior
 }
 
 - (void)setBackgroundImage:(UIImage *)backgroundImage forBarMetrics:(UIBarMetrics)barMetrics {

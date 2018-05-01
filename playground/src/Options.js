@@ -31,7 +31,6 @@ export default class Options extends Component {
         console.info('setting button is clicked.');
       },
       enabled: false,
-      tintColor: '#00FFFF',
     },
 
     tabItem: {

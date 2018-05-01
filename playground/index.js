@@ -34,7 +34,7 @@ Garden.setStyle({
   statusBarColor: '#F0FFFFFF',
   topBarColor: '#F0FFFFFF',
 
-  // topBarTintColor: '#0000ff',
+  topBarTintColor: '#000000',
   // titleTextColor: '#00ff00',
   titleAlignment: 'center',
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
@@ -42,7 +42,7 @@ Garden.setStyle({
     color: '#DDDDDD',
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
-  hideBackTitle: true,
+  // hideBackTitle: true,
   elevation: 1,
 
   bottomBarColor: '#FFFFFF',

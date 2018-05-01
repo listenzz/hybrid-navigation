@@ -1263,11 +1263,10 @@ setStyle 接受一个对象为参数，可配置字段如下：
     elevation: Number // 导航栏阴影高度， 仅对 Android 5.0 以上版本生效，默认值为 4 dp
     shadowImage: Object // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 
     backIcon: Object // 返回按钮图标，需要传递一个带有 uri 和其它字段的对象
-    topBarTintColor: String // 顶部导航栏标题和按钮的颜色
+    topBarTintColor: String // 顶部导航栏按钮的颜色
     titleTextColor: String // 顶部导航栏标题颜色
     titleTextSize: Int // 顶部导航栏标题字体大小，默认是 17 dp(pt)
     titleAlignment: String // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left
-    barButtonItemTintColor: String // 顶部导航栏按钮颜色
     barButtonItemTextSize: Int // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
     
     bottomBarColor: String // 底部 TabBar 背景颜色
@@ -1443,12 +1442,15 @@ setStyle 接受一个对象为参数，可配置字段如下：
 class Screen extends Component {
 
     static navigationItem = {
-        topBarAlpha: 0.5,          // 当前页面 topBar 背景透明度
-        topBarColor: '#FDFF0000',  // 当前页面 topBar 背景颜色，可以是透明颜色 
-        topBarShadowHidden: true,  // 是否隐藏当前页面 topBar 的阴影
-        topBarHidden: true,        // 是否隐藏当前页面 topBar
-        backButtonHidden: true,    // 当前页面是否隐藏返回按钮
-        backInteractive: true,     // 当前页面是否可以通过右滑或返回键返回
+        screenColor: '#FFFFFF',     // 当前页面背景
+        topBarAlpha: 0.5,           // 当前页面 topBar 背景透明度
+        topBarColor: '#FDFF0000',   // 当前页面 topBar 背景颜色，可以是透明颜色 
+        topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
+        titleTextColor: '#FFFFFF',  // 当前页面标题颜色
+        topBarShadowHidden: true,   // 是否隐藏当前页面 topBar 的阴影
+        topBarHidden: true,         // 是否隐藏当前页面 topBar
+        backButtonHidden: true,     // 当前页面是否隐藏返回按钮
+        backInteractive: true,      // 当前页面是否可以通过右滑或返回键返回
         
         titleItem: {               // 导航栏标题
             tilte: '这是标题',
@@ -1462,6 +1464,7 @@ class Screen extends Component {
             insets: {top: -1, left: -8, bottom: 0, right: 0},
             action: navigation => { navigation.toggleMenu(); },
             enabled: true,
+            tintColor: '#FFFF00',
         },
         	
         rightBarButtonItem: {     // 导航栏右侧按钮
@@ -1552,6 +1555,8 @@ class Screen extends Component {
     action 是个函数，它接收 navigation 作为参数，当按钮被点击时调用。
 	
     enabled 是个布尔值，可选，用来标识按钮是否可以点击，默认是 true。
+
+    tintColor 按钮颜色，可选，覆盖全局设置，实现个性化颜色
 
 - rightBarButtonItem
 

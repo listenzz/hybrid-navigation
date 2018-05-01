@@ -81,6 +81,11 @@ public class Garden {
             }
         }
 
+        String screenColor = options.getString("screenColor");
+        if (!TextUtils.isEmpty(screenColor)) {
+            style.setScreenBackgroundColor(Color.parseColor(screenColor));
+        }
+
         String topBarColor = options.getString("topBarColor");
         if (!TextUtils.isEmpty(topBarColor)) {
             int color = Color.parseColor(topBarColor);
@@ -102,12 +107,6 @@ public class Garden {
         if (!TextUtils.isEmpty(titleTextColor)) {
             style.setTitleTextColor(Color.parseColor(titleTextColor));
         }
-
-        String barButtonItemTintColor = options.getString("barButtonItemTintColor");
-        if (!TextUtils.isEmpty(barButtonItemTintColor)) {
-            style.setToolbarButtonTintColor(Color.parseColor(barButtonItemTintColor));
-        }
-
     }
 
     void configureToolbar() {

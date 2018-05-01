@@ -94,6 +94,12 @@ static GlobalStyle *globalStyle;
     
     NSString *action = item[@"action"];
     NSString *sceneId = controller.sceneId;
+    
+    NSString *tintColor = item[@"tintColor"];
+    if (tintColor) {
+        barButtonItem.tintColor = [HBDUtils colorWithHexString:tintColor];
+    }
+    
     if (action) {
         barButtonItem.actionBlock = ^{
             RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];

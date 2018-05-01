@@ -46,7 +46,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.view.backgroundColor = [HBDGarden globalStyle].screenBackgroundColor;
+    NSString *screenColor = self.options[@"screenColor"];
+    if (screenColor) {
+        self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
+    } else {
+        self.view.backgroundColor = [HBDGarden globalStyle].screenBackgroundColor;
+    }
     
     NSString *topBarStyle = self.options[@"topBarStyle"];
     if (topBarStyle) {
@@ -60,6 +65,21 @@
     NSString *topBarColor = self.options[@"topBarColor"];
     if (topBarColor) {
         self.hbd_barTintColor = [HBDUtils colorWithHexString:topBarColor];
+    }
+    
+    NSString *topBarTintColor = self.options[@"topBarTintColor"];
+    if (topBarTintColor) {
+        self.hbd_tintColor = [HBDUtils colorWithHexString:topBarTintColor];
+    }
+    
+    NSString *titleTextColor = self.options[@"titleTextColor"];
+    if (titleTextColor) {
+        NSMutableDictionary *attribute = [[UINavigationBar appearance].titleTextAttributes mutableCopy];
+        if (!attribute) {
+            attribute = [@{} mutableCopy];
+        }
+        [attribute setObject:[HBDUtils colorWithHexString:titleTextColor] forKey:NSForegroundColorAttributeName];
+        self.hbd_titleTextAttributes = attribute;
     }
     
     NSNumber *topBarAlpha = self.options[@"topBarAlpha"];
@@ -87,6 +107,18 @@
         if (!moduleName) {
             self.navigationItem.title = titleItem[@"title"];
         }
+    }
+    
+    NSDictionary *backItem = self.options[@"backItem"];
+    if (backItem) {
+        NSString *title = backItem[@"title"];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+        backButton.title = title;
+        NSString *tintColor = backItem[@"tintColor"];
+        if (tintColor) {
+            backButton.tintColor = [HBDUtils colorWithHexString:tintColor];
+        }
+        self.navigationItem.backBarButtonItem = backButton;
     }
     
     NSNumber *hidden = self.options[@"backButtonHidden"];

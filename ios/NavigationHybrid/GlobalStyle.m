@@ -19,7 +19,6 @@
 @property (nonatomic, strong) UIColor *barTintColor;
 @property (nonatomic, strong) UIColor *tintColor;
 @property (nonatomic, strong) UIColor *titleTextColor;
-@property (nonatomic, strong) UIColor *barButtonItemTintColor;
 @property (nonatomic, assign) NSInteger titleTextSize;
 @property (nonatomic, assign) NSInteger barButtonItemTextSize;
 
@@ -47,16 +46,8 @@
         NSString *topBarStyle = self.options[@"topBarStyle"];
         if (topBarStyle && [topBarStyle isEqualToString:@"light-content"]) {
             self.barStyle = UIBarStyleBlack;
-            self.barTintColor = UIColor.blackColor;
-            self.tintColor = UIColor.whiteColor;
-            self.barButtonItemTintColor = UIColor.whiteColor;
-            self.titleTextColor = UIColor.whiteColor;
         } else {
             self.barStyle = UIBarStyleDefault;
-            self.barTintColor = UIColor.whiteColor;
-            self.tintColor = UIColor.blackColor;
-            self.barButtonItemTintColor = UIColor.blackColor;
-            self.titleTextColor = UIColor.blackColor;
         }
         
         // topBarBackgroundColor
@@ -95,8 +86,6 @@
         NSString *topBarTintColor = self.options[@"topBarTintColor"];
         if (topBarTintColor) {
             self.tintColor = [HBDUtils colorWithHexString:topBarTintColor];
-            self.barButtonItemTintColor = self.tintColor;
-            self.titleTextColor = self.tintColor;
         }
         
         // titleTextColor,
@@ -113,11 +102,6 @@
             self.titleTextSize = 17;
         }
 
-        NSString *barButtonItemTintColor = self.options[@"barButtonItemTintColor"];
-        if (barButtonItemTintColor) {
-            self.barButtonItemTintColor = [HBDUtils colorWithHexString:barButtonItemTintColor];
-        }
-        
         NSNumber *barButtonItemTextSize = self.options[@"barButtonItemTextSize"];
         if (barButtonItemTextSize) {
             self.barButtonItemTextSize = [barButtonItemTextSize integerValue];
@@ -163,7 +147,9 @@
 - (void)inflateNavigationBar:(UINavigationBar *)navigationBar {
     
     [navigationBar setBarStyle:self.barStyle];
-    [navigationBar setBarTintColor:self.barTintColor];
+    if (self.barTintColor) {
+        [navigationBar setBarTintColor:self.barTintColor];
+    }
     
     if (self.shadowImage) {
         [navigationBar setShadowImage:self.shadowImage];
@@ -174,23 +160,22 @@
         [navigationBar setBackIndicatorTransitionMaskImage:self.backIcon];
     }
     
-    [navigationBar setTintColor:self.tintColor];
+    if (self.tintColor) {
+        [navigationBar setTintColor:self.tintColor];
+    }
     
     // title
     NSMutableDictionary *titleAttributes = [[NSMutableDictionary alloc] init];
-    [titleAttributes setObject:self.titleTextColor forKey:NSForegroundColorAttributeName];
+    if (self.titleTextColor) {
+        [titleAttributes setObject:self.titleTextColor forKey:NSForegroundColorAttributeName];
+    }
     [titleAttributes setObject:[UIFont systemFontOfSize:self.titleTextSize] forKey:NSFontAttributeName];
     [navigationBar setTitleTextAttributes:titleAttributes];
 }
 
 - (void)inflateBarButtonItem:(UIBarButtonItem *)barButtonItem {
-    
-    [barButtonItem setTintColor:self.barButtonItemTintColor];
-    
-    NSDictionary *attributes = @{
-                                 NSFontAttributeName: [UIFont systemFontOfSize:self.barButtonItemTextSize],
-                                 NSForegroundColorAttributeName: self.barButtonItemTintColor
-                                 };
+    NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
+    [attributes setObject:[UIFont systemFontOfSize:self.barButtonItemTextSize] forKey:NSFontAttributeName];
     [barButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
     [barButtonItem setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
     [barButtonItem setTitleTextAttributes:attributes forState:UIControlStateDisabled];

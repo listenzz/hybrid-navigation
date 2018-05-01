@@ -137,12 +137,6 @@ public class GlobalStyle {
             style.setTitleGravity(Gravity.START);
         }
 
-        // barButtonItemTintColor
-        String barButtonItemTintColor = options.getString("barButtonItemTintColor");
-        if (barButtonItemTintColor != null) {
-            style.setToolbarButtonTintColor(Color.parseColor(barButtonItemTintColor));
-        }
-
         // barButtonItemTextSize
         double barButtonItemTextSize = options.getDouble("barButtonItemTextSize", -1);
         if (barButtonItemTextSize != -1) {
