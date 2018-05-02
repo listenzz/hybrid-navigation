@@ -48,6 +48,7 @@
     [super viewDidLoad];
     self.interactivePopGestureRecognizer.delegate = self;
     self.delegate = self;
+    [self.navigationBar setTranslucent:YES];
     [self.navigationBar setShadowImage:[UINavigationBar appearance].shadowImage];
 }
 
@@ -173,10 +174,10 @@
     [self.toFakeBar removeFromSuperview];
     [self.fromFakeShadow removeFromSuperview];
     [self.toFakeShadow removeFromSuperview];
-    self.fromFakeBar = nil;
-    self.toFakeBar = nil;
-    self.fromFakeShadow = nil;
-    self.toFakeShadow = nil;
+    _fromFakeBar = nil;
+    _toFakeBar = nil;
+    _fromFakeShadow = nil;
+    _toFakeShadow = nil;
 }
 
 - (CGRect)fakeBarFrameForViewController:(UIViewController *)vc {

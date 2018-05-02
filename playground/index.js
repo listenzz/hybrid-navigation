@@ -32,7 +32,7 @@ Garden.setStyle({
   topBarStyle: 'dark-content',
   titleTextSize: 17,
   statusBarColor: '#F0FFFFFF',
-  topBarColor: '#F0FFFFFF',
+  // topBarColor: '#F0FFFFFF',
 
   topBarTintColor: '#000000',
   // titleTextColor: '#00ff00',

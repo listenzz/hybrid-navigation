@@ -16,6 +16,17 @@ import fontUri from './FontUtil';
 // React component
 class ReduxCounter extends Component {
   static navigationItem = {
+    topBarStyle: 'light-content',
+    topBarTintColor: '#FFFFFF',
+    titleTextColor: '#FFFF00',
+    ...Platform.select({
+      ios: {
+        topBarColor: '#FF344C',
+      },
+      android: {
+        topBarColor: '#F94D53',
+      },
+    }),
     titleItem: {
       title: 'Redux Counter',
     },

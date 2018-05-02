@@ -84,6 +84,7 @@
 
 - (void)setTranslucent:(BOOL)translucent {
     // prevent default behavior
+    [super setTranslucent:YES];
 }
 
 - (void)setBackgroundImage:(UIImage *)backgroundImage forBarMetrics:(UIBarMetrics)barMetrics {
