@@ -90,7 +90,6 @@ public class Garden {
         if (!TextUtils.isEmpty(topBarColor)) {
             int color = Color.parseColor(topBarColor);
             style.setToolbarBackgroundColor(color);
-            style.setStatusBarColor(color);
         }
 
         String statusBarColor = options.getString("statusBarColor");
