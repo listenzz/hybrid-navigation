@@ -21,6 +21,7 @@
 @property (nonatomic, strong) UIVisualEffectView *toFakeBar;
 @property (nonatomic, strong) UIImageView *fromFakeShadow;
 @property (nonatomic, strong) UIImageView *toFakeShadow;
+@property (nonatomic, assign) BOOL inGesture;
 
 @end
 
@@ -47,9 +48,42 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.interactivePopGestureRecognizer.delegate = self;
+    [self.interactivePopGestureRecognizer addTarget:self action:@selector(handlePopGesture:)];
     self.delegate = self;
     [self.navigationBar setTranslucent:YES];
     [self.navigationBar setShadowImage:[UINavigationBar appearance].shadowImage];
+}
+
+- (void)handlePopGesture:(UIScreenEdgePanGestureRecognizer *)recognizer {
+    id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
+    UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
+    if (recognizer.state == UIGestureRecognizerStateBegan || recognizer.state == UIGestureRecognizerStateChanged) {
+        self.inGesture = YES;
+        self.navigationBar.tintColor = blendColor(from.hbd_tintColor, to.hbd_tintColor, coordinator.percentComplete);
+    } else {
+        self.inGesture = NO;
+    }
+}
+
+UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
+    CGFloat fromRed = 0;
+    CGFloat fromGreen = 0;
+    CGFloat fromBlue = 0;
+    CGFloat fromAlpha = 0;
+    [from getRed:&fromRed green:&fromGreen blue:&fromBlue alpha:&fromAlpha];
+    
+    CGFloat toRed = 0;
+    CGFloat toGreen = 0;
+    CGFloat toBlue = 0;
+    CGFloat toAlpha = 0;
+    [to getRed:&toRed green:&toGreen blue:&toBlue alpha:&toAlpha];
+    
+    CGFloat newRed = fromRed + (toRed - fromRed) * percent;
+    CGFloat newGreen = fromGreen + (toGreen - fromGreen) * percent;
+    CGFloat newBlue = fromBlue + (toBlue - fromBlue) * percent;
+    CGFloat newAlpha = fromAlpha + (toAlpha - fromAlpha) * percent;
+    return [UIColor colorWithRed:newRed green:newGreen blue:newBlue alpha:newAlpha];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -69,16 +103,21 @@
         [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
             BOOL shouldFake = to == viewController && (![from.hbd_barTintColor.description  isEqual:to.hbd_barTintColor.description] || ABS(from.hbd_barAlpha - to.hbd_barAlpha) > 0.1);
             if (shouldFake) {
-                self.navigationBar.tintColor = viewController.hbd_tintColor;
+                if (self.inGesture) {
+                    self.navigationBar.titleTextAttributes = viewController.hbd_titleTextAttributes;
+                    self.navigationBar.barStyle = viewController.hbd_barStyle;
+                } else {
+                    [self updateNavigationBarAnimatedForController:viewController];
+                }
                 [UIView setAnimationsEnabled:NO];
                 self.navigationBar.fakeView.alpha = 0;
                 self.navigationBar.shadowImageView.alpha = 0;
                 
                 // from
-                self.fromFakeBar.subviews[1].backgroundColor = from.hbd_barTintColor;
+                self.fromFakeBar.subviews.lastObject.backgroundColor = from.hbd_barTintColor;
                 self.fromFakeBar.alpha = from.hbd_barAlpha == 0 ? 0.01:from.hbd_barAlpha;
                 if (from.hbd_barAlpha == 0) {
-                    self.fromFakeBar.subviews[1].alpha = 0.01;
+                    self.fromFakeBar.subviews.lastObject.alpha = 0.01;
                 }
                 self.fromFakeBar.frame = [self fakeBarFrameForViewController:from];
                 [from.view addSubview:self.fromFakeBar];
@@ -86,7 +125,7 @@
                 self.fromFakeShadow.frame = [self fakeShadowFrameWithBarFrame:self.fromFakeBar.frame];
                 [from.view addSubview:self.fromFakeShadow];
                 // to
-                self.toFakeBar.subviews[1].backgroundColor = to.hbd_barTintColor;
+                self.toFakeBar.subviews.lastObject.backgroundColor = to.hbd_barTintColor;
                 self.toFakeBar.alpha = to.hbd_barAlpha;
                 self.toFakeBar.frame = [self fakeBarFrameForViewController:to];
                 [to.view addSubview:self.toFakeBar];
@@ -109,6 +148,20 @@
                 [self clearFake];
             }
         }];
+        
+        if (@available(iOS 10.0, *)) {
+            [coordinator notifyWhenInteractionChangesUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+                if (!context.isCancelled && self.inGesture) {
+                    [self updateNavigationBarAnimatedForController:viewController];
+                }
+            }];
+        } else {
+            [coordinator notifyWhenInteractionEndsUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+                if (!context.isCancelled && self.inGesture) {
+                    [self updateNavigationBarAnimatedForController:viewController];
+                }
+            }];
+        }
     } else {
         [self updateNavigationBarForController:viewController];
     }
@@ -181,7 +234,8 @@
 }
 
 - (CGRect)fakeBarFrameForViewController:(UIViewController *)vc {
-    CGRect frame = [self.navigationBar.fakeView convertRect:self.navigationBar.fakeView.frame toView:vc.view];
+    UIView *back = self.navigationBar.subviews[0];
+    CGRect frame = [self.navigationBar convertRect:back.frame toView:vc.view];
     frame.origin.x = vc.view.frame.origin.x;
     return frame;
 }
@@ -191,13 +245,16 @@
 }
 
 - (void)updateNavigationBarForController:(UIViewController *)vc {
-   
     [self updateNavigationBarAlphaForViewController:vc];
     [self updateNavigationBarColorForViewController:vc];
     [self updateNavigationBarShadowImageAlphaForViewController:vc];
+    [self updateNavigationBarAnimatedForController:vc];
+}
+
+- (void)updateNavigationBarAnimatedForController:(UIViewController *)vc {
     self.navigationBar.barStyle = vc.hbd_barStyle;
-    self.navigationBar.tintColor = vc.hbd_tintColor;
     self.navigationBar.titleTextAttributes = vc.hbd_titleTextAttributes;
+    self.navigationBar.tintColor = vc.hbd_tintColor;
 }
 
 - (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc {
