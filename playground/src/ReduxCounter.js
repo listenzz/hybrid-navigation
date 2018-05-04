@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView, Platform } from 'react-native';
 
 import { createStore } from 'redux';
 import { connect } from 'react-redux';
