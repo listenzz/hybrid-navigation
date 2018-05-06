@@ -11,6 +11,7 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDReactViewController.h"
 #import "HBDNavigationController.h"
+#import "HBDTabBarController.h"
 
 @interface HBDNavigationModule()
 
@@ -266,6 +267,96 @@ RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) 
     HBDDrawerController *drawer = [vc drawerController];
     if (drawer) {
         drawer.interactive = enabled;
+    }
+}
+
+RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    UIViewController *controller = application.keyWindow.rootViewController;
+    while (controller != nil) {
+        UIViewController *presentedController = controller.presentedViewController;
+        if (presentedController && ![presentedController isBeingDismissed]) {
+            controller = presentedController;
+        } else {
+            break;
+        }
+    }
+    
+    HBDViewController *current = [self currentControllerInController:controller];
+    if (current) {
+        resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId });
+    } else {
+        reject(@"404", @"not found!", [NSError errorWithDomain:@"NavigationModuleDomain" code:404 userInfo:nil]);
+    }
+}
+
+- (HBDViewController *)currentControllerInController:(UIViewController *)controller {
+    if ([controller isKindOfClass:[HBDDrawerController class]]) {
+        HBDDrawerController *drawer = (HBDDrawerController *)controller;
+        if (drawer.isMenuOpened) {
+            return [self currentControllerInController:drawer.menuController];
+        } else {
+            return [self currentControllerInController:drawer.contentController];
+        }
+    } else if ([controller isKindOfClass:[HBDTabBarController class]]) {
+        HBDTabBarController *tabs = (HBDTabBarController *)controller;
+        return [self currentControllerInController:tabs.selectedViewController];
+    } else if ([controller isKindOfClass:[HBDNavigationController class]]) {
+        HBDNavigationController *stack = (HBDNavigationController *)controller;
+        return [self currentControllerInController:stack.topViewController];
+    } else if ([controller isKindOfClass:[HBDViewController class]]) {
+        return (HBDViewController *)controller;
+    }
+    return nil;
+}
+
+RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    UIViewController *controller = application.keyWindow.rootViewController;
+    NSMutableArray *container = [[NSMutableArray alloc] init];
+    while (controller != nil) {
+        [self routeGraphWithController:controller container:container];
+        UIViewController *presentedController = controller.presentedViewController;
+        if (presentedController && ![presentedController isBeingDismissed]) {
+            controller = presentedController;
+        } else {
+            controller = nil;
+        }
+    }
+    resolve(container);
+}
+
+- (void)routeGraphWithController:(UIViewController *)controller container:(NSMutableArray *)container {
+    if ([controller isKindOfClass:[HBDDrawerController class]]) {
+        HBDDrawerController *drawer = (HBDDrawerController *)controller;
+        NSMutableArray *children = [[NSMutableArray alloc] init];
+        [self routeGraphWithController:drawer.contentController container:children];
+        [self routeGraphWithController:drawer.menuController container:children];
+        [container addObject:@{ @"type": @"drawer", @"drawer": children }];
+    } else if ([controller isKindOfClass:[HBDTabBarController class]]) {
+        HBDTabBarController *tabs = (HBDTabBarController *)controller;
+        NSMutableArray *children = [[NSMutableArray alloc] init];
+        for (NSInteger i = 0; i < tabs.childViewControllers.count; i++) {
+            UIViewController *child = tabs.childViewControllers[i];
+            [self routeGraphWithController:child container:children];
+        }
+        [container addObject:@{ @"type": @"tabs", @"tabs": children, @"selectedIndex": @(tabs.selectedIndex) }];
+    } else if ([controller isKindOfClass:[HBDNavigationController class]]) {
+        HBDNavigationController *stack = (HBDNavigationController *)controller;
+        NSMutableArray *children = [[NSMutableArray alloc] init];
+        for (NSInteger i = 0; i < stack.childViewControllers.count; i++) {
+            UIViewController *child = stack.childViewControllers[i];
+            [self routeGraphWithController:child container:children];
+        }
+        [container addObject:@{ @"type": @"stack", @"stack": children }];
+    } else if ([controller isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *screen = (HBDViewController *)controller;
+        [container addObject:@{
+                               @"type": @"screen",
+                               @"screen": @{ @"moduleName": screen.moduleName, @"sceneId": screen.sceneId}
+                               }];
+    } else {
+        NSLog(@"warning: controller do not add to route graph!!");
     }
 }
 

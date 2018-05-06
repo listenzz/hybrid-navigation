@@ -1,8 +1,10 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -14,7 +16,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
@@ -24,6 +28,7 @@ import me.listenzz.navigation.DrawerFragment;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.NavigationFragment;
 import me.listenzz.navigation.TabBarFragment;
+
 
 /**
  * Created by Listen on 2017/11/20.
@@ -390,6 +395,119 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             }
         });
     }
+
+    @ReactMethod
+    public void currentRoute(Promise promise) {
+        Activity activity = getCurrentActivity();
+        if (activity == null || !(activity instanceof ReactAppCompatActivity)) {
+            promise.reject("400", "Bad Request");
+            return;
+        }
+
+        ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+        FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
+        HybridFragment current = getCurrentFragment(fragment);
+        if (current != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("moduleName", current.getModuleName());
+            bundle.putString("sceneId", current.getSceneId());
+            promise.resolve(Arguments.fromBundle(bundle));
+        } else {
+            promise.reject("404", "Not Found");
+        }
+    }
+
+    private HybridFragment getCurrentFragment(Fragment fragment) {
+        if (fragment == null) {
+            return null;
+        }
+        if (fragment instanceof DrawerFragment) {
+            DrawerFragment drawer = (DrawerFragment) fragment;
+            if (drawer.isMenuOpened()) {
+                return getCurrentFragment(drawer.getMenuFragment());
+            } else {
+                return getCurrentFragment(drawer.getContentFragment());
+            }
+        } else if (fragment instanceof TabBarFragment) {
+            TabBarFragment tabs = (TabBarFragment) fragment;
+            return getCurrentFragment(tabs.getSelectedFragment());
+        } else if (fragment instanceof NavigationFragment) {
+            NavigationFragment stack = (NavigationFragment) fragment;
+            return getCurrentFragment(stack.getTopFragment());
+        } else if (fragment instanceof HybridFragment) {
+            return (HybridFragment) fragment;
+        }
+        return null;
+    }
+
+    @ReactMethod
+    public void routeGraph(Promise promise) {
+        Activity activity = getCurrentActivity();
+        if (activity == null || !(activity instanceof ReactAppCompatActivity)) {
+            promise.reject("400", "Bad Request");
+            return;
+        }
+        ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+        ArrayList<Bundle> container = new ArrayList<>();
+        List<AwesomeFragment> fragments = reactAppCompatActivity.getFragmentsAtAddedList();
+        for (int i = 0; i < fragments.size(); i++) {
+            AwesomeFragment fragment = fragments.get(i);
+            buildRouteGraph(fragment, container);
+        }
+        promise.resolve(Arguments.fromList(container));
+    }
+
+    private void buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> container) {
+        if (fragment instanceof DrawerFragment) {
+            DrawerFragment drawer = (DrawerFragment) fragment;
+            ArrayList<Bundle> children = new ArrayList<>();
+            buildRouteGraph(drawer.getContentFragment(), children);
+            buildRouteGraph(drawer.getMenuFragment(), children);
+            Bundle bundle = new Bundle();
+            bundle.putString("type", "drawer");
+            bundle.putParcelableArrayList("drawer", children);
+            container.add(bundle);
+        } else if (fragment instanceof TabBarFragment) {
+            TabBarFragment tabs = (TabBarFragment) fragment;
+            ArrayList<Bundle> children = new ArrayList<>();
+            List<AwesomeFragment> fragments = tabs.getChildFragments();
+            for (int i = 0; i < fragments.size(); i++) {
+                AwesomeFragment child = fragments.get(i);
+                buildRouteGraph(child, children);
+            }
+            Bundle bundle = new Bundle();
+            bundle.putString("type", "tabs");
+            bundle.putInt("selectedIndex", tabs.getSelectedIndex());
+            bundle.putParcelableArrayList("tabs", children);
+            container.add(bundle);
+        } else if (fragment instanceof NavigationFragment) {
+            NavigationFragment stack = (NavigationFragment) fragment;
+            ArrayList<Bundle> children = new ArrayList<>();
+            List<AwesomeFragment> fragments = stack.getChildFragmentsAtAddedList();
+            for (int i = 0; i < fragments.size(); i++) {
+                AwesomeFragment child = fragments.get(i);
+                buildRouteGraph(child, children);
+            }
+            Bundle bundle = new Bundle();
+            bundle.putString("type", "stack");
+            bundle.putParcelableArrayList("stack", children);
+            container.add(bundle);
+
+        } else if (fragment instanceof HybridFragment) {
+            HybridFragment screen = (HybridFragment) fragment;
+            Bundle bundle = new Bundle();
+            bundle.putString("type", "screen");
+            Bundle route = new Bundle();
+            route.putString("moduleName", screen.getModuleName());
+            route.putString("sceneId", screen.getSceneId());
+            bundle.putBundle("screen", route);
+            container.add(bundle);
+        } else {
+            Log.w(TAG, "fragment do not add to route graph!!");
+        }
+    }
+
 
     private HybridFragment findFragmentBySceneId(String sceneId) {
         Activity activity = getCurrentActivity();

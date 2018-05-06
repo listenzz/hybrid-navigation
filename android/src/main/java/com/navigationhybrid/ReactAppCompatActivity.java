@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
@@ -13,6 +14,9 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.listenzz.navigation.AwesomeActivity;
 import me.listenzz.navigation.AwesomeFragment;
@@ -188,6 +192,18 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     public boolean isReactModuleInRegistry() {
         return getReactBridgeManager().isReactModuleInRegistry();
+    }
+
+    public List<AwesomeFragment> getFragmentsAtAddedList() {
+        List<AwesomeFragment> children = new ArrayList<>();
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (int i = 0, size = fragments.size(); i < size; i++) {
+            Fragment fragment = fragments.get(i);
+            if (fragment instanceof AwesomeFragment) {
+                children.add((AwesomeFragment) fragment);
+            }
+        }
+        return children;
     }
 
 }

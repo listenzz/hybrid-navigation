@@ -35,6 +35,14 @@ export default class Navigattion {
     NavigationModule.setRoot(layout, sticky);
   }
 
+  static routeGraph() {
+    return NavigationModule.routeGraph();
+  }
+
+  static currentRoute() {
+    return NavigationModule.currentRoute();
+  }
+
   static result_ok = NavigationModule.RESULT_OK;
   static result_cancel = NavigationModule.RESULT_CANCEL;
 

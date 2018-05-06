@@ -10,6 +10,7 @@ import me.listenzz.navigation.AwesomeToolbar;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.Style;
 
+import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
 import static com.navigationhybrid.Constants.ARG_PROPS;
 import static com.navigationhybrid.Constants.ARG_SCENE_ID;
 
@@ -88,6 +89,11 @@ public class HybridFragment extends AwesomeFragment {
         }
         initialProps.putString(ARG_SCENE_ID, getSceneId());
         return initialProps;
+    }
+
+    public String getModuleName() {
+        Bundle args = FragmentHelper.getArguments(this);
+        return args.getString(ARG_MODULE_NAME);
     }
 
 }
