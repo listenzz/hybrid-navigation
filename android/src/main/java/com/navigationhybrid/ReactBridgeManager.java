@@ -275,6 +275,10 @@ public class ReactBridgeManager {
     }
 
     public AwesomeFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
+        if (isReactModuleInRegistry()) {
+            throw new IllegalStateException("模块还没有注册完，不能执行此操作");
+        }
+
         HybridFragment fragment = null;
 
         if (hasReactModule(moduleName)) {
