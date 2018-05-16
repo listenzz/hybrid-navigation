@@ -1,4 +1,5 @@
 # react-native-navigation-hybrid
+
 A native navigation for React Native.
 
 ![navigation-android](./screenshot/android.png)
@@ -26,17 +27,17 @@ To run on iOS: `npm run run:ios`
 
 To run on Android: `npm run run:android`
 
-make sure that you have a  simulator or device when you run andriod
+make sure that you have a simulator or device when you run andriod
 
 ## 特性
 
 <a name="migrate-react"></a>
 
-- 使得 React Native 应用更具原生质感
-- 支持 Stack、Tabs、Drawer 等容器
-- 以 iOS 的导航系统为参照，支持 push, pop, popTo, popToRoot, present, dismiss 等操作
-- 支持 StatusBar, UINavigationBar(iOS), UITabBar(iOS), Toolbar(Android), BottomNavigationBar(Android) 的全局样式配置以及局部调整
-- 支持原生页面和 RN 页面互相跳转和传值
+* 使得 React Native 应用更具原生质感
+* 支持 Stack、Tabs、Drawer 等容器
+* 以 iOS 的导航系统为参照，支持 push, pop, popTo, popToRoot, present, dismiss 等操作
+* 支持 StatusBar, UINavigationBar(iOS), UITabBar(iOS), Toolbar(Android), BottomNavigationBar(Android) 的全局样式配置以及局部调整
+* 支持原生页面和 RN 页面互相跳转和传值
 
 ## 目录
 
@@ -49,7 +50,6 @@ make sure that you have a  simulator or device when you run andriod
 #### [RN 页面与原生页面相互跳转和传值](#navigation-hybrid)
 
 #### [设置样式](#style)
-
 
 ## 集成到以 RN 为主的项目
 
@@ -98,7 +98,7 @@ import Profile from './ProfileComponent';
 
 // 配置全局样式
 Garden.setStyle({
-    topBarStyle: 'dark-content',
+  topBarStyle: 'dark-content',
 });
 
 // 重要必须
@@ -160,7 +160,6 @@ drawer 对象也是一个数组，长度固定为 2 ，第一个对象是抽屉�
 
 > Navigation.setRoot 还接受第二个参数，是个 boolean，用来决定 Android 按返回键退出 app 后，再次打开时，是否恢复到首次将该参数设置为 true 时的那个 layout。通常用来决定按返回键退出 app 后重新打开时，要不要走闪屏逻辑。请参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目对 Navigation.setRoot 的使用
 
-
 #### 支持 Redux
 
 想要为每个页面都注入相同的属性，可以利用 `ReactRegistry.startRegisterComponent()` 这个方法，它接受一个函数作为参数，该函数的参数是一个返回我们将要构建的组件的函数，返回值是一个新的组件。
@@ -177,8 +176,7 @@ function componentWrapper(componentProvider) {
   );
 }
 
-ReactRegistry.startRegisterComponent(componentWrapper)
-
+ReactRegistry.startRegisterComponent(componentWrapper);
 ```
 
 ### Android 项目配置
@@ -204,28 +202,26 @@ allprojects {
         mavenLocal()
         jcenter()
         maven {
-            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-            url "$rootDir/../node_modules/react-native/android"
+        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+        url "$rootDir/../node_modules/react-native/android"
         }
 +       google()
     }
 }
 
-+ ext {
-+   minSdkVersion = 16
-+   targetSdkVersion = 27
-+   compileSdkVersion = 27
-+   buildToolsVersion = '27.0.3'
-+   // 必须保证支持包的版本 >= 27.1.1
-+   supportLibraryVersion = '27.1.1'
-+ }
-
++   ext {
++       minSdkVersion = 16
++       targetSdkVersion = 27
++       compileSdkVersion = 27
++       buildToolsVersion = '27.0.3'
++       // 必须保证支持包的版本 >= 27.1.1
++       supportLibraryVersion = '27.1.1'
++   }
 ```
 
 修改 android/app/build.gradle 文件
 
 ```diff
-
 android {
 -   compileSdkVersion 23
 -   buildToolsVersion "23.0.1"
@@ -241,24 +237,23 @@ android {
 }
 
 dependencies {  
-+    compile project(':react-native-navigation-hybrid')
-     compile fileTree(dir: "libs", include: ["*.jar"])
--    compile "com.android.support:appcompat-v7:23.0.1"
-+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-     compile "com.facebook.react:react-native:+" // From node_modules
-     
-+    configurations.all {
-+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-+        def requested = details.requested
-+            if (requested.group == 'com.android.support') {
-+                if (!requested.name.startsWith("multidex")) {
-+                    details.useVersion rootProject.supportLibraryVersion
-+                }
-+            }
-+        }
-+    }
++   compile project(':react-native-navigation-hybrid')
+    compile fileTree(dir: "libs", include: ["*.jar"])
+-   compile "com.android.support:appcompat-v7:23.0.1"
++   compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.facebook.react:react-native:+" // From node_modules
 
-}
++   configurations.all {
++       resolutionStrategy.eachDependency { DependencyResolveDetails details ->
++           def requested = details.requested
++               if (requested.group == 'com.android.support') {
++                   if (!requested.name.startsWith("multidex")) {
++                       details.useVersion rootProject.supportLibraryVersion
++                   }
++               }
++           }
++       }
+    }
 ```
 
 修改 android/gradle/wrapper/gradle-wrapper.properties 文件
@@ -276,30 +271,25 @@ dependencies {
 
 - public class MainActivity extends ReactActivity {
 + public class MainActivity extends ReactAppCompatActivity {
- 
--    @Override
--    protected String getMainComponentName() {
--        return "AwesomeProject";
--    }
- }
-
+-   @Override
+-   protected String getMainComponentName() {
+-       return "AwesomeProject";
+-   }
+}
 ```
 
 修改 MainApplication.java 文件
 
 ```diff
-
 + import com.navigationhybrid.ReactBridgeManager;
 
- public void onCreate() {
-     super.onCreate();
-     SoLoader.init(this, /* native exopackage */ false);
+public void onCreate() {
+    super.onCreate();
+    SoLoader.init(this, /* native exopackage */ false);
 
-+    ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
-+    bridgeManager.install(getReactNativeHost());
-    
- }
-
++   ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
++   bridgeManager.install(getReactNativeHost());
+}
 ```
 
 同步构建版本，参看[这里](#sync-build-version)
@@ -319,29 +309,24 @@ $(SRCROOT)/../node_modules/react-native-navigation-hybrid/ios
 修改 AppDelegate.m 文件
 
 ```objc
-
 #import "AppDelegate.h"
-
 #import <React/RCTBundleURLProvider.h>
 #import <NavigationHybrid/NavigationHybrid.h>
 
 @implementation AppDelegate
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  NSURL *jsCodeLocation;
+    NSURL *jsCodeLocation;
+    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+    [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
 
-  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-  [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
-
-  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  self.window.backgroundColor = UIColor.whiteColor;
-  UIViewController *rootViewController = [UIViewController new];
-  self.window.rootViewController = rootViewController;
-  [self.window makeKeyAndVisible];
-  return YES;
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.backgroundColor = UIColor.whiteColor;
+    UIViewController *rootViewController = [UIViewController new];
+    self.window.rootViewController = rootViewController;
+    [self.window makeKeyAndVisible];
+    return YES;
 }
-
 @end
 ```
 
@@ -413,7 +398,7 @@ ReactNativeProject/
 
 cd 到 ReactNativeProject，执行如下命令添加依赖
 
-```
+```bash
 npm install react-native-navigation-hybrid --save
 ```
 
@@ -438,7 +423,7 @@ import Profile from './ProfileComponent';
 
 // 配置全局样式
 Garden.setStyle({
-    topBarStyle: 'dark-content',
+  topBarStyle: 'dark-content',
 });
 
 ReactRegistry.startRegisterComponent();
@@ -480,8 +465,8 @@ buildscript {
 +       google()
     }
     dependencies {
--        classpath 'com.android.tools.build:gradle:2.2.3'
-+        classpath 'com.android.tools.build:gradle:3.1.1'
+-       classpath 'com.android.tools.build:gradle:2.2.3'
++       classpath 'com.android.tools.build:gradle:3.1.1'
     }
 }
 
@@ -517,11 +502,11 @@ android {
 
 dependencies {
 +   implementation fileTree(include: ['*.jar'], dir: 'libs')
-   
+
 +   implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
 +   implementation "com.android.support:support-v4:$rootProject.supportLibraryVersion"
 +   implementation "com.android.support:design:$rootProject.supportLibraryVersion"
-   
+
 +   implementation project(':react-native-navigation-hybrid')
 +   implementation "com.facebook.react:react-native:+" // From node_modules
 }
@@ -539,30 +524,30 @@ dependencies {
 ```java
 public class MainApplication extends Application implements ReactApplication {
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-        @Override
-        public boolean getUseDeveloperSupport() {
-            return BuildConfig.DEBUG;
-        }
-        
-        @Override
-        protected List<ReactPackage> getPackages() {
-            return Arrays.<ReactPackage>asList(
-                new MainReactPackage(),
-                new NavigationHybridPackage()
-            );
-        }
-        
-        @Override
-        protected String getJSMainModuleName() {
-            return "index";
+    @Override
+    public boolean getUseDeveloperSupport() {
+        return BuildConfig.DEBUG;
+    }
+
+    @Override
+    protected List<ReactPackage> getPackages() {
+    return Arrays.<ReactPackage>asList(
+        new MainReactPackage(),
+        new NavigationHybridPackage()
+    );
+}
+
+    @Override
+    protected String getJSMainModuleName() {
+        return "index";
         }
     };
-    
+
     @Override
     public ReactNativeHost getReactNativeHost() {
         return mReactNativeHost;
     }
-    
+
     public void onCreate() {
         super.onCreate();
         // react native
@@ -614,7 +599,7 @@ protected void onCreateMainComponent() {
     AwesomeFragment home = getReactBridgeManager().createFragment("Home");
     ReactNavigationFragment navigation = new ReactNavigationFragment();
     navigation.setRootFragment(home);
-    
+
     setRootFragment(navigation);
 }
 ```
@@ -623,8 +608,8 @@ protected void onCreateMainComponent() {
 
 ```xml
 <activity
-    android:name=".ReactEntryActivity"
-    android:theme="@style/Theme.AppCompat.NoActionBar"
+  android:name=".ReactEntryActivity"
+  android:theme="@style/Theme.AppCompat.NoActionBar"
 />
 ```
 
@@ -644,10 +629,10 @@ Navigation Hybrid 使用的构建版本是 27.1.1 ，你的项目可能使用了
 回到 RN 项目的根目录，创建一个叫 scripts 的文件夹，在里面创建一个叫 fix-build-version.js 的文件
 
 ```javascript
-const fs = require('fs-extra')
+const fs = require('fs-extra');
 
 // 找到 NavigatonHybrid 的 build.gradle 文件
-const navigationHybrid = './node_modules/react-native-navigation-hybrid/android/build.gradle'
+const navigationHybrid = './node_modules/react-native-navigation-hybrid/android/build.gradle';
 
 // 其它使用了原生源码的库，例如：
 // const codePush = './node_modules/react-native-code-push/android/app/build.gradle'
@@ -657,7 +642,7 @@ const gradles = [
   navigationHybrid,
   // codePush,
   // vectorIcons,
-]
+];
 
 gradles.forEach(gradle => {
   fs.readFile(gradle, 'utf8', function(err, data) {
@@ -687,14 +672,13 @@ gradles.forEach(gradle => {
     fs.outputFile(gradle, str);
   });
 });
-
 ```
 
 现在，让我们激活这个脚本。打开 package.json 文件，作如下修改
 
 ```diff
 "scripts": {
-    "start": "react-native start",
+"start": "react-native start",
 +   "fbv": "node scripts/fix-build-version.js",
 +   "postinstall": "npm run fbv"
 }
@@ -711,7 +695,7 @@ gradles.forEach(gradle => {
 ```ruby
 # 注意把 ReactNativeProject 替换成你的项目
 node_modules_path = '../ReactNativeProject/node_modules/'
-  
+
 pod 'React', :path => node_modules_path + 'react-native', :subspecs => [
     'Core',
     'CxxBridge',
@@ -733,7 +717,7 @@ pod 'yoga', :path => node_modules_path +  'react-native/ReactCommon/yoga'
 pod 'DoubleConversion', :podspec => node_modules_path + 'react-native/third-party-podspecs/DoubleConversion.podspec'
 pod 'GLog', :podspec => node_modules_path + 'react-native/third-party-podspecs/GLog.podspec'
 pod 'Folly', :podspec => node_modules_path + 'react-native/third-party-podspecs/Folly.podspec'
-  
+
 pod 'NavigationHybrid', :path => node_modules_path + 'react-native-navigation-hybrid'
 ```
 
@@ -744,14 +728,14 @@ pod 'NavigationHybrid', :path => node_modules_path + 'react-native-navigation-hy
 ```xml
 <key>NSAppTransportSecurity</key>
 <dict>
-    <key>NSExceptionDomains</key>
+  <key>NSExceptionDomains</key>
+  <dict>
+    <key>localhost</key>
     <dict>
-        <key>localhost</key>
-        <dict>
-            <key>NSExceptionAllowsInsecureHTTPLoads</key>
-            <true/>
-        </dict>
+      <key>NSExceptionAllowsInsecureHTTPLoads</key>
+      <true/>
     </dict>
+  </dict>
 </dict>
 ```
 
@@ -763,9 +747,8 @@ pod 'NavigationHybrid', :path => node_modules_path + 'react-native-navigation-hy
 
 点击三角图标展开，在其中填入
 
-```
-export NODE_BINARY=node
-../ReactNativeProject/node_modules/react-native/scripts/react-native-xcode.sh
+```bash
+export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/react-native-xcode.sh
 ```
 
 注意将 ReactNativeProject 替换成你的 RN 项目名
@@ -794,248 +777,221 @@ export NODE_BINARY=node
     return YES;
 }
 @end
-
 ```
 
 ## 容器
 
-### Stack 
+### Stack
 
-- 导航栈
+* 导航栈
 
-	我们先要理解一个叫**导航栈**的概念。在 iOS 中，一个导航栈对应一个 `UINavigationController`；在 Android 中，一个导航栈对应一个 `FragmentManager`。
+我们先要理解一个叫**导航栈**的概念。在 iOS 中，一个导航栈对应一个 `UINavigationController`；在 Android 中，一个导航栈对应一个 `FragmentManager`。
 
-- push
+* push
 
-	由 A 页面跳转到 B 页面。
-	
-	```javascript
-    // A.js
-    this.props.navigation.push('B')
-	```
+由 A 页面跳转到 B 页面。
 
-- pop
+```javascript
+// A.js
+this.props.navigation.push('B');
+```
 
-	返回到前一个页面。比如你由 A 页面 `push` 到 B 页面，现在想返回到 A 页面。
-	
-	```javascript
-    // B.js
-    this.props.navigation.pop()
-	```
+* pop
 
-- popTo
+返回到前一个页面。比如你由 A 页面 `push` 到 B 页面，现在想返回到 A 页面。
 
-	返回到之前的指定页面。比如你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回 B 页面。你可以把 B 页面的 `sceneId` 一直传递到 D 页面，然后调用 `popTo('bId')` 返回到 B 页面。
-	
-	从 B 页面跳转到 C 页面时
-	
-	```javascript
-    // B.js
-    this.props.navigation.push('C', {bId: this.props.sceneId})
-	```
-	
-	从 C 页面跳到 D 页面时 
-	
-	```javascript
-    // C.js
-    this.props.navigation.push('D', {bId: this.props.bId})
-	```
-	
-	现在想从 D 页面 返回到 B 页面
-	
-	```javascript
-    // D.js
-    this.props.navigation.popTo(this.props.bId)
-	```
-	
-- popToRoot
+```javascript
+// B.js
+this.props.navigation.pop();
+```
 
-	返回到当前导航栈根页面。比如 A 页面是根页面，你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回到根部，也就是 A 页面。
-	
-	```javascript
-    // D.js
-    this.props.navigation.popToRoot()
-	```
+* popTo
 
-- isRoot
+返回到之前的指定页面。比如你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回 B 页面。你可以把 B 页面的 `sceneId` 一直传递到 D 页面，然后调用 `popTo('bId')` 返回到 B 页面。
 
-	判断一个页面是否根页面，返回值是一个 Promise.
-	
-	```javascript
-    componentWillMount() {
-        this.props.navigation.isRoot().then((isRoot) => {
-            if(isRoot) {
-                this.props.garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
-                this.setState({isRoot});
-            }
-        })
+从 B 页面跳转到 C 页面时
+
+```javascript
+// B.js
+this.props.navigation.push('C', {bId: this.props.sceneId})
+`从 C 页面跳到 D 页面时`javascript
+// C.js
+this.props.navigation.push('D', {bId: this.props.bId})
+`现在想从 D 页面 返回到 B 页面`javascript
+// D.js
+this.props.navigation.popTo(this.props.bId)
+```
+
+* popToRoot
+
+返回到当前导航栈根页面。比如 A 页面是根页面，你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回到根部，也就是 A 页面。
+
+```javascript
+// D.js
+this.props.navigation.popToRoot();
+```
+
+* isRoot
+
+判断一个页面是否根页面，返回值是一个 Promise.
+
+```javascript
+componentWillMount() {
+  this.props.navigation.isRoot().then((isRoot) => {
+    if(isRoot) {
+      this.props.garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
+      this.setState({isRoot});
     }
-	``` 
+  })
+}
+```
 
-- replace
+* replace
 
-	用指定页面取代当前页面，比如当前页面是 A，想要替换成 B
-	
-	```javascript
-    // A.js
-    this.props.navigation.replace('B')
-	```
-	
-	现在导航栈里没有 A 页面了，被替换成了 B。
-	
-	> 注意：只能替换位于当前导航栈顶端的页面
-	
-- replaceToRoot
+用指定页面取代当前页面，比如当前页面是 A，想要替换成 B
 
-	把当前导航栈里的所有页面替换成一个页面。譬如 A 页面是根页面，然后 `push` 到 B、C、D 页面，此时导航栈里有 A、B、C、D 四个页面。如果想要重置当前导航栈，把 E 页面设置成根页面。
-	
-	```javascript
-    // D.js
-    this.props.navigation.replaceToRoot('E')
-	```
-	
-	现在导航栈里只有 E 页面了。
+```javascript
+// A.js
+this.props.navigation.replace('B');
+```
 
-- present
+现在导航栈里没有 A 页面了，被替换成了 B。 > 注意：只能替换位于当前导航栈顶端的页面
 
-	present 是一种模态交互模式，类似于 Android 的 `startActivityForResult`，要求后面的页面返回结果给发起 present 的页面。
-	
-	比如 A 页面 `present` 出 B 页面
-	
-	```javascript
-    // A.js
-    this.navigation.present('B', 1)
-	```
-	
-	B 页面返回结果给 A 页面 
-	
-	```javascript
-    // B.js
-    this.navigation.setResult(RESULT_OK, {text: 'greeting'})
-    this.navigation.dismiss()
-	```
-	
-	A 页面通过实现 `onComponentResult` 方法来接收结果
-	
-	```javascript
-    // A.js
-    onComponentResult(requestCode, resultCode, data) {
-        if(requestCode === 1) { 
-            if(resultCode === RESULT_OK) {
-                this.setState({text: data.text || '', error: undefined});
-            } else {
-                this.setState({text: undefined, error: 'ACTION CANCEL'});
-            }
-        }
+* replaceToRoot
+
+把当前导航栈里的所有页面替换成一个页面。譬如 A 页面是根页面，然后 `push` 到 B、C、D 页面，此时导航栈里有 A、B、C、D 四个页面。如果想要重置当前导航栈，把 E 页面设置成根页面。
+
+```javascript
+// D.js
+this.props.navigation.replaceToRoot('E');
+```
+
+现在导航栈里只有 E 页面了。
+
+* present
+
+present 是一种模态交互模式，类似于 Android 的 `startActivityForResult`，要求后面的页面返回结果给发起 present 的页面。
+
+比如 A 页面 `present` 出 B 页面
+
+```javascript
+// A.js
+this.navigation.present('B', 1);
+```
+
+B 页面返回结果给 A 页面
+
+```javascript
+// B.js
+this.navigation.setResult(RESULT_OK, { text: 'greeting' });
+this.navigation.dismiss();
+```
+
+A 页面通过实现 `onComponentResult` 方法来接收结果
+
+```javascript
+// A.js
+onComponentResult(requestCode, resultCode, data) {
+  if(requestCode === 1) {
+    if(resultCode === RESULT_OK) {
+      this.setState({text: data.text || '', error: undefined});
     }
-	```
-	
-	有些时候，比如选择一张照片，我们先要跳到相册列表页面，然后进入某个相册选择相片返回。这也是没有问题的。
-	
-	A 页面 `present` 出相册列表页面
-	
-	```javascript
-    //A.js
-    this.props.navigation.present('AlbumList', 1)
-	```
-	
-	相册列表页面 `push` 到某个相册
-	
-	```javascript
-    // AlbumList.js
-    this.props.navigation.push('Album')
-	```
-	
-	在相册页面选好相片后返回结果给 A 页面
-	
-	```javascript
-    // Album.js
-    this.props.navigation.setResult(RESULT_OK, {uri: 'file://...'})
-    this.props.navigation.dismiss()
-	```
-	
-	在 A 页面接收返回的结果（略）。
-	
-	> pop, popTo, popToRoot 也是可以返回结果给目标页面的，但是此时 `requestCode` 的值总是 0 。
-	
-- dismiss
+  } else {
+    this.setState({text: undefined, error: 'ACTION CANCEL'});
+  }
+}
+```
 
-	关闭 `present` 出来的整个导航栈中的页面，可以在当前导航栈中的任意页面调用。
-	
-- 传值
+有些时候，比如选择一张照片，我们先要跳到相册列表页面，然后进入某个相册选择相片返回。这也是没有问题的。 A 页面 `present` 出相册列表页面
 
-	由一个页面跳转到另一个页面时，`push`, `present`, `replace`, `replaceToRoot` 是可以通过 props 这个参数来传值的，但只支持可以序列化成 json 的对象。以下是这些方法的完整签名：
-	
-	```javascript
-    push(moduleName, props={}, options={}, animated = true)
-    	
-    replace(moduleName, props={}, options={})
-    	
-    replaceToRoot(moduleName, props={}, options={})
-    	
-    present(moduleName, requestCode,  props={}, options={}, animated = true)
-	```
-	
-	options 这个参数的作用我们会在其它地方讲解。
-	
-- 导航栈边界
+```javascript
+//A.js
+this.props.navigation.present('AlbumList', 1);
+```
 
-	比如 A `push` B `push` C `push` D `present` E `push` F
-	
-	现在存在两个导航栈，A、B、C、D 在一个栈，E 和 F 在另一栈，它们分界就是因为 E 是 D `present` 出来的。
-	
-	`popTo`, `popToRoot`, `replaceToRoot`, `isRoot` 都是有边界的
-	
-	在 F 调用 `popTo` 是不能返回 A、B、C、D 中的任何页面的，因为 F 和它们不在同一个栈。
-	
-	在 F 调用 `popToRoot` 只能返回到 E 页面，因为 E 就是 F 所在栈的根部。
-	
-	同理，在 F 调用 `replaceToRoot` 只能替换到 E 页面。
-	
-	在 A 或 E 中调用 `isRoot` 会返回 `true`，其它页面返回 `false`
-	
+相册列表页面 `push` 到某个相册
+
+```javascript
+// AlbumList.js
+this.props.navigation.push('Album')
+`在相册页面选好相片后返回结果给 A 页面`javascript
+// Album.js
+this.props.navigation.setResult(RESULT_OK, {uri: 'file://...'})
+this.props.navigation.dismiss()
+```
+
+在 A 页面接收返回的结果（略）。 > pop, popTo, popToRoot 也是可以返回结果给目标页面的，但是此时 `requestCode` 的值总是 0 。
+
+* dismiss
+
+关闭 `present` 出来的整个导航栈中的页面，可以在当前导航栈中的任意页面调用。
+
+* 传值
+
+由一个页面跳转到另一个页面时，`push`, `present`, `replace`, `replaceToRoot` 是可以通过 props 这个参数来传值的，但只支持可以序列化成 json 的对象。以下是这些方法的完整签名：
+
+```javascript
+push(moduleName, (props = {}), (options = {}), (animated = true));
+replace(moduleName, (props = {}), (options = {}));
+replaceToRoot(moduleName, (props = {}), (options = {}));
+present(moduleName, requestCode, (props = {}), (options = {}), (animated = true));
+```
+
+options 这个参数的作用我们会在其它地方讲解。
+
+* 导航栈边界
+
+比如 A `push` B `push` C `push` D `present` E `push` F
+
+现在存在两个导航栈，A、B、C、D 在一个栈，E 和 F 在另一栈，它们分界就是因为 E 是 D `present` 出来的。
+
+`popTo`, `popToRoot`, `replaceToRoot`, `isRoot` 都是有边界的
+
+在 F 调用 `popTo` 是不能返回 A、B、C、D 中的任何页面的，因为 F 和它们不在同一个栈。
+
+在 F 调用 `popToRoot` 只能返回到 E 页面，因为 E 就是 F 所在栈的根部。
+
+同理，在 F 调用 `replaceToRoot` 只能替换到 E 页面。
+
+在 A 或 E 中调用 `isRoot` 会返回 `true`，其它页面返回 `false`
 
 ### Tab
 
-- switchToTab
-    
-    切换到指定 tab
-    
-- setTabBadge
+* switchToTab
+  切换到指定 tab
+* setTabBadge
 
-    设置指定 tab 的 badge
+设置指定 tab 的 badge
 
 ### Drawer
 
-- toggleMenu
+* toggleMenu
 
-    切换抽屉的开关状态
+切换抽屉的开关状态
 
 <a name="navigation-hybrid"></a>
-    
-- openMenu
 
-    打开抽屉
-    
-- closeMenu
+* openMenu
 
-    关闭抽屉
-    
-- setMenuInteractive
+打开抽屉
 
-    是否允许通过手势打开 Menu
+* closeMenu
 
-    ```javascript
-    componentDidAppear() {
-        this.props.navigation.setMenuInteractive(true);
-    }
-    
-    componentDidDisappear() {
-        this.props.navigation.setMenuInteractive(false);
-    }
-    ```
+关闭抽屉
 
+* setMenuInteractive
 
+是否允许通过手势打开 Menu
+
+```javascript
+componentDidAppear() {
+  this.props.navigation.setMenuInteractive(true);
+}
+
+componentDidDisappear() {
+  this.props.navigation.setMenuInteractive(false);
+}
+```
 
 ## RN 页面与原生页面相互跳转和传值
 
@@ -1075,7 +1031,6 @@ Android 注册方式如下
 
 ```java
 public class MainApplication extends Application implements ReactApplication{
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -1088,7 +1043,6 @@ public class MainApplication extends Application implements ReactApplication{
         bridgeManager.registerNativeModule("OneNative", OneNativeFragment.class);
     }
 }
-
 ```
 
 iOS 注册方式如下
@@ -1097,13 +1051,12 @@ iOS 注册方式如下
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
     [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
-    
+
     // 注册原生模块
     [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
-    
+
     return YES;
 }
 
@@ -1111,7 +1064,6 @@ iOS 注册方式如下
 ```
 
 > 如果 RN 和原生都注册了同样的模块，即模块名相同，会优先采用 RN 模块。一个应用场景是，如果线上原生模块有严重 BUG，可以通过热更新用 RN 模块临时替换，并指引用户升级版本。
-
 
 ### 原生页面的跳转
 
@@ -1175,14 +1127,14 @@ public void setResult(int resultCode, Bundle data);
 通过重写以下方法来接收结果，不管这个页面是原生的还是 RN 的
 
 ```java
-public void onFragmentResult(int requestCode, int resultCode, Bundle data) { 
+public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
 
 }
 ```
 
 更多细节，请看 [AndroidNavigation](https://github.com/listenzz/AndroidNavigation) 这个子项目。
 
-#### iOS 
+#### iOS
 
 实例化时传值，不管这个页面是原生的还是 RN 的
 
@@ -1217,37 +1169,39 @@ self.props
 
 我们提供了三种设置图片的方式
 
-1. 加载静态图片
-    
-    ```javascript
-    import { Image } from 'react-native';
-    
-    icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
-    
-    ```
-    
-2. 加载原生图片
-    
-    ```javascript
-    import { PixelRatio } from 'react-native';
-    
-    icon: { uri: 'flower', scale: PixelRatio.get() },
-    ```
+1.  加载静态图片
 
-3. 加载网络图片（不推荐）
-    
-    ```javascript
-    icon: { uri: 'http://xxx.xx/?width=24&height=24&scale=3'}
-    ```
-    
-    会占用主线程，导致卡顿，并且没有缓存
-    
-4. 使用 icon font
+```javascript
+import { Image } from 'react-native';
 
-    ```javascript
-    icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
-    ```
-    如果项目中使用了 react-native-vector-icons 这样的库，请参考 playground 中 Options.js 这个文件
+icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+```
+
+2.  加载原生图片
+
+```javascript
+import { PixelRatio } from 'react-native';
+
+icon: { uri: 'flower', scale: PixelRatio.get() },
+```
+
+3.  加载网络图片（不推荐）
+
+```javascript
+icon: {
+  uri: 'http://xxx.xx/?width=24&height=24&scale=3';
+}
+```
+
+会占用主线程，导致卡顿，并且没有缓存
+
+4.  使用 icon font
+
+```javascript
+icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
+```
+
+如果项目中使用了 react-native-vector-icons 这样的库，请参考 playground 中 Options.js 这个文件
 
 ### 设置全局主题
 
@@ -1255,183 +1209,178 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 ```javascript
 {
-    screenBackgroundColor: String // 页面背景
-    topBarStyle: String // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
-    topBarColor: String // 顶部导航栏背景颜色
-    statusBarColor: String // 状态栏背景色，仅对 Android 5.0 以上版本生效
-    hideBackTitle: Bool // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-    elevation: Number // 导航栏阴影高度， 仅对 Android 5.0 以上版本生效，默认值为 4 dp
-    shadowImage: Object // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 
-    backIcon: Object // 返回按钮图标，需要传递一个带有 uri 和其它字段的对象
-    topBarTintColor: String // 顶部导航栏按钮的颜色
-    titleTextColor: String // 顶部导航栏标题颜色
-    titleTextSize: Int // 顶部导航栏标题字体大小，默认是 17 dp(pt)
-    titleAlignment: String // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left
-    barButtonItemTextSize: Int // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
-    
-    bottomBarColor: String // 底部 TabBar 背景颜色
-    bottomBarShadowImage: Object // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 。对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
-    bottomBarButtonItemActiveColor: String // 底部 TabBarItem 选中效果
-    bottomBarButtonItemInactiveColor: String // 底部 TabBarItem 未选中效果
+  screenBackgroundColor: String; // 页面背景
+  topBarStyle: String; // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
+  topBarColor: String; // 顶部导航栏背景颜色
+  statusBarColor: String; // 状态栏背景色，仅对 Android 5.0 以上版本生效
+  hideBackTitle: Bool; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
+  elevation: Number; // 导航栏阴影高度， 仅对 Android 5.0 以上版本生效，默认值为 4 dp
+  shadowImage: Object; // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
+  backIcon: Object; // 返回按钮图标，需要传递一个带有 uri 和其它字段的对象
+  topBarTintColor: String; // 顶部导航栏按钮的颜色
+  titleTextColor: String; // 顶部导航栏标题颜色
+  titleTextSize: Int; // 顶部导航栏标题字体大小，默认是 17 dp(pt)
+  titleAlignment: String; // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left
+  barButtonItemTextSize: Int; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
+
+  bottomBarColor: String; // 底部 TabBar 背景颜色
+  bottomBarShadowImage: Object; // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 。对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
+  bottomBarButtonItemActiveColor: String; // 底部 TabBarItem 选中效果
+  bottomBarButtonItemInactiveColor: String; // 底部 TabBarItem 未选中效果
 }
 ```
 
 > 全局设置主题，有些样式需要重新运行原生应用才能看到效果。
 
-- screenBackgroundColor 
+* screenBackgroundColor
 
-    页面背景，仅支持 #RRGGBB 格式的字符串。
+页面背景，仅支持 #RRGGBB 格式的字符串。
 
-- topBarStyle
+* topBarStyle
 
-	可选，导航栏和状态栏前景色，在 iOS 中，默认是白底黑字，在 Android 中，默认是黑底白字。
-	
-	这个字段一共有两个常量可选： `dark-content` 和 `light-content`，在 Android 6.0 效果如下。
-	
-	![topbar-default](./screenshot/topbar-default.png)
+可选，导航栏和状态栏前景色，在 iOS 中，默认是白底黑字，在 Android 中，默认是黑底白字。
 
-- topBarColor
+这个字段一共有两个常量可选： `dark-content` 和 `light-content`，在 Android 6.0 效果如下。
 
-	可选，导航栏（UINavigationBar | ToolBar）背景颜色。如果不设置，将根据 topBarStyle 来计算，如果 topBarStyle 的值是 dark-content，那么 topBarColor 的值是白色，否则是黑色。
-	
-	> 注意，可配置的颜色仅支持 #AARRGGBB 或者 #RRGGBB 格式的字符
+![topbar-default](./screenshot/topbar-default.png)
 
-- statusBarColor
+* topBarColor
 
-	可选，仅对 Android 5.0 以上版本生效。如果不设置，默认取 `topBarColor` 的值。
-	
-	系统启动时，由于还没有设置 statusBarColor，状态栏颜色会出现前后不一致的情况，下图是应用还没启动好时，状态栏可能的颜色。和上面的黑白图对比，是不是有种违和感。
-	
-	![statusbar-inperfect](./screenshot/statusbar-inperfect.png) 
-		
-	为了提供一致的用户体验，你可以为 Android 5.0 以上版本配置 `andriod:statusBarColor` 样式。
-	
-	1.在 res 目录下新建一个名为 values-v21 的文件夹
-	
-	![statusbar-setup-step-1](./screenshot/statusbar-setup-step-1.png) 
-	
-	2.在 values-v21 文件夹新建一个名为 styles.xml 的资源文件
-	
-	![statusbar-setup-step-2](./screenshot/statusbar-setup-step-2.png) 
-	
-	3.双击打开 values-v21 目录中的 styles.xml 文件，把 App 主题样式 `andriod:statusBarColor` 的值设置成和你用 Garden 设置的一样。
+可选，导航栏（UINavigationBar | ToolBar）背景颜色。如果不设置，将根据 topBarStyle 来计算，如果 topBarStyle 的值是 dark-content，那么 topBarColor 的值是白色，否则是黑色。
 
-    ```javascript
-    import { Garden } from 'react-native-navigation-hybrid'
-                	
-    Garden.setStyle({
-        statusBarColor: '#ffffff'
-    })
-       
-    ```
-        
-    ```xml
-    <?xml version="1.0" encoding="utf-8"?>
-    <resources>
-        <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-            <item name="android:statusBarColor">#ffffff</item>
-        </style>
-    </resources>
-    ```
-            
-    现在，应用启动时和启动完成后的状态栏颜色是一致的了。
+> 注意，可配置的颜色仅支持 #AARRGGBB 或者 #RRGGBB 格式的字符
 
-- hideBackTitle
+* statusBarColor
 
-	可选，仅对 iOS 生效，用来决定是否隐藏返回按钮旁边的文字，即前一个页面的标题
-	
-- elevation
+可选，仅对 Android 5.0 以上版本生效。如果不设置，默认取 `topBarColor` 的值。
 
-	可选，导航栏阴影高度，仅对 Android 5.0 以上版本生效，默认值为 4 dp
-	
-- shadowImage
+系统启动时，由于还没有设置 statusBarColor，状态栏颜色会出现前后不一致的情况，下图是应用还没启动好时，状态栏可能的颜色。和上面的黑白图对比，是不是有种违和感。
 
-	可选，导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效。
-	
-    ```javascript
-    // index.js
-    	
-    import { Image } from 'react-native'
-    import { Garden } from 'react-native-navigation-hybrid'
-    	
-    Garden.setStyle({
-        shadowImage: {
-            // color 和 image 二选其一，如果选择 color ，默认生成 1 dp(pt) 高度的纯色图片
-            color: '#cccccc', 
-            // image: Image.resolveAssetSource(require('./divider.png'))
-        },
-    })
-	
-    ```
-    
-    shadowImage 会有一个默认值，如果你想去掉，可以这样设置 
-    
-    ```javascript
-    Garden.setStyle({
-        shadowImage: {},
-    })
-    ```
+![statusbar-inperfect](./screenshot/statusbar-inperfect.png)
 
-- backIcon
+为了提供一致的用户体验，你可以为 Android 5.0 以上版本配置 `andriod:statusBarColor` 样式。
 
-	可选，配置返回按钮的图标。如果不配置，则采用平台默认的图标。配置方式如下
+1.在 res 目录下新建一个名为 values-v21 的文件夹
 
-    ```javascript
-    // index.js
-    	
-    import { Image } from 'react-native'
-    import { Garden } from 'react-native-navigation-hybrid'
-    	
-    Garden.setStyle({
-        backIcon: Image.resolveAssetSource(require('./ic_back.png')),
-    })
-	
-    ```
+![statusbar-setup-step-1](./screenshot/statusbar-setup-step-1.png)
 
-- topBarTintColor
+2.在 values-v21 文件夹新建一个名为 styles.xml 的资源文件
 
-	可选，顶部导航栏标题和按钮的颜色。如果不设置，将根据 topBarStyle 来计算，如果 topBarStyle 的值是 dark-content，那么 topBarTintColor 的值是黑色，否则是白色。
+![statusbar-setup-step-2](./screenshot/statusbar-setup-step-2.png)
 
-- titleTextColor
+3.双击打开 values-v21 目录中的 styles.xml 文件，把 App 主题样式 `andriod:statusBarColor` 的值设置成和你用 Garden 设置的一样。
 
-	可选，顶部导航栏标题的颜色。如果不设置，取 topBarTintColor 的值。
+```javascript
+import { Garden } from 'react-native-navigation-hybrid';
 
-- titleTextSize
+Garden.setStyle({
+  statusBarColor: '#ffffff',
+});
+```
 
-	可选，顶部导航栏标题的字体大小，默认是 17 dp(pt)。
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+  <item name="android:statusBarColor">#ffffff</item>
+</style>
+</resources>
+```
 
-- titleAlignment
+现在，应用启动时和启动完成后的状态栏颜色是一致的了。
 
-	可选，顶部导航栏标题的位置，仅对 Android 生效，有 left 和 center 两个值可选，默认是 left
+* hideBackTitle
 
-- barButtonItemTintColor
+可选，仅对 iOS 生效，用来决定是否隐藏返回按钮旁边的文字，即前一个页面的标题
 
-	可选，顶部导航栏按钮的颜色。如果不设置， 取 topBarTintColor 的值。
+* elevation
 
-- barButtonItemTextSize
+可选，导航栏阴影高度，仅对 Android 5.0 以上版本生效，默认值为 4 dp
 
-	可选，顶部导航栏按钮的字体大小，默认是 15 dp(pt)
+* shadowImage
 
-- bottomBarColor
+可选，导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效。
 
-    可选，UITabBar(iOS)、BottomNavigationBar(Android) 的背景颜色。
-    
-- bottomBarShadowImage
+```javascript
+// index.js
 
-    可选，UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。仅对 iOS 和 Android 4.4 以下版本生效 ，对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
-    配置方式请参考 `shadowImage`
-    
-    <a name="static-options"></a>
-    
-- bottomBarButtonItemActiveColor
+import { Image } from 'react-native';
+import { Garden } from 'react-native-navigation-hybrid';
 
-    可选，底部 TabBarItem 选中效果
+Garden.setStyle({
+  shadowImage: {
+    // color 和 image 二选其一，如果选择 color ，默认生成 1 dp(pt) 高度的纯色图片
+    color: '#cccccc',
+    // image: Image.resolveAssetSource(require('./divider.png'))
+  },
+});
+```
 
-- bottomBarButtonItemInactiveColor
+shadowImage 会有一个默认值，如果你想去掉，可以这样设置
 
-    可选，底部 TabBarItem 未选中效果
-    
-    
+```javascript
+Garden.setStyle({
+  shadowImage: {},
+});
+```
+
+* backIcon
+
+可选，配置返回按钮的图标。如果不配置，则采用平台默认的图标。配置方式如下
+
+```javascript
+// index.js
+
+import { Image } from 'react-native';
+import { Garden } from 'react-native-navigation-hybrid';
+
+Garden.setStyle({
+  backIcon: Image.resolveAssetSource(require('./ic_back.png')),
+});
+```
+
+* topBarTintColor
+
+可选，顶部导航栏标题和按钮的颜色。如果不设置，将根据 topBarStyle 来计算，如果 topBarStyle 的值是 dark-content，那么 topBarTintColor 的值是黑色，否则是白色。
+
+* titleTextColor
+
+可选，顶部导航栏标题的颜色。如果不设置，取 topBarTintColor 的值。
+
+* titleTextSize
+
+可选，顶部导航栏标题的字体大小，默认是 17 dp(pt)。
+
+* titleAlignment
+
+可选，顶部导航栏标题的位置，仅对 Android 生效，有 left 和 center 两个值可选，默认是 left
+
+* barButtonItemTintColor
+
+可选，顶部导航栏按钮的颜色。如果不设置， 取 topBarTintColor 的值。
+
+* barButtonItemTextSize
+
+可选，顶部导航栏按钮的字体大小，默认是 15 dp(pt)
+
+* bottomBarColor
+
+可选，UITabBar(iOS)、BottomNavigationBar(Android) 的背景颜色。
+
+* bottomBarShadowImage
+
+可选，UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。仅对 iOS 和 Android 4.4 以下版本生效 ，对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效配置方式请参考 `shadowImage`
+
+<a name="static-options"></a>
+
+* bottomBarButtonItemActiveColor
+
+可选，底部 TabBarItem 选中效果
+
+* bottomBarButtonItemInactiveColor
+
+可选，底部 TabBarItem 未选中效果
+
 ### 静态配置页面
 
 每个页面的标题、按钮，通常是固定的，我们可以通过静态的方式来配置。
@@ -1440,144 +1389,144 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 ```javascript
 class Screen extends Component {
+  static navigationItem = {
+    screenColor: '#FFFFFF', // 当前页面背景
+    topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
+    topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，可以是透明颜色
+    topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
+    titleTextColor: '#FFFFFF', // 当前页面标题颜色
+    topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
+    topBarHidden: true, // 是否隐藏当前页面 topBar
+    backButtonHidden: true, // 当前页面是否隐藏返回按钮
+    backInteractive: true, // 当前页面是否可以通过右滑或返回键返回
 
-    static navigationItem = {
-        screenColor: '#FFFFFF',     // 当前页面背景
-        topBarAlpha: 0.5,           // 当前页面 topBar 背景透明度
-        topBarColor: '#FDFF0000',   // 当前页面 topBar 背景颜色，可以是透明颜色 
-        topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
-        titleTextColor: '#FFFFFF',  // 当前页面标题颜色
-        topBarShadowHidden: true,   // 是否隐藏当前页面 topBar 的阴影
-        topBarHidden: true,         // 是否隐藏当前页面 topBar
-        backButtonHidden: true,     // 当前页面是否隐藏返回按钮
-        backInteractive: true,      // 当前页面是否可以通过右滑或返回键返回
-        
-        titleItem: {               // 导航栏标题
-            tilte: '这是标题',
-            moduleName: 'ModuleName',  // 自定义标题栏模块名
-            layoutFitting: 'expanded', // 自定义标题栏填充模式，expanded 或 compressed
-        },
-        	
-        leftBarButtonItem: {      // 导航栏左侧按钮
-            title: '按钮',
-            icon: Image.resolveAssetSource(require('./ic_settings.png')),
-            insets: {top: -1, left: -8, bottom: 0, right: 0},
-            action: navigation => { navigation.toggleMenu(); },
-            enabled: true,
-            tintColor: '#FFFF00',
-        },
-        	
-        rightBarButtonItem: {     // 导航栏右侧按钮
-            // 可配置项同 leftBarButtonItem
-        },
-        
-        leftBarButtonItems: [
-            {
-                // 可配置项同 leftBarButtonItem
-            },
-            {
-                // 可配置项同 leftBarButtonItem
-            },
-        ],
-        
-        rightBarButtonItems: [
-            {
-                // 可配置项同 leftBarButtonItem
-            },
-            {
-                // 可配置项同 leftBarButtonItem
-            },
-        ],
-        
-        tabItem: {               // 底部 TabBarItem 可配置项
-            title: 'Style',
-            icon: { uri: fontUri('FontAwesome', 'leaf', 20) },
-            inactiveIcon: { uri: fontUri('FontAwesome', 'leaf', 20) },
-            hideTabBarWhenPush: true,
-        }
-    }
-    	
+    titleItem: {
+      // 导航栏标题
+      tilte: '这是标题',
+      moduleName: 'ModuleName', // 自定义标题栏模块名
+      layoutFitting: 'expanded', // 自定义标题栏填充模式，expanded 或 compressed
+    },
+
+    leftBarButtonItem: {
+      // 导航栏左侧按钮
+      title: '按钮',
+      icon: Image.resolveAssetSource(require('./ic_settings.png')),
+      insets: { top: -1, left: -8, bottom: 0, right: 0 },
+      action: navigation => {
+        navigation.toggleMenu();
+      },
+      enabled: true,
+      tintColor: '#FFFF00',
+    },
+
+    rightBarButtonItem: {
+      // 导航栏右侧按钮
+      // 可配置项同 leftBarButtonItem
+    },
+
+    leftBarButtonItems: [
+      {
+        // 可配置项同 leftBarButtonItem
+      },
+      {
+        // 可配置项同 leftBarButtonItem
+      },
+    ],
+
+    rightBarButtonItems: [
+      {
+        // 可配置项同 leftBarButtonItem
+      },
+      {
+        // 可配置项同 leftBarButtonItem
+      },
+    ],
+
+    tabItem: {
+      // 底部 TabBarItem 可配置项
+      title: 'Style',
+      icon: { uri: fontUri('FontAwesome', 'leaf', 20) },
+      inactiveIcon: { uri: fontUri('FontAwesome', 'leaf', 20) },
+      hideTabBarWhenPush: true,
+    },
+  };
 }
 ```
 
-- topBarAlpha
+* topBarAlpha
 
-    可选，默认值是 1.0。 当前页面 topBar 背景透明度，如果想调整 topBar 透明度，请使用该配置项
-    
-- topBarColor
+可选，默认值是 1.0。 当前页面 topBar 背景透明度，如果想调整 topBar 透明度，请使用该配置项
 
-    可选，该设置会在当前页面覆盖全局设置中 topBarColor 的值，颜色可以是透明的，如果单纯只想调整透明度，请使用 topBarAlpha
-    
-- topBarShadowHidden
+* topBarColor
 
-    可选，默认是 false。用来控制当前页面是否隐藏 topBar 的阴影
-    
-- topBarHidden
+可选，该设置会在当前页面覆盖全局设置中 topBarColor 的值，颜色可以是透明的，如果单纯只想调整透明度，请使用 topBarAlpha
 
-    可选，默认值是 false。当前页面是否隐藏 topBar，同时会隐藏 topBar 的阴影
-    
+* topBarShadowHidden
 
-- backButtonHidden
+可选，默认是 false。用来控制当前页面是否隐藏 topBar 的阴影
 
-    可选，默认值是 false。用来控制是否隐藏当前页面的返回按钮。
-	
-- backInteractive
+* topBarHidden
 
-    可选，默认值是 true。 禁止用户通过右滑（iOS）或返回键（Android）退出当前页面，通常用于有重要信息需要用户确认后才可退出当前页面的场景。
-	
-- titleItem
+可选，默认值是 false。当前页面是否隐藏 topBar，同时会隐藏 topBar 的阴影
 
-    可选，设置页面标题。
-    
-    title 设置页面标题。
-    
-    moduleName 如果希望自定义标题栏，那么通过此配置项设置模块名，模块需要通过 ReactRegistry.registerComponent 注册。一旦设置了 moduleName，title 字段将失效
-    
-    layoutFitting 配合 moduleName 使用，自定义标题栏的布局模式，有 expanded 和 compressed 两个可选值，默认是 compressed。 expanded 是指尽可能占据更多的空间， compressed 是指刚好能包裹自身内容。
-    
-    当自定义标题栏时，可能需要将 backButtonHidden 设置为 true，以为标题栏提供更多的空间。
-    
-    标题栏和所属页面共享同一个 navigation 对象，你可以在所属页面通过以下方式传递参数给标题栏使用
-    
-    ```javascript
-    this.props.navigation.setParams({}) 
-    ```
-    详情请参考 playground 中 TopBarTitleView.js 这个文件。
+* backButtonHidden
 
-- leftBarButtonItem
+可选，默认值是 false。用来控制是否隐藏当前页面的返回按钮。
 
-    可选，设置导航栏左侧按钮。
-	
-    title 是按钮标题，icon 是按钮图标，两者设置其一则可，如果同时设置，则只会显示图标。
-	
-    insets 仅对 iOS 生效，用于调整按钮 icon 或 title 的位置。
-	
-    action 是个函数，它接收 navigation 作为参数，当按钮被点击时调用。
-	
-    enabled 是个布尔值，可选，用来标识按钮是否可以点击，默认是 true。
+* backInteractive
 
-    tintColor 按钮颜色，可选，覆盖全局设置，实现个性化颜色
+可选，默认值是 true。 禁止用户通过右滑（iOS）或返回键（Android）退出当前页面，通常用于有重要信息需要用户确认后才可退出当前页面的场景。
 
-- rightBarButtonItem
+* titleItem
 
-    可选，导航栏右侧按钮，可配置项同 leftBarButtonItem。
-	
-- leftBarButtonItems
+可选，设置页面标题。
 
-    可选，导航栏左侧按钮，配置项是个数组，当有多个左侧按钮时使用。一旦设置此值，leftBarButtonItem 将会失效
-    
-- rightBarButtonItems
+title 设置页面标题。
 
-    可选，导航栏右侧按钮，配置项是个数组，当有多个右侧按钮时使用。一旦设置此值，rightBarButtonItem 将会失效
-	
-- tabItem 
+moduleName 如果希望自定义标题栏，那么通过此配置项设置模块名，模块需要通过 ReactRegistry.registerComponent 注册。一旦设置了 moduleName，title 字段将失效
 
-    可选，设置 UITabBar(iOS)、BottomNavigationBar(Android) 的 tab 标题和 icon。
-    
-    如果设置了 inactiveIcon，tab 未选中时，会展示该图片，否则改变 icon 的颜色为 bottomBarButtonItemInactiveColor
-    
-    hideTabBarWhenPush, 当 Stack 嵌套在 Tab 的时候，push 到另一个页面时是否隐藏 TabBar
-      
+layoutFitting 配合 moduleName 使用，自定义标题栏的布局模式，有 expanded 和 compressed 两个可选值，默认是 compressed。 expanded 是指尽可能占据更多的空间， compressed 是指刚好能包裹自身内容。
+
+当自定义标题栏时，可能需要将 backButtonHidden 设置为 true，以为标题栏提供更多的空间。
+
+标题栏和所属页面共享同一个 navigation 对象，你可以在所属页面通过以下方式传递参数给标题栏使用
+
+```javascript
+this.props.navigation.setParams({});
+```
+
+详情请参考 playground 中 TopBarTitleView.js 这个文件。
+
+* leftBarButtonItem
+
+可选，设置导航栏左侧按钮。
+title 是按钮标题，icon 是按钮图标，两者设置其一则可，如果同时设置，则只会显示图标。
+insets 仅对 iOS 生效，用于调整按钮 icon 或 title 的位置。
+action 是个函数，它接收 navigation 作为参数，当按钮被点击时调用。
+enabled 是个布尔值，可选，用来标识按钮是否可以点击，默认是 true。
+
+tintColor 按钮颜色，可选，覆盖全局设置，实现个性化颜色
+
+* rightBarButtonItem
+
+可选，导航栏右侧按钮，可配置项同 leftBarButtonItem。
+
+* leftBarButtonItems
+
+可选，导航栏左侧按钮，配置项是个数组，当有多个左侧按钮时使用。一旦设置此值，leftBarButtonItem 将会失效
+
+* rightBarButtonItems
+
+可选，导航栏右侧按钮，配置项是个数组，当有多个右侧按钮时使用。一旦设置此值，rightBarButtonItem 将会失效
+
+* tabItem
+
+可选，设置 UITabBar(iOS)、BottomNavigationBar(Android) 的 tab 标题和 icon。
+
+如果设置了 inactiveIcon，tab 未选中时，会展示该图片，否则改变 icon 的颜色为 bottomBarButtonItemInactiveColor
+
+hideTabBarWhenPush, 当 Stack 嵌套在 Tab 的时候，push 到另一个页面时是否隐藏 TabBar
+
 ### 动态配置页面
 
 有时，需要根据业务状态来动态改变导航栏中的项目。比如 rightBarButtonItem 是否可以点击，就是个很好的例子。
@@ -1586,87 +1535,81 @@ class Screen extends Component {
 
 #### 传值配置
 
-譬如以下是 B 页面的静态配置 
+譬如以下是 B 页面的静态配置
 
 ```javascript
 // B.js
 class B extends Component {
-    static navigationItem = {
-        titleItem: {               
-            tilte: 'B 的标题', 
-        },
-        rightBarButtonItem: {      
-            title: 'B 的按钮',
-            action: navigation => {},
-        },
-    }
+  static navigationItem = {
+    titleItem: {
+      tilte: 'B 的标题',
+    },
+    rightBarButtonItem: {
+      title: 'B 的按钮',
+      action: navigation => {},
+    },
+  };
 }
 ```
 
-正常情况下，B 的导航栏标题是 *B 的标题*，导航栏右侧按钮的标题是 *B 的按钮*。
+正常情况下，B 的导航栏标题是 _B 的标题_，导航栏右侧按钮的标题是 _B 的按钮_。
 
 从 A 页面跳转到 B 页面时，我们可以改变 B 页面中的静态设置
 
 ```javascript
 // A.js
-this.props.navigation.push('B', {/*props*/}, {
+this.props.navigation.push(
+  'B',
+  {
+    /*props*/
+  },
+  {
     titleItem: {
-        title: '来自 A 的标题'
+      title: '来自 A 的标题',
     },
     rightBarButtonItem: {
-        title: '来自 A 的按钮'
-    }
-})
-
+      title: '来自 A 的按钮',
+    },
+  }
+);
 ```
 
-那么，如果 B 页面是从 A 跳过来的，那么 B 的导航栏标题就会变成 *来自 A 的标题* ，导航栏右侧按钮的标题就会变成 *来自 A 的按钮*。
-
+那么，如果 B 页面是从 A 跳过来的，那么 B 的导航栏标题就会变成 _来自 A 的标题_ ，导航栏右侧按钮的标题就会变成 _来自 A 的按钮_。
 
 #### 动态配置
 
 Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
 
-- setTitleItem
+* setTitleItem
 
-	更改标题
-    
-    ```javascript
-    this.props.garden.setTitleItem({
-        title: '新的标题'
-    })
-    ```
+更改标题
 
-- setLeftBarButtonItem
+```javascript
+this.props.garden.setTitleItem({
+  title: '新的标题',
+});
+```
 
-	更改左侧按钮
-	
-	```javascript
-    this.props.garden.setLeftBarButtonItem({
-        title: 'Cancel',
-        insets: { top: -1, left: -8, bottom: 0, right: 8 },
-        action: navigation => {
-            navigation.dismiss();
-        },
-    });
-	```
+* setLeftBarButtonItem
 
-- setRightBarButtonItem
+更改左侧按钮
 
-	更改右侧按钮
-	
-    ```javascript
-    this.props.garden.setRightBarButtonItem({
-        enabled: false
-    })
-    ```
+```javascript
+this.props.garden.setLeftBarButtonItem({
+  title: 'Cancel',
+  insets: { top: -1, left: -8, bottom: 0, right: 8 },
+  action: navigation => {
+    navigation.dismiss();
+  },
+});
+```
 
+* setRightBarButtonItem
 
+更改右侧按钮
 
-
-
-
-
-
-
-
+```javascript
+this.props.garden.setRightBarButtonItem({
+  enabled: false,
+});
+```

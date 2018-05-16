@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, ScrollView, PixelRatio } from 'react-native';
 
 import styles from './Styles';
-import { RESULT_OK } from 'react-native-navigation-hybrid';
+import { RESULT_OK, Navigation as NavigationModule } from 'react-native-navigation-hybrid';
 import fontUri from './FontUtil';
 
 const REQUEST_CODE = 1;
@@ -38,6 +38,8 @@ export default class Navigation extends Component {
     this.replaceToRoot = this.replaceToRoot.bind(this);
     this.present = this.present.bind(this);
     this.switchToTab = this.switchToTab.bind(this);
+    this.routeGraph = this.routeGraph.bind(this);
+    this.currentRoute = this.currentRoute.bind(this);
     this.state = {
       text: undefined,
       backId: undefined,
@@ -125,6 +127,18 @@ export default class Navigation extends Component {
     this.props.navigation.switchToTab(1);
   }
 
+  routeGraph() {
+    NavigationModule.routeGraph().then(graph => {
+      console.info(graph);
+    });
+  }
+
+  currentRoute() {
+    NavigationModule.currentRoute().then(route => {
+      console.info(route);
+    });
+  }
+
   render() {
     return (
       <ScrollView
@@ -188,6 +202,14 @@ export default class Navigation extends Component {
 
           <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>switch to tab 'Options'</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.routeGraph} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>print route graph</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.currentRoute} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>current route</Text>
           </TouchableOpacity>
 
           {this.state.text !== undefined && (
