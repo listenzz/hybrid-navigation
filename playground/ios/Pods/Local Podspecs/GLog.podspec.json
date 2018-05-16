@@ -1,5 +1,5 @@
 {
-  "name": "GLog",
+  "name": "glog",
   "version": "0.3.4",
   "license": {
     "type": "Google",
@@ -14,6 +14,7 @@
     "tag": "v0.3.4"
   },
   "module_name": "glog",
+  "header_dir": "glog",
   "source_files": [
     "src/glog/*.h",
     "src/demangle.cc",

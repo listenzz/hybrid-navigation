@@ -1,14 +1,14 @@
 {
   "name": "React",
-  "version": "0.50.3",
+  "version": "0.55.3",
   "summary": "A framework for building native apps using React",
   "description": "React Native apps are built using the React JS\nframework, and render directly to native UIKit\nelements using a fully asynchronous architecture.\nThere is no browser and no HTML. We have picked what\nwe think is the best set of features from these and\nother technologies to build what we hope to become\nthe best product development framework available,\nwith an emphasis on iteration speed, developer\ndelight, continuity of technology, and absolutely\nbeautiful and fast products with no compromises in\nquality or capability.",
   "homepage": "http://facebook.github.io/react-native/",
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "authors": "Facebook",
   "source": {
     "git": "https://github.com/facebook/react-native.git",
-    "tag": "v0.50.3"
+    "tag": "v0.55.3"
   },
   "default_subspecs": "Core",
   "requires_arc": true,
@@ -22,8 +22,7 @@
   "preserve_paths": [
     "package.json",
     "LICENSE",
-    "LICENSE-docs",
-    "PATENTS"
+    "LICENSE-docs"
   ],
   "cocoapods_version": ">= 1.2.0",
   "subspecs": [
@@ -31,10 +30,13 @@
       "name": "Core",
       "dependencies": {
         "yoga": [
-          "0.50.3.React"
+          "0.55.3.React"
         ]
       },
-      "source_files": "React/**/*.{c,h,m,mm,S}",
+      "source_files": "React/**/*.{c,h,m,mm,S,cpp}",
+      "ios": {
+        "exclude_files": "React/**/RCTTV*.*"
+      },
       "exclude_files": [
         "**/__tests__/*",
         "IntegrationTests/*",
@@ -42,12 +44,9 @@
         "React/Inspector/*",
         "ReactCommon/yoga/*",
         "React/Cxx*/*",
-        "React/Base/RCTBatchedBridge.mm",
-        "React/Executors/*"
+        "React/Fabric/*",
+        "React/**/RCTTV*.*"
       ],
-      "ios": {
-        "exclude_files": "React/**/RCTTVView.*"
-      },
       "tvos": {
         "exclude_files": [
           "React/Modules/RCTClipboard*",
@@ -65,21 +64,6 @@
       "pod_target_xcconfig": {
         "HEADER_SEARCH_PATHS": "\"$(PODS_TARGET_SRCROOT)/ReactCommon\""
       }
-    },
-    {
-      "name": "BatchedBridge",
-      "dependencies": {
-        "React/Core": [
-
-        ],
-        "React/cxxreact_legacy": [
-
-        ]
-      },
-      "source_files": [
-        "React/Base/RCTBatchedBridge.mm",
-        "React/Executors/*"
-      ]
     },
     {
       "name": "CxxBridge",
@@ -120,32 +104,7 @@
 
         ]
       },
-      "source_files": "React/**/RCTTVView.{h, m}"
-    },
-    {
-      "name": "jschelpers_legacy",
-      "source_files": [
-        "ReactCommon/jschelpers/{JavaScriptCore,JSCWrapper,InspectorInterfaces}.{cpp,h}",
-        "ReactCommon/jschelpers/systemJSCWrapper.cpp"
-      ],
-      "private_header_files": "ReactCommon/jschelpers/{JavaScriptCore,JSCWrapper,InspectorInterfaces}.h",
-      "pod_target_xcconfig": {
-        "HEADER_SEARCH_PATHS": "\"$(PODS_TARGET_SRCROOT)/ReactCommon\""
-      },
-      "frameworks": "JavaScriptCore"
-    },
-    {
-      "name": "cxxreact_legacy",
-      "dependencies": {
-        "React/jschelpers_legacy": [
-
-        ]
-      },
-      "source_files": "ReactCommon/cxxreact/{JSBundleType,oss-compat-util}.{cpp,h}",
-      "private_header_files": "ReactCommon/cxxreact/{JSBundleType,oss-compat-util}.h",
-      "pod_target_xcconfig": {
-        "HEADER_SEARCH_PATHS": "\"$(PODS_TARGET_SRCROOT)/ReactCommon\""
-      }
+      "source_files": "React/**/RCTTV*.{h, m}"
     },
     {
       "name": "jschelpers",
@@ -166,6 +125,14 @@
       "frameworks": "JavaScriptCore"
     },
     {
+      "name": "jsinspector",
+      "source_files": "ReactCommon/jsinspector/*.{cpp,h}",
+      "private_header_files": "ReactCommon/jsinspector/*.h",
+      "pod_target_xcconfig": {
+        "HEADER_SEARCH_PATHS": "\"$(PODS_TARGET_SRCROOT)/ReactCommon\""
+      }
+    },
+    {
       "name": "PrivateDatabase",
       "source_files": "ReactCommon/privatedata/*.{cpp,h}",
       "private_header_files": "ReactCommon/privatedata/*.h",
@@ -179,8 +146,11 @@
         "React/jschelpers": [
 
         ],
-        "boost": [
+        "React/jsinspector": [
 
+        ],
+        "boost-for-react-native": [
+          "1.63.0"
         ],
         "Folly": [
           "2016.09.26.00"
@@ -191,7 +161,7 @@
       "exclude_files": "ReactCommon/cxxreact/SampleCxxModule.*",
       "private_header_files": "ReactCommon/cxxreact/*.h",
       "pod_target_xcconfig": {
-        "HEADER_SEARCH_PATHS": "\"$(PODS_TARGET_SRCROOT)/ReactCommon\" \"$(PODS_ROOT)/boost\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/Folly\""
+        "HEADER_SEARCH_PATHS": "\"$(PODS_TARGET_SRCROOT)/ReactCommon\" \"$(PODS_ROOT)/boost-for-react-native\" \"$(PODS_ROOT)/DoubleConversion\" \"$(PODS_ROOT)/Folly\""
       }
     },
     {
@@ -229,7 +199,7 @@
 
         ]
       },
-      "source_files": "Libraries/Blob/*.{h,m}",
+      "source_files": "Libraries/Blob/*.{h,m,mm}",
       "preserve_paths": "Libraries/Blob/*.js"
     },
     {
@@ -299,7 +269,7 @@
 
         ]
       },
-      "source_files": "Libraries/Text/*.{h,m}"
+      "source_files": "Libraries/Text/**/*.{h,m}"
     },
     {
       "name": "RCTVibration",

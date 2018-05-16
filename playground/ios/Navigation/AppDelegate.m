@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTLinkingManager.h>
 #import <NavigationHybrid/NavigationHybrid.h>
 #import "OneNativeViewController.h"
 
@@ -49,5 +50,21 @@
     
     return YES;
 }
+
+//// iOS 8.x or older
+//- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+//{
+//    return [RCTLinkingManager application:application openURL:url sourceApplication:sourceApplication annotation:annotation];
+//}
+//
+// iOS 9.x or newer
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    return [RCTLinkingManager application:application openURL:url options:options];
+}
+
+//// universal links
+//- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler {
+//    return [RCTLinkingManager application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
+//}
 
 @end

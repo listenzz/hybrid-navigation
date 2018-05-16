@@ -26,6 +26,14 @@ export default class Menu extends Component {
     this.props.navigation.push('ReduxCounter');
   }
 
+  componentDidAppear() {
+    console.info('Menu componentDidAppear');
+  }
+
+  componentDidDisappear() {
+    console.info('Menu componentDidDisappear');
+  }
+
   render() {
     return (
       <View style={styles.container}>

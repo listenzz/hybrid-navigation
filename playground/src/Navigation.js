@@ -5,7 +5,7 @@
  */
 
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView, PixelRatio } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView, PixelRatio, Linking } from 'react-native';
 
 import styles from './Styles';
 import { RESULT_OK, Navigation as NavigationModule } from 'react-native-navigation-hybrid';
@@ -53,6 +53,22 @@ export default class Navigation extends Component {
       if (isRoot) {
         this.setState({ isRoot });
       }
+    });
+  }
+
+  componentDidMount() {
+    Linking.getInitialURL()
+      .then(url => {
+        if (url) {
+          console.info('Initial url is: ' + url);
+        } else {
+          console.info('Launch with no initial url.');
+        }
+      })
+      .catch(err => console.error('An error occurred', err));
+
+    Linking.addEventListener('url', event => {
+      console.log(event);
     });
   }
 

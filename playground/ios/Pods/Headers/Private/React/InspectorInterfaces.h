@@ -1,1 +1,1 @@
-../../../../../../node_modules/react-native/ReactCommon/jschelpers/InspectorInterfaces.h
+../../../../../../node_modules/react-native/ReactCommon/jsinspector/InspectorInterfaces.h
