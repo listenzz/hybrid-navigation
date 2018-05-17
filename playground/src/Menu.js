@@ -1,9 +1,3 @@
-/**
- * react-native-navigation-hybrid
- * https://github.com/listenzz/react-native-navigation-hybrid
- * @flow
- */
-
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View } from 'react-native';
 
@@ -24,14 +18,6 @@ export default class Menu extends Component {
   pushToRedux() {
     this.props.navigation.closeMenu();
     this.props.navigation.push('ReduxCounter');
-  }
-
-  componentDidAppear() {
-    console.info('Menu componentDidAppear');
-  }
-
-  componentDidDisappear() {
-    console.info('Menu componentDidDisappear');
   }
 
   render() {

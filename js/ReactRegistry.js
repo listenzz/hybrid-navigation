@@ -1,14 +1,9 @@
-/**
- * react-native-navigation-hybrid
- * https://github.com/listenzz/react-native-navigation-hybrid
- * @flow
- */
-
 import { AppRegistry, DeviceEventEmitter, NativeEventEmitter, Platform } from 'react-native';
 import React, { Component } from 'react';
 import Navigation from './Navigation';
 import NavigationModule from './NavigationModule';
 import Garden from './Garden';
+import router from './Router';
 
 const EventEmitter = Platform.select({
   ios: new NativeEventEmitter(NavigationModule),
@@ -43,6 +38,7 @@ function copy(obj = {}) {
 export default {
   startRegisterComponent(componentWrapper) {
     console.info('begin register react component');
+    router.clear();
     componentWrapperFunc = componentWrapper;
     NavigationModule.startRegisterReactComponent();
   },
@@ -52,8 +48,9 @@ export default {
     console.info('end register react component');
   },
 
-  registerComponent(appKey, componentProvider) {
+  registerComponent(appKey, componentProvider, routeConfig) {
     const RealComponent = componentProvider();
+    router.addRoute(appKey, routeConfig);
 
     class Screen extends Component {
       constructor(props) {

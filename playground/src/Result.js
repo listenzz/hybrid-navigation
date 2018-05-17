@@ -1,16 +1,9 @@
-/**
- * react-native-navigation-hybrid
- * https://github.com/listenzz/react-native-navigation-hybrid
- * @flow
- */
-
 import React, { Component } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { TouchableOpacity, Text, View, TextInput } from 'react-native';
-
 import styles from './Styles';
 
-import { RESULT_OK, Navigation } from 'react-native-navigation-hybrid';
+import { RESULT_OK } from 'react-native-navigation-hybrid';
 
 export default class Result extends Component {
   static navigationItem = {
@@ -25,8 +18,6 @@ export default class Result extends Component {
     this.pushToReact = this.pushToReact.bind(this);
     this.sendResult = this.sendResult.bind(this);
     this.onInputTextChanged = this.onInputTextChanged.bind(this);
-    this.routeGraph = this.routeGraph.bind(this);
-    this.currentRoute = this.currentRoute.bind(this);
     this.state = {
       text: '',
       isRoot: false,
@@ -50,18 +41,6 @@ export default class Result extends Component {
 
   popToRoot() {
     this.props.navigation.popToRoot();
-  }
-
-  routeGraph() {
-    Navigation.routeGraph().then(graph => {
-      console.info(graph);
-    });
-  }
-
-  currentRoute() {
-    Navigation.currentRoute().then(route => {
-      console.info(route);
-    });
   }
 
   pushToReact() {
@@ -103,14 +82,6 @@ export default class Result extends Component {
             <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
               pop to home
             </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.routeGraph} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>print route graph</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.currentRoute} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>current route</Text>
           </TouchableOpacity>
 
           <TextInput

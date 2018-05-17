@@ -1,46 +1,8 @@
-/**
- * react-native-navigation-hybrid
- * https://github.com/listenzz/react-native-navigation-hybrid
- * @flow
- */
-
 import NavigationModule from './NavigationModule';
 
 export default class Navigattion {
-  /**
-   * ```
-   * {
-   *   drawer: [
-   *     {
-   *       tabs: [
-   *         {
-   *           stack: {
-   *             screen: { moduleName: 'ReactNavigation' },
-   *           },
-   *         },
-   *         {
-   *           stack: {
-   *             screen: { moduleName: 'CustomStyle' },
-   *           },
-   *         },
-   *       ],
-   *     },
-   *     { screen: { moduleName: 'Menu' } },
-   *   ],
-   * }
-   * ```
-   */
   static setRoot(layout, sticky = false) {
-    // console.info('root:' + JSON.stringify(layout));
     NavigationModule.setRoot(layout, sticky);
-  }
-
-  static routeGraph() {
-    return NavigationModule.routeGraph();
-  }
-
-  static currentRoute() {
-    return NavigationModule.currentRoute();
   }
 
   static result_ok = NavigationModule.RESULT_OK;

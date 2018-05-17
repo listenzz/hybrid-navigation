@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -186,6 +188,7 @@ public class ReactAppCompatActivityDelegate {
         FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
         int count = fragmentManager.getBackStackEntryCount();
         if (count > 0) {
+            mActivity.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
             String tag = fragmentManager.getBackStackEntryAt(0).getName();
             fragmentManager.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }

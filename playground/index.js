@@ -1,9 +1,3 @@
-/**
- * react-native-navigation-hybrid
- * https://github.com/listenzz/react-native-navigation-hybrid
- * @flow
- */
-
 import { ReactRegistry, Garden, Navigation } from 'react-native-navigation-hybrid';
 import { Image, Platform } from 'react-native';
 import React, { Component } from 'react';
@@ -66,22 +60,27 @@ function componentWrapper(componentProvider) {
 ReactRegistry.startRegisterComponent(componentWrapper);
 
 ReactRegistry.registerComponent('Navigation', () => ReactNavigation);
-ReactRegistry.registerComponent('Result', () => Result);
+ReactRegistry.registerComponent('Result', () => Result, { path: 'result/:result', mode: 'modal' });
 ReactRegistry.registerComponent('Options', () => Options);
-ReactRegistry.registerComponent('Menu', () => Menu);
-ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter);
+ReactRegistry.registerComponent('Menu', () => Menu, { path: 'menu' });
+ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter, { path: 'redux' });
 ReactRegistry.registerComponent('PassOptions', () => PassOptions);
 ReactRegistry.registerComponent('Lifecycle', () => Lifecycle);
 
-ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc);
+ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc, { dependency: 'Options' });
 ReactRegistry.registerComponent('Noninteractive', () => Noninteractive);
 ReactRegistry.registerComponent('TopBarShadowHidden', () => TopBarShadowHidden);
 ReactRegistry.registerComponent('TopBarHidden', () => TopBarHidden);
-ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha);
-ReactRegistry.registerComponent('TopBarColor', () => TopBarColor);
+ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha, {
+  path: 'topBarAlpha/:alpha/:color',
+  dependency: 'TopBarMisc',
+});
+ReactRegistry.registerComponent('TopBarColor', () => TopBarColor, {
+  path: 'topBarColor/:color',
+  dependency: 'TopBarMisc',
+});
 ReactRegistry.registerComponent('TopBarTitleView', () => TopBarTitleView);
 ReactRegistry.registerComponent('CustomTitleView', () => CustomTitleView);
-
 ReactRegistry.registerComponent('StatusBarColor', () => StatusBarColor);
 ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle);
 

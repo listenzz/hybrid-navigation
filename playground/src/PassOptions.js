@@ -1,9 +1,3 @@
-/**
- * react-native-navigation-hybrid
- * https://github.com/listenzz/react-native-navigation-hybrid
- * @flow
- */
-
 import React, { Component } from 'react';
 import { Text, View, ScrollView } from 'react-native';
 

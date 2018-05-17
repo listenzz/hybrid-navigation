@@ -1,9 +1,3 @@
-/**
- * react-native-navigation-hybrid
- * https://github.com/listenzz/react-native-navigation-hybrid
- * @flow
- */
-
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native';
 import { Navigation } from 'react-native-navigation-hybrid';
@@ -52,7 +46,6 @@ export default class Options extends Component {
     this.toggleTabBadge = this.toggleTabBadge.bind(this);
     this.lifecycle = this.lifecycle.bind(this);
     this.replaceTabIcon = this.replaceTabIcon.bind(this);
-    this.routeGraph = this.routeGraph.bind(this);
     this.state = {
       leftButtonShowText: true,
       rightButtonEnabled: false,
@@ -127,12 +120,6 @@ export default class Options extends Component {
     );
   }
 
-  routeGraph() {
-    Navigation.routeGraph().then(graph => {
-      console.info(graph);
-    });
-  }
-
   render() {
     return (
       <ScrollView
@@ -193,10 +180,6 @@ export default class Options extends Component {
 
           <TouchableOpacity onPress={this.replaceTabIcon} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>replalce tab icon</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.routeGraph} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>print route graph</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

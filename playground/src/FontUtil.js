@@ -1,9 +1,3 @@
-/**
- * react-native-navigation-hybrid
- * https://github.com/listenzz/react-native-navigation-hybrid
- * @flow
- */
-
 function fontUri(fontFamily, name, size) {
   let glyphMap;
   if (fontFamily === 'FontAwesome') {

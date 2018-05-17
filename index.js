@@ -7,8 +7,9 @@
 import Navigation from './js/Navigation';
 import Garden from './js/Garden';
 import ReactRegistry from './js/ReactRegistry';
+import router from './js/Router';
 
 const RESULT_OK = Navigation.result_ok;
 const RESULT_CANCEL = Navigation.result_cancel;
 
-export { Navigation, Garden, ReactRegistry, RESULT_OK, RESULT_CANCEL };
+export { Navigation, Garden, ReactRegistry, RESULT_OK, RESULT_CANCEL, router };

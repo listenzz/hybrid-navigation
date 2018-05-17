@@ -1,9 +1,3 @@
-/**
- * react-native-navigation-hybrid
- * https://github.com/listenzz/react-native-navigation-hybrid
- * @flow
- */
-
 import { StyleSheet, StatusBar, Platform } from 'react-native';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 import { Garden } from 'react-native-navigation-hybrid';

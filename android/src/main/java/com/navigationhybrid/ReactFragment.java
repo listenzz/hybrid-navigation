@@ -14,8 +14,8 @@ import android.widget.FrameLayout;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 
+import me.listenzz.navigation.Anim;
 import me.listenzz.navigation.FragmentHelper;
-import me.listenzz.navigation.PresentAnimation;
 
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
 import static com.navigationhybrid.Constants.ARG_SCENE_ID;
@@ -46,7 +46,7 @@ public class ReactFragment extends HybridFragment {
         containerLayout = view.findViewById(R.id.react_content);
 
         if (!getReactBridgeManager().isReactModuleInRegistry()) {
-            if (getAnimation() != PresentAnimation.Delay && getAnimation() != PresentAnimation.None) {
+            if (getAnimation() != Anim.None) {
                 postponeEnterTransition();
             }
             initReactNative();
