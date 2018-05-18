@@ -7,26 +7,6 @@ let configs = new Map();
 let intercepters = new Set();
 let active = 0;
 
-function pathToRoute(path) {
-  for (const config of configs.values()) {
-    if (!config.pathRegexp) {
-      continue;
-    }
-    const match = config.pathRegexp.exec(path);
-    if (match) {
-      const moduleName = config.moduleName;
-      const props = {};
-      const names = config.paramNames;
-      for (let i = 0; i < names.length; i++) {
-        props[names[i]] = match[i + 1];
-      }
-      const dependencies = dependenciesForRoute(config);
-      return { moduleName, props, dependencies, mode: config.mode };
-    }
-  }
-  return {};
-}
-
 function dependenciesForRoute(config = {}) {
   let dependencies = [];
   while (config && config.dependency) {
@@ -154,6 +134,26 @@ class Router {
     intercepters.delete(func);
   }
 
+  pathToRoute(path) {
+    for (const config of configs.values()) {
+      if (!config.pathRegexp) {
+        continue;
+      }
+      const match = config.pathRegexp.exec(path);
+      if (match) {
+        const moduleName = config.moduleName;
+        const props = {};
+        const names = config.paramNames;
+        for (let i = 0; i < names.length; i++) {
+          props[names[i]] = match[i + 1];
+        }
+        const dependencies = dependenciesForRoute(config);
+        return { moduleName, props, dependencies, mode: config.mode };
+      }
+    }
+    return {};
+  }
+
   async open(path) {
     if (!path) {
       return;
@@ -167,7 +167,7 @@ class Router {
       }
     }
 
-    const target = pathToRoute(path);
+    const target = this.pathToRoute(path);
     if (target && target.moduleName) {
       try {
         const graph = await this.routeGraph();
@@ -201,12 +201,14 @@ class Router {
       this.uriPrefix = uriPrefix;
       if (!this.hasHandleInitialURL) {
         this.hasHandleInitialURL = true;
-        Linking.getInitialURL().then(url => {
-          if (url) {
-            const path = url.replace(this.uriPrefix, '');
-            this.open(path);
-          }
-        });
+        Linking.getInitialURL()
+          .then(url => {
+            if (url) {
+              const path = url.replace(this.uriPrefix, '');
+              this.open(path);
+            }
+          })
+          .catch(err => console.error('An error occurred', err));
       }
       Linking.addEventListener('url', this._routeEventHandler);
     }
