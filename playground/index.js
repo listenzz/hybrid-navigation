@@ -60,7 +60,7 @@ function componentWrapper(componentProvider) {
 ReactRegistry.startRegisterComponent(componentWrapper);
 
 ReactRegistry.registerComponent('Navigation', () => ReactNavigation);
-ReactRegistry.registerComponent('Result', () => Result, { path: 'result/:result', mode: 'modal' });
+ReactRegistry.registerComponent('Result', () => Result, { path: 'result', mode: 'modal' });
 ReactRegistry.registerComponent('Options', () => Options);
 ReactRegistry.registerComponent('Menu', () => Menu, { path: 'menu' });
 ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter, { path: 'redux' });
