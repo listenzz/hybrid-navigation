@@ -82,6 +82,10 @@ export default class Garden {
     GardenModule.setTopBarColor(this.sceneId, item);
   }
 
+  setBottomBarColor(item) {
+    GardenModule.setBottomBarColor(this.sceneId, item);
+  }
+
   setTopBarShadowHidden(item) {
     GardenModule.setTopBarShadowHidden(this.sceneId, item);
   }

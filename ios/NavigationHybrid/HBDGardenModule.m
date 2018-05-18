@@ -112,6 +112,18 @@ RCT_EXPORT_METHOD(setTopBarColor:(NSString *)sceneId item:(NSDictionary *)item) 
     NSLog(@"setTopBarColor: %@", item);
 }
 
+RCT_EXPORT_METHOD(setBottomBarColor:(NSString *)sceneId item:(NSDictionary *)item) {
+    NSString *bottomBarColor = [item objectForKey:@"bottomBarColor"];
+    if (bottomBarColor) {
+        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        UITabBarController *tabBarVC = vc.tabBarController;
+        if (tabBarVC) {
+           [tabBarVC.tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:bottomBarColor]]];
+        }
+    }
+    NSLog(@"setBottomBarColor: %@", item);
+}
+
 RCT_EXPORT_METHOD(setTopBarShadowHidden:(NSString *)sceneId item:(NSDictionary *)item) {
     NSNumber *topBarShadowHidden = [item objectForKey:@"topBarShadowHidden"];
     if (topBarShadowHidden) {

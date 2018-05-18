@@ -38,7 +38,7 @@ import static com.navigationhybrid.Constants.TOP_BAR_STYLE_LIGHT_CONTENT;
  * Created by Listen on 2017/11/22.
  */
 
-public class GardenModule extends ReactContextBaseJavaModule{
+public class GardenModule extends ReactContextBaseJavaModule {
 
     private static final String TAG = "ReactNative";
 
@@ -69,7 +69,7 @@ public class GardenModule extends ReactContextBaseJavaModule{
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
         constants.put("DARK_CONTENT", TOP_BAR_STYLE_DARK_CONTENT);
-        constants.put("LIGHT_CONTENT",TOP_BAR_STYLE_LIGHT_CONTENT);
+        constants.put("LIGHT_CONTENT", TOP_BAR_STYLE_LIGHT_CONTENT);
         constants.put("TOOLBAR_HEIGHT", 56);
         return constants;
     }
@@ -191,7 +191,7 @@ public class GardenModule extends ReactContextBaseJavaModule{
                     if (readableMap.hasKey("topBarAlpha")) {
                         double topBarAlpha = readableMap.getDouble("topBarAlpha");
                         options.putDouble("topBarAlpha", topBarAlpha);
-                        fragment.getGarden().setToolbarAlpha((float)topBarAlpha);
+                        fragment.getGarden().setToolbarAlpha((float) topBarAlpha);
                     }
                 }
             }
@@ -211,6 +211,27 @@ public class GardenModule extends ReactContextBaseJavaModule{
                         String topBarColor = readableMap.getString("topBarColor");
                         options.putString("topBarColor", topBarColor);
                         fragment.getGarden().setTopBarColor(Color.parseColor(topBarColor));
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setBottomBarColor(final String sceneId, final ReadableMap readableMap) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (readableMap.hasKey("bottomBarColor")) {
+                    String bottomBarColor = readableMap.getString("bottomBarColor");
+                    HybridFragment fragment = findFragmentBySceneId(sceneId);
+                    if (fragment != null && fragment.getView() != null) {
+                        TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                        if (tabBarFragment != null) {
+                            BottomBar bottomBar = tabBarFragment.getBottomBar();
+                            bottomBar.setBarBackgroundColor(bottomBarColor);
+                            bottomBar.initialise();
+                        }
                     }
                 }
             }
@@ -246,19 +267,16 @@ public class GardenModule extends ReactContextBaseJavaModule{
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
                         BottomBar bottomBar = tabBarFragment.getBottomBar();
-                        if (bottomBar != null) {
-                            Drawable drawable = drawableFromReadableMap(bottomBar.getContext(), icon);
-                            if (drawable == null) {
-                                return;
-                            }
-                            Drawable inactiveDrawable = drawableFromReadableMap(bottomBar.getContext(), inactiveIcon);
-                            bottomBar.setTabIcon(index, drawable, inactiveDrawable);
-
-                            AwesomeFragment f = tabBarFragment.getChildFragments().get(index);
-                            f.getTabBarItem().iconUri = icon.getString("uri");
-                            if (inactiveIcon!= null && inactiveIcon.hasKey("uri")) {
-                                f.getTabBarItem().inactiveIconUri = inactiveIcon.getString("uri");
-                            }
+                        Drawable drawable = drawableFromReadableMap(bottomBar.getContext(), icon);
+                        if (drawable == null) {
+                            return;
+                        }
+                        Drawable inactiveDrawable = drawableFromReadableMap(bottomBar.getContext(), inactiveIcon);
+                        bottomBar.setTabIcon(index, drawable, inactiveDrawable);
+                        AwesomeFragment f = tabBarFragment.getChildFragments().get(index);
+                        f.getTabBarItem().iconUri = icon.getString("uri");
+                        if (inactiveIcon != null && inactiveIcon.hasKey("uri")) {
+                            f.getTabBarItem().inactiveIconUri = inactiveIcon.getString("uri");
                         }
                     }
                 }
