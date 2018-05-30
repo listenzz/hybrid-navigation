@@ -43,7 +43,7 @@ dependencies {
     implementation 'com.facebook.react:react-native:+'
 
     // api project(':navigation')
-    api 'me.listenzz:navigation:1.5.0'
+    api 'me.listenzz:navigation:1.5.1'
     api 'com.ashokvarma.android:bottom-navigation-bar:2.0.4'
 
 }
