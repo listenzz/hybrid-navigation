@@ -1,6 +1,7 @@
 package com.navigationhybrid;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -73,7 +74,7 @@ public class HybridFragment extends AwesomeFragment {
         return args.getBundle(Constants.ARG_OPTIONS);
     }
 
-    public void setOptions(Bundle options) {
+    public void setOptions(@NonNull Bundle options) {
         Bundle args = getArguments();
         if (args != null) {
             args.putBundle(Constants.ARG_OPTIONS, options);
@@ -81,6 +82,7 @@ public class HybridFragment extends AwesomeFragment {
         }
     }
 
+    @NonNull
     public Bundle getProps() {
         Bundle args = FragmentHelper.getArguments(this);
         Bundle initialProps = args.getBundle(ARG_PROPS);
@@ -89,6 +91,12 @@ public class HybridFragment extends AwesomeFragment {
         }
         initialProps.putString(ARG_SCENE_ID, getSceneId());
         return initialProps;
+    }
+
+    @CallSuper
+    public void setAppProperties(@NonNull Bundle props) {
+        Bundle args = FragmentHelper.getArguments(this);
+        args.putBundle(Constants.ARG_PROPS, props);
     }
 
     public String getModuleName() {

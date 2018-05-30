@@ -13,6 +13,8 @@
 
 @interface HBDViewController ()
 
+@property(nonatomic, copy, readwrite) NSDictionary *props;
+
 @end
 
 @implementation HBDViewController
@@ -41,6 +43,10 @@
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     NSLog(@"requestCode:%ld, resultCode:%ld, data:%@", (long)requestCode, (long)resultCode, data);
+}
+
+- (void)setAppProperties:(NSDictionary *)props {
+    self.props = props;
 }
 
 - (void)viewDidLoad {
@@ -123,7 +129,6 @@
     
     NSNumber *hidden = self.options[@"backButtonHidden"];
     if ([hidden boolValue]) {
-        self.backButtonHidden = YES;
         if (@available(iOS 11, *)) {
              [self.navigationItem setHidesBackButton:YES];
         } else {

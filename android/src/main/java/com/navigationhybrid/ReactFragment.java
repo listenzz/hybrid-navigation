@@ -104,6 +104,14 @@ public class ReactFragment extends HybridFragment {
         getReactBridgeManager().sendEvent(ON_COMPONENT_RESULT_EVENT, Arguments.fromBundle(result));
     }
 
+    @Override
+    public void setAppProperties(@NonNull Bundle props) {
+        super.setAppProperties(props);
+        if (reactRootView != null && !getReactBridgeManager().isReactModuleInRegistry()) {
+            this.reactRootView.setAppProperties(getProps());
+        }
+    }
+
     private void initReactNative() {
         if (reactRootView != null || getContext() == null) {
             return;

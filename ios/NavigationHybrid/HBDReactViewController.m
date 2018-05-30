@@ -18,6 +18,7 @@
 
 @property(nonatomic, assign) BOOL firstRenderComplete;
 @property(nonatomic, assign) BOOL viewAppeared;
+@property(nonatomic, strong) RCTRootView *rootView;
 
 @end
 
@@ -42,6 +43,7 @@
 - (void)loadView {
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
     self.view = rootView;
+    self.rootView = rootView;
 }
 
 - (void)viewDidLoad {
@@ -79,9 +81,16 @@
     return props;
 }
 
+- (void)setAppProperties:(NSDictionary *)props {
+    [super setAppProperties:props];
+    if (![[HBDReactBridgeManager sharedInstance] isReactModuleInRegistry]) {
+        self.rootView.appProperties = [self propsWithSceneId];
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-     self.automaticallyAdjustsScrollViewInsets = NO;
+    self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
