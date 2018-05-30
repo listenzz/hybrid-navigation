@@ -39,6 +39,14 @@ export default StyleSheet.create({
     flex: 1,
   },
 
+  transparent: {
+    marginTop: 200,
+    width: 200,
+    height: 120,
+    backgroundColor: 'rgba(0,0,0, 0.5)',
+    alignSelf: 'center',
+  },
+
   button: {
     alignItems: 'center',
     justifyContent: 'center',

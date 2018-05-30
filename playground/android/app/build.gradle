@@ -15,7 +15,7 @@ project.ext.vectoricons = [
 apply from: "../../../node_modules/react-native-vector-icons/fonts.gradle"
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdkVersion 27
     buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.navigationhybrid.playground"
@@ -47,11 +47,9 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     implementation "com.android.support:support-v4:$rootProject.supportLibraryVersion"
     implementation "com.android.support:design:$rootProject.supportLibraryVersion"
-
     implementation 'com.facebook.react:react-native:+'
     implementation project(':navigation-hybrid')
     implementation project(':react-native-vector-icons')
-
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'

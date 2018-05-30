@@ -116,7 +116,12 @@ public class ReactFragment extends HybridFragment {
         if (reactRootView != null || getContext() == null) {
             return;
         }
-        reactRootView = new ReactRootView(getContext());
+
+        BubbleTouchEventReactRootView reactRootView = new BubbleTouchEventReactRootView(getContext());
+        boolean passThroughTouches = getOptions().getBoolean("passThroughTouches", false);
+        reactRootView.setShouldConsumeTouchEvent(!passThroughTouches);
+        this.reactRootView = reactRootView;
+
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         containerLayout.addView(reactRootView, layoutParams);
         Bundle args = FragmentHelper.getArguments(this);

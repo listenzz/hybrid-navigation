@@ -21,6 +21,7 @@ import TopBarAlpha from './src/TopBarAlpha';
 import TopBarTitleView, { CustomTitleView } from './src/TopBarTitleView';
 import TopBarStyle from './src/TopBarStyle';
 import StatusBarColor from './src/StatusBarColor';
+import Transparent from './src/Transparent';
 
 Garden.setStyle({
   topBarStyle: 'dark-content',
@@ -84,33 +85,35 @@ ReactRegistry.registerComponent('CustomTitleView', () => CustomTitleView);
 ReactRegistry.registerComponent('StatusBarColor', () => StatusBarColor);
 ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle);
 
+ReactRegistry.registerComponent('Transparent', () => Transparent);
+
 ReactRegistry.endRegisterComponent();
 
-Navigation.setRoot(
-  {
-    drawer: [
-      {
-        tabs: [
-          {
-            stack: {
-              screen: { moduleName: 'Navigation' },
-            },
-          },
-          {
-            stack: {
-              screen: { moduleName: 'Options' },
-            },
-          },
-        ],
-      },
-      {
-        screen: { moduleName: 'Menu' },
-        options: {
-          maxDrawerWidth: 280,
-          minDrawerMargin: 64,
-        },
-      },
-    ],
-  },
-  true
-);
+// Navigation.setRoot(
+//   {
+//     drawer: [
+//       {
+//         tabs: [
+//           {
+//             stack: {
+//               screen: { moduleName: 'Navigation' },
+//             },
+//           },
+//           {
+//             stack: {
+//               screen: { moduleName: 'Options' },
+//             },
+//           },
+//         ],
+//       },
+//       {
+//         screen: { moduleName: 'Menu' },
+//         options: {
+//           maxDrawerWidth: 280,
+//           minDrawerMargin: 64,
+//         },
+//       },
+//     ],
+//   },
+//   true
+// );

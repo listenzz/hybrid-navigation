@@ -44,6 +44,7 @@
     RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
     self.view = rootView;
     self.rootView = rootView;
+    rootView.passThroughTouches = [self.options[@"passThroughTouches"] boolValue];
 }
 
 - (void)viewDidLoad {
