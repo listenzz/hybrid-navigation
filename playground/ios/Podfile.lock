@@ -6,7 +6,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.4)
-  - NavigationHybrid (0.4.41):
+  - NavigationHybrid (0.6.11):
     - React
   - React (0.55.3):
     - React/Core (= 0.55.3)

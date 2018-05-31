@@ -22,6 +22,7 @@
 		91C884A5202C3E8600EC0A20 /* HBDTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C884A0202C3E8600EC0A20 /* HBDTabBarController.m */; };
 		91C884A6202C3E8600EC0A20 /* HBDUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C884A1202C3E8600EC0A20 /* HBDUtils.m */; };
 		91C884A9202C3F9200EC0A20 /* GlobalStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C884A8202C3F9200EC0A20 /* GlobalStyle.m */; };
+		91DCF5C420BF034600520342 /* HBDRootView.m in Sources */ = {isa = PBXBuildFile; fileRef = 91DCF5C320BF034600520342 /* HBDRootView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -69,6 +70,8 @@
 		91C884A2202C3E8600EC0A20 /* HBDUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDUtils.h; sourceTree = "<group>"; };
 		91C884A7202C3F9200EC0A20 /* GlobalStyle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlobalStyle.h; sourceTree = "<group>"; };
 		91C884A8202C3F9200EC0A20 /* GlobalStyle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GlobalStyle.m; sourceTree = "<group>"; };
+		91DCF5C220BF034600520342 /* HBDRootView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HBDRootView.h; sourceTree = "<group>"; };
+		91DCF5C320BF034600520342 /* HBDRootView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HBDRootView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +135,8 @@
 				910BA6E8204E29E3004CB741 /* HBDNavigationBar.m */,
 				910BA6EA204E8157004CB741 /* HBDTitleView.h */,
 				910BA6EB204E8157004CB741 /* HBDTitleView.m */,
+				91DCF5C220BF034600520342 /* HBDRootView.h */,
+				91DCF5C320BF034600520342 /* HBDRootView.m */,
 			);
 			path = NavigationHybrid;
 			sourceTree = "<group>";
@@ -198,6 +203,7 @@
 				91C884A3202C3E8600EC0A20 /* HBDDrawerController.m in Sources */,
 				910362F51FE931E000F4DA8E /* HBDReactBridgeManager.m in Sources */,
 				910362F11FE931E000F4DA8E /* HBDGarden.m in Sources */,
+				91DCF5C420BF034600520342 /* HBDRootView.m in Sources */,
 				91C884A5202C3E8600EC0A20 /* HBDTabBarController.m in Sources */,
 				910362F61FE931E000F4DA8E /* HBDNavigationModule.m in Sources */,
 				910BA6E9204E29E3004CB741 /* HBDNavigationBar.m in Sources */,

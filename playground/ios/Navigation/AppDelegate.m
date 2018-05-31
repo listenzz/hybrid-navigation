@@ -11,6 +11,7 @@
 #import <React/RCTLinkingManager.h>
 #import <NavigationHybrid/NavigationHybrid.h>
 #import "OneNativeViewController.h"
+#import "CustomContainerViewController.h"
 
 @interface AppDelegate ()
 
@@ -39,12 +40,16 @@
 //    HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:tabBarController menuViewController:menuController];
 //    drawerController.maxDrawerWidth = 280;
 //
-//    UIViewController *rootViewController = drawerController;
+//   UIViewController *rootViewController = drawerController;
     
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
 
     // set root
+//    CustomContainerViewController *rootViewController = [[CustomContainerViewController alloc] init];
+//    rootViewController.contentViewController = navigationNav;
+//    rootViewController.overlayViewController = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Transparent"
+   
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
     

@@ -89,31 +89,31 @@ ReactRegistry.registerComponent('Transparent', () => Transparent);
 
 ReactRegistry.endRegisterComponent();
 
-// Navigation.setRoot(
-//   {
-//     drawer: [
-//       {
-//         tabs: [
-//           {
-//             stack: {
-//               screen: { moduleName: 'Navigation' },
-//             },
-//           },
-//           {
-//             stack: {
-//               screen: { moduleName: 'Options' },
-//             },
-//           },
-//         ],
-//       },
-//       {
-//         screen: { moduleName: 'Menu' },
-//         options: {
-//           maxDrawerWidth: 280,
-//           minDrawerMargin: 64,
-//         },
-//       },
-//     ],
-//   },
-//   true
-// );
+Navigation.setRoot(
+  {
+    drawer: [
+      {
+        tabs: [
+          {
+            stack: {
+              screen: { moduleName: 'Navigation' },
+            },
+          },
+          {
+            stack: {
+              screen: { moduleName: 'Options' },
+            },
+          },
+        ],
+      },
+      {
+        screen: { moduleName: 'Menu' },
+        options: {
+          maxDrawerWidth: 280,
+          minDrawerMargin: 64,
+        },
+      },
+    ],
+  },
+  true
+);

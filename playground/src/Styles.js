@@ -40,10 +40,12 @@ export default StyleSheet.create({
   },
 
   transparent: {
-    marginTop: 200,
+    marginTop: 150,
     width: 200,
     height: 120,
     backgroundColor: 'rgba(0,0,0, 0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
     alignSelf: 'center',
   },
 

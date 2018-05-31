@@ -16,6 +16,7 @@
 		914E8E7E1FC03AD300E5F241 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 914E8E7D1FC03AD300E5F241 /* main.m */; };
 		91BFD21C2020A6B900DFB5C6 /* OneNativeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91BFD21A2020A6B900DFB5C6 /* OneNativeViewController.m */; };
 		91BFD21D2020A6B900DFB5C6 /* OneNativeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 91BFD21B2020A6B900DFB5C6 /* OneNativeViewController.xib */; };
+		91DCF5C120BEF60900520342 /* CustomContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91DCF5C020BEF60900520342 /* CustomContainerViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,8 @@
 		91BFD2192020A6B900DFB5C6 /* OneNativeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OneNativeViewController.h; sourceTree = "<group>"; };
 		91BFD21A2020A6B900DFB5C6 /* OneNativeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OneNativeViewController.m; sourceTree = "<group>"; };
 		91BFD21B2020A6B900DFB5C6 /* OneNativeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OneNativeViewController.xib; sourceTree = "<group>"; };
+		91DCF5BF20BEF60900520342 /* CustomContainerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomContainerViewController.h; sourceTree = "<group>"; };
+		91DCF5C020BEF60900520342 /* CustomContainerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomContainerViewController.m; sourceTree = "<group>"; };
 		ACA1C6C7A54D9D81DCEBE8E9 /* libPods-Navigation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Navigation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -82,6 +85,8 @@
 				91BFD2192020A6B900DFB5C6 /* OneNativeViewController.h */,
 				91BFD21A2020A6B900DFB5C6 /* OneNativeViewController.m */,
 				91BFD21B2020A6B900DFB5C6 /* OneNativeViewController.xib */,
+				91DCF5BF20BEF60900520342 /* CustomContainerViewController.h */,
+				91DCF5C020BEF60900520342 /* CustomContainerViewController.m */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -251,6 +256,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91DCF5C120BEF60900520342 /* CustomContainerViewController.m in Sources */,
 				91BFD21C2020A6B900DFB5C6 /* OneNativeViewController.m in Sources */,
 				914E8E731FC03AD300E5F241 /* ViewController.m in Sources */,
 				914E8E7E1FC03AD300E5F241 /* main.m in Sources */,

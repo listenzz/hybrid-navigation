@@ -9,6 +9,7 @@
 #import "HBDReactViewController.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDTitleView.h"
+#import "HBDRootView.h"
 
 #import <React/RCTRootView.h>
 #import <React/RCTEventEmitter.h>
@@ -41,10 +42,11 @@
 }
 
 - (void)loadView {
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
+    RCTRootView *rootView = [[HBDRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
+    BOOL passThroughTouches = [self.options[@"passThroughTouches"] boolValue];
+    rootView.passThroughTouches = passThroughTouches;
     self.view = rootView;
     self.rootView = rootView;
-    rootView.passThroughTouches = [self.options[@"passThroughTouches"] boolValue];
 }
 
 - (void)viewDidLoad {
