@@ -13,9 +13,19 @@
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
     UIView *hitView = [super hitTest:point withEvent:event];
-    UIView *view = self.contentView.subviews.firstObject.subviews.firstObject.subviews.firstObject;
-    if (self.passThroughTouches && hitView == view) {
-        return nil;
+    if (self.passThroughTouches && hitView) {
+        UIView *view = self.contentView.subviews.firstObject;
+        while (view) {
+            if (view == hitView) {
+               if (CGRectEqualToRect(view.frame, self.bounds)) {
+                    return nil;
+                } else {
+                    break;
+                }
+            } else {
+                view = view.subviews.firstObject;
+            }
+        }
     }
     return hitView;
 }

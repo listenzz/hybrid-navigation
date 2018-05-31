@@ -19,11 +19,13 @@ export default class Transparent extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.transparent}>
-          <TouchableOpacity onPress={this.log} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>点我</Text>
-          </TouchableOpacity>
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <View style={styles.transparent}>
+            <TouchableOpacity onPress={this.log} activeOpacity={0.2} style={styles.button}>
+              <Text style={styles.buttonText}>点我</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
