@@ -47,7 +47,7 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     @Override
-    protected boolean backInteractive() {
+    protected boolean isBackInteractive() {
         return garden.backInteractive;
     }
 
