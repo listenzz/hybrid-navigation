@@ -49,20 +49,20 @@ Garden.setStyle({
   bottomBarButtonItemInactiveColor: '#CCCCCC',
 });
 
-function componentWrapper(componentProvider) {
-  const InnerComponent = componentProvider();
+function screenWrapper(screenProvider) {
+  const Screen = screenProvider();
   return props => (
     <Provider store={store}>
-      <InnerComponent {...props} />
+      <Screen {...props} />
     </Provider>
   );
 }
 
-ReactRegistry.startRegisterComponent(componentWrapper);
+ReactRegistry.startRegisterComponent(screenWrapper);
 
 ReactRegistry.registerComponent('Navigation', () => ReactNavigation);
 ReactRegistry.registerComponent('Result', () => Result, { path: 'result', mode: 'modal' });
-ReactRegistry.registerComponent('Options', () => Options);
+ReactRegistry.registerComponent('Options', () => Options, { path: 'options' });
 ReactRegistry.registerComponent('Menu', () => Menu, { path: 'menu' });
 ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter, { path: 'redux' });
 ReactRegistry.registerComponent('PassOptions', () => PassOptions);
