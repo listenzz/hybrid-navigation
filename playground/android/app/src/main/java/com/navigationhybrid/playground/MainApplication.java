@@ -14,6 +14,8 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import java.util.Arrays;
 import java.util.List;
 
+import me.listenzz.hud.HUDReactPackage;
+
 /**
  * Created by Listen on 2017/11/17.
  */
@@ -31,7 +33,8 @@ public class MainApplication extends Application implements ReactApplication{
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
                     new NavigationHybridPackage(),
-                    new VectorIconsPackage()
+                    new VectorIconsPackage(),
+                    new HUDReactPackage()
             );
         }
 
