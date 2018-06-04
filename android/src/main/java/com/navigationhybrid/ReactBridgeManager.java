@@ -157,7 +157,6 @@ public class ReactBridgeManager {
         sendEvent(eventName, Arguments.createMap());
     }
 
-
     public void setRootLayout(ReadableMap root, boolean sticky) {
         if (sticky && !hasStickyLayout()) {
             this.stickyLayout = root;
@@ -270,11 +269,11 @@ public class ReactBridgeManager {
         return null;
     }
 
-    public AwesomeFragment createFragment(@NonNull String moduleName) {
+    public HybridFragment createFragment(@NonNull String moduleName) {
         return createFragment(moduleName, null, null);
     }
 
-    public AwesomeFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
+    public HybridFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
         if (isReactModuleInRegistry()) {
             throw new IllegalStateException("模块还没有注册完，不能执行此操作");
         }
