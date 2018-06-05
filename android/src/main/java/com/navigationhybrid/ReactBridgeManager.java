@@ -148,9 +148,14 @@ public class ReactBridgeManager {
     }
 
     public void sendEvent(String eventName, WritableMap data) {
-        DeviceEventManagerModule.RCTDeviceEventEmitter emitter = getReactInstanceManager().getCurrentReactContext()
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
-        emitter.emit(eventName, data);
+        if (!isReactModuleInRegistry) {
+            ReactContext reactContext = getReactInstanceManager().getCurrentReactContext();
+            if (reactContext != null) {
+                DeviceEventManagerModule.RCTDeviceEventEmitter emitter = reactContext
+                        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+                emitter.emit(eventName, data);
+            }
+        }
     }
 
     public void sendEvent(String eventName) {

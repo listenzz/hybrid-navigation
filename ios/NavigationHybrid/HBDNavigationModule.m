@@ -13,6 +13,7 @@
 #import "HBDNavigationController.h"
 #import "UINavigationController+HBD.h"
 #import "HBDTabBarController.h"
+#import "HBDModalViewController.h"
 
 @interface HBDNavigationModule()
 
@@ -197,6 +198,27 @@ RCT_EXPORT_METHOD(dismiss:(NSString *)sceneId animated:(BOOL)animated) {
     }
 }
 
+RCT_EXPORT_METHOD(showModal:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
+    NSLog(@"show modal");
+    HBDViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
+    HBDModalViewController *modal = [[HBDModalViewController alloc] init];
+    modal.contentViewController = target;
+    [modal showWithAnimated:YES completion:^(BOOL finished) {
+
+    }];
+}
+
+RCT_EXPORT_METHOD(hideModal:(NSString *)sceneId) {
+    NSLog(@"hide modal");
+    HBDViewController *vc = [self controllerForSceneId:sceneId];
+    if (vc) {
+        HBDModalViewController *modal = vc.hbd_modalViewController;
+        [modal hideWithAnimated:YES completion:^(BOOL finished) {
+
+        }];
+    }
+}
+
 RCT_EXPORT_METHOD(switchToTab:(NSString *)sceneId index:(NSInteger)index) {
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     UITabBarController *tabBarController = vc.tabBarController;
@@ -283,7 +305,7 @@ RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
         } else if ([drawer.contentController isKindOfClass:[UINavigationController class]]){
             nav = (UINavigationController *)drawer.contentController;
         } else {
-            nav = drawer.navigationController;
+            nav = drawer.contentController.navigationController;
         }
     }
     return nav;
@@ -362,7 +384,27 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
 - (HBDViewController *)controllerForSceneId:(NSString *)sceneId {
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     UIViewController *controller = application.keyWindow.rootViewController;
-    return [self controllerForSceneId:sceneId atController:controller];
+    HBDViewController *vc = [self controllerForSceneId:sceneId atController:controller];
+    if (!vc) {
+        vc = [self controllerForModalSceneId:sceneId];
+    }
+    return vc;
+}
+
+- (HBDViewController *)controllerForModalSceneId:(NSString *)sceneId {
+    HBDViewController *vc = nil;
+    for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
+        if ([window isKindOfClass:[HBDModalWindow class]] && !window.hidden) {
+            if ([window.rootViewController isKindOfClass:[HBDModalViewController class]]) {
+                HBDModalViewController *modal = (HBDModalViewController *)window.rootViewController;
+                vc = [self controllerForSceneId:sceneId atController:modal.contentViewController];
+                if (vc) {
+                    break;
+                }
+            }
+        }
+    }
+    return vc;
 }
 
 - (HBDViewController *)controllerForSceneId:(NSString *)sceneId atController:(UIViewController *)controller {

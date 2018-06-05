@@ -167,10 +167,6 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     }
 }
 
-- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    [self updateNavigationBarForController:viewController];
-}
-
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
     UIViewController *vc = [super popViewControllerAnimated:animated];
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;

@@ -14,6 +14,7 @@
 #import <React/RCTRootView.h>
 #import <React/RCTEventEmitter.h>
 #import <React/RCTConvert.h>
+#import <React/RCTLog.h>
 
 @interface HBDReactViewController ()
 
@@ -51,7 +52,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    RCTLogInfo(@"%@ viewDidLoad", self.moduleName);
     NSDictionary *titleItem = self.options[@"titleItem"];
     if (titleItem && self.navigationController) {
         if (self.hbd_barHidden) {
@@ -98,6 +99,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    RCTLogInfo(@"%@ viewDidAppear", self.moduleName);
     if (!self.viewAppeared) {
         self.viewAppeared = YES;
         if (self.firstRenderComplete) {
@@ -111,6 +113,7 @@
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    RCTLogInfo(@"%@ viewDidDisappear", self.moduleName);
     if (self.viewAppeared) {
         self.viewAppeared = NO;
         if (self.firstRenderComplete) {

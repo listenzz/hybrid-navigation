@@ -23,11 +23,12 @@ import TopBarStyle from './src/TopBarStyle';
 import StatusBarColor from './src/StatusBarColor';
 import Transparent from './src/Transparent';
 import HUDTest from './src/HUDText';
+import ReactModal from './src/ReactModal';
 
 Garden.setStyle({
   topBarStyle: 'dark-content',
   titleTextSize: 17,
-  // statusBarColor: '#F0FFFFFF',
+  // statusBarColor: '#0000FF',
   // topBarColor: '#F0FFFFFF',
 
   topBarTintColor: '#000000',
@@ -88,6 +89,7 @@ ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle);
 
 ReactRegistry.registerComponent('Transparent', () => Transparent);
 ReactRegistry.registerComponent('HUDTest', () => HUDTest);
+ReactRegistry.registerComponent('ReactModal', () => ReactModal);
 
 ReactRegistry.endRegisterComponent();
 

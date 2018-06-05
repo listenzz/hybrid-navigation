@@ -213,7 +213,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment =  findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     promise.resolve(fragment.isNavigationRoot());
                 }
@@ -292,6 +292,39 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     fragment.dismissFragment();
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void showModal(final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Activity activity = getCurrentActivity();
+                if (activity instanceof ReactAppCompatActivity) {
+                    ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                    FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+                    AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                    if (fragment != null) {
+                        AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                        target.show(fragmentManager, target.getSceneId());
+                    }
+                }
+            }
+        });
+
+    }
+
+    @ReactMethod
+    public void hideModal(final String sceneId) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    fragment.dismissDialog();
                 }
             }
         });

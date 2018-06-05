@@ -15,6 +15,7 @@
 
 #import "OneNativeViewController.h"
 #import "CustomContainerViewController.h"
+#import "NativeModalViewController.h"
 
 @interface AppDelegate () <HostViewProvider>
 
@@ -31,6 +32,7 @@
     
     // register native modules
     [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
+    [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"NativeModal" forController:[NativeModalViewController class]];
     
     // build root
 //    HBDViewController *navigation = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Navigation" props:nil options:nil];

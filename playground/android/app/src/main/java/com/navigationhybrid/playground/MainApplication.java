@@ -59,6 +59,7 @@ public class MainApplication extends Application implements ReactApplication{
 
         // register native modules
         bridgeManager.registerNativeModule("OneNative", OneNativeFragment.class);
+        bridgeManager.registerNativeModule("NativeModal", NativeModalFragment.class);
 
     }
 }

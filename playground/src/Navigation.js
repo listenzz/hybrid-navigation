@@ -17,6 +17,10 @@ const REQUEST_CODE = 1;
 
 export default class Navigation extends Component {
   static navigationItem = {
+    //topBarStyle: 'light-content',
+    //topBarColor: '#666666',
+    //topBarTintColor: '#ffffff',
+    //titleTextColor: '#ffffff',
     titleItem: {
       title: 'RN navigation',
     },
@@ -40,6 +44,8 @@ export default class Navigation extends Component {
     this.replaceToRoot = this.replaceToRoot.bind(this);
     this.present = this.present.bind(this);
     this.switchToTab = this.switchToTab.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.showNativeModal = this.showNativeModal.bind(this);
     this.state = {
       text: undefined,
       backId: undefined,
@@ -136,6 +142,14 @@ export default class Navigation extends Component {
     this.props.navigation.switchToTab(1);
   }
 
+  showModal() {
+    this.props.navigation.showModal('ReactModal');
+  }
+
+  showNativeModal() {
+    this.props.navigation.showModal('NativeModal');
+  }
+
   render() {
     return (
       <ScrollView
@@ -199,6 +213,18 @@ export default class Navigation extends Component {
 
           <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>switch to tab 'Options'</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.showModal} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>show react modal</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={this.showNativeModal}
+            activeOpacity={0.2}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>show native modal</Text>
           </TouchableOpacity>
 
           {this.state.text !== undefined && (
