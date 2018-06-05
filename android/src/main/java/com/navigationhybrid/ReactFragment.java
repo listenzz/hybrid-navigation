@@ -112,11 +112,6 @@ public class ReactFragment extends HybridFragment {
         }
     }
 
-    @Override
-    protected boolean alwaysAssumeNoHit() {
-        return getShowsDialog();
-    }
-
     private void initReactNative() {
         if (reactRootView != null || getContext() == null) {
             return;
@@ -124,7 +119,7 @@ public class ReactFragment extends HybridFragment {
 
         BubbleTouchEventReactRootView reactRootView = new BubbleTouchEventReactRootView(getContext());
         boolean passThroughTouches = getOptions().getBoolean("passThroughTouches", false);
-        reactRootView.setShouldConsumeTouchEvent(!passThroughTouches && !getShowsDialog());
+        reactRootView.setShouldConsumeTouchEvent(!passThroughTouches);
         this.reactRootView = reactRootView;
 
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

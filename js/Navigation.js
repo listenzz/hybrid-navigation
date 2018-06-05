@@ -18,8 +18,6 @@ export default class Navigattion {
     this.present = this.present.bind(this);
     this.setResult = this.setResult.bind(this);
     this.dismiss = this.dismiss.bind(this);
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
     this.replace = this.replace.bind(this);
     this.replaceToRoot = this.replaceToRoot.bind(this);
     this.onBarButtonItemClick = undefined;
@@ -69,14 +67,6 @@ export default class Navigattion {
 
   dismiss(animated = true) {
     NavigationModule.dismiss(this.sceneId, animated);
-  }
-
-  showModal(moduleName, props = {}, options = {}) {
-    NavigationModule.showModal(this.sceneId, moduleName, props, options);
-  }
-
-  hideModal() {
-    NavigationModule.hideModal(this.sceneId);
   }
 
   switchToTab(index) {
