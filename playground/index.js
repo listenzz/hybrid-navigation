@@ -22,11 +22,13 @@ import TopBarTitleView, { CustomTitleView } from './src/TopBarTitleView';
 import TopBarStyle from './src/TopBarStyle';
 import StatusBarColor from './src/StatusBarColor';
 import Transparent from './src/Transparent';
+import HUDTest from './src/HUDText';
+import ReactModal from './src/ReactModal';
 
 Garden.setStyle({
   topBarStyle: 'dark-content',
   titleTextSize: 17,
-  // statusBarColor: '#F0FFFFFF',
+  // statusBarColor: '#0000FF',
   // topBarColor: '#F0FFFFFF',
 
   topBarTintColor: '#000000',
@@ -49,20 +51,20 @@ Garden.setStyle({
   bottomBarButtonItemInactiveColor: '#CCCCCC',
 });
 
-function componentWrapper(componentProvider) {
-  const InnerComponent = componentProvider();
+function screenWrapper(screenProvider) {
+  const Screen = screenProvider();
   return props => (
     <Provider store={store}>
-      <InnerComponent {...props} />
+      <Screen {...props} />
     </Provider>
   );
 }
 
-ReactRegistry.startRegisterComponent(componentWrapper);
+ReactRegistry.startRegisterComponent(screenWrapper);
 
 ReactRegistry.registerComponent('Navigation', () => ReactNavigation);
 ReactRegistry.registerComponent('Result', () => Result, { path: 'result', mode: 'modal' });
-ReactRegistry.registerComponent('Options', () => Options);
+ReactRegistry.registerComponent('Options', () => Options, { path: 'options' });
 ReactRegistry.registerComponent('Menu', () => Menu, { path: 'menu' });
 ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter, { path: 'redux' });
 ReactRegistry.registerComponent('PassOptions', () => PassOptions);
@@ -86,6 +88,8 @@ ReactRegistry.registerComponent('StatusBarColor', () => StatusBarColor);
 ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle);
 
 ReactRegistry.registerComponent('Transparent', () => Transparent);
+ReactRegistry.registerComponent('HUDTest', () => HUDTest);
+ReactRegistry.registerComponent('ReactModal', () => ReactModal);
 
 ReactRegistry.endRegisterComponent();
 

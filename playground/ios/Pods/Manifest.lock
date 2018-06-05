@@ -6,7 +6,9 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.4)
-  - NavigationHybrid (0.6.11):
+  - NavigationHybrid (0.6.13):
+    - React
+  - ProgressHUD (0.1.0):
     - React
   - React (0.55.3):
     - React/Core (= 0.55.3)
@@ -64,6 +66,7 @@ DEPENDENCIES:
   - Folly (from `../../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - NavigationHybrid (from `../../`)
+  - ProgressHUD (from `../../node_modules/react-native-hud-hybrid`)
   - React/Core (from `../../node_modules/react-native`)
   - React/CxxBridge (from `../../node_modules/react-native`)
   - React/DevSupport (from `../../node_modules/react-native`)
@@ -93,6 +96,8 @@ EXTERNAL SOURCES:
     :podspec: "../../node_modules/react-native/third-party-podspecs/glog.podspec"
   NavigationHybrid:
     :path: "../../"
+  ProgressHUD:
+    :path: "../../node_modules/react-native-hud-hybrid"
   React:
     :path: "../../node_modules/react-native"
   RNVectorIcons:
@@ -106,10 +111,11 @@ SPEC CHECKSUMS:
   Folly: 211775e49d8da0ca658aebc8eab89d642935755c
   glog: 1de0bb937dccdc981596d3b5825ebfb765017ded
   NavigationHybrid: faa51481a1b2389b95c4721d7cf63779240bbd13
+  ProgressHUD: b0a1bd4a82ff14eec84071a9a956e7bbe192b3f9
   React: aa2040dbb6f317b95314968021bd2888816e03d5
   RNVectorIcons: c0dbfbf6068fefa240c37b0f71bd03b45dddac44
   yoga: a23273df0088bf7f2bb7e5d7b00044ea57a2a54a
 
-PODFILE CHECKSUM: 3ce0b96b8b172d1362e3f700d7e1e6885c1f9a2f
+PODFILE CHECKSUM: 6d95c73202275b663c18e08f31d1dd35e9289d23
 
 COCOAPODS: 1.5.0

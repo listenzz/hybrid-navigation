@@ -130,18 +130,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
-
-                    if (navigationFragment == null && fragment.getDrawerFragment() != null) {
-                        DrawerFragment drawerFragment = fragment.getDrawerFragment();
-                        TabBarFragment tabBarFragment = drawerFragment.getContentFragment().getTabBarFragment();
-                        if (tabBarFragment != null) {
-                            navigationFragment = tabBarFragment.getSelectedFragment().getNavigationFragment();
-                        } else {
-                            navigationFragment = drawerFragment.getContentFragment().getNavigationFragment();
-                        }
-                    }
-
+                    NavigationFragment navigationFragment = getNavigationFragment(fragment);
                     if (navigationFragment != null) {
                         AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
                         navigationFragment.pushFragment(target);
@@ -151,6 +140,23 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         });
     }
 
+    NavigationFragment getNavigationFragment(AwesomeFragment fragment) {
+        if (fragment != null) {
+            NavigationFragment navigationFragment = fragment.getNavigationFragment();
+            if (navigationFragment == null && fragment.getDrawerFragment() != null) {
+                DrawerFragment drawerFragment = fragment.getDrawerFragment();
+                TabBarFragment tabBarFragment = drawerFragment.getContentFragment().getTabBarFragment();
+                if (tabBarFragment != null) {
+                    navigationFragment = tabBarFragment.getSelectedFragment().getNavigationFragment();
+                } else {
+                    navigationFragment = drawerFragment.getContentFragment().getNavigationFragment();
+                }
+            }
+            return navigationFragment;
+        }
+        return null;
+    }
+
     @ReactMethod
     public void pop(final String sceneId, final boolean animated) {
         handler.post(new Runnable() {
@@ -158,7 +164,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    NavigationFragment navigationFragment = getNavigationFragment(fragment);
                     if (navigationFragment != null) {
                         navigationFragment.popFragment();
                     }
@@ -174,7 +180,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    NavigationFragment navigationFragment = getNavigationFragment(fragment);
                     if (navigationFragment != null) {
                         AwesomeFragment target = (AwesomeFragment) navigationFragment.getChildFragmentManager().findFragmentByTag(targetId);
                         if (target != null) {
@@ -193,7 +199,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    NavigationFragment navigationFragment = getNavigationFragment(fragment);
                     if (navigationFragment != null) {
                         navigationFragment.popToRootFragment();
                     }
@@ -207,7 +213,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = (HybridFragment) findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     promise.resolve(fragment.isNavigationRoot());
                 }
@@ -222,7 +228,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    NavigationFragment navigationFragment = getNavigationFragment(fragment);
                     if (navigationFragment != null) {
                         AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
                         navigationFragment.replaceFragment(target);
@@ -239,7 +245,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                    NavigationFragment navigationFragment = fragment.getNavigationFragment();
+                    NavigationFragment navigationFragment = getNavigationFragment(fragment);
                     if (navigationFragment != null) {
                         AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
                         navigationFragment.replaceToRootFragment(target);
@@ -286,6 +292,39 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     fragment.dismissFragment();
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void showModal(final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Activity activity = getCurrentActivity();
+                if (activity instanceof ReactAppCompatActivity) {
+                    ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                    FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+                    AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                    if (fragment != null) {
+                        AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                        target.show(fragmentManager, target.getSceneId());
+                    }
+                }
+            }
+        });
+
+    }
+
+    @ReactMethod
+    public void hideModal(final String sceneId) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    fragment.dismissDialog();
                 }
             }
         });

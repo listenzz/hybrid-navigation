@@ -1,7 +1,8 @@
 const fs = require('fs-extra');
 
 const vectorIconsBuildGradle = './node_modules/react-native-vector-icons/android/build.gradle';
-const gradles = [vectorIconsBuildGradle];
+const hud = './node_modules/react-native-hud-hybrid/android/build.gradle';
+const gradles = [vectorIconsBuildGradle, hud];
 
 gradles.forEach(gradle => {
   fs.readFile(gradle, 'utf8', function(err, data) {

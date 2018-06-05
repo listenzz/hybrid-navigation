@@ -9,11 +9,15 @@
 #import "AppDelegate.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
+#import <React/RCTBridgeModule.h>
 #import <NavigationHybrid/NavigationHybrid.h>
+#import <ProgressHUD/HUD.h>
+
 #import "OneNativeViewController.h"
 #import "CustomContainerViewController.h"
+#import "NativeModalViewController.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () <HostViewProvider>
 
 @end
 
@@ -21,11 +25,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    [HUDConfig sharedConfig].hostViewProvider = self;
+    
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
     [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
     
     // register native modules
     [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
+    [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"NativeModal" forController:[NativeModalViewController class]];
     
     // build root
 //    HBDViewController *navigation = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Navigation" props:nil options:nil];
@@ -45,11 +52,6 @@
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
 
-    // set root
-//    CustomContainerViewController *rootViewController = [[CustomContainerViewController alloc] init];
-//    rootViewController.contentViewController = navigationNav;
-//    rootViewController.overlayViewController = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Transparent"
-   
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
     
@@ -71,5 +73,29 @@
 //- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler {
 //    return [RCTLinkingManager application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
 //}
+
+- (UIView *)hostView {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    UIViewController *controller = application.keyWindow.rootViewController;
+    return [self controller:controller].view;
+}
+
+- (UIViewController *)controller:(UIViewController *)controller {
+    UIViewController *presentedController = controller.presentedViewController;
+    if (presentedController && ![presentedController isBeingDismissed]) {
+        return [self controller:presentedController];
+    } else if ([controller isKindOfClass:[HBDDrawerController class]]) {
+        HBDDrawerController *drawer = (HBDDrawerController *)controller;
+        if ([drawer isMenuOpened]) {
+            return drawer;
+        } else {
+            return [self controller:drawer.contentController];
+        }
+    } else if ([controller isKindOfClass:[HBDTabBarController class]]) {
+        HBDTabBarController *tabs = (HBDTabBarController *)controller;
+        return [self controller:tabs.selectedViewController];
+    }
+    return controller;
+}
 
 @end

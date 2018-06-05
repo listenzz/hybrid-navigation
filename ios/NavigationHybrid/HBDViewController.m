@@ -49,6 +49,13 @@
     self.props = props;
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    if (self.hbd_barStyle) {
+        return self.hbd_barStyle == UIBarStyleBlack ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+    }
+    return [UIApplication sharedApplication].statusBarStyle;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     

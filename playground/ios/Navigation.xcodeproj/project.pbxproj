@@ -14,6 +14,8 @@
 		914E8E781FC03AD300E5F241 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 914E8E771FC03AD300E5F241 /* Assets.xcassets */; };
 		914E8E7B1FC03AD300E5F241 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 914E8E791FC03AD300E5F241 /* LaunchScreen.storyboard */; };
 		914E8E7E1FC03AD300E5F241 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 914E8E7D1FC03AD300E5F241 /* main.m */; };
+		91B264F320C5486C009167E2 /* NativeModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B264F120C5486C009167E2 /* NativeModalViewController.m */; };
+		91B264F420C5486C009167E2 /* NativeModalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 91B264F220C5486C009167E2 /* NativeModalViewController.xib */; };
 		91BFD21C2020A6B900DFB5C6 /* OneNativeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91BFD21A2020A6B900DFB5C6 /* OneNativeViewController.m */; };
 		91BFD21D2020A6B900DFB5C6 /* OneNativeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 91BFD21B2020A6B900DFB5C6 /* OneNativeViewController.xib */; };
 		91DCF5C120BEF60900520342 /* CustomContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91DCF5C020BEF60900520342 /* CustomContainerViewController.m */; };
@@ -32,6 +34,9 @@
 		914E8E7A1FC03AD300E5F241 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		914E8E7C1FC03AD300E5F241 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		914E8E7D1FC03AD300E5F241 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		91B264F020C5486C009167E2 /* NativeModalViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NativeModalViewController.h; sourceTree = "<group>"; };
+		91B264F120C5486C009167E2 /* NativeModalViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NativeModalViewController.m; sourceTree = "<group>"; };
+		91B264F220C5486C009167E2 /* NativeModalViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NativeModalViewController.xib; sourceTree = "<group>"; };
 		91BFD2192020A6B900DFB5C6 /* OneNativeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OneNativeViewController.h; sourceTree = "<group>"; };
 		91BFD21A2020A6B900DFB5C6 /* OneNativeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OneNativeViewController.m; sourceTree = "<group>"; };
 		91BFD21B2020A6B900DFB5C6 /* OneNativeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OneNativeViewController.xib; sourceTree = "<group>"; };
@@ -87,6 +92,9 @@
 				91BFD21B2020A6B900DFB5C6 /* OneNativeViewController.xib */,
 				91DCF5BF20BEF60900520342 /* CustomContainerViewController.h */,
 				91DCF5C020BEF60900520342 /* CustomContainerViewController.m */,
+				91B264F020C5486C009167E2 /* NativeModalViewController.h */,
+				91B264F120C5486C009167E2 /* NativeModalViewController.m */,
+				91B264F220C5486C009167E2 /* NativeModalViewController.xib */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -172,6 +180,7 @@
 				91BFD21D2020A6B900DFB5C6 /* OneNativeViewController.xib in Resources */,
 				914E8E7B1FC03AD300E5F241 /* LaunchScreen.storyboard in Resources */,
 				914E8E781FC03AD300E5F241 /* Assets.xcassets in Resources */,
+				91B264F420C5486C009167E2 /* NativeModalViewController.xib in Resources */,
 				914E8E761FC03AD300E5F241 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -186,6 +195,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Navigation/Pods-Navigation-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/ProgressHUD/ProgressHUD.bundle",
 				"${PODS_ROOT}/../../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
 				"${PODS_ROOT}/../../../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf",
 				"${PODS_ROOT}/../../../node_modules/react-native-vector-icons/Fonts/Feather.ttf",
@@ -200,6 +210,7 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/ProgressHUD.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Entypo.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EvilIcons.ttf",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Feather.ttf",
@@ -257,6 +268,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				91DCF5C120BEF60900520342 /* CustomContainerViewController.m in Sources */,
+				91B264F320C5486C009167E2 /* NativeModalViewController.m in Sources */,
 				91BFD21C2020A6B900DFB5C6 /* OneNativeViewController.m in Sources */,
 				914E8E731FC03AD300E5F241 /* ViewController.m in Sources */,
 				914E8E7E1FC03AD300E5F241 /* main.m in Sources */,

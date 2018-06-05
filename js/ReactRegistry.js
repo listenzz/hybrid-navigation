@@ -53,6 +53,8 @@ export default {
     router.addRoute(appKey, routeConfig);
 
     class Screen extends Component {
+      static InternalComponent = RealComponent;
+
       constructor(props) {
         super(props);
         if (navigations.has(props.sceneId)) {
