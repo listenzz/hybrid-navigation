@@ -8,7 +8,6 @@ export default class Menu extends Component {
     super(props);
     this.push = this.push.bind(this);
     this.pushToRedux = this.pushToRedux.bind(this);
-    this.hudTest = this.hudTest.bind(this);
   }
 
   push() {
@@ -19,11 +18,6 @@ export default class Menu extends Component {
   pushToRedux() {
     this.props.navigation.closeMenu();
     this.props.navigation.push('ReduxCounter');
-  }
-
-  hudTest() {
-    this.props.navigation.closeMenu();
-    this.props.navigation.push('HUDTest');
   }
 
   render() {
@@ -37,10 +31,6 @@ export default class Menu extends Component {
 
         <TouchableOpacity onPress={this.pushToRedux} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>Redux Counter</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.hudTest} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>HUD</Text>
         </TouchableOpacity>
       </View>
     );

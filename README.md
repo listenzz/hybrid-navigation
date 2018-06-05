@@ -170,16 +170,16 @@ drawer 对象也是一个数组，长度固定为 2 ，第一个对象是抽屉�
 想要支持 Redux，像下面这样配置即可
 
 ```javascript
-function screenWrapper(screenProvider) {
-  const Screen = screenProvider();
+function componentWrapper(componentProvider) {
+  const InnerComponent = componentProvider();
   return props => (
     <Provider store={store}>
-      <Screen {...props} />
+      <InnerComponent {...props} />
     </Provider>
   );
 }
 
-ReactRegistry.startRegisterComponent(screenWrapper);
+ReactRegistry.startRegisterComponent(componentWrapper);
 ```
 
 ### Android 项目配置

@@ -18,6 +18,5 @@
 #import "UIViewController+HBD.h"
 #import "HBDBarButtonItem.h"
 #import "HBDNavigationBar.h"
-#import "HBDModalViewController.h"
 
 #endif /* NavigationHybrid_h */

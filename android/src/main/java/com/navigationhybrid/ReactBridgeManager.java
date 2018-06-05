@@ -148,19 +148,15 @@ public class ReactBridgeManager {
     }
 
     public void sendEvent(String eventName, WritableMap data) {
-        if (!isReactModuleInRegistry) {
-            ReactContext reactContext = getReactInstanceManager().getCurrentReactContext();
-            if (reactContext != null) {
-                DeviceEventManagerModule.RCTDeviceEventEmitter emitter = reactContext
-                        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
-                emitter.emit(eventName, data);
-            }
-        }
+        DeviceEventManagerModule.RCTDeviceEventEmitter emitter = getReactInstanceManager().getCurrentReactContext()
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
+        emitter.emit(eventName, data);
     }
 
     public void sendEvent(String eventName) {
         sendEvent(eventName, Arguments.createMap());
     }
+
 
     public void setRootLayout(ReadableMap root, boolean sticky) {
         if (sticky && !hasStickyLayout()) {
@@ -274,11 +270,11 @@ public class ReactBridgeManager {
         return null;
     }
 
-    public HybridFragment createFragment(@NonNull String moduleName) {
+    public AwesomeFragment createFragment(@NonNull String moduleName) {
         return createFragment(moduleName, null, null);
     }
 
-    public HybridFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
+    public AwesomeFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
         if (isReactModuleInRegistry()) {
             throw new IllegalStateException("模块还没有注册完，不能执行此操作");
         }
