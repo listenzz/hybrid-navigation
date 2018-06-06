@@ -149,6 +149,7 @@ export default {
     }
 
     let RootComponent;
+    Screen.componentName = appKey;
     if (componentWrapperFunc) {
       RootComponent = componentWrapperFunc(() => Screen);
     } else {

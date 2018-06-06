@@ -53,11 +53,22 @@ Garden.setStyle({
 
 function screenWrapper(screenProvider) {
   const Screen = screenProvider();
-  return props => (
-    <Provider store={store}>
-      <Screen {...props} />
-    </Provider>
-  );
+  class ScreenWrapper extends Component {
+    componentDidMount() {
+      // 获取屏幕名称
+      const screenName = Screen.componentName;
+      console.info(`screenName:${screenName}`);
+    }
+
+    render() {
+      return (
+        <Provider store={store}>
+          <Screen {...this.props} />
+        </Provider>
+      );
+    }
+  }
+  return ScreenWrapper;
 }
 
 ReactRegistry.startRegisterComponent(screenWrapper);
