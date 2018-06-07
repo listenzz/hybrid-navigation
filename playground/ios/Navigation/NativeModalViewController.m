@@ -7,7 +7,7 @@
 //
 
 #import "NativeModalViewController.h"
-#import <HBDModalViewController.h>
+#import <NavigationHybrid/HBDModalViewController.h>
 
 @interface NativeModalViewController ()
 
@@ -18,11 +18,54 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    HBDModalViewController *modal = self.hbd_modalViewController;
+    
+    //modal.maximumContentViewWidth = modal.view.bounds.size.width;
+    //modal.contentViewMargins = UIEdgeInsetsZero;
+    
+    modal.measureBlock = ^CGSize(HBDModalViewController *modalViewController, CGSize limitSize) {
+        CGSize size = limitSize;
+        size.height = 200;
+        return size;
+    };
+    
+    modal.layoutBlock = ^(HBDModalViewController *modalViewController, CGRect contentViewDefaultFrame) {
+        UIEdgeInsets safeAreaInsets = UIEdgeInsetsZero;
+        if (@available(iOS 11.0, *)) {
+            safeAreaInsets = modalViewController.contentView.safeAreaInsets;
+        }
+        contentViewDefaultFrame.origin.y = CGRectGetHeight(modalViewController.view.bounds) - modalViewController.contentViewMargins.bottom - CGRectGetHeight(contentViewDefaultFrame) - safeAreaInsets.bottom;
+        modalViewController.contentView.frame = contentViewDefaultFrame;
+    };
+    
+    modal.showingAnimation = ^(HBDModalViewController *modalViewController, CGRect contentViewFrame, void (^completion)(BOOL finished)) {
+        modalViewController.dimmingView.alpha = 0;
+        CGRect frame = contentViewFrame;
+        frame.origin.y = CGRectGetHeight(modalViewController.view.bounds);
+        modalViewController.contentView.frame = frame;
+        [UIView animateWithDuration:.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
+            modalViewController.dimmingView.alpha = 1;
+            modalViewController.contentView.frame = contentViewFrame;
+        } completion:^(BOOL finished) {
+            if (completion) {
+                completion(finished);
+            }
+        }];
+    };
+    
+    modal.hidingAnimation = ^(HBDModalViewController *modalViewController, void (^completion)(BOOL finished)) {
+        [UIView animateWithDuration:.25 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^(void) {
+            modalViewController.dimmingView.alpha = 0;
+            CGRect frame = modalViewController.contentView.frame;
+            frame.origin.y = CGRectGetHeight(modalViewController.view.bounds);
+            modalViewController.contentView.frame = frame;
+        } completion:^(BOOL finished) {
+            if (completion) {
+                completion(finished);
+            }
+        }];
+    };
+    
 }
 
 - (IBAction)closeModal:(UIButton *)sender {
@@ -30,15 +73,5 @@
         
     }];
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

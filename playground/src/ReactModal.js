@@ -1,14 +1,25 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+  Dimensions,
+} from 'react-native';
+import * as Animatable from 'react-native-animatable';
+
+// Utility for creating custom animations
+const makeAnimation = (name, obj) => {
+  Animatable.registerAnimation(name, Animatable.createAnimation(obj));
+};
 
 export default class ReactModal extends React.Component {
   static defaultProps = {
     actionSheets: [{ text: '男', onPress: () => {} }, { text: '女', onPress: () => {} }],
   };
 
-  static navigationItem = {
-    // passThroughTouches: true,
-  };
+  static navigationItem = {};
 
   constructor(props) {
     super(props);
@@ -25,23 +36,66 @@ export default class ReactModal extends React.Component {
     );
   };
 
+  handleRef = ref => {
+    this.view = ref;
+  };
+
+  _onLayout = e => {
+    this.height = e.nativeEvent.layout.height;
+    makeAnimation('slideOutDown', {
+      from: {
+        opacity: 1,
+        translateY: 0,
+      },
+      to: {
+        opacity: 1,
+        translateY: this.height,
+      },
+    });
+    makeAnimation('slideInUp', {
+      from: {
+        opacity: 1,
+        translateY: this.height,
+      },
+      to: {
+        opacity: 1,
+        translateY: 0,
+      },
+    });
+    this.view.slideInUp(300);
+  };
+
   hideModal() {
-    this.props.navigation.hideModal();
+    console.info('hideModal');
+    this.view.slideOutDown(300).then(endState => {
+      if (endState.finished) {
+        this.props.navigation.hideModal();
+      }
+    });
   }
 
   render() {
     return (
-      <View style={styles.bottomModal}>
-        {this.props.actionSheets.map(({ text, onPress }, index) => {
-          let isLast = index === this.props.actionSheets.length - 1;
-          return (
-            <View key={text} style={!isLast && styles.divider}>
-              {this.renderItem(text, onPress)}
-            </View>
-          );
-        })}
-        <View style={styles.itemCancel}>{this.renderItem('取消', this.hideModal)}</View>
-      </View>
+      <TouchableWithoutFeedback onPress={this.hideModal}>
+        <Animatable.View
+          ref={this.handleRef}
+          useNativeDriver
+          easing="ease-in-out"
+          style={[styles.bottomModal, { opacity: 0 }]}
+        >
+          <View onLayout={this._onLayout}>
+            {this.props.actionSheets.map(({ text, onPress }, index) => {
+              let isLast = index === this.props.actionSheets.length - 1;
+              return (
+                <View key={text} style={!isLast && styles.divider}>
+                  {this.renderItem(text, onPress)}
+                </View>
+              );
+            })}
+            <View style={styles.itemCancel}>{this.renderItem('取消', this.hideModal)}</View>
+          </View>
+        </Animatable.View>
+      </TouchableWithoutFeedback>
     );
   }
 }

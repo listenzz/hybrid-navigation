@@ -17,12 +17,12 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nXG-TQ-lOl">
-                    <rect key="frame" x="84.5" y="85" width="31" height="30"/>
-                    <state key="normal" title="关闭"/>
+                    <rect key="frame" x="168" y="318.5" width="39" height="30"/>
+                    <state key="normal" title="Close"/>
                     <connections>
                         <action selector="closeModal:" destination="-1" eventType="touchUpInside" id="cd2-67-BaY"/>
                     </connections>
@@ -33,7 +33,6 @@
                 <constraint firstItem="nXG-TQ-lOl" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="Acf-PS-Vb6"/>
                 <constraint firstItem="nXG-TQ-lOl" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="E5p-9S-zV8"/>
             </constraints>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
         </view>
     </objects>

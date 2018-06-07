@@ -9,8 +9,6 @@
 #import <React/RCTLog.h>
 #import <objc/runtime.h>
 #import "HBDModalViewController.h"
-#import "UIViewController+HBD.h"
-#import "HBDUtils.h"
 #import "HBDRootView.h"
 
 @interface UIViewController()
@@ -21,7 +19,7 @@
 
 @interface HBDModalViewController ()
 
-@property (nonatomic, strong) UIView *contentView;
+@property (nonatomic, strong, readwrite) UIView *contentView;
 
 @property(nonatomic, strong) HBDModalWindow *containerWindow;
 @property(nonatomic, weak) UIWindow *previousKeyWindow;
@@ -82,7 +80,7 @@
     self.dimmingView.frame = self.view.bounds;
     CGRect contentViewFrame = [self contentViewFrameForShowing];
     if (self.layoutBlock) {
-        self.layoutBlock(self.view.bounds, contentViewFrame);
+        self.layoutBlock(self, contentViewFrame);
     } else {
         self.contentView.frame = contentViewFrame;
     }
@@ -96,8 +94,8 @@
     CGSize contentViewLimitSize = CGSizeMake(fmin(self.maximumContentViewWidth, contentViewContainerSize.width), contentViewContainerSize.height);
     CGSize contentViewSize = CGSizeZero;
     contentViewSize = [self.contentView sizeThatFits:contentViewLimitSize];
-    if (self.contentSizeProvider) {
-        contentViewSize = [self.contentSizeProvider preferredContentSizeInModalViewController:self   limitSize:contentViewSize];
+    if (self.measureBlock) {
+        contentViewSize = self.measureBlock(self, contentViewSize);
     } else {
         contentViewSize = [self.contentView sizeThatFits:contentViewLimitSize];
     }
@@ -140,15 +138,14 @@
         if (self.showingAnimation) {
             // 使用自定义的动画
             if (self.layoutBlock) {
-                self.layoutBlock(self.view.bounds, contentViewFrame);
+                self.layoutBlock(self, contentViewFrame);
                 contentViewFrame = self.contentView.frame;
             }
-            self.showingAnimation(self.dimmingView, self.view.bounds, contentViewFrame, didShownCompletion);
+            self.showingAnimation(self, contentViewFrame, didShownCompletion);
         } else {
             self.contentView.frame = contentViewFrame;
             [self.contentView setNeedsLayout];
             [self.contentView layoutIfNeeded];
-            
             [self showingAnimationWithCompletion:didShownCompletion];
         }
     } else {
@@ -162,7 +159,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    RCTLogInfo(@"modal viewWillAppear");
+    RCTLogInfo(@"modal viewWillDisappear");
     animated = self.disappearAnimated;
     [self.view endEditing:YES];
 
@@ -205,7 +202,7 @@
     
     if (animated) {
         if (self.hidingAnimation) {
-            self.hidingAnimation(self.dimmingView, self.view.bounds, didHiddenCompletion);
+            self.hidingAnimation(self, didHiddenCompletion);
         } else {
             [self hidingAnimationWithCompletion:didHiddenCompletion];
         }
@@ -280,7 +277,6 @@
     _contentView = contentView;
     if ([contentView isKindOfClass:[HBDRootView class]]) {
         HBDRootView *rootView = (HBDRootView *)contentView;
-        rootView.passThroughTouches = YES;
         rootView.backgroundColor = UIColor.clearColor;
     }
 }
