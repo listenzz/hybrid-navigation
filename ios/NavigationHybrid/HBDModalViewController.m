@@ -14,6 +14,8 @@
 @interface UIViewController()
 
 @property(nonatomic, weak, readwrite) HBDModalViewController *hbd_modalViewController;
+@property(nonatomic, strong, readwrite) UIViewController *hbd_targetViewController;
+@property(nonatomic, weak, readwrite) UIViewController *hbd_puppetViewController;
 
 @end
 
@@ -186,6 +188,10 @@
         }
         
         self.visible = NO;
+        
+        if (self.willDismissBlock) {
+            self.willDismissBlock(self);
+        }
         
         if (self.disappearCompletionBlock) {
             self.disappearCompletionBlock(YES);
@@ -379,6 +385,11 @@
 
 @end
 
+@interface HBDModalViewController(Manager)
+- (void)showWithAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
+- (void)hideWithAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
+@end
+
 @implementation HBDModalWindow
 
 @end
@@ -391,6 +402,38 @@
 
 - (void)setHbd_modalViewController:(HBDModalViewController *)modalViewController {
     objc_setAssociatedObject(self, @selector(hbd_modalViewController), modalViewController, OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (UIViewController *)hbd_targetViewController {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setHbd_targetViewController:(UIViewController *)targetViewController {
+    objc_setAssociatedObject(self, @selector(hbd_targetViewController), targetViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (UIViewController *)hbd_puppetViewController {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setHbd_puppetViewController:(UIViewController *)puppetViewController {
+    objc_setAssociatedObject(self, @selector(hbd_puppetViewController), puppetViewController, OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (void)hbd_showViewController:(UIViewController *)vc animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    HBDModalViewController *modalViewController = [[HBDModalViewController alloc] init];
+    modalViewController.contentViewController = vc;
+    self.hbd_puppetViewController = vc;
+    vc.hbd_targetViewController = self;
+    [modalViewController showWithAnimated:animated completion:completion];
+}
+
+- (void)hbd_hideViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    if (self.hbd_puppetViewController) {
+        [self.hbd_puppetViewController.hbd_modalViewController hideWithAnimated:animated completion:completion];
+    } else {
+        [self.hbd_targetViewController hbd_hideViewControllerAnimated:animated completion:completion];
+    }
 }
 
 @end

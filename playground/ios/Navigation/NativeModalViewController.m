@@ -66,10 +66,15 @@
         }];
     };
     
+    __weak typeof (self) weakSelf = self;
+    modal.willDismissBlock = ^(HBDModalViewController *modalViewController) {
+        [weakSelf.hbd_targetViewController didReceiveResultCode:-1 resultData:@{@"text": @"来自原生 modal 的问候", @"backId": weakSelf.sceneId} requestCode:1];
+    };
+    
 }
 
 - (IBAction)closeModal:(UIButton *)sender {
-    [self.hbd_modalViewController hideWithAnimated:YES completion:^(BOOL finished) {
+    [self hbd_hideViewControllerAnimated:YES completion:^(BOOL finished) {
         
     }];
 }

@@ -1,11 +1,13 @@
 package com.navigationhybrid;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,7 +114,6 @@ public class ReactFragment extends HybridFragment {
         }
     }
 
-
     private void initReactNative() {
         if (reactRootView != null || getContext() == null) {
             return;
@@ -177,4 +178,21 @@ public class ReactFragment extends HybridFragment {
         }
     }
 
+    @Override
+    protected void setupDialog() {
+        super.setupDialog();
+        getDialog().setOnKeyListener(
+                new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                        if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("sceneId", getSceneId());
+                            getReactBridgeManager().sendEvent("DIALOG_BACK_PRESS", Arguments.fromBundle(bundle));
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+    }
 }

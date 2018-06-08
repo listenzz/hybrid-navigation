@@ -143,11 +143,11 @@ export default class Navigation extends Component {
   }
 
   showModal() {
-    this.props.navigation.showModal('ReactModal');
+    this.props.navigation.showModal('ReactModal', REQUEST_CODE);
   }
 
   showNativeModal() {
-    this.props.navigation.showModal('NativeModal');
+    this.props.navigation.showModal('NativeModal', REQUEST_CODE);
   }
 
   render() {

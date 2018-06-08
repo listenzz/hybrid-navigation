@@ -56,7 +56,7 @@ public class OneNativeFragment extends HybridFragment {
     }
 
     @Override
-    protected void onCustomStyle(Style style) {
+    protected void onCustomStyle(@NonNull Style style) {
         super.onCustomStyle(style);
         Bundle args = FragmentHelper.getArguments(this);
         String greeting = args.getString("greeting");

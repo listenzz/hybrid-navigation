@@ -26,7 +26,7 @@ public class HybridFragment extends AwesomeFragment {
     private Garden garden;
 
     @Override
-    protected void onCustomStyle(Style style) {
+    protected void onCustomStyle(@NonNull Style style) {
         super.onCustomStyle(style);
         garden = new Garden(this, style);
     }

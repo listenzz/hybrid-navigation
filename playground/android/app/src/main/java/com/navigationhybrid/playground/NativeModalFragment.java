@@ -1,5 +1,7 @@
 package com.navigationhybrid.playground;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,7 +19,7 @@ import com.navigationhybrid.HybridFragment;
 
 public class NativeModalFragment extends HybridFragment {
 
-    private final static int mAnimationDuration = 200;
+    private final static int mAnimationDuration = 250;
     private boolean mIsAnimating = false;
     private View mContentView;
 
@@ -32,10 +34,20 @@ public class NativeModalFragment extends HybridFragment {
         super.onActivityCreated(savedInstanceState);
         mContentView = getView().findViewById(R.id.content);
         animateUp();
+
     }
 
     @Override
-    public void dismissDialog() {
+    public void onDismiss(DialogInterface dialog) {
+        Bundle bundle = new Bundle();
+        bundle.putString("text", "这条消息来自原生 modal.");
+        bundle.putString("backId", getSceneId());
+        setResult(Activity.RESULT_OK, bundle);
+        super.onDismiss(dialog);
+    }
+
+    @Override
+    public void dismissDialogFragment() {
         if (mIsAnimating) {
             return;
         }
@@ -55,7 +67,7 @@ public class NativeModalFragment extends HybridFragment {
         set.addAnimation(translate);
         set.addAnimation(alpha);
         set.setInterpolator(new DecelerateInterpolator());
-        set.setDuration(mAnimationDuration + 100);
+        set.setDuration(mAnimationDuration);
         set.setFillAfter(true);
         mContentView.startAnimation(set);
     }
@@ -93,7 +105,7 @@ public class NativeModalFragment extends HybridFragment {
                         // java.lang.IllegalArgumentException: View=com.android.internal.policy.PhoneWindow$DecorView{22dbf5b V.E...... R......D 0,0-1080,1083} not attached to window manager
                         // 在dismiss的时候可能已经detach了，简单try-catch一下
                         try {
-                            NativeModalFragment.super.dismissDialog();
+                            NativeModalFragment.super.dismissDialogFragment();
                         } catch (Exception e) {
                             Log.w(TAG, "dismiss error\n" + Log.getStackTraceString(e));
                         }

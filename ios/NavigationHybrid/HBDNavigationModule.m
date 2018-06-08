@@ -42,6 +42,7 @@ RCT_EXPORT_MODULE(NavigationHybrid)
              @"ON_BAR_BUTTON_ITEM_CLICK",
              @"ON_COMPONENT_APPEAR",
              @"ON_COMPONENT_DISAPPEAR",
+             @"DIALOG_BACK_PRESS", // for Android
              ];
 }
 
@@ -198,23 +199,27 @@ RCT_EXPORT_METHOD(dismiss:(NSString *)sceneId animated:(BOOL)animated) {
     }
 }
 
-RCT_EXPORT_METHOD(showModal:(NSString *)sceneId moduleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options) {
-    NSLog(@"show modal");
-    HBDViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
-    HBDModalViewController *modal = [[HBDModalViewController alloc] init];
-    modal.contentViewController = target;
-    [modal showWithAnimated:YES completion:^(BOOL finished) {
-
-    }];
+RCT_EXPORT_METHOD(showModal:(NSString *)sceneId moduleName:(NSString *)moduleName requestCode:(NSInteger)requestCode props:(NSDictionary *)props options:(NSDictionary *)options) {
+    HBDViewController *vc = [self controllerForSceneId:sceneId];
+    if (vc) {
+        HBDViewController *puppet = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
+        [puppet setRequestCode:requestCode];
+        [vc hbd_showViewController:puppet animated:YES completion:^(BOOL finished) {
+            
+        }];
+    }
 }
 
 RCT_EXPORT_METHOD(hideModal:(NSString *)sceneId) {
-    NSLog(@"hide modal");
     HBDViewController *vc = [self controllerForSceneId:sceneId];
     if (vc) {
-        HBDModalViewController *modal = vc.hbd_modalViewController;
-        [modal hideWithAnimated:YES completion:^(BOOL finished) {
-
+        UIViewController *target = vc.hbd_targetViewController;
+        if (target) {
+            [target didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:vc.requestCode];
+        }
+        
+        [target hbd_hideViewControllerAnimated:YES completion:^(BOOL finished) {
+            
         }];
     }
 }
@@ -385,35 +390,22 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     UIViewController *controller = application.keyWindow.rootViewController;
     HBDViewController *vc = [self controllerForSceneId:sceneId atController:controller];
-    if (!vc) {
-        vc = [self controllerForModalSceneId:sceneId];
-    }
-    return vc;
-}
-
-- (HBDViewController *)controllerForModalSceneId:(NSString *)sceneId {
-    HBDViewController *vc = nil;
-    for (UIWindow *window in [[UIApplication sharedApplication] windows]) {
-        if ([window isKindOfClass:[HBDModalWindow class]] && !window.hidden) {
-            if ([window.rootViewController isKindOfClass:[HBDModalViewController class]]) {
-                HBDModalViewController *modal = (HBDModalViewController *)window.rootViewController;
-                vc = [self controllerForSceneId:sceneId atController:modal.contentViewController];
-                if (vc) {
-                    break;
-                }
-            }
-        }
-    }
     return vc;
 }
 
 - (HBDViewController *)controllerForSceneId:(NSString *)sceneId atController:(UIViewController *)controller {
     HBDViewController *target;
+    
     if ([controller isKindOfClass:[HBDViewController class]]) {
         HBDViewController *vc = (HBDViewController *)controller;
         if ([vc.sceneId isEqualToString:sceneId]) {
             target = vc;
         }
+    }
+    
+    if (!target && [controller isKindOfClass:[HBDModalViewController class]]) {
+        HBDModalViewController *modal = (HBDModalViewController *)controller;
+        target = [self controllerForSceneId:sceneId atController:modal.contentViewController];
     }
     
     if (!target) {

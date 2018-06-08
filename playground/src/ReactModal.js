@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  Dimensions,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import { RESULT_OK } from 'react-native-navigation-hybrid';
 
 // Utility for creating custom animations
 const makeAnimation = (name, obj) => {
@@ -15,32 +9,54 @@ const makeAnimation = (name, obj) => {
 };
 
 export default class ReactModal extends React.Component {
-  static defaultProps = {
-    actionSheets: [{ text: '男', onPress: () => {} }, { text: '女', onPress: () => {} }],
-  };
-
-  static navigationItem = {};
-
   constructor(props) {
     super(props);
     this.hideModal = this.hideModal.bind(this);
   }
 
-  renderItem = (text, onPress) => {
-    return (
-      <TouchableHighlight onPress={onPress} underlayColor={'#212121'}>
-        <View style={styles.item}>
-          <Text style={styles.itemText}>{text}</Text>
-        </View>
-      </TouchableHighlight>
-    );
+  state = {
+    actionSheets: [
+      {
+        text: '男',
+        onPress: () => {
+          this.hideModal('男');
+        },
+      },
+      {
+        text: '女',
+        onPress: () => {
+          this.hideModal('女');
+        },
+      },
+    ],
   };
+
+  onBackPressed = () => {
+    this.handleCancel();
+  };
+
+  handleCancel = () => {
+    this.hideModal();
+  };
+
+  hideModal(gender) {
+    console.info('hideModal:' + gender);
+    this.view.slideOutDown(250).then(endState => {
+      if (endState.finished) {
+        this.props.navigation.setResult(RESULT_OK, {
+          text: gender || '你到底是男是女？',
+          backId: this.props.sceneId,
+        });
+        this.props.navigation.hideModal();
+      }
+    });
+  }
 
   handleRef = ref => {
     this.view = ref;
   };
 
-  _onLayout = e => {
+  onLayout = e => {
     this.height = e.nativeEvent.layout.height;
     makeAnimation('slideOutDown', {
       from: {
@@ -62,37 +78,38 @@ export default class ReactModal extends React.Component {
         translateY: 0,
       },
     });
-    this.view.slideInUp(300);
+    this.view.slideInUp(250);
   };
 
-  hideModal() {
-    console.info('hideModal');
-    this.view.slideOutDown(300).then(endState => {
-      if (endState.finished) {
-        this.props.navigation.hideModal();
-      }
-    });
-  }
+  renderItem = (text, onPress) => {
+    return (
+      <TouchableHighlight onPress={onPress} underlayColor={'#212121'}>
+        <View style={styles.item}>
+          <Text style={styles.itemText}>{text}</Text>
+        </View>
+      </TouchableHighlight>
+    );
+  };
 
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.hideModal}>
+      <TouchableWithoutFeedback onPress={this.handleCancel}>
         <Animatable.View
           ref={this.handleRef}
           useNativeDriver
           easing="ease-in-out"
           style={[styles.bottomModal, { opacity: 0 }]}
         >
-          <View onLayout={this._onLayout}>
-            {this.props.actionSheets.map(({ text, onPress }, index) => {
-              let isLast = index === this.props.actionSheets.length - 1;
+          <View onLayout={this.onLayout}>
+            {this.state.actionSheets.map(({ text, onPress }, index) => {
+              let isLast = index === this.state.actionSheets.length - 1;
               return (
                 <View key={text} style={!isLast && styles.divider}>
                   {this.renderItem(text, onPress)}
                 </View>
               );
             })}
-            <View style={styles.itemCancel}>{this.renderItem('取消', this.hideModal)}</View>
+            <View style={styles.itemCancel}>{this.renderItem('取消', this.handleCancel)}</View>
           </View>
         </Animatable.View>
       </TouchableWithoutFeedback>

@@ -21,7 +21,7 @@ typedef NS_ENUM(NSUInteger, HBDModalAnimationStyle) {
 @property(nonatomic, strong) UIViewController *contentViewController;
 
 /**
- * 等同于 contentViewController.view
+ * 等同 contentViewController.view
  */
 @property (nonatomic, strong, readonly) UIView *contentView;
 
@@ -80,12 +80,14 @@ typedef NS_ENUM(NSUInteger, HBDModalAnimationStyle) {
 @property(nonatomic, copy) void (^hidingAnimation)(HBDModalViewController *modalViewController, void(^completion)(BOOL finished));
 
 /**
+ * modal 将要销毁时的回掉
+ */
+@property(nonatomic, copy) void (^willDismissBlock)(HBDModalViewController *modalViewController);
+
+/**
  *  请求重新计算浮层的布局
  */
 - (void)updateLayout;
-
-- (void)showWithAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
-- (void)hideWithAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 
 @end
 
@@ -94,10 +96,17 @@ typedef NS_ENUM(NSUInteger, HBDModalAnimationStyle) {
 
 @end
 
-
 @interface UIViewController (HBDModalViewController)
 
 @property(nonatomic, weak, readonly) HBDModalViewController *hbd_modalViewController;
+
+@property(nonatomic, strong, readonly) UIViewController *hbd_targetViewController;
+
+@property(nonatomic, weak, readonly) UIViewController *hbd_puppetViewController;
+
+- (void)hbd_showViewController:(UIViewController *)vc animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
+
+- (void)hbd_hideViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 
 @end
 

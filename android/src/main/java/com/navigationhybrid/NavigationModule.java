@@ -298,19 +298,14 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void showModal(final String sceneId, final String moduleName, final ReadableMap props, final ReadableMap options) {
+    public void showModal(final String sceneId, final String moduleName, final int requestCode, final ReadableMap props, final ReadableMap options) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Activity activity = getCurrentActivity();
-                if (activity instanceof ReactAppCompatActivity) {
-                    ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                    FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-                    AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-                    if (fragment != null) {
-                        AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
-                        target.show(fragmentManager, target.getSceneId());
-                    }
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
+                    fragment.showDialogFragment(target, requestCode);
                 }
             }
         });
@@ -324,7 +319,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                    fragment.dismissDialog();
+                    fragment.dismissDialogFragment();
                 }
             }
         });

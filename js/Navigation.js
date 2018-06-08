@@ -59,7 +59,7 @@ export default class Navigattion {
     NavigationModule.replaceToRoot(this.sceneId, moduleName, props, options);
   }
 
-  present(moduleName, requestCode, props = {}, options = {}, animated = true) {
+  present(moduleName, requestCode = 0, props = {}, options = {}, animated = true) {
     NavigationModule.present(this.sceneId, moduleName, requestCode, props, options, animated);
   }
 
@@ -71,8 +71,8 @@ export default class Navigattion {
     NavigationModule.dismiss(this.sceneId, animated);
   }
 
-  showModal(moduleName, props = {}, options = {}) {
-    NavigationModule.showModal(this.sceneId, moduleName, props, options);
+  showModal(moduleName, requestCode = 0, props = {}, options = {}) {
+    NavigationModule.showModal(this.sceneId, moduleName, requestCode, props, options);
   }
 
   hideModal() {
