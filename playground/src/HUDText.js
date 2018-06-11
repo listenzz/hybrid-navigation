@@ -12,6 +12,7 @@ const instructions = Platform.select({
 export default class HUDTest extends Component {
   constructor(props) {
     super(props);
+    this.loading = this.loading.bind(this);
   }
 
   componentDidMount() {
@@ -28,10 +29,10 @@ export default class HUDTest extends Component {
   }
 
   loading() {
-    HUD.show();
+    this.hud = HUD.showLoading();
     setTimeout(() => {
       HUD.done('任务已经完成啦！');
-      HUD.hide();
+      this.hud.hideLoading();
     }, 2000);
   }
 

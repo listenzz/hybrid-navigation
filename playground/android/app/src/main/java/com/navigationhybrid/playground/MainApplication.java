@@ -10,11 +10,11 @@ import com.facebook.soloader.SoLoader;
 import com.navigationhybrid.NavigationHybridPackage;
 import com.navigationhybrid.ReactBridgeManager;
 import com.oblador.vectoricons.VectorIconsPackage;
+import com.taihua.hud.HUDReactPackage;
 
 import java.util.Arrays;
 import java.util.List;
 
-import me.listenzz.hud.HUDReactPackage;
 
 /**
  * Created by Listen on 2017/11/17.
