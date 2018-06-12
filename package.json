@@ -4,17 +4,14 @@
     "type": "git",
     "url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
   },
-  "version": "0.7.1",
+  "version": "0.7.3",
   "nativePackage": true,
-  "description": "A native navigation for React Native which support navigation between native and react side",
+  "description":
+    "A native navigation for React Native which support navigation between native and react side",
   "author": "listen <listenzz@163.com>",
   "license": "MIT",
   "homepage": "https://github.com/listenzz/react-native-navigation-hybrid",
-  "keywords": [
-    "react native",
-    "navigation",
-    "navigator"
-  ],
+  "keywords": ["react native", "navigation", "navigator"],
   "main": "index.js",
   "scripts": {
     "start": "npm run syncfp && node node_modules/react-native/local-cli/cli.js start",
