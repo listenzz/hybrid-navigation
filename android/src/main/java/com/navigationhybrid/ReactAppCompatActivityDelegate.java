@@ -2,8 +2,10 @@ package com.navigationhybrid;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -19,7 +22,6 @@ import android.widget.Toast;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
-import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Callback;
@@ -59,13 +61,20 @@ public class ReactAppCompatActivityDelegate {
         this.bridgeManager = bridgeManager;
     }
 
-    /**
-     * Get the {@link ReactNativeHost} used by this app. By default, assumes
-     * {@link Activity#getApplication()} is an instance of {@link ReactApplication} and calls
-     * {@link ReactApplication#getReactNativeHost()}. Override this method if your application class
-     * does not implement {@code ReactApplication} or you simply have a different mechanism for
-     * storing a {@code ReactNativeHost}, e.g. as a static field somewhere.
-     */
+    private void askPermission() {
+        if (getReactNativeHost().getUseDeveloperSupport() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Log.i(TAG, "check overlay permission");
+            // Get permission to show redbox in dev builds.
+            if (!Settings.canDrawOverlays(getContext())) {
+                Log.i(TAG, "request overlay permission");
+                Intent serviceIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
+                FLog.w(ReactConstants.TAG, REDBOX_PERMISSION_MESSAGE);
+                Toast.makeText(getContext(), REDBOX_PERMISSION_MESSAGE, Toast.LENGTH_LONG).show();
+                ((Activity) getContext()).startActivityForResult(serviceIntent, REQUEST_OVERLAY_PERMISSION_CODE);
+            }
+        }
+    }
+
     protected ReactNativeHost getReactNativeHost() {
         return bridgeManager.getReactNativeHost();
     }
@@ -79,19 +88,20 @@ public class ReactAppCompatActivityDelegate {
     }
 
     protected void onCreate(Bundle savedInstanceState) {
-        if (getReactNativeHost().getUseDeveloperSupport() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.i(TAG, "check overlay permission");
-            // Get permission to show redbox in dev builds.
-            if (!Settings.canDrawOverlays(getContext())) {
-                Log.i(TAG, "request overlay permission");
-                Intent serviceIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
-                FLog.w(ReactConstants.TAG, REDBOX_PERMISSION_MESSAGE);
-                Toast.makeText(getContext(), REDBOX_PERMISSION_MESSAGE, Toast.LENGTH_LONG).show();
-                ((Activity) getContext()).startActivityForResult(serviceIntent, REQUEST_OVERLAY_PERMISSION_CODE);
-            }
-        }
         mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
+        if (!bridgeManager.isReactModuleInRegistry()) {
+            askPermission();
+        }
+        IntentFilter intentFilter = new IntentFilter(ReactBridgeManager.REACT_INSTANCE_CONTEXT_INITIALIZED);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
     }
+
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            askPermission();
+        }
+    };
 
     protected void onPause() {
         if (getReactNativeHost().hasInstance()) {
@@ -113,6 +123,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     protected void onDestroy() {
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
         if (getReactNativeHost().hasInstance()) {
             getReactNativeHost().getReactInstanceManager().onHostDestroy(getPlainActivity());
         }
@@ -132,6 +143,16 @@ public class ReactAppCompatActivityDelegate {
         }
     }
 
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (getReactNativeHost().hasInstance()
+                && getReactNativeHost().getUseDeveloperSupport()
+                && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+            event.startTracking();
+            return true;
+        }
+        return false;
+    }
+
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (getReactNativeHost().hasInstance() && getReactNativeHost().getUseDeveloperSupport()) {
             if (keyCode == KeyEvent.KEYCODE_MENU) {
@@ -145,6 +166,16 @@ public class ReactAppCompatActivityDelegate {
                 getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (getReactNativeHost().hasInstance()
+                && getReactNativeHost().getUseDeveloperSupport()
+                && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+            getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
+            return true;
         }
         return false;
     }
@@ -172,12 +203,10 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public void onRequestPermissionsResult(final int requestCode, final String[] permissions, final int[] grantResults) {
-        Log.i(TAG, getClass().getSimpleName() + "#onRequestPermissionsResult");
         mPermissionsCallback = new Callback() {
             @Override
             public void invoke(Object... args) {
                 if (mPermissionListener != null && mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-                    Log.i(TAG, "call permission listener");
                     mPermissionListener = null;
                 }
             }
@@ -195,7 +224,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     private Context getContext() {
-        return mActivity;
+        return Assertions.assertNotNull(mActivity);
     }
 
     private Activity getPlainActivity() {

@@ -214,7 +214,7 @@ public class Garden {
         fragment.setNeedsStatusBarAppearanceUpdate();
     }
 
-    void setTopBarStyle(BarStyle barStyle) {
+    void setStatusBarStyle(BarStyle barStyle) {
         style.setStatusBarStyle(barStyle);
         fragment.setNeedsStatusBarAppearanceUpdate();
     }
@@ -226,7 +226,7 @@ public class Garden {
         }
     }
 
-    void setTopBarColor(int color) {
+    void setToolbarColor(int color) {
         style.setToolbarBackgroundColor(color);
         fragment.setNeedsToolbarAppearanceUpdate();
     }

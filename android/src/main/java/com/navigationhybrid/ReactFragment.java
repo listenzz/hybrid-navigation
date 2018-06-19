@@ -1,5 +1,6 @@
 package com.navigationhybrid;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.widget.FrameLayout;
 
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
 
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.PresentAnimation;
@@ -155,6 +157,12 @@ public class ReactFragment extends HybridFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
+    }
+
     public void signalFirstRenderComplete() {
         Log.d(TAG, "signalFirstRenderComplete");
         startPostponedEnterTransition();
@@ -190,6 +198,18 @@ public class ReactFragment extends HybridFragment {
                             bundle.putString("sceneId", getSceneId());
                             getReactBridgeManager().sendEvent("DIALOG_BACK_PRESS", Arguments.fromBundle(bundle));
                             return true;
+                        }
+
+                        ReactContext reactContext = getReactBridgeManager().getReactInstanceManager().getCurrentReactContext();
+                        if (reactContext != null && !getReactBridgeManager().isReactModuleInRegistry()) {
+                            Activity activity = reactContext.getCurrentActivity();
+                            if (activity != null) {
+                                if (KeyEvent.ACTION_UP == event.getAction()) {
+                                    activity.onKeyUp(keyCode, event);
+                                } else if (KeyEvent.ACTION_DOWN == event.getAction()) {
+                                    activity.onKeyDown(keyCode, event);
+                                }
+                            }
                         }
                         return false;
                     }

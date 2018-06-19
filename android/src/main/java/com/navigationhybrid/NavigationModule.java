@@ -305,7 +305,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     AwesomeFragment target = reactBridgeManager.createFragment(moduleName, Arguments.toBundle(props), Arguments.toBundle(options));
-                    fragment.showDialogFragment(target, requestCode);
+                    fragment.showDialog(target, requestCode);
                 }
             }
         });
@@ -319,7 +319,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
-                    fragment.dismissDialogFragment();
+                    fragment.dismissDialog();
                 }
             }
         });

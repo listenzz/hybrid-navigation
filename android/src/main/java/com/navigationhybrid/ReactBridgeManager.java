@@ -32,6 +32,7 @@ import me.listenzz.navigation.FragmentHelper;
 public class ReactBridgeManager {
 
     public static String REACT_MODULE_REGISTRY_COMPLETED_BROADCAST = "registry_completed";
+    public static String REACT_INSTANCE_CONTEXT_INITIALIZED = "context_initialized";
 
     public interface ReactModuleRegistryListener {
         void onReactModuleRegistryCompleted();
@@ -66,6 +67,11 @@ public class ReactBridgeManager {
                 rootLayout = null;
                 stickyLayout = null;
                 pendingLayout = null;
+
+                if (context != null) {
+                    Intent intent = new Intent(REACT_INSTANCE_CONTEXT_INITIALIZED);
+                    LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
+                }
             }
         });
         reactInstanceManager.createReactContextInBackground();

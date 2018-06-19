@@ -24,9 +24,13 @@ public class CustomContainerFragment extends AwesomeFragment {
         if (savedInstanceState != null) {
             containerFragment = (AwesomeFragment) getChildFragmentManager().findFragmentById(R.id.container);
             backgroundFragment = (AwesomeFragment) getChildFragmentManager().findFragmentById(R.id.background);
-        }
-        if (backgroundFragment == null || containerFragment == null) {
-            throw new IllegalArgumentException("必须指定 backgroundFragment 以及 containerFragment");
+        } else {
+            if (backgroundFragment == null || containerFragment == null) {
+                throw new IllegalArgumentException("必须指定 backgroundFragment 以及 containerFragment");
+            } else {
+                FragmentHelper.addFragmentToAddedList(getChildFragmentManager(), R.id.background, backgroundFragment, false);
+                FragmentHelper.addFragmentToAddedList(getChildFragmentManager(), R.id.container, containerFragment, true);
+            }
         }
     }
 
@@ -36,21 +40,9 @@ public class CustomContainerFragment extends AwesomeFragment {
 
     public void setBackgroundFragment(@NonNull final AwesomeFragment backgroundFragment) {
         this.backgroundFragment = backgroundFragment;
-        scheduleTaskAtStarted(new Runnable() {
-            @Override
-            public void run() {
-                FragmentHelper.addFragmentToAddedList(getChildFragmentManager(), R.id.background, backgroundFragment, false);
-            }
-        });
     }
 
     public void setContainerFragment(@NonNull final AwesomeFragment containerFragment) {
         this.containerFragment = containerFragment;
-        scheduleTaskAtStarted(new Runnable() {
-            @Override
-            public void run() {
-                FragmentHelper.addFragmentToAddedList(getChildFragmentManager(), R.id.container, containerFragment, true);
-            }
-        });
     }
 }

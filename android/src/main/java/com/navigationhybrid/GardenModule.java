@@ -169,9 +169,9 @@ public class GardenModule extends ReactContextBaseJavaModule {
                         String barStyle = readableMap.getString("topBarStyle");
                         options.putString("topBarStyle", barStyle);
                         if (barStyle.equals("dark-content")) {
-                            fragment.getGarden().setTopBarStyle(BarStyle.DarkContent);
+                            fragment.getGarden().setStatusBarStyle(BarStyle.DarkContent);
                         } else {
-                            fragment.getGarden().setTopBarStyle(BarStyle.LightContent);
+                            fragment.getGarden().setStatusBarStyle(BarStyle.LightContent);
                         }
                     }
                 }
@@ -200,7 +200,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setTopBarColor(final String sceneId, final ReadableMap readableMap) {
-        Log.i(TAG, "setTopBarColor:" + readableMap);
+        Log.i(TAG, "setToolbarColor:" + readableMap);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -210,7 +210,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                     if (readableMap.hasKey("topBarColor")) {
                         String topBarColor = readableMap.getString("topBarColor");
                         options.putString("topBarColor", topBarColor);
-                        fragment.getGarden().setTopBarColor(Color.parseColor(topBarColor));
+                        fragment.getGarden().setToolbarColor(Color.parseColor(topBarColor));
                     }
                 }
             }

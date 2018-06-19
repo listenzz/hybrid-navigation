@@ -34,18 +34,22 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     private final ReactAppCompatActivityDelegate activityDelegate;
 
     protected ReactAppCompatActivity() {
-        activityDelegate = new ReactAppCompatActivityDelegate(this, ReactBridgeManager.instance);
+        activityDelegate = createReactActivityDelegate();
+    }
+
+    protected ReactAppCompatActivityDelegate createReactActivityDelegate() {
+        return new ReactAppCompatActivityDelegate(this, ReactBridgeManager.instance);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setStatusBarTranslucent(true);
-        }
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         activityDelegate.onCreate(savedInstanceState);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+           setStatusBarTranslucent(true);
+        }
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         getReactBridgeManager().addReactModuleRegistryListener(this);
 
         if (savedInstanceState == null) {
@@ -67,9 +71,9 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     protected void onDestroy() {
-        activityDelegate.onDestroy();
         getReactBridgeManager().removeReactModuleRegistryListener(this);
         super.onDestroy();
+        activityDelegate.onDestroy();
     }
 
     @Override
@@ -130,7 +134,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         if (getReactBridgeManager().hasPendingLayout()) {
             Log.i(TAG, "set root from pending layout when resume");
             ReactBridgeManager bridgeManager = getReactBridgeManager();
-            AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getRootLayout());
+            AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getPendingLayout());
             bridgeManager.setPendingLayout(null);
             if (fragment != null) {
                 setActivityRootFragment(fragment);
@@ -144,8 +148,18 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return activityDelegate.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return activityDelegate.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        return activityDelegate.onKeyLongPress(keyCode, event) || super.onKeyLongPress(keyCode, event);
     }
 
     @Override
