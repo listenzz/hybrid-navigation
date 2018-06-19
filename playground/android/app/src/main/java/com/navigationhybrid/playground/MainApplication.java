@@ -1,6 +1,6 @@
 package com.navigationhybrid.playground;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -20,7 +20,7 @@ import java.util.List;
  * Created by Listen on 2017/11/17.
  */
 
-public class MainApplication extends Application implements ReactApplication{
+public class MainApplication extends MultiDexApplication implements ReactApplication{
 
     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
         @Override
