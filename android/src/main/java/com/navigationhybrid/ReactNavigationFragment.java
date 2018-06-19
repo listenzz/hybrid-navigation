@@ -21,7 +21,7 @@ public class ReactNavigationFragment extends NavigationFragment {
     }
 
     @Override
-    public void setRootFragment(AwesomeFragment fragment) {
+    public void setRootFragment(@NonNull AwesomeFragment fragment) {
         super.setRootFragment(fragment);
         if (fragment instanceof HybridFragment) {
             HybridFragment hybridFragment = (HybridFragment) fragment;
