@@ -16,15 +16,16 @@ function dependenciesForRoute(config = {}) {
   return dependencies.reverse();
 }
 
-function navigateTo(graph, target) {
+function navigateTo(graph, route) {
   if (graph.type === 'drawer') {
     const drawer = graph.drawer;
-    if (navigateTo(drawer[0], target)) {
+    if (navigateTo(drawer[0], route)) {
       const navigation = getNavigationForGraph(drawer[0]);
       navigation.closeMenu();
       return true;
     }
-    if (navigateTo(drawer[1], target)) {
+    if (navigateTo(drawer[1], route)) {
+      // 打开侧边栏
       const navigation = getNavigationForGraph(drawer[0]);
       navigation.openMenu();
       return true;
@@ -32,7 +33,7 @@ function navigateTo(graph, target) {
   } else if (graph.type === 'tabs') {
     const tabs = graph.tabs;
     for (let i = 0; i < tabs.length; i++) {
-      if (navigateTo(tabs[i], target)) {
+      if (navigateTo(tabs[i], route)) {
         if (i !== graph.selectedIndex) {
           const navigation = getNavigationForGraph(tabs[graph.selectedIndex]);
           navigation.switchToTab(i);
@@ -42,7 +43,7 @@ function navigateTo(graph, target) {
     }
   } else if (graph.type === 'stack') {
     const stack = graph.stack;
-    let moduleNames = [...target.dependencies, target.moduleName];
+    let moduleNames = [...route.dependencies, route.moduleName];
     let index = -1;
     for (let i = stack.length - 1; i > -1; i--) {
       if (stack[i].type === 'screen') {
@@ -54,23 +55,24 @@ function navigateTo(graph, target) {
       }
     }
     if (index !== -1) {
-      moduleNames = moduleNames.slice(index + 1);
+      let peddingModuleNames = moduleNames.slice(index + 1);
       const navigation = getNavigationForGraph(graph);
-      for (let i = 0; i < moduleNames.length; i++) {
-        if (i === moduleNames.length - 1) {
-          navigation.push(target.moduleName, target.props);
-        } else {
-          navigation.push(moduleNames[i]);
+      if (peddingModuleNames.length === 0) {
+        navigation.replace(route.moduleName, route.props);
+      } else {
+        for (let i = 0; i < peddingModuleNames.length; i++) {
+          if (i === peddingModuleNames.length - 1) {
+            navigation.push(route.moduleName, route.props);
+          } else {
+            navigation.push(peddingModuleNames[i]);
+          }
         }
-      }
-      if (moduleNames.length === 0) {
-        navigation.replace(target.moduleName, target.props);
       }
       return true;
     }
   } else if (graph.type === 'screen') {
     const screen = graph.screen;
-    if (screen.moduleName === target.moduleName) {
+    if (screen.moduleName === route.moduleName) {
       return true;
     }
   }
@@ -167,24 +169,23 @@ class Router {
       }
     }
 
-    const target = this.pathToRoute(path);
-    if (target && target.moduleName) {
+    const route = this.pathToRoute(path);
+    if (route && route.moduleName) {
       try {
         const graph = await this.routeGraph();
-        if (target.mode === 'modal') {
+        if (route.mode === 'modal') {
           let navigation = getNavigationForGraph(graph[0]);
-          navigation.present(target.moduleName, 0, target.props);
+          navigation.present(route.moduleName, 0, route.props);
         } else {
+          // push
           if (graph.length > 1) {
             let navigation = getNavigationForGraph(graph[1]);
             navigation.dismiss();
           }
-          if (navigateTo(graph[0], target)) {
-            // empty
-          } else {
+          if (!navigateTo(graph[0], route)) {
             let navigation = getNavigationForGraph(graph[0]);
             navigation.closeMenu();
-            navigation.push(target.moduleName, target.props);
+            navigation.push(route.moduleName, route.props);
           }
         }
       } catch (error) {
@@ -213,12 +214,10 @@ class Router {
       Linking.addEventListener('url', this._routeEventHandler);
     }
     active++;
-    console.info('active count:' + active);
   }
 
   inactivate() {
     active--;
-    console.info('active count:' + active);
     if (active == 0) {
       Linking.removeEventListener('url', this._routeEventHandler);
     }
