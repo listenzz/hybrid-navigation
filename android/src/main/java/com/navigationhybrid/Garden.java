@@ -60,10 +60,6 @@ public class Garden {
         this.style = style;
 
         Bundle options = fragment.getOptions();
-        if (options == null) {
-            options = new Bundle();
-        }
-
         this.options = options;
 
         this.backButtonHidden = options.getBoolean("backButtonHidden", false);

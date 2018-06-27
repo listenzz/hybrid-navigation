@@ -69,9 +69,14 @@ public class HybridFragment extends AwesomeFragment {
         return bridgeManager;
     }
 
+    @NonNull
     public Bundle getOptions() {
         Bundle args = FragmentHelper.getArguments(this);
-        return args.getBundle(Constants.ARG_OPTIONS);
+        Bundle bundle = args.getBundle(Constants.ARG_OPTIONS);
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
+        return bundle;
     }
 
     public void setOptions(@NonNull Bundle options) {
