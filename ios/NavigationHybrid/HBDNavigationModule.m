@@ -42,7 +42,8 @@ RCT_EXPORT_MODULE(NavigationHybrid)
              @"ON_BAR_BUTTON_ITEM_CLICK",
              @"ON_COMPONENT_APPEAR",
              @"ON_COMPONENT_DISAPPEAR",
-             @"DIALOG_BACK_PRESS", // for Android
+             @"ON_DIALOG_BACK_PRESSED", // for Android
+             @"ON_COMPONENT_BACK",
              ];
 }
 

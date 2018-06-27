@@ -18,6 +18,7 @@ public class Constants {
     public static final String ON_BAR_BUTTON_ITEM_CLICK_EVENT = "ON_BAR_BUTTON_ITEM_CLICK";
     public static final String ON_COMPONENT_APPEAR = "ON_COMPONENT_APPEAR";
     public static final String ON_COMPONENT_DISAPPEAR = "ON_COMPONENT_DISAPPEAR";
+    public static final String ON_COMPONENT_BACK = "ON_COMPONENT_BACK";
 
     public static final String REQUEST_CODE_KEY = "requestCode";
     public static final String RESULT_CODE_KEY = "resultCode";

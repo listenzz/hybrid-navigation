@@ -118,10 +118,19 @@ export default {
         this.events.push(event);
       }
 
-      listenDialogBackPress() {
-        let event = EventEmitter.addListener('DIALOG_BACK_PRESS', event => {
+      listenDialogBackPressedEvent() {
+        let event = EventEmitter.addListener('ON_DIALOG_BACK_PRESSED', event => {
           if (this.props.sceneId === event.sceneId && this.refs.real.onBackPressed) {
             this.refs.real.onBackPressed();
+          }
+        });
+        this.events.push(event);
+      }
+
+      listenComponentBackEvent() {
+        let event = EventEmitter.addListener('ON_COMPONENT_BACK', event => {
+          if (this.props.sceneId === event.sceneId && this.refs.real.onComponentBack) {
+            this.refs.real.onComponentBack();
           }
         });
         this.events.push(event);
@@ -133,7 +142,8 @@ export default {
         this.listenBarButtonItemClickEvent();
         this.listenComponentResumeEvent();
         this.listenComponentPauseEvent();
-        this.listenDialogBackPress();
+        this.listenDialogBackPressedEvent();
+        this.listenComponentBackEvent();
         this.navigation.signalFirstRenderComplete();
       }
 

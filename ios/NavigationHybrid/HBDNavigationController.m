@@ -13,6 +13,8 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDUtils.h"
 #import "HBDGarden.h"
+#import "HBDReactViewController.h"
+#import <React/RCTEventEmitter.h>
 
 @interface HBDNavigationController () <UIGestureRecognizerDelegate, UINavigationControllerDelegate>
 
@@ -22,6 +24,7 @@
 @property (nonatomic, strong) UIImageView *fromFakeShadow;
 @property (nonatomic, strong) UIImageView *toFakeShadow;
 @property (nonatomic, assign) BOOL inGesture;
+@property (nonatomic, strong) UIViewController *poppingViewController;
 
 @end
 
@@ -167,8 +170,22 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     }
 }
 
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
+    if (coordinator) {
+        UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
+        if (from == self.poppingViewController && [from isKindOfClass:[HBDReactViewController class]]) {
+            HBDReactViewController *reactVC = (HBDReactViewController *)from;
+            RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
+            [emitter sendEventWithName:@"ON_COMPONENT_BACK" body:@{ @"sceneId": reactVC.sceneId }];
+        }
+        self.poppingViewController = nil;
+    }
+}
+
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
     UIViewController *vc = [super popViewControllerAnimated:animated];
+    self.poppingViewController = vc;
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
     return vc;

@@ -196,7 +196,7 @@ public class ReactFragment extends HybridFragment {
                         if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                             Bundle bundle = new Bundle();
                             bundle.putString("sceneId", getSceneId());
-                            getReactBridgeManager().sendEvent("DIALOG_BACK_PRESS", Arguments.fromBundle(bundle));
+                            getReactBridgeManager().sendEvent("ON_DIALOG_BACK_PRESSED", Arguments.fromBundle(bundle));
                             return true;
                         }
 
