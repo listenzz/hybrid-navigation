@@ -28,7 +28,7 @@ export default class TopBarShadowHidden extends Component {
   }
 
   topBarAlpha() {
-    this.props.navigation.push('TopBarAlpha');
+    this.props.navigator.push('TopBarAlpha');
   }
 
   render() {

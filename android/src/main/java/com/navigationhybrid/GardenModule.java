@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -28,6 +29,7 @@ import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.BarStyle;
 import me.listenzz.navigation.BottomBar;
 import me.listenzz.navigation.DrawableUtils;
+import me.listenzz.navigation.DrawerFragment;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.TabBarFragment;
 
@@ -218,6 +220,25 @@ public class GardenModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void setTopBarShadowHidden(final String sceneId, final ReadableMap readableMap) {
+        Log.i(TAG, "setTopBarShadowHidden:" + readableMap);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    Bundle options = fragment.getOptions();
+                    if (readableMap.hasKey("topBarShadowHidden")) {
+                        boolean topBarShadowHidden = readableMap.getBoolean("topBarShadowHidden");
+                        options.putBoolean("topBarShadowHidden", topBarShadowHidden);
+                        fragment.getGarden().setToolbarShadowHidden(topBarShadowHidden);
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void setBottomBarColor(final String sceneId, final ReadableMap readableMap) {
         handler.post(new Runnable() {
             @Override
@@ -232,25 +253,6 @@ public class GardenModule extends ReactContextBaseJavaModule {
                             bottomBar.setBarBackgroundColor(bottomBarColor);
                             bottomBar.initialise();
                         }
-                    }
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void setTopBarShadowHidden(final String sceneId, final ReadableMap readableMap) {
-        Log.i(TAG, "setTopBarShadowHidden:" + readableMap);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
-                if (fragment != null && fragment.getView() != null) {
-                    Bundle options = fragment.getOptions();
-                    if (readableMap.hasKey("topBarShadowHidden")) {
-                        boolean topBarShadowHidden = readableMap.getBoolean("topBarShadowHidden");
-                        options.putBoolean("topBarShadowHidden", topBarShadowHidden);
-                        fragment.getGarden().setToolbarShadowHidden(topBarShadowHidden);
                     }
                 }
             }
@@ -284,6 +286,43 @@ public class GardenModule extends ReactContextBaseJavaModule {
         });
     }
 
+
+    @ReactMethod
+    public void setTabBadge(final String sceneId, final int index, final String text) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ReactFragment fragment = (ReactFragment) findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                    if (tabBarFragment != null) {
+                        AwesomeFragment presented = tabBarFragment.getPresentedFragment();
+                        if (presented != null) {
+                            presented.dismissFragment();
+                        }
+                        tabBarFragment.setBadge(index, text);
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setMenuInteractive(final String sceneId, final boolean enabled) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
+                if (awesomeFragment != null) {
+                    DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
+                    if (drawerFragment != null) {
+                        drawerFragment.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                    }
+                }
+            }
+        });
+    }
+
     private Drawable drawableFromReadableMap(Context context, ReadableMap icon) {
         if (icon != null && icon.hasKey("uri")) {
             String uri = icon.getString("uri");
@@ -305,6 +344,5 @@ public class GardenModule extends ReactContextBaseJavaModule {
     private HybridFragment findFragmentBySceneId(FragmentManager fragmentManager, String sceneId) {
         return (HybridFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
     }
-
 
 }

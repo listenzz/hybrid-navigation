@@ -27,7 +27,7 @@ export default class TopBarStyle extends Component {
     rightBarButtonItem: {
       icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
       title: 'SETTING',
-      action: navigation => {
+      action: navigator => {
         console.info('setting button is clicked.');
       },
       tintColor: '#FFFFFF',
@@ -51,7 +51,7 @@ export default class TopBarStyle extends Component {
   }
 
   statusBarColor() {
-    this.props.navigation.push('StatusBarColor');
+    this.props.navigator.push('StatusBarColor');
   }
   render() {
     return (

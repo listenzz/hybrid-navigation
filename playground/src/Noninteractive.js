@@ -21,7 +21,7 @@ export default class Noninteractive extends Component {
   }
 
   onBackButtonClick() {
-    this.props.navigation.pop();
+    this.props.navigator.pop();
   }
 
   render() {

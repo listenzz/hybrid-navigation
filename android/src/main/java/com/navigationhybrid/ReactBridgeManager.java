@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -12,10 +13,14 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.navigationhybrid.router.TabNavigator;
+import com.navigationhybrid.router.DrawerNavigator;
+import com.navigationhybrid.router.Navigator;
+import com.navigationhybrid.router.ScreenNavigator;
+import com.navigationhybrid.router.StackNavigator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +46,12 @@ public class ReactBridgeManager {
     private static final String TAG = "ReactNative";
     public static ReactBridgeManager instance = new ReactBridgeManager();
 
-    private ReactBridgeManager() {}
+    private ReactBridgeManager() {
+        registerNavigator(new ScreenNavigator());
+        registerNavigator(new StackNavigator());
+        registerNavigator(new TabNavigator());
+        registerNavigator(new DrawerNavigator());
+    }
 
     private HashMap<String, Class<? extends HybridFragment>> nativeModules = new HashMap<>();
     private HashMap<String, ReadableMap> reactModules = new HashMap<>();
@@ -204,86 +214,54 @@ public class ReactBridgeManager {
     }
 
     public AwesomeFragment createFragment(ReadableMap layout) {
-
-        if (layout.hasKey("screen")) {
-            ReadableMap screen = layout.getMap("screen");
-            String moduleName = screen.getString("moduleName");
-            Bundle props = null;
-            if (screen.hasKey("props")) {
-                ReadableMap map = screen.getMap("props");
-                props = Arguments.toBundle(map);
-            }
-
-            Bundle options = null;
-            if (screen.hasKey("options")) {
-                ReadableMap map = screen.getMap("options");
-                options = Arguments.toBundle(map);
-            }
-            return createFragment(moduleName, props, options);
-        }
-
-        if (layout.hasKey("stack")) {
-            ReadableMap stack = layout.getMap("stack");
-            AwesomeFragment awesomeFragment = createFragment(stack);
-            if (awesomeFragment != null) {
-                ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
-                reactNavigationFragment.setRootFragment(awesomeFragment);
-                return reactNavigationFragment;
+        AwesomeFragment fragment = null;
+        for (Navigator navigator : navigators) {
+            fragment = navigator.createFragment(layout);
+            if (fragment != null) {
+                break;
             }
         }
-
-        if (layout.hasKey("tabs")) {
-            ReadableArray tabs = layout.getArray("tabs");
-            List<AwesomeFragment> fragments = new ArrayList<>();
-            for (int i = 0, size = tabs.size(); i < size; i++) {
-                ReadableMap tab = tabs.getMap(i);
-                AwesomeFragment awesomeFragment = createFragment(tab);
-                if (awesomeFragment != null) {
-                    fragments.add(awesomeFragment);
-                }
-            }
-            if (fragments.size() > 0) {
-                ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
-                tabBarFragment.setChildFragments(fragments);
-                return tabBarFragment;
-            }
-        }
-
-        if (layout.hasKey("drawer")) {
-            ReadableArray drawer = layout.getArray("drawer");
-            if (drawer.size() == 2) {
-                ReadableMap content = drawer.getMap(0);
-                ReadableMap menu = drawer.getMap(1);
-                AwesomeFragment contentFragment = createFragment(content);
-                AwesomeFragment menuFragment = createFragment(menu);
-                if (contentFragment != null && menuFragment != null) {
-                    ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
-                    drawerFragment.setMenuFragment(menuFragment);
-                    drawerFragment.setContentFragment(contentFragment);
-                    if (menu.hasKey("options")) {
-                        ReadableMap options = menu.getMap("options");
-                        if (options.hasKey("maxDrawerWidth")) {
-                            int maxDrawerWidth = options.getInt("maxDrawerWidth");
-                            drawerFragment.setMaxDrawerWidth(maxDrawerWidth);
-                        }
-
-                        if (options.hasKey("minDrawerMargin")) {
-                            int minDrawerMargin = options.getInt("minDrawerMargin");
-                            drawerFragment.setMinDrawerMargin(minDrawerMargin);
-                        }
-                    }
-
-                    return drawerFragment;
-                }
-            }
-        }
-        return null;
+        return fragment;
     }
 
+    public void buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph) {
+        for (Navigator navigator : navigators) {
+            if (navigator.buildRouteGraph(fragment, graph)) {
+                return;
+            }
+        }
+    }
+
+    public HybridFragment primaryChildFragment(AwesomeFragment f) {
+        HybridFragment fragment = null;
+        for (Navigator navigator : navigators) {
+            fragment = navigator.primaryChildFragment(f);
+            if (fragment != null) {
+                break;
+            }
+        }
+        return fragment;
+    }
+
+    public void handleNavigation(@Nullable AwesomeFragment fragment, @NonNull String action, @NonNull Bundle extras) {
+        if (fragment == null) {
+            return;
+        }
+        for (Navigator navigator : navigators) {
+            List<String> supportActions = navigator.supportActions();
+            if (supportActions.contains(action)) {
+                navigator.handleNavigation(fragment, action, extras);
+                break;
+            }
+        }
+    }
+
+    @Nullable
     public HybridFragment createFragment(@NonNull String moduleName) {
         return createFragment(moduleName, null, null);
     }
 
+    @Nullable
     public HybridFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
         if (isReactModuleInRegistry()) {
             throw new IllegalStateException("模块还没有注册完，不能执行此操作");
@@ -336,4 +314,9 @@ public class ReactBridgeManager {
         return fragment;
     }
 
+    private List<Navigator> navigators = new ArrayList<>();
+
+    void registerNavigator(Navigator navigator) {
+        navigators.add(0, navigator);
+    }
 }

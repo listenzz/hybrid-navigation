@@ -8,6 +8,7 @@
 
 #import <React/RCTBridge.h>
 #import "HBDViewController.h"
+#import "HBDNavigator.h"
 
 extern NSString * const ReactModuleRegistryDidCompletedNotification;
 extern const NSInteger ResultOK;
@@ -53,5 +54,13 @@ extern const NSInteger ResultCancel;
 - (UIViewController *)controllerWithLayout:(NSDictionary *)layout;
 
 - (void)setRootViewController:(UIViewController *)rootViewController;
+
+- (void)routeGraphWithController:(UIViewController *)controller container:(NSMutableArray *)container;
+
+- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc;
+
+- (void)handleNavigationWithViewController:(HBDViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras;
+
+- (void)registerNavigator:(id<HBDNavigator>)navigator;
 
 @end

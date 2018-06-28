@@ -12,18 +12,18 @@ export default class Menu extends Component {
   }
 
   push() {
-    this.props.navigation.closeMenu();
-    this.props.navigation.push('OneNative');
+    this.props.navigator.closeMenu();
+    this.props.navigator.push('OneNative');
   }
 
   pushToRedux() {
-    this.props.navigation.closeMenu();
-    this.props.navigation.push('ReduxCounter');
+    this.props.navigator.closeMenu();
+    this.props.navigator.push('ReduxCounter');
   }
 
   hudTest() {
-    this.props.navigation.closeMenu();
-    this.props.navigation.push('HUDTest');
+    this.props.navigator.closeMenu();
+    this.props.navigator.push('HUDTest');
   }
 
   render() {

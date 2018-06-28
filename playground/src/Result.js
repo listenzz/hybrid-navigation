@@ -25,13 +25,13 @@ export default class Result extends Component {
   }
 
   componentWillMount() {
-    this.props.navigation.isRoot().then(isRoot => {
+    this.props.navigator.isRoot().then(isRoot => {
       if (isRoot) {
         this.props.garden.setLeftBarButtonItem({
           title: 'Cancel',
           insets: { top: -1, left: -8, bottom: 0, right: 8 },
-          action: navigation => {
-            navigation.dismiss();
+          action: navigator => {
+            navigator.dismiss();
           },
         });
         this.setState({ isRoot: isRoot });
@@ -40,19 +40,19 @@ export default class Result extends Component {
   }
 
   popToRoot() {
-    this.props.navigation.popToRoot();
+    this.props.navigator.popToRoot();
   }
 
   pushToReact() {
-    this.props.navigation.push('Result');
+    this.props.navigator.push('Result');
   }
 
   sendResult() {
-    this.props.navigation.setResult(RESULT_OK, {
+    this.props.navigator.setResult(RESULT_OK, {
       text: this.state.text,
       backId: this.props.sceneId,
     });
-    this.props.navigation.dismiss();
+    this.props.navigator.dismiss();
   }
 
   onInputTextChanged(text) {

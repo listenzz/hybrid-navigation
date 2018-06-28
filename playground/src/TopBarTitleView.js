@@ -6,7 +6,7 @@ import styles from './Styles';
 
 class CustomTitleView extends Component {
   render() {
-    let { params } = this.props.navigation.state;
+    let { params } = this.props.navigator.state;
     return (
       <View
         style={{
@@ -45,7 +45,7 @@ export default class TopBarTitleView extends Component {
     this.topBarHidden = this.topBarHidden.bind(this);
     this.topBarColor = this.topBarColor.bind(this);
     this.topBarAlpha = this.topBarAlpha.bind(this);
-    this.props.navigation.setParams({
+    this.props.navigator.setParams({
       onFackbookButtonClick: this.onFackbookButtonClick.bind(this),
     });
   }
@@ -60,19 +60,19 @@ export default class TopBarTitleView extends Component {
   }
 
   topBarHidden() {
-    this.props.navigation.push('TopBarHidden');
+    this.props.navigator.push('TopBarHidden');
   }
 
   topBarColor() {
-    this.props.navigation.push('TopBarColor');
+    this.props.navigator.push('TopBarColor');
   }
 
   topBarAlpha() {
-    this.props.navigation.push('TopBarAlpha');
+    this.props.navigator.push('TopBarAlpha');
   }
 
   topBarTitleView() {
-    this.props.navigation.push('TopBarTitleView');
+    this.props.navigator.push('TopBarTitleView');
   }
 
   render() {

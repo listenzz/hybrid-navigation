@@ -1,15 +1,10 @@
-/**
- * react-native-navigation-hybrid
- * https://github.com/listenzz/react-native-navigation-hybrid
- * @flow
- */
+import Navigator from './src/Navigator';
+import Garden from './src/Garden';
+import ReactRegistry from './src/ReactRegistry';
+import router, { route } from './src/Router';
+import NavigationModule from './src/NavigationModule';
 
-import Navigation from './js/Navigation';
-import Garden from './js/Garden';
-import ReactRegistry from './js/ReactRegistry';
-import router from './js/Router';
+const RESULT_OK = NavigationModule.RESULT_OK;
+const RESULT_CANCEL = NavigationModule.RESULT_CANCEL;
 
-const RESULT_OK = Navigation.result_ok;
-const RESULT_CANCEL = Navigation.result_cancel;
-
-export { Navigation, Garden, ReactRegistry, RESULT_OK, RESULT_CANCEL, router };
+export { Navigator, Garden, ReactRegistry, RESULT_OK, RESULT_CANCEL, router, route };

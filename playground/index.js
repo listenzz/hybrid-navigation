@@ -1,10 +1,10 @@
-import { ReactRegistry, Garden, Navigation } from 'react-native-navigation-hybrid';
+import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid';
 import { Image, Platform } from 'react-native';
 import React, { Component } from 'react';
 
 import { Provider } from 'react-redux';
 
-import ReactNavigation from './src/Navigation';
+import Navigation from './src/Navigation';
 import Result from './src/Result';
 import Options from './src/Options';
 import Menu from './src/Menu';
@@ -73,7 +73,7 @@ function screenWrapper(screenProvider) {
 
 ReactRegistry.startRegisterComponent(screenWrapper);
 
-ReactRegistry.registerComponent('Navigation', () => ReactNavigation);
+ReactRegistry.registerComponent('Navigation', () => Navigation);
 ReactRegistry.registerComponent('Result', () => Result, { path: 'result', mode: 'modal' });
 ReactRegistry.registerComponent('Options', () => Options, { path: 'options' });
 ReactRegistry.registerComponent('Menu', () => Menu, { path: 'menu' });
@@ -104,7 +104,7 @@ ReactRegistry.registerComponent('ReactModal', () => ReactModal);
 
 ReactRegistry.endRegisterComponent();
 
-Navigation.setRoot(
+Navigator.setRoot(
   {
     drawer: [
       {
@@ -132,3 +132,7 @@ Navigation.setRoot(
   },
   true
 );
+
+Navigator.setInterceptor((action, from, to, extras) => {
+  console.info(`action:${action} from:${from} to:${to}`);
+});

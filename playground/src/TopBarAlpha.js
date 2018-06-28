@@ -14,7 +14,7 @@ export default class TopBarAlpha extends Component {
     rightBarButtonItem: {
       icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
       title: 'SETTING',
-      action: navigation => {
+      action: navigator => {
         console.info('setting button is clicked.');
       },
     },
@@ -27,7 +27,7 @@ export default class TopBarAlpha extends Component {
     this.topBarColor = this.topBarColor.bind(this);
     this.topBarAlpha = this.topBarAlpha.bind(this);
     this.onAlphaChange = this.onAlphaChange.bind(this);
-    this.props.navigation.setParams({
+    this.props.navigator.setParams({
       onFackbookButtonClick: this.onFackbookButtonClick.bind(this),
     });
     this.state = { alpha: 0.5 };

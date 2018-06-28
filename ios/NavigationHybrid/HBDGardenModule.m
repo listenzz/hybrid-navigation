@@ -138,6 +138,15 @@ RCT_EXPORT_METHOD(setTopBarShadowHidden:(NSString *)sceneId item:(NSDictionary *
     NSLog(@"setTopBarShadowHidden: %@", item);
 }
 
+RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId index:(NSInteger)index text:(NSString *)text) {
+    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    UITabBarController *tabBarController = vc.tabBarController;
+    if (tabBarController) {
+        UIViewController *vc = tabBarController.viewControllers[index];
+        vc.tabBarItem.badgeValue = text;
+    }
+}
+
 RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon:(NSDictionary *)icon inactiveIcon:(NSDictionary *)inactiveIcon) {
     HBDViewController *vc = [self controllerForSceneId:sceneId];
     UITabBarController *tabBarVC = vc.tabBarController;
@@ -152,6 +161,14 @@ RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon
             tabBarItem = [[UITabBarItem alloc] initWithTitle:tab.tabBarItem.title image:[HBDUtils UIImage:icon] selectedImage:nil];
         }
         tab.tabBarItem = tabBarItem;
+    }
+}
+
+RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) {
+    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    HBDDrawerController *drawer = [vc drawerController];
+    if (drawer) {
+        drawer.interactive = enabled;
     }
 }
 

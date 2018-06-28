@@ -43,11 +43,11 @@ export default class ReactModal extends React.Component {
     console.info('hideModal:' + gender);
     this.view.slideOutDown(250).then(endState => {
       if (endState.finished) {
-        this.props.navigation.setResult(RESULT_OK, {
+        this.props.navigator.setResult(RESULT_OK, {
           text: gender || '你到底是男是女？',
           backId: this.props.sceneId,
         });
-        this.props.navigation.hideModal();
+        this.props.navigator.hideModal();
       }
     });
   }

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 
 import styles from './Styles';
 import fontUri from './FontUtil';
+import { route } from 'react-native-navigation-hybrid';
 
 // React component
 class ReduxCounter extends Component {
@@ -28,15 +29,15 @@ class ReduxCounter extends Component {
     rightBarButtonItem: {
       icon: { uri: fontUri('FontAwesome', 'minus', 24) },
       title: 'MINUS',
-      action: navigation => {
-        navigation.state.params.onDecreaseClick();
+      action: navigator => {
+        navigator.state.params.onDecreaseClick();
       },
     },
   };
 
   componentWillMount() {
-    const { navigation, onDecreaseClick } = this.props;
-    navigation.setParams({ onDecreaseClick });
+    const { navigator, onDecreaseClick } = this.props;
+    navigator.setParams({ onDecreaseClick });
   }
 
   render() {

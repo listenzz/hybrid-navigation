@@ -13,6 +13,10 @@
 #import "HBDNavigationController.h"
 #import "HBDTabBarController.h"
 #import "HBDDrawerController.h"
+#import "HBDScreenNavigator.h"
+#import "HBDStackNavigator.h"
+#import "HBDTabNavigator.h"
+#import "HBDDrawerNavigator.h"
 
 NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
 const NSInteger ResultOK = -1;
@@ -24,6 +28,7 @@ const NSInteger ResultCancel = 0;
 @property(nonatomic, strong) NSMutableDictionary *nativeModules;
 @property(nonatomic, strong) NSMutableDictionary *reactModules;
 @property(nonatomic, assign) BOOL isReactModuleInRegistry;
+@property(nonatomic, copy) NSMutableArray *navigators;
 
 @end
 
@@ -34,6 +39,10 @@ const NSInteger ResultCancel = 0;
     static HBDReactBridgeManager *manager;
     dispatch_once(&onceToken, ^{
         manager = [[self alloc] init];
+        [manager registerNavigator:[HBDScreenNavigator new]];
+        [manager registerNavigator:[HBDStackNavigator new]];
+        [manager registerNavigator:[HBDTabNavigator new]];
+        [manager registerNavigator:[HBDDrawerNavigator new]];
     });
     return manager;
 }
@@ -43,6 +52,7 @@ const NSInteger ResultCancel = 0;
         _nativeModules = [[NSMutableDictionary alloc] init];
         _reactModules = [[NSMutableDictionary alloc] init];
         _isReactModuleInRegistry = YES;
+        _navigators = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -95,66 +105,13 @@ const NSInteger ResultCancel = 0;
 }
 
 - (UIViewController *)controllerWithLayout:(NSDictionary *)layout {
-    NSDictionary *screen = [layout objectForKey:@"screen"];
-    if (screen) {
-        NSString *moduleName = [screen objectForKey:@"moduleName"];
-        NSDictionary *props = [screen objectForKey:@"props"];
-        NSDictionary *options = [screen objectForKey:@"options"];
-        return [self controllerWithModuleName:moduleName props:props options:options];
-    }
-    
-    NSDictionary *stack = [layout objectForKey:@"stack"];
-    if (stack) {
-        UIViewController *root = [self controllerWithLayout:stack];
-        if (root) {
-            return [[HBDNavigationController alloc] initWithRootViewController:root];
+    UIViewController *vc;
+    for (id<HBDNavigator> navigator in self.navigators) {
+        if ((vc = [navigator createViewControllerWithLayout:layout])) {
+            break;
         }
     }
-    
-    NSArray *tabs = [layout objectForKey:@"tabs"];
-    if (tabs) {
-        NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:4];
-        for (NSDictionary *tab in tabs) {
-            UIViewController *vc = [self controllerWithLayout:tab];
-            if (vc) {
-                [controllers addObject:vc];
-            }
-        }
-        
-        if (controllers.count > 0) {
-            HBDTabBarController *tabBarController = [[HBDTabBarController alloc] init];
-            [tabBarController setViewControllers:controllers];
-            return tabBarController;
-        }
-    }
-    
-    NSArray *drawer = [layout objectForKey:@"drawer"];
-    if (drawer && drawer.count == 2) {
-        NSDictionary *content = [drawer objectAtIndex:0];
-        NSDictionary *menu = [drawer objectAtIndex:1];
-        
-        UIViewController *contentController = [self controllerWithLayout:content];
-        UIViewController *menuController = [self controllerWithLayout:menu];
-        
-        if (contentController && menuController) {
-            HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:contentController menuViewController:menuController];
-            NSDictionary *menuOptions = [menu objectForKey:@"options"];
-            if (menuOptions) {
-                NSNumber *maxDrawerWidth = [menuOptions objectForKey:@"maxDrawerWidth"];
-                NSNumber *minDrawerMargin = [menuOptions objectForKey:@"minDrawerMargin"];
-                if (maxDrawerWidth) {
-                    [drawerController setMaxDrawerWidth:[maxDrawerWidth floatValue]];
-                }
-                
-                if (minDrawerMargin) {
-                    [drawerController setMinDrawerMargin:[minDrawerMargin floatValue]];
-                }
-            }
-            return drawerController;
-        }
-    }
-    
-    return nil;
+    return vc;
 }
 
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
@@ -199,6 +156,39 @@ const NSInteger ResultCancel = 0;
 - (void)performSetRootViewController:(UIViewController *)rootViewController {
     UIWindow *keyWindow = RCTKeyWindow();
     keyWindow.rootViewController = rootViewController;
+}
+
+- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc {
+    HBDViewController *hbdVC = nil;
+    for (id<HBDNavigator> navigator in self.navigators) {
+        hbdVC = [navigator primaryChildViewControllerInController:vc];
+        if (hbdVC) {
+            break;
+        }
+    }
+    return hbdVC;
+}
+
+- (void)routeGraphWithController:(UIViewController *)controller container:(NSMutableArray *)container {
+    for (id<HBDNavigator> navigator in self.navigators) {
+        if ([navigator buildRouteGraphWithController:controller graph:container]) {
+            return;
+        }
+    }
+}
+
+- (void)handleNavigationWithViewController:(HBDViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras {
+    for (id<HBDNavigator> navigator in self.navigators) {
+        NSArray<NSString *> *supportActions = navigator.supportActions;
+        if ([supportActions containsObject:action]) {
+            [navigator handleNavigationWithViewController:vc action:action extras:extras];
+            break;
+        }
+    }
+}
+
+- (void)registerNavigator:(id<HBDNavigator>)navigator {
+    [self.navigators insertObject:navigator atIndex:0];
 }
 
 #pragma mark - bridge delegate

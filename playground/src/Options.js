@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native';
-import { Navigation } from 'react-native-navigation-hybrid';
 
 import styles from './Styles';
 import fontUri from './FontUtil';
@@ -14,15 +13,15 @@ export default class Options extends Component {
     leftBarButtonItem: {
       icon: { uri: fontUri('FontAwesome', 'navicon', 24) },
       title: 'Menu',
-      action: navigation => {
-        navigation.toggleMenu();
+      action: navigator => {
+        navigator.toggleMenu();
       },
     },
 
     rightBarButtonItem: {
       icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
       title: 'SETTING',
-      action: navigation => {
+      action: navigator => {
         console.info('setting button is clicked.');
       },
       enabled: false,
@@ -55,11 +54,11 @@ export default class Options extends Component {
   }
 
   componentDidAppear() {
-    this.props.navigation.setMenuInteractive(true);
+    this.props.garden.setMenuInteractive(true);
   }
 
   componentDidDisappear() {
-    this.props.navigation.setMenuInteractive(false);
+    this.props.garden.setMenuInteractive(false);
   }
 
   changeLeftButton() {
@@ -87,29 +86,29 @@ export default class Options extends Component {
   }
 
   passOptions() {
-    this.props.navigation.push('PassOptions', {}, { titleItem: { title: 'The Passing Title' } });
+    this.props.navigator.push('PassOptions', {}, { titleItem: { title: 'The Passing Title' } });
   }
 
   switchToTab() {
-    this.props.navigation.switchToTab(0);
+    this.props.navigator.switchToTab(0);
   }
 
   toggleTabBadge() {
     if (this.state.badge) {
       this.setState({ badge: null });
-      this.props.navigation.setTabBadge(1, null);
+      this.props.garden.setTabBadge(1, null);
     } else {
       this.setState({ badge: '5' });
-      this.props.navigation.setTabBadge(1, '99');
+      this.props.garden.setTabBadge(1, '99');
     }
   }
 
   topBarMisc() {
-    this.props.navigation.push('TopBarMisc');
+    this.props.navigator.push('TopBarMisc');
   }
 
   lifecycle() {
-    this.props.navigation.push('Lifecycle');
+    this.props.navigator.push('Lifecycle');
   }
 
   replaceTabIcon() {

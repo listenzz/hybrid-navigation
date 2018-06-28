@@ -30,6 +30,9 @@ export default class Garden {
   static toolbarHeight = GardenModule.TOOLBAR_HEIGHT;
 
   // --------------- instance method --------------
+  setStatusBarColor(item) {
+    GardenModule.setStatusBarColor(this.sceneId, item);
+  }
 
   setLeftBarButtonItem(item) {
     if (this.options.leftBarButtonItem) {
@@ -70,10 +73,6 @@ export default class Garden {
     GardenModule.setTopBarStyle(this.sceneId, item);
   }
 
-  setStatusBarColor(item) {
-    GardenModule.setStatusBarColor(this.sceneId, item);
-  }
-
   setTopBarAlpha(item) {
     GardenModule.setTopBarAlpha(this.sceneId, item);
   }
@@ -82,15 +81,23 @@ export default class Garden {
     GardenModule.setTopBarColor(this.sceneId, item);
   }
 
-  setBottomBarColor(item) {
-    GardenModule.setBottomBarColor(this.sceneId, item);
-  }
-
   setTopBarShadowHidden(item) {
     GardenModule.setTopBarShadowHidden(this.sceneId, item);
   }
 
+  setBottomBarColor(item) {
+    GardenModule.setBottomBarColor(this.sceneId, item);
+  }
+
   replaceTabIcon(index, icon, inactiveIcon) {
     GardenModule.replaceTabIcon(this.sceneId, index, icon, inactiveIcon);
+  }
+
+  setTabBadge(index, text) {
+    GardenModule.setTabBadge(this.sceneId, index, text);
+  }
+
+  setMenuInteractive(enabled) {
+    GardenModule.setMenuInteractive(this.sceneId, enabled);
   }
 }
