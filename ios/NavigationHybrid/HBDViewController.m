@@ -41,10 +41,6 @@
     return self;
 }
 
-- (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
-    NSLog(@"requestCode:%ld, resultCode:%ld, data:%@", (long)requestCode, (long)resultCode, data);
-}
-
 - (void)setAppProperties:(NSDictionary *)props {
     self.props = props;
 }
