@@ -27,10 +27,10 @@ import javax.annotation.Nullable;
 
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.BarStyle;
-import me.listenzz.navigation.BottomBar;
 import me.listenzz.navigation.DrawableUtils;
 import me.listenzz.navigation.DrawerFragment;
 import me.listenzz.navigation.FragmentHelper;
+import me.listenzz.navigation.TabBar;
 import me.listenzz.navigation.TabBarFragment;
 
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_DARK_CONTENT;
@@ -249,9 +249,9 @@ public class GardenModule extends ReactContextBaseJavaModule {
                     if (fragment != null && fragment.getView() != null) {
                         TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                         if (tabBarFragment != null) {
-                            BottomBar bottomBar = tabBarFragment.getBottomBar();
-                            bottomBar.setBarBackgroundColor(bottomBarColor);
-                            bottomBar.initialise();
+                            TabBar tabBar = tabBarFragment.getTabBar();
+                            tabBar.setBarBackgroundColor(bottomBarColor);
+                            tabBar.initialise();
                         }
                     }
                 }
@@ -268,13 +268,13 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 if (fragment != null && fragment.getView() != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
-                        BottomBar bottomBar = tabBarFragment.getBottomBar();
-                        Drawable drawable = drawableFromReadableMap(bottomBar.getContext(), icon);
+                        TabBar tabBar = tabBarFragment.getTabBar();
+                        Drawable drawable = drawableFromReadableMap(tabBar.getContext(), icon);
                         if (drawable == null) {
                             return;
                         }
-                        Drawable inactiveDrawable = drawableFromReadableMap(bottomBar.getContext(), inactiveIcon);
-                        bottomBar.setTabIcon(index, drawable, inactiveDrawable);
+                        Drawable inactiveDrawable = drawableFromReadableMap(tabBar.getContext(), inactiveIcon);
+                        tabBar.setTabIcon(index, drawable, inactiveDrawable);
                         AwesomeFragment f = tabBarFragment.getChildFragments().get(index);
                         f.getTabBarItem().iconUri = icon.getString("uri");
                         if (inactiveIcon != null && inactiveIcon.hasKey("uri")) {
@@ -300,7 +300,8 @@ public class GardenModule extends ReactContextBaseJavaModule {
                         if (presented != null) {
                             presented.dismissFragment();
                         }
-                        tabBarFragment.setBadge(index, text);
+                        TabBar tabBar = tabBarFragment.getTabBar();
+                        tabBar.setBadge(index, text);
                     }
                 }
             }

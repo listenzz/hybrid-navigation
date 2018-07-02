@@ -160,17 +160,17 @@ public class GlobalStyle {
         // bottomBarColor
         String bottomBarColor = options.getString("bottomBarColor");
         if (bottomBarColor != null) {
-            style.setBottomBarBackgroundColor(bottomBarColor);
+            style.setTabBarBackgroundColor(bottomBarColor);
         }
 
         String bottomBarButtonItemActiveColor = options.getString("bottomBarButtonItemActiveColor");
         if (bottomBarButtonItemActiveColor != null) {
-            style.setBottomBarActiveColor(bottomBarButtonItemActiveColor);
+            style.setTabBarActiveColor(bottomBarButtonItemActiveColor);
         }
 
         String bottomBarButtonItemInactiveColor = options.getString("bottomBarButtonItemInactiveColor");
         if (bottomBarButtonItemInactiveColor != null) {
-            style.setBottomBarInactiveColor(bottomBarButtonItemInactiveColor);
+            style.setTabBarInactiveColor(bottomBarButtonItemInactiveColor);
         }
 
         // bottomBarShadowImage
@@ -192,9 +192,14 @@ public class GlobalStyle {
                 } else if (color != null) {
                     drawable = new ColorDrawable(Color.parseColor(color));
                 }
-                style.setBottomBarShadow(drawable);
+                style.setTabBarShadow(drawable);
             }
         }
+
+        // swipeBackEnabledAndroid
+        boolean swipeBackEnabled = options.getBoolean("swipeBackEnabledAndroid", false);
+        style.setSwipeBackEnabled(swipeBackEnabled);
+
     }
 
 }
