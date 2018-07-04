@@ -16,3 +16,7 @@
 - (void)updateNavigationBarShadowImageAlphaForViewController:(UIViewController *)vc;
 
 @end
+
+@interface UINavigationController(UINavigationBar) <UINavigationBarDelegate>
+
+@end

@@ -49,6 +49,8 @@ public class Garden {
 
     boolean backInteractive;
 
+    boolean swipeBackEnabled;
+
     boolean hidesBottomBarWhenPushed;
 
     boolean toolbarHidden;
@@ -64,6 +66,7 @@ public class Garden {
 
         this.backButtonHidden = options.getBoolean("backButtonHidden", false);
         this.backInteractive = options.getBoolean("backInteractive", true);
+        this.swipeBackEnabled = options.getBoolean("swipeBackEnabled", true);
         this.toolbarHidden = options.getBoolean("topBarHidden", false);
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush");

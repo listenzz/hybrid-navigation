@@ -143,8 +143,11 @@
     NSNumber *interactive = self.options[@"backInteractive"];
     if (interactive) {
         self.hbd_backInteractive = [interactive boolValue];
-    } else {
-        self.hbd_backInteractive = YES;
+    }
+    
+    NSNumber *swipeBackEnabled = self.options[@"swipeBackEnabled"];
+    if (swipeBackEnabled) {
+        self.hbd_swipeBackEnabled = [swipeBackEnabled boolValue];
     }
     
     HBDGarden *garden = [[HBDGarden alloc] init];

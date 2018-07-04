@@ -20,8 +20,6 @@
 
 - (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options NS_DESIGNATED_INITIALIZER;
 
-- (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode;
-
 - (void)setAppProperties:(NSDictionary *)props;
 
 @end

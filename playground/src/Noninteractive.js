@@ -6,8 +6,9 @@ import styles from './Styles';
 export default class Noninteractive extends Component {
   static navigationItem = {
     // 注意这行代码，隐藏返回按钮
-    backButtonHidden: true,
+    // backButtonHidden: true,
     // 不允许通过右滑（iOS）或者返回键（Android）返回
+    // swipeBackEnabled: false,
     backInteractive: false,
 
     titleItem: {
@@ -18,10 +19,15 @@ export default class Noninteractive extends Component {
   constructor(props) {
     super(props);
     this.onBackButtonClick = this.onBackButtonClick.bind(this);
+    this.topBarAlpha = this.topBarAlpha.bind(this);
   }
 
   onBackButtonClick() {
     this.props.navigator.pop();
+  }
+
+  topBarAlpha() {
+    this.props.navigator.push('TopBarAlpha');
   }
 
   render() {
@@ -40,6 +46,10 @@ export default class Noninteractive extends Component {
             style={styles.button}
           >
             <Text style={styles.buttonText}>back</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.topBarAlpha} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}> TopBarAlpha </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

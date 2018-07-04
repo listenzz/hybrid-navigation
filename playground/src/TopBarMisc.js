@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
 
 import styles from './Styles';
 
-export default class TopBarColor extends Component {
+export default class TopBarMisc extends Component {
   static navigationItem = {
     titleItem: {
       title: 'TopBar Options',

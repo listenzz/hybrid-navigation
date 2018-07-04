@@ -52,6 +52,11 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     @Override
+    protected boolean isSwipeBackEnabled() {
+        return garden.swipeBackEnabled;
+    }
+
+    @Override
     protected boolean hidesBottomBarWhenPushed() {
         return garden.hidesBottomBarWhenPushed;
     }

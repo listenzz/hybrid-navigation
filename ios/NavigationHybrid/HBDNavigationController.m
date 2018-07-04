@@ -69,31 +69,20 @@
     }
 }
 
-UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
-    CGFloat fromRed = 0;
-    CGFloat fromGreen = 0;
-    CGFloat fromBlue = 0;
-    CGFloat fromAlpha = 0;
-    [from getRed:&fromRed green:&fromGreen blue:&fromBlue alpha:&fromAlpha];
-    
-    CGFloat toRed = 0;
-    CGFloat toGreen = 0;
-    CGFloat toBlue = 0;
-    CGFloat toAlpha = 0;
-    [to getRed:&toRed green:&toGreen blue:&toBlue alpha:&toAlpha];
-    
-    CGFloat newRed = fromRed + (toRed - fromRed) * percent;
-    CGFloat newGreen = fromGreen + (toGreen - fromGreen) * percent;
-    CGFloat newBlue = fromBlue + (toBlue - fromBlue) * percent;
-    CGFloat newAlpha = fromAlpha + (toAlpha - fromAlpha) * percent;
-    return [UIColor colorWithRed:newRed green:newGreen blue:newBlue alpha:newAlpha];
-}
-
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if (self.viewControllers.count > 1) {
-        return self.topViewController.hbd_backInteractive;
+        return self.topViewController.hbd_backInteractive && self.topViewController.hbd_swipeBackEnabled;
     }
     return NO;
+}
+
+- (BOOL)navigationBar:(UINavigationBar *)navigationBar shouldPopItem:(UINavigationItem *)item {
+    if (self.viewControllers.count > 1 && self.topViewController.navigationItem == item ) {
+        if (!self.topViewController.hbd_backInteractive) {
+            return NO;
+        }
+    }
+    return [super navigationBar:navigationBar shouldPopItem:item];
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
@@ -299,6 +288,26 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
         self.tabBarItem = tabBarItem;
         self.hidesBottomBarWhenPushed = [tabItem[@"hideTabBarWhenPush"] boolValue];
     }
+}
+
+UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
+    CGFloat fromRed = 0;
+    CGFloat fromGreen = 0;
+    CGFloat fromBlue = 0;
+    CGFloat fromAlpha = 0;
+    [from getRed:&fromRed green:&fromGreen blue:&fromBlue alpha:&fromAlpha];
+    
+    CGFloat toRed = 0;
+    CGFloat toGreen = 0;
+    CGFloat toBlue = 0;
+    CGFloat toAlpha = 0;
+    [to getRed:&toRed green:&toGreen blue:&toBlue alpha:&toAlpha];
+    
+    CGFloat newRed = fromRed + (toRed - fromRed) * percent;
+    CGFloat newGreen = fromGreen + (toGreen - fromGreen) * percent;
+    CGFloat newBlue = fromBlue + (toBlue - fromBlue) * percent;
+    CGFloat newAlpha = fromAlpha + (toAlpha - fromAlpha) * percent;
+    return [UIColor colorWithRed:newRed green:newGreen blue:newBlue alpha:newAlpha];
 }
 
 @end
