@@ -53,7 +53,7 @@
 
 -(void) viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationBackgroundRefreshStatusDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 }
 
 - (void)statusBarFrameWillChange:(NSNotification*)notification {
@@ -82,6 +82,7 @@
     } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         [self setStatusBarHidden:self.menuOpened && !self.inCall];
     }];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
 - (void)setContentViewController:(UIViewController *)contentViewController {

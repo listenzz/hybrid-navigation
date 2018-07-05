@@ -26,6 +26,7 @@ BOOL hasAlpha(UIColor *color) {
 @interface HBDViewController ()
 
 @property(nonatomic, copy, readwrite) NSDictionary *props;
+@property (nonatomic, assign) BOOL inCall;
 
 @end
 
@@ -66,6 +67,8 @@ BOOL hasAlpha(UIColor *color) {
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _inCall = [UIApplication sharedApplication].statusBarFrame.size.height == 40;
     
     NSString *screenColor = self.options[@"screenColor"];
     if (screenColor) {
@@ -196,7 +199,34 @@ BOOL hasAlpha(UIColor *color) {
     [self setStatusBarHidden:self.hbd_statusBarHidden];
 }
 
+-(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:)name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+}
+
+-(void) viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+}
+
+- (void)statusBarFrameWillChange:(NSNotification*)notification {
+    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation) && statusBarHeight != 0) {
+        self.inCall = (statusBarHeight == 40);
+        [self setStatusBarHidden:self.hbd_statusBarHidden];
+    }
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        [self setStatusBarHidden:self.hbd_statusBarHidden];
+    }];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+}
+
 - (void)setStatusBarHidden:(BOOL)hidden {
+    hidden = (hidden || self.drawerController.isMenuOpened) && !self.inCall;
     UIWindow *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
     if (!statusBar) {
         return;
