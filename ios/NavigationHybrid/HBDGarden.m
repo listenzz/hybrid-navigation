@@ -145,5 +145,10 @@ static GlobalStyle *globalStyle;
     [controller hbd_setNeedsUpdateNavigationBarShadowImageAlpha];
 }
 
+- (void)setStatusBarHidden:(BOOL)hidden forController:(HBDViewController *)controller {
+    controller.hbd_statusBarHidden = hidden;
+    [controller setStatusBarHidden:hidden];
+}
+
 @end
 

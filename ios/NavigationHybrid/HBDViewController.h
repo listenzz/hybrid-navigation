@@ -22,4 +22,6 @@
 
 - (void)setAppProperties:(NSDictionary *)props;
 
+- (void)setStatusBarHidden:(BOOL)hidden;
+
 @end

@@ -24,6 +24,7 @@ import StatusBarColor from './src/StatusBarColor';
 import Transparent from './src/Transparent';
 import HUDTest from './src/HUDText';
 import ReactModal from './src/ReactModal';
+import StatusBarHidden from './src/StatusBarHidden';
 
 Garden.setStyle({
   topBarStyle: 'dark-content',
@@ -98,6 +99,7 @@ ReactRegistry.registerComponent('TopBarColor', () => TopBarColor, {
 ReactRegistry.registerComponent('TopBarTitleView', () => TopBarTitleView);
 ReactRegistry.registerComponent('CustomTitleView', () => CustomTitleView);
 ReactRegistry.registerComponent('StatusBarColor', () => StatusBarColor);
+ReactRegistry.registerComponent('StatusBarHidden', () => StatusBarHidden);
 ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle);
 
 ReactRegistry.registerComponent('Transparent', () => Transparent);

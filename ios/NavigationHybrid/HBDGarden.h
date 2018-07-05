@@ -36,4 +36,6 @@
 
 - (void)setTopBarShadowHidden:(BOOL)hidden forController:(HBDViewController *)controller;
 
+- (void)setStatusBarHidden:(BOOL)hidden forController:(HBDViewController *)controller;
+
 @end

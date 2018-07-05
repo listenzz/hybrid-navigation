@@ -160,6 +160,25 @@ public class GardenModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void setStatusBarHidden(final String sceneId, final ReadableMap readableMap) {
+        Log.i(TAG, "setStatusBarHidden:" + readableMap);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    Bundle options = fragment.getOptions();
+                    if (readableMap.hasKey("statusBarHidden")) {
+                        boolean hidden = readableMap.getBoolean("statusBarHidden");
+                        options.putBoolean("statusBarHidden", hidden);
+                        fragment.getGarden().setStatusBarHidden(hidden);
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void setTopBarStyle(final String sceneId, final ReadableMap readableMap) {
         handler.post(new Runnable() {
             @Override

@@ -118,6 +118,11 @@ BOOL hasAlpha(UIColor *color) {
         self.hbd_barHidden = YES;
     }
     
+    NSNumber *statusBarHidden = self.options[@"statusBarHidden"];
+    if (statusBarHidden) {
+        self.hbd_statusBarHidden = [statusBarHidden boolValue];
+    }
+    
     if ([HBDGarden globalStyle].isBackTitleHidden) {
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
     }
@@ -184,6 +189,22 @@ BOOL hasAlpha(UIColor *color) {
     
     NSArray *leftBarButtonItems = self.options[@"leftBarButtonItems"];
     [garden setLeftBarButtonItems:leftBarButtonItems forController:self];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self setStatusBarHidden:self.hbd_statusBarHidden];
+}
+
+- (void)setStatusBarHidden:(BOOL)hidden {
+    UIWindow *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
+    if (!statusBar) {
+        return;
+    }
+    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+    [UIView animateWithDuration:0.35 animations:^{
+        statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
+    }];
 }
 
 @end

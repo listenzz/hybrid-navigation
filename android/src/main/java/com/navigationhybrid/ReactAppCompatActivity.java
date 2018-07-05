@@ -1,7 +1,6 @@
 package com.navigationhybrid;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -46,9 +45,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         super.onCreate(savedInstanceState);
         activityDelegate.onCreate(savedInstanceState);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-           setStatusBarTranslucent(true);
-        }
+        setStatusBarTranslucent(true);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         getReactBridgeManager().addReactModuleRegistryListener(this);
 

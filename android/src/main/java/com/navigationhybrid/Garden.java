@@ -99,6 +99,9 @@ public class Garden {
             style.setStatusBarColor(Color.parseColor(statusBarColor));
         }
 
+        boolean statusBarHidden = options.getBoolean("statusBarHidden");
+        style.setStatusBarHidden(statusBarHidden);
+
         String topBarTintColor = options.getString("topBarTintColor");
         if (!TextUtils.isEmpty(topBarTintColor)) {
             style.setToolbarTintColor(Color.parseColor(topBarTintColor));
@@ -218,6 +221,11 @@ public class Garden {
 
     void setStatusBarStyle(BarStyle barStyle) {
         style.setStatusBarStyle(barStyle);
+        fragment.setNeedsStatusBarAppearanceUpdate();
+    }
+
+    void setStatusBarHidden(boolean hidden) {
+        style.setStatusBarHidden(hidden);
         fragment.setNeedsStatusBarAppearanceUpdate();
     }
 

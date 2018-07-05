@@ -34,6 +34,10 @@ export default class Garden {
     GardenModule.setStatusBarColor(this.sceneId, item);
   }
 
+  setStatusBarHidden(hidden = true) {
+    GardenModule.setStatusBarHidden(this.sceneId, { statusBarHidden: hidden });
+  }
+
   setLeftBarButtonItem(item) {
     if (this.options.leftBarButtonItem) {
       this.options.leftBarButtonItem = { ...this.options.leftBarButtonItem, ...item };

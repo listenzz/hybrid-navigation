@@ -67,6 +67,19 @@ RCT_EXPORT_METHOD(setStatusBarColor:(NSString *)sceneId item:(NSDictionary *)ite
     NSLog(@"setStatusBarColor: %@", item);
 }
 
+RCT_EXPORT_METHOD(setStatusBarHidden:(NSString *)sceneId item:(NSDictionary *)item) {
+    NSNumber *statusBarHidden = [item objectForKey:@"statusBarHidden"];
+    if (statusBarHidden) {
+        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        NSDictionary *options = vc.options;
+        NSMutableDictionary *mutable =  [options mutableCopy];
+        [mutable setObject:statusBarHidden forKey:@"statusBarHidden"];
+        vc.options = [mutable copy];
+        HBDGarden *garden = [[HBDGarden alloc] init];
+        [garden setStatusBarHidden:[statusBarHidden boolValue] forController:vc];
+    }
+}
+
 RCT_EXPORT_METHOD(setTopBarStyle:(NSString *)sceneId item:(NSDictionary *)item) {
     NSLog(@"setTopBarStyle: %@", item);
     NSString *topBarStyle = [item objectForKey:@"topBarStyle"];
