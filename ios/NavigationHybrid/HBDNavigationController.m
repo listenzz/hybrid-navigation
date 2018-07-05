@@ -167,6 +167,7 @@
             HBDReactViewController *reactVC = (HBDReactViewController *)from;
             RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
             [emitter sendEventWithName:@"ON_COMPONENT_BACK" body:@{ @"sceneId": reactVC.sceneId }];
+            [viewController didReceiveResultCode:from.resultCode resultData:from.resultData requestCode:0];
         }
         self.poppingViewController = nil;
     }

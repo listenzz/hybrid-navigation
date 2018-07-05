@@ -75,12 +75,7 @@
             [nav pushViewController:target animated:animated];
         }
     } else if ([action isEqualToString:@"pop"]) {
-        NSArray *children = nav.childViewControllers;
-        NSUInteger index = [children indexOfObject:vc];
-        if (index > 0) {
-            HBDViewController *target = children[index -1];
-            [target didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:0];
-        }
+        // HBDNavigationController 中处理了返回结果
         [nav popViewControllerAnimated:animated];
     } else if ([action isEqualToString:@"popTo"]) {
         NSArray *children = nav.childViewControllers;

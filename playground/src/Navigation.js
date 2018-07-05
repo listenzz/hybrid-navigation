@@ -71,6 +71,7 @@ export default class Navigation extends Component {
   componentDidMount() {
     const prefix = Platform.OS == 'android' ? 'hbd://hbd/' : 'hbd://';
     router.activate(prefix);
+    this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
   }
 
   componentWillUnmount() {
@@ -90,7 +91,7 @@ export default class Navigation extends Component {
       }
     } else if (requestCode === 0) {
       if (resultCode === RESULT_OK) {
-        this.setState({ backId: data.backId || undefined });
+        this.setState({ text: data.backId || undefined });
       }
     }
   }
@@ -112,7 +113,7 @@ export default class Navigation extends Component {
   }
 
   pop() {
-    this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
+    // this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
     this.props.navigator.pop();
   }
 
