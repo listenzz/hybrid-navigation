@@ -199,6 +199,8 @@
         }
         
         if (self.contentViewController) {
+            self.contentViewController.hbd_targetViewController.hbd_puppetViewController = nil;
+            self.contentViewController.hbd_targetViewController = nil;
             self.contentViewController.hbd_modalViewController = nil;
             self.contentViewController = nil;
         }
@@ -401,7 +403,7 @@
 }
 
 - (void)setHbd_modalViewController:(HBDModalViewController *)modalViewController {
-    objc_setAssociatedObject(self, @selector(hbd_modalViewController), modalViewController, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(self, @selector(hbd_modalViewController), modalViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (UIViewController *)hbd_targetViewController {
@@ -417,7 +419,7 @@
 }
 
 - (void)setHbd_puppetViewController:(UIViewController *)puppetViewController {
-    objc_setAssociatedObject(self, @selector(hbd_puppetViewController), puppetViewController, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(self, @selector(hbd_puppetViewController), puppetViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)hbd_showViewController:(UIViewController *)vc animated:(BOOL)animated completion:(void (^)(BOOL))completion {
