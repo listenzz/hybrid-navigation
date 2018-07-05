@@ -50,10 +50,16 @@
             self.barStyle = UIBarStyleDefault;
         }
         
-        // topBarBackgroundColor
+        // topBarColor
         NSString *topBarColor = self.options[@"topBarColor"];
         if (topBarColor) {
             self.barTintColor = [HBDUtils colorWithHexString:topBarColor];
+        }  else {
+            if (self.barStyle == UIBarStyleBlack) {
+                self.barTintColor = UIColor.blackColor;
+            } else {
+                self.barTintColor = UIColor.whiteColor;
+            }
         }
         
         // navigationBar shadowImeage

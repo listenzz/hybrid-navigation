@@ -1,38 +1,11 @@
-import { StyleSheet, StatusBar, Platform } from 'react-native';
-import { ifIphoneX } from 'react-native-iphone-x-helper';
-import { Garden } from 'react-native-navigation-hybrid';
-
-function ifLollipop(obj1 = {}, obj2 = {}) {
-  return Platform.Version > 20 ? obj1 : obj2;
-}
+import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    ...Platform.select({
-      ios: {
-        ...ifIphoneX(
-          {
-            paddingTop: 16 + 88,
-          },
-          {
-            paddingTop: 16 + 64,
-          }
-        ),
-      },
-      android: {
-        ...ifLollipop(
-          {
-            paddingTop: 16 + StatusBar.currentHeight + Garden.toolbarHeight,
-          },
-          {
-            paddingTop: 16 + Garden.toolbarHeight,
-          }
-        ),
-      },
-    }),
+    paddingTop: 16,
   },
 
   safeArea: {

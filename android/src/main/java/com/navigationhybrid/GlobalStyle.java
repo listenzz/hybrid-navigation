@@ -62,7 +62,7 @@ public class GlobalStyle {
             style.setStatusBarStyle(topBarStyle.equals("dark-content") ? BarStyle.DarkContent : BarStyle.LightContent);
         }
 
-        // topBarBackgroundColor
+        // topBarColor
         String topBarColor = options.getString("topBarColor");
         if (topBarColor != null) {
             style.setToolbarBackgroundColor(Color.parseColor(topBarColor));

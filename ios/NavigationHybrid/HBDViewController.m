@@ -11,6 +11,18 @@
 #import "HBDUtils.h"
 #import "HBDNavigationController.h"
 
+BOOL hasAlpha(UIColor *color) {
+    if (!color) {
+        return YES;
+    }
+    CGFloat red = 0;
+    CGFloat green= 0;
+    CGFloat blue = 0;
+    CGFloat alpha = 0;
+    [color getRed:&red green:&green blue:&blue alpha:&alpha];
+    return alpha < 1.0;
+}
+
 @interface HBDViewController ()
 
 @property(nonatomic, copy, readwrite) NSDictionary *props;
@@ -148,6 +160,15 @@
     NSNumber *swipeBackEnabled = self.options[@"swipeBackEnabled"];
     if (swipeBackEnabled) {
         self.hbd_swipeBackEnabled = [swipeBackEnabled boolValue];
+    }
+    
+    NSNumber *extendedLayoutIncludesTopBar = self.options[@"extendedLayoutIncludesTopBar"];
+    if (extendedLayoutIncludesTopBar) {
+        self.hbd_extendedLayoutIncludesTopBar = [extendedLayoutIncludesTopBar boolValue];
+    }
+    
+    if (!(self.hbd_extendedLayoutIncludesTopBar || hasAlpha(self.hbd_barTintColor))) {
+        self.edgesForExtendedLayout = UIRectEdgeNone;
     }
     
     HBDGarden *garden = [[HBDGarden alloc] init];

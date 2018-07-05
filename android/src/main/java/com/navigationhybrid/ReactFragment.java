@@ -2,6 +2,7 @@ package com.navigationhybrid;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,9 +47,15 @@ public class ReactFragment extends HybridFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.nav_fragment_react, container, false);
+        int color = preferredToolbarColor();
+        boolean extendedLayoutIncludesToolbar = Color.alpha(color) < 255 || getGarden().extendedLayoutIncludesTopBar;
+        View view;
+        if (extendedLayoutIncludesToolbar) {
+            view= inflater.inflate(R.layout.nav_fragment_react_translucent, container, false);
+        } else {
+            view= inflater.inflate(R.layout.nav_fragment_react, container, false);
+        }
         containerLayout = view.findViewById(R.id.react_content);
-
         if (!getReactBridgeManager().isReactModuleInRegistry()) {
             if (getAnimation() != PresentAnimation.None) {
                 postponeEnterTransition();

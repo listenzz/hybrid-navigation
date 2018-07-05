@@ -55,6 +55,8 @@ public class Garden {
 
     boolean toolbarHidden;
 
+    boolean extendedLayoutIncludesTopBar;
+
     Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
@@ -70,6 +72,7 @@ public class Garden {
         this.toolbarHidden = options.getBoolean("topBarHidden", false);
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush");
+        this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
 
         String barStyle = options.getString("topBarStyle");
         if (barStyle != null) {

@@ -53,6 +53,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     RCTLogInfo(@"%@ viewDidLoad", self.moduleName);
+    
     NSDictionary *titleItem = self.options[@"titleItem"];
     if (titleItem && self.navigationController) {
         if (self.hbd_barHidden) {

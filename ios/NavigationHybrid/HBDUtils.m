@@ -145,16 +145,6 @@
             lroundf(b * 255)];
 }
 
-+ (UIImageView *)findShadowImageAt:(UINavigationBar *)bar {
-    NSArray *subViews = [self allSubviews:bar];
-    for (UIView *view in subViews) {
-        if ([view isKindOfClass:[UIImageView class]] && view.bounds.size.height <= 1){
-            return (UIImageView *)view;
-        }
-    }
-    return nil;
-}
-
 + (NSArray *)allSubviews:(UIView *)aView {
     NSArray *results = [aView subviews];
     for (UIView *eachView in aView.subviews)
