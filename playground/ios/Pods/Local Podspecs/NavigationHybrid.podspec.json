@@ -1,6 +1,6 @@
 {
   "name": "NavigationHybrid",
-  "version": "0.7.13",
+  "version": "0.7.14",
   "summary": "A native navigation for React Native which support navigation between native and react side",
   "authors": {
     "listen": "listenzz@163.com"
@@ -13,7 +13,7 @@
   "module_name": "NavigationHybrid",
   "source": {
     "git": "https://github.com/listenzz/react-native-navigation-hybrid.git",
-    "tag": "v0.7.13"
+    "tag": "v0.7.14"
   },
   "source_files": "ios/NavigationHybrid/*.{h,m,swift}",
   "dependencies": {

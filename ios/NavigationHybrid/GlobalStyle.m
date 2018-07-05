@@ -140,6 +140,14 @@
             self.tabBarUnselectedTintColor = [HBDUtils colorWithHexString:bottomBarButtonItemInactiveColor];
         }
         
+        if (@available(iOS 10.0, *)) {
+            NSString *badgeColor = self.options[@"badgeColor"];
+            if (badgeColor) {
+                [UITabBarItem appearance].badgeColor = [HBDUtils colorWithHexString:badgeColor];
+            }
+        } else {
+            // Fallback on earlier versions
+        }
     }
     return self;
 }

@@ -97,9 +97,11 @@ export default class Options extends Component {
     if (this.state.badge) {
       this.setState({ badge: null });
       this.props.garden.setTabBadge(1, null);
+      this.props.garden.hideRedPointAtIndex(0);
     } else {
       this.setState({ badge: '5' });
       this.props.garden.setTabBadge(1, '99');
+      this.props.garden.showRedPointAtIndex(0);
     }
   }
 

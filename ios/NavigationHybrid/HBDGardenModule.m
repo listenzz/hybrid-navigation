@@ -11,6 +11,7 @@
 #import "HBDReactViewController.h"
 #import "HBDGarden.h"
 #import "HBDUtils.h"
+#import "UITabBar+Badge.h"
 
 #import <React/RCTLog.h>
 
@@ -145,6 +146,27 @@ RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId index:(NSInteger)index text:(N
         UIViewController *vc = tabBarController.viewControllers[index];
         vc.tabBarItem.badgeValue = text;
     }
+    NSLog(@"setTabBadge: %li", index);
+}
+
+RCT_EXPORT_METHOD(showRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
+    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    UITabBarController *tabBarController = vc.tabBarController;
+    if (tabBarController) {
+        UITabBar *tabBar = tabBarController.tabBar;
+        [tabBar showRedPointAtIndex:index];
+    }
+    NSLog(@"showRedPointAtIndex: %li", index);
+}
+
+RCT_EXPORT_METHOD(hideRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
+    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    UITabBarController *tabBarController = vc.tabBarController;
+    if (tabBarController) {
+        UITabBar *tabBar = tabBarController.tabBar;
+        [tabBar hideRedPointAtIndex:index];
+    }
+    NSLog(@"hideRedPointAtIndex: %li", index);
 }
 
 RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon:(NSDictionary *)icon inactiveIcon:(NSDictionary *)inactiveIcon) {
@@ -162,6 +184,7 @@ RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon
         }
         tab.tabBarItem = tabBarItem;
     }
+     NSLog(@"replaceTabIcon: %li", index);
 }
 
 RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) {

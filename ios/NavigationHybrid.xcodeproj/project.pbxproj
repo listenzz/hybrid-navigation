@@ -23,6 +23,7 @@
 		91608F4220E5271300D11D9F /* HBDStackNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 91608F4120E5271300D11D9F /* HBDStackNavigator.m */; };
 		91608F4520E5273000D11D9F /* HBDTabNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 91608F4420E5273000D11D9F /* HBDTabNavigator.m */; };
 		91B264EF20C4D87C009167E2 /* UINavigationController+HBD.m in Sources */ = {isa = PBXBuildFile; fileRef = 91B264EE20C4D87C009167E2 /* UINavigationController+HBD.m */; };
+		91C6D5DB20EDD47100E26A6F /* UITabBar+Badge.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C6D5DA20EDD47100E26A6F /* UITabBar+Badge.m */; };
 		91C884A3202C3E8600EC0A20 /* HBDDrawerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C8849D202C3E8600EC0A20 /* HBDDrawerController.m */; };
 		91C884A4202C3E8600EC0A20 /* UIViewController+HBD.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C8849E202C3E8600EC0A20 /* UIViewController+HBD.m */; };
 		91C884A5202C3E8600EC0A20 /* HBDTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C884A0202C3E8600EC0A20 /* HBDTabBarController.m */; };
@@ -79,6 +80,8 @@
 		91608F4420E5273000D11D9F /* HBDTabNavigator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HBDTabNavigator.m; sourceTree = "<group>"; };
 		91B264ED20C4D87C009167E2 /* UINavigationController+HBD.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+HBD.h"; sourceTree = "<group>"; };
 		91B264EE20C4D87C009167E2 /* UINavigationController+HBD.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+HBD.m"; sourceTree = "<group>"; };
+		91C6D5D920EDD47100E26A6F /* UITabBar+Badge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITabBar+Badge.h"; sourceTree = "<group>"; };
+		91C6D5DA20EDD47100E26A6F /* UITabBar+Badge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITabBar+Badge.m"; sourceTree = "<group>"; };
 		91C8849B202C3E8600EC0A20 /* HBDDrawerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HBDDrawerController.h; sourceTree = "<group>"; };
 		91C8849C202C3E8600EC0A20 /* UIViewController+HBD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+HBD.h"; sourceTree = "<group>"; };
 		91C8849D202C3E8600EC0A20 /* HBDDrawerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HBDDrawerController.m; sourceTree = "<group>"; };
@@ -169,6 +172,8 @@
 				91608F4120E5271300D11D9F /* HBDStackNavigator.m */,
 				91608F4320E5272F00D11D9F /* HBDTabNavigator.h */,
 				91608F4420E5273000D11D9F /* HBDTabNavigator.m */,
+				91C6D5D920EDD47100E26A6F /* UITabBar+Badge.h */,
+				91C6D5DA20EDD47100E26A6F /* UITabBar+Badge.m */,
 			);
 			path = NavigationHybrid;
 			sourceTree = "<group>";
@@ -247,6 +252,7 @@
 				910362F91FE931E000F4DA8E /* HBDReactViewController.m in Sources */,
 				91C884A9202C3F9200EC0A20 /* GlobalStyle.m in Sources */,
 				91C884A4202C3E8600EC0A20 /* UIViewController+HBD.m in Sources */,
+				91C6D5DB20EDD47100E26A6F /* UITabBar+Badge.m in Sources */,
 				910362F81FE931E000F4DA8E /* HBDViewController.m in Sources */,
 				910362F21FE931E000F4DA8E /* HBDGardenModule.m in Sources */,
 				910362F41FE931E000F4DA8E /* HBDNavigationController.m in Sources */,

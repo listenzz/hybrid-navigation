@@ -97,6 +97,14 @@ export default class Garden {
     GardenModule.setTabBadge(this.sceneId, index, text);
   }
 
+  showRedPointAtIndex(index) {
+    GardenModule.showRedPointAtIndex(index, this.sceneId);
+  }
+
+  hideRedPointAtIndex(index) {
+    GardenModule.hideRedPointAtIndex(index, this.sceneId);
+  }
+
   setMenuInteractive(enabled) {
     GardenModule.setMenuInteractive(this.sceneId, enabled);
   }

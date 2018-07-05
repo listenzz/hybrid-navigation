@@ -33,6 +33,7 @@ Garden.setStyle({
 
   swipeBackEnabledAndroid: true,
   topBarTintColor: '#000000',
+  // badgeColor: '#00FFFF',
   // titleTextColor: '#00ff00',
   titleAlignment: 'center',
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),

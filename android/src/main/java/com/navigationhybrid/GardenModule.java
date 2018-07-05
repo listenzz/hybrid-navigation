@@ -296,12 +296,42 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 if (fragment != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
-                        AwesomeFragment presented = tabBarFragment.getPresentedFragment();
-                        if (presented != null) {
-                            presented.dismissFragment();
-                        }
                         TabBar tabBar = tabBarFragment.getTabBar();
                         tabBar.setBadge(index, text);
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void showRedPointAtIndex(final int index, final String sceneId) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ReactFragment fragment = (ReactFragment) findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                    if (tabBarFragment != null) {
+                        TabBar tabBar = tabBarFragment.getTabBar();
+                        tabBar.setRedPoint(index, true);
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void hideRedPointAtIndex(final int index, final String sceneId) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ReactFragment fragment = (ReactFragment) findFragmentBySceneId(sceneId);
+                if (fragment != null) {
+                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                    if (tabBarFragment != null) {
+                        TabBar tabBar = tabBarFragment.getTabBar();
+                        tabBar.setRedPoint(index, false);
                     }
                 }
             }

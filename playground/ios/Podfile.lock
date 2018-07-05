@@ -6,7 +6,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.4)
-  - NavigationHybrid (0.7.13):
+  - NavigationHybrid (0.7.14):
     - React
   - ProgressHUD (0.6.0):
     - React

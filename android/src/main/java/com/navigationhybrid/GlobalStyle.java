@@ -200,6 +200,12 @@ public class GlobalStyle {
         boolean swipeBackEnabled = options.getBoolean("swipeBackEnabledAndroid", false);
         style.setSwipeBackEnabled(swipeBackEnabled);
 
+        // badgeColor;
+        String badgeColor = options.getString("badgeColor");
+        if (badgeColor != null) {
+            style.setBadgeColor(badgeColor);
+        }
+
     }
 
 }
