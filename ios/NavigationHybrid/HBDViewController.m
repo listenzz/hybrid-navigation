@@ -226,7 +226,7 @@ BOOL hasAlpha(UIColor *color) {
 }
 
 - (void)setStatusBarHidden:(BOOL)hidden {
-    hidden = (hidden || self.drawerController.isMenuOpened) && !self.inCall;
+    hidden = (hidden || self.drawerController.isMenuOpened) && !self.inCall && ![HBDUtils isIphoneX];
     UIWindow *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
     if (!statusBar) {
         return;

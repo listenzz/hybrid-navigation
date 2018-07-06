@@ -18,4 +18,6 @@
 
 + (UIImage*)imageWithColor:(UIColor*)color;
 
++ (BOOL)isIphoneX;
+
 @end

@@ -145,15 +145,8 @@
             lroundf(b * 255)];
 }
 
-+ (NSArray *)allSubviews:(UIView *)aView {
-    NSArray *results = [aView subviews];
-    for (UIView *eachView in aView.subviews)
-    {
-        NSArray *subviews = [self allSubviews: eachView];
-        if (subviews)
-            results = [results arrayByAddingObjectsFromArray:subviews];
-    }
-    return results;
++ (BOOL)isIphoneX {
+    return [UIScreen mainScreen].bounds.size.height == 812.0;
 }
 
 @end
