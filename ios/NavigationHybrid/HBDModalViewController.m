@@ -15,7 +15,7 @@
 
 @property(nonatomic, weak, readwrite) HBDModalViewController *hbd_modalViewController;
 @property(nonatomic, strong, readwrite) UIViewController *hbd_targetViewController;
-@property(nonatomic, weak, readwrite) UIViewController *hbd_puppetViewController;
+@property(nonatomic, weak, readwrite) UIViewController *hbd_popupViewController;
 
 @end
 
@@ -95,9 +95,8 @@
     CGSize contentViewContainerSize = CGSizeMake(CGRectGetWidth(self.view.bounds) - self.contentViewMargins.left - self.contentViewMargins.right, CGRectGetHeight(self.view.bounds)  - self.contentViewMargins.top - self.contentViewMargins.bottom);
     CGSize contentViewLimitSize = CGSizeMake(fmin(self.maximumContentViewWidth, contentViewContainerSize.width), contentViewContainerSize.height);
     CGSize contentViewSize = CGSizeZero;
-    contentViewSize = [self.contentView sizeThatFits:contentViewLimitSize];
     if (self.measureBlock) {
-        contentViewSize = self.measureBlock(self, contentViewSize);
+        contentViewSize = self.measureBlock(self, contentViewLimitSize);
     } else {
         contentViewSize = [self.contentView sizeThatFits:contentViewLimitSize];
     }
@@ -199,7 +198,7 @@
         }
         
         if (self.contentViewController) {
-            self.contentViewController.hbd_targetViewController.hbd_puppetViewController = nil;
+            self.contentViewController.hbd_targetViewController.hbd_popupViewController = nil;
             self.contentViewController.hbd_targetViewController = nil;
             self.contentViewController.hbd_modalViewController = nil;
             self.contentViewController = nil;
@@ -223,6 +222,15 @@
     if ([self isViewLoaded]) {
         [self.view setNeedsLayout];
     }
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+       
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+        
+    }];
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
 #pragma mark - Dimming View
@@ -414,25 +422,25 @@
     objc_setAssociatedObject(self, @selector(hbd_targetViewController), targetViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (UIViewController *)hbd_puppetViewController {
+- (UIViewController *)hbd_popupViewController {
     return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setHbd_puppetViewController:(UIViewController *)puppetViewController {
-    objc_setAssociatedObject(self, @selector(hbd_puppetViewController), puppetViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setHbd_popupViewController:(UIViewController *)puppetViewController {
+    objc_setAssociatedObject(self, @selector(hbd_popupViewController), puppetViewController, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)hbd_showViewController:(UIViewController *)vc animated:(BOOL)animated completion:(void (^)(BOOL))completion {
     HBDModalViewController *modalViewController = [[HBDModalViewController alloc] init];
     modalViewController.contentViewController = vc;
-    self.hbd_puppetViewController = vc;
+    self.hbd_popupViewController = vc;
     vc.hbd_targetViewController = self;
     [modalViewController showWithAnimated:animated completion:completion];
 }
 
 - (void)hbd_hideViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
-    if (self.hbd_puppetViewController) {
-        [self.hbd_puppetViewController.hbd_modalViewController hideWithAnimated:animated completion:completion];
+    if (self.hbd_popupViewController) {
+        [self.hbd_popupViewController.hbd_modalViewController hideWithAnimated:animated completion:completion];
     } else {
         [self.hbd_targetViewController hbd_hideViewControllerAnimated:animated completion:completion];
     }

@@ -30,7 +30,7 @@ Garden.setStyle({
   topBarStyle: 'dark-content',
   titleTextSize: 17,
   // statusBarColor: '#0000FF',
-  // topBarColor: '#F0FFFFFF',
+  topBarColor: '#FFFFFF',
 
   swipeBackEnabledAndroid: true,
   topBarTintColor: '#000000',

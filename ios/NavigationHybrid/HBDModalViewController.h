@@ -102,7 +102,7 @@ typedef NS_ENUM(NSUInteger, HBDModalAnimationStyle) {
 
 @property(nonatomic, strong, readonly) UIViewController *hbd_targetViewController;
 
-@property(nonatomic, strong, readonly) UIViewController *hbd_puppetViewController;
+@property(nonatomic, strong, readonly) UIViewController *hbd_popupViewController;
 
 - (void)hbd_showViewController:(UIViewController *)vc animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 
