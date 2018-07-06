@@ -1418,7 +1418,8 @@ class Screen extends Component {
     passThroughTouches: false, // 当前页面是否允许穿透，通常和透明背景一起使用
     screenColor: '#FFFFFF', // 当前页面背景
     topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
-    topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，可以是透明颜色
+    topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。 `topBarAlpha` 不能决定页面内容是否延伸到 topBar 底下
+    extendedLayoutIncludesTopBar: false, // 当前页面的内容是否延伸到 topBar 底下，通常用于需要动态改变 `topBarAlpha` 的场合
     topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
     titleTextColor: '#FFFFFF', // 当前页面标题颜色
     topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
