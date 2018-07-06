@@ -39,6 +39,18 @@ make sure that you have a simulator or device when you run andriod
 * 支持 StatusBar, UINavigationBar(iOS), UITabBar(iOS), Toolbar(Android), BottomNavigationBar(Android) 的全局样式配置以及局部调整
 * 支持原生页面和 RN 页面互相跳转和传值
 
+## 更新日志
+
+### 0.8.0
+
+支持自定义容器和导航
+
+Android 支持侧滑返回
+
+TopBar 不再遮挡内容
+
+支持隐藏状态栏
+
 ## 目录
 
 #### [集成到以 RN 为主的项目](#migrate-react)
@@ -808,6 +820,14 @@ this.props.navigation.push('B');
 this.props.navigation.pop();
 ```
 
+可以通过以下方法来监听用户是否通过点击返回按钮，右滑，或通过代码 pop 来返回前一个页面
+
+```javascript
+onComponentBack() {
+
+}
+```
+
 * popTo
 
 返回到之前的指定页面。比如你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回 B 页面。你可以把 B 页面的 `sceneId` 一直传递到 D 页面，然后调用 `popTo('bId')` 返回到 B 页面。
@@ -1225,11 +1245,13 @@ setStyle 接受一个对象为参数，可配置字段如下：
   titleTextSize: Int; // 顶部导航栏标题字体大小，默认是 17 dp(pt)
   titleAlignment: String; // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left
   barButtonItemTextSize: Int; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
+  swipeBackEnabledAndroid: Bool; // Android 是否开启右滑返回，默认是 false
 
   bottomBarColor: String; // 底部 TabBar 背景颜色
   bottomBarShadowImage: Object; // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 。对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
   bottomBarButtonItemActiveColor: String; // 底部 TabBarItem 选中效果
   bottomBarButtonItemInactiveColor: String; // 底部 TabBarItem 未选中效果
+  badgeColor: Stringg; // Badge 以及小红点的颜色
 }
 ```
 
@@ -1393,6 +1415,7 @@ Garden.setStyle({
 ```javascript
 class Screen extends Component {
   static navigationItem = {
+    passThroughTouches: false, // 当前页面是否允许穿透，通常和透明背景一起使用
     screenColor: '#FFFFFF', // 当前页面背景
     topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
     topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，可以是透明颜色
@@ -1400,8 +1423,10 @@ class Screen extends Component {
     titleTextColor: '#FFFFFF', // 当前页面标题颜色
     topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
     topBarHidden: true, // 是否隐藏当前页面 topBar
+    statusBarHidden: true, // 是否隐藏当前页面的状态栏，iPhoneX 下，不管设置为何值都不隐藏
     backButtonHidden: true, // 当前页面是否隐藏返回按钮
     backInteractive: true, // 当前页面是否可以通过右滑或返回键返回
+    swipeBackEnabled: true, // 当前页面是否可以通过右滑返回。Android 下，只有开启了侧滑返回功能，该值才会生效。如果 `backInteractive` 设置为 false, 那么该值无效。
 
     titleItem: {
       // 导航栏标题
@@ -1583,6 +1608,61 @@ this.props.navigation.push(
 
 Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
 
+* setStatusBarColor
+
+动态更改状态栏背景颜色，仅对 Android 生效
+
+```javascript
+this.props.garden.setStatusBarColor({ statusBarColor: '#FF0000' });
+```
+
+* setStatusBarHidden
+
+动态隐藏或显示状态栏
+
+```javascript
+this.props.garden.setStatusBarHidden(false);
+```
+
+* setTopBarStyle
+
+动态改变导航栏样式风格（会影响状态栏前景色是黑的或白的）
+
+```javascript
+this.props.garden.setTopBarStyle({ topBarStyle: this.state.topBarStyle });
+if (this.state.topBarStyle === 'dark-content') {
+    this.setState({ topBarStyle: 'light-content' });
+} else {
+    this.setState({ topBarStyle: 'dark-content' });
+}
+```
+
+* setTopBarAlpha
+
+动态改变导航栏背景的透明度
+
+```javascript
+this.props.garden.setTopBarAlpha({
+    topBarAlpha: value,
+});
+```
+
+* setTopBarColor
+
+动态改变导航栏的颜色
+
+```javascript
+this.props.garden.setTopBarColor({ topBarColor: '#00FF00' });
+```
+
+* setTopBarShadowHidden
+
+是否隐藏导航栏下的阴影
+
+```javascript
+this.props.garden.setTopBarShadowHidden({ topBarShadowHidden: value });
+```
+
 * setTitleItem
 
 更改标题
@@ -1616,6 +1696,68 @@ this.props.garden.setRightBarButtonItem({
   enabled: false,
 });
 ```
+
+* setBottomBarColor
+
+更改 TabBar 的背景颜色
+
+```javascript
+this.props.garden.setBottomBarColor({bottomBarColor: '#FFFFFF'});
+```
+
+* replaceTabIcon
+
+替换 tab 图标
+
+```javascript
+this.props.garden.replaceTabIcon(
+  1,
+  { uri: 'blue_solid', scale: PixelRatio.get() }
+);
+```
+
+* setTabBadge
+
+设置 badge
+
+```javascript
+if (this.state.badge) {
+    this.props.garden.setTabBadge(1, null);
+} else {  
+    this.props.garden.setTabBadge(1, '99');
+}
+```
+
+* showRedPointAtIndex
+
+显示小红点
+
+```javascript
+this.props.garden.showRedPointAtIndex(0);
+```
+
+* hideRedPointAtIndex
+
+隐藏小红点
+
+```javascript
+this.props.garden.hideRedPointAtIndex(0);
+```
+
+* setMenuInteractive
+
+是否允许侧滑打开抽屉
+
+```javascript
+componentDidAppear() {
+    this.props.garden.setMenuInteractive(true);
+}
+
+componentDidDisappear() {
+    this.props.garden.setMenuInteractive(false);
+}
+```
+
 
 <a name="deep-link"></a>
 
