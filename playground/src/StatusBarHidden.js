@@ -1,12 +1,41 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView, StatusBar, Platform } from 'react-native';
+import { ifIphoneX } from 'react-native-iphone-x-helper';
 
 import styles from './Styles';
+
+function ifKitKat(obj1 = {}, obj2 = {}) {
+  return Platform.Version > 18 ? obj1 : obj2;
+}
+
+const paddingTop = Platform.select({
+  ios: {
+    ...ifIphoneX(
+      {
+        paddingTop: 16 + 44,
+      },
+      {
+        paddingTop: 16 + 20,
+      }
+    ),
+  },
+  android: {
+    ...ifKitKat(
+      {
+        paddingTop: 16 + StatusBar.currentHeight,
+      },
+      {
+        paddingTop: 16,
+      }
+    ),
+  },
+});
 
 export default class StatusBarHidden extends Component {
   static navigationItem = {
     statusBarColor: '#00FF00',
     statusBarHidden: true,
+    topBarHidden: true,
     titleItem: {
       title: '隐藏状态栏',
     },
@@ -38,6 +67,7 @@ export default class StatusBarHidden extends Component {
         automaticallyAdjustContentInsets={false}
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
+        <Text style={[styles.welcome, paddingTop]}> StatusBar Hidden</Text>
         <TouchableOpacity onPress={this.showStatusBar} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>show status bar</Text>
         </TouchableOpacity>

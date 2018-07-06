@@ -1,7 +1,45 @@
 import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, ScrollView, Slider, Image, Alert } from 'react-native';
-
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Slider,
+  Image,
+  Alert,
+  StatusBar,
+  Platform,
+} from 'react-native';
+import { ifIphoneX } from 'react-native-iphone-x-helper';
+import { Garden } from 'react-native-navigation-hybrid';
 import styles from './Styles';
+
+function ifKitKat(obj1 = {}, obj2 = {}) {
+  return Platform.Version > 18 ? obj1 : obj2;
+}
+
+const paddingTop = Platform.select({
+  ios: {
+    ...ifIphoneX(
+      {
+        paddingTop: 8 + 44,
+      },
+      {
+        paddingTop: 8 + 20,
+      }
+    ),
+  },
+  android: {
+    ...ifKitKat(
+      {
+        paddingTop: 12 + StatusBar.currentHeight,
+      },
+      {
+        paddingTop: 12,
+      }
+    ),
+  },
+});
 
 export default class TopBarAlpha extends Component {
   static navigationItem = {
@@ -73,7 +111,7 @@ export default class TopBarAlpha extends Component {
         automaticallyAdjustContentInsets={false}
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
-        <View style={[styles.container, { paddingTop: 36 }]}>
+        <View style={[styles.container, paddingTop]}>
           <Text style={styles.welcome}>滑动看看</Text>
 
           <TouchableOpacity onPress={this.topBarHidden} activeOpacity={0.2} style={styles.button}>

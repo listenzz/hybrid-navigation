@@ -1,7 +1,36 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import { TouchableOpacity, Text, View, StatusBar, Platform } from 'react-native';
+import { ifIphoneX } from 'react-native-iphone-x-helper';
+import { Garden } from 'react-native-navigation-hybrid';
 
 import styles from './Styles';
+
+function ifKitKat(obj1 = {}, obj2 = {}) {
+  return Platform.Version > 18 ? obj1 : obj2;
+}
+
+const paddingTop = Platform.select({
+  ios: {
+    ...ifIphoneX(
+      {
+        paddingTop: 16 + 88,
+      },
+      {
+        paddingTop: 16 + 64,
+      }
+    ),
+  },
+  android: {
+    ...ifKitKat(
+      {
+        paddingTop: 16 + StatusBar.currentHeight + Garden.toolbarHeight,
+      },
+      {
+        paddingTop: 16 + Garden.toolbarHeight,
+      }
+    ),
+  },
+});
 
 export default class Menu extends Component {
   constructor(props) {
@@ -28,7 +57,7 @@ export default class Menu extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, paddingTop]}>
         <Text style={styles.welcome}>This's a React Native Menu.</Text>
 
         <TouchableOpacity onPress={this.push} activeOpacity={0.2} style={styles.button}>
