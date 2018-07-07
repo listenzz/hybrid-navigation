@@ -65,7 +65,6 @@ TopBar 不再遮挡内容
 
 #### [DeepLink](#deep-link)
 
-
 ## 集成到以 RN 为主的项目
 
 你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
@@ -1632,9 +1631,9 @@ this.props.garden.setStatusBarHidden(false);
 ```javascript
 this.props.garden.setTopBarStyle({ topBarStyle: this.state.topBarStyle });
 if (this.state.topBarStyle === 'dark-content') {
-    this.setState({ topBarStyle: 'light-content' });
+  this.setState({ topBarStyle: 'light-content' });
 } else {
-    this.setState({ topBarStyle: 'dark-content' });
+  this.setState({ topBarStyle: 'dark-content' });
 }
 ```
 
@@ -1644,7 +1643,7 @@ if (this.state.topBarStyle === 'dark-content') {
 
 ```javascript
 this.props.garden.setTopBarAlpha({
-    topBarAlpha: value,
+  topBarAlpha: value,
 });
 ```
 
@@ -1703,7 +1702,7 @@ this.props.garden.setRightBarButtonItem({
 更改 TabBar 的背景颜色
 
 ```javascript
-this.props.garden.setBottomBarColor({bottomBarColor: '#FFFFFF'});
+this.props.garden.setBottomBarColor({ bottomBarColor: '#FFFFFF' });
 ```
 
 * replaceTabIcon
@@ -1711,10 +1710,7 @@ this.props.garden.setBottomBarColor({bottomBarColor: '#FFFFFF'});
 替换 tab 图标
 
 ```javascript
-this.props.garden.replaceTabIcon(
-  1,
-  { uri: 'blue_solid', scale: PixelRatio.get() }
-);
+this.props.garden.replaceTabIcon(1, { uri: 'blue_solid', scale: PixelRatio.get() });
 ```
 
 * setTabBadge
@@ -1723,9 +1719,9 @@ this.props.garden.replaceTabIcon(
 
 ```javascript
 if (this.state.badge) {
-    this.props.garden.setTabBadge(1, null);
-} else {  
-    this.props.garden.setTabBadge(1, '99');
+  this.props.garden.setTabBadge(1, null);
+} else {
+  this.props.garden.setTabBadge(1, '99');
 }
 ```
 
@@ -1758,7 +1754,6 @@ componentDidDisappear() {
     this.props.garden.setMenuInteractive(false);
 }
 ```
-
 
 <a name="deep-link"></a>
 
@@ -1797,7 +1792,6 @@ TopBarAlpha 依赖 TopBarMisc, TopBarMisc 依赖 Options, 当我们通过 `hbd:/
 
 mode 表示显示模式，不设置在跳转时使用 push，设置为 modal 时使用 present。譬如 playground 项目中，Result 这个页面就是以 modal 的形式打开的。
 
-
 ### 激活
 
 我们需要在一个稳定的页面（通常是主页面）激活路由功能。
@@ -1825,14 +1819,13 @@ componentWillUnmount() {
 router 对象为我们提供了注册和移除拦截器的一对方法
 
 ```javascript
-registerIntercepter(func);
-unregisterIntercepter(func);
+registerInterceptor(func);
+unregisterInterceptor(func);
 ```
 
 func 是一个接收 path 为参数，返回 boolen 的函数，返回 true 表示拦截。
 
 可以通过 `router.pathToRoute(path)` 来获取路由信息
-
 
 ### iOS 配置
 
@@ -1858,7 +1851,6 @@ In Xcode, open the project at SimpleApp/ios/SimpleApp.xcodeproj. Select the proj
 ![xcode-linking](./screenshot/xcode-linking.png)
 
 ### Android 配置
-
 
 To configure the external linking in Android, you can create a new intent in the manifest.
 
@@ -1890,4 +1882,3 @@ Android:
 ```
 adb shell am start -W -a android.intent.action.VIEW -d "hbd://hbd/topBarAlpha/0.5/#FFFFF" com.navigationhybrid.playground
 ```
-
