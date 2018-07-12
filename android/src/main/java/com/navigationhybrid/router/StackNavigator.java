@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigationhybrid.HybridFragment;
 import com.navigationhybrid.ReactBridgeManager;
@@ -39,6 +40,11 @@ public class StackNavigator implements Navigator {
             ReadableMap stack = layout.getMap(name());
             AwesomeFragment fragment = getReactBridgeManager().createFragment(stack);
             if (fragment != null) {
+                if (layout.hasKey("options") && fragment instanceof HybridFragment) {
+                    HybridFragment hybridFragment = (HybridFragment) fragment;
+                    Bundle bundle = Arguments.toBundle(layout.getMap("options"));
+                    hybridFragment.setOptions(bundle);
+                }
                 ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
                 reactNavigationFragment.setRootFragment(fragment);
                 return reactNavigationFragment;

@@ -204,7 +204,7 @@ RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) 
     HBDViewController *vc =  [self controllerForSceneId:sceneId];
     HBDDrawerController *drawer = [vc drawerController];
     if (drawer) {
-        drawer.interactive = enabled;
+        drawer.menuInteractive = enabled;
     }
 }
 

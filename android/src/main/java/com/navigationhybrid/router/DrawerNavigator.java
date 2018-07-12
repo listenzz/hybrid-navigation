@@ -47,8 +47,8 @@ public class DrawerNavigator implements Navigator {
                 ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
                 drawerFragment.setMenuFragment(menuFragment);
                 drawerFragment.setContentFragment(contentFragment);
-                if (menu.hasKey("options")) {
-                    ReadableMap options = menu.getMap("options");
+                if (layout.hasKey("options")) {
+                    ReadableMap options = layout.getMap("options");
                     if (options.hasKey("maxDrawerWidth")) {
                         int maxDrawerWidth = options.getInt("maxDrawerWidth");
                         drawerFragment.setMaxDrawerWidth(maxDrawerWidth);
@@ -57,6 +57,11 @@ public class DrawerNavigator implements Navigator {
                     if (options.hasKey("minDrawerMargin")) {
                         int minDrawerMargin = options.getInt("minDrawerMargin");
                         drawerFragment.setMinDrawerMargin(minDrawerMargin);
+                    }
+
+                    if (options.hasKey("menuInteractive")) {
+                        boolean interactive = options.getBoolean("menuInteractive");
+                        drawerFragment.setMenuInteractive(interactive);
                     }
                 }
                 return drawerFragment;

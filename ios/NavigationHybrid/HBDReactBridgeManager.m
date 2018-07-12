@@ -139,6 +139,24 @@ const NSInteger ResultCancel = 0;
         NSCAssert([self hasNativeModule:moduleName], @"找不到名为 %@ 的模块，你是否忘了注册？", moduleName);
         vc = [[clazz alloc] initWithModuleName:moduleName props:props options:options];
     }
+    
+    NSDictionary *tabItem = options[@"tabItem"];
+    if (tabItem) {
+        UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
+        tabBarItem.title = tabItem[@"title"];
+        
+        NSDictionary *inactiveIcon = tabItem[@"inactiveIcon"];
+        if (inactiveIcon) {
+            tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            tabBarItem.image = [[HBDUtils UIImage:inactiveIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        } else {
+            tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
+        }
+        
+        vc.tabBarItem = tabBarItem;
+        vc.hidesBottomBarWhenPushed = [tabItem[@"hideTabBarWhenPush"] boolValue];
+    }
+    
     return vc;
 }
 

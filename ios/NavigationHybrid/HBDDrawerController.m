@@ -24,7 +24,7 @@
     if (self = [super init]) {
         _contentController = content;
         _menuController = menu;
-        _interactive = YES;
+        _menuInteractive = YES;
         _minDrawerMargin = 64;
         _inCall = [UIApplication sharedApplication].statusBarFrame.size.height == 40;
     }
@@ -129,7 +129,7 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if ([gestureRecognizer isKindOfClass:[UIScreenEdgePanGestureRecognizer class]]) {
-        return  self.interactive && !self.menuDimmingView;
+        return  self.menuInteractive && !self.menuDimmingView;
     } else if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
         UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)gestureRecognizer;
         return [pan velocityInView:self.menuDimmingView].x < 0;

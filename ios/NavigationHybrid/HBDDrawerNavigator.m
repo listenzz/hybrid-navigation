@@ -30,16 +30,21 @@
         
         if (contentController && menuController) {
             HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:contentController menuViewController:menuController];
-            NSDictionary *menuOptions = [menu objectForKey:@"options"];
-            if (menuOptions) {
-                NSNumber *maxDrawerWidth = [menuOptions objectForKey:@"maxDrawerWidth"];
-                NSNumber *minDrawerMargin = [menuOptions objectForKey:@"minDrawerMargin"];
+            NSDictionary *options = [layout objectForKey:@"options"];
+            if (options) {
+                NSNumber *maxDrawerWidth = [options objectForKey:@"maxDrawerWidth"];
+                NSNumber *minDrawerMargin = [options objectForKey:@"minDrawerMargin"];
+                NSNumber *menuInteractive = [options objectForKey:@"menuInteractive"];
                 if (maxDrawerWidth) {
                     [drawerController setMaxDrawerWidth:[maxDrawerWidth floatValue]];
                 }
                 
                 if (minDrawerMargin) {
                     [drawerController setMinDrawerMargin:[minDrawerMargin floatValue]];
+                }
+                
+                if (menuInteractive) {
+                    drawerController.menuInteractive = [menuInteractive boolValue];
                 }
             }
             return drawerController;

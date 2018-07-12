@@ -85,11 +85,9 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     public void setOptions(@NonNull Bundle options) {
-        Bundle args = getArguments();
-        if (args != null) {
-            args.putBundle(Constants.ARG_OPTIONS, options);
-            setArguments(args);
-        }
+        Bundle args = FragmentHelper.getArguments(this);
+        args.putBundle(Constants.ARG_OPTIONS, options);
+        setArguments(args);
     }
 
     @NonNull

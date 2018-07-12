@@ -1,12 +1,42 @@
 import NavigationModule from './NavigationModule';
-import { NativeModules } from 'react-native';
+import actionIdGenerator from './ActionIdGenerator';
+import { NativeModules, DeviceEventEmitter, NativeEventEmitter, Platform } from 'react-native';
 const GardenModule = NativeModules.GardenHybrid;
+
+const EventEmitter = Platform.select({
+  ios: new NativeEventEmitter(NavigationModule),
+  android: DeviceEventEmitter,
+});
 
 let intercept;
 
+let events = [];
+
 export default class Navigator {
   static setRoot(layout, sticky = false) {
-    NavigationModule.setRoot(layout, sticky);
+    events.forEach(event => {
+      event.remove();
+    });
+    events = [];
+    NavigationModule.setRoot(
+      JSON.parse(
+        JSON.stringify(layout, function(key, value) {
+          if ('action' === key) {
+            const action = 'ON_BAR_BUTTON_ITEM_CLICK-' + actionIdGenerator();
+            let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', event => {
+              if (event.action === action) {
+                const navigator = new Navigator(event.sceneId);
+                value(navigator);
+              }
+            });
+            events.push(event);
+            return action;
+          }
+          return value;
+        })
+      ),
+      sticky
+    );
   }
 
   static setInterceptor(interceptor) {

@@ -65,6 +65,7 @@
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
         HBDNavigationController *presented = [[HBDNavigationController alloc] initWithRootViewController:target];
         [presented setRequestCode:requestCode];
+        presented.modalPresentationStyle = UIModalPresentationCurrentContext;
         [vc presentViewController:presented animated:animated completion:^{
             
         }];

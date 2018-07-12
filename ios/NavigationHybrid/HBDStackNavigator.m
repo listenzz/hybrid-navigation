@@ -25,6 +25,13 @@
     NSDictionary *stack = [layout objectForKey:self.name];
     if (stack) {
         UIViewController *root = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:stack];
+        NSDictionary *options = [layout objectForKey:@"options"];
+        
+        if (options && [root isKindOfClass:[HBDViewController class]]) {
+            HBDViewController *vc = (HBDViewController *)root;
+            vc.options = options;
+        }
+        
         if (root) {
             return [[HBDNavigationController alloc] initWithRootViewController:root];
         }

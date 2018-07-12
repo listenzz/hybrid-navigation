@@ -21,7 +21,7 @@
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
-    NSArray *tabs = [layout objectForKey:@"tabs"];
+    NSArray *tabs = [layout objectForKey:self.name];
     if (tabs) {
         NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:4];
         for (NSDictionary *tab in tabs) {
@@ -34,6 +34,15 @@
         if (controllers.count > 0) {
             HBDTabBarController *tabBarController = [[HBDTabBarController alloc] init];
             [tabBarController setViewControllers:controllers];
+            
+            NSDictionary *options = [layout objectForKey:@"options"];
+            if (options) {
+                NSNumber *selectedIndex = [options objectForKey:@"selectedIndex"];
+                if (selectedIndex) {
+                    tabBarController.selectedIndex = [selectedIndex integerValue];
+                }
+            }
+            
             return tabBarController;
         }
     }
@@ -48,7 +57,7 @@
             UIViewController *child = tabs.childViewControllers[i];
             [[HBDReactBridgeManager sharedInstance] routeGraphWithController:child container:children];
         }
-        [container addObject:@{ @"type": @"tabs", @"tabs": children, @"selectedIndex": @(tabs.selectedIndex) }];
+        [container addObject:@{ @"type": self.name, self.name: children, @"selectedIndex": @(tabs.selectedIndex) }];
         return YES;
     }
     return NO;

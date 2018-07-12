@@ -47,6 +47,13 @@ public class TabNavigator implements Navigator {
             if (fragments.size() > 0) {
                 ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
                 tabBarFragment.setChildFragments(fragments);
+                if (layout.hasKey("options")) {
+                    ReadableMap options = layout.getMap("options");
+                    if (options.hasKey("selectedIndex")) {
+                        int selectedIndex = options.getInt("selectedIndex");
+                        tabBarFragment.setSelectedIndex(selectedIndex);
+                    }
+                }
                 return tabBarFragment;
             } else {
                 throw new IllegalArgumentException("tabs layout should has a child at least");

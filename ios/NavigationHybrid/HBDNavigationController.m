@@ -40,8 +40,8 @@
     if (self = [super initWithNavigationBarClass:[HBDNavigationBar class] toolbarClass:nil]) {
         if ([rootViewController isKindOfClass:[HBDViewController class]]) {
             HBDViewController *root = (HBDViewController *)rootViewController;
-            NSDictionary *tabItem = root.options[@"tabItem"];
-            [self configTabItemWithDict:tabItem];
+            self.tabBarItem = root.tabBarItem;
+            self.hidesBottomBarWhenPushed = root.hidesBottomBarWhenPushed;
         }
         self.viewControllers = @[ rootViewController ];
     }
@@ -271,24 +271,6 @@
 
 - (void)updateNavigationBarShadowImageAlphaForViewController:(UIViewController *)vc {
     self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
-}
-
-- (void)configTabItemWithDict:(NSDictionary *)tabItem {
-    if (tabItem) {
-        UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
-        tabBarItem.title = tabItem[@"title"];
-        
-        NSDictionary *inactiveIcon = tabItem[@"inactiveIcon"];
-        if (inactiveIcon) {
-            tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            tabBarItem.image = [[HBDUtils UIImage:inactiveIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        } else {
-            tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
-        }
-        
-        self.tabBarItem = tabBarItem;
-        self.hidesBottomBarWhenPushed = [tabItem[@"hideTabBarWhenPush"] boolValue];
-    }
 }
 
 UIColor* blendColor(UIColor *from, UIColor *to, float percent) {

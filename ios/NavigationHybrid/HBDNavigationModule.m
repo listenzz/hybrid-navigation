@@ -131,7 +131,7 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
     while (controller != nil) {
         [self routeGraphWithController:controller container:container];
         UIViewController *presentedController = controller.presentedViewController;
-        if (presentedController && ![presentedController isBeingDismissed]) {
+        if (presentedController && !presentedController.isBeingDismissed) {
             controller = presentedController;
         } else {
             controller = nil;
