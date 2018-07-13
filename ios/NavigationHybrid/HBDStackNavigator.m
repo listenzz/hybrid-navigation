@@ -18,7 +18,7 @@
 }
 
 - (NSArray<NSString *> *)supportActions {
-    return @[@"push", @"pop", @"popTo", @"popToRoot", @"replace", @"replaceToRoot"];
+    return @[@"push", @"pushLayout", @"pop", @"popTo", @"popToRoot", @"replace", @"replaceToRoot"];
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
@@ -114,6 +114,10 @@
         [nav replaceViewController:target animated:YES];
     } else if ([action isEqualToString:@"replaceToRoot"]) {
         [nav replaceToRootViewController:target animated:YES];
+    } else if ([action isEqualToString:@"pushLayout"]) {
+        NSDictionary *layout = [extras objectForKey:@"layout"];
+        UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
+        [nav pushViewController:vc animated:animated];
     }
 }
 

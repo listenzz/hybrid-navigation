@@ -97,6 +97,10 @@ export default class Navigator {
     this.dispatch('push', { moduleName, props, options, animated });
   }
 
+  pushLayout(layout = {}, animated = true) {
+    this.dispatch('pushLayout', { layout, animated });
+  }
+
   pop(animated = true) {
     this.dispatch('pop', { animated });
   }
@@ -131,6 +135,10 @@ export default class Navigator {
     });
   }
 
+  presentLayout(layout = {}, requestCode = 0, animated = true) {
+    this.dispatch('presentLayout', { layout, requestCode, animated });
+  }
+
   dismiss(animated = true) {
     this.dispatch('dismiss', { animated });
   }
@@ -142,6 +150,10 @@ export default class Navigator {
       options,
       requestCode,
     });
+  }
+
+  showModalLayout(layout = {}, requestCode = 0) {
+    this.dispatch('showModalLayout', { layout, requestCode });
   }
 
   hideModal() {

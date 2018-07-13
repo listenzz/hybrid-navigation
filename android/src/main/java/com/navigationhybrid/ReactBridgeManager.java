@@ -266,7 +266,7 @@ public class ReactBridgeManager {
         return fragment;
     }
 
-    public void handleNavigation(@Nullable AwesomeFragment fragment, @NonNull String action, @NonNull Bundle extras) {
+    public void handleNavigation(@Nullable AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras) {
         if (fragment == null) {
             return;
         }

@@ -19,7 +19,7 @@ import me.listenzz.navigation.FragmentHelper;
 
 public class ScreenNavigator implements Navigator {
 
-    private List<String> supportActions = Arrays.asList("present", "dismiss", "showModal", "hideModal");
+    private List<String> supportActions = Arrays.asList("present", "presentLayout", "dismiss", "showModal", "showModalLayout", "hideModal");
 
     @Override
     public String name() {
@@ -82,18 +82,26 @@ public class ScreenNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull Bundle extras) {
-        String moduleName = extras.getString("moduleName");
+    public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull ReadableMap extras) {
         AwesomeFragment target = null;
-        if (moduleName != null) {
-            Bundle props = extras.getBundle("props");
-            Bundle options = extras.getBundle("options");
-            target = getReactBridgeManager().createFragment(moduleName, props, options);
+        if (extras.hasKey("moduleName")) {
+            String moduleName = extras.getString("moduleName");
+            if (moduleName != null) {
+                Bundle props = null;
+                Bundle options = null;
+                if (extras.hasKey("props")) {
+                    props = Arguments.toBundle(extras.getMap("props"));
+                }
+                if (extras.hasKey("options")) {
+                    options = Arguments.toBundle(extras.getMap("options"));
+                }
+                target = getReactBridgeManager().createFragment(moduleName, props, options);
+            }
         }
         switch (action) {
             case "present":
                 if (target != null) {
-                    int requestCode = (int) extras.getDouble("requestCode", 0);
+                    int requestCode = extras.getInt("requestCode");
                     ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
                     reactNavigationFragment.setRootFragment(target);
                     fragment.presentFragment(reactNavigationFragment, requestCode);
@@ -104,12 +112,28 @@ public class ScreenNavigator implements Navigator {
                 break;
             case "showModal":
                 if (target != null) {
-                    int requestCode = (int) extras.getDouble("requestCode", 0);
+                    int requestCode = extras.getInt("requestCode");
                     fragment.showDialog(target, requestCode);
                 }
                 break;
             case "hideModal":
                 fragment.dismissDialog();
+                break;
+            case "presentLayout":
+                ReadableMap layout = extras.getMap("layout");
+                target = getReactBridgeManager().createFragment(layout);
+                if (target != null) {
+                    int requestCode = extras.getInt("requestCode");
+                    fragment.presentFragment(target, requestCode);
+                }
+                break;
+            case "showModalLayout":
+                ReadableMap modalLayout = extras.getMap("layout");
+                target = getReactBridgeManager().createFragment(modalLayout);
+                if (target != null) {
+                    int requestCode = extras.getInt("requestCode");
+                    fragment.showDialog(target, requestCode);
+                }
                 break;
 
         }

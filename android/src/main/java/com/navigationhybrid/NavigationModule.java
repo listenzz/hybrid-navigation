@@ -125,11 +125,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 HybridFragment fragment = findFragmentBySceneId(sceneId);
-                Bundle bundle = Arguments.toBundle(extras);
-                if (bundle == null) {
-                    bundle = new Bundle();
-                }
-                reactBridgeManager.handleNavigation(fragment, action, bundle);
+                reactBridgeManager.handleNavigation(fragment, action, extras);
             }
         });
     }

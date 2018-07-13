@@ -92,7 +92,7 @@ public class TabNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull Bundle extras) {
+    public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull ReadableMap extras) {
         switch (action) {
             case "switchToTab":
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -101,7 +101,7 @@ public class TabNavigator implements Navigator {
                     if (presented != null) {
                         presented.dismissFragment();
                     }
-                    int index = (int) extras.getDouble("index");
+                    int index = extras.getInt("index");
                     tabBarFragment.setSelectedIndex(index);
                 }
                 break;

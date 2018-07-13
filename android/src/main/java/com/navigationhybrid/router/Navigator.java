@@ -25,6 +25,6 @@ public interface Navigator {
 
     HybridFragment primaryChildFragment(@NonNull AwesomeFragment fragment);
 
-    void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull Bundle extras);
+    void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull ReadableMap extras);
 
 }

@@ -18,7 +18,7 @@
 }
 
 - (NSArray<NSString *> *)supportActions {
-    return @[ @"present", @"dismiss", @"showModal", @"hideModal"];
+    return @[ @"present", @"presentLayout", @"dismiss", @"showModal", @"showModalLayout", @"hideModal"];
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
@@ -97,6 +97,24 @@
             [target didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:vc.requestCode];
         }
         [target hbd_hideViewControllerAnimated:YES completion:^(BOOL finished) {
+            
+        }];
+    } else if ([action isEqualToString:@"presentLayout"]) {
+        NSDictionary *layout = [extras objectForKey:@"layout"];
+        UIViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
+        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
+        BOOL animated = [[extras objectForKey:@"animated"] boolValue];
+        [target setRequestCode:requestCode];
+        target.modalPresentationStyle = UIModalPresentationCurrentContext;
+        [vc presentViewController:target animated:animated completion:^{
+            
+        }];
+    } else if ([action isEqualToString:@"showModalLayout"]) {
+        NSDictionary *layout = [extras objectForKey:@"layout"];
+        UIViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
+        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
+        [target setRequestCode:requestCode];
+        [vc hbd_showViewController:target animated:YES completion:^(BOOL finished) {
             
         }];
     }
