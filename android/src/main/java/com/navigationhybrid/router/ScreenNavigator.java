@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.listenzz.navigation.AwesomeFragment;
+import me.listenzz.navigation.FragmentHelper;
 
 public class ScreenNavigator implements Navigator {
 
@@ -53,7 +54,7 @@ public class ScreenNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph) {
+    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer) {
         if (fragment instanceof HybridFragment) {
             HybridFragment screen = (HybridFragment) fragment;
             Bundle bundle = new Bundle();
@@ -71,6 +72,10 @@ public class ScreenNavigator implements Navigator {
     @Override
     public HybridFragment primaryChildFragment(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof HybridFragment) {
+            AwesomeFragment presented = FragmentHelper.getLatterFragment(fragment.requireFragmentManager(), fragment);
+            if (presented != null) {
+                return (HybridFragment) presented;
+            }
             return (HybridFragment) fragment;
         }
         return null;

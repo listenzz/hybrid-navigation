@@ -171,7 +171,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
         FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
-        HybridFragment current = getCurrentFragment(fragment);
+        HybridFragment current = getPrimaryFragment(fragment);
         if (current != null) {
             Bundle bundle = new Bundle();
             bundle.putString("moduleName", current.getModuleName());
@@ -182,7 +182,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         }
     }
 
-    private HybridFragment getCurrentFragment(Fragment fragment) {
+    private HybridFragment getPrimaryFragment(Fragment fragment) {
         if (fragment != null && fragment instanceof AwesomeFragment) {
             return reactBridgeManager.primaryChildFragment((AwesomeFragment) fragment);
         }
@@ -190,24 +190,32 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void routeGraph(Promise promise) {
-        Activity activity = getCurrentActivity();
-        if (activity == null || !(activity instanceof ReactAppCompatActivity)) {
-            promise.reject("400", "Bad Request");
-            return;
-        }
-        ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-        ArrayList<Bundle> container = new ArrayList<>();
-        List<AwesomeFragment> fragments = reactAppCompatActivity.getFragmentsAtAddedList();
-        for (int i = 0; i < fragments.size(); i++) {
-            AwesomeFragment fragment = fragments.get(i);
-            buildRouteGraph(fragment, container);
-        }
-        promise.resolve(Arguments.fromList(container));
+    public void routeGraph(final Promise promise) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Activity activity = getCurrentActivity();
+                if (activity == null || !(activity instanceof ReactAppCompatActivity)) {
+                    promise.reject("400", "Bad Request");
+                    return;
+                }
+                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                ArrayList<Bundle> container = new ArrayList<>();
+                ArrayList<Bundle> modalContainer = new ArrayList<>();
+                List<AwesomeFragment> fragments = reactAppCompatActivity.getFragmentsAtAddedList();
+                for (int i = 0; i < fragments.size(); i++) {
+                    AwesomeFragment fragment = fragments.get(i);
+                    buildRouteGraph(fragment, container, modalContainer);
+                }
+                container.addAll(modalContainer);
+                promise.resolve(Arguments.fromList(container));
+            }
+        });
+
     }
 
-    private void buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph) {
-        reactBridgeManager.buildRouteGraph(fragment, graph);
+    private void buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> topContainer) {
+        reactBridgeManager.buildRouteGraph(fragment, graph, topContainer);
     }
 
     private HybridFragment findFragmentBySceneId(String sceneId) {

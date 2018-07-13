@@ -63,14 +63,14 @@ public class TabNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph) {
+    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer) {
         if (fragment instanceof TabBarFragment) {
             TabBarFragment tabs = (TabBarFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
             List<AwesomeFragment> fragments = tabs.getChildFragments();
             for (int i = 0; i < fragments.size(); i++) {
                 AwesomeFragment child = fragments.get(i);
-                getReactBridgeManager().buildRouteGraph(child, children);
+                getReactBridgeManager().buildRouteGraph(child, children, modalContainer);
             }
             Bundle bundle = new Bundle();
             bundle.putString("type", name());

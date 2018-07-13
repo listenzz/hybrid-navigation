@@ -127,12 +127,12 @@ Navigator.setRoot(
       },
       {
         screen: { moduleName: 'Menu' },
-        options: {
-          maxDrawerWidth: 280,
-          minDrawerMargin: 64,
-        },
       },
     ],
+    options: {
+      maxDrawerWidth: 280,
+      minDrawerMargin: 64,
+    },
   },
   true
 );

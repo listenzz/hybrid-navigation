@@ -112,7 +112,12 @@ RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
         }
     }
     
-    HBDViewController *current = [self currentControllerInController:controller];
+    if ([controller isKindOfClass:[HBDModalViewController class]]) {
+        HBDModalViewController *modal = (HBDModalViewController *)controller;
+        controller = modal.contentViewController;
+    }
+    
+    HBDViewController *current = [self primaryControllerInController:controller];
     if (current) {
         resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId });
     } else {
@@ -120,21 +125,24 @@ RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
     }
 }
 
-- (HBDViewController *)currentControllerInController:(UIViewController *)controller {
+- (HBDViewController *)primaryControllerInController:(UIViewController *)controller {
     return [[HBDReactBridgeManager sharedInstance] primaryChildViewControllerInController:controller];
 }
 
 RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    UIViewController *controller = application.keyWindow.rootViewController;
     NSMutableArray *container = [[NSMutableArray alloc] init];
-    while (controller != nil) {
-        [self routeGraphWithController:controller container:container];
-        UIViewController *presentedController = controller.presentedViewController;
-        if (presentedController && !presentedController.isBeingDismissed) {
-            controller = presentedController;
-        } else {
-            controller = nil;
+    for (NSUInteger i = 0; i < application.windows.count; i ++) {
+        UIWindow *window = application.windows[i];
+        UIViewController *controller = window.rootViewController;
+        while (controller != nil) {
+            [self routeGraphWithController:controller container:container];
+            UIViewController *presentedController = controller.presentedViewController;
+            if (presentedController && !presentedController.isBeingDismissed) {
+                controller = presentedController;
+            } else {
+                controller = nil;
+            }
         }
     }
     resolve(container);
