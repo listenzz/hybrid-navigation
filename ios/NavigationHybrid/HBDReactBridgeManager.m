@@ -154,7 +154,6 @@ const NSInteger ResultCancel = 0;
         }
         
         vc.tabBarItem = tabBarItem;
-        vc.hidesBottomBarWhenPushed = [tabItem[@"hideTabBarWhenPush"] boolValue];
     }
     
     return vc;

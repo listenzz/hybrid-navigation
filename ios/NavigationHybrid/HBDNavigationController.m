@@ -41,7 +41,11 @@
         if ([rootViewController isKindOfClass:[HBDViewController class]]) {
             HBDViewController *root = (HBDViewController *)rootViewController;
             self.tabBarItem = root.tabBarItem;
-            self.hidesBottomBarWhenPushed = root.hidesBottomBarWhenPushed;
+            root.tabBarItem = nil;
+            NSDictionary *tabItem = root.options[@"tabItem"];
+            if (tabItem) {
+                self.hidesBottomBarWhenPushed = [tabItem[@"hideTabBarWhenPush"] boolValue];
+            }
         }
         self.viewControllers = @[ rootViewController ];
     }
