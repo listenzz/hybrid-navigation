@@ -10,7 +10,6 @@ export default class Noninteractive extends Component {
     // 不允许通过右滑（iOS）或者返回键（Android）返回
     // swipeBackEnabled: false,
     backInteractive: false,
-
     titleItem: {
       title: 'Noninteractive',
     },
