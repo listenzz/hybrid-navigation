@@ -17,7 +17,7 @@
 }
 
 - (NSArray<NSString *> *)supportActions {
-    return @[ @"switchToTab" ];
+    return @[ @"switchToTab, switchTab" ];
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
@@ -76,7 +76,7 @@
     if (!tabBarController) {
         return;
     }
-    if ([action isEqualToString:@"switchToTab"]) {
+    if ([action isEqualToString:@"switchToTab"] || [action isEqualToString:@"switchTab"]) {
         if (tabBarController.presentedViewController) {
             [tabBarController.presentedViewController dismissViewControllerAnimated:YES completion:^{
                 

@@ -41,7 +41,7 @@ export default class Options extends Component {
     this.changeTitle = this.changeTitle.bind(this);
     this.topBarMisc = this.topBarMisc.bind(this);
     this.passOptions = this.passOptions.bind(this);
-    this.switchToTab = this.switchToTab.bind(this);
+    this.switchTab = this.switchTab.bind(this);
     this.toggleTabBadge = this.toggleTabBadge.bind(this);
     this.lifecycle = this.lifecycle.bind(this);
     this.replaceTabIcon = this.replaceTabIcon.bind(this);
@@ -89,8 +89,8 @@ export default class Options extends Component {
     this.props.navigator.push('PassOptions', {}, { titleItem: { title: 'The Passing Title' } });
   }
 
-  switchToTab() {
-    this.props.navigator.switchToTab(0);
+  switchTab() {
+    this.props.navigator.switchTab(0);
   }
 
   toggleTabBadge() {
@@ -175,7 +175,7 @@ export default class Options extends Component {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.switchToTab} activeOpacity={0.2} style={styles.button}>
+          <TouchableOpacity onPress={this.switchTab} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
           </TouchableOpacity>
 

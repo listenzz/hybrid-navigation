@@ -19,7 +19,7 @@ import me.listenzz.navigation.TabBarFragment;
 
 public class TabNavigator implements Navigator {
 
-    private List<String> supportActions = Arrays.asList("switchToTab");
+    private List<String> supportActions = Arrays.asList("switchToTab", "switchTab");
 
     @Override
     public String name() {
@@ -95,6 +95,7 @@ public class TabNavigator implements Navigator {
     public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull ReadableMap extras) {
         switch (action) {
             case "switchToTab":
+            case "switchTab":
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                 if (tabBarFragment != null) {
                     AwesomeFragment presented = tabBarFragment.getPresentedFragment();

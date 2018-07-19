@@ -43,6 +43,12 @@ export default class Navigator {
     intercept = interceptor;
   }
 
+  static dispatch(sceneId, action, extras = {}) {
+    if (!intercept || !intercept(action, this.moduleName, extras.moduleName, extras)) {
+      NavigationModule.dispatch(sceneId, action, extras);
+    }
+  }
+
   constructor(sceneId, moduleName) {
     this.sceneId = sceneId;
     this.moduleName = moduleName;
@@ -75,11 +81,15 @@ export default class Navigator {
 
   // 向后兼容， 1.0.0 将删除
   setTabBadge(index, text) {
+    console.warn('this.props.navigator.setTabBadge 已经弃用，请使用 this.props.garden.setTabBadge');
     GardenModule.setTabBadge(this.sceneId, index, text);
   }
 
   // 向后兼容， 1.0.0 将删除
   setMenuInteractive(enabled) {
+    console.warn(
+      'this.props.navigator.setMenuInteractive 已经弃用，请使用 this.props.garden.setMenuInteractive'
+    );
     GardenModule.setMenuInteractive(this.sceneId, enabled);
   }
 
@@ -88,9 +98,7 @@ export default class Navigator {
   }
 
   dispatch(action, extras = {}) {
-    if (!intercept || !intercept(action, this.moduleName, extras.moduleName, extras)) {
-      NavigationModule.dispatch(this.sceneId, action, extras);
-    }
+    Navigator.dispatch(this.sceneId, action, extras);
   }
 
   push(moduleName, props = {}, options = {}, animated = true) {
@@ -165,7 +173,12 @@ export default class Navigator {
   }
 
   switchToTab(index) {
+    console.warn('switchToTab 已弃用，请使用 switchTab');
     this.dispatch('switchToTab', { index });
+  }
+
+  switchTab(index) {
+    this.dispatch('switchTab', { index });
   }
 
   toggleMenu() {
