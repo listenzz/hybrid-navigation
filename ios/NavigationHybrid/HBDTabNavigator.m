@@ -17,7 +17,7 @@
 }
 
 - (NSArray<NSString *> *)supportActions {
-    return @[ @"switchToTab, switchTab" ];
+    return @[ @"switchToTab", @"switchTab" ];
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
