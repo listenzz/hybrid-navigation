@@ -34,7 +34,7 @@ RCT_EXPORT_MODULE(GardenHybrid)
 - (NSDictionary *)constantsToExport {
     return @{
              @"DARK_CONTENT": @"dark-content",
-             @"LIGHT_CONTENT": @"lieht-content",
+             @"LIGHT_CONTENT": @"light-content",
              };
 }
 
