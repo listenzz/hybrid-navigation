@@ -41,6 +41,21 @@ make sure that you have a simulator or device when you run andriod
 
 ## 更新日志
 
+### 0.8.5
+
+Garden#setBottomBarColor 重命名为 Garden#setTabBarColor
+
+navigationItem 配置中 的 `screenColor` 更名为 `screenBackgroundColor`
+
+Garden#setStyle 配置项中：
+
+- `bottomBarColor` 更名为 `tabBarColor`
+- `bottomBarShadowImage` 更名为 `tabBarShadowImage`
+- 用 `tabBarItemColor` 和 `tabBarSelectedItemColor` 取代 `bottomBarButtonItemActiveColor` 和 `bottomBarButtonItemInactiveColor`。`tabBarSelectedItemColor` 和 `bottomBarButtonItemInactiveColor` 的行为是相反的
+ 
+tabItem 可配置项中， `selectedIcon` 取代了 `inactiveIcon`，并且行为发生了倒置
+ 
+
 ### 0.8.0
 
 支持自定义容器和导航
@@ -1246,10 +1261,10 @@ setStyle 接受一个对象为参数，可配置字段如下：
   barButtonItemTextSize: Int; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
   swipeBackEnabledAndroid: Bool; // Android 是否开启右滑返回，默认是 false
 
-  bottomBarColor: String; // 底部 TabBar 背景颜色
-  bottomBarShadowImage: Object; // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 。对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效
-  bottomBarButtonItemActiveColor: String; // 底部 TabBarItem 选中效果
-  bottomBarButtonItemInactiveColor: String; // 底部 TabBarItem 未选中效果
+  tabBarColor: String; // 底部 TabBar 背景颜色
+  tabBarShadowImage: Object; // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 。对 iOS, 只有设置了 tabBarColor 才会生效
+  tabBarItemColor: String; // 当 `tabBarSelectedItemColor` 未设置时，此值为选中效果，否则为未选中效果
+  tabBarSelectedItemColor: String; // 底部 TabBarItem icon 选中效果
   badgeColor: Stringg; // Badge 以及小红点的颜色
 }
 ```
@@ -1415,9 +1430,10 @@ Garden.setStyle({
 class Screen extends Component {
   static navigationItem = {
     passThroughTouches: false, // 当前页面是否允许穿透，通常和透明背景一起使用
-    screenColor: '#FFFFFF', // 当前页面背景
-    topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
+    screenBackgroundColor: '#FFFFFF', // 当前页面背景
+    topBarStyle: String; // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
     topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。 `topBarAlpha` 不能决定页面内容是否延伸到 topBar 底下
+    topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
     extendedLayoutIncludesTopBar: false, // 当前页面的内容是否延伸到 topBar 底下，通常用于需要动态改变 `topBarAlpha` 的场合
     topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
     titleTextColor: '#FFFFFF', // 当前页面标题颜色
@@ -1474,7 +1490,7 @@ class Screen extends Component {
       // 底部 TabBarItem 可配置项
       title: 'Style',
       icon: { uri: fontUri('FontAwesome', 'leaf', 20) },
-      inactiveIcon: { uri: fontUri('FontAwesome', 'leaf', 20) },
+      selectedIcon: { uri: fontUri('FontAwesome', 'leaf', 20) },
       hideTabBarWhenPush: true,
     },
   };
@@ -1551,7 +1567,7 @@ tintColor 按钮颜色，可选，覆盖全局设置，实现个性化颜色
 
 可选，设置 UITabBar(iOS)、BottomNavigationBar(Android) 的 tab 标题和 icon。
 
-如果设置了 inactiveIcon，tab 未选中时，会展示该图片，否则改变 icon 的颜色为 bottomBarButtonItemInactiveColor
+如果同时设置了 icon 与 selectedIcon, 则保留图片原始颜色，否则用全局配置中的 `tabBarItemColor` 与 `tabBarSelectedItemColor` 对 icon 进行染色。
 
 hideTabBarWhenPush, 当 Stack 嵌套在 Tab 的时候，push 到另一个页面时是否隐藏 TabBar
 
@@ -1697,12 +1713,12 @@ this.props.garden.setRightBarButtonItem({
 });
 ```
 
-* setBottomBarColor
+* setTabBarColor
 
 更改 TabBar 的背景颜色
 
 ```javascript
-this.props.garden.setBottomBarColor({ bottomBarColor: '#FFFFFF' });
+this.props.garden.setTabBarColor({ bottomBarColor: '#FFFFFF' });
 ```
 
 * replaceTabIcon

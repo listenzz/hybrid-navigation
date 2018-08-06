@@ -74,7 +74,7 @@ BOOL hasAlpha(UIColor *color) {
     
     _inCall = [UIApplication sharedApplication].statusBarFrame.size.height == 40;
     
-    NSString *screenColor = self.options[@"screenColor"];
+    NSString *screenColor = self.options[@"screenBackgroundColor"];
     if (screenColor) {
         self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
     } else {

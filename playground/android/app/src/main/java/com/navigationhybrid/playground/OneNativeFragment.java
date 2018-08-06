@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import com.navigationhybrid.HybridFragment;
 
 import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.NavigationFragment;
 import me.listenzz.navigation.Style;
 
@@ -31,7 +30,13 @@ public class OneNativeFragment extends HybridFragment {
             public void onClick(View view) {
                 NavigationFragment navigationFragment = getNavigationFragment();
                 if (navigationFragment != null) {
-                    AwesomeFragment fragment = getReactBridgeManager().createFragment("Options");
+                    String popToId = getProps().getString("popToId");
+                    if (popToId == null) {
+                        popToId = getSceneId();
+                    }
+                    Bundle props = new Bundle();
+                    props.putString("popToId", popToId);
+                    AwesomeFragment fragment = getReactBridgeManager().createFragment("Navigation", props, null);
                     navigationFragment.pushFragment(fragment);
                 }
 
@@ -43,10 +48,15 @@ public class OneNativeFragment extends HybridFragment {
             public void onClick(View view) {
                 NavigationFragment navigationFragment = getNavigationFragment();
                 if (navigationFragment != null) {
+                    String popToId = getProps().getString("popToId");
+                    if (popToId == null) {
+                        popToId = getSceneId();
+                    }
+                    Bundle props = new Bundle();
+                    props.putString("popToId", popToId);
+                    props.putString("greeting", "Hello, Native");
                     AwesomeFragment fragment = new OneNativeFragment();
-                    Bundle args = new Bundle();
-                    args.putString("greeting", "Hello, Native");
-                    fragment.setArguments(args);
+                    setAppProperties(props);
                     navigationFragment.pushFragment(fragment);
                 }
             }
@@ -58,8 +68,8 @@ public class OneNativeFragment extends HybridFragment {
     @Override
     protected void onCustomStyle(@NonNull Style style) {
         super.onCustomStyle(style);
-        Bundle args = FragmentHelper.getArguments(this);
-        String greeting = args.getString("greeting");
+        Bundle props = getProps();
+        String greeting = props.getString("greeting");
         if (greeting != null) {
             style.setToolbarBackgroundColor(Color.RED);
             style.setStatusBarColor(Color.RED);
@@ -69,8 +79,8 @@ public class OneNativeFragment extends HybridFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Bundle args = FragmentHelper.getArguments(this);
-        String greeting = args.getString("greeting");
+        Bundle props = getProps();
+        String greeting = props.getString("greeting");
         if (greeting != null) {
             setTitle(greeting);
         } else {

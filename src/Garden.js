@@ -89,8 +89,8 @@ export default class Garden {
     GardenModule.setTopBarShadowHidden(this.sceneId, item);
   }
 
-  setBottomBarColor(item) {
-    GardenModule.setBottomBarColor(this.sceneId, item);
+  setTabBarColor(item) {
+    GardenModule.setTabBarColor(this.sceneId, item);
   }
 
   replaceTabIcon(index, icon, inactiveIcon) {

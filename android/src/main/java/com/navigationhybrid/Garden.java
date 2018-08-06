@@ -83,7 +83,7 @@ public class Garden {
             }
         }
 
-        String screenColor = options.getString("screenColor");
+        String screenColor = options.getString("screenBackgroundColor");
         if (!TextUtils.isEmpty(screenColor)) {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));
         }

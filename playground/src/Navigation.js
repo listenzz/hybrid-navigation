@@ -28,8 +28,8 @@ export default class Navigation extends Component {
     tabItem: {
       title: 'Navigation',
       icon: { uri: fontUri('FontAwesome', 'location-arrow', 24) },
-      // icon: { uri: 'red_ring', scale: PixelRatio.get() },
-      // inactiveIcon: { uri: 'blue_solid', scale: PixelRatio.get() },
+      //icon: { uri: 'blue_solid', scale: PixelRatio.get() },
+      //selectedIcon: { uri: 'red_ring', scale: PixelRatio.get() },
       hideTabBarWhenPush: true,
     },
   };

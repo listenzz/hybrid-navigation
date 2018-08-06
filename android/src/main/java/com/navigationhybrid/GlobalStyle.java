@@ -157,25 +157,25 @@ public class GlobalStyle {
         // --------- tabBar ------------
         // -----------------------------
 
-        // bottomBarColor
-        String bottomBarColor = options.getString("bottomBarColor");
+        // tabBarColor
+        String bottomBarColor = options.getString("tabBarColor");
         if (bottomBarColor != null) {
             style.setTabBarBackgroundColor(bottomBarColor);
         }
 
-        String bottomBarButtonItemActiveColor = options.getString("bottomBarButtonItemActiveColor");
-        if (bottomBarButtonItemActiveColor != null) {
-            style.setTabBarActiveColor(bottomBarButtonItemActiveColor);
+        String tabBarItemColor = options.getString("tabBarItemColor");
+        if (tabBarItemColor != null) {
+            style.setTabBarItemColor(tabBarItemColor);
         }
 
-        String bottomBarButtonItemInactiveColor = options.getString("bottomBarButtonItemInactiveColor");
-        if (bottomBarButtonItemInactiveColor != null) {
-            style.setTabBarInactiveColor(bottomBarButtonItemInactiveColor);
+        String tabBarSelectedItemColor = options.getString("tabBarSelectedItemColor");
+        if (tabBarSelectedItemColor != null) {
+            style.setTabBarSelectedItemColor(tabBarSelectedItemColor);
         }
 
         // bottomBarShadowImage
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Bundle shadowImage = options.getBundle("bottomBarShadowImage");
+            Bundle shadowImage = options.getBundle("tabBarShadowImage");
             if (shadowImage != null) {
                 Bundle image = shadowImage.getBundle("image");
                 String color = shadowImage.getString("color");

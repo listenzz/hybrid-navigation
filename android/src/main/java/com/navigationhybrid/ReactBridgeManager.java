@@ -337,9 +337,9 @@ public class ReactBridgeManager {
                     }
                     TabBarItem tabBarItem = new TabBarItem(uri, title);
 
-                    Bundle inactiveIcon = tabItem.getBundle("inactiveIcon");
-                    if (inactiveIcon != null) {
-                        tabBarItem.inactiveIconUri = inactiveIcon.getString("uri");
+                    Bundle selectedIcon = tabItem.getBundle("selectedIcon");
+                    if (selectedIcon != null) {
+                        tabBarItem.selectedIconUri = selectedIcon.getString("uri");
                     }
                     fragment.setTabBarItem(tabBarItem);
                 }

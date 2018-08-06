@@ -57,7 +57,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     }
 
     @Override
-    protected void onCustomStyle(Style style) {
+    protected void onCustomStyle(@NonNull Style style) {
         if (!isReactModuleInRegistry()) {
             GlobalStyle globalStyle = Garden.getGlobalStyle();
             if (globalStyle != null) {

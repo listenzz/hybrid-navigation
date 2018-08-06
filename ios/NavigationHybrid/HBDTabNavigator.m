@@ -77,7 +77,7 @@
         return;
     }
     if ([action isEqualToString:@"switchToTab"] || [action isEqualToString:@"switchTab"]) {
-        if (tabBarController.presentedViewController) {
+        if (tabBarController.presentedViewController && !tabBarController.presentedViewController.isBeingDismissed) {
             [tabBarController.presentedViewController dismissViewControllerAnimated:YES completion:^{
                 
             }];

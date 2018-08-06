@@ -45,13 +45,13 @@ Garden.setStyle({
   // hideBackTitle: true,
   elevation: 1,
 
-  bottomBarColor: '#FFFFFF',
-  //bottomBarShadowImage: {
-  //color: '#ff0000',
-  // 	image: Image.resolveAssetSource(require('./src/images/divider.png'))
-  //},
-  // bottomBarButtonItemActiveColor: '#00FF00'
-  bottomBarButtonItemInactiveColor: '#CCCCCC',
+  tabBarColor: '#FFFFFF',
+  tabBarShadowImage: {
+    // color: '#DDDDDD',
+    image: Image.resolveAssetSource(require('./src/images/divider.png')),
+  },
+  //tabBarItemColor: '#CCCCCC',
+  //tabBarSelectedItemColor: '#00ff00',
 });
 
 function screenWrapper(screenProvider) {

@@ -116,8 +116,8 @@ export default class Options extends Component {
   replaceTabIcon() {
     this.props.garden.replaceTabIcon(
       1,
-      { uri: 'blue_solid', scale: PixelRatio.get() }
-      // { uri: 'red_ring', scale: PixelRatio.get() }
+      { uri: 'blue_solid', scale: PixelRatio.get() },
+      { uri: 'red_ring', scale: PixelRatio.get() }
     );
   }
 

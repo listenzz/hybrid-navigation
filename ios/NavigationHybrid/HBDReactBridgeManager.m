@@ -145,10 +145,10 @@ const NSInteger ResultCancel = 0;
         UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
         tabBarItem.title = tabItem[@"title"];
         
-        NSDictionary *inactiveIcon = tabItem[@"inactiveIcon"];
-        if (inactiveIcon) {
-            tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            tabBarItem.image = [[HBDUtils UIImage:inactiveIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        NSDictionary *selectedIcon = tabItem[@"selectedIcon"];
+        if (selectedIcon) {
+            tabBarItem.selectedImage = [[HBDUtils UIImage:selectedIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            tabBarItem.image = [[HBDUtils UIImage:tabItem[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         } else {
             tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
         }

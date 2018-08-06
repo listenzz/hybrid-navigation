@@ -110,17 +110,17 @@
         }
         
         // tabBarColor
-        NSString *tabBarColor = self.options[@"bottomBarColor"];
+        NSString *tabBarColor = self.options[@"tabBarColor"];
         if (tabBarColor) {
             self.tabBarBarTintColor = [HBDUtils colorWithHexString:tabBarColor];
         }
         
         // shadowImeage
-        NSDictionary *bottomBarShadowImage = self.options[@"bottomBarShadowImage"];
-        if (bottomBarShadowImage && ![bottomBarShadowImage isEqual:NSNull.null]) {
+        NSDictionary *tabBarShadowImage = self.options[@"tabBarShadowImage"];
+        if (tabBarShadowImage && ![tabBarShadowImage isEqual:NSNull.null]) {
             UIImage *image = [UIImage new];
-            NSDictionary *imageItem = bottomBarShadowImage[@"image"];
-            NSString *color = bottomBarShadowImage[@"color"];
+            NSDictionary *imageItem = tabBarShadowImage[@"image"];
+            NSString *color = tabBarShadowImage[@"color"];
             if (imageItem) {
                 image = [HBDUtils UIImage:imageItem];
             } else if (color) {
@@ -130,14 +130,14 @@
         }
         
         // tabBar tintColor
-        NSString *bottomBarButtonItemActiveColor = self.options[@"bottomBarButtonItemActiveColor"];
-        if (bottomBarButtonItemActiveColor) {
-            self.tabBarTintColor = [HBDUtils colorWithHexString:bottomBarButtonItemActiveColor];
-        }
-        
-        NSString *bottomBarButtonItemInactiveColor = self.options[@"bottomBarButtonItemInactiveColor"];
-        if (bottomBarButtonItemInactiveColor) {
-            self.tabBarUnselectedTintColor = [HBDUtils colorWithHexString:bottomBarButtonItemInactiveColor];
+        NSString *tabBarItemColor = self.options[@"tabBarItemColor"];
+        if (tabBarItemColor) {
+            self.tabBarTintColor = [HBDUtils colorWithHexString:tabBarItemColor];
+            NSString *tabBarSelectedItemColor = self.options[@"tabBarSelectedItemColor"];
+            if (tabBarSelectedItemColor) {
+                self.tabBarTintColor = [HBDUtils colorWithHexString:tabBarSelectedItemColor];
+                self.tabBarUnselectedTintColor = [HBDUtils colorWithHexString:tabBarItemColor];
+            }
         }
         
         if (@available(iOS 10.0, *)) {

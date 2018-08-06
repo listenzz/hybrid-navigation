@@ -17,32 +17,39 @@
 
 @implementation OneNativeViewController
 
-- (instancetype)init {
-    if (self = [super init]) {
-        _greeting = @"Hello, Native";
-    }
-    return self;
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = self.greeting ?: @"Native";
+    self.title = self.props[@"greeting"] ?: @"Native";
     
-    if (self.greeting) {
+    if (self.props[@"greeting"]) {
         self.hbd_barTintColor = [UIColor redColor];
     }
 }
 
 - (IBAction)pushToRN:(UIButton *)sender {
     if (self.navigationController) {
-        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Options" props:nil options:nil];
+        NSDictionary *passedProps = nil;
+        if(self.props[@"popToId"]) {
+            passedProps = @{@"popToId": self.props[@"popToId"]};
+        }
+        else {
+            passedProps = @{@"popToId": self.sceneId};
+        }
+        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Navigation" props:passedProps options:nil];
         [self.navigationController pushViewController:vc animated:YES];
     }
 }
 
 - (IBAction)pushToNative:(UIButton *)sender {
     if (self.navigationController) {
-        OneNativeViewController *vc = [[OneNativeViewController alloc] init];
+        NSDictionary *passedProps = nil;
+        if(self.props[@"popToId"]) {
+            passedProps = @{@"popToId": self.props[@"popToId"], @"greeting": @"Hello, Native"};
+        }
+        else {
+            passedProps = @{@"popToId": self.sceneId, @"greeting": @"Hello, Native"};
+        }
+        OneNativeViewController *vc = [[OneNativeViewController alloc] initWithModuleName:nil props:passedProps options:nil];
         [self.navigationController pushViewController:vc animated:YES];
     }
 }
