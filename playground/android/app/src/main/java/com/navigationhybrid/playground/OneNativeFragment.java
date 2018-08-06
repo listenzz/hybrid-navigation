@@ -55,8 +55,8 @@ public class OneNativeFragment extends HybridFragment {
                     Bundle props = new Bundle();
                     props.putString("popToId", popToId);
                     props.putString("greeting", "Hello, Native");
-                    AwesomeFragment fragment = new OneNativeFragment();
-                    setAppProperties(props);
+                    HybridFragment fragment = new OneNativeFragment();
+                    fragment.setAppProperties(props);
                     navigationFragment.pushFragment(fragment);
                 }
             }
