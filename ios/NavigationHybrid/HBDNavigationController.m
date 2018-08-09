@@ -54,6 +54,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.definesPresentationContext = NO;
     self.interactivePopGestureRecognizer.delegate = self;
     [self.interactivePopGestureRecognizer addTarget:self action:@selector(handlePopGesture:)];
     self.delegate = self;

@@ -16,6 +16,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.definesPresentationContext = NO;
     // Do any additional setup after loading the view.
 }
 
