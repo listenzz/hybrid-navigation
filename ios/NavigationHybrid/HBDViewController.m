@@ -44,10 +44,6 @@ BOOL hasAlpha(UIColor *color) {
     return [self initWithModuleName:nil props:nil options:nil];
 }
 
-- (instancetype)init {
-    return [self initWithModuleName:nil props:nil options:nil];
-}
-
 - (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
     if (self = [super initWithNibName:nil bundle:nil]) {
         _sceneId = [[NSUUID UUID] UUIDString];
