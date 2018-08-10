@@ -121,7 +121,7 @@ RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
     if (current) {
         resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId });
     } else {
-        reject(@"404", @"not found!", [NSError errorWithDomain:@"NavigationModuleDomain" code:404 userInfo:nil]);
+        reject(@"1", @"UI 层级还没准备好", [NSError errorWithDomain:RCTErrorDomain code:1 userInfo:nil]);
     }
 }
 
@@ -145,7 +145,11 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
             }
         }
     }
-    resolve(container);
+    if (container.count > 0) {
+        resolve(container);
+    } else {
+        reject(@"2", @"UI 层级还没准备好", [NSError errorWithDomain:RCTErrorDomain code:2 userInfo:nil]);
+    }
 }
 
 - (void)routeGraphWithController:(UIViewController *)controller container:(NSMutableArray *)container {

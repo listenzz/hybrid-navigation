@@ -157,25 +157,30 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void currentRoute(Promise promise) {
-        Activity activity = getCurrentActivity();
-        if (activity == null || !(activity instanceof ReactAppCompatActivity)) {
-            promise.reject("400", "Bad Request");
-            return;
-        }
+    public void currentRoute(final Promise promise) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Activity activity = getCurrentActivity();
+                if (activity == null || !(activity instanceof ReactAppCompatActivity)) {
+                    promise.reject("1", "UI 层级还没有准备好");
+                    return;
+                }
 
-        ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-        FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
-        HybridFragment current = getPrimaryFragment(fragment);
-        if (current != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString("moduleName", current.getModuleName());
-            bundle.putString("sceneId", current.getSceneId());
-            promise.resolve(Arguments.fromBundle(bundle));
-        } else {
-            promise.reject("404", "Not Found");
-        }
+                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+                Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
+                HybridFragment current = getPrimaryFragment(fragment);
+                if (current != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("moduleName", current.getModuleName());
+                    bundle.putString("sceneId", current.getSceneId());
+                    promise.resolve(Arguments.fromBundle(bundle));
+                } else {
+                    promise.reject("2", "UI 层级还没有准备好");
+                }
+            }
+        });
     }
 
     private HybridFragment getPrimaryFragment(Fragment fragment) {
@@ -192,7 +197,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 Activity activity = getCurrentActivity();
                 if (activity == null || !(activity instanceof ReactAppCompatActivity)) {
-                    promise.reject("400", "Bad Request");
+                    promise.reject("1", "UI 层级还没有准备好");
                     return;
                 }
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
@@ -204,10 +209,13 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     buildRouteGraph(fragment, container, modalContainer);
                 }
                 container.addAll(modalContainer);
-                promise.resolve(Arguments.fromList(container));
+                if (container.size() > 0) {
+                    promise.resolve(Arguments.fromList(container));
+                } else {
+                    promise.reject("2", "UI 层级还没有准备好");
+                }
             }
         });
-
     }
 
     private void buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> topContainer) {

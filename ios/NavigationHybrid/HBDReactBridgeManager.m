@@ -53,12 +53,24 @@ const NSInteger ResultCancel = 0;
         _reactModules = [[NSMutableDictionary alloc] init];
         _isReactModuleInRegistry = YES;
         _navigators = [[NSMutableArray alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReload) name:RCTBridgeWillReloadNotification object:nil];
     }
     return self;
 }
 
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillReloadNotification object:nil];
+}
+
+- (void)handleReload {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    application.keyWindow.rootViewController = [[UIViewController alloc] init];
+    application.keyWindow.rootViewController.view.backgroundColor = UIColor.whiteColor;
+}
+
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
     _jsCodeLocation = jsCodeLocation;
+    
     _bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 }
 
