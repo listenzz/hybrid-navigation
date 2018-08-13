@@ -1,6 +1,6 @@
 # react-native-navigation-hybrid
 
-A library that mix navigation between native and React Native.
+seamless navigation between native and React Native.
 
 ![navigation-android](./screenshot/android.png)
 
@@ -49,12 +49,11 @@ navigationItem 配置中 的 `screenColor` 更名为 `screenBackgroundColor`
 
 Garden#setStyle 配置项中：
 
-- `bottomBarColor` 更名为 `tabBarColor`
-- `bottomBarShadowImage` 更名为 `tabBarShadowImage`
-- 用 `tabBarItemColor` 和 `tabBarSelectedItemColor` 取代 `bottomBarButtonItemActiveColor` 和 `bottomBarButtonItemInactiveColor`。`tabBarSelectedItemColor` 和 `bottomBarButtonItemInactiveColor` 的行为是相反的
- 
+* `bottomBarColor` 更名为 `tabBarColor`
+* `bottomBarShadowImage` 更名为 `tabBarShadowImage`
+* 用 `tabBarItemColor` 和 `tabBarSelectedItemColor` 取代 `bottomBarButtonItemActiveColor` 和 `bottomBarButtonItemInactiveColor`。`tabBarSelectedItemColor` 和 `bottomBarButtonItemInactiveColor` 的行为是相反的
+
 tabItem 可配置项中， `selectedIcon` 取代了 `inactiveIcon`，并且行为发生了倒置
- 
 
 ### 0.8.0
 
