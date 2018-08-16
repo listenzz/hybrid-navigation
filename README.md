@@ -33,11 +33,10 @@ make sure that you have a simulator or device when you run andriod
 
 <a name="migrate-react"></a>
 
-* 使得 React Native 应用更具原生质感
-* 支持 Stack、Tabs、Drawer 等容器
-* 以 iOS 的导航系统为参照，支持 push, pop, popTo, popToRoot, present, dismiss 等操作
-* 支持 StatusBar, UINavigationBar(iOS), UITabBar(iOS), Toolbar(Android), BottomNavigationBar(Android) 的全局样式配置以及局部调整
-* 支持原生页面和 RN 页面互相跳转和传值
+* 使用原生导航组件实现 React Native 页面间的导航，不仅具有更优的性能，而且使得 RN 页面具有原生质感
+* 原生页面和 RN 页面共享路由， 使得它们之间相互跳转和传值轻而易举
+* 内置 drawer, tabs, stack 标准容器，同时支持自定义容器和导航
+* 支持 deep link
 
 ## 更新日志
 
@@ -45,12 +44,12 @@ make sure that you have a simulator or device when you run andriod
 
 Garden#setBottomBarColor 重命名为 Garden#setTabBarColor
 
-navigationItem 配置中 的 `screenColor` 更名为 `screenBackgroundColor`
+navigationItem 配置中 的 `screenColor` 重命名 `screenBackgroundColor`
 
 Garden#setStyle 配置项中：
 
-* `bottomBarColor` 更名为 `tabBarColor`
-* `bottomBarShadowImage` 更名为 `tabBarShadowImage`
+* `bottomBarColor` 重命名为 `tabBarColor`
+* `bottomBarShadowImage` 重命名为 `tabBarShadowImage`
 * 用 `tabBarItemColor` 和 `tabBarSelectedItemColor` 取代 `bottomBarButtonItemActiveColor` 和 `bottomBarButtonItemInactiveColor`。`tabBarSelectedItemColor` 和 `bottomBarButtonItemInactiveColor` 的行为是相反的
 
 tabItem 可配置项中， `selectedIcon` 取代了 `inactiveIcon`，并且行为发生了倒置

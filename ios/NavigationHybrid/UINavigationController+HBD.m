@@ -18,9 +18,11 @@
         [self.view.layer addAnimation:transition forKey:kCATransition];
     }
     if (self.childViewControllers.count > 1) {
-        [self popViewControllerAnimated:NO];
         controller.hidesBottomBarWhenPushed = self.hidesBottomBarWhenPushed;
-        [self pushViewController:controller animated:NO];
+        NSMutableArray *children = [self.childViewControllers mutableCopy];
+        [children removeObjectAtIndex:self.childViewControllers.count -1];
+        [children addObject:controller];
+        [self setViewControllers:children animated:NO];
     } else {
         [self setViewControllers:@[ controller ] animated:NO];
     }
