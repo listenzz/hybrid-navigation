@@ -55,8 +55,8 @@
 
 - (void)didInitialized {
     self.animationStyle = HBDModalAnimationStyleFade;
-    self.contentViewMargins = UIEdgeInsetsMake(20, 20, 20, 20);
-    self.maximumContentViewWidth = [UIScreen mainScreen].bounds.size.width - 40;
+    self.contentViewMargins = UIEdgeInsetsZero;
+    self.maximumContentViewWidth = [UIScreen mainScreen].bounds.size.width;
     [self initDefaultDimmingViewWithoutAddToView];
 }
 

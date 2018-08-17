@@ -24,6 +24,8 @@
     //modal.contentViewMargins = UIEdgeInsetsZero;
     
     modal.measureBlock = ^CGSize(HBDModalViewController *modalViewController, CGSize limitSize) {
+        modalViewController.contentViewMargins = UIEdgeInsetsMake(20, 20, 20, 20);
+        modalViewController.maximumContentViewWidth = modalViewController.view.bounds.size.width - 40;
         CGSize size = limitSize;
         size.height = 200;
         return size;
