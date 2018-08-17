@@ -6,7 +6,7 @@
   },
   "version": "0.8.11",
   "nativePackage": true,
-  "description": "A library that mix navigation between native and React Native",
+  "description": "Seamless navigation between native and React Native",
   "author": "listen <listenzz@163.com>",
   "license": "MIT",
   "homepage": "https://github.com/listenzz/react-native-navigation-hybrid",

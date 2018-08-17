@@ -93,6 +93,11 @@
         }];
     } else if ([action isEqualToString:@"hideModal"]) {
         UIViewController *target = vc.hbd_targetViewController;
+        UIViewController *parent = vc.parentViewController;
+        while (!target && parent) {
+            target = parent.hbd_targetViewController;
+            parent = parent.parentViewController;
+        }
         if (target) {
             [target didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:vc.requestCode];
         }
