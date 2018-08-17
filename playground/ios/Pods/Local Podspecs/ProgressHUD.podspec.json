@@ -1,6 +1,6 @@
 {
   "name": "ProgressHUD",
-  "version": "0.6.0",
+  "version": "0.15.0",
   "summary": "progress hud for react native app",
   "authors": {
     "listen": "listenzz@163.com"
@@ -13,7 +13,7 @@
   "module_name": "ProgressHUD",
   "source": {
     "git": "https://github.com/listenzz/react-native-hud.git",
-    "tag": "v0.6.0"
+    "tag": "v0.15.0"
   },
   "source_files": "ios/ProgressHUD/*.{h,m,swift}",
   "resource_bundles": {

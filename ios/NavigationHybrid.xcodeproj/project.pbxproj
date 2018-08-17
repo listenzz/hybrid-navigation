@@ -126,30 +126,15 @@
 		910362D41FE9318600F4DA8E /* NavigationHybrid */ = {
 			isa = PBXGroup;
 			children = (
-				91C8849B202C3E8600EC0A20 /* HBDDrawerController.h */,
-				91C8849D202C3E8600EC0A20 /* HBDDrawerController.m */,
-				91C8849F202C3E8600EC0A20 /* HBDTabBarController.h */,
-				91C884A0202C3E8600EC0A20 /* HBDTabBarController.m */,
+				9113EC0A2126E01400B35D06 /* React */,
+				9113EC092126DFAA00B35D06 /* Controller */,
+				9113EC082126DF5A00B35D06 /* Navigator */,
 				91C884A2202C3E8600EC0A20 /* HBDUtils.h */,
 				91C884A1202C3E8600EC0A20 /* HBDUtils.m */,
-				91C8849C202C3E8600EC0A20 /* UIViewController+HBD.h */,
-				91C8849E202C3E8600EC0A20 /* UIViewController+HBD.m */,
 				910362ED1FE931DF00F4DA8E /* HBDBarButtonItem.h */,
 				910362E01FE931DF00F4DA8E /* HBDBarButtonItem.m */,
 				910362E61FE931DF00F4DA8E /* HBDGarden.h */,
 				910362DE1FE931DF00F4DA8E /* HBDGarden.m */,
-				910362E31FE931DF00F4DA8E /* HBDGardenModule.h */,
-				910362DF1FE931DF00F4DA8E /* HBDGardenModule.m */,
-				910362E71FE931DF00F4DA8E /* HBDNavigationController.h */,
-				910362E11FE931DF00F4DA8E /* HBDNavigationController.m */,
-				910362EC1FE931DF00F4DA8E /* HBDNavigationModule.h */,
-				910362E91FE931DF00F4DA8E /* HBDNavigationModule.m */,
-				910362E21FE931DF00F4DA8E /* HBDReactBridgeManager.h */,
-				910362E41FE931DF00F4DA8E /* HBDReactBridgeManager.m */,
-				910362E51FE931DF00F4DA8E /* HBDReactViewController.h */,
-				910362EF1FE931E000F4DA8E /* HBDReactViewController.m */,
-				910362EB1FE931DF00F4DA8E /* HBDViewController.h */,
-				910362EE1FE931DF00F4DA8E /* HBDViewController.m */,
 				910362E81FE931DF00F4DA8E /* NavigationHybrid.h */,
 				91C884A7202C3F9200EC0A20 /* GlobalStyle.h */,
 				91C884A8202C3F9200EC0A20 /* GlobalStyle.m */,
@@ -159,10 +144,15 @@
 				910BA6EB204E8157004CB741 /* HBDTitleView.m */,
 				91DCF5C220BF034600520342 /* HBDRootView.h */,
 				91DCF5C320BF034600520342 /* HBDRootView.m */,
-				91B264ED20C4D87C009167E2 /* UINavigationController+HBD.h */,
-				91B264EE20C4D87C009167E2 /* UINavigationController+HBD.m */,
-				912D957F20C5769F0075AE31 /* HBDModalViewController.h */,
-				912D958020C5769F0075AE31 /* HBDModalViewController.m */,
+				91C6D5D920EDD47100E26A6F /* UITabBar+Badge.h */,
+				91C6D5DA20EDD47100E26A6F /* UITabBar+Badge.m */,
+			);
+			path = NavigationHybrid;
+			sourceTree = "<group>";
+		};
+		9113EC082126DF5A00B35D06 /* Navigator */ = {
+			isa = PBXGroup;
+			children = (
 				91608F3920E526A200D11D9F /* HBDNavigator.h */,
 				91608F3A20E526D000D11D9F /* HBDDrawerNavigator.h */,
 				91608F3B20E526D000D11D9F /* HBDDrawerNavigator.m */,
@@ -172,10 +162,44 @@
 				91608F4120E5271300D11D9F /* HBDStackNavigator.m */,
 				91608F4320E5272F00D11D9F /* HBDTabNavigator.h */,
 				91608F4420E5273000D11D9F /* HBDTabNavigator.m */,
-				91C6D5D920EDD47100E26A6F /* UITabBar+Badge.h */,
-				91C6D5DA20EDD47100E26A6F /* UITabBar+Badge.m */,
 			);
-			path = NavigationHybrid;
+			path = Navigator;
+			sourceTree = "<group>";
+		};
+		9113EC092126DFAA00B35D06 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				91C8849B202C3E8600EC0A20 /* HBDDrawerController.h */,
+				91C8849D202C3E8600EC0A20 /* HBDDrawerController.m */,
+				91C8849F202C3E8600EC0A20 /* HBDTabBarController.h */,
+				91C884A0202C3E8600EC0A20 /* HBDTabBarController.m */,
+				91C8849C202C3E8600EC0A20 /* UIViewController+HBD.h */,
+				91C8849E202C3E8600EC0A20 /* UIViewController+HBD.m */,
+				910362E71FE931DF00F4DA8E /* HBDNavigationController.h */,
+				910362E11FE931DF00F4DA8E /* HBDNavigationController.m */,
+				910362E51FE931DF00F4DA8E /* HBDReactViewController.h */,
+				910362EF1FE931E000F4DA8E /* HBDReactViewController.m */,
+				910362EB1FE931DF00F4DA8E /* HBDViewController.h */,
+				910362EE1FE931DF00F4DA8E /* HBDViewController.m */,
+				91B264ED20C4D87C009167E2 /* UINavigationController+HBD.h */,
+				91B264EE20C4D87C009167E2 /* UINavigationController+HBD.m */,
+				912D957F20C5769F0075AE31 /* HBDModalViewController.h */,
+				912D958020C5769F0075AE31 /* HBDModalViewController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		9113EC0A2126E01400B35D06 /* React */ = {
+			isa = PBXGroup;
+			children = (
+				910362E31FE931DF00F4DA8E /* HBDGardenModule.h */,
+				910362DF1FE931DF00F4DA8E /* HBDGardenModule.m */,
+				910362EC1FE931DF00F4DA8E /* HBDNavigationModule.h */,
+				910362E91FE931DF00F4DA8E /* HBDNavigationModule.m */,
+				910362E21FE931DF00F4DA8E /* HBDReactBridgeManager.h */,
+				910362E41FE931DF00F4DA8E /* HBDReactBridgeManager.m */,
+			);
+			path = React;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

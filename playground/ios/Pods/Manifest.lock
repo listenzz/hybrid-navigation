@@ -6,9 +6,9 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.4)
-  - NavigationHybrid (0.7.14):
+  - NavigationHybrid (0.8.11):
     - React
-  - ProgressHUD (0.6.0):
+  - ProgressHUD (0.15.0):
     - React
   - React (0.55.3):
     - React/Core (= 0.55.3)
@@ -84,7 +84,7 @@ DEPENDENCIES:
   - yoga (from `../../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - boost-for-react-native
 
 EXTERNAL SOURCES:
@@ -110,7 +110,7 @@ SPEC CHECKSUMS:
   DoubleConversion: e22e0762848812a87afd67ffda3998d9ef29170c
   Folly: 211775e49d8da0ca658aebc8eab89d642935755c
   glog: 1de0bb937dccdc981596d3b5825ebfb765017ded
-  NavigationHybrid: faa51481a1b2389b95c4721d7cf63779240bbd13
+  NavigationHybrid: 8ee1e7c0651063c8cc8af32049507946c0180385
   ProgressHUD: b0a1bd4a82ff14eec84071a9a956e7bbe192b3f9
   React: aa2040dbb6f317b95314968021bd2888816e03d5
   RNVectorIcons: c0dbfbf6068fefa240c37b0f71bd03b45dddac44
@@ -118,4 +118,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 6d95c73202275b663c18e08f31d1dd35e9289d23
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3

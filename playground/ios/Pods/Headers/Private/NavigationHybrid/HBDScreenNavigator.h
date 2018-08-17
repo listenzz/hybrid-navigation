@@ -1,1 +1,1 @@
-../../../../../../ios/NavigationHybrid/HBDScreenNavigator.h
+../../../../../../ios/NavigationHybrid/Navigator/HBDScreenNavigator.h

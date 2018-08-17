@@ -1,1 +1,1 @@
-../../../../../../ios/NavigationHybrid/HBDTabBarController.h
+../../../../../../ios/NavigationHybrid/Controller/HBDTabBarController.h
