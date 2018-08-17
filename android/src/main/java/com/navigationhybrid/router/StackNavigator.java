@@ -40,10 +40,8 @@ public class StackNavigator implements Navigator {
             ReadableMap stack = layout.getMap(name());
             AwesomeFragment fragment = getReactBridgeManager().createFragment(stack);
             if (fragment != null) {
-                if (layout.hasKey("options") && fragment instanceof HybridFragment) {
-                    HybridFragment hybridFragment = (HybridFragment) fragment;
+                if (layout.hasKey("options")) {
                     Bundle bundle = Arguments.toBundle(layout.getMap("options"));
-                    hybridFragment.setOptions(bundle);
                 }
                 ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
                 reactNavigationFragment.setRootFragment(fragment);
