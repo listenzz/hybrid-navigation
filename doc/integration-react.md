@@ -247,7 +247,7 @@ public void onCreate() {
 
 修改 Header Search Paths
 
-![header-search-paths](./screenshot/header-search-paths.jpg)
+![header-search-paths](../screenshot/header-search-paths.jpg)
 
 如图，删掉后面的 NavigationHybrid, 配置成如下的样子：
 
@@ -281,7 +281,7 @@ $(SRCROOT)/../node_modules/react-native-navigation-hybrid/ios
 
 修改 Info.plist 文件
 
-![controller-base](./screenshot/controller-base.jpg)
+![controller-base](../screenshot/controller-base.jpg)
 
 ## 关于闪屏
 
