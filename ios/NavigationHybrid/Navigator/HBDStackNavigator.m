@@ -26,7 +26,10 @@
     if (stack) {
         UIViewController *root = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:stack];
         NSDictionary *options = [layout objectForKey:@"options"];
-        if (options) {
+        if (options && [root isKindOfClass:[HBDViewController class]]) {
+            // 覆盖 rootViewController 的 options
+            HBDViewController *vc = (HBDViewController *)root;
+            vc.options = options;
         }
         if (root) {
             return [[HBDNavigationController alloc] initWithRootViewController:root];
