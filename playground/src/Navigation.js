@@ -150,15 +150,7 @@ export default class Navigation extends Component {
   }
 
   showModal() {
-    // this.props.navigator.showModal('ReactModal', REQUEST_CODE);
-    this.props.navigator.showModalLayout(
-      {
-        stack: {
-          screen: { moduleName: 'ReactModal' },
-        },
-      },
-      REQUEST_CODE
-    );
+    this.props.navigator.showModal('ReactModal', REQUEST_CODE);
   }
 
   showNativeModal() {
