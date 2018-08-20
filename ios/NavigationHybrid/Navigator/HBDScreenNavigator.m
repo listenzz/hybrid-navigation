@@ -98,11 +98,8 @@
             target = parent.hbd_targetViewController;
             parent = parent.parentViewController;
         }
-        if (target) {
-            [target didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:vc.requestCode];
-        }
         [target hbd_hideViewControllerAnimated:YES completion:^(BOOL finished) {
-            
+            [target didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:vc.requestCode];
         }];
     } else if ([action isEqualToString:@"presentLayout"]) {
         NSDictionary *layout = [extras objectForKey:@"layout"];
