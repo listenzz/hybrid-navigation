@@ -9,6 +9,11 @@ const makeAnimation = (name, obj) => {
 };
 
 export default class ReactModal extends React.Component {
+  static navigationItem = {
+    screenBackgroundColor: '#00000000',
+    statusBarColor: '#00000000',
+    topBarHidden: true,
+  };
   constructor(props) {
     super(props);
     this.hideModal = this.hideModal.bind(this);
