@@ -1,4 +1,4 @@
-package com.navigationhybrid.router;
+package com.navigationhybrid.navigator;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

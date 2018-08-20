@@ -16,11 +16,11 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.navigationhybrid.router.DrawerNavigator;
-import com.navigationhybrid.router.Navigator;
-import com.navigationhybrid.router.ScreenNavigator;
-import com.navigationhybrid.router.StackNavigator;
-import com.navigationhybrid.router.TabNavigator;
+import com.navigationhybrid.navigator.DrawerNavigator;
+import com.navigationhybrid.navigator.Navigator;
+import com.navigationhybrid.navigator.ScreenNavigator;
+import com.navigationhybrid.navigator.StackNavigator;
+import com.navigationhybrid.navigator.TabNavigator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
