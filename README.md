@@ -1,6 +1,6 @@
 # react-native-navigation-hybrid
 
-seamless navigation between native and React Native.
+Seamless navigation between native and React Native.
 
 ![navigation-android](./screenshot/android.png)
 
@@ -119,7 +119,7 @@ AppRegistry.registerComponent('ReactNativeProject', () => App);
 现在，你需要像下面那样
 
 ```javascript
-import { ReactRegistry, Garden, Navigation } from 'react-native-navigation-hybrid';
+import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid';
 import Home from './HomeComponent';
 import Profile from './ProfileComponent';
 
@@ -142,7 +142,7 @@ ReactRegistry.endRegisterComponent();
 设置入口页面布局
 
 ```javascript
-Navigation.setRoot({
+Navigator.setRoot({
   drawer: [
     {
       tabs: [
@@ -183,9 +183,9 @@ drawer 对象也是一个数组，长度固定为 2 ，第一个对象是抽屉�
 
 `maxDrawerWidth` 表示侧边栏的最大宽度，`minDrawerMargin` 表示侧边栏距屏幕边缘的最小空隙，这两个属性可以单独使用，也可以一起指定。
 
-可以先通过 `Navigation.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigation.setRoot` 决定要进入哪个页面。
+可以先通过 `Navigator.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigator.setRoot` 决定要进入哪个页面。
 
-> Navigation.setRoot 还接受第二个参数，是个 boolean，用来决定 Android 按返回键退出 app 后，再次打开时，是否恢复到首次将该参数设置为 true 时的那个 layout。通常用来决定按返回键退出 app 后重新打开时，要不要走闪屏逻辑。请参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目对 Navigation.setRoot 的使用
+> Navigator.setRoot 还接受第二个参数，是个 boolean，用来决定 Android 按返回键退出 app 后，再次打开时，是否恢复到首次将该参数设置为 true 时的那个 layout。通常用来决定按返回键退出 app 后重新打开时，要不要走闪屏逻辑。请参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目对 Navigator.setRoot 的使用
 
 #### 支持 Redux
 
@@ -406,8 +406,10 @@ iOSProject/
 ```
 AndroidProject/
 |—— settings.gradle
+
 iOSProject/
 |—— Podfile
+
 ReactNativeProject/
 |—— node_modules/
 |—— package.json
@@ -415,7 +417,7 @@ ReactNativeProject/
 
 以上，Android 和 iOS 项目使用 gradle 或者 cocopods 依赖本地 RN 项目。
 
-第二和第三种目录结构，在集成上没多大区别。 这里，我们以后者的目录结构来演示如何集成 react-native-navigaton-hybrid 到原生项目。
+第二和第三种目录结构，在集成上没多大区别。 这里，我们以第三种目录结构来演示如何集成 react-native-navigaton-hybrid 到原生项目。
 
 ### 创建 RN 项目并集成 Navigation Hybrid
 
@@ -806,13 +808,137 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
 @end
 ```
 
-## 容器
+## 容器与导航
+
+和 react-navigation 一样，内置 Drawer、Tabs、Stack 三种容器，同时支持自定义容器以及导航。导航是指容器如何切换它的子页面，这和容器如何管理它的子页面有很大关系。
+
+### Screen
+
+Screen 不是容器，在 iOS 中，它相当于控制器，在 Android 中，它相当于 Fragment。 在它上面定义了基本的导航能力，为所有容器以及基本页面所共有：
+
+* present
+
+present 是一种模态交互方式，类似于 Android 的 `startActivityForResult`，要求被 present 的页面返回结果给发起 present 的页面。在 iOS 中，present 表现为从底往上弹出界面。
+
+比如 A 页面 `present` 出 B 页面
+
+```javascript
+// A.js
+this.props.navigator.present('B', 1);
+```
+
+B 页面返回结果给 A 页面
+
+```javascript
+// B.js
+this.props.navigator.setResult(RESULT_OK, { text: 'greeting' });
+this.props.navigator.dismiss();
+```
+
+A 页面通过实现 `onComponentResult` 方法来接收结果
+
+```javascript
+// A.js
+onComponentResult(requestCode, resultCode, data) {
+  if(requestCode === 1) {
+    if(resultCode === RESULT_OK) {
+      this.setState({text: data.text || '', error: undefined});
+    }
+  } else {
+    this.setState({text: undefined, error: 'ACTION CANCEL'});
+  }
+}
+```
+
+A 在 present B 时，可以通过第三个参数传值给 B
+
+```javascript
+// A.js
+this.props.navigator.present('B', 1, {});
+```
+
+B 页面可以通过 `this.props` 来获取传递的值
+
+有些时候，比如选择一张照片，我们先要跳到相册列表页面，然后进入某个相册选择相片返回。这也是没有问题的。
+
+A 页面 `present` 出相册列表页面
+
+```javascript
+//A.js
+this.props.navigator.present('AlbumList', 1);
+```
+
+相册列表页面 `push` 到某个相册
+
+```javascript
+// AlbumList.js
+this.props.navigator.push('Album')
+`在相册页面选好相片后返回结果给 A 页面`javascript
+// Album.js
+this.props.navigator.setResult(RESULT_OK, {uri: 'file://...'})
+this.props.navigator.dismiss()
+```
+
+在 A 页面接收返回的结果（略）。
+
+* dismiss
+
+关闭 `present` 出来的页面，如果该页面是容器，可以在容器的任何子页面调用此法。
+
+* showModal
+
+将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件。这也是一种模态交互方式，作用与 present 类似，同样可以通过 `onComponentResult` 来接收结果。不同的是，它比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
+
+```javascript
+this.props.navigator.showModal('ReactModal', REQUEST_CODE);
+```
+
+* hideModal
+
+隐藏作为 Modal 显示的页面，如果 Modal 是一个容器，可以在该容器的任何子页面调用此方法。如果隐藏 modal 的同时希望切换到其它页面，请在调用 `showModal` 的页面的 `onComponentResult` 回调中执行此操作。
+
+```javascript
+// ReactModal.js
+this.props.navigator.setResult(RESULT_OK, {...});
+this.props.navigator.hideModal();
+```
+
+* presentLayout
+
+present 的加强版，可以 present 任意结构的页面。第一个参数表示页面结构：
+
+```javascript
+// A.js
+this.props.navigator.presentLayout(
+  {
+    stack: {
+      screen: { moduleName: 'B' },
+    },
+  },
+  REQUEST_CODE
+);
+```
+
+以上效果实际等同于：
+
+```javascript
+// A.js
+this.props.navigator.present('B', 1);
+```
+
+也就是说，present 出来的组件，默认会嵌套在 Stack 里面，因为当使用 present 时，嵌套 Stack 是非常常见的操作。
+
+> 同样使用 dismiss 来关闭
+
+* showModalLayout
+
+showModal 的加强版，可以将任意结构的页面作为 Modal 显示
+
+> 同样使用 hideModal 来关闭
 
 ### Stack
 
-* 导航栈
-
-我们先要理解一个叫**导航栈**的概念。在 iOS 中，一个导航栈对应一个 `UINavigationController`；在 Android 中，一个导航栈对应一个 `FragmentManager`。
+Stack 以栈的方式管理它的子页面，它支持以下导航操作：
 
 * push
 
@@ -820,8 +946,17 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
 
 ```javascript
 // A.js
-this.props.navigation.push('B');
+this.props.navigator.push('B');
 ```
+
+可以通过第二个参数来传值给 B 页面
+
+```javascript
+// A.js
+this.props.navigator.push('B', {...});
+```
+
+B 页面通过 `this.props` 来访问传递过来的值
 
 * pop
 
@@ -829,7 +964,7 @@ this.props.navigation.push('B');
 
 ```javascript
 // B.js
-this.props.navigation.pop();
+this.props.navigator.pop();
 ```
 
 可以通过以下方法来监听用户是否通过点击返回按钮，右滑，或通过代码 pop 来返回前一个页面
@@ -848,23 +983,49 @@ onComponentBack() {
 
 ```javascript
 // B.js
-this.props.navigation.push('C', {bId: this.props.sceneId})
+this.props.navigator.push('C', {bId: this.props.sceneId})
 `从 C 页面跳到 D 页面时`javascript
 // C.js
-this.props.navigation.push('D', {bId: this.props.bId})
+this.props.navigator.push('D', {bId: this.props.bId})
 `现在想从 D 页面 返回到 B 页面`javascript
 // D.js
-this.props.navigation.popTo(this.props.bId)
+this.props.navigator.popTo(this.props.bId)
 ```
 
 * popToRoot
 
-返回到当前导航栈根页面。比如 A 页面是根页面，你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回到根部，也就是 A 页面。
+返回到 stack 根页面。比如 A 页面是根页面，由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回到根部，也就是 A 页面：
 
 ```javascript
 // D.js
-this.props.navigation.popToRoot();
+this.props.navigator.popToRoot();
 ```
+
+pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `onComponentResult(requestCode, resultCode, data)` 来接受结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
+
+* replace
+
+用指定页面取代当前页面，比如当前页面是 A，想要替换成 B
+
+```javascript
+// A.js
+this.props.navigator.replace('B');
+```
+
+现在 Stack 里没有 A 页面了，被替换成了 B。
+
+* replaceToRoot
+
+移除所有页面，然后把目标页面设置为 Stack 的根页面。
+
+譬如 A 页面是根页面，然后 `push` 到 B、C、D 页面，此时 Stack 里有 A、B、C、D 四个页面，当执行如下操作：
+
+```javascript
+// D.js
+this.props.navigator.replaceToRoot('E');
+```
+
+A、B、C、D 页面被移除，E 页面被设置为 Stack 的根页面。
 
 * isRoot
 
@@ -872,7 +1033,7 @@ this.props.navigation.popToRoot();
 
 ```javascript
 componentWillMount() {
-  this.props.navigation.isRoot().then((isRoot) => {
+  this.props.navigator.isRoot().then((isRoot) => {
     if(isRoot) {
       this.props.garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
       this.setState({isRoot});
@@ -881,119 +1042,12 @@ componentWillMount() {
 }
 ```
 
-* replace
-
-用指定页面取代当前页面，比如当前页面是 A，想要替换成 B
-
-```javascript
-// A.js
-this.props.navigation.replace('B');
-```
-
-现在导航栈里没有 A 页面了，被替换成了 B。 > 注意：只能替换位于当前导航栈顶端的页面
-
-* replaceToRoot
-
-把当前导航栈里的所有页面替换成一个页面。譬如 A 页面是根页面，然后 `push` 到 B、C、D 页面，此时导航栈里有 A、B、C、D 四个页面。如果想要重置当前导航栈，把 E 页面设置成根页面。
-
-```javascript
-// D.js
-this.props.navigation.replaceToRoot('E');
-```
-
-现在导航栈里只有 E 页面了。
-
-* present
-
-present 是一种模态交互模式，类似于 Android 的 `startActivityForResult`，要求后面的页面返回结果给发起 present 的页面。
-
-比如 A 页面 `present` 出 B 页面
-
-```javascript
-// A.js
-this.navigation.present('B', 1);
-```
-
-B 页面返回结果给 A 页面
-
-```javascript
-// B.js
-this.navigation.setResult(RESULT_OK, { text: 'greeting' });
-this.navigation.dismiss();
-```
-
-A 页面通过实现 `onComponentResult` 方法来接收结果
-
-```javascript
-// A.js
-onComponentResult(requestCode, resultCode, data) {
-  if(requestCode === 1) {
-    if(resultCode === RESULT_OK) {
-      this.setState({text: data.text || '', error: undefined});
-    }
-  } else {
-    this.setState({text: undefined, error: 'ACTION CANCEL'});
-  }
-}
-```
-
-有些时候，比如选择一张照片，我们先要跳到相册列表页面，然后进入某个相册选择相片返回。这也是没有问题的。 A 页面 `present` 出相册列表页面
-
-```javascript
-//A.js
-this.props.navigation.present('AlbumList', 1);
-```
-
-相册列表页面 `push` 到某个相册
-
-```javascript
-// AlbumList.js
-this.props.navigation.push('Album')
-`在相册页面选好相片后返回结果给 A 页面`javascript
-// Album.js
-this.props.navigation.setResult(RESULT_OK, {uri: 'file://...'})
-this.props.navigation.dismiss()
-```
-
-在 A 页面接收返回的结果（略）。 > pop, popTo, popToRoot 也是可以返回结果给目标页面的，但是此时 `requestCode` 的值总是 0 。
-
-* dismiss
-
-关闭 `present` 出来的整个导航栈中的页面，可以在当前导航栈中的任意页面调用。
-
-* 传值
-
-由一个页面跳转到另一个页面时，`push`, `present`, `replace`, `replaceToRoot` 是可以通过 props 这个参数来传值的，但只支持可以序列化成 json 的对象。以下是这些方法的完整签名：
-
-```javascript
-push(moduleName, (props = {}), (options = {}), (animated = true));
-replace(moduleName, (props = {}), (options = {}));
-replaceToRoot(moduleName, (props = {}), (options = {}));
-present(moduleName, requestCode, (props = {}), (options = {}), (animated = true));
-```
-
-options 这个参数的作用我们会在其它地方讲解。
-
-* 导航栈边界
-
-比如 A `push` B `push` C `push` D `present` E `push` F
-
-现在存在两个导航栈，A、B、C、D 在一个栈，E 和 F 在另一栈，它们分界就是因为 E 是 D `present` 出来的。
-
-`popTo`, `popToRoot`, `replaceToRoot`, `isRoot` 都是有边界的
-
-在 F 调用 `popTo` 是不能返回 A、B、C、D 中的任何页面的，因为 F 和它们不在同一个栈。
-
-在 F 调用 `popToRoot` 只能返回到 E 页面，因为 E 就是 F 所在栈的根部。
-
-同理，在 F 调用 `replaceToRoot` 只能替换到 E 页面。
-
-在 A 或 E 中调用 `isRoot` 会返回 `true`，其它页面返回 `false`
-
 ### Tab
 
-* switchToTab
-  切换到指定 tab
+* switchTa
+
+切换到指定 tab
+
 * setTabBadge
 
 设置指定 tab 的 badge
@@ -1020,11 +1074,11 @@ options 这个参数的作用我们会在其它地方讲解。
 
 ```javascript
 componentDidAppear() {
-  this.props.navigation.setMenuInteractive(true);
+  this.props.navigator.setMenuInteractive(true);
 }
 
 componentDidDisappear() {
-  this.props.navigation.setMenuInteractive(false);
+  this.props.navigator.setMenuInteractive(false);
 }
 ```
 
@@ -1454,8 +1508,8 @@ class Screen extends Component {
       title: '按钮',
       icon: Image.resolveAssetSource(require('./ic_settings.png')),
       insets: { top: -1, left: -8, bottom: 0, right: 0 },
-      action: navigation => {
-        navigation.toggleMenu();
+      action: navigator => {
+        navigator.toggleMenu();
       },
       enabled: true,
       tintColor: '#FFFF00',
@@ -1531,10 +1585,10 @@ layoutFitting 配合 moduleName 使用，自定义标题栏的布局模式，有
 
 当自定义标题栏时，可能需要将 backButtonHidden 设置为 true，以为标题栏提供更多的空间。
 
-标题栏和所属页面共享同一个 navigation 对象，你可以在所属页面通过以下方式传递参数给标题栏使用
+标题栏和所属页面共享同一个 navigator 对象，你可以在所属页面通过以下方式传递参数给标题栏使用
 
 ```javascript
-this.props.navigation.setParams({});
+this.props.navigator.setParams({});
 ```
 
 详情请参考 playground 中 TopBarTitleView.js 这个文件。
@@ -1544,7 +1598,7 @@ this.props.navigation.setParams({});
 可选，设置导航栏左侧按钮。
 title 是按钮标题，icon 是按钮图标，两者设置其一则可，如果同时设置，则只会显示图标。
 insets 仅对 iOS 生效，用于调整按钮 icon 或 title 的位置。
-action 是个函数，它接收 navigation 作为参数，当按钮被点击时调用。
+action 是个函数，它接收 navigator 作为参数，当按钮被点击时调用。
 enabled 是个布尔值，可选，用来标识按钮是否可以点击，默认是 true。
 
 tintColor 按钮颜色，可选，覆盖全局设置，实现个性化颜色
@@ -1588,7 +1642,7 @@ class B extends Component {
     },
     rightBarButtonItem: {
       title: 'B 的按钮',
-      action: navigation => {},
+      action: navigator => {},
     },
   };
 }
@@ -1600,7 +1654,7 @@ class B extends Component {
 
 ```javascript
 // A.js
-this.props.navigation.push(
+this.props.navigator.push(
   'B',
   {
     /*props*/
@@ -1695,8 +1749,8 @@ this.props.garden.setTitleItem({
 this.props.garden.setLeftBarButtonItem({
   title: 'Cancel',
   insets: { top: -1, left: -8, bottom: 0, right: 8 },
-  action: navigation => {
-    navigation.dismiss();
+  action: navigator => {
+    navigator.dismiss();
   },
 });
 ```
