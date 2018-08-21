@@ -79,7 +79,6 @@
             [nav pushViewController:target animated:animated];
         }
     } else if ([action isEqualToString:@"pop"]) {
-        // HBDNavigationController 中处理了返回结果
         [nav popViewControllerAnimated:animated];
     } else if ([action isEqualToString:@"popTo"]) {
         NSArray *children = nav.childViewControllers;
@@ -95,17 +94,9 @@
         }
         
         if (target) {
-            if (vc != target) {
-                [target didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:0];
-            }
             [nav popToViewController:target animated:animated];
         }
     } else if ([action isEqualToString:@"popToRoot"]) {
-        NSArray *children = nav.childViewControllers;
-        HBDViewController *root = [children objectAtIndex:0];
-        if (vc != root) {
-            [root didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:0];
-        }
         [nav popToRootViewControllerAnimated:animated];
     } else if ([action isEqualToString:@"replace"]) {
         [nav replaceViewController:target animated:YES];
@@ -114,7 +105,9 @@
     } else if ([action isEqualToString:@"pushLayout"]) {
         NSDictionary *layout = [extras objectForKey:@"layout"];
         UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
-        [nav pushViewController:vc animated:animated];
+        if (vc) {
+            [nav pushViewController:vc animated:animated];
+        }
     }
 }
 

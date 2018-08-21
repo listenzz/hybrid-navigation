@@ -180,21 +180,33 @@
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
-    if (coordinator) {
-        UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
-        if (from == self.poppingViewController && [from isKindOfClass:[HBDReactViewController class]]) {
-            HBDReactViewController *reactVC = (HBDReactViewController *)from;
-            RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-            [emitter sendEventWithName:@"ON_COMPONENT_BACK" body:@{ @"sceneId": reactVC.sceneId }];
-            [viewController didReceiveResultCode:from.resultCode resultData:from.resultData requestCode:0];
-        }
-        self.poppingViewController = nil;
+    if (self.poppingViewController && [self.poppingViewController isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *reactVC = (HBDViewController *)self.poppingViewController;
+        RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
+        [emitter sendEventWithName:@"ON_COMPONENT_BACK" body:@{ @"sceneId": reactVC.sceneId }];
+        [viewController didReceiveResultCode:self.poppingViewController.resultCode resultData:self.poppingViewController.resultData requestCode:0];
+    }
+    self.poppingViewController = nil;
+}
+
+- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if ([self shouldBetterTransitionWithViewController:viewController]) {
+        [self prepareForBetterTransitionAnimated:animated];
+        [super pushViewController:viewController animated:NO];
+    } else {
+        [super pushViewController:viewController animated:animated];
     }
 }
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
-    UIViewController *vc = [super popViewControllerAnimated:animated];
+    UIViewController *vc;
+    if ([self shouldBetterTransitionWithViewController:self.topViewController]) {
+        [self prepareForBetterTransitionAnimated:animated];
+        vc = [super popViewControllerAnimated:NO];
+    } else {
+        vc = [super popViewControllerAnimated:animated];
+    }
+    
     self.poppingViewController = vc;
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
@@ -202,17 +214,50 @@
 }
 
 - (NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    NSArray *array = [super popToViewController:viewController animated:animated];
+    self.poppingViewController = self.topViewController;
+    NSArray *array;
+    if ([self shouldBetterTransitionWithViewController:self.topViewController]) {
+        [self prepareForBetterTransitionAnimated:animated];
+        array = [super popToViewController:viewController animated:NO];
+    } else {
+        array = [super popToViewController:viewController animated:animated];
+    }
+
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
     return array;
 }
 
 - (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated {
-    NSArray *array = [super popToRootViewControllerAnimated:animated];
+    self.poppingViewController = self.topViewController;
+    NSArray *array;
+    if ([self shouldBetterTransitionWithViewController:self.topViewController]) {
+        [self prepareForBetterTransitionAnimated:animated];
+        array = [super popToRootViewControllerAnimated:NO];
+    } else {
+        array = [super popToRootViewControllerAnimated:animated];
+    }
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
     return array;
+}
+
+- (BOOL)shouldBetterTransitionWithViewController:(UIViewController *)vc {
+    BOOL shouldBetter = NO;
+    if ([vc isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hbd = (HBDViewController *)vc;
+        shouldBetter = [hbd.options[@"passThroughTouches"] boolValue];
+    }
+    return shouldBetter;
+}
+
+- (void)prepareForBetterTransitionAnimated:(BOOL)animated {
+    if (animated) {
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.25;
+        transition.type = kCATransitionFade;
+        [self.view.layer addAnimation:transition forKey:kCATransition];
+    }
 }
 
 - (UIVisualEffectView *)fromFakeBar {
