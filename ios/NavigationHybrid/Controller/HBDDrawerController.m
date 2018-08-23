@@ -33,18 +33,46 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
     [self addChildViewController:self.contentController];
     self.contentController.view.frame = self.view.bounds;
     [self.view addSubview:self.contentController.view];
     [self.contentController didMoveToParentViewController:self];
     
-    [self setNeedsStatusBarAppearanceUpdate];
+    [self addChildViewController:self.menuController];
+    [self.view addSubview:self.menuController.view];
+    [self.menuController didMoveToParentViewController:self];
     
     UIScreenEdgePanGestureRecognizer *edgePanGestureRecogizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handleEdgePanGestureRecognizer:)];
     edgePanGestureRecogizer.edges = UIRectEdgeLeft;
     edgePanGestureRecogizer.delegate = self;
     [self.view addGestureRecognizer:edgePanGestureRecogizer];
+}
+
+- (BOOL)shouldAutomaticallyForwardAppearanceMethods {
+    return NO;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (self.isMenuOpened) {
+        [self.menuController beginAppearanceTransition:YES animated:animated];
+        [self.menuController endAppearanceTransition];
+    } else {
+        [self.contentController beginAppearanceTransition:YES animated:animated];
+        [self.contentController endAppearanceTransition];
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (self.isMenuOpened) {
+        [self.menuController beginAppearanceTransition:NO animated:animated];
+        [self.menuController endAppearanceTransition];
+    } else {
+        [self.contentController beginAppearanceTransition:NO animated:animated];
+        [self.contentController endAppearanceTransition];
+    }
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -146,22 +174,23 @@
     UIViewController *menu = self.menuController;
     float menuWidth = [self menuWidth];
     
+    [self.contentController beginAppearanceTransition:NO animated:YES];
+    [self.menuController beginAppearanceTransition:YES animated:YES];
+    
     [UIView animateWithDuration:0.2 delay:0. options:UIViewAnimationOptionCurveEaseOut animations:^{
         self.menuOpened = YES;
         self.menuDimmingView.alpha = 0.5;
         menu.view.frame = CGRectMake(0, 0, menuWidth, CGRectGetHeight(self.view.bounds));
     } completion:^(BOOL finished) {
-       
+        [self.contentController endAppearanceTransition];
+        [self.menuController endAppearanceTransition];
     }];
 }
 
 - (void)addMenuView {
     UIViewController *menu = self.menuController;
     float menuWidth = [self menuWidth];
-    
     menu.view.frame = CGRectMake(-menuWidth, 0, menuWidth, CGRectGetHeight(self.view.bounds));
-    [self addChildViewController:menu];
-    
     UIView *menuHolderView = [[UIView alloc] initWithFrame:self.view.bounds];
     self.menuHolderView = menuHolderView;
     UIView *dimmingView = [[UIView alloc] initWithFrame:self.view.bounds];
@@ -173,7 +202,6 @@
     [menuHolderView addSubview:dimmingView];
     [self addGestureRecognizerToMenuHolderView];
     [menuHolderView addSubview:menu.view];
-    [menu didMoveToParentViewController:self];
 }
 
 - (void)dismissMenuView {
@@ -181,18 +209,22 @@
     CGFloat dx = -menuWidth - CGRectGetMinX(self.menuController.view.frame);
     CGRect rect = CGRectOffset(self.menuController.view.frame, dx, 0);
     CGFloat duration = ( 1- (dx + menuWidth)/menuWidth ) * 0.2;
-    [self.menuController willMoveToParentViewController:nil];
+    
+    [self.menuController beginAppearanceTransition:NO animated:YES];
+    [self.contentController beginAppearanceTransition:YES animated:YES];
+   
     [UIView animateWithDuration:duration delay:0. options:UIViewAnimationOptionCurveEaseIn animations:^{
         self.menuController.view.frame = rect;
         self.menuDimmingView.alpha = 0;
     } completion:^(BOOL finished) {
-        [self.menuController removeFromParentViewController];
         [self.menuController.view removeFromSuperview];
         [self.menuDimmingView removeFromSuperview];
         self.menuDimmingView = nil;
         [self.menuHolderView removeFromSuperview];
         self.menuHolderView = nil;
         self.menuOpened = NO;
+        [self.menuController endAppearanceTransition];
+        [self.contentController endAppearanceTransition];
     }];
 }
 
@@ -201,11 +233,14 @@
     CGFloat dx = 0 - CGRectGetMinX(self.menuController.view.frame);
     CGRect rect = CGRectOffset(self.menuController.view.frame, dx, 0);
     CGFloat duration = (dx/width) * 0.2;
+    [self.contentController beginAppearanceTransition:NO animated:YES];
+    [self.menuController beginAppearanceTransition:YES animated:YES];
     [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         self.menuController.view.frame = rect;
         self.menuDimmingView.alpha = 0.5;
     } completion:^(BOOL finished) {
-        
+        [self.contentController endAppearanceTransition];
+        [self.menuController endAppearanceTransition];
     }];
 }
 
