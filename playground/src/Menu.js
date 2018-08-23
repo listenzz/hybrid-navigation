@@ -40,6 +40,14 @@ export default class Menu extends Component {
     this.hudTest = this.hudTest.bind(this);
   }
 
+  componentDidAppear() {
+    console.info('menu componentDidAppear');
+  }
+
+  componentDidMount() {
+    console.info('menu componentDidMount');
+  }
+
   push() {
     this.props.navigator.closeMenu();
     this.props.navigator.push('OneNative');
