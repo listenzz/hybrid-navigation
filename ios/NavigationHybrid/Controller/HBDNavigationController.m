@@ -191,7 +191,12 @@
 
 - (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
     if ([self shouldBetterTransitionWithViewController:viewController]) {
-        [self prepareForBetterTransitionAnimated:animated];
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.25f;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+        transition.type = kCATransitionPush;
+        transition.subtype = kCATransitionFromRight;
+        [self.view.layer addAnimation:transition forKey:nil];
         [super pushViewController:viewController animated:NO];
     } else {
         [super pushViewController:viewController animated:animated];
@@ -201,7 +206,7 @@
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
     UIViewController *vc;
     if ([self shouldBetterTransitionWithViewController:self.topViewController]) {
-        [self prepareForBetterTransitionAnimated:animated];
+        [self prepareForPopTransitionAnimated:animated];
         vc = [super popViewControllerAnimated:NO];
     } else {
         vc = [super popViewControllerAnimated:animated];
@@ -217,7 +222,7 @@
     self.poppingViewController = self.topViewController;
     NSArray *array;
     if ([self shouldBetterTransitionWithViewController:self.topViewController]) {
-        [self prepareForBetterTransitionAnimated:animated];
+        [self prepareForPopTransitionAnimated:animated];
         array = [super popToViewController:viewController animated:NO];
     } else {
         array = [super popToViewController:viewController animated:animated];
@@ -232,7 +237,7 @@
     self.poppingViewController = self.topViewController;
     NSArray *array;
     if ([self shouldBetterTransitionWithViewController:self.topViewController]) {
-        [self prepareForBetterTransitionAnimated:animated];
+        [self prepareForPopTransitionAnimated:animated];
         array = [super popToRootViewControllerAnimated:NO];
     } else {
         array = [super popToRootViewControllerAnimated:animated];
@@ -251,12 +256,14 @@
     return shouldBetter;
 }
 
-- (void)prepareForBetterTransitionAnimated:(BOOL)animated {
+- (void)prepareForPopTransitionAnimated:(BOOL)animated {
     if (animated) {
         CATransition *transition = [CATransition animation];
-        transition.duration = 0.25;
-        transition.type = kCATransitionFade;
-        [self.view.layer addAnimation:transition forKey:kCATransition];
+        transition.duration = 0.25f;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
+        transition.type = kCATransitionPush;
+        transition.subtype = kCATransitionFromLeft;
+        [self.view.layer addAnimation:transition forKey:nil];
     }
 }
 
