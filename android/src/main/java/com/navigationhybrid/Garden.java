@@ -3,7 +3,6 @@ package com.navigationhybrid;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -247,11 +246,7 @@ public class Garden {
             if (hidden) {
                 toolbar.hideShadow();
             } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    toolbar.setElevation(style.getElevation());
-                } else {
-                    toolbar.setShadow(style.getShadow());
-                }
+                toolbar.showShadow(style.getShadow(), style.getElevation());
             }
         }
     }
