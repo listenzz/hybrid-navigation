@@ -61,6 +61,11 @@ export default class Navigation extends Component {
     console.info('navigation componentDidAppear');
   }
 
+  componentDidDisappear() {
+    this.props.garden.setMenuInteractive(false);
+    console.info('navigation componentDidDisappear');
+  }
+
   componentWillMount() {
     this.props.navigator.isRoot().then(isRoot => {
       if (isRoot) {

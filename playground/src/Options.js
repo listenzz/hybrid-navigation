@@ -59,6 +59,10 @@ export default class Options extends Component {
     });
   }
 
+  componentDidDisappear() {
+    this.props.garden.setMenuInteractive(false);
+  }
+
   changeLeftButton() {
     if (this.state.leftButtonShowText) {
       this.props.garden.setLeftBarButtonItem({

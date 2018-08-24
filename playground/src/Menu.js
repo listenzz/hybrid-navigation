@@ -44,6 +44,10 @@ export default class Menu extends Component {
     console.info('menu componentDidAppear');
   }
 
+  componentDiddisappear() {
+    console.info('menu componentDiddisappear');
+  }
+
   componentDidMount() {
     console.info('menu componentDidMount');
   }
