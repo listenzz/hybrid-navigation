@@ -132,7 +132,9 @@ RCT_EXPORT_METHOD(setTabBarColor:(NSString *)sceneId item:(NSDictionary *)item) 
         HBDViewController *vc = [self controllerForSceneId:sceneId];
         UITabBarController *tabBarVC = vc.tabBarController;
         if (tabBarVC) {
-           [tabBarVC.tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]]];
+            UIColor *color = [HBDUtils colorWithHexString:tabBarColor];
+            [tabBarVC.tabBar setBackgroundImage:[HBDUtils imageWithColor:color]];
+            tabBarVC.tabBar.translucent = hasAlpha(color);
         }
     }
     NSLog(@"setTabBarColor: %@", item);

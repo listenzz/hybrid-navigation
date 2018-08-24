@@ -11,18 +11,6 @@
 #import "HBDUtils.h"
 #import "HBDNavigationController.h"
 
-BOOL hasAlpha(UIColor *color) {
-    if (!color) {
-        return YES;
-    }
-    CGFloat red = 0;
-    CGFloat green= 0;
-    CGFloat blue = 0;
-    CGFloat alpha = 0;
-    [color getRed:&red green:&green blue:&blue alpha:&alpha];
-    return alpha < 1.0;
-}
-
 @interface HBDViewController ()
 
 @property(nonatomic, copy, readwrite) NSDictionary *props;
