@@ -55,23 +55,21 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self.contentController beginAppearanceTransition:YES animated:animated];
+    [self.contentController endAppearanceTransition];
     if (self.isMenuOpened) {
         [self.menuController beginAppearanceTransition:YES animated:animated];
         [self.menuController endAppearanceTransition];
-    } else {
-        [self.contentController beginAppearanceTransition:YES animated:animated];
-        [self.contentController endAppearanceTransition];
     }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    [self.contentController beginAppearanceTransition:NO animated:animated];
+    [self.contentController endAppearanceTransition];
     if (self.isMenuOpened) {
         [self.menuController beginAppearanceTransition:NO animated:animated];
         [self.menuController endAppearanceTransition];
-    } else {
-        [self.contentController beginAppearanceTransition:NO animated:animated];
-        [self.contentController endAppearanceTransition];
     }
 }
 
