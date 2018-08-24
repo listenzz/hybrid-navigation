@@ -1,10 +1,10 @@
 # 容器与导航
 
-和 react-navigation 一样，内置 Drawer、Tabs、Stack 三种容器，同时支持自定义容器以及导航。导航是指容器如何切换它的子页面，这和容器如何管理它的子页面有很大关系。
+和 react-navigation 一样，内置 drawer、tabs、stack 三种容器，同时支持自定义容器以及导航。导航是指容器如何切换它的子页面，这和容器如何管理它的子页面有很大关系。
 
-## Screen
+## screen
 
-Screen 不是容器，在 iOS 中，它相当于控制器，在 Android 中，它相当于 Fragment。 在它上面定义了基本的导航能力，为所有容器以及基本页面所共有：
+screen 不是容器，它是通过 `ReactRegistry.registerComponent` 注册的组件。它有一些基本的导航能力，所有容器均继承了这些能力。
 
 * present
 
@@ -126,9 +126,9 @@ showModal 的加强版，可以将任意结构的页面作为 Modal 显示
 
 > 同样使用 hideModal 来关闭
 
-## Stack
+## stack
 
-Stack 以栈的方式管理它的子页面，它支持以下导航操作：
+stack 以栈的方式管理它的子页面，它支持以下导航操作：
 
 * push
 
@@ -232,9 +232,9 @@ componentWillMount() {
 }
 ```
 
-## Tab
+## tabs
 
-* switchTa
+* switchTab
 
 切换到指定 tab
 
@@ -242,13 +242,11 @@ componentWillMount() {
 
 设置指定 tab 的 badge
 
-## Drawer
+## drawer
 
 * toggleMenu
 
 切换抽屉的开关状态
-
-<a name="navigation-hybrid"></a>
 
 * openMenu
 

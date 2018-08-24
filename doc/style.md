@@ -44,23 +44,23 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 ```javascript
 {
-  screenBackgroundColor: String; // 页面背景
+  screenBackgroundColor: String; // 页面背景，默认是白色
   topBarStyle: String; // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
-  topBarColor: String; // 顶部导航栏背景颜色
-  statusBarColor: String; // 状态栏背景色，仅对 Android 5.0 以上版本生效
+  topBarColor: String; // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算。
+  statusBarColor: String; // 状态栏背景色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
   hideBackTitle: Bool; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-  elevation: Number; // 导航栏阴影高度， 仅对 Android 5.0 以上版本生效，默认值为 4 dp
+  elevation: Number; // 导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
   shadowImage: Object; // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
   backIcon: Object; // 返回按钮图标，需要传递一个带有 uri 和其它字段的对象
-  topBarTintColor: String; // 顶部导航栏按钮的颜色
-  titleTextColor: String; // 顶部导航栏标题颜色
+  topBarTintColor: String; // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算。
+  titleTextColor: String; // 顶部导航栏标题颜色，默认取 topBarTintColor 的值。
   titleTextSize: Int; // 顶部导航栏标题字体大小，默认是 17 dp(pt)
-  titleAlignment: String; // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left
+  titleAlignment: String; // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left，仅对 Android 生效
   barButtonItemTextSize: Int; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
   swipeBackEnabledAndroid: Bool; // Android 是否开启右滑返回，默认是 false
 
   tabBarColor: String; // 底部 TabBar 背景颜色
-  tabBarShadowImage: Object; // 底部 TabBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效 。对 iOS, 只有设置了 tabBarColor 才会生效
+  tabBarShadowImage: Object; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
   tabBarItemColor: String; // 当 `tabBarSelectedItemColor` 未设置时，此值为选中效果，否则为未选中效果
   tabBarSelectedItemColor: String; // 底部 TabBarItem icon 选中效果
   badgeColor: Stringg; // Badge 以及小红点的颜色
@@ -69,27 +69,21 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 > 全局设置主题，有些样式需要重新运行原生应用才能看到效果。
 
-* screenBackgroundColor
+> 所有关于颜色的设置，仅支持 #AARRGGBB 或者 #RRGGBB 格式的字符。
 
-页面背景，仅支持 #RRGGBB 格式的字符串。
+> 所有可配置项均是可选
 
 * topBarStyle
 
-可选，导航栏和状态栏前景色，在 iOS 中，默认是白底黑字，在 Android 中，默认是黑底白字。
+导航栏和状态栏前景色，在 iOS 中，默认是白底黑字，在 Android 中，默认是黑底白字。
 
 这个字段一共有两个常量可选： `dark-content` 和 `light-content`，在 Android 6.0 效果如下。
 
 ![topbar-default](../screenshot/topbar-default.png)
 
-* topBarColor
-
-可选，导航栏（UINavigationBar | ToolBar）背景颜色。如果不设置，将根据 topBarStyle 来计算，如果 topBarStyle 的值是 dark-content，那么 topBarColor 的值是白色，否则是黑色。
-
-> 注意，可配置的颜色仅支持 #AARRGGBB 或者 #RRGGBB 格式的字符
-
 * statusBarColor
 
-可选，仅对 Android 5.0 以上版本生效。如果不设置，默认取 `topBarColor` 的值。
+仅对 Android 5.0 以上版本生效。默认取 `topBarColor` 的值。
 
 系统启动时，由于还没有设置 statusBarColor，状态栏颜色会出现前后不一致的情况，下图是应用还没启动好时，状态栏可能的颜色。和上面的黑白图对比，是不是有种违和感。
 
@@ -126,17 +120,9 @@ Garden.setStyle({
 
 现在，应用启动时和启动完成后的状态栏颜色是一致的了。
 
-* hideBackTitle
-
-可选，仅对 iOS 生效，用来决定是否隐藏返回按钮旁边的文字，即前一个页面的标题
-
-* elevation
-
-可选，导航栏阴影高度，仅对 Android 5.0 以上版本生效，默认值为 4 dp
-
 * shadowImage
 
-可选，导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效。
+导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效。
 
 ```javascript
 // index.js
@@ -163,7 +149,7 @@ Garden.setStyle({
 
 * backIcon
 
-可选，配置返回按钮的图标。如果不配置，则采用平台默认的图标。配置方式如下
+配置返回按钮的图标。如果不配置，则采用平台默认的图标。配置方式如下
 
 ```javascript
 // index.js
@@ -176,47 +162,14 @@ Garden.setStyle({
 });
 ```
 
-* topBarTintColor
+* tabBarShadowImage
 
-可选，顶部导航栏标题和按钮的颜色。如果不设置，将根据 topBarStyle 来计算，如果 topBarStyle 的值是 dark-content，那么 topBarTintColor 的值是黑色，否则是白色。
+UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只有设置了 tabBarColor 才会生效。
 
-* titleTextColor
-
-可选，顶部导航栏标题的颜色。如果不设置，取 topBarTintColor 的值。
-
-* titleTextSize
-
-可选，顶部导航栏标题的字体大小，默认是 17 dp(pt)。
-
-* titleAlignment
-
-可选，顶部导航栏标题的位置，仅对 Android 生效，有 left 和 center 两个值可选，默认是 left
-
-* barButtonItemTintColor
-
-可选，顶部导航栏按钮的颜色。如果不设置， 取 topBarTintColor 的值。
-
-* barButtonItemTextSize
-
-可选，顶部导航栏按钮的字体大小，默认是 15 dp(pt)
-
-* bottomBarColor
-
-可选，UITabBar(iOS)、BottomNavigationBar(Android) 的背景颜色。
-
-* bottomBarShadowImage
-
-可选，UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。仅对 iOS 和 Android 4.4 以下版本生效 ，对 iOS, 只有设置了 bottomBarBackgroundColor 才会生效配置方式请参考 `shadowImage`
+配置方式请参考 `shadowImage`
 
 <a name="static-options"></a>
 
-* bottomBarButtonItemActiveColor
-
-可选，底部 TabBarItem 选中效果
-
-* bottomBarButtonItemInactiveColor
-
-可选，底部 TabBarItem 未选中效果
 
 ## 静态配置页面
 
@@ -227,38 +180,46 @@ Garden.setStyle({
 ```javascript
 class Screen extends Component {
   static navigationItem = {
-    passThroughTouches: false, // 当前页面是否允许穿透，通常和透明背景一起使用
+    passThroughTouches: false, // 当前页面是否允许 touch 事件穿透，通常和透明背景一起使用
     screenBackgroundColor: '#FFFFFF', // 当前页面背景
     topBarStyle: String; // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
-    topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。 `topBarAlpha` 不能决定页面内容是否延伸到 topBar 底下
+    topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
     topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
     extendedLayoutIncludesTopBar: false, // 当前页面的内容是否延伸到 topBar 底下，通常用于需要动态改变 `topBarAlpha` 的场合
     topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
     titleTextColor: '#FFFFFF', // 当前页面标题颜色
     topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
     topBarHidden: true, // 是否隐藏当前页面 topBar
-    statusBarHidden: true, // 是否隐藏当前页面的状态栏，iPhoneX 下，不管设置为何值都不隐藏
+    statusBarHidden: true, // 是否隐藏当前页面的状态栏，对 iPhoneX 无效 
     backButtonHidden: true, // 当前页面是否隐藏返回按钮
     backInteractive: true, // 当前页面是否可以通过右滑或返回键返回
-    swipeBackEnabled: true, // 当前页面是否可以通过右滑返回。Android 下，只有开启了侧滑返回功能，该值才会生效。如果 `backInteractive` 设置为 false, 那么该值无效。
+    swipeBackEnabled: true, // 当前页面是否可以通过右滑返回。如果 `backInteractive` 设置为 false, 那么该值无效。Android 下，只有开启了侧滑返回功能，该值才会生效。
 
     titleItem: {
       // 导航栏标题
       tilte: '这是标题',
-      moduleName: 'ModuleName', // 自定义标题栏模块名
-      layoutFitting: 'expanded', // 自定义标题栏填充模式，expanded 或 compressed
+      // 自定义标题栏模块名
+      moduleName: 'ModuleName', 
+      // 自定义标题栏填充模式，expanded 或 compressed。仅对自定义标题模块生效
+      layoutFitting: 'expanded', 
     },
 
+    // 导航栏左侧按钮
     leftBarButtonItem: {
-      // 导航栏左侧按钮
+      // 按钮文字，如果设置了 icon ，将会失效
       title: '按钮',
-      icon: Image.resolveAssetSource(require('./ic_settings.png')),
+      // icon 图片 
+      icon: Image.resolveAssetSource(require('./ic_settings.png')), 
+      // 图片位置调整，仅对 iOS 生效
       insets: { top: -1, left: -8, bottom: 0, right: 0 },
-      action: navigator => {
+      // 按钮点击事件处理
+      action: navigator => { 
         navigator.toggleMenu();
       },
+      // 按钮是否可以点击
       enabled: true,
-      tintColor: '#FFFF00',
+      // 按钮颜色 
+      tintColor: '#FFFF00', 
     },
 
     rightBarButtonItem: {
@@ -284,48 +245,24 @@ class Screen extends Component {
       },
     ],
 
+    // 底部 TabBarItem 可配置项
     tabItem: {
-      // 底部 TabBarItem 可配置项
+      // tab 标题文字
       title: 'Style',
+      // tab 图片
       icon: { uri: fontUri('FontAwesome', 'leaf', 20) },
+      // tab 选中时的图片
       selectedIcon: { uri: fontUri('FontAwesome', 'leaf', 20) },
-      hideTabBarWhenPush: true,
+      // push 时是否隐藏 tabBar
+      hideTabBarWhenPush: true, 
     },
   };
 }
 ```
 
-* topBarAlpha
-
-可选，默认值是 1.0。 当前页面 topBar 背景透明度，如果想调整 topBar 透明度，请使用该配置项
-
-* topBarColor
-
-可选，该设置会在当前页面覆盖全局设置中 topBarColor 的值，颜色可以是透明的，如果单纯只想调整透明度，请使用 topBarAlpha
-
-* topBarShadowHidden
-
-可选，默认是 false。用来控制当前页面是否隐藏 topBar 的阴影
-
-* topBarHidden
-
-可选，默认值是 false。当前页面是否隐藏 topBar，同时会隐藏 topBar 的阴影
-
-* backButtonHidden
-
-可选，默认值是 false。用来控制是否隐藏当前页面的返回按钮。
-
-* backInteractive
-
-可选，默认值是 true。 禁止用户通过右滑（iOS）或返回键（Android）退出当前页面，通常用于有重要信息需要用户确认后才可退出当前页面的场景。
-
 * titleItem
 
-可选，设置页面标题。
-
-title 设置页面标题。
-
-moduleName 如果希望自定义标题栏，那么通过此配置项设置模块名，模块需要通过 ReactRegistry.registerComponent 注册。一旦设置了 moduleName，title 字段将失效
+如果希望自定义标题栏，可以通过 moduleName 来指定标题栏对应的组件。组件需要通过 ReactRegistry.registerComponent 注册。一旦设置了 moduleName，title 字段将失效。
 
 layoutFitting 配合 moduleName 使用，自定义标题栏的布局模式，有 expanded 和 compressed 两个可选值，默认是 compressed。 expanded 是指尽可能占据更多的空间， compressed 是指刚好能包裹自身内容。
 
@@ -339,41 +276,17 @@ this.props.navigator.setParams({});
 
 详情请参考 playground 中 TopBarTitleView.js 这个文件。
 
-* leftBarButtonItem
-
-可选，设置导航栏左侧按钮。
-title 是按钮标题，icon 是按钮图标，两者设置其一则可，如果同时设置，则只会显示图标。
-insets 仅对 iOS 生效，用于调整按钮 icon 或 title 的位置。
-action 是个函数，它接收 navigator 作为参数，当按钮被点击时调用。
-enabled 是个布尔值，可选，用来标识按钮是否可以点击，默认是 true。
-
-tintColor 按钮颜色，可选，覆盖全局设置，实现个性化颜色
-
-* rightBarButtonItem
-
-可选，导航栏右侧按钮，可配置项同 leftBarButtonItem。
-
-* leftBarButtonItems
-
-可选，导航栏左侧按钮，配置项是个数组，当有多个左侧按钮时使用。一旦设置此值，leftBarButtonItem 将会失效
-
-* rightBarButtonItems
-
-可选，导航栏右侧按钮，配置项是个数组，当有多个右侧按钮时使用。一旦设置此值，rightBarButtonItem 将会失效
-
 * tabItem
-
-可选，设置 UITabBar(iOS)、BottomNavigationBar(Android) 的 tab 标题和 icon。
 
 如果同时设置了 icon 与 selectedIcon, 则保留图片原始颜色，否则用全局配置中的 `tabBarItemColor` 与 `tabBarSelectedItemColor` 对 icon 进行染色。
 
-hideTabBarWhenPush, 当 Stack 嵌套在 Tab 的时候，push 到另一个页面时是否隐藏 TabBar
+hideTabBarWhenPush 表示当 Stack 嵌套在 Tabs 的时候，push 到另一个页面时是否隐藏 TabBar。
 
 ## 动态配置页面
 
 有时，需要根据业务状态来动态改变导航栏中的项目。比如 rightBarButtonItem 是否可以点击，就是个很好的例子。
 
-动态配置页面有两种方式，一种是页面跳转时，由前一个页面决定后一个页面的配置。另一种是当前页面根据应用状态来自行改变。
+动态配置页面有两种方式，一种是页面跳转时，由前一个页面决定后一个页面的配置（传值配置）。另一种是当前页面根据应用状态来动态改变（动态配置）。
 
 ### 传值配置
 
@@ -561,10 +474,10 @@ this.props.garden.hideRedPointAtIndex(0);
 
 ```javascript
 componentDidAppear() {
-    this.props.garden.setMenuInteractive(true);
+  this.props.garden.setMenuInteractive(true);
 }
 
 componentDidDisappear() {
-    this.props.garden.setMenuInteractive(false);
+  this.props.garden.setMenuInteractive(false);
 }
 ```
