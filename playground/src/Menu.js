@@ -44,8 +44,8 @@ export default class Menu extends Component {
     console.info('menu componentDidAppear');
   }
 
-  componentDiddisappear() {
-    console.info('menu componentDiddisappear');
+  componentDidDisappear() {
+    console.info('menu componentDidDisappear');
   }
 
   componentDidMount() {
