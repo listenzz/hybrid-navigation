@@ -13,6 +13,9 @@ let intercept;
 let events = [];
 
 export default class Navigator {
+  static RESULT_OK = NavigationModule.RESULT_OK;
+  static RESULT_CANCEL = NavigationModule.RESULT_CANCEL;
+
   static setRoot(layout, sticky = false) {
     events.forEach(event => {
       event.remove();

@@ -158,9 +158,9 @@ public class GlobalStyle {
         // -----------------------------
 
         // tabBarColor
-        String bottomBarColor = options.getString("tabBarColor");
-        if (bottomBarColor != null) {
-            style.setTabBarBackgroundColor(bottomBarColor);
+        String tabBarColor = options.getString("tabBarColor");
+        if (tabBarColor != null) {
+            style.setTabBarBackgroundColor(tabBarColor);
         }
 
         String tabBarItemColor = options.getString("tabBarItemColor");
@@ -173,7 +173,7 @@ public class GlobalStyle {
             style.setTabBarSelectedItemColor(tabBarSelectedItemColor);
         }
 
-        // bottomBarShadowImage
+        // tabBarShadowImage
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Bundle shadowImage = options.getBundle("tabBarShadowImage");
             if (shadowImage != null) {

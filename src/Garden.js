@@ -15,10 +15,9 @@ function copy(obj = {}) {
 }
 
 export default class Garden {
-  constructor(sceneId, options) {
-    this.sceneId = sceneId;
-    this.options = options;
-  }
+  static toolbarHeight = GardenModule.TOOLBAR_HEIGHT;
+  static DARK_CONTENT = GardenModule.DARK_CONTENT;
+  static LIGHT_CONTENT = GardenModule.LIGHT_CONTENT;
 
   static setStyle(style = {}) {
     GardenModule.setStyle(style);
@@ -27,7 +26,10 @@ export default class Garden {
     }
   }
 
-  static toolbarHeight = GardenModule.TOOLBAR_HEIGHT;
+  constructor(sceneId, options) {
+    this.sceneId = sceneId;
+    this.options = options;
+  }
 
   // --------------- instance method --------------
   setStatusBarColor(item) {

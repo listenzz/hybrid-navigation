@@ -22,7 +22,7 @@
 @property (nonatomic, assign) NSInteger titleTextSize;
 @property (nonatomic, assign) NSInteger barButtonItemTextSize;
 
-@property (nonatomic, strong) UIColor *tabBarBarTintColor;
+@property (nonatomic, strong) UIColor *tabBarBackgroundColor;
 @property (nonatomic, strong) UIImage *tabBarShadowImage;
 @property (nonatomic, strong) UIColor *tabBarTintColor;
 @property (nonatomic, strong) UIColor *tabBarUnselectedTintColor;
@@ -112,7 +112,7 @@
         // tabBarColor
         NSString *tabBarColor = self.options[@"tabBarColor"];
         if (tabBarColor) {
-            self.tabBarBarTintColor = [HBDUtils colorWithHexString:tabBarColor];
+            self.tabBarBackgroundColor = [HBDUtils colorWithHexString:tabBarColor];
         }
         
         // shadowImeage
@@ -190,8 +190,8 @@
 }
 
 - (void)inflateTabBar:(UITabBar *)tabBar {
-    if (self.tabBarBarTintColor) {
-        [tabBar setBackgroundImage:[HBDUtils imageWithColor:self.tabBarBarTintColor]];
+    if (self.tabBarBackgroundColor) {
+        [tabBar setBackgroundImage:[HBDUtils imageWithColor:self.tabBarBackgroundColor]];
     }
     
     if (self.tabBarShadowImage) {
