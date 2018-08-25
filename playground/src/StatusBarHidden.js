@@ -37,7 +37,7 @@ export default class StatusBarHidden extends Component {
     statusBarHidden: true,
     topBarHidden: true,
     titleItem: {
-      title: '隐藏状态栏',
+      title: 'StatusBar Hidden',
     },
   };
 
@@ -45,11 +45,11 @@ export default class StatusBarHidden extends Component {
     super(props);
     this.showStatusBar = this.showStatusBar.bind(this);
     this.hideStatusBar = this.hideStatusBar.bind(this);
-    this.topBarStyle = this.topBarStyle.bind(this);
+    this.statusBarHidden = this.statusBarHidden.bind(this);
   }
 
-  topBarStyle() {
-    this.props.navigator.push('TopBarStyle');
+  statusBarHidden() {
+    this.props.navigator.push('StatusBarHidden');
   }
 
   showStatusBar() {
@@ -76,8 +76,8 @@ export default class StatusBarHidden extends Component {
           <Text style={styles.buttonText}>hide status bar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.topBarStyle} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>TopBarStyle</Text>
+        <TouchableOpacity onPress={this.statusBarHidden} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>StatusBarHidden</Text>
         </TouchableOpacity>
       </ScrollView>
     );

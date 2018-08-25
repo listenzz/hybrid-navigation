@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native';
 
-import styles from './Styles';
+import styles, { paddingTop } from './Styles';
 
 export default class TopBarStyle extends Component {
   static navigationItem = {
+    extendedLayoutIncludesTopBar: true,
     topBarStyle: 'light-content',
     topBarTintColor: '#FFFFFF',
     titleTextColor: '#FFFF00',
@@ -37,7 +38,7 @@ export default class TopBarStyle extends Component {
   constructor(props) {
     super(props);
     this.switchTopBarStyle = this.switchTopBarStyle.bind(this);
-    this.statusBarColor = this.statusBarColor.bind(this);
+    this.topBarStyle = this.topBarStyle.bind(this);
     this.state = { topBarStyle: 'dark-content' };
   }
 
@@ -50,8 +51,8 @@ export default class TopBarStyle extends Component {
     }
   }
 
-  statusBarColor() {
-    this.props.navigator.push('StatusBarColor');
+  topBarStyle() {
+    this.props.navigator.push('TopBarStyle');
   }
   render() {
     return (
@@ -60,10 +61,13 @@ export default class TopBarStyle extends Component {
         automaticallyAdjustContentInsets={false}
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
-        <View style={styles.container}>
-          <Text style={styles.welcome}> 1. Android 5.0 以下状态栏文字只能是白的</Text>
+        <View style={[styles.container, paddingTop]}>
+          <Text style={styles.welcome}>1. status bar text can only be white below Android 5.0</Text>
 
-          <Text style={styles.welcome}> 2. Android 会根据情况适当修正状态栏的背景色</Text>
+          <Text style={styles.welcome}>
+            2. The background color of the status bar will be corrected as appropriate if needed on
+            Android
+          </Text>
 
           <TouchableOpacity
             onPress={this.switchTopBarStyle}
@@ -73,8 +77,8 @@ export default class TopBarStyle extends Component {
             <Text style={styles.buttonText}>switch to {this.state.topBarStyle}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.statusBarColor} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>StatusBarColor</Text>
+          <TouchableOpacity onPress={this.topBarStyle} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>TopBarStyle</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

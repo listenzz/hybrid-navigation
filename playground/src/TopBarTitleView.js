@@ -16,7 +16,7 @@ class CustomTitleView extends Component {
           alignItems: 'center',
         }}
       >
-        <Text style={styles.welcome}>--标题--</Text>
+        <Text style={styles.welcome}>--Custom Title--</Text>
         <Icon.Button
           name="facebook"
           backgroundColor="#3b5998"
@@ -33,7 +33,6 @@ export default class TopBarTitleView extends Component {
   static navigationItem = {
     backButtonHidden: true,
     titleItem: {
-      title: '出 BUG 了',
       moduleName: 'CustomTitleView', // registered component name
       layoutFitting: 'expanded', // expanded or compressed, default is compressed
     },
@@ -42,9 +41,6 @@ export default class TopBarTitleView extends Component {
   constructor(props) {
     super(props);
     this.topBarTitleView = this.topBarTitleView.bind(this);
-    this.topBarHidden = this.topBarHidden.bind(this);
-    this.topBarColor = this.topBarColor.bind(this);
-    this.topBarAlpha = this.topBarAlpha.bind(this);
     this.props.navigator.setParams({
       onFackbookButtonClick: this.onFackbookButtonClick.bind(this),
     });
@@ -59,18 +55,6 @@ export default class TopBarTitleView extends Component {
     );
   }
 
-  topBarHidden() {
-    this.props.navigator.push('TopBarHidden');
-  }
-
-  topBarColor() {
-    this.props.navigator.push('TopBarColor');
-  }
-
-  topBarAlpha() {
-    this.props.navigator.push('TopBarAlpha');
-  }
-
   topBarTitleView() {
     this.props.navigator.push('TopBarTitleView');
   }
@@ -83,26 +67,14 @@ export default class TopBarTitleView extends Component {
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
         <View style={styles.container}>
-          <Text style={styles.welcome}> 自定义标题栏 </Text>
-
-          <TouchableOpacity onPress={this.topBarHidden} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar hidden</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.topBarColor} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar color</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.topBarAlpha} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar alpha</Text>
-          </TouchableOpacity>
+          <Text style={styles.welcome}> Custom title bar </Text>
 
           <TouchableOpacity
             onPress={this.topBarTitleView}
             activeOpacity={0.2}
             style={styles.button}
           >
-            <Text style={styles.buttonText}>TopBar title view</Text>
+            <Text style={styles.buttonText}>TopBarTitleView</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

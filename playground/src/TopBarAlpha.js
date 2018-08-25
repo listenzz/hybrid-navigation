@@ -11,7 +11,6 @@ import {
   Platform,
 } from 'react-native';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
-import { Garden } from 'react-native-navigation-hybrid';
 import styles from './Styles';
 
 function ifKitKat(obj1 = {}, obj2 = {}) {
@@ -61,9 +60,6 @@ export default class TopBarAlpha extends Component {
 
   constructor(props) {
     super(props);
-    this.topBarTitleView = this.topBarTitleView.bind(this);
-    this.topBarHidden = this.topBarHidden.bind(this);
-    this.topBarColor = this.topBarColor.bind(this);
     this.topBarAlpha = this.topBarAlpha.bind(this);
     this.onAlphaChange = this.onAlphaChange.bind(this);
     this.props.navigator.setParams({
@@ -81,20 +77,8 @@ export default class TopBarAlpha extends Component {
     );
   }
 
-  topBarHidden() {
-    this.props.navigator.push('TopBarHidden');
-  }
-
-  topBarColor() {
-    this.props.navigator.push('TopBarColor');
-  }
-
   topBarAlpha() {
     this.props.navigator.push('TopBarAlpha');
-  }
-
-  topBarTitleView() {
-    this.props.navigator.push('TopBarTitleView');
   }
 
   onAlphaChange(value) {
@@ -112,36 +96,20 @@ export default class TopBarAlpha extends Component {
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
         <View style={[styles.container, paddingTop]}>
-          <Text style={styles.welcome}>滑动看看</Text>
-
-          <TouchableOpacity onPress={this.topBarHidden} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar hidden</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.topBarColor} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar color</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.topBarAlpha} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar alpha</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={this.topBarTitleView}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>TopBar title view</Text>
-          </TouchableOpacity>
+          <Text style={styles.welcome}>Try to slide</Text>
 
           <Slider
-            style={{ marginLeft: 32, marginRight: 32 }}
+            style={{ marginLeft: 32, marginRight: 32, marginTop: 40 }}
             onValueChange={this.onAlphaChange}
             step={0.01}
             value={this.state.alpha}
           />
 
           <Text style={styles.result}>alpha: {this.state.alpha}</Text>
+
+          <TouchableOpacity onPress={this.topBarAlpha} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>TopBarAlpha</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     );

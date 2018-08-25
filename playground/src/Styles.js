@@ -1,4 +1,33 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
+import { ifIphoneX } from 'react-native-iphone-x-helper';
+import { Garden } from 'react-native-navigation-hybrid';
+
+function ifKitKat(obj1 = {}, obj2 = {}) {
+  return Platform.Version > 18 ? obj1 : obj2;
+}
+
+export const paddingTop = Platform.select({
+  ios: {
+    ...ifIphoneX(
+      {
+        paddingTop: 16 + 88,
+      },
+      {
+        paddingTop: 16 + 64,
+      }
+    ),
+  },
+  android: {
+    ...ifKitKat(
+      {
+        paddingTop: 16 + StatusBar.currentHeight + Garden.toolbarHeight,
+      },
+      {
+        paddingTop: 16,
+      }
+    ),
+  },
+});
 
 export default StyleSheet.create({
   container: {

@@ -17,15 +17,15 @@ export default class ReactModal extends React.Component {
   state = {
     actionSheets: [
       {
-        text: '男',
+        text: 'Male',
         onPress: () => {
-          this.hideModal('男');
+          this.hideModal('Male');
         },
       },
       {
-        text: '女',
+        text: 'Female',
         onPress: () => {
-          this.hideModal('女');
+          this.hideModal('Female');
         },
       },
     ],
@@ -44,7 +44,7 @@ export default class ReactModal extends React.Component {
     this.view.slideOutDown(250).then(endState => {
       if (endState.finished) {
         this.props.navigator.setResult(RESULT_OK, {
-          text: gender || '你到底是男是女？',
+          text: gender || 'Are you male or female?',
           backId: this.props.sceneId,
         });
         this.props.navigator.hideModal();
@@ -109,7 +109,7 @@ export default class ReactModal extends React.Component {
                 </View>
               );
             })}
-            <View style={styles.itemCancel}>{this.renderItem('取消', this.handleCancel)}</View>
+            <View style={styles.itemCancel}>{this.renderItem('Cancel', this.handleCancel)}</View>
           </View>
         </Animatable.View>
       </TouchableWithoutFeedback>

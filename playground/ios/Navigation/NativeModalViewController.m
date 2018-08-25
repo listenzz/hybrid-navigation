@@ -70,7 +70,7 @@
     
     __weak typeof (self) weakSelf = self;
     modal.willDismissBlock = ^(HBDModalViewController *modalViewController) {
-        [weakSelf.hbd_targetViewController didReceiveResultCode:-1 resultData:@{@"text": @"来自原生 modal 的问候", @"backId": weakSelf.sceneId} requestCode:1];
+        [weakSelf.hbd_targetViewController didReceiveResultCode:-1 resultData:@{@"text": @"gretting from native modal.", @"backId": weakSelf.sceneId} requestCode:1];
     };
     
 }

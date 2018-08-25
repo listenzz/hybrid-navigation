@@ -6,9 +6,8 @@ import styles from './Styles';
 export default class StatusBarColor extends Component {
   static navigationItem = {
     statusBarColor: '#0000FF',
-
     titleItem: {
-      title: '状态栏颜色',
+      title: 'StatusBar Color',
     },
   };
 
@@ -17,7 +16,7 @@ export default class StatusBarColor extends Component {
     this.red = this.red.bind(this);
     this.blue = this.blue.bind(this);
     this.green = this.green.bind(this);
-    this.topBarStyle = this.topBarStyle.bind(this);
+    this.statusBarColor = this.statusBarColor.bind(this);
   }
 
   red() {
@@ -32,8 +31,8 @@ export default class StatusBarColor extends Component {
     this.props.garden.setStatusBarColor({ statusBarColor: '#0000FF' });
   }
 
-  topBarStyle() {
-    this.props.navigator.push('TopBarStyle');
+  statusBarColor() {
+    this.props.navigator.push('StatusBarColor');
   }
 
   render() {
@@ -44,7 +43,7 @@ export default class StatusBarColor extends Component {
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
         <View style={styles.container}>
-          <Text style={styles.welcome}>仅对 Android 生效</Text>
+          <Text style={styles.welcome}>Only valid for Android</Text>
         </View>
 
         <TouchableOpacity onPress={this.red} activeOpacity={0.2} style={styles.button}>
@@ -59,8 +58,8 @@ export default class StatusBarColor extends Component {
           <Text style={styles.buttonText}>Green</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.topBarStyle} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>TopBarStyle</Text>
+        <TouchableOpacity onPress={this.statusBarColor} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>StatucsBarColor</Text>
         </TouchableOpacity>
       </ScrollView>
     );

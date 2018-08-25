@@ -18,6 +18,7 @@
 @implementation OneNativeViewController
 
 - (void)viewDidLoad {
+    self.hbd_extendedLayoutIncludesTopBar = YES;
     [super viewDidLoad];
     self.title = self.props[@"greeting"] ?: @"Native";
     

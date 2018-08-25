@@ -73,19 +73,19 @@ export default class TopBarMisc extends Component {
             activeOpacity={0.2}
             style={styles.button}
           >
-            <Text style={styles.buttonText}>TopBar shadow hidden</Text>
+            <Text style={styles.buttonText}>TopBarShadowHidden</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.topBarHidden} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar hidden</Text>
+            <Text style={styles.buttonText}>TopBarHidden</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.topBarColor} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar color</Text>
+            <Text style={styles.buttonText}>TopBarColor</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.topBarAlpha} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar alpha</Text>
+            <Text style={styles.buttonText}>TopBarAlpha</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -93,7 +93,7 @@ export default class TopBarMisc extends Component {
             activeOpacity={0.2}
             style={styles.button}
           >
-            <Text style={styles.buttonText}>TopBar title view</Text>
+            <Text style={styles.buttonText}>TopBarTitleView</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.noninteractive} activeOpacity={0.2} style={styles.button}>
@@ -101,7 +101,7 @@ export default class TopBarMisc extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.statusBarColor} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>StatusBar color</Text>
+            <Text style={styles.buttonText}>StatusBarColor</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -109,11 +109,11 @@ export default class TopBarMisc extends Component {
             activeOpacity={0.2}
             style={styles.button}
           >
-            <Text style={styles.buttonText}>StatusBar Hidden</Text>
+            <Text style={styles.buttonText}>StatusBarHidden</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.topBarStyle} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar style</Text>
+            <Text style={styles.buttonText}>TopBarStyle</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

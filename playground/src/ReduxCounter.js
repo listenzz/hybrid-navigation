@@ -4,13 +4,13 @@ import { TouchableOpacity, Text, View, ScrollView, Platform } from 'react-native
 import { createStore } from 'redux';
 import { connect } from 'react-redux';
 
-import styles from './Styles';
+import styles, { paddingTop } from './Styles';
 import fontUri from './FontUtil';
-import { route } from 'react-native-navigation-hybrid';
 
 // React component
 class ReduxCounter extends Component {
   static navigationItem = {
+    extendedLayoutIncludesTopBar: true,
     topBarStyle: 'light-content',
     topBarTintColor: '#FFFFFF',
     titleTextColor: '#FFFF00',
@@ -48,7 +48,7 @@ class ReduxCounter extends Component {
         automaticallyAdjustContentInsets={false}
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
-        <View style={styles.container}>
+        <View style={[styles.container, paddingTop]}>
           <Text style={styles.welcome}>{value}</Text>
 
           <TouchableOpacity onPress={onIncreaseClick} activeOpacity={0.2} style={styles.button}>

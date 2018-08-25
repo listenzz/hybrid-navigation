@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
 
-import styles from './Styles';
+import styles, { paddingTop } from './Styles';
 
 export default class TopBarColor extends Component {
   static navigationItem = {
+    extendedLayoutIncludesTopBar: true,
     topBarColor: '#FF0000',
   };
 
   constructor(props) {
     super(props);
-    this.topBarTitleView = this.topBarTitleView.bind(this);
-    this.topBarHidden = this.topBarHidden.bind(this);
     this.topBarColor = this.topBarColor.bind(this);
-    this.topBarAlpha = this.topBarAlpha.bind(this);
     this.red = this.red.bind(this);
     this.blue = this.blue.bind(this);
     this.green = this.green.bind(this);
@@ -31,20 +29,8 @@ export default class TopBarColor extends Component {
     this.props.garden.setTopBarColor({ topBarColor: '#0000FF' });
   }
 
-  topBarHidden() {
-    this.props.navigator.push('TopBarHidden');
-  }
-
   topBarColor() {
     this.props.navigator.push('TopBarColor');
-  }
-
-  topBarAlpha() {
-    this.props.navigator.push('TopBarAlpha');
-  }
-
-  topBarTitleView() {
-    this.props.navigator.push('TopBarTitleView');
   }
 
   render() {
@@ -54,8 +40,8 @@ export default class TopBarColor extends Component {
         automaticallyAdjustContentInsets={false}
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
-        <View style={styles.container}>
-          <Text style={styles.welcome}>鲜艳的颜色</Text>
+        <View style={[styles.container, paddingTop]}>
+          <Text style={styles.welcome}>Bright colors</Text>
 
           <TouchableOpacity onPress={this.red} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>Red</Text>
@@ -69,24 +55,8 @@ export default class TopBarColor extends Component {
             <Text style={styles.buttonText}>Green</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.topBarHidden} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar hidden</Text>
-          </TouchableOpacity>
-
           <TouchableOpacity onPress={this.topBarColor} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar color</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.topBarAlpha} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBar alpha</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={this.topBarTitleView}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>TopBar title view</Text>
+            <Text style={styles.buttonText}>TopBarColor</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
