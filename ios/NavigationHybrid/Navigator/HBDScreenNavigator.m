@@ -78,12 +78,9 @@
         }];
     } else if ([action isEqualToString:@"dismiss"]) {
         UIViewController *presenting = vc.presentingViewController;
-        if (presenting) {
-            [presenting didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:vc.requestCode];
-        }
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
         [presenting dismissViewControllerAnimated:animated completion:^{
-            
+            [presenting didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:vc.requestCode];
         }];
     } else if ([action isEqualToString:@"showModal"]) {
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
