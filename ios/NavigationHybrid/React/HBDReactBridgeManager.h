@@ -53,6 +53,8 @@ extern const NSInteger ResultCancel;
 
 - (UIViewController *)controllerWithLayout:(NSDictionary *)layout;
 
+- (HBDViewController *)controllerForSceneId:(NSString *)sceneId;
+
 - (void)setRootViewController:(UIViewController *)rootViewController;
 
 - (void)routeGraphWithController:(UIViewController *)controller container:(NSMutableArray *)container;

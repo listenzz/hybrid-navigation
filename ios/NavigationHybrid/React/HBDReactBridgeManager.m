@@ -17,6 +17,7 @@
 #import "HBDStackNavigator.h"
 #import "HBDTabNavigator.h"
 #import "HBDDrawerNavigator.h"
+#import "HBDModalViewController.h"
 
 NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
 const NSInteger ResultOK = -1;
@@ -169,6 +170,53 @@ const NSInteger ResultCancel = 0;
     }
     
     return vc;
+}
+
+- (HBDViewController *)controllerForSceneId:(NSString *)sceneId {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    HBDViewController *vc = nil;
+    for (UIWindow *window in application.windows) {
+        vc = [self controllerForSceneId:sceneId inController:window.rootViewController];
+        if (vc) {
+            break;
+        }
+    }
+    return vc;
+}
+
+- (HBDViewController *)controllerForSceneId:(NSString *)sceneId inController:(UIViewController *)controller {
+    HBDViewController *target;
+    
+    if ([controller isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *vc = (HBDViewController *)controller;
+        if ([vc.sceneId isEqualToString:sceneId]) {
+            target = vc;
+        }
+    }
+    
+    if (!target && [controller isKindOfClass:[HBDModalViewController class]]) {
+        HBDModalViewController *modal = (HBDModalViewController *)controller;
+        target = [self controllerForSceneId:sceneId inController:modal.contentViewController];
+    }
+    
+    if (!target) {
+        UIViewController *presentedController = controller.presentedViewController;
+        if (presentedController && ![presentedController isBeingDismissed]) {
+            target = [self controllerForSceneId:sceneId inController:presentedController];
+        }
+    }
+    
+    if (!target && controller.childViewControllers.count > 0) {
+        NSUInteger count = controller.childViewControllers.count;
+        for (NSUInteger i = 0; i < count; i ++) {
+            UIViewController *child = controller.childViewControllers[i];
+            target = [self controllerForSceneId:sceneId inController:child];
+            if (target) {
+                break;
+            }
+        }
+    }
+    return target;
 }
 
 - (void)setRootViewController:(UIViewController *)rootViewController {

@@ -43,21 +43,21 @@ RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
 }
 
 RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)sceneId item:(NSDictionary *)item) {
-    HBDViewController *vc = [self controllerForSceneId:sceneId];
+    HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
     item = [self mergeItem:item key:@"leftBarButtonItem" forController:vc];
     [garden setLeftBarButtonItem:item forController:vc];
 }
 
 RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *)sceneId item:(NSDictionary *)item) {
-    HBDViewController *vc = [self controllerForSceneId:sceneId];
+    HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
     item = [self mergeItem:item key:@"rightBarButtonItem" forController:vc];
     [garden setRightBarButtonItem:item forController:vc];
 }
 
 RCT_EXPORT_METHOD(setTitleItem:(NSString *)sceneId item:(NSDictionary *)item) {
-    HBDViewController *vc = [self controllerForSceneId:sceneId];
+    HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     HBDGarden *garden = [[HBDGarden alloc] init];
     item = [self mergeItem:item key:@"titleItem" forController:vc];
     [garden setTitleItem:item forController:vc];
@@ -70,7 +70,7 @@ RCT_EXPORT_METHOD(setStatusBarColor:(NSString *)sceneId item:(NSDictionary *)ite
 RCT_EXPORT_METHOD(setStatusBarHidden:(NSString *)sceneId item:(NSDictionary *)item) {
     NSNumber *statusBarHidden = [item objectForKey:@"statusBarHidden"];
     if (statusBarHidden) {
-        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
         NSDictionary *options = vc.options;
         NSMutableDictionary *mutable =  [options mutableCopy];
         [mutable setObject:statusBarHidden forKey:@"statusBarHidden"];
@@ -84,7 +84,7 @@ RCT_EXPORT_METHOD(setTopBarStyle:(NSString *)sceneId item:(NSDictionary *)item) 
     NSLog(@"setTopBarStyle: %@", item);
     NSString *topBarStyle = [item objectForKey:@"topBarStyle"];
     if (topBarStyle) {
-        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
         NSDictionary *options = vc.options;
         NSMutableDictionary *mutable =  [options mutableCopy];
         [mutable setObject:topBarStyle forKey:@"topBarStyle"];
@@ -101,7 +101,7 @@ RCT_EXPORT_METHOD(setTopBarStyle:(NSString *)sceneId item:(NSDictionary *)item) 
 RCT_EXPORT_METHOD(setTopBarAlpha:(NSString *)sceneId item:(NSDictionary *)item) {
     NSNumber *topBarAlpha = [item objectForKey:@"topBarAlpha"];
     if (topBarAlpha) {
-        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
         NSDictionary *options = vc.options;
         NSMutableDictionary *mutable =  [options mutableCopy];
         [mutable setObject:topBarAlpha forKey:@"topBarAlpha"];
@@ -115,7 +115,7 @@ RCT_EXPORT_METHOD(setTopBarAlpha:(NSString *)sceneId item:(NSDictionary *)item) 
 RCT_EXPORT_METHOD(setTopBarColor:(NSString *)sceneId item:(NSDictionary *)item) {
     NSString *topBarColor = [item objectForKey:@"topBarColor"];
     if (topBarColor) {
-        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
         NSDictionary *options = vc.options;
         NSMutableDictionary *mutable =  [options mutableCopy];
         [mutable setObject:topBarColor forKey:@"topBarColor"];
@@ -129,7 +129,7 @@ RCT_EXPORT_METHOD(setTopBarColor:(NSString *)sceneId item:(NSDictionary *)item) 
 RCT_EXPORT_METHOD(setTabBarColor:(NSString *)sceneId item:(NSDictionary *)item) {
     NSString *tabBarColor = [item objectForKey:@"tabBarColor"];
     if (tabBarColor) {
-        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
         UITabBarController *tabBarVC = vc.tabBarController;
         if (tabBarVC) {
             [tabBarVC.tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]]];
@@ -141,7 +141,7 @@ RCT_EXPORT_METHOD(setTabBarColor:(NSString *)sceneId item:(NSDictionary *)item) 
 RCT_EXPORT_METHOD(setTopBarShadowHidden:(NSString *)sceneId item:(NSDictionary *)item) {
     NSNumber *topBarShadowHidden = [item objectForKey:@"topBarShadowHidden"];
     if (topBarShadowHidden) {
-        HBDViewController *vc = [self controllerForSceneId:sceneId];
+        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
         NSDictionary *options = vc.options;
         NSMutableDictionary *mutable =  [options mutableCopy];
         [mutable setObject:topBarShadowHidden forKey:@"topBarShadowHidden"];
@@ -153,7 +153,7 @@ RCT_EXPORT_METHOD(setTopBarShadowHidden:(NSString *)sceneId item:(NSDictionary *
 }
 
 RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId index:(NSInteger)index text:(NSString *)text) {
-    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     UITabBarController *tabBarController = vc.tabBarController;
     if (tabBarController) {
         UIViewController *vc = tabBarController.viewControllers[index];
@@ -163,7 +163,7 @@ RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId index:(NSInteger)index text:(N
 }
 
 RCT_EXPORT_METHOD(showRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
-    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     UITabBarController *tabBarController = vc.tabBarController;
     if (tabBarController) {
         UITabBar *tabBar = tabBarController.tabBar;
@@ -173,7 +173,7 @@ RCT_EXPORT_METHOD(showRedPointAtIndex:(NSInteger)index sceneId:(NSString *)scene
 }
 
 RCT_EXPORT_METHOD(hideRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
-    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     UITabBarController *tabBarController = vc.tabBarController;
     if (tabBarController) {
         UITabBar *tabBar = tabBarController.tabBar;
@@ -183,7 +183,7 @@ RCT_EXPORT_METHOD(hideRedPointAtIndex:(NSInteger)index sceneId:(NSString *)scene
 }
 
 RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon:(NSDictionary *)icon inactiveIcon:(NSDictionary *)selectedIcon) {
-    HBDViewController *vc = [self controllerForSceneId:sceneId];
+    HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     UITabBarController *tabBarVC = vc.tabBarController;
     if (tabBarVC) {
         UIViewController *tab = [tabBarVC.viewControllers objectAtIndex:index];
@@ -202,7 +202,7 @@ RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon
 }
 
 RCT_EXPORT_METHOD(replaceTabColor:(NSString *)sceneId item:(NSDictionary *)item) {
-    HBDViewController *vc = [self controllerForSceneId:sceneId];
+    HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     UITabBarController *tabBarVC = vc.tabBarController;
     if (tabBarVC) {
         NSString *tabBarItemColor = item[@"tabBarItemColor"];
@@ -219,46 +219,11 @@ RCT_EXPORT_METHOD(replaceTabColor:(NSString *)sceneId item:(NSDictionary *)item)
 }
 
 RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) {
-    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     HBDDrawerController *drawer = [vc drawerController];
     if (drawer) {
         drawer.menuInteractive = enabled;
     }
-}
-
-- (HBDViewController *)controllerForSceneId:(NSString *)sceneId {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    UIViewController *controller = application.keyWindow.rootViewController;
-    return [self controllerForSceneId:sceneId atController:controller];
-}
-
-- (HBDViewController *)controllerForSceneId:(NSString *)sceneId atController:(UIViewController *)controller {
-    HBDViewController *target;
-    if ([controller isKindOfClass:[HBDViewController class]]) {
-        HBDViewController *vc = (HBDViewController *)controller;
-        if ([vc.sceneId isEqualToString:sceneId]) {
-            target = vc;
-        }
-    }
-    
-    if (!target) {
-        UIViewController *presentedController = controller.presentedViewController;
-        if (presentedController && ![presentedController isBeingDismissed]) {
-            target = [self controllerForSceneId:sceneId atController:presentedController];
-        }
-    }
-    
-    if (!target && controller.childViewControllers.count > 0) {
-        NSUInteger count = controller.childViewControllers.count;
-        for (NSUInteger i = 0; i < count; i ++) {
-            UIViewController *child = controller.childViewControllers[i];
-            target = [self controllerForSceneId:sceneId atController:child];
-            if (target) {
-                break;
-            }
-        }
-    }
-    return target;
 }
 
 - (NSDictionary *)mergeItem:(NSDictionary *)item key:(NSString *)key forController:(HBDViewController *)vc {

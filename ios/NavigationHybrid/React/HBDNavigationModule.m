@@ -61,7 +61,7 @@ RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionar
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
     // NSLog(@"signalFirstRenderComplete sceneId:%@",sceneId);
-    HBDReactViewController *vc =  (HBDReactViewController *)[self controllerForSceneId:sceneId];
+    HBDReactViewController *vc =  (HBDReactViewController *)[[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     [vc signalFirstRenderComplete];
 }
 
@@ -73,14 +73,14 @@ RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky) {
 }
 
 RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:(NSDictionary *)extras) {
-    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     if (vc) {
         [[HBDReactBridgeManager sharedInstance] handleNavigationWithViewController:vc action:action extras:extras];
     }
 }
 
 RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     UINavigationController *nav = vc.navigationController;
     if (nav) {
         NSArray *children = nav.childViewControllers;
@@ -96,7 +96,7 @@ RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResol
 }
 
 RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode data:(NSDictionary *)data) {
-    HBDViewController *vc =  [self controllerForSceneId:sceneId];
+    HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     [vc setResultCode:resultCode resultData:data];
 }
 
@@ -154,48 +154,6 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
 
 - (void)routeGraphWithController:(UIViewController *)controller container:(NSMutableArray *)container {
     [[HBDReactBridgeManager sharedInstance] routeGraphWithController:controller container:container];
-}
-
-- (HBDViewController *)controllerForSceneId:(NSString *)sceneId {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    UIViewController *controller = application.keyWindow.rootViewController;
-    HBDViewController *vc = [self controllerForSceneId:sceneId inController:controller];
-    return vc;
-}
-
-- (HBDViewController *)controllerForSceneId:(NSString *)sceneId inController:(UIViewController *)controller {
-    HBDViewController *target;
-    
-    if ([controller isKindOfClass:[HBDViewController class]]) {
-        HBDViewController *vc = (HBDViewController *)controller;
-        if ([vc.sceneId isEqualToString:sceneId]) {
-            target = vc;
-        }
-    }
-    
-    if (!target && [controller isKindOfClass:[HBDModalViewController class]]) {
-        HBDModalViewController *modal = (HBDModalViewController *)controller;
-        target = [self controllerForSceneId:sceneId inController:modal.contentViewController];
-    }
-    
-    if (!target) {
-        UIViewController *presentedController = controller.presentedViewController;
-        if (presentedController && ![presentedController isBeingDismissed]) {
-            target = [self controllerForSceneId:sceneId inController:presentedController];
-        }
-    }
-    
-    if (!target && controller.childViewControllers.count > 0) {
-        NSUInteger count = controller.childViewControllers.count;
-        for (NSUInteger i = 0; i < count; i ++) {
-            UIViewController *child = controller.childViewControllers[i];
-            target = [self controllerForSceneId:sceneId inController:child];
-            if (target) {
-                break;
-            }
-        }
-    }
-    return target;
 }
 
 @end
