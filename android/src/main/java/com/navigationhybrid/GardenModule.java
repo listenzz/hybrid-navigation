@@ -269,8 +269,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                         TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                         if (tabBarFragment != null) {
                             TabBar tabBar = tabBarFragment.getTabBar();
-                            tabBar.setBarBackgroundColor(tabBarColor);
-                            tabBar.initialise();
+                            tabBar.setTabBarBackgroundColor(tabBarColor);
                         }
                     }
                 }
@@ -309,11 +308,31 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
 
     @ReactMethod
+    public void replaceTabColor(final String sceneId, final ReadableMap item) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                    if (tabBarFragment != null) {
+                        TabBar tabBar = tabBarFragment.getTabBar();
+                        String tabBarItemColor = item.getString("tabBarItemColor");
+                        String tabBarUnselectedItemColor = item.getString("tabBarUnselectedItemColor");
+                        tabBar.setTabItemColor(tabBarItemColor, tabBarUnselectedItemColor);
+                    }
+                }
+            }
+        });
+    }
+
+
+    @ReactMethod
     public void setTabBadge(final String sceneId, final int index, final String text) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ReactFragment fragment = (ReactFragment) findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
@@ -330,7 +349,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ReactFragment fragment = (ReactFragment) findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
@@ -347,7 +366,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ReactFragment fragment = (ReactFragment) findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {

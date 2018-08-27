@@ -45,6 +45,8 @@ export default class Options extends Component {
     this.toggleTabBadge = this.toggleTabBadge.bind(this);
     this.lifecycle = this.lifecycle.bind(this);
     this.replaceTabIcon = this.replaceTabIcon.bind(this);
+    this.replaceTabColor = this.replaceTabColor.bind(this);
+    this.setTabBarColor = this.setTabBarColor.bind(this);
     this.state = {
       leftButtonShowText: true,
       rightButtonEnabled: false,
@@ -118,9 +120,20 @@ export default class Options extends Component {
   replaceTabIcon() {
     this.props.garden.replaceTabIcon(
       1,
-      { uri: 'blue_solid', scale: PixelRatio.get() },
-      { uri: 'red_ring', scale: PixelRatio.get() }
+      { uri: 'blue_solid', scale: PixelRatio.get() }
+      // { uri: 'red_ring', scale: PixelRatio.get() }
     );
+  }
+
+  replaceTabColor() {
+    this.props.garden.replaceTabColor({
+      tabBarItemColor: '#00FF00',
+      tabBarUnselectedItemColor: '#0000FF',
+    });
+  }
+
+  setTabBarColor() {
+    this.props.garden.setTabBarColor({ tabBarColor: '#EEEEEE' });
   }
 
   render() {
@@ -183,6 +196,18 @@ export default class Options extends Component {
 
           <TouchableOpacity onPress={this.replaceTabIcon} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>replalce tab icon</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={this.replaceTabColor}
+            activeOpacity={0.2}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>replalce tab color</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.setTabBarColor} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>change tab bar color</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

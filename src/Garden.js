@@ -99,6 +99,10 @@ export default class Garden {
     GardenModule.replaceTabIcon(this.sceneId, index, icon, inactiveIcon);
   }
 
+  replaceTabColor(item) {
+    GardenModule.replaceTabColor(this.sceneId, item);
+  }
+
   setTabBadge(index, text) {
     GardenModule.setTabBadge(this.sceneId, index, text);
   }

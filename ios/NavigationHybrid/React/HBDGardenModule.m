@@ -132,9 +132,7 @@ RCT_EXPORT_METHOD(setTabBarColor:(NSString *)sceneId item:(NSDictionary *)item) 
         HBDViewController *vc = [self controllerForSceneId:sceneId];
         UITabBarController *tabBarVC = vc.tabBarController;
         if (tabBarVC) {
-            UIColor *color = [HBDUtils colorWithHexString:tabBarColor];
-            [tabBarVC.tabBar setBackgroundImage:[HBDUtils imageWithColor:color]];
-            tabBarVC.tabBar.translucent = hasAlpha(color);
+            [tabBarVC.tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]]];
         }
     }
     NSLog(@"setTabBarColor: %@", item);
@@ -161,7 +159,7 @@ RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId index:(NSInteger)index text:(N
         UIViewController *vc = tabBarController.viewControllers[index];
         vc.tabBarItem.badgeValue = text;
     }
-    NSLog(@"setTabBadge: %li", index);
+    NSLog(@"setTabBadge: %ld", (long)index);
 }
 
 RCT_EXPORT_METHOD(showRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
@@ -171,7 +169,7 @@ RCT_EXPORT_METHOD(showRedPointAtIndex:(NSInteger)index sceneId:(NSString *)scene
         UITabBar *tabBar = tabBarController.tabBar;
         [tabBar showRedPointAtIndex:index];
     }
-    NSLog(@"showRedPointAtIndex: %li", index);
+    NSLog(@"showRedPointAtIndex: %ld", (long)index);
 }
 
 RCT_EXPORT_METHOD(hideRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
@@ -181,7 +179,7 @@ RCT_EXPORT_METHOD(hideRedPointAtIndex:(NSInteger)index sceneId:(NSString *)scene
         UITabBar *tabBar = tabBarController.tabBar;
         [tabBar hideRedPointAtIndex:index];
     }
-    NSLog(@"hideRedPointAtIndex: %li", index);
+    NSLog(@"hideRedPointAtIndex: %ld", (long)index);
 }
 
 RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon:(NSDictionary *)icon inactiveIcon:(NSDictionary *)selectedIcon) {
@@ -197,9 +195,27 @@ RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon
         } else {
             tabBarItem = [[UITabBarItem alloc] initWithTitle:tab.tabBarItem.title image:[HBDUtils UIImage:icon] selectedImage:nil];
         }
+        tabBarItem.badgeValue = tab.tabBarItem.badgeValue;
         tab.tabBarItem = tabBarItem;
     }
-     NSLog(@"replaceTabIcon: %li", index);
+    NSLog(@"replaceTabIcon: %ld", (long)index);
+}
+
+RCT_EXPORT_METHOD(replaceTabColor:(NSString *)sceneId item:(NSDictionary *)item) {
+    HBDViewController *vc = [self controllerForSceneId:sceneId];
+    UITabBarController *tabBarVC = vc.tabBarController;
+    if (tabBarVC) {
+        NSString *tabBarItemColor = item[@"tabBarItemColor"];
+        if (tabBarItemColor) {
+            tabBarVC.tabBar.tintColor = [HBDUtils colorWithHexString:tabBarItemColor];
+        }
+        NSString *tabBarUnselectedItemColor = item[@"tabBarUnselectedItemColor"];
+        if (tabBarUnselectedItemColor) {
+            if (@available(iOS 10.0, *)) {
+                tabBarVC.tabBar.unselectedItemTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
+            }
+        }
+    }
 }
 
 RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) {
