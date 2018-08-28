@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="72dp"
         android:gravity="center"
-        android:text="这是一个原生页面"
+        android:text="This's a native page"
         android:textSize="17dp" />
 
     <TextView

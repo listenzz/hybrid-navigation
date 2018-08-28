@@ -43,7 +43,7 @@ export default class StatusBarColor extends Component {
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
         <View style={styles.container}>
-          <Text style={styles.welcome}>Only valid for Android</Text>
+          <Text style={styles.welcome}>For Android only</Text>
         </View>
 
         <TouchableOpacity onPress={this.red} activeOpacity={0.2} style={styles.button}>

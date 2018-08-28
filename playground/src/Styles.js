@@ -89,4 +89,12 @@ export default StyleSheet.create({
     textAlign: 'center',
     margin: 8,
   },
+
+  text: {
+    backgroundColor: 'transparent',
+    fontSize: 16,
+    alignSelf: 'flex-start',
+    textAlign: 'left',
+    margin: 8,
+  },
 });

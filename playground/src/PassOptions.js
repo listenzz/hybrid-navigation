@@ -22,7 +22,7 @@ export default class PassOptions extends Component {
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
         <View style={styles.container}>
-          <Text style={styles.welcome}>Keep an eye on the title, not 'The Origin Title'</Text>
+          <Text style={styles.welcome}>Attention: the title is not 'The Origin Title'</Text>
         </View>
       </ScrollView>
     );

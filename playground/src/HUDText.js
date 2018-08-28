@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 
-import { Platform, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-
+import { Text, View, TouchableOpacity } from 'react-native';
+import styles from './Styles';
 import HUD, { LoadingHUD } from 'react-native-hud-hybrid';
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
-});
 
 export default class HUDTest extends Component {
   constructor(props) {
@@ -24,7 +19,7 @@ export default class HUDTest extends Component {
       // graceTime: 300,
       // minShowTime: 800,
       // dimAmount: 0.0, // only for andriod
-      loadingText: '加载中...',
+      loadingText: 'Loading...',
     });
     this.hud = new LoadingHUD();
   }
@@ -36,7 +31,7 @@ export default class HUDTest extends Component {
   loading() {
     this.hud.show();
     setTimeout(() => {
-      new HUD().done('任务已经完成啦！').hideDelayDefault();
+      new HUD().done('Work is Done!').hideDelayDefault();
       this.hud.hide();
     }, 2000);
   }
@@ -46,15 +41,15 @@ export default class HUDTest extends Component {
   }
 
   info() {
-    new HUD().info('有条消息要告诉你').hideDelayDefault();
+    new HUD().info('A message to you.').hideDelayDefault();
   }
 
   done() {
-    new HUD().done('任务已经完成啦！').hideDelayDefault();
+    new HUD().done('Work is Done!').hideDelayDefault();
   }
 
   error() {
-    new HUD().error('可能什么地方出错了！').hideDelayDefault();
+    new HUD().error('Somthing Wrong!').hideDelayDefault();
   }
 
   render() {
@@ -83,33 +78,3 @@ export default class HUDTest extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    backgroundColor: '#F5FCFF',
-    paddingTop: 16 + 88,
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 40,
-  },
-
-  buttonText: {
-    backgroundColor: 'transparent',
-    color: 'rgb(34,88,220)',
-  },
-});

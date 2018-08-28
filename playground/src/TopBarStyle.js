@@ -59,11 +59,10 @@ export default class TopBarStyle extends Component {
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
         <View style={[styles.container, paddingTop]}>
-          <Text style={styles.welcome}>1. status bar text can only be white below Android 5.0</Text>
+          <Text style={styles.text}>1. Status bar text can only be white on Android below 6.0</Text>
 
-          <Text style={styles.welcome}>
-            2. The background color of the status bar will be corrected as appropriate if needed on
-            Android
+          <Text style={styles.text}>
+            2. Status bar color may be adjusted if topBarStyle is dark-content on Android below 6.0
           </Text>
 
           <TouchableOpacity

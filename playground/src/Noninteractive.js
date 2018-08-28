@@ -30,7 +30,7 @@ export default class Noninteractive extends Component {
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
       >
         <View style={styles.container}>
-          <Text style={styles.welcome}>Now you can only return via the button below</Text>
+          <Text style={styles.welcome}>Now you can only back via the button below</Text>
 
           <TouchableOpacity
             onPress={this.onBackButtonClick}
