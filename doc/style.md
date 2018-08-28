@@ -170,7 +170,6 @@ UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只�
 
 <a name="static-options"></a>
 
-
 ## 静态配置页面
 
 每个页面的标题、按钮，通常是固定的，我们可以通过静态的方式来配置。
@@ -190,7 +189,7 @@ class Screen extends Component {
     titleTextColor: '#FFFFFF', // 当前页面标题颜色
     topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
     topBarHidden: true, // 是否隐藏当前页面 topBar
-    statusBarHidden: true, // 是否隐藏当前页面的状态栏，对 iPhoneX 无效 
+    statusBarHidden: true, // 是否隐藏当前页面的状态栏，对 iPhoneX 无效
     backButtonHidden: true, // 当前页面是否隐藏返回按钮
     backInteractive: true, // 当前页面是否可以通过右滑或返回键返回
     swipeBackEnabled: true, // 当前页面是否可以通过右滑返回。如果 `backInteractive` 设置为 false, 那么该值无效。Android 下，只有开启了侧滑返回功能，该值才会生效。
@@ -199,27 +198,27 @@ class Screen extends Component {
       // 导航栏标题
       tilte: '这是标题',
       // 自定义标题栏模块名
-      moduleName: 'ModuleName', 
+      moduleName: 'ModuleName',
       // 自定义标题栏填充模式，expanded 或 compressed。仅对自定义标题模块生效
-      layoutFitting: 'expanded', 
+      layoutFitting: 'expanded',
     },
 
     // 导航栏左侧按钮
     leftBarButtonItem: {
       // 按钮文字，如果设置了 icon ，将会失效
       title: '按钮',
-      // icon 图片 
-      icon: Image.resolveAssetSource(require('./ic_settings.png')), 
+      // icon 图片
+      icon: Image.resolveAssetSource(require('./ic_settings.png')),
       // 图片位置调整，仅对 iOS 生效
       insets: { top: -1, left: -8, bottom: 0, right: 0 },
       // 按钮点击事件处理
-      action: navigator => { 
+      action: navigator => {
         navigator.toggleMenu();
       },
       // 按钮是否可以点击
       enabled: true,
-      // 按钮颜色 
-      tintColor: '#FFFF00', 
+      // 按钮颜色
+      tintColor: '#FFFF00',
     },
 
     rightBarButtonItem: {
@@ -245,6 +244,12 @@ class Screen extends Component {
       },
     ],
 
+    // 返回按钮文字和颜色，仅对 iOS 生效
+    backItem: {
+      title: 'Back',
+      tintColor: '#000000', // 仅对 iOS 11.0 以上生效
+    },
+
     // 底部 TabBarItem 可配置项
     tabItem: {
       // tab 标题文字
@@ -254,7 +259,7 @@ class Screen extends Component {
       // tab 选中时的图片
       selectedIcon: { uri: fontUri('FontAwesome', 'leaf', 20) },
       // push 时是否隐藏 tabBar
-      hideTabBarWhenPush: true, 
+      hideTabBarWhenPush: true,
     },
   };
 }

@@ -74,6 +74,8 @@ TopBar 不再遮挡内容
 
 #### [RN 页面与原生页面相互跳转和传值](./doc/pass-and-return-value.md)
 
+#### [额外的生命周期函数](./doc/lifecycle.md)
+
 #### [设置样式](./doc/style.md)
 
 #### [DeepLink](./doc/deeplink.md)
