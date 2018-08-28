@@ -116,7 +116,7 @@ this.props.navigator.presentLayout(
 this.props.navigator.present('B', 1);
 ```
 
-也就是说，present 出来的组件，默认会嵌套在 Stack 里面，因为当使用 present 时，嵌套 Stack 是非常常见的操作。
+也就是说，present 出来的组件，默认会嵌套在 stack 里面，因为当使用 present 时，嵌套 stack 是非常常见的操作。
 
 > 同样使用 dismiss 来关闭
 
@@ -237,10 +237,6 @@ componentWillMount() {
 * switchTab
 
 切换到指定 tab
-
-* setTabBadge
-
-设置指定 tab 的 badge
 
 ## drawer
 
