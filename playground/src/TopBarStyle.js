@@ -21,10 +21,7 @@ export default class TopBarStyle extends Component {
     titleItem: {
       title: 'TopBar Style',
     },
-    backItem: {
-      title: 'Back',
-      tintColor: '#000000',
-    },
+
     rightBarButtonItem: {
       icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
       title: 'SETTING',
