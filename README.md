@@ -13,6 +13,12 @@ git clone git@github.com:listenzz/react-native-navigation-hybrid.git
 cd react-native-navigation-hybrid
 ```
 
+### run on Android
+
+first, make sure that you have a simulator or device.
+
+Then,
+
 ```shell
 npm install
 ```
@@ -23,11 +29,37 @@ npm start
 
 Then, in another CLI window:
 
-To run on iOS: `npm run run:ios`
+```shell
+npm run run:android
+```
 
-To run on Android: `npm run run:android`
+### run on iOS
 
-make sure that you have a simulator or device when you run andriod
+first, install pods.
+
+```shell
+cd playground/ios
+
+pod install
+
+cd ../../
+```
+
+Then,
+
+```shell
+npm install
+```
+
+```shell
+npm start
+```
+
+Then, in another CLI window:
+
+```shell
+npm run run:ios
+```
 
 ## 特性
 
