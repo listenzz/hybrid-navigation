@@ -1,1 +1,1 @@
-../../../../../../ios/NavigationHybrid/React/HBDNavigationModule.h
+../../../../../../ios/NavigationHybrid/Bridge/HBDNavigationModule.h

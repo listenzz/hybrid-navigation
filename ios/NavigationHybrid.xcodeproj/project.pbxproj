@@ -126,7 +126,7 @@
 		910362D41FE9318600F4DA8E /* NavigationHybrid */ = {
 			isa = PBXGroup;
 			children = (
-				9113EC0A2126E01400B35D06 /* React */,
+				9113EC0A2126E01400B35D06 /* Bridge */,
 				9113EC092126DFAA00B35D06 /* Controller */,
 				9113EC082126DF5A00B35D06 /* Navigator */,
 				91C884A2202C3E8600EC0A20 /* HBDUtils.h */,
@@ -189,7 +189,7 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
-		9113EC0A2126E01400B35D06 /* React */ = {
+		9113EC0A2126E01400B35D06 /* Bridge */ = {
 			isa = PBXGroup;
 			children = (
 				910362E31FE931DF00F4DA8E /* HBDGardenModule.h */,
@@ -199,7 +199,7 @@
 				910362E21FE931DF00F4DA8E /* HBDReactBridgeManager.h */,
 				910362E41FE931DF00F4DA8E /* HBDReactBridgeManager.m */,
 			);
-			path = React;
+			path = Bridge;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
