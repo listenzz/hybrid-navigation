@@ -80,21 +80,25 @@
 
 
 + (UIImage *)UIImage:(NSDictionary *)json {
-    NSString *uri = json[@"uri"];
-    if (uri && [uri hasPrefix:@"font:"]) {
-        uri = [uri substringFromIndex:7];
-        // NSLog(@"font uri:%@", uri);
-        NSArray *components = [uri componentsSeparatedByString:@"/"];
-        if (components.count != 3) {
-            return nil;
+    if ([json isKindOfClass:[NSDictionary class]]) {
+         NSString *uri = json[@"uri"];
+        if (uri && [uri hasPrefix:@"font:"]) {
+            uri = [uri substringFromIndex:7];
+            // NSLog(@"font uri:%@", uri);
+            NSArray *components = [uri componentsSeparatedByString:@"/"];
+            if (components.count != 3) {
+                return nil;
+            }
+            NSString *font = components[0];
+            NSString *glyph = components[1];
+            CGFloat size = [components[2] floatValue];
+            NSString *path = [self imagePathForFont:font withGlyph:glyph withFontSize:size withColor:[UIColor whiteColor]];
+            // NSLog(@"font path:%@", path);
+            UIImage *image = [UIImage imageWithContentsOfFile:path];
+            return image;
+        }  else {
+            return [RCTConvert UIImage:json];
         }
-        NSString *font = components[0];
-        NSString *glyph = components[1];
-        CGFloat size = [components[2] floatValue];
-        NSString *path = [self imagePathForFont:font withGlyph:glyph withFontSize:size withColor:[UIColor whiteColor]];
-        // NSLog(@"font path:%@", path);
-        UIImage *image = [UIImage imageWithContentsOfFile:path];
-        return image;
     } else {
         return [RCTConvert UIImage:json];
     }
