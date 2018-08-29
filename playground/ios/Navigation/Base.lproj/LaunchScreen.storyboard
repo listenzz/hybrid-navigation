@@ -19,21 +19,21 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Navigation Hybrid" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Udg-HJ-1ca">
-                                <rect key="frame" x="95" y="319" width="186" height="29"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <nil key="textColor"/>
+                                <rect key="frame" x="87" y="255" width="202" height="29"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="24"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="playground" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Shl-nt-DJj">
-                                <rect key="frame" x="138.5" y="364" width="98" height="24"/>
+                                <rect key="frame" x="138.5" y="300" width="98" height="24"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="0.55023351074865035" blue="0.26673664456096735" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" red="0.97647058823529409" green="0.30196078431372547" blue="0.32549019607843138" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Udg-HJ-1ca" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="aTJ-WC-pJ0"/>
+                            <constraint firstItem="Udg-HJ-1ca" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-64" id="aTJ-WC-pJ0"/>
                             <constraint firstItem="Shl-nt-DJj" firstAttribute="top" secondItem="Udg-HJ-1ca" secondAttribute="bottom" constant="16" id="gS8-yO-5LJ"/>
                             <constraint firstItem="Udg-HJ-1ca" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="jfw-du-GSl"/>
                             <constraint firstItem="Shl-nt-DJj" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="kMb-ym-SqU"/>

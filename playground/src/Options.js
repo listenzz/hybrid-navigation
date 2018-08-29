@@ -127,8 +127,8 @@ export default class Options extends Component {
 
   replaceTabColor() {
     this.props.garden.replaceTabColor({
-      tabBarItemColor: '#00FF00',
-      tabBarUnselectedItemColor: '#0000FF',
+      tabBarItemColor: '#8BC34A',
+      tabBarUnselectedItemColor: '#BDBDBD',
     });
   }
 
