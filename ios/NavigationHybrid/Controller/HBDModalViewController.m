@@ -77,9 +77,12 @@
     }
 }
 
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
     self.dimmingView.frame = self.view.bounds;
+    if (self.hbd_inCall) {
+        self.dimmingView.frame = CGRectMake(CGRectGetMinX(self.view.bounds), CGRectGetMinY(self.view.bounds) + 20, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - 20);
+    }
     CGRect contentViewFrame = [self contentViewFrameForShowing];
     if (self.layoutBlock) {
         self.layoutBlock(self, contentViewFrame);
@@ -218,6 +221,23 @@
     }
 }
 
+-(void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:)name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+}
+
+-(void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+}
+
+- (void)statusBarFrameWillChange:(NSNotification*)notification {
+    [UIView animateWithDuration:0.35 animations:^{
+        CGFloat dy = self.hbd_inCall ? -20 : 20;
+        self.dimmingView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) + dy);
+    }];
+}
+
 - (void)updateLayout {
     if ([self isViewLoaded]) {
         [self.view setNeedsLayout];
@@ -225,12 +245,15 @@
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-       
+        if (!UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
+            self.view.frame = CGRectMake(0, 0, size.width, size.height);
+        }
     } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         
     }];
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+   
 }
 
 #pragma mark - Dimming View

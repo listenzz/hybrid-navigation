@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UIViewController+HBD.h"
+#import "UIViewController+StatusBar.h"
 
 @class HBDNavigator;
 
@@ -21,7 +22,5 @@
 - (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options NS_DESIGNATED_INITIALIZER;
 
 - (void)setAppProperties:(NSDictionary *)props;
-
-- (void)setStatusBarHidden:(BOOL)hidden;
 
 @end

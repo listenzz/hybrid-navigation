@@ -8,13 +8,14 @@
 
 #import "HBDDrawerController.h"
 #import "HBDUtils.h"
+#import "UIViewController+StatusBar.h"
+#import "UIViewController+HBD.h"
 
 @interface HBDDrawerController () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, assign, getter=isMenuOpened) BOOL menuOpened;
 @property (nonatomic, strong) UIView *menuDimmingView;          // 侧边栏半透明黑底
 @property (nonatomic, strong) UIView *menuHolderView;
-@property (nonatomic, assign) BOOL inCall;
 
 @end
 
@@ -26,7 +27,6 @@
         _menuController = menu;
         _menuInteractive = YES;
         _minDrawerMargin = 64;
-        _inCall = [UIApplication sharedApplication].statusBarFrame.size.height == 40;
     }
     return self;
 }
@@ -53,6 +53,14 @@
     return NO;
 }
 
+- (UIViewController *)childViewControllerForStatusBarStyle {
+    return self.contentController;
+}
+
+- (UIViewController *)childViewControllerForStatusBarHidden {
+    return self.menuOpened ? self.menuController : self.contentController;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.contentController beginAppearanceTransition:YES animated:animated];
@@ -73,12 +81,12 @@
     }
 }
 
--(void) viewDidAppear:(BOOL)animated {
+-(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:)name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 }
 
--(void) viewDidDisappear:(BOOL)animated {
+-(void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 }
@@ -86,11 +94,9 @@
 - (void)statusBarFrameWillChange:(NSNotification*)notification {
     CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
     if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation) && statusBarHeight != 0) {
-        self.inCall = (statusBarHeight == 40);
-        [self setStatusBarHidden:self.menuOpened];
         if (self.menuOpened) {
             [UIView animateWithDuration:0.35 animations:^{
-                CGFloat dy = self.inCall ? -20 : 20;
+                CGFloat dy = self.hbd_inCall ? -20 : 20;
                 self.menuHolderView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) + dy);
                 self.menuDimmingView.frame = self.menuHolderView.bounds;
                 self.menuController.view.frame = CGRectMake(0, 0, [self menuWidth], self.menuHolderView.bounds.size.height);
@@ -100,16 +106,14 @@
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         if (self.menuOpened) {
             self.menuHolderView.frame = CGRectMake(0, 0, size.width, size.height);
             self.menuDimmingView.frame = self.menuHolderView.bounds;
             self.menuController.view.frame = CGRectMake(0, 0, [self menuWidth], size.height);
         }
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-        [self setStatusBarHidden:self.menuOpened];
-    }];
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {}];
 }
 
 - (void)setContentViewController:(UIViewController *)contentViewController {
@@ -142,15 +146,8 @@
 
 - (void)setMenuOpened:(BOOL)menuOpened {
     _menuOpened = menuOpened;
-    [self setStatusBarHidden:self.menuOpened];
-}
-
-- (UIViewController *)childViewControllerForStatusBarStyle {
-    return self.contentController;
-}
-
-- (UIViewController *)childViewControllerForStatusBarHidden {
-    return self.contentController;
+    self.menuController.hbd_statusBarHidden = menuOpened;
+    [self.menuController setStatusBarHidden:menuOpened];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
@@ -313,19 +310,6 @@
     CGFloat margin2 = maxWidth - self.maxDrawerWidth;
     CGFloat margin = MAX(margin1, margin2);
     return maxWidth - margin;
-}
-
-- (void)setStatusBarHidden:(BOOL)hidden {
-    hidden = (hidden || self.isMenuOpened) && !self.inCall &&![HBDUtils isIphoneX];
-
-    UIWindow *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
-    if (!statusBar) {
-        return;
-    }
-    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-    [UIView animateWithDuration:0.35 animations:^{
-        statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
-    }];
 }
 
 @end
