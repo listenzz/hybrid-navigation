@@ -168,8 +168,7 @@
     
     UIViewController *menu = self.menuController;
     float menuWidth = [self menuWidth];
-    
-    // [self.contentController beginAppearanceTransition:NO animated:YES];
+
     [self.menuController beginAppearanceTransition:YES animated:YES];
     
     [UIView animateWithDuration:0.2 delay:0. options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -177,7 +176,6 @@
         self.menuDimmingView.alpha = 0.5;
         menu.view.frame = CGRectMake(0, 0, menuWidth, CGRectGetHeight(self.view.bounds));
     } completion:^(BOOL finished) {
-        // [self.contentController endAppearanceTransition];
         [self.menuController endAppearanceTransition];
     }];
 }
@@ -206,7 +204,6 @@
     CGFloat duration = ( 1- (dx + menuWidth)/menuWidth ) * 0.2;
     
     [self.menuController beginAppearanceTransition:NO animated:YES];
-    // [self.contentController beginAppearanceTransition:YES animated:YES];
    
     [UIView animateWithDuration:duration delay:0. options:UIViewAnimationOptionCurveEaseIn animations:^{
         self.menuController.view.frame = rect;
@@ -219,7 +216,6 @@
         self.menuHolderView = nil;
         self.menuOpened = NO;
         [self.menuController endAppearanceTransition];
-        // [self.contentController endAppearanceTransition];
     }];
 }
 
@@ -228,13 +224,11 @@
     CGFloat dx = 0 - CGRectGetMinX(self.menuController.view.frame);
     CGRect rect = CGRectOffset(self.menuController.view.frame, dx, 0);
     CGFloat duration = (dx/width) * 0.2;
-    // [self.contentController beginAppearanceTransition:NO animated:YES];
     [self.menuController beginAppearanceTransition:YES animated:YES];
     [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionCurveEaseIn animations:^{
         self.menuController.view.frame = rect;
         self.menuDimmingView.alpha = 0.5;
     } completion:^(BOOL finished) {
-        // [self.contentController endAppearanceTransition];
         [self.menuController endAppearanceTransition];
     }];
 }
