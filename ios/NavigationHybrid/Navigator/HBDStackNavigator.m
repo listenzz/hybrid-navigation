@@ -106,6 +106,7 @@
         NSDictionary *layout = [extras objectForKey:@"layout"];
         UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
         if (vc) {
+            vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
             [nav pushViewController:vc animated:animated];
         }
     }
