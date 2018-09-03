@@ -14,7 +14,7 @@
 
 * onComponentResult(requestCode, resultCode, data)
 
-当从前一个页面返回结果时回调，包含 pop、dismiss、hideModal 等操作，不保证和 componentDidAppear 之间的执行顺序
+当从前一个页面返回结果时回调，包含 pop、dismiss、hideModal 等操作。onComponentResult 总是在该页面的 componentDidAppear 之后执行
 
 * onBackPressed
 

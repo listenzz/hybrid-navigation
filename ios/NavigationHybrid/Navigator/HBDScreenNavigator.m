@@ -73,12 +73,17 @@
         HBDNavigationController *presented = [[HBDNavigationController alloc] initWithRootViewController:target];
         presented.modalPresentationStyle = UIModalPresentationCurrentContext;
         [presented setRequestCode:requestCode];
+        [vc beginAppearanceTransition:NO animated:animated];
+        [vc endAppearanceTransition];
         [vc presentViewController:presented animated:animated completion:^{
             
         }];
     } else if ([action isEqualToString:@"dismiss"]) {
         UIViewController *presenting = vc.presentingViewController;
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
+        // make sure extra lifecycle excuting order
+        [vc beginAppearanceTransition:NO animated:animated];
+        [vc endAppearanceTransition];
         [presenting dismissViewControllerAnimated:animated completion:^{
             [presenting didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:vc.requestCode];
         }];
@@ -105,6 +110,9 @@
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
         [target setRequestCode:requestCode];
         target.modalPresentationStyle = UIModalPresentationCurrentContext;
+        // make sure extra lifecycle excuting order
+        [vc beginAppearanceTransition:NO animated:animated];
+        [vc endAppearanceTransition];
         [vc presentViewController:target animated:animated completion:^{
             
         }];

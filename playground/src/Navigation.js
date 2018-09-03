@@ -84,7 +84,12 @@ export default class Navigation extends Component {
     router.inactivate();
   }
 
+  onComponentBack() {
+    console.info('navigation onComponentBack');
+  }
+
   onComponentResult(requestCode, resultCode, data) {
+    console.info('navigation onComponentResult');
     if (requestCode === REQUEST_CODE) {
       if (resultCode === RESULT_OK) {
         this.setState({

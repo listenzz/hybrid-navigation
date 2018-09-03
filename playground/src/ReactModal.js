@@ -31,6 +31,14 @@ export default class ReactModal extends React.Component {
     ],
   };
 
+  componentDidAppear() {
+    console.info('modal componentDidAppear');
+  }
+
+  componentDidDisappear() {
+    console.info('modal componentDidDisappear');
+  }
+
   onBackPressed = () => {
     this.handleCancel();
   };

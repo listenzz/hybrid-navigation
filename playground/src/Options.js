@@ -56,12 +56,14 @@ export default class Options extends Component {
   }
 
   componentDidAppear() {
+    console.info('options componentDidAppear');
     this.props.navigator.isRoot().then(isRoot => {
       this.props.garden.setMenuInteractive(isRoot);
     });
   }
 
   componentDidDisappear() {
+    console.info('options componentDidDisappear');
     this.props.garden.setMenuInteractive(false);
   }
 

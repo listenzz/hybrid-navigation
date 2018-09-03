@@ -24,6 +24,14 @@ export default class Result extends Component {
     };
   }
 
+  componentDidAppear() {
+    console.info('result componentDidAppear');
+  }
+
+  componentDidDisappear() {
+    console.info('result componentDidDisappear');
+  }
+
   componentWillMount() {
     this.props.navigator.isRoot().then(isRoot => {
       if (isRoot) {
@@ -37,6 +45,10 @@ export default class Result extends Component {
         this.setState({ isRoot: isRoot });
       }
     });
+  }
+
+  onComponentBack() {
+    console.info('result onComponentBack');
   }
 
   popToRoot() {
