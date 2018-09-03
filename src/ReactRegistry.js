@@ -133,15 +133,6 @@ export default {
         this.events.push(event);
       }
 
-      listenComponentBackEvent() {
-        let event = EventEmitter.addListener('ON_COMPONENT_BACK', event => {
-          if (this.props.sceneId === event.sceneId && this.refs.real.onComponentBack) {
-            this.refs.real.onComponentBack();
-          }
-        });
-        this.events.push(event);
-      }
-
       componentDidMount() {
         // console.debug('componentDidMount    = ' + this.props.sceneId);
         this.listenComponentResultEvent();
@@ -149,7 +140,6 @@ export default {
         this.listenComponentResumeEvent();
         this.listenComponentPauseEvent();
         this.listenDialogBackPressedEvent();
-        this.listenComponentBackEvent();
         this.navigator.signalFirstRenderComplete();
       }
 

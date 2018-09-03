@@ -47,10 +47,6 @@ export default class Result extends Component {
     });
   }
 
-  onComponentBack() {
-    console.info('result onComponentBack');
-  }
-
   popToRoot() {
     this.props.navigator.popToRoot();
   }

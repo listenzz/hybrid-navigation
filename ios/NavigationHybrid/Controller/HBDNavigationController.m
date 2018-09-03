@@ -181,9 +181,6 @@
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     if (self.poppingViewController && [self.poppingViewController isKindOfClass:[HBDViewController class]]) {
-        HBDViewController *reactVC = (HBDViewController *)self.poppingViewController;
-        RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-        [emitter sendEventWithName:@"ON_COMPONENT_BACK" body:@{ @"sceneId": reactVC.sceneId }];
         [viewController didReceiveResultCode:self.poppingViewController.resultCode resultData:self.poppingViewController.resultData requestCode:0];
     }
     self.poppingViewController = nil;
