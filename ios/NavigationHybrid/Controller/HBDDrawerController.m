@@ -40,7 +40,7 @@
     [self.contentController didMoveToParentViewController:self];
     
     [self addChildViewController:self.menuController];
-    [self.view addSubview:self.menuController.view];
+    self.menuController.view.frame = CGRectZero;
     [self.menuController didMoveToParentViewController:self];
     
     UIScreenEdgePanGestureRecognizer *edgePanGestureRecogizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handleEdgePanGestureRecognizer:)];
