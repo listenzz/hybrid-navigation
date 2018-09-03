@@ -10,12 +10,14 @@
 
 当页面不可见时回调
 
-> 从 A 页面切换至 B 页面时，不保证 A 页面的 componentDidDisappear 在 B 页面的 componentDidAppear 之前执行
+> 从 A 页面切换至 B 页面时，确保 A 页面的 componentDidDisappear 在 B 页面的 componentDidAppear 之前执行
 
 * onComponentResult(requestCode, resultCode, data)
 
-当从前一个页面返回结果时回调，包含 pop、dismiss、hideModal 等操作。onComponentResult 总是在该页面的 componentDidAppear 之后执行
+当从前一个页面返回结果时回调，包含 pop、dismiss、hideModal 等操作。
+
+> onComponentResult 总是在该页面的 componentDidAppear 之后执行
 
 * onBackPressed
 
-仅对 Android 平台生效。用于处理通过 showModal 弹出的组件的返回键。
+仅对 Android 平台生效。用于处理通过 showModal 弹出的注册组件的物理或虚拟返回键。
