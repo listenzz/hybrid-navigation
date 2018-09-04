@@ -75,8 +75,16 @@ export default class Garden {
     GardenModule.setTitleItem(this.sceneId, item);
   }
 
+  setTitleTextAttributes(attributes) {
+    GardenModule.setTitleTextAttributes(this.sceneId, attributes);
+  }
+
   setTopBarStyle(item) {
     GardenModule.setTopBarStyle(this.sceneId, item);
+  }
+
+  setTopBarTintColor(item) {
+    GardenModule.setTopBarTintColor(this.sceneId, item);
   }
 
   setTopBarAlpha(item) {

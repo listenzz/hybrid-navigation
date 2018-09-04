@@ -63,6 +63,25 @@ RCT_EXPORT_METHOD(setTitleItem:(NSString *)sceneId item:(NSDictionary *)item) {
     [garden setTitleItem:item forController:vc];
 }
 
+RCT_EXPORT_METHOD(setTitleTextAttributes:(NSString *)sceneId item:(NSDictionary *)item) {
+    HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    HBDGarden *garden = [[HBDGarden alloc] init];
+    NSMutableDictionary *titleAttributes = [vc.hbd_titleTextAttributes mutableCopy];
+    if (!titleAttributes) {
+        titleAttributes = [@{} mutableCopy];
+    }
+    NSString *titleTextColor = [item objectForKey:@"titleTextColor"];
+    NSNumber *titleTextSize = [item objectForKey:@"titleTextSize"];
+    if (titleTextColor) {
+        [titleAttributes setObject:[HBDUtils colorWithHexString:titleTextColor] forKey:NSForegroundColorAttributeName];
+    }
+    if (titleTextSize) {
+        [titleAttributes setObject:[UIFont systemFontOfSize:[titleTextSize floatValue]] forKey:NSFontAttributeName];
+    }
+    [garden setTitleTextAttributes:titleAttributes forController:vc];
+}
+
+
 RCT_EXPORT_METHOD(setStatusBarColor:(NSString *)sceneId item:(NSDictionary *)item) {
     NSLog(@"setStatusBarColor: %@", item);
 }
@@ -95,6 +114,20 @@ RCT_EXPORT_METHOD(setTopBarStyle:(NSString *)sceneId item:(NSDictionary *)item) 
         } else {
             [garden setTopBarStyle:UIBarStyleBlack forController:vc];
         }
+    }
+}
+
+RCT_EXPORT_METHOD(setTopBarTintColor:(NSString *)sceneId item:(NSDictionary *)item) {
+    NSLog(@"setTopBarTintColor: %@", item);
+    NSString *topBarTintColor = [item objectForKey:@"topBarTintColor"];
+    if (topBarTintColor) {
+        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+        NSDictionary *options = vc.options;
+        NSMutableDictionary *mutable =  [options mutableCopy];
+        [mutable setObject:topBarTintColor forKey:@"topBarTintColor"];
+        vc.options = [mutable copy];
+        HBDGarden *garden = [[HBDGarden alloc] init];
+        [garden setTopBarTintColor:[HBDUtils colorWithHexString:topBarTintColor] forController:vc];
     }
 }
 

@@ -8,7 +8,7 @@ export default class TopBarStyle extends Component {
     extendedLayoutIncludesTopBar: true,
     topBarStyle: 'light-content',
     topBarTintColor: '#FFFFFF',
-    titleTextColor: '#FFFF00',
+    titleTextColor: '#FFFFFF',
     ...Platform.select({
       ios: {
         topBarColor: '#FF344C',
@@ -24,11 +24,9 @@ export default class TopBarStyle extends Component {
 
     rightBarButtonItem: {
       icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
-      title: 'SETTING',
       action: navigator => {
-        console.info('setting button is clicked.');
+        navigator.push('TopBarMisc');
       },
-      tintColor: '#FFFFFF',
     },
   };
 
@@ -36,21 +34,27 @@ export default class TopBarStyle extends Component {
     super(props);
     this.switchTopBarStyle = this.switchTopBarStyle.bind(this);
     this.topBarStyle = this.topBarStyle.bind(this);
-    this.state = { topBarStyle: 'dark-content' };
+    this.state = {
+      topBarStyle: 'dark-content',
+      topBarTintColor: '#000000',
+    };
   }
 
   switchTopBarStyle() {
     this.props.garden.setTopBarStyle({ topBarStyle: this.state.topBarStyle });
+    this.props.garden.setTopBarTintColor({ topBarTintColor: this.state.topBarTintColor });
+    this.props.garden.setTitleTextAttributes({ titleTextColor: this.state.topBarTintColor });
     if (this.state.topBarStyle === 'dark-content') {
-      this.setState({ topBarStyle: 'light-content' });
+      this.setState({ topBarStyle: 'light-content', topBarTintColor: '#FFFFFF' });
     } else {
-      this.setState({ topBarStyle: 'dark-content' });
+      this.setState({ topBarStyle: 'dark-content', topBarTintColor: '#000000' });
     }
   }
 
   topBarStyle() {
     this.props.navigator.push('TopBarStyle');
   }
+
   render() {
     return (
       <ScrollView

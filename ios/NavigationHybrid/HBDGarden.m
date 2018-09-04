@@ -121,12 +121,22 @@ static GlobalStyle *globalStyle;
     }
 }
 
+- (void)setTitleTextAttributes:(NSDictionary *)attributes forController:(HBDViewController *)controller {
+    controller.hbd_titleTextAttributes = attributes;
+    [controller hbd_setNeedsUpdateNavigationBar];
+}
+
 - (void)setHideBackButton:(BOOL)hidden forController:(HBDViewController *)controller {
     controller.navigationItem.hidesBackButton = hidden;
 }
 
 - (void)setTopBarStyle:(UIBarStyle)barStyle forController:(HBDViewController *)controller {
     controller.hbd_barStyle = barStyle;
+    [controller hbd_setNeedsUpdateNavigationBar];
+}
+
+- (void)setTopBarTintColor:(UIColor *)tintColor forController:(HBDViewController *)controller {
+    controller.hbd_tintColor = tintColor;
     [controller hbd_setNeedsUpdateNavigationBar];
 }
 

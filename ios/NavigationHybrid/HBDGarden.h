@@ -28,7 +28,11 @@
 
 - (void)setTitleItem:(NSDictionary *)item forController:(HBDViewController *)controller;
 
+- (void)setTitleTextAttributes:(NSDictionary *)attributes forController:(HBDViewController *)controller;
+
 - (void)setTopBarStyle:(UIBarStyle)barStyle forController:(HBDViewController *)controller;
+
+- (void)setTopBarTintColor:(UIColor *)tintColor forController:(HBDViewController *)controller;
 
 - (void)setTopBarAlpha:(float)alpha forController:(HBDViewController *)controller;
 

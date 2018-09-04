@@ -4,6 +4,7 @@ package com.navigationhybrid;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
@@ -213,7 +214,7 @@ public class Garden {
         });
     }
 
-    void setStatusBarColor(int color) {
+    void setStatusBarColor(@ColorInt int color) {
         style.setStatusBarColor(color);
         fragment.setNeedsStatusBarAppearanceUpdate();
     }
@@ -235,8 +236,25 @@ public class Garden {
         }
     }
 
-    void setToolbarColor(int color) {
+    void setToolbarColor(@ColorInt int color) {
         style.setToolbarBackgroundColor(color);
+        fragment.setNeedsToolbarAppearanceUpdate();
+    }
+
+    void setToolbarTintColor(@ColorInt int color) {
+        style.setToolbarTintColor(color);
+        fragment.setNeedsToolbarAppearanceUpdate();
+    }
+
+    void setTitleTextAttributes(@NonNull Bundle item) {
+        String titleTextColor = item.getString("titleTextColor");
+        if (titleTextColor != null) {
+            style.setTitleTextColor(Color.parseColor(titleTextColor));
+        }
+        int titleTextSizeDp = item.getInt("titleTextSize", -1);
+        if (titleTextSizeDp != -1) {
+            style.setTitleTextSize(titleTextSizeDp);
+        }
         fragment.setNeedsToolbarAppearanceUpdate();
     }
 

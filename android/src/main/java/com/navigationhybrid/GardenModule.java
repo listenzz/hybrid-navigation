@@ -141,6 +141,28 @@ public class GardenModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void setTitleTextAttributes(final String sceneId, final ReadableMap readableMap) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    Bundle options = fragment.getOptions();
+                    if (readableMap.hasKey("titleTextColor")) {
+                        String titleTextColor = readableMap.getString("titleTextColor");
+                        options.putString("titleTextColor", titleTextColor);
+                    }
+                    if (readableMap.hasKey("titleTextSize")) {
+                        String titleTextSize = readableMap.getString("titleTextSize");
+                        options.putString("titleTextSize", titleTextSize);
+                    }
+                    fragment.getGarden().setTitleTextAttributes(Arguments.toBundle(readableMap));
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void setStatusBarColor(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "setStatusBarColor:" + readableMap);
         handler.post(new Runnable() {
@@ -180,6 +202,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setTopBarStyle(final String sceneId, final ReadableMap readableMap) {
+        Log.i(TAG, "setTopBarStyle:" + readableMap);
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -194,6 +217,25 @@ public class GardenModule extends ReactContextBaseJavaModule {
                         } else {
                             fragment.getGarden().setStatusBarStyle(BarStyle.LightContent);
                         }
+                    }
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setTopBarTintColor(final String sceneId, final ReadableMap readableMap) {
+        Log.i(TAG, "setTopBarTintColor:" + readableMap);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    Bundle options = fragment.getOptions();
+                    if (readableMap.hasKey("topBarTintColor")) {
+                        String topBarTintColor = readableMap.getString("topBarTintColor");
+                        options.putString("topBarTintColor", topBarTintColor);
+                        fragment.getGarden().setToolbarTintColor(Color.parseColor(topBarTintColor));
                     }
                 }
             }

@@ -108,52 +108,52 @@ ReactRegistry.registerComponent('ReactModal', () => ReactModal);
 
 ReactRegistry.endRegisterComponent();
 
-// Navigator.setRoot(
-//   {
-//     drawer: [
-//       {
-//         tabs: [
-//           {
-//             stack: {
-//               screen: { moduleName: 'Navigation' },
-//             },
-//           },
-//           {
-//             stack: {
-//               screen: { moduleName: 'Options' },
-//             },
-//           },
-//         ],
-//       },
-//       {
-//         screen: { moduleName: 'Menu' },
-//       },
-//     ],
-//     options: {
-//       maxDrawerWidth: 280,
-//       minDrawerMargin: 64,
-//     },
-//   },
-//   true
-// );
-
 Navigator.setRoot(
   {
-    tabs: [
+    drawer: [
       {
-        stack: {
-          screen: { moduleName: 'Navigation' },
-        },
+        tabs: [
+          {
+            stack: {
+              screen: { moduleName: 'Navigation' },
+            },
+          },
+          {
+            stack: {
+              screen: { moduleName: 'Options' },
+            },
+          },
+        ],
       },
       {
-        stack: {
-          screen: { moduleName: 'Options' },
-        },
+        screen: { moduleName: 'Menu' },
       },
     ],
+    options: {
+      maxDrawerWidth: 280,
+      minDrawerMargin: 64,
+    },
   },
   true
 );
+
+// Navigator.setRoot(
+//   {
+//     tabs: [
+//       {
+//         stack: {
+//           screen: { moduleName: 'Navigation' },
+//         },
+//       },
+//       {
+//         stack: {
+//           screen: { moduleName: 'Options' },
+//         },
+//       },
+//     ],
+//   },
+//   true
+// );
 
 // Navigator.setRoot(
 //   {
