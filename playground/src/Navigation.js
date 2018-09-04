@@ -75,12 +75,14 @@ export default class Navigation extends Component {
   }
 
   componentDidMount() {
+    console.info('navigation componentDidMount');
     const prefix = Platform.OS == 'android' ? 'hbd://hbd/' : 'hbd://';
     router.activate(prefix);
     this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
   }
 
   componentWillUnmount() {
+    console.info('navigation componentWillUnmount');
     router.inactivate();
   }
 

@@ -24,12 +24,20 @@ export default class Result extends Component {
     };
   }
 
+  componentDidMount() {
+    console.info('result componentDidMount');
+  }
+
   componentDidAppear() {
     console.info('result componentDidAppear');
   }
 
   componentDidDisappear() {
     console.info('result componentDidDisappear');
+  }
+
+  componentWillUnmount() {
+    console.info('result componentWillUnmount');
   }
 
   componentWillMount() {

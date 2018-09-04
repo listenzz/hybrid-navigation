@@ -55,6 +55,10 @@ export default class Options extends Component {
     };
   }
 
+  componentDidMount() {
+    console.info('options componentDidMount');
+  }
+
   componentDidAppear() {
     console.info('options componentDidAppear');
     this.props.navigator.isRoot().then(isRoot => {

@@ -31,12 +31,20 @@ export default class ReactModal extends React.Component {
     ],
   };
 
+  componentDidMount() {
+    console.info('modal componentDidMount');
+  }
+
   componentDidAppear() {
     console.info('modal componentDidAppear');
   }
 
   componentDidDisappear() {
     console.info('modal componentDidDisappear');
+  }
+
+  componentWillUnmount() {
+    console.info('modal componentWillUnmount');
   }
 
   onBackPressed = () => {
