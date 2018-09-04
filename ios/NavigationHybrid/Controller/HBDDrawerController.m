@@ -201,7 +201,7 @@
     float menuWidth = [self menuWidth];
     CGFloat dx = -menuWidth - CGRectGetMinX(self.menuController.view.frame);
     CGRect rect = CGRectOffset(self.menuController.view.frame, dx, 0);
-    CGFloat duration = ( 1- (dx + menuWidth)/menuWidth ) * 0.2;
+    CGFloat duration = (1- (dx + menuWidth)/menuWidth) * 0.2;
     
     [self.menuController beginAppearanceTransition:NO animated:YES];
    

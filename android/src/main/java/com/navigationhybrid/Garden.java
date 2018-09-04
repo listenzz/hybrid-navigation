@@ -214,6 +214,13 @@ public class Garden {
         });
     }
 
+    void setPassThroughTouches(boolean passThroughTouches) {
+        View view = fragment.getView();
+        if (view != null && view instanceof BubbleTouchEventReactRootView) {
+            ((BubbleTouchEventReactRootView) view).setShouldConsumeTouchEvent(!passThroughTouches);
+        }
+    }
+
     void setStatusBarColor(@ColorInt int color) {
         style.setStatusBarColor(color);
         fragment.setNeedsStatusBarAppearanceUpdate();

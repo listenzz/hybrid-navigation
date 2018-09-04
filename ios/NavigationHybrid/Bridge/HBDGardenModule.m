@@ -185,6 +185,20 @@ RCT_EXPORT_METHOD(setTopBarShadowHidden:(NSString *)sceneId item:(NSDictionary *
     NSLog(@"setTopBarShadowHidden: %@", item);
 }
 
+RCT_EXPORT_METHOD(setPassThroughTouches:(NSString *)sceneId item:(NSDictionary *)item) {
+    NSNumber *passThroughTouches = [item objectForKey:@"passThroughTouches"];
+    if (passThroughTouches) {
+        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+        NSDictionary *options = vc.options;
+        NSMutableDictionary *mutable =  [options mutableCopy];
+        [mutable setObject:passThroughTouches forKey:@"passThroughTouches"];
+        vc.options = [mutable copy];
+        HBDGarden *garden = [[HBDGarden alloc] init];
+        [garden setPassThroughTouches:[passThroughTouches boolValue] forController:vc];
+    }
+    NSLog(@"setPassThroughTouches: %@", item);
+}
+
 RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId index:(NSInteger)index text:(NSString *)text) {
     HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     UITabBarController *tabBarController = vc.tabBarController;

@@ -9,6 +9,7 @@
 #import "HBDGarden.h"
 #import <React/RCTConvert.h>
 #import <React/RCTEventEmitter.h>
+#import <React/RCTRootView.h>
 
 #import "HBDBarButtonItem.h"
 #import "HBDReactBridgeManager.h"
@@ -158,6 +159,13 @@ static GlobalStyle *globalStyle;
 - (void)setStatusBarHidden:(BOOL)hidden forController:(HBDViewController *)controller {
     controller.hbd_statusBarHidden = hidden;
     [controller setStatusBarHidden:hidden];
+}
+
+- (void)setPassThroughTouches:(BOOL)passThrough forController:(HBDViewController *)controller {
+    if ([controller.view isKindOfClass:[RCTRootView class]]) {
+        RCTRootView *rootView = (RCTRootView *)controller.view;
+        rootView.passThroughTouches = passThrough;
+    }
 }
 
 @end

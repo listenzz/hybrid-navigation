@@ -40,6 +40,10 @@ export default class Garden {
     GardenModule.setStatusBarHidden(this.sceneId, { statusBarHidden: hidden });
   }
 
+  setPassThroughTouches(item) {
+    GardenModule.setPassThroughtouches(item);
+  }
+
   setLeftBarButtonItem(item) {
     if (this.options.leftBarButtonItem) {
       this.options.leftBarButtonItem = { ...this.options.leftBarButtonItem, ...item };

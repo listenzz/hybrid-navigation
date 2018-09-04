@@ -42,4 +42,6 @@
 
 - (void)setStatusBarHidden:(BOOL)hidden forController:(HBDViewController *)controller;
 
+- (void)setPassThroughTouches:(BOOL)passThrough forController:(HBDViewController *)controller;
+
 @end

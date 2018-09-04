@@ -89,6 +89,26 @@ public class GardenModule extends ReactContextBaseJavaModule {
         });
     }
 
+
+    @ReactMethod
+    public void setPassThroughTouches(final String sceneId, final ReadableMap readableMap) {
+        Log.i(TAG, "setPassThroughTouches:" + readableMap);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment != null && fragment.getView() != null) {
+                    Bundle options = fragment.getOptions();
+                    if (readableMap.hasKey("passThroughTouches")) {
+                        boolean passThroughTouches = readableMap.getBoolean("passThroughTouches");
+                        options.putBoolean("passThroughTouches", passThroughTouches);
+                        fragment.getGarden().setPassThroughTouches(passThroughTouches);
+                    }
+                }
+            }
+        });
+    }
+
     @ReactMethod
     public void setLeftBarButtonItem(final String sceneId, final ReadableMap readableMap) {
         handler.post(new Runnable() {
