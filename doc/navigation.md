@@ -17,13 +17,15 @@ present 是一种模态交互方式，类似于 Android 的 `startActivityForRes
 this.props.navigator.present('B', 1);
 ```
 
-B 页面返回结果给 A 页面
+B 页面通过 `setResult`返回结果给 A 页面
 
 ```javascript
 // B.js
 this.props.navigator.setResult(RESULT_OK, { text: 'greeting' });
 this.props.navigator.dismiss();
 ```
+
+> 注意：仅支持返回可以序列化为 json 的对象，不支持函数
 
 A 页面通过实现 `onComponentResult` 方法来接收结果
 
@@ -49,6 +51,8 @@ this.props.navigator.present('B', 1, {});
 
 B 页面可以通过 `this.props` 来获取传递的值
 
+> 注意：第三个参数仅支持可以序列化为 json 的对象，不支持函数
+
 有些时候，比如选择一张照片，我们先要跳到相册列表页面，然后进入某个相册选择相片返回。这也是没有问题的。
 
 A 页面 `present` 出相册列表页面
@@ -62,11 +66,15 @@ this.props.navigator.present('AlbumList', 1);
 
 ```javascript
 // AlbumList.js
-this.props.navigator.push('Album')
-`在相册页面选好相片后返回结果给 A 页面`javascript
+this.props.navigator.push('Album');
+```
+
+在相册页面选好相片后返回结果给 A 页面
+
+```javascript
 // Album.js
-this.props.navigator.setResult(RESULT_OK, {uri: 'file://...'})
-this.props.navigator.dismiss()
+this.props.navigator.setResult(RESULT_OK, { uri: 'file://...' });
+this.props.navigator.dismiss();
 ```
 
 在 A 页面接收返回的结果（略）。
@@ -146,7 +154,13 @@ this.props.navigator.push('B');
 this.props.navigator.push('B', {...});
 ```
 
+> 注意：第二个参数只支持可以序列化为 json 的对象，不支持函数
+
 B 页面通过 `this.props` 来访问传递过来的值
+
+* pushLayout
+
+push 加强版，可以 push 任意结构的页面
 
 * pop
 
@@ -157,14 +171,6 @@ B 页面通过 `this.props` 来访问传递过来的值
 this.props.navigator.pop();
 ```
 
-可以通过以下方法来监听用户是否通过点击返回按钮，右滑，或通过代码 pop 来返回前一个页面
-
-```javascript
-onComponentBack() {
-
-}
-```
-
 * popTo
 
 返回到之前的指定页面。比如你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回 B 页面。你可以把 B 页面的 `sceneId` 一直传递到 D 页面，然后调用 `popTo('bId')` 返回到 B 页面。
@@ -173,11 +179,19 @@ onComponentBack() {
 
 ```javascript
 // B.js
-this.props.navigator.push('C', {bId: this.props.sceneId})
-`从 C 页面跳到 D 页面时`javascript
+this.props.navigator.push('C', { bId: this.props.sceneId });
+```
+
+从 C 页面跳到 D 页面时
+
+````javascript
 // C.js
 this.props.navigator.push('D', {bId: this.props.bId})
-`现在想从 D 页面 返回到 B 页面`javascript
+```
+
+现在想从 D 页面 返回到 B 页面
+
+```javascript
 // D.js
 this.props.navigator.popTo(this.props.bId)
 ```
@@ -215,7 +229,7 @@ this.props.navigator.replace('B');
 this.props.navigator.replaceToRoot('E');
 ```
 
-A、B、C、D 页面被移除，E 页面被设置为 Stack 的根页面。
+A、B、C、D 页面被移除，E 页面被设置为 stack 的根页面。
 
 * isRoot
 
@@ -251,3 +265,4 @@ componentWillMount() {
 * closeMenu
 
 关闭抽屉
+````
