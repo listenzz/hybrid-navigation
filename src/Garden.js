@@ -90,27 +90,27 @@ export default class Garden {
   }
 
   setTopBarStyle(item) {
-    console.warn('#setTopBarStyle 已经弃用，请使用 #updateTopBar');
+    console.warn('#setTopBarStyle is deprecated, use #updateTopBar instead');
     this.updateTopBar(item);
   }
 
   setTopBarTintColor(item) {
-    console.warn('#setTopBarTintColor 已经弃用，请使用 #updateTopBar');
+    console.warn('#setTopBarTintColor is deprecated, use #updateTopBar instead');
     this.updateTopBar(item);
   }
 
   setTopBarAlpha(item) {
-    console.warn('#setTopBarAlpha 已经弃用，请使用 #updateTopBar');
+    console.warn('#setTopBarAlpha is deprecated, use #updateTopBar instead');
     this.updateTopBar(item);
   }
 
   setTopBarColor(item) {
-    console.warn('#setTopBarColor 已经弃用，请使用 #updateTopBar');
+    console.warn('#setTopBarColor is deprecated, use #updateTopBar instead');
     this.updateTopBar(item);
   }
 
   setTopBarShadowHidden(item) {
-    console.warn('#setTopBarShadowHidden 已经弃用，请使用 #updateTopBar');
+    console.warn('#setTopBarShadowHidden is deprecated, use #updateTopBar instead');
     this.updateTopBar(item);
   }
 
@@ -119,12 +119,12 @@ export default class Garden {
   }
 
   setTabBarColor(item) {
-    console.warn('#setTabBarColor 已经弃用，请使用 #updateTabBar');
+    console.warn('#setTabBarColor is deprecated, use #updateTabBar instead');
     this.updateTabBar(item);
   }
 
   replaceTabColor(item) {
-    console.warn('#replaceTabColor 已经弃用，请使用 #updateTabBar');
+    console.warn('#replaceTabColor is deprecated, use #updateTabBar instead');
     this.updateTabBar(item);
   }
 
