@@ -53,7 +53,7 @@ export default class TopBarAlpha extends Component {
       icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
       title: 'SETTING',
       action: navigator => {
-        console.info('setting button is clicked.');
+        navigator.push('TopBarMisc');
       },
     },
   };
@@ -82,7 +82,7 @@ export default class TopBarAlpha extends Component {
   }
 
   onAlphaChange(value) {
-    this.props.garden.setTopBarAlpha({
+    this.props.garden.updateTopBar({
       topBarAlpha: value,
     });
     this.setState({ alpha: value });

@@ -43,4 +43,6 @@
 
 - (HBDDrawerController *)drawerController;
 
+- (void)hbd_updateTabBarItem:(NSDictionary *)options;
+
 @end

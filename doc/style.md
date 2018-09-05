@@ -187,6 +187,7 @@ class Screen extends Component {
     extendedLayoutIncludesTopBar: false, // 当前页面的内容是否延伸到 topBar 底下，通常用于需要动态改变 `topBarAlpha` 的场合
     topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
     titleTextColor: '#FFFFFF', // 当前页面标题颜色
+    titleTextSize: Int; // 当前页面顶部导航栏标题字体大小
     topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
     topBarHidden: true, // 是否隐藏当前页面 topBar
     statusBarHidden: true, // 是否隐藏当前页面的状态栏，对 iPhoneX 无效
@@ -356,43 +357,20 @@ this.props.garden.setStatusBarColor({ statusBarColor: '#FF0000' });
 this.props.garden.setStatusBarHidden(false);
 ```
 
-* setTopBarStyle
+* updateTopBar
 
-动态改变导航栏样式风格（会影响状态栏前景色是黑的或白的）
-
-```javascript
-this.props.garden.setTopBarStyle({ topBarStyle: this.state.topBarStyle });
-if (this.state.topBarStyle === 'dark-content') {
-  this.setState({ topBarStyle: 'light-content' });
-} else {
-  this.setState({ topBarStyle: 'dark-content' });
-}
-```
-
-* setTopBarAlpha
-
-动态改变导航栏背景的透明度
+动态改变导航栏样式, 可配置项如下
 
 ```javascript
-this.props.garden.setTopBarAlpha({
-  topBarAlpha: value,
+this.props.garden.updateTopBar({
+  topBarStyle: 'light-content', // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
+  topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
+  topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
+  topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
+  topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
+  titleTextColor: '#FFFFFF', // 当前页面标题颜色
+  titleTextSize: 17, // 当前页面顶部导航栏标题字体大小
 });
-```
-
-* setTopBarColor
-
-动态改变导航栏的颜色
-
-```javascript
-this.props.garden.setTopBarColor({ topBarColor: '#00FF00' });
-```
-
-* setTopBarShadowHidden
-
-是否隐藏导航栏下的阴影
-
-```javascript
-this.props.garden.setTopBarShadowHidden({ topBarShadowHidden: value });
 ```
 
 * setTitleItem
@@ -429,12 +407,20 @@ this.props.garden.setRightBarButtonItem({
 });
 ```
 
-* setTabBarColor
+* updateTabBar
 
-更改 TabBar 的背景颜色
+动态改变 tabBar 样式, 可配置项如下
 
 ```javascript
-this.props.garden.setTabBarColor({ bottomBarColor: '#FFFFFF' });
+this.props.garden.updateTabBar({
+  tabBarColor: '#FFFFFF',
+  tabBarShadowImage: {
+    color: '#DDDDDD',
+    // image: Image.resolveAssetSource(require('./src/images/divider.png')),
+  },
+  tabBarItemColor: '#8BC34A',
+  tabBarUnselectedItemColor: '#BDBDBD',
+});
 ```
 
 * replaceTabIcon

@@ -21,7 +21,7 @@ export default class TopBarShadowHidden extends Component {
 
   onHiddenChange(value) {
     this.setState({ hidden: value });
-    this.props.garden.setTopBarShadowHidden({ topBarShadowHidden: value });
+    this.props.garden.updateTopBar({ topBarShadowHidden: value });
   }
 
   topBarAlpha() {

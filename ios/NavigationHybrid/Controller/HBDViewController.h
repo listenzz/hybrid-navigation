@@ -23,4 +23,6 @@
 
 - (void)setAppProperties:(NSDictionary *)props;
 
+- (void)updateNavigationBar:(NSDictionary *)options;
+
 @end

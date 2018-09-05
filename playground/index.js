@@ -47,8 +47,8 @@ Garden.setStyle({
 
   tabBarColor: '#FFFFFF',
   tabBarShadowImage: {
-    // color: '#DDDDDD',
-    image: Image.resolveAssetSource(require('./src/images/divider.png')),
+    color: '#DDDDDD',
+    // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
   //tabBarItemColor: '#CCCCCC',
   //tabBarSelectedItemColor: '#00ff00',

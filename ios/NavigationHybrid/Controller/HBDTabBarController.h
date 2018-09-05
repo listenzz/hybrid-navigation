@@ -10,4 +10,6 @@
 
 @interface HBDTabBarController : UITabBarController
 
+- (void)updateTabBar:(NSDictionary *)options;
+
 @end

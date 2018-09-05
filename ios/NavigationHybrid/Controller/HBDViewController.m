@@ -62,44 +62,7 @@
         self.view.backgroundColor = [HBDGarden globalStyle].screenBackgroundColor;
     }
     
-    NSString *topBarStyle = self.options[@"topBarStyle"];
-    if (topBarStyle) {
-        if ([topBarStyle isEqualToString:@"dark-content"]) {
-            self.hbd_barStyle = UIBarStyleDefault;
-        } else {
-            self.hbd_barStyle = UIBarStyleBlack;
-        }
-    }
-    
-    NSString *topBarColor = self.options[@"topBarColor"];
-    if (topBarColor) {
-        self.hbd_barTintColor = [HBDUtils colorWithHexString:topBarColor];
-    }
-    
-    NSString *topBarTintColor = self.options[@"topBarTintColor"];
-    if (topBarTintColor) {
-        self.hbd_tintColor = [HBDUtils colorWithHexString:topBarTintColor];
-    }
-    
-    NSString *titleTextColor = self.options[@"titleTextColor"];
-    if (titleTextColor) {
-        NSMutableDictionary *attribute = [[UINavigationBar appearance].titleTextAttributes mutableCopy];
-        if (!attribute) {
-            attribute = [@{} mutableCopy];
-        }
-        [attribute setObject:[HBDUtils colorWithHexString:titleTextColor] forKey:NSForegroundColorAttributeName];
-        self.hbd_titleTextAttributes = attribute;
-    }
-    
-    NSNumber *topBarAlpha = self.options[@"topBarAlpha"];
-    if (topBarAlpha) {
-        self.hbd_barAlpha = [topBarAlpha floatValue];
-    }
-    
-    NSNumber *hideShadow = self.options[@"topBarShadowHidden"];
-    if ([hideShadow boolValue]) {
-        self.hbd_barShadowHidden = YES;
-    }
+    [self applyNavigationBarOptions:self.options];
     
     NSNumber *topBarHidden = self.options[@"topBarHidden"];
     if ([topBarHidden boolValue]) {
@@ -135,8 +98,8 @@
         self.navigationItem.backBarButtonItem = backButton;
     }
     
-    NSNumber *hidden = self.options[@"backButtonHidden"];
-    if ([hidden boolValue]) {
+    NSNumber *backButtonHidden = self.options[@"backButtonHidden"];
+    if ([backButtonHidden boolValue]) {
         if (@available(iOS 11, *)) {
              [self.navigationItem setHidesBackButton:YES];
         } else {
@@ -177,6 +140,56 @@
     
     NSArray *leftBarButtonItems = self.options[@"leftBarButtonItems"];
     [garden setLeftBarButtonItems:leftBarButtonItems forController:self];
+}
+
+- (void)updateNavigationBar:(NSDictionary *)options {
+    [self applyNavigationBarOptions:options];
+    [self hbd_setNeedsUpdateNavigationBar];
+}
+
+- (void)applyNavigationBarOptions:(NSDictionary *)options {
+    NSString *topBarStyle = options[@"topBarStyle"];
+    if (topBarStyle) {
+        if ([topBarStyle isEqualToString:@"dark-content"]) {
+            self.hbd_barStyle = UIBarStyleDefault;
+        } else {
+            self.hbd_barStyle = UIBarStyleBlack;
+        }
+    }
+    
+    NSString *topBarTintColor = options[@"topBarTintColor"];
+    if (topBarTintColor) {
+        self.hbd_tintColor = [HBDUtils colorWithHexString:topBarTintColor];
+    }
+    
+    NSMutableDictionary *titleAttributes = [self.hbd_titleTextAttributes mutableCopy];
+    if (!titleAttributes) {
+        titleAttributes = [@{} mutableCopy];
+    }
+    NSString *titleTextColor = [options objectForKey:@"titleTextColor"];
+    NSNumber *titleTextSize = [options objectForKey:@"titleTextSize"];
+    if (titleTextColor) {
+        [titleAttributes setObject:[HBDUtils colorWithHexString:titleTextColor] forKey:NSForegroundColorAttributeName];
+    }
+    if (titleTextSize) {
+        [titleAttributes setObject:[UIFont systemFontOfSize:[titleTextSize floatValue]] forKey:NSFontAttributeName];
+    }
+    self.hbd_titleTextAttributes = titleAttributes;
+    
+    NSString *topBarColor = options[@"topBarColor"];
+    if (topBarColor) {
+        self.hbd_barTintColor = [HBDUtils colorWithHexString:topBarColor];
+    }
+    
+    NSNumber *topBarAlpha = options[@"topBarAlpha"];
+    if (topBarAlpha) {
+        self.hbd_barAlpha = [topBarAlpha floatValue];
+    }
+    
+    NSNumber *hideShadow = options[@"topBarShadowHidden"];
+    if (hideShadow) {
+        self.hbd_barShadowHidden = [hideShadow boolValue];
+    }
 }
 
 @end

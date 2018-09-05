@@ -174,26 +174,24 @@ public class GlobalStyle {
         }
 
         // tabBarShadowImage
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Bundle shadowImage = options.getBundle("tabBarShadowImage");
-            if (shadowImage != null) {
-                Bundle image = shadowImage.getBundle("image");
-                String color = shadowImage.getString("color");
-                Drawable drawable = null;
-                if (image != null) {
-                    String uri = image.getString("uri");
-                    if (uri != null) {
-                        drawable = DrawableUtils.fromUri(context, uri);
-                        if (drawable instanceof BitmapDrawable) {
-                            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-                            bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
-                        }
+        Bundle shadowImage = options.getBundle("tabBarShadowImage");
+        if (shadowImage != null) {
+            Bundle image = shadowImage.getBundle("image");
+            String color = shadowImage.getString("color");
+            Drawable drawable = null;
+            if (image != null) {
+                String uri = image.getString("uri");
+                if (uri != null) {
+                    drawable = DrawableUtils.fromUri(context, uri);
+                    if (drawable instanceof BitmapDrawable) {
+                        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+                        bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
                     }
-                } else if (color != null) {
-                    drawable = new ColorDrawable(Color.parseColor(color));
                 }
-                style.setTabBarShadow(drawable);
+            } else if (color != null) {
+                drawable = new ColorDrawable(Color.parseColor(color));
             }
+            style.setTabBarShadow(drawable);
         }
 
         // swipeBackEnabledAndroid

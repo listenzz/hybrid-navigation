@@ -32,6 +32,7 @@ export default class Garden {
   }
 
   // --------------- instance method --------------
+
   setStatusBarColor(item) {
     GardenModule.setStatusBarColor(this.sceneId, item);
   }
@@ -79,40 +80,56 @@ export default class Garden {
     GardenModule.setTitleItem(this.sceneId, item);
   }
 
+  updateTopBar(options = {}) {
+    GardenModule.updateTopBar(this.sceneId, options);
+  }
+
   setTitleTextAttributes(attributes) {
-    GardenModule.setTitleTextAttributes(this.sceneId, attributes);
+    console.warn('#setTitleTextAttributes 已经弃用，请使用 #updateTopBar');
+    this.updateTopBar(attributes);
   }
 
   setTopBarStyle(item) {
-    GardenModule.setTopBarStyle(this.sceneId, item);
+    console.warn('#setTopBarStyle 已经弃用，请使用 #updateTopBar');
+    this.updateTopBar(item);
   }
 
   setTopBarTintColor(item) {
-    GardenModule.setTopBarTintColor(this.sceneId, item);
+    console.warn('#setTopBarTintColor 已经弃用，请使用 #updateTopBar');
+    this.updateTopBar(item);
   }
 
   setTopBarAlpha(item) {
-    GardenModule.setTopBarAlpha(this.sceneId, item);
+    console.warn('#setTopBarAlpha 已经弃用，请使用 #updateTopBar');
+    this.updateTopBar(item);
   }
 
   setTopBarColor(item) {
-    GardenModule.setTopBarColor(this.sceneId, item);
+    console.warn('#setTopBarColor 已经弃用，请使用 #updateTopBar');
+    this.updateTopBar(item);
   }
 
   setTopBarShadowHidden(item) {
-    GardenModule.setTopBarShadowHidden(this.sceneId, item);
+    console.warn('#setTopBarShadowHidden 已经弃用，请使用 #updateTopBar');
+    this.updateTopBar(item);
+  }
+
+  updateTabBar(options = {}) {
+    GardenModule.updateTabBar(this.sceneId, options);
   }
 
   setTabBarColor(item) {
-    GardenModule.setTabBarColor(this.sceneId, item);
+    console.warn('#setTabBarColor 已经弃用，请使用 #updateTabBar');
+    this.updateTabBar(item);
+  }
+
+  replaceTabColor(item) {
+    console.warn('#replaceTabColor 已经弃用，请使用 #updateTabBar');
+    this.updateTabBar(item);
   }
 
   replaceTabIcon(index, icon, inactiveIcon) {
     GardenModule.replaceTabIcon(this.sceneId, index, icon, inactiveIcon);
-  }
-
-  replaceTabColor(item) {
-    GardenModule.replaceTabColor(this.sceneId, item);
   }
 
   setTabBadge(index, text) {

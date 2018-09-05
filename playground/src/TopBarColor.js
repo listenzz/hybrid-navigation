@@ -18,15 +18,15 @@ export default class TopBarColor extends Component {
   }
 
   red() {
-    this.props.garden.setTopBarColor({ topBarColor: '#FF0000' });
+    this.props.garden.updateTopBar({ topBarColor: '#FF0000' });
   }
 
   green() {
-    this.props.garden.setTopBarColor({ topBarColor: '#00FF00' });
+    this.props.garden.updateTopBar({ topBarColor: '#00FF00' });
   }
 
   blue() {
-    this.props.garden.setTopBarColor({ topBarColor: '#0000FF' });
+    this.props.garden.updateTopBar({ topBarColor: '#0000FF' });
   }
 
   topBarColor() {

@@ -6,10 +6,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 
 import java.util.ArrayList;
 
@@ -37,6 +40,16 @@ public class Garden {
 
     static GlobalStyle getGlobalStyle() {
         return globalStyle;
+    }
+
+    static @NonNull Bundle mergeOptions(@NonNull Bundle options, @Nullable ReadableMap readableMap) {
+        if (readableMap == null) {
+            return options;
+        }
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(Arguments.fromBundle(options));
+        writableMap.merge(readableMap);
+        return Arguments.toBundle(writableMap);
     }
 
     private final HybridFragment fragment;
@@ -74,24 +87,9 @@ public class Garden {
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush");
         this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
 
-        String barStyle = options.getString("topBarStyle");
-        if (barStyle != null) {
-            if (barStyle.equals("dark-content")) {
-                style.setStatusBarStyle(BarStyle.DarkContent);
-            } else {
-                style.setStatusBarStyle(BarStyle.LightContent);
-            }
-        }
-
         String screenColor = options.getString("screenBackgroundColor");
         if (!TextUtils.isEmpty(screenColor)) {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));
-        }
-
-        String topBarColor = options.getString("topBarColor");
-        if (!TextUtils.isEmpty(topBarColor)) {
-            int color = Color.parseColor(topBarColor);
-            style.setToolbarBackgroundColor(color);
         }
 
         String statusBarColor = options.getString("statusBarColor");
@@ -102,15 +100,7 @@ public class Garden {
         boolean statusBarHidden = options.getBoolean("statusBarHidden");
         style.setStatusBarHidden(statusBarHidden);
 
-        String topBarTintColor = options.getString("topBarTintColor");
-        if (!TextUtils.isEmpty(topBarTintColor)) {
-            style.setToolbarTintColor(Color.parseColor(topBarTintColor));
-        }
-
-        String titleTextColor = options.getString("titleTextColor");
-        if (!TextUtils.isEmpty(titleTextColor)) {
-            style.setTitleTextColor(Color.parseColor(titleTextColor));
-        }
+        applyToolbarOptions(options);
     }
 
     void configureToolbar() {
@@ -123,14 +113,6 @@ public class Garden {
         if (toolbar == null) {
             return;
         }
-
-        double topBarAlpha = options.getDouble("topBarAlpha", -1);
-        if (topBarAlpha != -1) {
-            setToolbarAlpha((float) topBarAlpha);
-        }
-
-        boolean topBarShadowHidden = options.getBoolean("topBarShadowHidden", false);
-        setToolbarShadowHidden(topBarShadowHidden);
 
         Bundle titleItem = options.getBundle("titleItem");
         if (titleItem != null) {
@@ -221,59 +203,64 @@ public class Garden {
         }
     }
 
-    void setStatusBarColor(@ColorInt int color) {
-        style.setStatusBarColor(color);
-        fragment.setNeedsStatusBarAppearanceUpdate();
+    private void applyToolbarOptions(@NonNull Bundle options) {
+        String barStyle = options.getString("topBarStyle");
+        if (barStyle != null) {
+            if (barStyle.equals("dark-content")) {
+                style.setStatusBarStyle(BarStyle.DarkContent);
+            } else {
+                style.setStatusBarStyle(BarStyle.LightContent);
+            }
+        }
+
+        String topBarTintColor = options.getString("topBarTintColor");
+        if (!TextUtils.isEmpty(topBarTintColor)) {
+            style.setToolbarTintColor(Color.parseColor(topBarTintColor));
+        }
+
+        String titleTextColor = options.getString("titleTextColor");
+        if (!TextUtils.isEmpty(titleTextColor)) {
+            style.setTitleTextColor(Color.parseColor(titleTextColor));
+        }
+
+        double titleTextSize = options.getDouble("titleTextSize", -1);
+        if (titleTextSize != -1) {
+            style.setTitleTextSize((int)titleTextSize);
+        }
+
+        String topBarColor = options.getString("topBarColor");
+        if (!TextUtils.isEmpty(topBarColor)) {
+            int color = Color.parseColor(topBarColor);
+            style.setToolbarBackgroundColor(color);
+        }
+
+        double topBarAlpha = options.getDouble("topBarAlpha", -1);
+        if (topBarAlpha != -1) {
+            style.setToolbarAlpha((float) topBarAlpha);
+        }
+
+        boolean topBarShadowHidden = options.getBoolean("topBarShadowHidden", false);
+        style.setToolbarShadowHidden(topBarShadowHidden);
     }
 
-    void setStatusBarStyle(BarStyle barStyle) {
-        style.setStatusBarStyle(barStyle);
+    void updateToolbar(@NonNull ReadableMap readableMap) {
+        Bundle options = Arguments.toBundle(readableMap);
+        applyToolbarOptions(options);
+        if (options.getString("topBarStyle") != null) {
+            fragment.setNeedsStatusBarAppearanceUpdate();
+        }
+        fragment.setNeedsToolbarAppearanceUpdate();
+        fragment.setOptions(mergeOptions(fragment.getOptions(), readableMap));
+    }
+
+    void setStatusBarColor(@ColorInt int color) {
+        style.setStatusBarColor(color);
         fragment.setNeedsStatusBarAppearanceUpdate();
     }
 
     void setStatusBarHidden(boolean hidden) {
         style.setStatusBarHidden(hidden);
         fragment.setNeedsStatusBarAppearanceUpdate();
-    }
-
-    void setToolbarAlpha(float alpha) {
-        AwesomeToolbar toolbar = fragment.getAwesomeToolbar();
-        if (toolbar != null) {
-            toolbar.setAlpha(alpha);
-        }
-    }
-
-    void setToolbarColor(@ColorInt int color) {
-        style.setToolbarBackgroundColor(color);
-        fragment.setNeedsToolbarAppearanceUpdate();
-    }
-
-    void setToolbarTintColor(@ColorInt int color) {
-        style.setToolbarTintColor(color);
-        fragment.setNeedsToolbarAppearanceUpdate();
-    }
-
-    void setTitleTextAttributes(@NonNull Bundle item) {
-        String titleTextColor = item.getString("titleTextColor");
-        if (titleTextColor != null) {
-            style.setTitleTextColor(Color.parseColor(titleTextColor));
-        }
-        int titleTextSizeDp = item.getInt("titleTextSize", -1);
-        if (titleTextSizeDp != -1) {
-            style.setTitleTextSize(titleTextSizeDp);
-        }
-        fragment.setNeedsToolbarAppearanceUpdate();
-    }
-
-    void setToolbarShadowHidden(boolean hidden) {
-        AwesomeToolbar toolbar = fragment.getAwesomeToolbar();
-        if (toolbar != null) {
-            if (hidden) {
-                toolbar.hideShadow();
-            } else {
-                toolbar.showShadow(style.getShadow(), style.getElevation());
-            }
-        }
     }
 
 }

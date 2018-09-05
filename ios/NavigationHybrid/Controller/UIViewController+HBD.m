@@ -9,6 +9,7 @@
 #import "UIViewController+HBD.h"
 #import <objc/runtime.h>
 #import "HBDNavigationController.h"
+#import "HBDUtils.h"
 
 @implementation UIViewController (HBD)
 
@@ -227,6 +228,21 @@
     }
     
     return nil;
+}
+
+- (void)hbd_updateTabBarItem:(NSDictionary *)options {
+    NSDictionary *selectedIcon = options[@"selectedIcon"];
+    NSDictionary *icon = options[@"icon"];
+    UITabBarItem *tabBarItem = nil;
+    if (selectedIcon) {
+        UIImage *selectedImage = [[HBDUtils UIImage:selectedIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        UIImage *image = [[HBDUtils UIImage:icon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        tabBarItem = [[UITabBarItem alloc] initWithTitle:self.tabBarItem.title image:image selectedImage:selectedImage];
+    } else {
+        tabBarItem = [[UITabBarItem alloc] initWithTitle:self.tabBarItem.title image:[HBDUtils UIImage:icon] selectedImage:nil];
+    }
+    tabBarItem.badgeValue = self.tabBarItem.badgeValue;
+    self.tabBarItem = tabBarItem;
 }
 
 @end

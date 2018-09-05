@@ -41,9 +41,11 @@ export default class TopBarStyle extends Component {
   }
 
   switchTopBarStyle() {
-    this.props.garden.setTopBarStyle({ topBarStyle: this.state.topBarStyle });
-    this.props.garden.setTopBarTintColor({ topBarTintColor: this.state.topBarTintColor });
-    this.props.garden.setTitleTextAttributes({ titleTextColor: this.state.topBarTintColor });
+    this.props.garden.updateTopBar({
+      topBarStyle: this.state.topBarStyle,
+      topBarTintColor: this.state.topBarTintColor,
+      titleTextColor: this.state.topBarTintColor,
+    });
     if (this.state.topBarStyle === 'dark-content') {
       this.setState({ topBarStyle: 'light-content', topBarTintColor: '#FFFFFF' });
     } else {

@@ -28,20 +28,9 @@
 
 - (void)setTitleItem:(NSDictionary *)item forController:(HBDViewController *)controller;
 
-- (void)setTitleTextAttributes:(NSDictionary *)attributes forController:(HBDViewController *)controller;
-
-- (void)setTopBarStyle:(UIBarStyle)barStyle forController:(HBDViewController *)controller;
-
-- (void)setTopBarTintColor:(UIColor *)tintColor forController:(HBDViewController *)controller;
-
-- (void)setTopBarAlpha:(float)alpha forController:(HBDViewController *)controller;
-
-- (void)setTopBarColor:(UIColor *)color forController:(HBDViewController *)controller;
-
-- (void)setTopBarShadowHidden:(BOOL)hidden forController:(HBDViewController *)controller;
-
 - (void)setStatusBarHidden:(BOOL)hidden forController:(HBDViewController *)controller;
 
 - (void)setPassThroughTouches:(BOOL)passThrough forController:(HBDViewController *)controller;
+
 
 @end

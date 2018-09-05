@@ -22,7 +22,7 @@ export default class Options extends Component {
       icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
       title: 'SETTING',
       action: navigator => {
-        console.info('setting button is clicked.');
+        navigator.push('TopBarMisc');
       },
       enabled: false,
     },
@@ -45,7 +45,7 @@ export default class Options extends Component {
     this.toggleTabBadge = this.toggleTabBadge.bind(this);
     this.lifecycle = this.lifecycle.bind(this);
     this.replaceTabIcon = this.replaceTabIcon.bind(this);
-    this.replaceTabColor = this.replaceTabColor.bind(this);
+    this.replaceTabItemColor = this.replaceTabItemColor.bind(this);
     this.setTabBarColor = this.setTabBarColor.bind(this);
     this.state = {
       leftButtonShowText: true,
@@ -131,15 +131,21 @@ export default class Options extends Component {
     );
   }
 
-  replaceTabColor() {
-    this.props.garden.replaceTabColor({
+  replaceTabItemColor() {
+    this.props.garden.updateTabBar({
       tabBarItemColor: '#8BC34A',
       tabBarUnselectedItemColor: '#BDBDBD',
     });
   }
 
   setTabBarColor() {
-    this.props.garden.setTabBarColor({ tabBarColor: '#EEEEEE' });
+    this.props.garden.updateTabBar({
+      tabBarColor: '#EEEEEE',
+      tabBarShadowImage: {
+        // color: '#FF0000',
+        image: Image.resolveAssetSource(require('./images/divider.png')),
+      },
+    });
   }
 
   render() {
@@ -205,11 +211,11 @@ export default class Options extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={this.replaceTabColor}
+            onPress={this.replaceTabItemColor}
             activeOpacity={0.2}
             style={styles.button}
           >
-            <Text style={styles.buttonText}>replalce tab color</Text>
+            <Text style={styles.buttonText}>replalce tab item color</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.setTabBarColor} activeOpacity={0.2} style={styles.button}>

@@ -7,6 +7,7 @@
 //
 
 #import "HBDTabBarController.h"
+#import "HBDUtils.h"
 
 @interface HBDTabBarController ()
 
@@ -17,22 +18,41 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.definesPresentationContext = NO;
-    // Do any additional setup after loading the view.
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)updateTabBar:(NSDictionary *)options {
+    UITabBar *tabBar = self.tabBar;
+    
+    NSString *tabBarItemColor = options[@"tabBarItemColor"];
+    if (tabBarItemColor) {
+        tabBar.tintColor = [HBDUtils colorWithHexString:tabBarItemColor];
+        NSString *tabBarUnselectedItemColor = options[@"tabBarUnselectedItemColor"];
+        if (tabBarUnselectedItemColor) {
+            if (@available(iOS 10.0, *)) {
+                tabBar.unselectedItemTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
+            }
+        }
+    }
+    
+    NSString *tabBarColor = [options objectForKey:@"tabBarColor"];
+    if (tabBarColor) {
+        [tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]]];
+    }
+    
+    NSDictionary *tabBarShadowImage = options[@"tabBarShadowImage"];
+    if (tabBarShadowImage && ![tabBarShadowImage isEqual:NSNull.null]) {
+        UIImage *image = [UIImage new];
+        NSDictionary *imageItem = tabBarShadowImage[@"image"];
+        NSString *color = tabBarShadowImage[@"color"];
+        if (imageItem) {
+            image = [HBDUtils UIImage:imageItem];
+        } else if (color) {
+            image = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:color]];
+        }
+        tabBar.shadowImage = image;
+    }
+    
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -122,40 +122,6 @@ static GlobalStyle *globalStyle;
     }
 }
 
-- (void)setTitleTextAttributes:(NSDictionary *)attributes forController:(HBDViewController *)controller {
-    controller.hbd_titleTextAttributes = attributes;
-    [controller hbd_setNeedsUpdateNavigationBar];
-}
-
-- (void)setHideBackButton:(BOOL)hidden forController:(HBDViewController *)controller {
-    controller.navigationItem.hidesBackButton = hidden;
-}
-
-- (void)setTopBarStyle:(UIBarStyle)barStyle forController:(HBDViewController *)controller {
-    controller.hbd_barStyle = barStyle;
-    [controller hbd_setNeedsUpdateNavigationBar];
-}
-
-- (void)setTopBarTintColor:(UIColor *)tintColor forController:(HBDViewController *)controller {
-    controller.hbd_tintColor = tintColor;
-    [controller hbd_setNeedsUpdateNavigationBar];
-}
-
-- (void)setTopBarAlpha:(float)alpha forController:(HBDViewController *)controller {
-    controller.hbd_barAlpha = alpha;
-    [controller hbd_setNeedsUpdateNavigationBarAlpha];
-}
-
-- (void)setTopBarColor:(UIColor *)color forController:(HBDViewController *)controller {
-    controller.hbd_barTintColor = color;
-    [controller hbd_setNeedsUpdateNavigationBarColor];
-}
-
-- (void)setTopBarShadowHidden:(BOOL)hidden forController:(HBDViewController *)controller {
-    controller.hbd_barShadowHidden = hidden;
-    [controller hbd_setNeedsUpdateNavigationBarShadowImageAlpha];
-}
-
 - (void)setStatusBarHidden:(BOOL)hidden forController:(HBDViewController *)controller {
     controller.hbd_statusBarHidden = hidden;
     [controller setStatusBarHidden:hidden];
