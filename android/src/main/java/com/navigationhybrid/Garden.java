@@ -184,7 +184,8 @@ public class Garden {
         if (color != null) {
             tintColor = Color.parseColor(color);
         }
-        return new ToolbarButtonItem(uri, 0, title, tintColor, enabled, new View.OnClickListener() {
+        boolean renderOriginal = item.getBoolean("renderOriginal", false);
+        return new ToolbarButtonItem(uri, 0, renderOriginal, title, tintColor, enabled, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ReactBridgeManager bridgeManager = ReactBridgeManager.instance;

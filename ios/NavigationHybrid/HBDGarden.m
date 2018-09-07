@@ -80,6 +80,9 @@ static GlobalStyle *globalStyle;
     BOOL hasIcon = icon && ![icon isEqual:NSNull.null];
     if (hasIcon) {
         UIImage *iconImage = [HBDUtils UIImage:icon];
+        if (item[@"renderOriginal"] && [item[@"renderOriginal"] boolValue]) {
+            iconImage = [iconImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        }
         barButtonItem = [[HBDBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain];
         barButtonItem.imageInsets = insets;
     } else {

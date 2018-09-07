@@ -86,13 +86,17 @@
             uri = [uri substringFromIndex:7];
             // NSLog(@"font uri:%@", uri);
             NSArray *components = [uri componentsSeparatedByString:@"/"];
-            if (components.count != 3) {
+            if (components.count < 3) {
                 return nil;
             }
             NSString *font = components[0];
             NSString *glyph = components[1];
             CGFloat size = [components[2] floatValue];
-            NSString *path = [self imagePathForFont:font withGlyph:glyph withFontSize:size withColor:[UIColor whiteColor]];
+            UIColor *color = UIColor.whiteColor;
+            if (components.count >=4) {
+                color = [self colorWithHexString:components[3]];
+            }
+            NSString *path = [self imagePathForFont:font withGlyph:glyph withFontSize:size withColor:color];
             // NSLog(@"font path:%@", path);
             UIImage *image = [UIImage imageWithContentsOfFile:path];
             return image;

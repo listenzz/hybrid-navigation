@@ -1,4 +1,4 @@
-function fontUri(fontFamily, name, size) {
+function fontUri(fontFamily, name, size = 24, color = '#FFFFFF') {
   let glyphMap;
   if (fontFamily === 'FontAwesome') {
     glyphMap = require('react-native-vector-icons/glyphmaps/FontAwesome.json');
@@ -14,7 +14,7 @@ function fontUri(fontFamily, name, size) {
   if (typeof glyph === 'number') {
     glyph = String.fromCharCode(glyph);
   }
-  let uri = `font://${fontFamily}/${glyph}/${size}`;
+  let uri = `font://${fontFamily}/${glyph}/${size}/${color}`;
   return uri;
 }
 
