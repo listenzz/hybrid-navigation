@@ -26,6 +26,7 @@
         _contentController = content;
         _menuController = menu;
         _menuInteractive = YES;
+        _hideStatusBarWhenMenuOpened = YES;
         _minDrawerMargin = 64;
     }
     return self;
@@ -146,8 +147,9 @@
 
 - (void)setMenuOpened:(BOOL)menuOpened {
     _menuOpened = menuOpened;
-    self.menuController.hbd_statusBarHidden = menuOpened;
-    [self.menuController setStatusBarHidden:menuOpened];
+    BOOL hideStatusBar = menuOpened && self.hideStatusBarWhenMenuOpened;
+    self.menuController.hbd_statusBarHidden = hideStatusBar;
+    [self.menuController setStatusBarHidden:hideStatusBar];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {

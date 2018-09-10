@@ -63,6 +63,11 @@ public class DrawerNavigator implements Navigator {
                         boolean interactive = options.getBoolean("menuInteractive");
                         drawerFragment.setMenuInteractive(interactive);
                     }
+
+                    if (options.hasKey("hideStatusBarWhenMenuOpened")) {
+                        boolean hidden = options.getBoolean("hideStatusBarWhenMenuOpened");
+                        drawerFragment.setHideStatusBarWhenMenuOpened(hidden);
+                    }
                 }
                 return drawerFragment;
             } else {

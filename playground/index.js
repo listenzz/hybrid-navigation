@@ -132,6 +132,7 @@ Navigator.setRoot(
     options: {
       maxDrawerWidth: 280,
       minDrawerMargin: 64,
+      // hideStatusBarWhenMenuOpened: true,
     },
   },
   true

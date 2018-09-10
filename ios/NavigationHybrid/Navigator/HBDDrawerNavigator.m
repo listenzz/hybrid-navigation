@@ -33,18 +33,23 @@
             NSDictionary *options = [layout objectForKey:@"options"];
             if (options) {
                 NSNumber *maxDrawerWidth = [options objectForKey:@"maxDrawerWidth"];
-                NSNumber *minDrawerMargin = [options objectForKey:@"minDrawerMargin"];
-                NSNumber *menuInteractive = [options objectForKey:@"menuInteractive"];
                 if (maxDrawerWidth) {
                     [drawerController setMaxDrawerWidth:[maxDrawerWidth floatValue]];
                 }
                 
+                NSNumber *minDrawerMargin = [options objectForKey:@"minDrawerMargin"];
                 if (minDrawerMargin) {
                     [drawerController setMinDrawerMargin:[minDrawerMargin floatValue]];
                 }
                 
+                NSNumber *menuInteractive = [options objectForKey:@"menuInteractive"];
                 if (menuInteractive) {
                     drawerController.menuInteractive = [menuInteractive boolValue];
+                }
+                
+                NSNumber *hideStatusBarWhenMenuOpened = [options objectForKey:@"hideStatusBarWhenMenuOpened"];
+                if (hideStatusBarWhenMenuOpened) {
+                    drawerController.hideStatusBarWhenMenuOpened = [hideStatusBarWhenMenuOpened boolValue];
                 }
             }
             return drawerController;
