@@ -221,7 +221,7 @@ const NSInteger ResultCancel = 0;
 
 - (void)setRootViewController:(UIViewController *)rootViewController {
     UIWindow *keyWindow = RCTKeyWindow();
-    if (keyWindow.rootViewController.presentedViewController) {
+    if (keyWindow.rootViewController.presentedViewController && !keyWindow.rootViewController.presentedViewController.isBeingDismissed) {
         [keyWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
             [self performSelector:@selector(performSetRootViewController:) withObject:rootViewController afterDelay:0];
         }];
