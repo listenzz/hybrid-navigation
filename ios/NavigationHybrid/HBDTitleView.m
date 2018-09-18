@@ -13,6 +13,7 @@
 
 @property (nonatomic, assign) CGSize fittingSize;
 @property (nonatomic, strong) RCTRootView *rootView;
+@property (nonatomic, assign) CGRect barBounds;
 
 @end
 
@@ -23,6 +24,7 @@
         rootView.backgroundColor = [UIColor clearColor];
         _rootView = rootView;
         _fittingSize = fittingSize;
+        _barBounds = bounds;
         if (CGSizeEqualToSize(fittingSize, UILayoutFittingCompressedSize)) {
             rootView.delegate = self;
             rootView.sizeFlexibility = RCTRootViewSizeFlexibilityWidthAndHeight;
@@ -39,6 +41,15 @@
 
 - (CGSize)intrinsicContentSize {
     return self.fittingSize;
+}
+
+- (void)setFrame:(CGRect)frame {
+    CGFloat d = self.barBounds.size.width - frame.size.width;
+    if (d <= 40 && CGSizeEqualToSize(self.fittingSize, UILayoutFittingExpandedSize)) {
+        [super setFrame:CGRectInset(frame, -d / 2, 0)];
+    } else {
+        [super setFrame:frame];
+    }
 }
 
 - (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView {
@@ -76,5 +87,7 @@
         return [self navigationBarInView:view.superview];
     }
 }
+
+
 
 @end
