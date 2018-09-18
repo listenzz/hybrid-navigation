@@ -1,12 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
-import * as Animatable from 'react-native-animatable';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
+  Animated,
+  Easing,
+  Dimensions,
+} from 'react-native';
 import { RESULT_OK } from 'react-native-navigation-hybrid';
-
-// Utility for creating custom animations
-const makeAnimation = (name, obj) => {
-  Animatable.registerAnimation(name, Animatable.createAnimation(obj));
-};
 
 export default class ReactModal extends React.Component {
   constructor(props) {
@@ -29,6 +32,8 @@ export default class ReactModal extends React.Component {
         },
       },
     ],
+
+    anim: new Animated.Value(Dimensions.get('screen').height),
   };
 
   componentDidMount() {
@@ -48,7 +53,7 @@ export default class ReactModal extends React.Component {
   }
 
   onBackPressed = () => {
-    this.handleCancel();
+    this.hideModal();
   };
 
   handleCancel = () => {
@@ -57,44 +62,28 @@ export default class ReactModal extends React.Component {
 
   hideModal(gender) {
     console.info('hideModal:' + gender);
-    this.view.slideOutDown(250).then(endState => {
-      if (endState.finished) {
-        this.props.navigator.setResult(RESULT_OK, {
-          text: gender || 'Are you male or female?',
-          backId: this.props.sceneId,
-        });
-        this.props.navigator.hideModal();
-      }
+    Animated.timing(this.state.anim, {
+      toValue: this.height,
+      duration: 200,
+      easing: Easing.linear,
+    }).start(state => {
+      console.log(state);
+      this.props.navigator.setResult(RESULT_OK, {
+        text: gender || 'Are you male or female?',
+        backId: this.props.sceneId,
+      });
+      this.props.navigator.hideModal();
     });
   }
 
-  handleRef = ref => {
-    this.view = ref;
+  handleLayout = e => {
+    this.height = e.nativeEvent.layout.height;
+    this.state.anim.setValue(this.height);
+    Animated.timing(this.state.anim, { toValue: 0, duration: 200, easing: Easing.linear }).start();
   };
 
-  onLayout = e => {
-    this.height = e.nativeEvent.layout.height;
-    makeAnimation('slideOutDown', {
-      from: {
-        opacity: 1,
-        translateY: 0,
-      },
-      to: {
-        opacity: 1,
-        translateY: this.height,
-      },
-    });
-    makeAnimation('slideInUp', {
-      from: {
-        opacity: 1,
-        translateY: this.height,
-      },
-      to: {
-        opacity: 1,
-        translateY: 0,
-      },
-    });
-    this.view.slideInUp(250);
+  handleRef = ref => {
+    this.view = ref;
   };
 
   renderItem = (text, onPress) => {
@@ -110,13 +99,12 @@ export default class ReactModal extends React.Component {
   render() {
     return (
       <TouchableWithoutFeedback onPress={this.handleCancel}>
-        <Animatable.View
+        <Animated.View
           ref={this.handleRef}
           useNativeDriver
-          easing="ease-in-out"
-          style={[styles.bottomModal, { opacity: 0 }]}
+          style={[styles.bottomModal, { opacity: 1, transform: [{ translateY: this.state.anim }] }]}
         >
-          <View onLayout={this.onLayout}>
+          <View onLayout={this.handleLayout}>
             {this.state.actionSheets.map(({ text, onPress }, index) => {
               let isLast = index === this.state.actionSheets.length - 1;
               return (
@@ -127,7 +115,7 @@ export default class ReactModal extends React.Component {
             })}
             <View style={styles.itemCancel}>{this.renderItem('Cancel', this.handleCancel)}</View>
           </View>
-        </Animatable.View>
+        </Animated.View>
       </TouchableWithoutFeedback>
     );
   }
