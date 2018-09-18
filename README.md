@@ -72,6 +72,8 @@ npm run run:ios
 
 ## 更新日志
 
+最新版本: `0.8.25`
+
 ### 0.8.5
 
 Garden#setBottomBarColor 重命名为 Garden#setTabBarColor
