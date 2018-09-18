@@ -33,6 +33,8 @@ Then, in another CLI window:
 npm run run:android
 ```
 
+[**Download demo apk**](https://raw.githubusercontent.com/listenzz/react-native-navigation-hybrid/master/screenshot/app-release.apk)
+
 ### run on iOS
 
 first, install pods.
