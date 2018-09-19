@@ -109,7 +109,8 @@ static GlobalStyle *globalStyle;
             RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
             [emitter sendEventWithName:@"ON_BAR_BUTTON_ITEM_CLICK" body:@{
                                                                              @"action": action,
-                                                                             @"sceneId": sceneId
+                                                                             @"sceneId": sceneId,
+                                                                             @"moduleName": controller.moduleName
                                                                              }];
         };
     }

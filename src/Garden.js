@@ -1,19 +1,6 @@
 import { NativeModules } from 'react-native';
 const GardenModule = NativeModules.GardenHybrid;
 
-function copy(obj = {}) {
-  let target = {};
-  for (const key of Object.keys(obj)) {
-    const value = obj[key];
-    if (value && typeof value === 'object') {
-      target[key] = copy(value);
-    } else {
-      target[key] = value;
-    }
-  }
-  return target;
-}
-
 export default class Garden {
   static toolbarHeight = GardenModule.TOOLBAR_HEIGHT;
   static DARK_CONTENT = GardenModule.DARK_CONTENT;
@@ -26,9 +13,8 @@ export default class Garden {
     }
   }
 
-  constructor(sceneId, options) {
+  constructor(sceneId) {
     this.sceneId = sceneId;
-    this.options = options;
   }
 
   // --------------- instance method --------------
@@ -45,34 +31,21 @@ export default class Garden {
     GardenModule.setPassThroughtouches(item);
   }
 
-  setLeftBarButtonItem(item) {
-    if (this.options.leftBarButtonItem) {
-      this.options.leftBarButtonItem = { ...this.options.leftBarButtonItem, ...item };
-    } else {
-      this.options.leftBarButtonItem = item;
+  setLeftBarButtonItem(buttonItem) {
+    if (buttonItem.action && typeof buttonItem.action === 'function') {
+      throw new Error(
+        '使用 `setLeftBarButtonItem` 时出错：通过该方法修改 action 时，值不能是函数。'
+      );
     }
-
-    const buttonItem = copy(item);
-
-    if (typeof buttonItem.action === 'function') {
-      buttonItem.action = 'left_bar_button_item_click';
-    }
-
     GardenModule.setLeftBarButtonItem(this.sceneId, buttonItem);
   }
 
-  setRightBarButtonItem(item) {
-    if (this.options.rightBarButtonItem) {
-      this.options.rightBarButtonItem = { ...this.options.rightBarButtonItem, ...item };
-    } else {
-      this.options.rightBarButtonItem = item;
+  setRightBarButtonItem(buttonItem) {
+    if (buttonItem.action && typeof buttonItem.action === 'function') {
+      throw new Error(
+        '使用 `setRightBarButtonItem` 时出错： 通过该方法修改 action 时，值不能是函数。'
+      );
     }
-
-    const buttonItem = copy(item);
-    if (typeof buttonItem.action === 'function') {
-      buttonItem.action = 'right_bar_button_item_click';
-    }
-
     GardenModule.setRightBarButtonItem(this.sceneId, buttonItem);
   }
 

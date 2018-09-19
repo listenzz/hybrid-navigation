@@ -28,7 +28,7 @@ export default class Navigator {
             const action = 'ON_BAR_BUTTON_ITEM_CLICK-' + actionIdGenerator();
             let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', event => {
               if (event.action === action) {
-                const navigator = new Navigator(event.sceneId);
+                const navigator = new Navigator(event.sceneId, event.moduleName);
                 value(navigator);
               }
             });
@@ -177,7 +177,7 @@ export default class Navigator {
 
   switchToTab(index) {
     console.warn('switchToTab 已弃用，请使用 switchTab');
-    this.dispatch('switchToTab', { index });
+    this.dispatch('switchTab', { index });
   }
 
   switchTab(index) {

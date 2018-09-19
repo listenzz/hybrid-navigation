@@ -8,7 +8,7 @@ project.ext.react = [
 
 // Android studio bug hack
 if (System.properties['os.name'].contains("Mac")) {
-    project.ext.react.nodeExecutableAndArgs = ["/usr/local/bin/node"]
+   //  project.ext.react.nodeExecutableAndArgs = ["/usr/local/bin/node"]
 }
 
 apply from: "../../../node_modules/react-native/react.gradle"

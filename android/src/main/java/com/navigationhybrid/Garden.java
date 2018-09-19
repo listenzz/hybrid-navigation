@@ -21,7 +21,6 @@ import me.listenzz.navigation.BarStyle;
 import me.listenzz.navigation.Style;
 import me.listenzz.navigation.ToolbarButtonItem;
 
-import static com.navigationhybrid.Constants.ARG_SCENE_ID;
 import static com.navigationhybrid.Constants.ON_BAR_BUTTON_ITEM_CLICK_EVENT;
 
 
@@ -191,7 +190,8 @@ public class Garden {
                 ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
                 Bundle bundle = new Bundle();
                 bundle.putString("action", action);
-                bundle.putString(ARG_SCENE_ID, fragment.getSceneId());
+                bundle.putString("sceneId", fragment.getSceneId());
+                bundle.putString("moduleName", fragment.getModuleName());
                 bridgeManager.sendEvent(ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
             }
         });

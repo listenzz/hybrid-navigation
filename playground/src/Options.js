@@ -73,12 +73,12 @@ export default class Options extends Component {
 
   changeLeftButton() {
     if (this.state.leftButtonShowText) {
+      this.props.garden.setLeftBarButtonItem({ icon: null });
+    } else {
       this.props.garden.setLeftBarButtonItem({
         icon: { uri: fontUri('FontAwesome', 'navicon', 24) },
         // icon: { uri: 'flower', scale: PixelRatio.get() },
       });
-    } else {
-      this.props.garden.setLeftBarButtonItem({ icon: null });
     }
     this.setState({ leftButtonShowText: !this.state.leftButtonShowText });
   }
@@ -178,8 +178,8 @@ export default class Options extends Component {
           >
             <Text style={styles.buttonText}>
               {this.state.leftButtonShowText
-                ? 'change left button to icon'
-                : 'change left button to text'}
+                ? 'change left button to text'
+                : 'change left button to icon'}
             </Text>
           </TouchableOpacity>
 
