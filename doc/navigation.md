@@ -83,6 +83,8 @@ this.props.navigator.dismiss();
 
 关闭 `present` 出来的页面，如果该页面是容器，可以在容器的任何子页面调用此法。
 
+如果想要在 dismiss 后执行某些操作，比如显示新的页面，请在前一个页面的 `onComponentResult` 中进行操作
+
 * showModal
 
 将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件。这也是一种模态交互方式，作用与 present 类似，同样可以通过 `onComponentResult` 来接收结果。不同的是，它比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
@@ -94,6 +96,8 @@ this.props.navigator.showModal('ReactModal', REQUEST_CODE);
 * hideModal
 
 隐藏作为 Modal 显示的页面，如果 Modal 是一个容器，可以在该容器的任何子页面调用此方法。如果隐藏 modal 的同时希望切换到其它页面，请在调用 `showModal` 的页面的 `onComponentResult` 回调中执行此操作。
+
+如果想要在 hideModal 后执行某些操作，比如显示新的页面，请在前一个页面的 `onComponentResult` 中进行操作
 
 ```javascript
 // ReactModal.js

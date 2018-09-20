@@ -148,13 +148,7 @@ NSDictionary *props = @{@"user_id": @1};
 HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"moduleName" props:props options:nil];
 ```
 
-通过以下方式获取其它页面传递过来的值，不管这个页面是原生的还是 RN 的
-
-<a name="style"></a>
-
-```objc
-self.props
-```
+通过 `self.props` 获取其它页面传递过来的值，不管这个页面是原生的还是 RN 的
 
 通过调用以下方法返回结果给之前的页面，不管这个页面是原生的还是 RN 的
 
@@ -162,7 +156,25 @@ self.props
 - (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data;
 ```
 
-通过重写以下方法来接收结果，不管这个页面是原生的还是 RN 的
+如果执行的是 dismiss 操作, 在 dismiss 完成后调用 prensenting 页面的 `didReceiveResultCode:resultData:requestCode:` 进行手动派发结果
+
+```objc
+UIViewController *presenting = self.presentingViewController;
+[presenting dismissViewControllerAnimated:animated completion:^{
+    [presenting didReceiveResultCode:self.resultCode resultData:self.resultData requestCode:self.requestCode];
+}];
+```
+
+如果执行的是 hideModal 操作， 在 hideModal 完成后调用 target 页面的 `didReceiveResultCode:resultData:requestCode:` 进行手动派发结果
+
+```objc
+UIViewController *target = self.hbd_targetViewController;
+[target hbd_hideViewControllerAnimated:YES completion:^(BOOL finished) {
+    [target didReceiveResultCode:self.resultCode resultData:self.resultData requestCode:self.requestCode];
+}];
+```
+
+通过重写以下方法来接收结果，不管结果来自原生还是 RN 页面
 
 ```objc
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode;
