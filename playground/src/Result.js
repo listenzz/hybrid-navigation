@@ -1,15 +1,26 @@
 import React, { Component } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { TouchableOpacity, Text, View, TextInput } from 'react-native';
+import { TouchableOpacity, Text, View, TextInput, Platform } from 'react-native';
 import styles from './Styles';
 
 import { RESULT_OK } from 'react-native-navigation-hybrid';
+import TopBarStyle from './TopBarStyle';
 
 export default class Result extends Component {
   static navigationItem = {
     titleItem: {
       title: 'RN result',
     },
+    topBarStyle: 'light-content',
+    topBarTintColor: '#FFFFFF',
+    ...Platform.select({
+      ios: {
+        topBarColor: '#FF344C',
+      },
+      android: {
+        topBarColor: '#F94D53',
+      },
+    }),
   };
 
   constructor(props) {
