@@ -1,5 +1,6 @@
 import { NativeModules } from 'react-native';
 const GardenModule = NativeModules.GardenHybrid;
+import { bindBarButtonItemClickEvent } from './utils';
 
 export default class Garden {
   static toolbarHeight = GardenModule.TOOLBAR_HEIGHT;
@@ -31,22 +32,14 @@ export default class Garden {
     GardenModule.setPassThroughtouches(item);
   }
 
-  setLeftBarButtonItem(buttonItem) {
-    if (buttonItem.action && typeof buttonItem.action === 'function') {
-      throw new Error(
-        '使用 `setLeftBarButtonItem` 时出错：通过该方法修改 action 时，值不能是函数。'
-      );
-    }
-    GardenModule.setLeftBarButtonItem(this.sceneId, buttonItem);
+  setLeftBarButtonItem(buttonItem = {}) {
+    const options = bindBarButtonItemClickEvent(buttonItem, { sceneId: this.sceneId });
+    GardenModule.setLeftBarButtonItem(this.sceneId, options);
   }
 
   setRightBarButtonItem(buttonItem) {
-    if (buttonItem.action && typeof buttonItem.action === 'function') {
-      throw new Error(
-        '使用 `setRightBarButtonItem` 时出错： 通过该方法修改 action 时，值不能是函数。'
-      );
-    }
-    GardenModule.setRightBarButtonItem(this.sceneId, buttonItem);
+    const options = bindBarButtonItemClickEvent(buttonItem, { sceneId: this.sceneId });
+    GardenModule.setRightBarButtonItem(this.sceneId, options);
   }
 
   setTitleItem(item) {

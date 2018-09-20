@@ -1,45 +1,17 @@
 import NavigationModule from './NavigationModule';
-import actionIdGenerator from './ActionIdGenerator';
-import { NativeModules, DeviceEventEmitter, NativeEventEmitter, Platform } from 'react-native';
+import { NativeModules } from 'react-native';
 const GardenModule = NativeModules.GardenHybrid;
-
-const EventEmitter = Platform.select({
-  ios: new NativeEventEmitter(NavigationModule),
-  android: DeviceEventEmitter,
-});
+import { bindBarButtonItemClickEvent } from './utils';
 
 let intercept;
-
-let events = [];
 
 export default class Navigator {
   static RESULT_OK = NavigationModule.RESULT_OK;
   static RESULT_CANCEL = NavigationModule.RESULT_CANCEL;
 
   static setRoot(layout, sticky = false) {
-    events.forEach(event => {
-      event.remove();
-    });
-    events = [];
-    NavigationModule.setRoot(
-      JSON.parse(
-        JSON.stringify(layout, function(key, value) {
-          if ('action' === key) {
-            const action = 'ON_BAR_BUTTON_ITEM_CLICK-' + actionIdGenerator();
-            let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', event => {
-              if (event.action === action) {
-                const navigator = new Navigator(event.sceneId, event.moduleName);
-                value(navigator);
-              }
-            });
-            events.push(event);
-            return action;
-          }
-          return value;
-        })
-      ),
-      sticky
-    );
+    const pureLayout = bindBarButtonItemClickEvent(layout, { inLayout: true });
+    NavigationModule.setRoot(pureLayout, sticky);
   }
 
   static setInterceptor(interceptor) {

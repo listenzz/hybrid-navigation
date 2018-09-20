@@ -1,4 +1,5 @@
 const navigators = new Map();
+
 let events = [];
 
 function addNavigator(sceneId, navigator) {
@@ -13,8 +14,17 @@ function getNavigator(sceneId) {
   return navigators.get(sceneId);
 }
 
-function addEvent(event) {
+function addBarButtonItemClickEvent(event) {
   events.push(event);
+}
+
+function removeBarButtonItemClickEvent(event) {
+  event.remove();
+  events = events.filter(e => e !== event);
+}
+
+function filterBarButtonItemClickEvent(callback) {
+  return events.filter(callback);
 }
 
 function clear() {
@@ -29,6 +39,8 @@ export default {
   addNavigator,
   removeNavigator,
   getNavigator,
-  addEvent,
+  addBarButtonItemClickEvent,
+  removeBarButtonItemClickEvent,
+  filterBarButtonItemClickEvent,
   clear,
 };

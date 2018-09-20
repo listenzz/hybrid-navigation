@@ -191,7 +191,6 @@ public class Garden {
                 Bundle bundle = new Bundle();
                 bundle.putString("action", action);
                 bundle.putString("sceneId", fragment.getSceneId());
-                bundle.putString("moduleName", fragment.getModuleName());
                 bridgeManager.sendEvent(ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
             }
         });

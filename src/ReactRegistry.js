@@ -1,16 +1,11 @@
-import { AppRegistry, DeviceEventEmitter, NativeEventEmitter, Platform } from 'react-native';
+import { AppRegistry } from 'react-native';
 import React, { Component } from 'react';
 import Navigator from './Navigator';
-import NavigationModule from './NavigationModule';
+import NavigationModule, { EventEmitter } from './NavigationModule';
 import Garden from './Garden';
 import router from './Router';
-import actionIdGenerator from './ActionIdGenerator';
 import store from './Store';
-
-const EventEmitter = Platform.select({
-  ios: new NativeEventEmitter(NavigationModule),
-  android: DeviceEventEmitter,
-});
+import { bindBarButtonItemClickEvent, removeBarButtonItemClickEvent } from './utils';
 
 let componentWrapperFunc;
 
@@ -114,7 +109,7 @@ export default {
       componentWillUnmount() {
         // console.debug('componentWillUnmount = ' + this.props.sceneId);
         store.removeNavigator(this.props.sceneId);
-
+        removeBarButtonItemClickEvent(this.props.sceneId);
         this.events.forEach(event => {
           event.remove();
         });
@@ -142,22 +137,7 @@ export default {
     }
 
     // build static options
-    let options = JSON.parse(
-      JSON.stringify(RealComponent.navigationItem || {}, (key, value) => {
-        if (key === 'action' && typeof value === 'function') {
-          const action = 'ON_BAR_BUTTON_ITEM_CLICK_' + actionIdGenerator();
-          let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', event => {
-            if (event.action === action) {
-              const navigator = store.getNavigator(event.sceneId);
-              navigator && value(navigator);
-            }
-          });
-          store.addEvent(event);
-          return action;
-        }
-        return value;
-      })
-    );
+    let options = bindBarButtonItemClickEvent(RealComponent.navigationItem);
 
     // console.info('register component:' + appKey + ' options:' + JSON.stringify(options));
 
