@@ -51,7 +51,7 @@ export default class Garden {
   }
 
   setTitleTextAttributes(attributes) {
-    console.warn('#setTitleTextAttributes 已经弃用，请使用 #updateTopBar');
+    console.warn('#setTitleTextAttributes is deprecated, use #updateTopBar instead');
     this.updateTopBar(attributes);
   }
 

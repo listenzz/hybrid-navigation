@@ -2,12 +2,23 @@ import NavigationModule from './NavigationModule';
 import { NativeModules } from 'react-native';
 const GardenModule = NativeModules.GardenHybrid;
 import { bindBarButtonItemClickEvent } from './utils';
+import store from './store';
+import router from './router';
 
 let intercept;
 
 export default class Navigator {
   static RESULT_OK = NavigationModule.RESULT_OK;
   static RESULT_CANCEL = NavigationModule.RESULT_CANCEL;
+
+  static get(sceneId) {
+    return store.getNavigator(sceneId);
+  }
+
+  static async current() {
+    const { sceneId } = await router.currentRoute();
+    return Navigator.get(sceneId);
+  }
 
   static setRoot(layout, sticky = false) {
     const pureLayout = bindBarButtonItemClickEvent(layout, { inLayout: true });

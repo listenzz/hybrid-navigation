@@ -1,5 +1,5 @@
 import { EventEmitter } from './NavigationModule';
-import store from './Store';
+import store from './store';
 
 let actionIdGenerator = 0;
 

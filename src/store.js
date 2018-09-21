@@ -29,6 +29,7 @@ function filterBarButtonItemClickEvent(callback) {
 
 function clear() {
   navigators.clear();
+
   events.forEach(event => {
     event.remove();
   });

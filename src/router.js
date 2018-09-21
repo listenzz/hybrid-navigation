@@ -108,11 +108,11 @@ class Router {
   }
 
   async routeGraph() {
-    return NavigationModule.routeGraph();
+    return await NavigationModule.routeGraph();
   }
 
   async currentRoute() {
-    return NavigationModule.currentRoute();
+    return await NavigationModule.currentRoute();
   }
 
   addRoute(key, routeConfig = {}) {

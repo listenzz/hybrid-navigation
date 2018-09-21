@@ -1,7 +1,7 @@
 import Navigator from './src/Navigator';
 import Garden from './src/Garden';
 import ReactRegistry from './src/ReactRegistry';
-import router, { route } from './src/Router';
+import router, { route } from './src/router';
 
 const RESULT_OK = Navigator.RESULT_OK;
 const RESULT_CANCEL = Navigator.RESULT_CANCEL;

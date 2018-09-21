@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import Navigator from './Navigator';
 import NavigationModule, { EventEmitter } from './NavigationModule';
 import Garden from './Garden';
-import router from './Router';
-import store from './Store';
+import router from './router';
+import store from './store';
 import { bindBarButtonItemClickEvent, removeBarButtonItemClickEvent } from './utils';
 
 let componentWrapperFunc;
