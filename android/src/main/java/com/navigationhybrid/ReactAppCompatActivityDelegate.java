@@ -162,7 +162,6 @@ public class ReactAppCompatActivityDelegate {
             boolean didDoubleTapR = Assertions.assertNotNull(mDoubleTapReloadRecognizer)
                     .didDoubleTapR(keyCode, getPlainActivity().getCurrentFocus());
             if (didDoubleTapR) {
-                clearFragments();
                 getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();
                 return true;
             }
@@ -211,16 +210,6 @@ public class ReactAppCompatActivityDelegate {
                 }
             }
         };
-    }
-
-    public void clearFragments() {
-        FragmentManager fragmentManager = mActivity.getSupportFragmentManager();
-        int count = fragmentManager.getBackStackEntryCount();
-        if (count > 0) {
-            mActivity.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-            String tag = fragmentManager.getBackStackEntryAt(0).getName();
-            fragmentManager.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
     }
 
     private Context getContext() {

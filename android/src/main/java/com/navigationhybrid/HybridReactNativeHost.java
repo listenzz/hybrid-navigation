@@ -1,0 +1,83 @@
+package com.navigationhybrid;
+
+import android.app.Activity;
+import android.app.Application;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
+import com.facebook.infer.annotation.Assertions;
+import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.ReactInstanceManagerBuilder;
+import com.facebook.react.ReactNativeHost;
+import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.common.LifecycleState;
+import com.facebook.react.devsupport.interfaces.DevBundleDownloadListener;
+
+import javax.annotation.Nullable;
+
+import me.listenzz.navigation.AwesomeActivity;
+
+public abstract class HybridReactNativeHost extends ReactNativeHost {
+
+    private static final String TAG = "ReactNative";
+
+    protected HybridReactNativeHost(Application application) {
+        super(application);
+    }
+
+    @Override
+    protected ReactInstanceManager createReactInstanceManager() {
+        ReactInstanceManagerBuilder builder = ReactInstanceManager.builder()
+                .setApplication(getApplication())
+                .setJSMainModulePath(getJSMainModuleName())
+                .setUseDeveloperSupport(getUseDeveloperSupport())
+                .setRedBoxHandler(getRedBoxHandler())
+                .setJavaScriptExecutorFactory(getJavaScriptExecutorFactory())
+                .setUIImplementationProvider(getUIImplementationProvider())
+                .setInitialLifecycleState(LifecycleState.BEFORE_CREATE)
+                .setDevBundleDownloadListener(devBundleDownloadListener);
+
+        for (ReactPackage reactPackage : getPackages()) {
+            builder.addPackage(reactPackage);
+        }
+
+        String jsBundleFile = getJSBundleFile();
+        if (jsBundleFile != null) {
+            builder.setJSBundleFile(jsBundleFile);
+        } else {
+            builder.setBundleAssetName(Assertions.assertNotNull(getBundleAssetName()));
+        }
+        return builder.build();
+    }
+
+    private DevBundleDownloadListener devBundleDownloadListener = new DevBundleDownloadListener() {
+        @Override
+        public void onSuccess() {
+            Log.i(TAG, "dev bundle download success");
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    ReactContext reactContext = getReactInstanceManager().getCurrentReactContext();
+                    if (reactContext != null) {
+                        Activity activity = reactContext.getCurrentActivity();
+                        if (activity != null && activity instanceof AwesomeActivity) {
+                            ((AwesomeActivity)activity).clearFragments();
+                        }
+                    }
+                }
+            });
+        }
+
+        @Override
+        public void onProgress(@Nullable String status, @Nullable Integer done, @Nullable Integer total) {
+
+        }
+
+        @Override
+        public void onFailure(Exception cause) {
+            Log.e(TAG, "dev bundle download failure: " + cause.getMessage());
+        }
+    };
+}
