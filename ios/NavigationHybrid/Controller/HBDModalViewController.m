@@ -21,6 +21,8 @@
 
 @interface HBDModalViewController ()
 
+@property(nonatomic, assign, readwrite, getter=isBeingHidden) BOOL beingHidden;
+
 @property (nonatomic, strong, readwrite) UIView *contentView;
 
 @property(nonatomic, strong) HBDModalWindow *containerWindow;
@@ -363,6 +365,7 @@
 }
 
 - (void)hidingAnimationWithCompletion:(void (^)(BOOL))completion {
+    self.beingHidden = YES;
     if (self.animationStyle == HBDModalAnimationStyleFade) {
         [UIView animateWithDuration:.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.dimmingView.alpha = 0.0;
@@ -411,6 +414,7 @@
 }
 
 - (void)hideWithAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    self.beingHidden = YES;
     self.disappearAnimated = animated;
     self.disappearCompletionBlock = completion;
     [self beginAppearanceTransition:NO animated:animated];

@@ -77,13 +77,46 @@ this.props.navigator.setResult(RESULT_OK, { uri: 'file://...' });
 this.props.navigator.dismiss();
 ```
 
-在 A 页面接收返回的结果（略）。
+A 页面通过实现 `onComponentResult` 方法来接收结果（略）。
 
 * dismiss
 
 关闭 `present` 出来的页面，如果该页面是容器，可以在容器的任何子页面调用此法。
 
-如果想要在 dismiss 后执行某些操作，比如显示新的页面，请在前一个页面的 `onComponentResult` 中进行操作
+在调用 `this.props.navigator.dismiss` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。
+
+如果想要在 dismiss 后执行导航操作，建议在前一个页面的 `onComponentResult` 中进行操作，也可以使用 `Navigator.current()` 取得当前有效的 navigator 来执行操作。
+
+譬如 A 页面 present 出 B 页面，B 页面 dismiss 后想要 push 出 C 页面
+
+方法一：
+
+```javascript
+// B.js
+this.props.navigator.setResult(100, data);
+this.props.navigator.dismiss();
+```
+
+```javascript
+// A.js
+onComponentResult(requestCode, resultCode, data) {
+  if (resultCode === 100) {
+    // 处理数据，然后决定要 push 到哪个页面
+    this.props.navigator.push('C');
+  }
+}
+```
+
+方法二：
+
+```javascript
+// B.js
+this.props.navigator.dismiss();
+const navigator = await Navigator.current();
+navigator && navigator.push('C');
+```
+
+方法二不能保证 B 页面完全消失后才开始 push C 页面
 
 * showModal
 
@@ -95,15 +128,42 @@ this.props.navigator.showModal('ReactModal', REQUEST_CODE);
 
 * hideModal
 
-隐藏作为 Modal 显示的页面，如果 Modal 是一个容器，可以在该容器的任何子页面调用此方法。如果隐藏 modal 的同时希望切换到其它页面，请在调用 `showModal` 的页面的 `onComponentResult` 回调中执行此操作。
+隐藏作为 Modal 显示的页面，如果 Modal 是一个容器，可以在该容器的任何子页面调用此方法。
 
-如果想要在 hideModal 后执行某些操作，比如显示新的页面，请在前一个页面的 `onComponentResult` 中进行操作
+在调用 `this.props.navigator.hideModal` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。
+
+如果想要在 hideModal 后执行导航操作，建议在前一个页面的 `onComponentResult` 中进行操作，也可以使用 `Navigator.current()` 取得当前有效的 navigator 来执行操作。
+
+譬如 A 页面 showModal 出 B 页面，B 页面 hideModal 后想要 push 出 C 页面
+
+方法一：
 
 ```javascript
-// ReactModal.js
-this.props.navigator.setResult(RESULT_OK, {...});
+// B.js
+this.props.navigator.setResult(100, data);
 this.props.navigator.hideModal();
 ```
+
+```javascript
+// A.js
+onComponentResult(requestCode, resultCode, data) {
+  if (resultCode === 100) {
+    // 处理数据，然后决定要 push 到哪个页面
+    this.props.navigator.push('C');
+  }
+}
+```
+
+方法二：
+
+```javascript
+// B.js
+this.props.navigator.hideModal();
+const navigator = await Navigator.current();
+navigator && navigator.push('C');
+```
+
+方法二不能保证 B 页面完全消失后才开始 push C 页面
 
 * presentLayout
 
@@ -188,16 +248,16 @@ this.props.navigator.push('C', { bId: this.props.sceneId });
 
 从 C 页面跳到 D 页面时
 
-````javascript
+```javascript
 // C.js
-this.props.navigator.push('D', {bId: this.props.bId})
+this.props.navigator.push('D', { bId: this.props.bId });
 ```
 
 现在想从 D 页面 返回到 B 页面
 
 ```javascript
 // D.js
-this.props.navigator.popTo(this.props.bId)
+this.props.navigator.popTo(this.props.bId);
 ```
 
 * popToRoot
@@ -269,4 +329,32 @@ componentWillMount() {
 * closeMenu
 
 关闭抽屉
-````
+
+## Navigator
+
+Navigator 是一个类，它的实例方法大都为导航服务。它还有一些静态方法。
+
+* get
+
+接受 sceneId 作为参数，返回一个已经存在的 navigator 实例
+
+```javascript
+this.props.navigator === Navigator.get(this.props.sceneId);
+// true
+```
+
+* current
+
+返回当前有效的 navigator，通常是用户当前可见的那个页面的 navigator
+
+* setRoot
+
+设置应用的 UI 层级
+
+* setInterceptor
+
+设置导航拦截器
+
+* dispatch
+
+大多数导航操作都是转发给该方法完成

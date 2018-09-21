@@ -18,6 +18,8 @@ typedef NS_ENUM(NSUInteger, HBDModalAnimationStyle) {
 
 @interface HBDModalViewController : HBDViewController
 
+@property(nonatomic, assign, readonly, getter=isBeingHidden) BOOL beingHidden;
+
 @property(nonatomic, strong) UIViewController *contentViewController;
 
 /**

@@ -102,21 +102,38 @@ RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode
 
 RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    UIViewController *controller = application.keyWindow.rootViewController;
-    while (controller != nil) {
-        UIViewController *presentedController = controller.presentedViewController;
-        if (presentedController && ![presentedController isBeingDismissed]) {
-            controller = presentedController;
-        } else {
+    UIViewController *controller = nil;
+    
+    for (NSUInteger i = application.windows.count; i > 0; i --) {
+        UIWindow *window = application.windows[i-1];
+        if (!window.rootViewController) {
+            continue;
+        }
+        
+        controller = window.rootViewController;
+        
+        if ([controller isKindOfClass:[HBDModalViewController class]]) {
+            HBDModalViewController *modal = (HBDModalViewController *)controller;
+            if (modal.isBeingHidden) {
+                continue;
+            }
+            controller = modal.contentViewController;
+        }
+        
+        while (controller != nil) {
+            UIViewController *presentedController = controller.presentedViewController;
+            if (presentedController && ![presentedController isBeingDismissed]) {
+                controller = presentedController;
+            } else {
+                break;
+            }
+        }
+        
+        if (controller) {
             break;
         }
     }
-    
-    if ([controller isKindOfClass:[HBDModalViewController class]]) {
-        HBDModalViewController *modal = (HBDModalViewController *)controller;
-        controller = modal.contentViewController;
-    }
-    
+
     HBDViewController *current = [self primaryControllerInController:controller];
     if (current) {
         resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId });
@@ -135,6 +152,14 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
     for (NSUInteger i = 0; i < application.windows.count; i ++) {
         UIWindow *window = application.windows[i];
         UIViewController *controller = window.rootViewController;
+        
+        if ([controller isKindOfClass:[HBDModalViewController class]]) {
+            HBDModalViewController *modal = (HBDModalViewController *)controller;
+            if (modal.isBeingHidden) {
+                continue;
+            }
+        }
+        
         while (controller != nil) {
             [self routeGraphWithController:controller container:container];
             UIViewController *presentedController = controller.presentedViewController;
