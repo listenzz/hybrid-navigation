@@ -55,7 +55,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
         super.onCreate();
         SoLoader.init(this, false);
 
-        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+        ReactBridgeManager bridgeManager = ReactBridgeManager.get();
         bridgeManager.install(getReactNativeHost());
 
         // register native modules

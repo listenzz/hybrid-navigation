@@ -26,7 +26,7 @@ import me.listenzz.navigation.Style;
  * Created by Listen on 2017/11/17.
  */
 
-public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity, ReactBridgeManager.ReactModuleRegistryListener {
+public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity, ReactBridgeManager.ReactModuleRegisterListener {
 
     protected static final String TAG = "ReactNative";
 
@@ -37,7 +37,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     }
 
     protected ReactAppCompatActivityDelegate createReactActivityDelegate() {
-        return new ReactAppCompatActivityDelegate(this, ReactBridgeManager.instance);
+        return new ReactAppCompatActivityDelegate(this, ReactBridgeManager.get());
     }
 
     @Override
@@ -47,10 +47,10 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
         setStatusBarTranslucent(true);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        getReactBridgeManager().addReactModuleRegistryListener(this);
+        getReactBridgeManager().addReactModuleRegisterListener(this);
 
         if (savedInstanceState == null) {
-            if (!isReactModuleInRegistry()) {
+            if (isReactModuleRegisterCompleted()) {
                 createMainComponent();
             }
         }
@@ -58,7 +58,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     protected void onCustomStyle(@NonNull Style style) {
-        if (!isReactModuleInRegistry()) {
+        if (isReactModuleRegisterCompleted()) {
             GlobalStyle globalStyle = Garden.getGlobalStyle();
             if (globalStyle != null) {
                 globalStyle.inflateStyle(this, style);
@@ -68,13 +68,13 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     protected void onDestroy() {
-        getReactBridgeManager().removeReactModuleRegistryListener(this);
+        getReactBridgeManager().removeReactModuleRegisterListener(this);
         super.onDestroy();
         activityDelegate.onDestroy();
     }
 
     @Override
-    public void onReactModuleRegistryCompleted() {
+    public void onReactModuleRegisterCompleted() {
         onCustomStyle(getStyle());
         createMainComponent();
     }
@@ -201,8 +201,8 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         return activityDelegate.getReactBridgeManager();
     }
 
-    public boolean isReactModuleInRegistry() {
-        return getReactBridgeManager().isReactModuleInRegistry();
+    public boolean isReactModuleRegisterCompleted() {
+        return getReactBridgeManager().isReactModuleRegisterCompleted();
     }
 
     public List<AwesomeFragment> getFragmentsAtAddedList() {

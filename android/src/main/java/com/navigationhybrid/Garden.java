@@ -187,7 +187,7 @@ public class Garden {
         return new ToolbarButtonItem(uri, 0, renderOriginal, title, tintColor, enabled, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+                ReactBridgeManager bridgeManager = ReactBridgeManager.get();
                 Bundle bundle = new Bundle();
                 bundle.putString("action", action);
                 bundle.putString("sceneId", fragment.getSceneId());

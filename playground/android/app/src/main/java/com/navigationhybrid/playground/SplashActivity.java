@@ -16,7 +16,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!ReactBridgeManager.instance.isReactModuleInRegistry()) {
+        if (ReactBridgeManager.get().isReactModuleRegisterCompleted()) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -24,10 +24,10 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }, 500);
         } else {
-            ReactBridgeManager.instance.addReactModuleRegistryListener(new ReactBridgeManager.ReactModuleRegistryListener() {
+            ReactBridgeManager.get().addReactModuleRegisterListener(new ReactBridgeManager.ReactModuleRegisterListener() {
                 @Override
-                public void onReactModuleRegistryCompleted() {
-                    ReactBridgeManager.instance.removeReactModuleRegistryListener(this);
+                public void onReactModuleRegisterCompleted() {
+                    ReactBridgeManager.get().removeReactModuleRegisterListener(this);
                     startMainActivity();
                 }
             });

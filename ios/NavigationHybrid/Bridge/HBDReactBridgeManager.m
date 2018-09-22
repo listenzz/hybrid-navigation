@@ -28,7 +28,7 @@ const NSInteger ResultCancel = 0;
 @property(nonatomic, copy) NSURL *jsCodeLocation;
 @property(nonatomic, strong) NSMutableDictionary *nativeModules;
 @property(nonatomic, strong) NSMutableDictionary *reactModules;
-@property(nonatomic, assign) BOOL isReactModuleInRegistry;
+@property(nonatomic, assign, readwrite, getter=isReactModuleRegisterCompleted) BOOL reactModuleRegisterCompleted;
 @property(nonatomic, copy) NSMutableArray *navigators;
 
 @end
@@ -52,7 +52,7 @@ const NSInteger ResultCancel = 0;
     if (self = [super init]) {
         _nativeModules = [[NSMutableDictionary alloc] init];
         _reactModules = [[NSMutableDictionary alloc] init];
-        _isReactModuleInRegistry = YES;
+        _reactModuleRegisterCompleted = NO;
         _navigators = [[NSMutableArray alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReload) name:RCTBridgeWillReloadNotification object:nil];
     }
@@ -88,7 +88,7 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)registerReactModule:(NSString *)moduleName options:(NSDictionary *)options {
-    NSCAssert(self.isReactModuleInRegistry, @"非法操作，你应该先调用 `startRegisterReactModule`");
+    NSCAssert(!self.reactModuleRegisterCompleted, @"非法操作，你应该先调用 `startRegisterReactModule`");
     [_reactModules setObject:options forKey:moduleName];
 }
 
@@ -100,17 +100,13 @@ const NSInteger ResultCancel = 0;
     return [_reactModules objectForKey:moduleName] != nil;
 }
 
-- (BOOL)isReactModuleInRegistry {
-    return _isReactModuleInRegistry;
-}
-
 - (void)startRegisterReactModule {
-    _isReactModuleInRegistry = YES;
+    _reactModuleRegisterCompleted = NO;
     [_reactModules removeAllObjects];
 }
 
 - (void)endRegisterReactModule {
-    _isReactModuleInRegistry = NO;
+    _reactModuleRegisterCompleted = YES;
     if (self.delegate != nil) {
         [self.delegate reactModuleRegistryDidCompleted:self];
     }
@@ -130,7 +126,7 @@ const NSInteger ResultCancel = 0;
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
     HBDViewController *vc = nil;
     
-    while ([self isReactModuleInRegistry]) {
+    while (!self.isReactModuleRegisterCompleted) {
         NSDate* later = [NSDate dateWithTimeIntervalSinceNow:0.1];
         [[NSRunLoop mainRunLoop] runUntilDate:later];
     }

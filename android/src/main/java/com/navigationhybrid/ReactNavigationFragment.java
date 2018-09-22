@@ -11,7 +11,7 @@ import me.listenzz.navigation.NavigationFragment;
 
 public class ReactNavigationFragment extends NavigationFragment {
 
-    private final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+    private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 
     @NonNull
     public ReactBridgeManager getReactBridgeManager() {

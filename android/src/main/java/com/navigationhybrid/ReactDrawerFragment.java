@@ -10,7 +10,7 @@ import me.listenzz.navigation.DrawerFragment;
 
 public class ReactDrawerFragment extends DrawerFragment {
 
-    private final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+    private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 
     public @NonNull ReactBridgeManager getReactBridgeManager() {
         return bridgeManager;

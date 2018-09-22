@@ -56,7 +56,7 @@ public class ReactFragment extends HybridFragment {
             view= inflater.inflate(R.layout.nav_fragment_react, container, false);
         }
         containerLayout = view.findViewById(R.id.react_content);
-        if (!getReactBridgeManager().isReactModuleInRegistry()) {
+        if (getReactBridgeManager().isReactModuleRegisterCompleted()) {
             if (getAnimation() != PresentAnimation.None) {
                 postponeEnterTransition();
             }
@@ -96,7 +96,7 @@ public class ReactFragment extends HybridFragment {
     }
 
     private void sendViewAppearEvent(boolean appear) {
-        if (!getReactBridgeManager().isReactModuleInRegistry() && this.appear != appear) {
+        if (getReactBridgeManager().isReactModuleRegisterCompleted() && this.appear != appear) {
             this.appear = appear;
             Bundle bundle = new Bundle();
             bundle.putString(Constants.ARG_SCENE_ID, getSceneId());
@@ -118,7 +118,7 @@ public class ReactFragment extends HybridFragment {
     @Override
     public void setAppProperties(@NonNull Bundle props) {
         super.setAppProperties(props);
-        if (reactRootView != null && !getReactBridgeManager().isReactModuleInRegistry()) {
+        if (reactRootView != null && getReactBridgeManager().isReactModuleRegisterCompleted()) {
             this.reactRootView.setAppProperties(getProps());
         }
     }
@@ -141,7 +141,7 @@ public class ReactFragment extends HybridFragment {
     }
 
     private void initTitleViewIfNeeded() {
-        if (getReactBridgeManager().isReactModuleInRegistry() || reactTitleView != null || getContext() == null) {
+        if (!getReactBridgeManager().isReactModuleRegisterCompleted() || reactTitleView != null || getContext() == null) {
             return;
         }
 
@@ -208,7 +208,7 @@ public class ReactFragment extends HybridFragment {
                         }
 
                         ReactContext reactContext = getReactBridgeManager().getReactInstanceManager().getCurrentReactContext();
-                        if (reactContext != null && !getReactBridgeManager().isReactModuleInRegistry()) {
+                        if (reactContext != null && getReactBridgeManager().isReactModuleRegisterCompleted()) {
                             Activity activity = reactContext.getCurrentActivity();
                             if (activity != null) {
                                 if (KeyEvent.ACTION_UP == event.getAction()) {

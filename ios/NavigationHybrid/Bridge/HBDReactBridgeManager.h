@@ -26,6 +26,7 @@ extern const NSInteger ResultCancel;
 
 @property(nonatomic, strong, readonly) RCTBridge *bridge;
 @property(nonatomic, weak) id<HBDReactBridgeManagerDelegate> delegate;
+@property(nonatomic, assign, readonly, getter=isReactModuleRegisterCompleted) BOOL reactModuleRegisterCompleted;
 
 + (instancetype)sharedInstance;
 
@@ -42,8 +43,6 @@ extern const NSInteger ResultCancel;
 - (NSDictionary *)reactModuleOptionsForKey:(NSString *)moduleName;
 
 - (BOOL)hasReactModuleForName:(NSString *)moduleName;
-
-- (BOOL)isReactModuleInRegistry;
 
 - (void)startRegisterReactModule;
 

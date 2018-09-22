@@ -89,7 +89,7 @@ public class ReactAppCompatActivityDelegate {
 
     protected void onCreate(Bundle savedInstanceState) {
         mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
-        if (!bridgeManager.isReactModuleInRegistry()) {
+        if (bridgeManager.isReactModuleRegisterCompleted()) {
             askPermission();
         }
         IntentFilter intentFilter = new IntentFilter(ReactBridgeManager.REACT_INSTANCE_CONTEXT_INITIALIZED);

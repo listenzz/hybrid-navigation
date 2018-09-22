@@ -88,7 +88,7 @@
 
 - (void)setAppProperties:(NSDictionary *)props {
     [super setAppProperties:props];
-    if (![[HBDReactBridgeManager sharedInstance] isReactModuleInRegistry]) {
+    if ([HBDReactBridgeManager sharedInstance].isReactModuleRegisterCompleted) {
         self.rootView.appProperties = [self propsWithSceneId];
     }
 }

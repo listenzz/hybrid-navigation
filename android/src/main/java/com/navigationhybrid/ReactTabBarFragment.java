@@ -24,7 +24,7 @@ import me.listenzz.navigation.TabBarFragment;
 
 public class ReactTabBarFragment extends TabBarFragment {
 
-    private final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+    private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 
     public @NonNull
     ReactBridgeManager getReactBridgeManager() {

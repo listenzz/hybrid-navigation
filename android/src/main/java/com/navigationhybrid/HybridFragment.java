@@ -21,7 +21,7 @@ import static com.navigationhybrid.Constants.ARG_SCENE_ID;
 
 public class HybridFragment extends AwesomeFragment {
 
-    private final ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+    private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 
     private Garden garden;
 

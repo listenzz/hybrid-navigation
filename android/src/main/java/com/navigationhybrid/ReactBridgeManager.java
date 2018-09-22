@@ -40,12 +40,16 @@ public class ReactBridgeManager {
     public static String REACT_MODULE_REGISTRY_COMPLETED_BROADCAST = "registry_completed";
     public static String REACT_INSTANCE_CONTEXT_INITIALIZED = "context_initialized";
 
-    public interface ReactModuleRegistryListener {
-        void onReactModuleRegistryCompleted();
+    public interface ReactModuleRegisterListener {
+        void onReactModuleRegisterCompleted();
     }
 
     private static final String TAG = "ReactNative";
-    public static ReactBridgeManager instance = new ReactBridgeManager();
+    private final static ReactBridgeManager instance = new ReactBridgeManager();
+
+    public static ReactBridgeManager get() {
+        return instance;
+    }
 
     private ReactBridgeManager() {
         registerNavigator(new ScreenNavigator());
@@ -56,7 +60,7 @@ public class ReactBridgeManager {
 
     private HashMap<String, Class<? extends HybridFragment>> nativeModules = new HashMap<>();
     private HashMap<String, ReadableMap> reactModules = new HashMap<>();
-    private CopyOnWriteArrayList<ReactModuleRegistryListener> reactModuleRegistryListeners = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<ReactModuleRegisterListener> reactModuleRegisterListeners = new CopyOnWriteArrayList<>();
 
     private ReadableMap rootLayout;
     private ReadableMap stickyLayout;
@@ -128,24 +132,24 @@ public class ReactBridgeManager {
         return reactModules.get(moduleName);
     }
 
-    private boolean isReactModuleInRegistry = true;
+    private boolean reactModuleRegisterCompleted = false;
 
-    public boolean isReactModuleInRegistry() {
-        return isReactModuleInRegistry;
+    public boolean isReactModuleRegisterCompleted() {
+        return reactModuleRegisterCompleted;
     }
 
     @UiThread
     public void startRegisterReactModule() {
         reactModules.clear();
-        isReactModuleInRegistry = true;
+        reactModuleRegisterCompleted = false;
     }
 
     @UiThread
     public void endRegisterReactModule() {
-        isReactModuleInRegistry = false;
+        reactModuleRegisterCompleted = true;
         Log.i(TAG, "react module registry completed");
-        for (ReactModuleRegistryListener listener : reactModuleRegistryListeners) {
-            listener.onReactModuleRegistryCompleted();
+        for (ReactModuleRegisterListener listener : reactModuleRegisterListeners) {
+            listener.onReactModuleRegisterCompleted();
         }
         Context context = getReactInstanceManager().getCurrentReactContext();
         if (context != null) {
@@ -155,17 +159,17 @@ public class ReactBridgeManager {
     }
 
     @UiThread
-    public void addReactModuleRegistryListener(ReactModuleRegistryListener listener) {
-        reactModuleRegistryListeners.add(listener);
+    public void addReactModuleRegisterListener(ReactModuleRegisterListener listener) {
+        reactModuleRegisterListeners.add(listener);
     }
 
     @UiThread
-    public void removeReactModuleRegistryListener(ReactModuleRegistryListener listener) {
-        reactModuleRegistryListeners.remove(listener);
+    public void removeReactModuleRegisterListener(ReactModuleRegisterListener listener) {
+        reactModuleRegisterListeners.remove(listener);
     }
 
     public void sendEvent(String eventName, WritableMap data) {
-        if (!isReactModuleInRegistry) {
+        if (isReactModuleRegisterCompleted()) {
             ReactContext reactContext = getReactInstanceManager().getCurrentReactContext();
             if (reactContext != null) {
                 DeviceEventManagerModule.RCTDeviceEventEmitter emitter = reactContext
@@ -286,7 +290,7 @@ public class ReactBridgeManager {
 
     @Nullable
     public HybridFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
-        if (isReactModuleInRegistry()) {
+        if (!isReactModuleRegisterCompleted()) {
             throw new IllegalStateException("模块还没有注册完，不能执行此操作");
         }
 

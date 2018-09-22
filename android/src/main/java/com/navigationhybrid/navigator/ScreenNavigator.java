@@ -140,6 +140,6 @@ public class ScreenNavigator implements Navigator {
     }
 
     private ReactBridgeManager getReactBridgeManager() {
-        return ReactBridgeManager.instance;
+        return ReactBridgeManager.get();
     }
 }
