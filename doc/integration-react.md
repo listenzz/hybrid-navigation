@@ -229,6 +229,12 @@ dependencies {
 
 ```diff
 + import com.navigationhybrid.ReactBridgeManager;
++ import com.navigationhybrid.HybridReactNativeHost;
+
+- private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
++ private final ReactNativeHost mReactNativeHost = new HybridReactNativeHost(this) {
+
+}
 
 public void onCreate() {
     super.onCreate();
@@ -238,6 +244,8 @@ public void onCreate() {
 +   bridgeManager.install(getReactNativeHost());
 }
 ```
+
+> 注意：ReactNativeHost 的实例是 HybridReactNativeHost 对象，它为 reload bundle 做了些优化。
 
 ### 同步构建版本
 

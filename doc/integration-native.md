@@ -183,7 +183,7 @@ dependencies {
 
 ```java
 public class MainApplication extends Application implements ReactApplication {
-    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+    private final ReactNativeHost mReactNativeHost = new HybridReactNativeHost(this) {
     @Override
     public boolean getUseDeveloperSupport() {
         return BuildConfig.DEBUG;
@@ -217,6 +217,8 @@ public class MainApplication extends Application implements ReactApplication {
     }
 }
 ```
+
+> 注意：ReactNativeHost 的实例是 HybridReactNativeHost 对象，它为 reload bundle 做了些优化。
 
 创建一个 Activity 继承 ReactAppCompatActivity
 

@@ -15,7 +15,7 @@ cd react-native-navigation-hybrid
 
 ### run on Android
 
-first, make sure that you have a simulator or device.
+First, make sure that you have a simulator or device.
 
 Then,
 
@@ -37,7 +37,9 @@ npm run run:android
 
 ### run on iOS
 
-first, install pods.
+First, make sure that you have install [cocoapods](https://guides.cocoapods.org/).
+
+Then,
 
 ```shell
 cd playground/ios
@@ -72,9 +74,31 @@ npm run run:ios
 * 内置 drawer, tabs, stack 标准容器，同时支持自定义容器和导航
 * 支持 deep link
 
+## 目录
+
+#### [集成到以 RN 为主的项目](./doc/integration-react.md)
+
+#### [为原生项目添加 RN 模块](./doc/integration-native.md)
+
+#### [容器与导航](./doc/navigation.md)
+
+#### [RN 页面与原生页面相互跳转和传值](./doc/pass-and-return-value.md)
+
+#### [额外的生命周期函数](./doc/lifecycle.md)
+
+#### [设置样式](./doc/style.md)
+
+#### [DeepLink](./doc/deeplink.md)
+
 ## 更新日志
 
-最新版本: `0.8.25`
+最新版本: `0.8.29`
+
+### 0.8.29
+
+安卓推荐用 HybridReactNativeHost 替代 ReactNativeHost，它为 reload bundle 做了些优化
+
+Navigator 添加 get 和 current 静态方法，帮助我们在注册组件之外获取它们的 navigator
 
 ### 0.8.5
 
@@ -99,19 +123,3 @@ Android 支持侧滑返回
 TopBar 不再遮挡内容
 
 支持隐藏状态栏
-
-## 目录
-
-#### [集成到以 RN 为主的项目](./doc/integration-react.md)
-
-#### [为原生项目添加 RN 模块](./doc/integration-native.md)
-
-#### [容器与导航](./doc/navigation.md)
-
-#### [RN 页面与原生页面相互跳转和传值](./doc/pass-and-return-value.md)
-
-#### [额外的生命周期函数](./doc/lifecycle.md)
-
-#### [设置样式](./doc/style.md)
-
-#### [DeepLink](./doc/deeplink.md)
