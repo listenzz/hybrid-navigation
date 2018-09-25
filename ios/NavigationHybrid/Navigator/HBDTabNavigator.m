@@ -51,13 +51,13 @@
 
 - (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
     if ([vc isKindOfClass:[HBDTabBarController class]]) {
-        HBDTabBarController *tabs = (HBDTabBarController *)vc;
-        NSMutableArray *children = [[NSMutableArray alloc] init];
-        for (NSInteger i = 0; i < tabs.childViewControllers.count; i++) {
-            UIViewController *child = tabs.childViewControllers[i];
-            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:child root:children];
+        HBDTabBarController *tabBarController = (HBDTabBarController *)vc;
+        NSMutableArray *tabs = [[NSMutableArray alloc] init];
+        for (NSInteger i = 0; i < tabBarController.childViewControllers.count; i++) {
+            UIViewController *child = tabBarController.childViewControllers[i];
+            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:child root:tabs];
         }
-        [root addObject:@{ @"type": self.name, self.name: children, @"selectedIndex": @(tabs.selectedIndex) }];
+        [root addObject:@{ @"type": self.name, self.name: tabs, @"selectedIndex": @(tabBarController.selectedIndex) }];
         return YES;
     }
     return NO;

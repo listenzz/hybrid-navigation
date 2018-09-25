@@ -60,11 +60,11 @@
 
 - (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
     if ([vc isKindOfClass:[HBDDrawerController class]]) {
-        HBDDrawerController *drawer = (HBDDrawerController *)vc;
-        NSMutableArray *children = [[NSMutableArray alloc] init];
-        [[HBDReactBridgeManager sharedInstance] routeGraphWithController:drawer.contentController root:children];
-        [[HBDReactBridgeManager sharedInstance] routeGraphWithController:drawer.menuController root:children];
-        [root addObject:@{ @"type": @"drawer", @"drawer": children }];
+        HBDDrawerController *drawerController = (HBDDrawerController *)vc;
+        NSMutableArray *drawer = [[NSMutableArray alloc] init];
+        [[HBDReactBridgeManager sharedInstance] routeGraphWithController:drawerController.contentController root:drawer];
+        [[HBDReactBridgeManager sharedInstance] routeGraphWithController:drawerController.menuController root:drawer];
+        [root addObject:@{ @"type": @"drawer", @"drawer": drawer }];
         return YES;
     }
     return NO;
