@@ -54,16 +54,16 @@ public class ScreenNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer) {
+    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
         if (fragment instanceof HybridFragment) {
             HybridFragment screen = (HybridFragment) fragment;
-            Bundle bundle = new Bundle();
-            bundle.putString("type", name());
+            Bundle graph = new Bundle();
+            graph.putString("type", name());
             Bundle route = new Bundle();
             route.putString("moduleName", screen.getModuleName());
             route.putString("sceneId", screen.getSceneId());
-            bundle.putBundle(name(), route);
-            graph.add(bundle);
+            graph.putBundle(name(), route);
+            root.add(graph);
             return true;
         }
         return false;

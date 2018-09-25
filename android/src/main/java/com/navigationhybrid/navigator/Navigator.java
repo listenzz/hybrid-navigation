@@ -21,7 +21,7 @@ public interface Navigator {
     @Nullable
     AwesomeFragment createFragment(ReadableMap layout);
 
-    boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer);
+    boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal);
 
     HybridFragment primaryChildFragment(@NonNull AwesomeFragment fragment);
 

@@ -201,16 +201,16 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     return;
                 }
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                ArrayList<Bundle> container = new ArrayList<>();
-                ArrayList<Bundle> modalContainer = new ArrayList<>();
+                ArrayList<Bundle> root = new ArrayList<>();
+                ArrayList<Bundle> modal = new ArrayList<>();
                 List<AwesomeFragment> fragments = reactAppCompatActivity.getFragmentsAtAddedList();
                 for (int i = 0; i < fragments.size(); i++) {
                     AwesomeFragment fragment = fragments.get(i);
-                    buildRouteGraph(fragment, container, modalContainer);
+                    buildRouteGraph(fragment, root, modal);
                 }
-                container.addAll(modalContainer);
-                if (container.size() > 0) {
-                    promise.resolve(Arguments.fromList(container));
+                root.addAll(modal);
+                if (root.size() > 0) {
+                    promise.resolve(Arguments.fromList(root));
                 } else {
                     promise.reject("2", "UI 层级还没有准备好");
                 }
@@ -218,8 +218,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         });
     }
 
-    private void buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> topContainer) {
-        reactBridgeManager.buildRouteGraph(fragment, graph, topContainer);
+    private void buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
+        reactBridgeManager.buildRouteGraph(fragment, root, modal);
     }
 
     private HybridFragment findFragmentBySceneId(String sceneId) {

@@ -54,7 +54,7 @@ public class StackNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer) {
+    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
         if (fragment instanceof NavigationFragment) {
             NavigationFragment stack = (NavigationFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
@@ -62,13 +62,13 @@ public class StackNavigator implements Navigator {
             for (int i = 0; i < fragments.size(); i++) {
                 AwesomeFragment child = fragments.get(i);
                 if (!child.getShowsDialog()) {
-                    getReactBridgeManager().buildRouteGraph(child, children, modalContainer);
+                    getReactBridgeManager().buildRouteGraph(child, children, modal);
                 }
             }
-            Bundle bundle = new Bundle();
-            bundle.putString("type", name());
-            bundle.putParcelableArrayList(name(), children);
-            graph.add(bundle);
+            Bundle graph = new Bundle();
+            graph.putString("type", name());
+            graph.putParcelableArrayList(name(), children);
+            root.add(graph);
             return true;
         }
         return false;

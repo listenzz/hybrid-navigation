@@ -229,14 +229,14 @@ public class ReactBridgeManager {
         return fragment;
     }
 
-    public void buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer) {
+    public void buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
         List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
         if (children.size() > 0) {
             for (int i = 0; i < children.size(); i ++) {
                 AwesomeFragment child = children.get(i);
                 if (child.getShowsDialog()) {
                     for (Navigator navigator : navigators) {
-                        if (navigator.buildRouteGraph(child, modalContainer, modalContainer)) {
+                        if (navigator.buildRouteGraph(child, modal, modal)) {
                             break;
                         }
                     }
@@ -245,7 +245,7 @@ public class ReactBridgeManager {
         }
 
         for (Navigator navigator : navigators) {
-            if (navigator.buildRouteGraph(fragment, graph, modalContainer)) {
+            if (navigator.buildRouteGraph(fragment, root, modal)) {
                 break;
             }
         }

@@ -63,20 +63,20 @@ public class TabNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer) {
+    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
         if (fragment instanceof TabBarFragment) {
             TabBarFragment tabs = (TabBarFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
             List<AwesomeFragment> fragments = tabs.getChildFragments();
             for (int i = 0; i < fragments.size(); i++) {
                 AwesomeFragment child = fragments.get(i);
-                getReactBridgeManager().buildRouteGraph(child, children, modalContainer);
+                getReactBridgeManager().buildRouteGraph(child, children, modal);
             }
-            Bundle bundle = new Bundle();
-            bundle.putString("type", name());
-            bundle.putInt("selectedIndex", tabs.getSelectedIndex());
-            bundle.putParcelableArrayList(name(), children);
-            graph.add(bundle);
+            Bundle graph = new Bundle();
+            graph.putString("type", name());
+            graph.putInt("selectedIndex", tabs.getSelectedIndex());
+            graph.putParcelableArrayList(name(), children);
+            root.add(graph);
             return true;
         }
         return false;

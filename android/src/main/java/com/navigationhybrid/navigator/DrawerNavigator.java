@@ -78,16 +78,16 @@ public class DrawerNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer) {
+    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
         if (fragment instanceof DrawerFragment) {
             DrawerFragment drawer = (DrawerFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
-            getReactBridgeManager().buildRouteGraph(drawer.getContentFragment(), children, modalContainer);
-            getReactBridgeManager().buildRouteGraph(drawer.getMenuFragment(), children, modalContainer);
-            Bundle bundle = new Bundle();
-            bundle.putString("type", name());
-            bundle.putParcelableArrayList(name(), children);
-            graph.add(bundle);
+            getReactBridgeManager().buildRouteGraph(drawer.getContentFragment(), children, modal);
+            getReactBridgeManager().buildRouteGraph(drawer.getMenuFragment(), children, modal);
+            Bundle graph = new Bundle();
+            graph.putString("type", name());
+            graph.putParcelableArrayList(name(), children);
+            root.add(graph);
             return true;
         }
         return false;
