@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -71,7 +72,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         final Map<String, Object> constants = new HashMap<>();
         constants.put("DARK_CONTENT", TOP_BAR_STYLE_DARK_CONTENT);
         constants.put("LIGHT_CONTENT", TOP_BAR_STYLE_LIGHT_CONTENT);
-        constants.put("TOOLBAR_HEIGHT", 56);
+        constants.put("TOOLBAR_HEIGHT", Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? 56 : 48);
         return constants;
     }
 
@@ -220,7 +221,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 if (fragment != null && fragment.getView() != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null && tabBarFragment instanceof ReactTabBarFragment) {
-                        ((ReactTabBarFragment)tabBarFragment).updateTabBar(readableMap);
+                        ((ReactTabBarFragment) tabBarFragment).updateTabBar(readableMap);
                     }
                 }
             }
