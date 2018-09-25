@@ -49,15 +49,15 @@
     return nil;
 }
 
-- (BOOL)buildRouteGraphWithController:(UIViewController *)vc graph:(NSMutableArray *)container {
+- (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
     if ([vc isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabs = (HBDTabBarController *)vc;
         NSMutableArray *children = [[NSMutableArray alloc] init];
         for (NSInteger i = 0; i < tabs.childViewControllers.count; i++) {
             UIViewController *child = tabs.childViewControllers[i];
-            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:child container:children];
+            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:child root:children];
         }
-        [container addObject:@{ @"type": self.name, self.name: children, @"selectedIndex": @(tabs.selectedIndex) }];
+        [root addObject:@{ @"type": self.name, self.name: children, @"selectedIndex": @(tabs.selectedIndex) }];
         return YES;
     }
     return NO;

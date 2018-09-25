@@ -56,7 +56,7 @@ extern const NSInteger ResultCancel;
 
 - (void)setRootViewController:(UIViewController *)rootViewController;
 
-- (void)routeGraphWithController:(UIViewController *)controller container:(NSMutableArray *)container;
+- (void)routeGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root;
 
 - (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc;
 

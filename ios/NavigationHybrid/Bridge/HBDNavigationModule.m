@@ -136,7 +136,7 @@ RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
 
 RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    NSMutableArray *container = [[NSMutableArray alloc] init];
+    NSMutableArray *root = [[NSMutableArray alloc] init];
     for (NSUInteger i = 0; i < application.windows.count; i ++) {
         UIWindow *window = application.windows[i];
         UIViewController *controller = window.rootViewController;
@@ -149,7 +149,7 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
         }
         
         while (controller != nil) {
-            [self routeGraphWithController:controller container:container];
+            [self routeGraphWithController:controller root:root];
             UIViewController *presentedController = controller.presentedViewController;
             if (presentedController && !presentedController.isBeingDismissed) {
                 controller = presentedController;
@@ -159,15 +159,15 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
         }
     }
     
-    if (container.count > 0) {
-        resolve(container);
+    if (root.count > 0) {
+        resolve(root);
     } else {
         reject(@"2", @"UI 层级还没准备好", [NSError errorWithDomain:RCTErrorDomain code:2 userInfo:nil]);
     }
 }
 
-- (void)routeGraphWithController:(UIViewController *)controller container:(NSMutableArray *)container {
-    [[HBDReactBridgeManager sharedInstance] routeGraphWithController:controller container:container];
+- (void)routeGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root {
+    [[HBDReactBridgeManager sharedInstance] routeGraphWithController:controller root:root];
 }
 
 @end

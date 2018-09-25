@@ -16,7 +16,7 @@
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout;
 
-- (BOOL)buildRouteGraphWithController:(UIViewController *)vc graph:(NSMutableArray *)container;
+- (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root;
 
 - (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc;
 

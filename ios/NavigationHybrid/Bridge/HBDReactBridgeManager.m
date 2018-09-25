@@ -242,9 +242,9 @@ const NSInteger ResultCancel = 0;
     return hbdVC;
 }
 
-- (void)routeGraphWithController:(UIViewController *)controller container:(NSMutableArray *)container {
+- (void)routeGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root {
     for (id<HBDNavigator> navigator in self.navigators) {
-        if ([navigator buildRouteGraphWithController:controller graph:container]) {
+        if ([navigator buildRouteGraphWithController:controller root:root]) {
             return;
         }
     }

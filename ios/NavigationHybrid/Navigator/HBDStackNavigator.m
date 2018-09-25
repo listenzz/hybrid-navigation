@@ -36,15 +36,15 @@
     return nil;
 }
 
-- (BOOL)buildRouteGraphWithController:(UIViewController *)vc graph:(NSMutableArray *)container {
+- (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
     if ([vc isKindOfClass:[HBDNavigationController class]]) {
         HBDNavigationController *stack = (HBDNavigationController *)vc;
         NSMutableArray *children = [[NSMutableArray alloc] init];
         for (NSInteger i = 0; i < stack.childViewControllers.count; i++) {
             UIViewController *child = stack.childViewControllers[i];
-            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:child container:children];
+            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:child root:children];
         }
-        [container addObject:@{ @"type": @"stack", @"stack": children }];
+        [root addObject:@{ @"type": @"stack", @"stack": children }];
         return YES;
     }
     return NO;

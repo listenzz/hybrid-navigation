@@ -32,16 +32,16 @@
     return nil;
 }
 
-- (BOOL)buildRouteGraphWithController:(UIViewController *)vc graph:(NSMutableArray *)container {
+- (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
     if ([vc isKindOfClass:[HBDViewController class]]) {
         HBDViewController *screen = nil;
         if ([vc isKindOfClass:[HBDModalViewController class]]) {
             HBDModalViewController *modal = (HBDModalViewController *)vc;
             screen = (HBDViewController *)modal.contentViewController;
-            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:screen container:container];
+            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:screen root:root];
         } else {
             screen = (HBDViewController *)vc;
-            [container addObject:@{
+            [root addObject:@{
                                    @"type": @"screen",
                                    @"screen": @{ @"moduleName": screen.moduleName, @"sceneId": screen.sceneId}
                                    }];
