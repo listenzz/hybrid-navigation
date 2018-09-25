@@ -19,6 +19,7 @@ typedef NS_ENUM(NSUInteger, HBDModalAnimationStyle) {
 @interface HBDModalViewController : HBDViewController
 
 @property(nonatomic, assign, readonly, getter=isBeingHidden) BOOL beingHidden;
+@property(nonatomic, weak, readonly) UIWindow *previousKeyWindow;
 
 @property(nonatomic, strong) UIViewController *contentViewController;
 

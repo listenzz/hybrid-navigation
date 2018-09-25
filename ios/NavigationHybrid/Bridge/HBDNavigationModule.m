@@ -102,38 +102,26 @@ RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode
 
 RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    UIViewController *controller = nil;
+    UIViewController *controller = application.keyWindow.rootViewController;
     
-    for (NSUInteger i = application.windows.count; i > 0; i --) {
-        UIWindow *window = application.windows[i-1];
-        if (!window.rootViewController) {
-            continue;
-        }
-        
-        controller = window.rootViewController;
-        
-        if ([controller isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)controller;
-            if (modal.isBeingHidden) {
-                continue;
-            }
+    while (controller != nil && [controller isKindOfClass:[HBDModalViewController class]]) {
+        HBDModalViewController *modal = (HBDModalViewController *)controller;
+        if (modal.isBeingHidden) {
+            controller = modal.previousKeyWindow.rootViewController;
+        } else {
             controller = modal.contentViewController;
         }
-        
-        while (controller != nil) {
-            UIViewController *presentedController = controller.presentedViewController;
-            if (presentedController && ![presentedController isBeingDismissed]) {
-                controller = presentedController;
-            } else {
-                break;
-            }
-        }
-        
-        if (controller) {
+    }
+    
+    while (controller != nil) {
+        UIViewController *presentedController = controller.presentedViewController;
+        if (presentedController && ![presentedController isBeingDismissed]) {
+            controller = presentedController;
+        } else {
             break;
         }
     }
-
+    
     HBDViewController *current = [self primaryControllerInController:controller];
     if (current) {
         resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId });
@@ -170,6 +158,7 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
             }
         }
     }
+    
     if (container.count > 0) {
         resolve(container);
     } else {

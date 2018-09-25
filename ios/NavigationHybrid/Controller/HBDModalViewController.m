@@ -26,7 +26,7 @@
 @property (nonatomic, strong, readwrite) UIView *contentView;
 
 @property(nonatomic, strong) HBDModalWindow *containerWindow;
-@property(nonatomic, weak) UIWindow *previousKeyWindow;
+@property(nonatomic, weak, readwrite) UIWindow *previousKeyWindow;
 @property(nonatomic, strong) UITapGestureRecognizer *dimmingViewTapGestureRecognizer;
 
 @property(nonatomic, assign, readwrite, getter=isVisible) BOOL visible;
