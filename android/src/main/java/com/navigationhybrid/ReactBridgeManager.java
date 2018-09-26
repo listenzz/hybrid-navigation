@@ -229,10 +229,12 @@ public class ReactBridgeManager {
         return fragment;
     }
 
-    public void buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
+    public void buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
+        fragment.requireFragmentManager().executePendingTransactions();
+
         List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
         if (children.size() > 0) {
-            for (int i = 0; i < children.size(); i ++) {
+            for (int i = 0; i < children.size(); i++) {
                 AwesomeFragment child = children.get(i);
                 if (child.getShowsDialog()) {
                     for (Navigator navigator : navigators) {
@@ -252,9 +254,12 @@ public class ReactBridgeManager {
     }
 
     public HybridFragment primaryFragment(AwesomeFragment f) {
+
+        f.requireFragmentManager().executePendingTransactions();
+
         List<AwesomeFragment> children = f.getChildFragmentsAtAddedList();
         if (children.size() > 0) {
-            AwesomeFragment last = children.get(children.size() -1);
+            AwesomeFragment last = children.get(children.size() - 1);
             if (last.getShowsDialog()) {
                 f = last;
             }

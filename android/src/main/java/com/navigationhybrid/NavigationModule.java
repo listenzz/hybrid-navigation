@@ -201,6 +201,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     return;
                 }
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                reactAppCompatActivity.getSupportFragmentManager().executePendingTransactions();
+
                 ArrayList<Bundle> root = new ArrayList<>();
                 ArrayList<Bundle> modal = new ArrayList<>();
                 List<AwesomeFragment> fragments = reactAppCompatActivity.getFragmentsAtAddedList();
