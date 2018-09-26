@@ -92,7 +92,37 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.8.30`
+最新版本: `0.8.31`
+
+### 0.8.31 - 2018/9/26
+
+#### iOS
+
+```objc
+// HBDNavigator.h
+- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc;
+```
+
+方法签名变更为
+
+```objc
+// HBDNavigator.h
+- (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc;
+```
+
+#### Android
+
+```java
+// Navigator.java
+boolean primaryChildFragment(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer);
+```
+
+方法签名更改为：
+
+```java
+// Navigator.java
+boolean primaryFragment(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal);
+```
 
 ### 0.8.30 - 2018/9/26
 

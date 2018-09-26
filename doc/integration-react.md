@@ -240,7 +240,7 @@ public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
 
-+   ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
++   ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 +   bridgeManager.install(getReactNativeHost());
 }
 ```

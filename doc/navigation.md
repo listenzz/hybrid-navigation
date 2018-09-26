@@ -312,11 +312,60 @@ componentWillMount() {
 
 ## tabs
 
+可以通过 `selectedIndex` 来指定首选 tab
+
+```javascript
+Navigator.setRoot({
+  tabs: [
+    {
+      stack: {
+        screen: { moduleName: 'Navigation' },
+      },
+    },
+    {
+      stack: {
+        screen: { moduleName: 'Options' },
+      },
+    },
+  ],
+  options: {
+    selectedIndex: 1,
+  },
+});
+```
+
+tabs 支持以下导航操作
+
 * switchTab
 
 切换到指定 tab
 
 ## drawer
+
+drawer 有以下可配置属性：`maxDrawerWidth`, `minDrawerMargin`, `menuInteractive`, `hideStatusBarWhenMenuOpened`
+
+```javascript
+Navigator.setRoot({
+  drawer: [
+    {
+      screen: { moduleName: 'Content' },
+    },
+    {
+      screen: { moduleName: 'Menu' },
+    },
+  ],
+  options: {
+    maxDrawerWidth: 280, // 抽屉的宽度
+    minDrawerMargin: 64, // 抽屉距离页面右边缘的空隙
+    menuInteractive: false, // 是否允许通过手势打开抽屉，默认 true
+    hideStatusBarWhenMenuOpened: true, // 打开抽屉时，是否隐藏状态栏，默认 true
+  },
+});
+```
+
+可以 通过 garden 动态改变 menuInteractive 的值，具体查看[样式和主题](./style.md)一章。
+
+drawer 支持以下导航操作
 
 * toggleMenu
 
