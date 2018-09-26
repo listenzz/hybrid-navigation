@@ -12,7 +12,7 @@ export default class Navigator {
   static RESULT_CANCEL = NavigationModule.RESULT_CANCEL;
 
   static get(sceneId) {
-    return store.getNavigator(sceneId);
+    return store.getNavigator(sceneId) || new Navigator(sceneId);
   }
 
   static async current() {
