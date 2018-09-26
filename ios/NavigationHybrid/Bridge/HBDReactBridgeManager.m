@@ -108,7 +108,7 @@ const NSInteger ResultCancel = 0;
 - (void)endRegisterReactModule {
     _reactModuleRegisterCompleted = YES;
     if (self.delegate != nil) {
-        [self.delegate reactModuleRegistryDidCompleted:self];
+        [self.delegate reactModuleRegisterDidCompleted:self];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:ReactModuleRegistryDidCompletedNotification object:nil];
 }

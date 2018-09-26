@@ -18,7 +18,7 @@ extern const NSInteger ResultCancel;
 
 @protocol HBDReactBridgeManagerDelegate <NSObject>
 
-- (void)reactModuleRegistryDidCompleted:(HBDReactBridgeManager *)manager;
+- (void)reactModuleRegisterDidCompleted:(HBDReactBridgeManager *)manager;
 
 @end
 
