@@ -90,11 +90,11 @@ npm run run:ios
 
 #### [DeepLink](./doc/deeplink.md)
 
-## 更新日志
+## 最近更新日志
 
 最新版本: `0.8.30`
 
-### 0.8.30
+### 0.8.30 - 2018/9/26
 
 #### iOS
 
@@ -132,32 +132,8 @@ boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayL
 
 移除了 `ReactBrideManager` 中的 `isReactModuleInRegistry` 变量以及相关方法，添加了 `reactModuleRegisterCompleted` 变量及相关方法
 
-### 0.8.29
+### 0.8.29 - 2018/9/21
 
 安卓推荐用 HybridReactNativeHost 替代 ReactNativeHost，它为 reload bundle 做了些优化
 
-Navigator 添加 get 和 current 静态方法，帮助我们在注册组件之外获取它们的 navigator
-
-### 0.8.5
-
-Garden#setBottomBarColor 重命名为 Garden#setTabBarColor
-
-navigationItem 配置中 的 `screenColor` 重命名 `screenBackgroundColor`
-
-Garden#setStyle 配置项中：
-
-* `bottomBarColor` 重命名为 `tabBarColor`
-* `bottomBarShadowImage` 重命名为 `tabBarShadowImage`
-* 用 `tabBarItemColor` 和 `tabBarSelectedItemColor` 取代 `bottomBarButtonItemActiveColor` 和 `bottomBarButtonItemInactiveColor`。`tabBarSelectedItemColor` 和 `bottomBarButtonItemInactiveColor` 的行为是相反的
-
-tabItem 可配置项中， `selectedIcon` 取代了 `inactiveIcon`，并且行为发生了倒置
-
-### 0.8.0
-
-支持自定义容器和导航
-
-Android 支持侧滑返回
-
-TopBar 不再遮挡内容
-
-支持隐藏状态栏
+Navigator 添加 get 和 current 静态方法，帮助我们随时随地获取我们想要的 navigator.
