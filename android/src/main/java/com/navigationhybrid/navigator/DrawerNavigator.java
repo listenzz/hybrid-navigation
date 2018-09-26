@@ -22,6 +22,7 @@ public class DrawerNavigator implements Navigator {
     private List<String> supportActions = Arrays.asList("toggleMenu", "openMenu", "closeMenu");
 
     @Override
+    @NonNull
     public String name() {
         return "drawer";
     }
@@ -78,7 +79,7 @@ public class DrawerNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
+    public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull  ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
         if (fragment instanceof DrawerFragment) {
             DrawerFragment drawer = (DrawerFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
@@ -94,19 +95,20 @@ public class DrawerNavigator implements Navigator {
     }
 
     @Override
-    public HybridFragment primaryChildFragment(@NonNull AwesomeFragment fragment) {
+    public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof DrawerFragment) {
             DrawerFragment drawer = (DrawerFragment) fragment;
             if (drawer.isMenuOpened()) {
-                return getReactBridgeManager().primaryChildFragment(drawer.getMenuFragment());
+                return getReactBridgeManager().primaryFragment(drawer.getMenuFragment());
             } else {
-                return getReactBridgeManager().primaryChildFragment(drawer.getContentFragment());
+                return getReactBridgeManager().primaryFragment(drawer.getContentFragment());
             }
         }
         return null;
     }
 
     @Override
+    @NonNull
     public List<String> supportActions() {
         return supportActions;
     }

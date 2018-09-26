@@ -10,10 +10,6 @@
 #import <React/RCTLog.h>
 #import "HBDReactBridgeManager.h"
 #import "HBDReactViewController.h"
-#import "HBDNavigationController.h"
-#import "UINavigationController+HBD.h"
-#import "HBDTabBarController.h"
-#import "HBDModalViewController.h"
 
 @interface HBDNavigationModule()
 
@@ -43,7 +39,6 @@ RCT_EXPORT_MODULE(NavigationHybrid)
              @"ON_COMPONENT_APPEAR",
              @"ON_COMPONENT_DISAPPEAR",
              @"ON_DIALOG_BACK_PRESSED", // for Android
-             @"ON_COMPONENT_BACK",
              ];
 }
 
@@ -101,28 +96,7 @@ RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode
 }
 
 RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    UIViewController *controller = application.keyWindow.rootViewController;
-    
-    while (controller != nil && [controller isKindOfClass:[HBDModalViewController class]]) {
-        HBDModalViewController *modal = (HBDModalViewController *)controller;
-        if (modal.isBeingHidden) {
-            controller = modal.previousKeyWindow.rootViewController;
-        } else {
-            controller = modal.contentViewController;
-        }
-    }
-    
-    while (controller != nil) {
-        UIViewController *presentedController = controller.presentedViewController;
-        if (presentedController && ![presentedController isBeingDismissed]) {
-            controller = presentedController;
-        } else {
-            break;
-        }
-    }
-    
-    HBDViewController *current = [self primaryControllerInController:controller];
+    HBDViewController *current = [[HBDReactBridgeManager sharedInstance] primaryViewController];
     if (current) {
         resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId });
     } else {
@@ -130,44 +104,13 @@ RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
     }
 }
 
-- (HBDViewController *)primaryControllerInController:(UIViewController *)controller {
-    return [[HBDReactBridgeManager sharedInstance] primaryChildViewControllerInController:controller];
-}
-
 RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    NSMutableArray *root = [[NSMutableArray alloc] init];
-    for (NSUInteger i = 0; i < application.windows.count; i ++) {
-        UIWindow *window = application.windows[i];
-        UIViewController *controller = window.rootViewController;
-        
-        if ([controller isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)controller;
-            if (modal.isBeingHidden) {
-                continue;
-            }
-        }
-        
-        while (controller != nil) {
-            [self routeGraphWithController:controller root:root];
-            UIViewController *presentedController = controller.presentedViewController;
-            if (presentedController && !presentedController.isBeingDismissed) {
-                controller = presentedController;
-            } else {
-                controller = nil;
-            }
-        }
-    }
-    
+    NSArray *root = [[HBDReactBridgeManager sharedInstance] routeGraph];
     if (root.count > 0) {
         resolve(root);
     } else {
         reject(@"2", @"UI 层级还没准备好", [NSError errorWithDomain:RCTErrorDomain code:2 userInfo:nil]);
     }
-}
-
-- (void)routeGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root {
-    [[HBDReactBridgeManager sharedInstance] routeGraphWithController:controller root:root];
 }
 
 @end

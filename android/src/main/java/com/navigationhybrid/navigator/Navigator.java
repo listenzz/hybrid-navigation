@@ -14,16 +14,18 @@ import me.listenzz.navigation.AwesomeFragment;
 
 public interface Navigator {
 
+    @NonNull
     String name();
 
+    @NonNull
     List<String> supportActions();
 
     @Nullable
-    AwesomeFragment createFragment(ReadableMap layout);
+    AwesomeFragment createFragment(@NonNull ReadableMap layout);
 
-    boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal);
+    boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal);
 
-    HybridFragment primaryChildFragment(@NonNull AwesomeFragment fragment);
+    HybridFragment primaryFragment(@NonNull AwesomeFragment fragment);
 
     void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull ReadableMap extras);
 

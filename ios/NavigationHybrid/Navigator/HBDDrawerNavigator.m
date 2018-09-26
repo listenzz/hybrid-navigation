@@ -62,21 +62,21 @@
     if ([vc isKindOfClass:[HBDDrawerController class]]) {
         HBDDrawerController *drawerController = (HBDDrawerController *)vc;
         NSMutableArray *drawer = [[NSMutableArray alloc] init];
-        [[HBDReactBridgeManager sharedInstance] routeGraphWithController:drawerController.contentController root:drawer];
-        [[HBDReactBridgeManager sharedInstance] routeGraphWithController:drawerController.menuController root:drawer];
+        [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:drawerController.contentController root:drawer];
+        [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:drawerController.menuController root:drawer];
         [root addObject:@{ @"type": @"drawer", @"drawer": drawer }];
         return YES;
     }
     return NO;
 }
 
-- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc {
+- (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[HBDDrawerController class]]) {
         HBDDrawerController *drawer = (HBDDrawerController *)vc;
         if (drawer.isMenuOpened) {
-            return [[HBDReactBridgeManager sharedInstance] primaryChildViewControllerInController:drawer.menuController];
+            return [[HBDReactBridgeManager sharedInstance] primaryViewControllerWithViewController:drawer.menuController];
         } else {
-            return [[HBDReactBridgeManager sharedInstance] primaryChildViewControllerInController:drawer.contentController];
+            return [[HBDReactBridgeManager sharedInstance] primaryViewControllerWithViewController:drawer.contentController];
         }
     }
     return nil;

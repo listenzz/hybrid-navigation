@@ -18,7 +18,7 @@
 
 - (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root;
 
-- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc;
+- (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc;
 
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras;
 

@@ -24,11 +24,11 @@ extern const NSInteger ResultCancel;
 
 @interface HBDReactBridgeManager : NSObject
 
++ (instancetype)sharedInstance;
+
 @property(nonatomic, strong, readonly) RCTBridge *bridge;
 @property(nonatomic, weak) id<HBDReactBridgeManagerDelegate> delegate;
 @property(nonatomic, assign, readonly, getter=isReactModuleRegisterCompleted) BOOL reactModuleRegisterCompleted;
-
-+ (instancetype)sharedInstance;
 
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions;
 
@@ -56,9 +56,13 @@ extern const NSInteger ResultCancel;
 
 - (void)setRootViewController:(UIViewController *)rootViewController;
 
-- (void)routeGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root;
+- (NSArray *)routeGraph;
 
-- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc;
+- (void)buildRouteGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root;
+
+- (HBDViewController *)primaryViewController;
+
+- (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc;
 
 - (void)handleNavigationWithViewController:(HBDViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras;
 

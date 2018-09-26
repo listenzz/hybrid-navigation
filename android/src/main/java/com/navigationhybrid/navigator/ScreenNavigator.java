@@ -22,18 +22,20 @@ public class ScreenNavigator implements Navigator {
     private List<String> supportActions = Arrays.asList("present", "presentLayout", "dismiss", "showModal", "showModalLayout", "hideModal");
 
     @Override
+    @NonNull
     public String name() {
         return "screen";
     }
 
     @Override
+    @NonNull
     public List<String> supportActions() {
         return supportActions;
     }
 
     @Override
     @Nullable
-    public AwesomeFragment createFragment(ReadableMap layout) {
+    public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
             ReadableMap screen = layout.getMap(name());
             String moduleName = screen.getString("moduleName");
@@ -54,7 +56,7 @@ public class ScreenNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
+    public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
         if (fragment instanceof HybridFragment) {
             HybridFragment screen = (HybridFragment) fragment;
             Bundle graph = new Bundle();
@@ -70,7 +72,7 @@ public class ScreenNavigator implements Navigator {
     }
 
     @Override
-    public HybridFragment primaryChildFragment(@NonNull AwesomeFragment fragment) {
+    public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof HybridFragment) {
             AwesomeFragment presented = FragmentHelper.getLatterFragment(fragment.requireFragmentManager(), fragment);
             if (presented != null) {

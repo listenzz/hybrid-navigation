@@ -251,7 +251,7 @@ public class ReactBridgeManager {
         }
     }
 
-    public HybridFragment primaryChildFragment(AwesomeFragment f) {
+    public HybridFragment primaryFragment(AwesomeFragment f) {
         List<AwesomeFragment> children = f.getChildFragmentsAtAddedList();
         if (children.size() > 0) {
             AwesomeFragment last = children.get(children.size() -1);
@@ -262,7 +262,7 @@ public class ReactBridgeManager {
 
         HybridFragment fragment = null;
         for (Navigator navigator : navigators) {
-            fragment = navigator.primaryChildFragment(f);
+            fragment = navigator.primaryFragment(f);
             if (fragment != null) {
                 break;
             }

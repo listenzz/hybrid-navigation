@@ -55,7 +55,7 @@
         NSMutableArray *tabs = [[NSMutableArray alloc] init];
         for (NSInteger i = 0; i < tabBarController.childViewControllers.count; i++) {
             UIViewController *child = tabBarController.childViewControllers[i];
-            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:child root:tabs];
+            [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:child root:tabs];
         }
         [root addObject:@{ @"type": self.name, self.name: tabs, @"selectedIndex": @(tabBarController.selectedIndex) }];
         return YES;
@@ -63,10 +63,10 @@
     return NO;
 }
 
-- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc {
+- (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[UITabBarController class]]) {
         UITabBarController *tabBarVc = (UITabBarController *)vc;
-        return [[HBDReactBridgeManager sharedInstance] primaryChildViewControllerInController:tabBarVc.selectedViewController];
+        return [[HBDReactBridgeManager sharedInstance] primaryViewControllerWithViewController:tabBarVc.selectedViewController];
     }
     return nil;
 }

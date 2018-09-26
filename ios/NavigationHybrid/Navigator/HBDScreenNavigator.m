@@ -38,7 +38,7 @@
         if ([vc isKindOfClass:[HBDModalViewController class]]) {
             HBDModalViewController *modal = (HBDModalViewController *)vc;
             screen = (HBDViewController *)modal.contentViewController;
-            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:screen root:root];
+            [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:screen root:root];
         } else {
             screen = (HBDViewController *)vc;
             [root addObject:@{
@@ -51,7 +51,7 @@
     return NO;
 }
 
-- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc {
+- (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[HBDViewController class]]) {
         return (HBDViewController *)vc;
     }

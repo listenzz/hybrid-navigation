@@ -22,18 +22,20 @@ public class TabNavigator implements Navigator {
     private List<String> supportActions = Arrays.asList("switchToTab", "switchTab");
 
     @Override
+    @NonNull
     public String name() {
         return "tabs";
     }
 
     @Override
+    @NonNull
     public List<String> supportActions() {
         return supportActions;
     }
 
     @Override
     @Nullable
-    public AwesomeFragment createFragment(ReadableMap layout) {
+    public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
             ReadableArray tabs = layout.getArray(name());
             List<AwesomeFragment> fragments = new ArrayList<>();
@@ -63,7 +65,7 @@ public class TabNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
+    public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
         if (fragment instanceof TabBarFragment) {
             TabBarFragment tabs = (TabBarFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
@@ -83,16 +85,16 @@ public class TabNavigator implements Navigator {
     }
 
     @Override
-    public HybridFragment primaryChildFragment(@NonNull AwesomeFragment fragment) {
+    public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof TabBarFragment) {
             TabBarFragment tabs = (TabBarFragment) fragment;
-            return getReactBridgeManager().primaryChildFragment(tabs.getSelectedFragment());
+            return getReactBridgeManager().primaryFragment(tabs.getSelectedFragment());
         }
         return null;
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull ReadableMap extras) {
+    public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras) {
         switch (action) {
             case "switchToTab":
             case "switchTab":

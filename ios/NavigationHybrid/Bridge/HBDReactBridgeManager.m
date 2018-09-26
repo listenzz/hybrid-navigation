@@ -231,10 +231,35 @@ const NSInteger ResultCancel = 0;
     keyWindow.rootViewController = rootViewController;
 }
 
-- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc {
+- (HBDViewController *)primaryViewController {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    UIViewController *controller = application.keyWindow.rootViewController;
+    
+    while (controller != nil && [controller isKindOfClass:[HBDModalViewController class]]) {
+        HBDModalViewController *modal = (HBDModalViewController *)controller;
+        if (modal.isBeingHidden) {
+            controller = modal.previousKeyWindow.rootViewController;
+        } else {
+            controller = modal.contentViewController;
+        }
+    }
+    
+    while (controller != nil) {
+        UIViewController *presentedController = controller.presentedViewController;
+        if (presentedController && ![presentedController isBeingDismissed]) {
+            controller = presentedController;
+        } else {
+            break;
+        }
+    }
+    
+    return [self primaryViewControllerWithViewController:controller];
+}
+
+- (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
     HBDViewController *hbdVC = nil;
     for (id<HBDNavigator> navigator in self.navigators) {
-        hbdVC = [navigator primaryChildViewControllerInController:vc];
+        hbdVC = [navigator primaryViewControllerWithViewController:vc];
         if (hbdVC) {
             break;
         }
@@ -242,7 +267,36 @@ const NSInteger ResultCancel = 0;
     return hbdVC;
 }
 
-- (void)routeGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root {
+- (NSArray *)routeGraph {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    NSMutableArray *root = [[NSMutableArray alloc] init];
+    
+    for (NSUInteger i = 0; i < application.windows.count; i ++) {
+        UIWindow *window = application.windows[i];
+        UIViewController *controller = window.rootViewController;
+        
+        if ([controller isKindOfClass:[HBDModalViewController class]]) {
+            HBDModalViewController *modal = (HBDModalViewController *)controller;
+            if (modal.isBeingHidden) {
+                continue;
+            }
+        }
+        
+        while (controller != nil) {
+            [self buildRouteGraphWithController:controller root:root];
+            UIViewController *presentedController = controller.presentedViewController;
+            if (presentedController && !presentedController.isBeingDismissed) {
+                controller = presentedController;
+            } else {
+                controller = nil;
+            }
+        }
+    }
+    
+    return root;
+}
+
+- (void)buildRouteGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root {
     for (id<HBDNavigator> navigator in self.navigators) {
         if ([navigator buildRouteGraphWithController:controller root:root]) {
             return;

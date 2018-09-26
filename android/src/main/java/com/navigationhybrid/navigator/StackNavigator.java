@@ -24,18 +24,20 @@ public class StackNavigator implements Navigator {
     private List<String> supportActions = Arrays.asList("push", "pushLayout", "pop", "popTo", "popToRoot", "replace", "replaceToRoot");
 
     @Override
+    @NonNull
     public String name() {
         return "stack";
     }
 
     @Override
+    @NonNull
     public List<String> supportActions() {
         return supportActions;
     }
 
     @Override
     @Nullable
-    public AwesomeFragment createFragment(ReadableMap layout) {
+    public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
             ReadableMap stack = layout.getMap(name());
             AwesomeFragment fragment = getReactBridgeManager().createFragment(stack);
@@ -54,7 +56,7 @@ public class StackNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal) {
+    public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
         if (fragment instanceof NavigationFragment) {
             NavigationFragment stack = (NavigationFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
@@ -75,10 +77,10 @@ public class StackNavigator implements Navigator {
     }
 
     @Override
-    public HybridFragment primaryChildFragment(@NonNull AwesomeFragment fragment) {
+    public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof NavigationFragment) {
             NavigationFragment stack = (NavigationFragment) fragment;
-            return getReactBridgeManager().primaryChildFragment(stack.getTopFragment());
+            return getReactBridgeManager().primaryFragment(stack.getTopFragment());
         }
         return null;
     }

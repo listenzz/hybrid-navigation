@@ -42,7 +42,7 @@
         NSMutableArray *stack = [[NSMutableArray alloc] init];
         for (NSInteger i = 0; i < nav.childViewControllers.count; i++) {
             UIViewController *child = nav.childViewControllers[i];
-            [[HBDReactBridgeManager sharedInstance] routeGraphWithController:child root:stack];
+            [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:child root:stack];
         }
         [root addObject:@{ @"type": @"stack", @"stack": stack }];
         return YES;
@@ -50,10 +50,10 @@
     return NO;
 }
 
-- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc {
+- (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[UINavigationController class]]) {
         UINavigationController *nav = (UINavigationController *)vc;
-        return [[HBDReactBridgeManager sharedInstance] primaryChildViewControllerInController:nav.topViewController];
+        return [[HBDReactBridgeManager sharedInstance] primaryViewControllerWithViewController:nav.topViewController];
     }
     return nil;
 }
