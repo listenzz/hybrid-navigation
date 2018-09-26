@@ -92,7 +92,35 @@ npm run run:ios
 
 ## 更新日志
 
-最新版本: `0.8.29`
+最新版本: `0.8.30`
+
+### 0.8.30
+
+#### iOS
+
+`HBDNavigator#buildRouteGraphWithController:graph:` 重名为 `HBDNavigator#buildRouteGraphWithController:root:`;
+
+HBDReactBridgeManager 中移除了 isReactModuleInRegistry 方法，添加了 reactModuleRegisterCompleted 属性
+
+#### Android
+
+```java
+// Navigator.java
+boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer);
+```
+
+方法签名更改为：
+
+```java
+// Navigator.java
+boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal);
+```
+
+ReactBrideManager 中 `instance` 静态变量不再公开，提供 `get` 方法来获取单例实例
+
+ReactModuleRegistryListener 重构为 ReactModuleRegisterListener
+
+移除了 ReactBrideManager 中的 isReactModuleInRegistry 变量以及相关方法添加了 reactModuleRegisterCompleted 变量及相关方法
 
 ### 0.8.29
 
