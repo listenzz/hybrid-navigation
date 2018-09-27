@@ -36,7 +36,7 @@ function navigateTo(graph, route) {
       if (navigateTo(tabs[i], route)) {
         if (i !== graph.selectedIndex) {
           const navigation = navigatorFromRouteGraph(tabs[graph.selectedIndex]);
-          navigation.switchToTab(i);
+          navigation.switchTab(i);
         }
         return true;
       }
