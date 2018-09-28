@@ -230,7 +230,7 @@ public class ReactBridgeManager {
     }
 
     public void buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
-        fragment.requireFragmentManager().executePendingTransactions();
+        FragmentHelper.executePendingTransactionsSafe(fragment.requireFragmentManager());
 
         List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
         if (children.size() > 0) {
@@ -253,26 +253,25 @@ public class ReactBridgeManager {
         }
     }
 
-    public HybridFragment primaryFragment(AwesomeFragment f) {
+    public HybridFragment primaryFragment(AwesomeFragment fragment) {
+        FragmentHelper.executePendingTransactionsSafe(fragment.requireFragmentManager());
 
-        f.requireFragmentManager().executePendingTransactions();
-
-        List<AwesomeFragment> children = f.getChildFragmentsAtAddedList();
+        List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
         if (children.size() > 0) {
             AwesomeFragment last = children.get(children.size() - 1);
             if (last.getShowsDialog()) {
-                f = last;
+                fragment = last;
             }
         }
 
-        HybridFragment fragment = null;
+        HybridFragment hybridFragment = null;
         for (Navigator navigator : navigators) {
-            fragment = navigator.primaryFragment(f);
-            if (fragment != null) {
+            hybridFragment = navigator.primaryFragment(fragment);
+            if (hybridFragment != null) {
                 break;
             }
         }
-        return fragment;
+        return hybridFragment;
     }
 
     public void handleNavigation(@Nullable AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras) {

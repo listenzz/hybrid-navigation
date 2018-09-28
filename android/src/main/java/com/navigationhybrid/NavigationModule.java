@@ -200,8 +200,9 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     promise.reject("1", "UI 层级还没有准备好");
                     return;
                 }
+                
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                reactAppCompatActivity.getSupportFragmentManager().executePendingTransactions();
+                FragmentHelper.executePendingTransactionsSafe(reactAppCompatActivity.getSupportFragmentManager());
 
                 ArrayList<Bundle> root = new ArrayList<>();
                 ArrayList<Bundle> modal = new ArrayList<>();
