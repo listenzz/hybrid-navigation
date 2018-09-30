@@ -16,6 +16,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (ReactBridgeManager.get().isReactModuleRegisterCompleted()) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -36,6 +37,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void startMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
+        overridePendingTransition(R.anim.nav_fade_in, R.anim.nav_fade_out);
         finish();
     }
 }

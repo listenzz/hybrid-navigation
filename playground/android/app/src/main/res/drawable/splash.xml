@@ -8,10 +8,13 @@
         </shape>
     </item>
 
-    <item android:gravity="center">
-        <shape android:shape="ring" android:innerRadius="0dp" android:thickness="120dp">
-            <solid android:color="@color/colorPrimary"/>
-        </shape>
+    <item android:bottom="60dp">
+        <bitmap
+            android:antialias="true"
+            android:dither="true"
+            android:filter="true"
+            android:gravity="center"
+            android:src="@drawable/splash_text" />
     </item>
 
 </layer-list>
