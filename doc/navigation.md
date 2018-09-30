@@ -1,12 +1,151 @@
 # 容器与导航
 
-和 react-navigation 一样，内置 drawer、tabs、stack 三种容器，同时支持自定义容器以及导航。导航是指容器如何切换它的子页面，这和容器如何管理它的子页面有很大关系。
+本库内置 drawer、tabs、stack、screen 四种布局对象，前三种也被称为容器对象，因为它们可以容纳其它布局对象。
+
+## Navigator
+
+Navigator 是一个类，它的实例方法大都为导航服务。它还有一些静态方法。
+
+- setRoot
+
+设置应用的 UI 层级
+
+一共有内置四种布局: screen, stack, tabs 以及 drawer
+
+最简单的布局只有一个页面，我们用 screen 来表示，它不可以包含其它布局对象
+
+```javascript
+Navigator.setRoot({
+  screen: {
+    moduleName: 'Navigation', // required
+    props: {},
+    options: {},
+  },
+});
+```
+
+screen 布局对象有三个属性，分别是 moduleName, props, options，其中 moduleName 是必须的，它就是我们上面注册的那些模块名，props 是我们要传递给该页面的初始属性，options 是 navigationItem，参看[静态配置页面](./style.md#static-options)。
+
+如果需要使用 push 或 pop 等导航功能在不同页面之间进行切换，那么我们需要 stack。
+
+stack 布局对象有两个属性，分别是 children, options，其中 children 是必须的，它是一个表示布局对象的数组，options 用来配置 stack 的其它属性，暂时没有什么用。
+
+```javascript
+Navigator.setRoot({
+  stack: {
+    children: [{ screen: { moduleName: 'Navigation' } }], // required
+    options: {},
+  },
+});
+```
+
+> 注意：stack 中 不可嵌套 stack
+
+如果我们需要像微信那样，底部有几个 tab 可以切换，那么我们需要用到 tabs。
+
+tabs 布局对象有 children, options 两个属性，其中 children 是必须的，它是一个表示布局对象的数组，options 用来配置 tabs 的其它属性。
+
+```javascript
+Navigator.setRoot({
+  tabs: {
+    children: [
+      {
+        stack: {
+          children: [{ screen: { moduleName: 'Navigation' } }],
+        },
+      },
+      {
+        stack: {
+          children: [{ screen: { moduleName: 'Options' } }],
+        },
+      },
+    ],
+    options: {
+      selectedIndex: 1, // 默认选中的 tab
+    },
+  },
+});
+```
+
+抽屉(drawer) 起源于 Android，不过我们在 iOS 也支持了它。
+
+drawer 布局对象有 children, options 两个属性，其中 children 是必须的，它是一个表示布局对象的数组，长度必须为 2. options 用来配置 drawer 的其它属性。
+
+```javascript
+Navigator.setRoot({
+  drawer: {
+    children: [
+      {
+        stack: {
+          children: [{ screen: { moduleName: 'Navigation' } }],
+        },
+      },
+      {
+        { screen: { moduleName: 'Menu' }
+      },
+    ],
+    options: {
+      maxDrawerWidth: 240, // Menu 的最大宽度
+      minDrawerMargin: 60, // Menu 右侧需要预留的最小空间
+      menuInteractive: true // 是否可以通过手势打开 menu
+    },
+  },
+});
+```
+
+至此，四种内置布局就已经介绍完成了，我们也可以自定义布局（容器）和导航，不过这是比较高级的话题了。
+
+> 可以先通过 `Navigator.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigator.setRoot` 决定要进入哪个页面。
+
+> Navigator.setRoot 还接受第二个参数，是个 boolean，用来决定 Android 按返回键退出 app 后，再次打开时，是否恢复到首次将该参数设置为 true 时的那个 layout。通常用来决定按返回键退出 app 后重新打开时，要不要走闪屏逻辑。请参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目对 Navigator.setRoot 的使用
+
+- get
+
+接受 sceneId 作为参数，返回一个已经存在的 navigator 实例
+
+```javascript
+this.props.navigator === Navigator.get(this.props.sceneId);
+// true
+```
+
+- current
+
+返回当前有效的 navigator，通常是用户当前可见的那个页面的 navigator
+
+```javascript
+const navigator = await Navigator.current();
+this.props.navigator === navigator;
+// true
+```
+
+- setInterceptor
+
+设置导航拦截器
+
+```javascript
+Navigator.setInterceptor((action, from, to, extras) => {
+  console.info(`action:${action} from:${from} to:${to}`);
+  // 当返回 true 时，表示你要拦截该操作
+  // 譬如用户想要跳到的页面需要登录，你可以在这里验证用户是否已经登录，否则就重定向到登录页面
+  return false;
+});
+```
+
+- dispatch
+
+大多数导航操作都是转发给该方法完成，你也可以直接使用，尤其是当你自定义了容器和导航之后
+
+```javascript
+// 以下两行代码的效果是等同的
+Navigator.dispatch(this.props.sceneId, 'push', { moduleName: 'Profile' });
+this.props.navigator.push('Profile');
+```
 
 ## screen
 
-screen 不是容器，它是通过 `ReactRegistry.registerComponent` 注册的组件。它有一些基本的导航能力，所有容器均继承了这些能力。
+screen 是最基本的页面，它用来表示通过 `ReactRegistry.registerComponent` 注册的组件。它有一些基本的导航能力，所有容器均继承了这些能力。
 
-* present
+- present
 
 present 是一种模态交互方式，类似于 Android 的 `startActivityForResult`，要求被 present 的页面返回结果给发起 present 的页面。在 iOS 中，present 表现为从底往上弹出界面。
 
@@ -79,7 +218,7 @@ this.props.navigator.dismiss();
 
 A 页面通过实现 `onComponentResult` 方法来接收结果（略）。
 
-* dismiss
+- dismiss
 
 关闭 `present` 出来的页面，如果该页面是容器，可以在容器的任何子页面调用此法。
 
@@ -118,7 +257,7 @@ navigator && navigator.push('C');
 
 方法二不能保证 B 页面完全消失后才开始 push C 页面
 
-* showModal
+- showModal
 
 将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件。这也是一种模态交互方式，作用与 present 类似，同样可以通过 `onComponentResult` 来接收结果。不同的是，它比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
 
@@ -126,7 +265,7 @@ navigator && navigator.push('C');
 this.props.navigator.showModal('ReactModal', REQUEST_CODE);
 ```
 
-* hideModal
+- hideModal
 
 隐藏作为 Modal 显示的页面，如果 Modal 是一个容器，可以在该容器的任何子页面调用此方法。
 
@@ -165,16 +304,16 @@ navigator && navigator.push('C');
 
 方法二不能保证 B 页面完全消失后才开始 push C 页面
 
-* presentLayout
+- presentLayout
 
-present 的加强版，可以 present 任意结构的页面。第一个参数表示页面结构：
+present 的加强版，通过传递一个布局对象，用来 present 比较 UI 层级比较复杂的页面：
 
 ```javascript
 // A.js
 this.props.navigator.presentLayout(
   {
     stack: {
-      screen: { moduleName: 'B' },
+      children: { screen: { moduleName: 'B' } },
     },
   },
   REQUEST_CODE
@@ -192,9 +331,9 @@ this.props.navigator.present('B', 1);
 
 > 同样使用 dismiss 来关闭
 
-* showModalLayout
+- showModalLayout
 
-showModal 的加强版，可以将任意结构的页面作为 Modal 显示
+showModal 的加强版，可以将布局对象作为 Modal 显示
 
 > 同样使用 hideModal 来关闭
 
@@ -202,7 +341,7 @@ showModal 的加强版，可以将任意结构的页面作为 Modal 显示
 
 stack 以栈的方式管理它的子页面，它支持以下导航操作：
 
-* push
+- push
 
 由 A 页面跳转到 B 页面。
 
@@ -222,11 +361,11 @@ this.props.navigator.push('B', {...});
 
 B 页面通过 `this.props` 来访问传递过来的值
 
-* pushLayout
+- pushLayout
 
-push 加强版，可以 push 任意结构的页面
+push 加强版，通过传递一个布局对象，展示 UI 层级比较复杂的页面。
 
-* pop
+- pop
 
 返回到前一个页面。比如你由 A 页面 `push` 到 B 页面，现在想返回到 A 页面。
 
@@ -235,7 +374,7 @@ push 加强版，可以 push 任意结构的页面
 this.props.navigator.pop();
 ```
 
-* popTo
+- popTo
 
 返回到之前的指定页面。比如你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回 B 页面。你可以把 B 页面的 `sceneId` 一直传递到 D 页面，然后调用 `popTo('bId')` 返回到 B 页面。
 
@@ -260,7 +399,7 @@ this.props.navigator.push('D', { bId: this.props.bId });
 this.props.navigator.popTo(this.props.bId);
 ```
 
-* popToRoot
+- popToRoot
 
 返回到 stack 根页面。比如 A 页面是根页面，由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回到根部，也就是 A 页面：
 
@@ -271,7 +410,7 @@ this.props.navigator.popToRoot();
 
 pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `onComponentResult(requestCode, resultCode, data)` 来接受结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
 
-* replace
+- replace
 
 用指定页面取代当前页面，比如当前页面是 A，想要替换成 B
 
@@ -282,7 +421,7 @@ this.props.navigator.replace('B');
 
 现在 Stack 里没有 A 页面了，被替换成了 B。
 
-* replaceToRoot
+- replaceToRoot
 
 移除所有页面，然后把目标页面设置为 Stack 的根页面。
 
@@ -295,7 +434,7 @@ this.props.navigator.replaceToRoot('E');
 
 A、B、C、D 页面被移除，E 页面被设置为 stack 的根页面。
 
-* isRoot
+- isRoot
 
 判断一个页面是否根页面，返回值是一个 Promise.
 
@@ -312,98 +451,24 @@ componentWillMount() {
 
 ## tabs
 
-可以通过 `selectedIndex` 来指定首选 tab
-
-```javascript
-Navigator.setRoot({
-  tabs: [
-    {
-      stack: {
-        screen: { moduleName: 'Navigation' },
-      },
-    },
-    {
-      stack: {
-        screen: { moduleName: 'Options' },
-      },
-    },
-  ],
-  options: {
-    selectedIndex: 1,
-  },
-});
-```
-
 tabs 支持以下导航操作
 
-* switchTab
+- switchTab
 
 切换到指定 tab
 
 ## drawer
 
-drawer 有以下可配置属性：`maxDrawerWidth`, `minDrawerMargin`, `menuInteractive`, `hideStatusBarWhenMenuOpened`
-
-```javascript
-Navigator.setRoot({
-  drawer: [
-    {
-      screen: { moduleName: 'Content' },
-    },
-    {
-      screen: { moduleName: 'Menu' },
-    },
-  ],
-  options: {
-    maxDrawerWidth: 280, // 抽屉的宽度
-    minDrawerMargin: 64, // 抽屉距离页面右边缘的空隙
-    menuInteractive: false, // 是否允许通过手势打开抽屉，默认 true
-    hideStatusBarWhenMenuOpened: true, // 打开抽屉时，是否隐藏状态栏，默认 true
-  },
-});
-```
-
-可以 通过 garden 动态改变 menuInteractive 的值，具体查看[样式和主题](./style.md)一章。
-
 drawer 支持以下导航操作
 
-* toggleMenu
+- toggleMenu
 
 切换抽屉的开关状态
 
-* openMenu
+- openMenu
 
 打开抽屉
 
-* closeMenu
+- closeMenu
 
 关闭抽屉
-
-## Navigator
-
-Navigator 是一个类，它的实例方法大都为导航服务。它还有一些静态方法。
-
-* get
-
-接受 sceneId 作为参数，返回一个已经存在的 navigator 实例
-
-```javascript
-this.props.navigator === Navigator.get(this.props.sceneId);
-// true
-```
-
-* current
-
-返回当前有效的 navigator，通常是用户当前可见的那个页面的 navigator
-
-* setRoot
-
-设置应用的 UI 层级
-
-* setInterceptor
-
-设置导航拦截器
-
-* dispatch
-
-大多数导航操作都是转发给该方法完成

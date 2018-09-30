@@ -109,12 +109,13 @@ project(':react-native-navigation-hybrid').projectDir = new File(rootProject.pro
 
 ```diff
 ext {
-+   minSdkVersion = 17
++   minSdkVersion = 16
 +   targetSdkVersion = 27
-+   compileSdkVersion = 27
-+   buildToolsVersion = '27.0.3'
++   // 为了适配凹凸屏、刘海屏，compileSdkVersion 必须 >= 28
++   compileSdkVersion = 28
++   buildToolsVersion = '28.0.1'
 +   // 必须保证支持包的版本 >= 27.1.1
-+   supportLibraryVersion = '27.1.1'
++   supportLibVersion = '28.0.0'
 +   // 注意把 ReactNativeProject 替换成你的 RN 项目
 +   rn_root = "$rootDir/../ReactNativeProject"
 }
@@ -126,7 +127,7 @@ buildscript {
     }
     dependencies {
 -       classpath 'com.android.tools.build:gradle:2.2.3'
-+       classpath 'com.android.tools.build:gradle:3.1.1'
++       classpath 'com.android.tools.build:gradle:3.1.4'
     }
 }
 
@@ -163,9 +164,9 @@ android {
 dependencies {
 +   implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-+   implementation "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-+   implementation "com.android.support:support-v4:$rootProject.supportLibraryVersion"
-+   implementation "com.android.support:design:$rootProject.supportLibraryVersion"
++   implementation "com.android.support:appcompat-v7:$rootProject.supportLibVersion"
++   implementation "com.android.support:support-v4:$rootProject.supportLibVersion"
++   implementation "com.android.support:design:$rootProject.supportLibVersion"
 
 +   implementation project(':react-native-navigation-hybrid')
 +   implementation "com.facebook.react:react-native:+" // From node_modules

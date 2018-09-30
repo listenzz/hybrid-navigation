@@ -69,10 +69,10 @@ npm run run:ios
 
 <a name="migrate-react"></a>
 
-* 使用原生导航组件实现 React Native 页面间的导航，不仅具有更优的性能，而且使得 RN 页面具有原生质感
-* 原生页面和 RN 页面共享路由， 使得它们之间相互跳转和传值轻而易举
-* 内置 drawer, tabs, stack 标准容器，同时支持自定义容器和导航
-* 支持 deep link
+- 使用原生导航组件实现 React Native 页面间的导航，不仅具有更优的性能，而且使得 RN 页面具有原生质感
+- 原生页面和 RN 页面共享路由， 使得它们之间相互跳转和传值轻而易举
+- 内置 drawer, tabs, stack 标准容器，同时支持自定义容器和导航
+- 支持 deep link
 
 ## 目录
 
@@ -92,7 +92,17 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.8.33`
+最新版本: `0.9.0`
+
+### 0.9.0 - 2018/10/7
+
+- react-native 升级到 0.57.1，不再兼容低于 0.57.1 的版本，请参考官方文档进行 react-native 的升级
+
+- 为了支持凹凸屏、刘海屏，Android 构建版本更新到 28，请查看 [集成到以 RN 为主的项目](./doc/integration-react.md) 和 [为原生项目添加 RN 模块](./doc/integration-native.md) 以及 [同步构建版本](./doc/sync-build-version.md) 以获得最新的指引。
+
+- 布局描述对象改变，也就是 `Navigator#setRoot` 接受的第一个参数格式发生变化，现在如何正确地传递布局对象，请查看 [容器与导航](./doc/navigation.md)
+
+- 移除了所有已经弃用的 API
 
 ### 0.8.31 - 2018/9/26
 

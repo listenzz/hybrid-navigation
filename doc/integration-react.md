@@ -59,53 +59,17 @@ ReactRegistry.registerComponent('Profile', () => Profile);
 ReactRegistry.endRegisterComponent();
 ```
 
-设置入口页面布局
+通过 `Navigator#setRoot` 来设置 UI 层级
 
 ```javascript
 Navigator.setRoot({
-  drawer: [
-    {
-      tabs: [
-        {
-          stack: {
-            screen: { moduleName: 'Navigation' },
-          },
-        },
-        {
-          stack: {
-            screen: { moduleName: 'Options' },
-          },
-        },
-      ],
-    },
-    {
-      screen: { moduleName: 'Menu' },
-    },
-  ],
-  options: {
-    maxDrawerWidth: 280,
-    minDrawerMargin: 64,
+  stack: {
+    children: [{ screen: { moduleName: 'Navigation' } }],
   },
 });
 ```
 
-根布局一共有四种类型的布局: screen, stack, tabs 以及 drawer
-
-screen 对象有三个属性，分别是 moduleName, props, options，其中 moduleName 是必须的，它就是我们上面注册的那些模块名，props 是我们要传递给该页面的初始属性，options 是 navigationItem，参看[静态配置页面](./style.md#static-options)。
-
-stack 对象包含一个其它布局对象作为根页面，通常是 screen.
-
-tabs 对象是一个数组，成员是一个包含其它布局对象的对象
-
-drawer 对象也是一个数组，长度固定为 2 ，第一个对象是抽屉的内容，第二个对象是抽屉的侧边栏。
-
-可以在表示侧边栏的对象中添加 options 属性来配置侧边栏的宽度
-
-`maxDrawerWidth` 表示侧边栏的最大宽度，`minDrawerMargin` 表示侧边栏距屏幕边缘的最小空隙，这两个属性可以单独使用，也可以一起指定。
-
-可以先通过 `Navigator.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigator.setRoot` 决定要进入哪个页面。
-
-> Navigator.setRoot 还接受第二个参数，是个 boolean，用来决定 Android 按返回键退出 app 后，再次打开时，是否恢复到首次将该参数设置为 true 时的那个 layout。通常用来决定按返回键退出 app 后重新打开时，要不要走闪屏逻辑。请参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目对 Navigator.setRoot 的使用
+具体应用请查看 [Navigator#setRoot](./navigation.md)
 
 ### 支持 Redux
 
@@ -134,80 +98,32 @@ ReactRegistry.startRegisterComponent(screenWrapper);
 
 ```diff
 buildscript {
-    repositories {
-        jcenter()
-+       google()
+    ext {
+        // 为了支持凹凸屏、刘海屏，compileSdkVersion 必须 >= 28
+-        buildToolsVersion = "27.0.3"
++        buildToolsVersion = "28.0.1"
+        minSdkVersion = 16
+-        compileSdkVersion = 27
++        compileSdkVersion = 28
+        targetSdkVersion = 26
+-        supportLibVersion = "28.0.0"
++        supportLibVersion = "28.0.0"
     }
+
     dependencies {
--        classpath 'com.android.tools.build:gradle:2.2.3'
-+        classpath 'com.android.tools.build:gradle:3.1.1'
+-        classpath 'com.android.tools.build:gradle:3.1.1'
++        classpath 'com.android.tools.build:gradle:3.1.4'
     }
 }
-
-allprojects {
-    repositories {
-        mavenLocal()
-        jcenter()
-        maven {
-        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-        url "$rootDir/../node_modules/react-native/android"
-        }
-+       google()
-    }
-}
-
-+   ext {
-+       minSdkVersion = 16
-+       targetSdkVersion = 27
-+       compileSdkVersion = 27
-+       buildToolsVersion = '27.0.3'
-+       // 必须保证支持包的版本 >= 27.1.1
-+       supportLibraryVersion = '27.1.1'
-+   }
 ```
 
 修改 android/app/build.gradle 文件
 
 ```diff
-android {
--   compileSdkVersion 23
--   buildToolsVersion "23.0.1"
-+   compileSdkVersion rootProject.ext.compileSdkVersion
-+   buildToolsVersion rootProject.ext.buildToolsVersion
-
-    defaultConfig {
--       minSdkVersion 16
--       targetSdkVersion 22
-+       minSdkVersion rootProject.ext.minSdkVersion
-+       targetSdkVersion rootProject.ext.targetSdkVersion
-    }
+dependencies {
+-   compile project(':react-native-navigation-hybrid')
++   implementation project(':react-native-navigation-hybrid')
 }
-
-dependencies {  
-+   compile project(':react-native-navigation-hybrid')
-    compile fileTree(dir: "libs", include: ["*.jar"])
--   compile "com.android.support:appcompat-v7:23.0.1"
-+   compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
-    compile "com.facebook.react:react-native:+" // From node_modules
-
-+   configurations.all {
-+       resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-+           def requested = details.requested
-+               if (requested.group == 'com.android.support') {
-+                   if (!requested.name.startsWith("multidex")) {
-+                       details.useVersion rootProject.supportLibraryVersion
-+                   }
-+               }
-+           }
-+       }
-    }
-```
-
-修改 android/gradle/wrapper/gradle-wrapper.properties 文件
-
-```diff
-- distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip
-+ distributionUrl=https\://services.gradle.org/distributions/gradle-4.4-all.zip
 ```
 
 修改 MainActivity.java 文件
@@ -228,6 +144,7 @@ dependencies {
 修改 MainApplication.java 文件
 
 ```diff
+- import com.facebook.react.ReactNativeHost;
 + import com.navigationhybrid.ReactBridgeManager;
 + import com.navigationhybrid.HybridReactNativeHost;
 

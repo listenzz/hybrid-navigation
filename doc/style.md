@@ -73,7 +73,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 > 所有可配置项均是可选
 
-* topBarStyle
+- topBarStyle
 
 导航栏和状态栏前景色，在 iOS 中，默认是白底黑字，在 Android 中，默认是黑底白字。
 
@@ -81,7 +81,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 ![topbar-default](../screenshot/topbar-default.png)
 
-* statusBarColor
+- statusBarColor
 
 仅对 Android 5.0 以上版本生效。默认取 `topBarColor` 的值。
 
@@ -120,7 +120,7 @@ Garden.setStyle({
 
 现在，应用启动时和启动完成后的状态栏颜色是一致的了。
 
-* shadowImage
+- shadowImage
 
 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效。
 
@@ -147,7 +147,7 @@ Garden.setStyle({
 });
 ```
 
-* backIcon
+- backIcon
 
 配置返回按钮的图标。如果不配置，则采用平台默认的图标。配置方式如下
 
@@ -162,7 +162,7 @@ Garden.setStyle({
 });
 ```
 
-* tabBarShadowImage
+- tabBarShadowImage
 
 UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只有设置了 tabBarColor 才会生效。
 
@@ -181,13 +181,13 @@ class Screen extends Component {
   static navigationItem = {
     passThroughTouches: false, // 当前页面是否允许 touch 事件穿透，通常和透明背景一起使用
     screenBackgroundColor: '#FFFFFF', // 当前页面背景
-    topBarStyle: String; // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
+    topBarStyle: String, // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
     topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
     topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
     extendedLayoutIncludesTopBar: false, // 当前页面的内容是否延伸到 topBar 底下，通常用于需要动态改变 `topBarAlpha` 的场合
     topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
     titleTextColor: '#FFFFFF', // 当前页面标题颜色
-    titleTextSize: Int; // 当前页面顶部导航栏标题字体大小
+    titleTextSize: Int, // 当前页面顶部导航栏标题字体大小
     topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
     topBarHidden: true, // 是否隐藏当前页面 topBar
     statusBarHidden: true, // 是否隐藏当前页面的状态栏，对 iPhoneX 无效
@@ -220,6 +220,7 @@ class Screen extends Component {
       enabled: true,
       // 按钮颜色
       tintColor: '#FFFF00',
+      renderOriginal: true, // 是否保留图片原来的颜色
     },
 
     rightBarButtonItem: {
@@ -266,7 +267,7 @@ class Screen extends Component {
 }
 ```
 
-* titleItem
+- titleItem
 
 如果希望自定义标题栏，可以通过 moduleName 来指定标题栏对应的组件。组件需要通过 ReactRegistry.registerComponent 注册。一旦设置了 moduleName，title 字段将失效。
 
@@ -282,7 +283,7 @@ this.props.navigator.setParams({});
 
 详情请参考 playground 中 TopBarTitleView.js 这个文件。
 
-* tabItem
+- tabItem
 
 如果同时设置了 icon 与 selectedIcon, 则保留图片原始颜色，否则用全局配置中的 `tabBarItemColor` 与 `tabBarSelectedItemColor` 对 icon 进行染色。
 
@@ -341,7 +342,7 @@ this.props.navigator.push(
 
 Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
 
-* setStatusBarColor
+- setStatusBarColor
 
 动态更改状态栏背景颜色，仅对 Android 生效
 
@@ -349,7 +350,7 @@ Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
 this.props.garden.setStatusBarColor({ statusBarColor: '#FF0000' });
 ```
 
-* setStatusBarHidden
+- setStatusBarHidden
 
 动态隐藏或显示状态栏
 
@@ -357,7 +358,7 @@ this.props.garden.setStatusBarColor({ statusBarColor: '#FF0000' });
 this.props.garden.setStatusBarHidden(false);
 ```
 
-* updateTopBar
+- updateTopBar
 
 动态改变导航栏样式, 可配置项如下
 
@@ -373,7 +374,7 @@ this.props.garden.updateTopBar({
 });
 ```
 
-* setTitleItem
+- setTitleItem
 
 更改标题
 
@@ -383,7 +384,7 @@ this.props.garden.setTitleItem({
 });
 ```
 
-* setLeftBarButtonItem
+- setLeftBarButtonItem
 
 更改左侧按钮
 
@@ -397,7 +398,7 @@ this.props.garden.setLeftBarButtonItem({
 });
 ```
 
-* setRightBarButtonItem
+- setRightBarButtonItem
 
 更改右侧按钮
 
@@ -407,7 +408,7 @@ this.props.garden.setRightBarButtonItem({
 });
 ```
 
-* updateTabBar
+- updateTabBar
 
 动态改变 tabBar 样式, 可配置项如下
 
@@ -423,7 +424,7 @@ this.props.garden.updateTabBar({
 });
 ```
 
-* replaceTabIcon
+- replaceTabIcon
 
 替换 tab 图标
 
@@ -431,7 +432,7 @@ this.props.garden.updateTabBar({
 this.props.garden.replaceTabIcon(1, { uri: 'blue_solid', scale: PixelRatio.get() });
 ```
 
-* setTabBadge
+- setTabBadge
 
 设置 badge
 
@@ -443,7 +444,7 @@ if (this.state.badge) {
 }
 ```
 
-* showRedPointAtIndex
+- showRedPointAtIndex
 
 显示小红点
 
@@ -451,7 +452,7 @@ if (this.state.badge) {
 this.props.garden.showRedPointAtIndex(0);
 ```
 
-* hideRedPointAtIndex
+- hideRedPointAtIndex
 
 隐藏小红点
 
@@ -459,7 +460,7 @@ this.props.garden.showRedPointAtIndex(0);
 this.props.garden.hideRedPointAtIndex(0);
 ```
 
-* setMenuInteractive
+- setMenuInteractive
 
 是否允许侧滑打开抽屉
 
