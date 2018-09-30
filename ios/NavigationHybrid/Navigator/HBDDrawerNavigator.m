@@ -46,11 +46,6 @@
                 if (menuInteractive) {
                     drawerController.menuInteractive = [menuInteractive boolValue];
                 }
-                
-                NSNumber *hideStatusBarWhenMenuOpened = [options objectForKey:@"hideStatusBarWhenMenuOpened"];
-                if (hideStatusBarWhenMenuOpened) {
-                    drawerController.hideStatusBarWhenMenuOpened = [hideStatusBarWhenMenuOpened boolValue];
-                }
             }
             return drawerController;
         }

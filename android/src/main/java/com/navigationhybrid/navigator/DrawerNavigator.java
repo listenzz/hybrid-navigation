@@ -29,7 +29,7 @@ public class DrawerNavigator implements Navigator {
 
     @Override
     @Nullable
-    public AwesomeFragment createFragment(ReadableMap layout) {
+    public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
             ReadableArray drawer = layout.getArray(name());
             if (drawer.size() == 2) {
@@ -65,10 +65,6 @@ public class DrawerNavigator implements Navigator {
                         drawerFragment.setMenuInteractive(interactive);
                     }
 
-                    if (options.hasKey("hideStatusBarWhenMenuOpened")) {
-                        boolean hidden = options.getBoolean("hideStatusBarWhenMenuOpened");
-                        drawerFragment.setHideStatusBarWhenMenuOpened(hidden);
-                    }
                 }
                 return drawerFragment;
             } else {
