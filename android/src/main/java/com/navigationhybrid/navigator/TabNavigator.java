@@ -37,10 +37,11 @@ public class TabNavigator implements Navigator {
     @Nullable
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
-            ReadableArray tabs = layout.getArray(name());
+            ReadableMap tabs = layout.getMap(name());
+            ReadableArray children = tabs.getArray("children");
             List<AwesomeFragment> fragments = new ArrayList<>();
-            for (int i = 0, size = tabs.size(); i < size; i++) {
-                ReadableMap tab = tabs.getMap(i);
+            for (int i = 0, size = children.size(); i < size; i++) {
+                ReadableMap tab = children.getMap(i);
                 AwesomeFragment awesomeFragment = getReactBridgeManager().createFragment(tab);
                 if (awesomeFragment != null) {
                     fragments.add(awesomeFragment);
@@ -49,8 +50,8 @@ public class TabNavigator implements Navigator {
             if (fragments.size() > 0) {
                 ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
                 tabBarFragment.setChildFragments(fragments);
-                if (layout.hasKey("options")) {
-                    ReadableMap options = layout.getMap("options");
+                if (tabs.hasKey("options")) {
+                    ReadableMap options = tabs.getMap("options");
                     if (options.hasKey("selectedIndex")) {
                         int selectedIndex = options.getInt("selectedIndex");
                         tabBarFragment.setSelectedIndex(selectedIndex);

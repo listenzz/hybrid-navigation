@@ -21,10 +21,11 @@
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
-    NSArray *tabs = [layout objectForKey:self.name];
-    if (tabs) {
+    NSDictionary *tabs = [layout objectForKey:self.name];
+    NSArray *children = [tabs objectForKey:@"children"];
+    if (children) {
         NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:4];
-        for (NSDictionary *tab in tabs) {
+        for (NSDictionary *tab in children) {
             UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:tab];
             if (vc) {
                 [controllers addObject:vc];
@@ -35,7 +36,7 @@
             HBDTabBarController *tabBarController = [[HBDTabBarController alloc] init];
             [tabBarController setViewControllers:controllers];
             
-            NSDictionary *options = [layout objectForKey:@"options"];
+            NSDictionary *options = [tabs objectForKey:@"options"];
             if (options) {
                 NSNumber *selectedIndex = [options objectForKey:@"selectedIndex"];
                 if (selectedIndex) {

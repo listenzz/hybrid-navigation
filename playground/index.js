@@ -108,62 +108,33 @@ ReactRegistry.registerComponent('ReactModal', () => ReactModal);
 
 ReactRegistry.endRegisterComponent();
 
-Navigator.setRoot(
-  {
-    drawer: [
-      {
-        tabs: [
-          {
-            stack: {
-              screen: { moduleName: 'Navigation' },
-            },
-          },
-          {
-            stack: {
-              screen: { moduleName: 'Options' },
-            },
-          },
-        ],
-      },
-      {
-        screen: { moduleName: 'Menu' },
-      },
-    ],
+const navigationStack = {
+  stack: {
+    children: [{ screen: { moduleName: 'Navigation' } }],
+  },
+};
+
+const optionsStack = {
+  stack: {
+    children: [{ screen: { moduleName: 'Options' } }],
+  },
+};
+
+const tabs = { tabs: { children: [navigationStack, optionsStack] } };
+
+const menu = { screen: { moduleName: 'Menu' } };
+
+const drawer = {
+  drawer: {
+    children: [tabs, menu],
     options: {
       maxDrawerWidth: 280,
       minDrawerMargin: 64,
-      // hideStatusBarWhenMenuOpened: true,
     },
   },
-  true
-);
+};
 
-// Navigator.setRoot(
-//   {
-//     tabs: [
-//       {
-//         stack: {
-//           screen: { moduleName: 'Navigation' },
-//         },
-//       },
-//       {
-//         stack: {
-//           screen: { moduleName: 'Options' },
-//         },
-//       },
-//     ],
-//   },
-//   true
-// );
-
-// Navigator.setRoot(
-//   {
-//     stack: {
-//       screen: { moduleName: 'Navigation' },
-//     },
-//   },
-//   true
-// );
+Navigator.setRoot(drawer, true);
 
 Navigator.setInterceptor((action, from, to, extras) => {
   console.info(`action:${action} from:${from} to:${to}`);

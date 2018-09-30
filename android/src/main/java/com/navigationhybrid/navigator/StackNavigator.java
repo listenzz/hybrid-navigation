@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigationhybrid.HybridFragment;
 import com.navigationhybrid.ReactBridgeManager;
@@ -40,13 +41,12 @@ public class StackNavigator implements Navigator {
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
             ReadableMap stack = layout.getMap(name());
-            AwesomeFragment fragment = getReactBridgeManager().createFragment(stack);
-            if (fragment != null) {
-                if (layout.hasKey("options")) {
-                    // empty now
-                }
+            ReadableArray children = stack.getArray("children");
+            ReadableMap root = children.getMap(0);
+            AwesomeFragment rootFragment = getReactBridgeManager().createFragment(root);
+            if (rootFragment != null) {
                 ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
-                reactNavigationFragment.setRootFragment(fragment);
+                reactNavigationFragment.setRootFragment(rootFragment);
                 return reactNavigationFragment;
             } else {
                 throw new IllegalArgumentException("can't create stack component with " + layout);

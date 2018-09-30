@@ -31,10 +31,12 @@ public class DrawerNavigator implements Navigator {
     @Nullable
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
-            ReadableArray drawer = layout.getArray(name());
-            if (drawer.size() == 2) {
-                ReadableMap content = drawer.getMap(0);
-                ReadableMap menu = drawer.getMap(1);
+            ReadableMap drawer = layout.getMap(name());
+            ReadableArray children = drawer.getArray("children");
+            if (children.size() == 2) {
+
+                ReadableMap content = children.getMap(0);
+                ReadableMap menu = children.getMap(1);
 
                 AwesomeFragment contentFragment = getReactBridgeManager().createFragment(content);
                 if (contentFragment == null) {
@@ -48,8 +50,8 @@ public class DrawerNavigator implements Navigator {
                 ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
                 drawerFragment.setMenuFragment(menuFragment);
                 drawerFragment.setContentFragment(contentFragment);
-                if (layout.hasKey("options")) {
-                    ReadableMap options = layout.getMap("options");
+                if (drawer.hasKey("options")) {
+                    ReadableMap options = drawer.getMap("options");
                     if (options.hasKey("maxDrawerWidth")) {
                         int maxDrawerWidth = options.getInt("maxDrawerWidth");
                         drawerFragment.setMaxDrawerWidth(maxDrawerWidth);

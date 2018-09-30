@@ -24,11 +24,8 @@
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
     NSDictionary *stack = [layout objectForKey:self.name];
     if (stack) {
-        UIViewController *root = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:stack];
-        NSDictionary *options = [layout objectForKey:@"options"];
-        if (options) {
-            // nothing to do now.
-        }
+        NSArray *children = [stack objectForKey:@"children"];
+        UIViewController *root = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:children.firstObject];
         if (root) {
             return [[HBDNavigationController alloc] initWithRootViewController:root];
         }

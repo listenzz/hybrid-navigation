@@ -20,17 +20,18 @@
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
-    NSArray *drawer = [layout objectForKey:self.name];
-    if (drawer && drawer.count == 2) {
-        NSDictionary *content = [drawer objectAtIndex:0];
-        NSDictionary *menu = [drawer objectAtIndex:1];
+    NSDictionary *drawer = [layout objectForKey:self.name];
+    NSArray *children = [drawer objectForKey:@"children"];
+    if (children.count == 2) {
+        NSDictionary *content = [children objectAtIndex:0];
+        NSDictionary *menu = [children objectAtIndex:1];
         
         UIViewController *contentController = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:content];
         UIViewController *menuController = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:menu];
         
         if (contentController && menuController) {
             HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:contentController menuViewController:menuController];
-            NSDictionary *options = [layout objectForKey:@"options"];
+            NSDictionary *options = [drawer objectForKey:@"options"];
             if (options) {
                 NSNumber *maxDrawerWidth = [options objectForKey:@"maxDrawerWidth"];
                 if (maxDrawerWidth) {
