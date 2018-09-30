@@ -17,13 +17,13 @@
   ],
   "main": "index.js",
   "scripts": {
-    "start": "npm run syncfp && node node_modules/react-native/local-cli/cli.js start",
+    "start": "npm run syncbv && node node_modules/react-native/local-cli/cli.js start",
     "lint": "./node_modules/.bin/eslint --fix --ext .js ./ && echo \"lint finished\" ",
     "run:ios": "react-native run-ios --project-path ./playground/ios",
     "start:android": "adb shell am start -n com.navigationhybrid.playground/.MainActivity",
     "run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
     "test": "jest",
-    "syncfp": "node scripts/fix-code-bug.js"
+    "syncbv": "node scripts/sync-build-version.js"
   },
   "peerDependencies": {
     "react": ">=16.5.0",

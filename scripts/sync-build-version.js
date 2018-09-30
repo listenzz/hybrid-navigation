@@ -11,15 +11,15 @@ gradles.forEach(gradle => {
     str = str.replace(/^(\s+targetSdkVersion).*$/gm, '$1 rootProject.ext.targetSdkVersion');
     str = str.replace(
       /["'](com\.android\.support:appcompat-v7:).*["']/gm,
-      '"$1$rootProject.ext.supportLibraryVersion"'
+      '"$1$rootProject.ext.supportLibVersion"'
     );
     str = str.replace(
       /["'](com\.android\.support:support-v4:).*["']/gm,
-      '"$1$rootProject.ext.supportLibraryVersion"'
+      '"$1$rootProject.ext.supportLibVersion"'
     );
     str = str.replace(
       /["'](com\.android\.support:design:).*["']/gm,
-      '"$1$rootProject.ext.supportLibraryVersion"'
+      '"$1$rootProject.ext.supportLibVersion"'
     );
     str = str.replace(/\scompile\s/gm, ' implementation ');
     str = str.replace(
