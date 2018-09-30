@@ -220,7 +220,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 HybridFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                    if (tabBarFragment != null && tabBarFragment instanceof ReactTabBarFragment) {
+                    if (tabBarFragment instanceof ReactTabBarFragment) {
                         ((ReactTabBarFragment) tabBarFragment).updateTabBar(readableMap);
                     }
                 }

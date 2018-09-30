@@ -156,7 +156,7 @@ public class Garden {
             Bundle item = items.get(i);
             buttonItems.add(barButtonItemFromBundle(item));
         }
-        return buttonItems.toArray(new ToolbarButtonItem[buttonItems.size()]);
+        return buttonItems.toArray(new ToolbarButtonItem[0]);
     }
 
     void setLeftBarButtonItem(@NonNull Bundle item) {

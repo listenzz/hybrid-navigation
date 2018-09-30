@@ -89,7 +89,11 @@ public class ReactBridgeManager {
                 }
             }
         });
-        reactInstanceManager.createReactContextInBackground();
+
+        if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
+            Log.i(TAG, "create react context");
+            reactInstanceManager.createReactContextInBackground();
+        }
     }
 
     ReactNativeHost getReactNativeHost() {

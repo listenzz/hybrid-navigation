@@ -162,7 +162,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 Activity activity = getCurrentActivity();
-                if (activity == null || !(activity instanceof ReactAppCompatActivity)) {
+                if (!(activity instanceof ReactAppCompatActivity)) {
                     promise.reject("1", "UI 层级还没有准备好");
                     return;
                 }
@@ -184,7 +184,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     private HybridFragment getPrimaryFragment(Fragment fragment) {
-        if (fragment != null && fragment instanceof AwesomeFragment) {
+        if (fragment instanceof AwesomeFragment) {
             return reactBridgeManager.primaryFragment((AwesomeFragment) fragment);
         }
         return null;
@@ -196,7 +196,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 Activity activity = getCurrentActivity();
-                if (activity == null || !(activity instanceof ReactAppCompatActivity)) {
+                if (!(activity instanceof ReactAppCompatActivity)) {
                     promise.reject("1", "UI 层级还没有准备好");
                     return;
                 }
