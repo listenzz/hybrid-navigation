@@ -10,7 +10,11 @@
   "author": "listen <listenzz@163.com>",
   "license": "MIT",
   "homepage": "https://github.com/listenzz/react-native-navigation-hybrid",
-  "keywords": ["react native", "navigation", "navigator"],
+  "keywords": [
+    "react native",
+    "navigation",
+    "navigator"
+  ],
   "main": "index.js",
   "scripts": {
     "start": "npm run syncfp && node node_modules/react-native/local-cli/cli.js start",
@@ -22,27 +26,23 @@
     "syncfp": "node scripts/fix-code-bug.js"
   },
   "peerDependencies": {
-    "react": ">=16.0.0",
-    "react-native": ">=0.50.3"
+    "react": ">=16.5.0",
+    "react-native": ">=0.57.1"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.2",
-    "babel-jest": "21.2.0",
-    "babel-preset-react-native": "4.0.0",
-    "eslint": "^4.18.1",
-    "prettier": "1.11.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-plugin-prettier": "^2.6.0",
-    "jest": "21.2.1",
-
-    "react": "16.3.0",
-    "react-native": "0.55.3",
+    "@babel/core": "^7.1.2",
+    "@babel/runtime": "^7.1.2",
+    "babel-jest": "23.6.0",
+    "jest": "23.6.0",
+    "metro-react-native-babel-preset": "0.47.0",
+    "react-test-renderer": "16.5.0",
+    "react": "16.5.0",
+    "react-native": "0.57.1",
     "react-native-hud-hybrid": "0.15.0",
     "react-native-iphone-x-helper": "^1.0.2",
     "react-native-keyboard-aware-scroll-view": "0.4.1",
     "react-native-vector-icons": "^4.4.3",
     "react-redux": "^5.0.5",
-    "react-test-renderer": "16.0.0",
     "redux": "^3.7.2"
   },
   "jest": {
