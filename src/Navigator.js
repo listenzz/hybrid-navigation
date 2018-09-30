@@ -1,6 +1,4 @@
 import NavigationModule from './NavigationModule';
-import { NativeModules } from 'react-native';
-const GardenModule = NativeModules.GardenHybrid;
 import { bindBarButtonItemClickEvent } from './utils';
 import store from './store';
 import router from './router';
@@ -40,8 +38,6 @@ export default class Navigator {
     this.moduleName = moduleName;
     this.dispatch = this.dispatch.bind(this);
     this.setParams = this.setParams.bind(this);
-    this.setTabBadge = this.setTabBadge.bind(this);
-    this.setMenuInteractive = this.setMenuInteractive.bind(this);
 
     this.push = this.push.bind(this);
     this.pop = this.pop.bind(this);
@@ -57,27 +53,12 @@ export default class Navigator {
     this.hideModal = this.hideModal.bind(this);
     this.setResult = this.setResult.bind(this);
 
-    this.switchToTab = this.switchToTab.bind(this);
     this.toggleMenu = this.toggleMenu.bind(this);
     this.openMenu = this.openMenu.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
   }
 
   state = { params: {} };
-
-  // 向后兼容， 1.0.0 将删除
-  setTabBadge(index, text) {
-    console.warn('this.props.navigator.setTabBadge 已经弃用，请使用 this.props.garden.setTabBadge');
-    GardenModule.setTabBadge(this.sceneId, index, text);
-  }
-
-  // 向后兼容， 1.0.0 将删除
-  setMenuInteractive(enabled) {
-    console.warn(
-      'this.props.navigator.setMenuInteractive 已经弃用，请使用 this.props.garden.setMenuInteractive'
-    );
-    GardenModule.setMenuInteractive(this.sceneId, enabled);
-  }
 
   setParams(params = {}) {
     this.state.params = { ...this.state.params, ...params };
@@ -156,11 +137,6 @@ export default class Navigator {
 
   setResult(resultCode, data = {}) {
     NavigationModule.setResult(this.sceneId, resultCode, data);
-  }
-
-  switchToTab(index) {
-    console.warn('switchToTab 已弃用，请使用 switchTab');
-    this.dispatch('switchTab', { index });
   }
 
   switchTab(index) {

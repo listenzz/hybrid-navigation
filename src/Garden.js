@@ -50,48 +50,8 @@ export default class Garden {
     GardenModule.updateTopBar(this.sceneId, options);
   }
 
-  setTitleTextAttributes(attributes) {
-    console.warn('#setTitleTextAttributes is deprecated, use #updateTopBar instead');
-    this.updateTopBar(attributes);
-  }
-
-  setTopBarStyle(item) {
-    console.warn('#setTopBarStyle is deprecated, use #updateTopBar instead');
-    this.updateTopBar(item);
-  }
-
-  setTopBarTintColor(item) {
-    console.warn('#setTopBarTintColor is deprecated, use #updateTopBar instead');
-    this.updateTopBar(item);
-  }
-
-  setTopBarAlpha(item) {
-    console.warn('#setTopBarAlpha is deprecated, use #updateTopBar instead');
-    this.updateTopBar(item);
-  }
-
-  setTopBarColor(item) {
-    console.warn('#setTopBarColor is deprecated, use #updateTopBar instead');
-    this.updateTopBar(item);
-  }
-
-  setTopBarShadowHidden(item) {
-    console.warn('#setTopBarShadowHidden is deprecated, use #updateTopBar instead');
-    this.updateTopBar(item);
-  }
-
   updateTabBar(options = {}) {
     GardenModule.updateTabBar(this.sceneId, options);
-  }
-
-  setTabBarColor(item) {
-    console.warn('#setTabBarColor is deprecated, use #updateTabBar instead');
-    this.updateTabBar(item);
-  }
-
-  replaceTabColor(item) {
-    console.warn('#replaceTabColor is deprecated, use #updateTabBar instead');
-    this.updateTabBar(item);
   }
 
   replaceTabIcon(index, icon, inactiveIcon) {
