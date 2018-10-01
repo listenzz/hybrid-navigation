@@ -246,9 +246,7 @@ public class Garden {
     void updateToolbar(@NonNull ReadableMap readableMap) {
         Bundle options = Arguments.toBundle(readableMap);
         applyToolbarOptions(options);
-        if (options.getString("topBarStyle") != null) {
-            fragment.setNeedsStatusBarAppearanceUpdate();
-        }
+        fragment.setNeedsStatusBarAppearanceUpdate(false);
         fragment.setNeedsToolbarAppearanceUpdate();
         fragment.setOptions(mergeOptions(fragment.getOptions(), readableMap));
     }

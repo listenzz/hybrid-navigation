@@ -2,7 +2,6 @@
 <resources>
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@drawable/splash</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
