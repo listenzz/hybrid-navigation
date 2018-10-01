@@ -12,6 +12,7 @@ import com.navigationhybrid.ReactTabBarFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import me.listenzz.navigation.AwesomeFragment;
@@ -19,7 +20,7 @@ import me.listenzz.navigation.TabBarFragment;
 
 public class TabNavigator implements Navigator {
 
-    private List<String> supportActions = Arrays.asList("switchToTab", "switchTab");
+    private List<String> supportActions = Collections.singletonList("switchTab");
 
     @Override
     @NonNull
@@ -76,9 +77,13 @@ public class TabNavigator implements Navigator {
                 getReactBridgeManager().buildRouteGraph(child, children, modal);
             }
             Bundle graph = new Bundle();
-            graph.putString("type", name());
-            graph.putInt("selectedIndex", tabs.getSelectedIndex());
-            graph.putParcelableArrayList(name(), children);
+            graph.putString("layout", name());
+            graph.putString("sceneId", fragment.getSceneId());
+            graph.putParcelableArrayList("children", children);
+            graph.putString("mode", Navigator.Util.getMode(fragment));
+            Bundle state = new Bundle();
+            state.putInt("selectedIndex", tabs.getSelectedIndex());
+            graph.putBundle("state", state);
             root.add(graph);
             return true;
         }
@@ -97,7 +102,6 @@ public class TabNavigator implements Navigator {
     @Override
     public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras) {
         switch (action) {
-            case "switchToTab":
             case "switchTab":
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                 if (tabBarFragment != null) {

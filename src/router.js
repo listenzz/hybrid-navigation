@@ -17,38 +17,41 @@ function routeDependencies(routeConfig) {
 }
 
 function navigateTo(graph, route) {
-  if (graph.type === 'drawer') {
-    const drawer = graph.drawer;
-    if (navigateTo(drawer[0], route)) {
-      const navigation = navigatorFromRouteGraph(drawer[0]);
-      navigation.closeMenu();
+  console.info('===================================================');
+  console.info(graph);
+  if (graph.layout === 'drawer') {
+    const children = graph.children;
+    if (navigateTo(children[0], route)) {
+      const navigator = navigatorFromRouteGraph(children[0]);
+      navigator.closeMenu();
       return true;
     }
-    if (navigateTo(drawer[1], route)) {
+    if (navigateTo(children[1], route)) {
       // 打开侧边栏
-      const navigation = navigatorFromRouteGraph(drawer[0]);
-      navigation.openMenu();
+      const navigator = navigatorFromRouteGraph(children[0]);
+      navigator.openMenu();
       return true;
     }
-  } else if (graph.type === 'tabs') {
-    const tabs = graph.tabs;
-    for (let i = 0; i < tabs.length; i++) {
-      if (navigateTo(tabs[i], route)) {
-        if (i !== graph.selectedIndex) {
-          const navigation = navigatorFromRouteGraph(tabs[graph.selectedIndex]);
-          navigation.switchTab(i);
+  } else if (graph.layout === 'tabs') {
+    const { children, state } = graph;
+    for (let i = 0; i < children.length; i++) {
+      if (navigateTo(children[i], route)) {
+        if (i !== state.selectedIndex) {
+          console.info('state:' + state.selectedIndex);
+          const navigator = navigatorFromRouteGraph(children[state.selectedIndex]);
+          navigator.switchTab(i);
         }
         return true;
       }
     }
-  } else if (graph.type === 'stack') {
-    const stack = graph.stack;
+  } else if (graph.layout === 'stack') {
+    const children = graph.children;
     let moduleNames = [...route.dependencies, route.moduleName];
     let index = -1;
-    for (let i = stack.length - 1; i > -1; i--) {
-      if (stack[i].type === 'screen') {
-        const screen = stack[i].screen;
-        index = moduleNames.indexOf(screen.moduleName);
+    for (let i = children.length - 1; i > -1; i--) {
+      if (children[i].layout === 'screen') {
+        const moduleName = children[i].moduleName;
+        index = moduleNames.indexOf(moduleName);
         if (index !== -1) {
           break;
         }
@@ -56,6 +59,8 @@ function navigateTo(graph, route) {
     }
     if (index !== -1) {
       let peddingModuleNames = moduleNames.slice(index + 1);
+      console.info('>>>>>>>>>>>>>>>>>>>>>>>>>>');
+      console.info(graph);
       const navigation = navigatorFromRouteGraph(graph);
       if (peddingModuleNames.length === 0) {
         navigation.replace(route.moduleName, route.props);
@@ -70,9 +75,9 @@ function navigateTo(graph, route) {
       }
       return true;
     }
-  } else if (graph.type === 'screen') {
-    const screen = graph.screen;
-    if (screen.moduleName === route.moduleName) {
+  } else if (graph.layout === 'screen') {
+    const { moduleName } = graph;
+    if (moduleName === route.moduleName) {
       return true;
     }
   }
@@ -80,20 +85,23 @@ function navigateTo(graph, route) {
 }
 
 function navigatorFromRouteGraph(graph) {
-  if (graph.type === 'drawer') {
-    const drawer = graph.drawer;
-    return navigatorFromRouteGraph(drawer[0]);
-  } else if (graph.type === 'tabs') {
-    const tabs = graph.tabs;
-    return navigatorFromRouteGraph(tabs[graph.selectedIndex]);
-  } else if (graph.type === 'stack') {
-    const stack = graph.stack;
-    return navigatorFromRouteGraph(stack[0]);
-  } else if (graph.type === 'screen') {
-    const screen = graph.screen;
-    return new Navigator(screen.sceneId);
+  console.info('---------------------------------------------');
+  console.info(graph);
+  if (graph.layout === 'drawer') {
+    const children = graph.children;
+    return navigatorFromRouteGraph(children[0]);
+  } else if (graph.layout === 'tabs') {
+    const { children, state } = graph;
+    return navigatorFromRouteGraph(children[state.selectedIndex]);
+  } else if (graph.layout === 'stack') {
+    const children = graph.children;
+    return navigatorFromRouteGraph(children[0]);
+  } else if (graph.layout === 'screen') {
+    return new Navigator(graph.sceneId);
+  } else {
+    // TODO 提供自定义容器注册处理的钩子
+    throw new Error('还没有实现此类布局');
   }
-  return null;
 }
 
 class Router {

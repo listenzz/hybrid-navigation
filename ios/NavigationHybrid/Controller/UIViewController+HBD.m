@@ -10,6 +10,7 @@
 #import <objc/runtime.h>
 #import "HBDNavigationController.h"
 #import "HBDUtils.h"
+#import "HBDModalViewController.h"
 
 @implementation UIViewController (HBD)
 
@@ -19,6 +20,15 @@
         return [obj integerValue];
     }
     return [UINavigationBar appearance].barStyle;
+}
+
+- (NSString *)sceneId {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    if (!obj) {
+        obj = [[NSUUID UUID] UUIDString];
+        objc_setAssociatedObject(self, @selector(sceneId), obj, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    }
+     return obj;
 }
 
 - (void)setHbd_barStyle:(UIBarStyle)hbd_barStyle {
@@ -243,6 +253,16 @@
     }
     tabBarItem.badgeValue = self.tabBarItem.badgeValue;
     self.tabBarItem = tabBarItem;
+}
+
+- (NSString *)hbd_mode {
+    if ([self.view.window isKindOfClass:[HBDModalWindow class]]) {
+        return @"modal";
+    } else if (self.presentingViewController != nil) {
+        return @"present";
+    } else {
+        return @"normal";
+    }
 }
 
 @end

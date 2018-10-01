@@ -14,7 +14,6 @@
 
 @interface HBDViewController : UIViewController
 
-@property(nonatomic, copy, readonly) NSString *sceneId;
 @property(nonatomic, copy, readonly) NSString *moduleName;
 @property(nonatomic, copy, readonly) NSDictionary *props;
 @property(nonatomic, copy) NSDictionary *options;

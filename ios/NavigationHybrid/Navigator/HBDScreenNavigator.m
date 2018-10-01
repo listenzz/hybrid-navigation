@@ -42,9 +42,11 @@
         } else {
             screen = (HBDViewController *)vc;
             [root addObject:@{
-                                   @"type": @"screen",
-                                   @"screen": @{ @"moduleName": screen.moduleName, @"sceneId": screen.sceneId}
-                                   }];
+                               @"layout": @"screen",
+                               @"sceneId": screen.sceneId,
+                               @"moduleName": screen.moduleName,
+                               @"mode": [vc hbd_mode],
+                            }];
         }
         return YES;
     }

@@ -17,7 +17,7 @@
 }
 
 - (NSArray<NSString *> *)supportActions {
-    return @[ @"switchToTab", @"switchTab" ];
+    return @[ @"switchTab" ];
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
@@ -53,12 +53,20 @@
 - (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
     if ([vc isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarController = (HBDTabBarController *)vc;
-        NSMutableArray *tabs = [[NSMutableArray alloc] init];
+        NSMutableArray *children = [[NSMutableArray alloc] init];
         for (NSInteger i = 0; i < tabBarController.childViewControllers.count; i++) {
             UIViewController *child = tabBarController.childViewControllers[i];
-            [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:child root:tabs];
+            [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:child root:children];
         }
-        [root addObject:@{ @"type": self.name, self.name: tabs, @"selectedIndex": @(tabBarController.selectedIndex) }];
+        [root addObject:@{
+                          @"layout": self.name,
+                          @"sceneId": vc.sceneId,
+                          @"children": children,
+                          @"mode": [vc hbd_mode],
+                          @"state": @{
+                                  @"selectedIndex": @(tabBarController.selectedIndex)
+                              }
+                          }];
         return YES;
     }
     return NO;
@@ -77,7 +85,7 @@
     if (!tabBarController) {
         return;
     }
-    if ([action isEqualToString:@"switchToTab"] || [action isEqualToString:@"switchTab"]) {
+    if ([action isEqualToString:@"switchTab"]) {
         if (tabBarController.presentedViewController && !tabBarController.presentedViewController.isBeingDismissed) {
             [tabBarController.presentedViewController dismissViewControllerAnimated:YES completion:^{
                 

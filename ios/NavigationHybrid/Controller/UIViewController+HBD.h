@@ -11,6 +11,8 @@
 
 @interface UIViewController (HBD)
 
+@property(nonatomic, copy, readonly) NSString *sceneId;
+
 @property (nonatomic, assign) UIBarStyle hbd_barStyle;
 @property (nonatomic, strong) UIColor *hbd_barTintColor;
 @property (nonatomic, strong) UIColor *hbd_tintColor;
@@ -44,5 +46,7 @@
 - (HBDDrawerController *)drawerController;
 
 - (void)hbd_updateTabBarItem:(NSDictionary *)options;
+
+- (NSString *)hbd_mode;
 
 @end

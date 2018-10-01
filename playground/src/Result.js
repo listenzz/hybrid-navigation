@@ -3,7 +3,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { TouchableOpacity, Text, View, TextInput, Platform } from 'react-native';
 import styles from './Styles';
 
-import { RESULT_OK } from 'react-native-navigation-hybrid';
+import { RESULT_OK, router } from 'react-native-navigation-hybrid';
 import TopBarStyle from './TopBarStyle';
 
 export default class Result extends Component {
@@ -74,7 +74,10 @@ export default class Result extends Component {
     this.props.navigator.push('Result');
   }
 
-  sendResult() {
+  async sendResult() {
+    const graph = await router.routeGraph();
+    console.info(graph);
+
     this.props.navigator.setResult(RESULT_OK, {
       text: this.state.text,
       backId: this.props.sceneId,

@@ -33,7 +33,6 @@
 
 - (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
     if (self = [super initWithNibName:nil bundle:nil]) {
-        _sceneId = [[NSUUID UUID] UUIDString];
         _moduleName = moduleName;
         _options = options;
         _props = props;

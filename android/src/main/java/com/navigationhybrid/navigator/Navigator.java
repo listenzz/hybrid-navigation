@@ -14,6 +14,22 @@ import me.listenzz.navigation.AwesomeFragment;
 
 public interface Navigator {
 
+    String MODE_NORMAL = "normal";
+    String MODE_MODAL = "modal";
+    String MODE_PRESENT = "present";
+
+    class Util {
+        static String getMode(@NonNull AwesomeFragment fragment) {
+            if (fragment.isInDialog()) {
+                return MODE_MODAL;
+            } else if (fragment.getPresentingFragment() != null) {
+                return MODE_PRESENT;
+            } else {
+                return MODE_NORMAL;
+            }
+        }
+    }
+
     @NonNull
     String name();
 
@@ -27,6 +43,6 @@ public interface Navigator {
 
     HybridFragment primaryFragment(@NonNull AwesomeFragment fragment);
 
-    void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull ReadableMap extras);
+    void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras);
 
 }

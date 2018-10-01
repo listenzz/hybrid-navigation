@@ -84,8 +84,10 @@ public class DrawerNavigator implements Navigator {
             getReactBridgeManager().buildRouteGraph(drawer.getContentFragment(), children, modal);
             getReactBridgeManager().buildRouteGraph(drawer.getMenuFragment(), children, modal);
             Bundle graph = new Bundle();
-            graph.putString("type", name());
-            graph.putParcelableArrayList(name(), children);
+            graph.putString("layout", name());
+            graph.putString("sceneId", fragment.getSceneId());
+            graph.putParcelableArrayList("children", children);
+            graph.putString("mode", Navigator.Util.getMode(fragment));
             root.add(graph);
             return true;
         }

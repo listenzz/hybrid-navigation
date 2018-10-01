@@ -36,12 +36,17 @@
 - (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
     if ([vc isKindOfClass:[HBDNavigationController class]]) {
         HBDNavigationController *nav = (HBDNavigationController *)vc;
-        NSMutableArray *stack = [[NSMutableArray alloc] init];
+        NSMutableArray *children = [[NSMutableArray alloc] init];
         for (NSInteger i = 0; i < nav.childViewControllers.count; i++) {
             UIViewController *child = nav.childViewControllers[i];
-            [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:child root:stack];
+            [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:child root:children];
         }
-        [root addObject:@{ @"type": @"stack", @"stack": stack }];
+        [root addObject:@{
+                          @"layout": @"stack",
+                          @"sceneId": vc.sceneId,
+                          @"children": children,
+                          @"mode": [vc hbd_mode],
+                          }];
         return YES;
     }
     return NO;

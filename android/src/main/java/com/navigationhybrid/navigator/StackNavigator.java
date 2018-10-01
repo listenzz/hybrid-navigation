@@ -68,8 +68,10 @@ public class StackNavigator implements Navigator {
                 }
             }
             Bundle graph = new Bundle();
-            graph.putString("type", name());
-            graph.putParcelableArrayList(name(), children);
+            graph.putString("layout", name());
+            graph.putString("sceneId", stack.getSceneId());
+            graph.putParcelableArrayList("children", children);
+            graph.putString("mode", Navigator.Util.getMode(fragment));
             root.add(graph);
             return true;
         }

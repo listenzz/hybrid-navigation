@@ -457,6 +457,10 @@ tabs 支持以下导航操作
 
 切换到指定 tab
 
+```javascript
+this.props.navigator.switchTab(1);
+```
+
 ## drawer
 
 drawer 支持以下导航操作
@@ -465,10 +469,103 @@ drawer 支持以下导航操作
 
 切换抽屉的开关状态
 
+```javascript
+this.props.navigator.toggleMenu();
+```
+
 - openMenu
 
 打开抽屉
 
+```javascript
+this.props.navigator.openMenu();
+```
+
 - closeMenu
 
 关闭抽屉
+
+```javascript
+this.props.navigator.closeMenu();
+```
+
+## 通过 redux 管理路由
+
+有时，页面可能需要把导航操作委托给状态管理容器，或者根据推送确定要切换到对应的页面。
+
+面对这种场景，router 和 Navigator 中的几个方法可能会比较有用：
+
+```javascript
+import { Navigator, router } from 'react-native-navigation-hybrid';
+
+const route = await router.currentRoute();
+
+// {
+//   sceneId: 'xxxxxxxx',
+//   moduleName: 'Name'
+// }
+
+const navigator = Navigator.get(route.sceneId);
+```
+
+以上操作等同于
+
+```javascript
+const navigator = await Navigator.current();
+```
+
+通过这种方式，我们拿到了当前所处的路由信息，通过其中的 sceneId 获取到当前页面的 navigator，这样就可以执行我们想要的导航操作。
+
+> 还可以通过 sceneId 来创建 Garden 对象，通过 garden 来动态更改 topBar，tabBar 的样式。
+
+我们不光需要知道当前处于哪个页面，还需要知道当前整个 UI 层级或者说路由图
+
+```javascript
+import { Navigator, router } from 'react-native-navigation-hybrid';
+
+const graph = await router.routeGraph();
+console.info(graph);
+
+const sceneId = // 通过 graph 抽取出我们想要的 sceneId
+
+const navigator = Navigator.get(sceneId);
+```
+
+`graph` 是一个数组，它长下面这个样子
+
+```javascript
+[
+  {
+    layout: 'drawer',
+    sceneId: '',
+    children: [], // 又是一个 graph 数组
+    mode: '', // modal, nornal, present，表示该页面是通过 prensent、showModal 或者其它方式显示
+  },
+
+  {
+    layout: 'tabs',
+    sceneId: '',
+    children: [],
+    mode: '',
+    state: { selectedIndex: 1 },
+  },
+
+  {
+    layout: 'stack',
+    sceneId: '',
+    children: [],
+    mode: '',
+  },
+
+  {
+    layout: 'screen',
+    sceneId: '36d60707-354e-4f87-a790-20590261500b',
+    moduleName: 'Navigation',
+    mode: '', // modal, present, normal
+  },
+];
+```
+
+`router.routeGraph` 帮助我们获得整张路由图，它是实现 DeepLink 的基础。本库已经提供了 DeepLink 的默认实现。
+
+在我们的实践中，并未把路由交给 redux 这样的容器来管理，所以我们不能给你太多关于这方面的经验。
