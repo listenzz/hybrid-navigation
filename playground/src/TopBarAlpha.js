@@ -43,7 +43,6 @@ const paddingTop = Platform.select({
 export default class TopBarAlpha extends Component {
   static navigationItem = {
     topBarAlpha: 0.5,
-    statusBarColor: '#00000000',
     extendedLayoutIncludesTopBar: true,
     // titleItem: {
     //   title: '出 BUG 了',
