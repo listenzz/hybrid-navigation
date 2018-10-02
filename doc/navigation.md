@@ -306,7 +306,7 @@ navigator && navigator.push('C');
 
 - presentLayout
 
-present 的加强版，通过传递一个布局对象，用来 present 比较 UI 层级比较复杂的页面：
+present 的加强版，通过传递一个布局对象，用来 present UI 层级比较复杂的页面：
 
 ```javascript
 // A.js
@@ -327,7 +327,7 @@ this.props.navigator.presentLayout(
 this.props.navigator.present('B', 1);
 ```
 
-也就是说，present 出来的组件，默认会嵌套在 stack 里面，因为当使用 present 时，嵌套 stack 是非常常见的操作。
+也就是说，present 出来的组件，默认会嵌套在 stack 里面，因为当使用 present 时，把目标页面嵌套在 stack 里面是比较常见的操作。
 
 > 同样使用 dismiss 来关闭
 

@@ -102,6 +102,8 @@ npm run run:ios
 
 - 布局描述对象改变，也就是 `Navigator#setRoot` 接受的第一个参数格式发生变化，现在如何正确地传递布局对象，请查看 [容器与导航](./doc/navigation.md)
 
+- `router.routeGraph` 返回的数据结构发生变化，以更好地描述 UI 层级，详情请查看 [容器与导航](./doc/navigation.md)
+
 - 移除了所有已经弃用的 API
 
 ### 0.8.31 - 2018/9/26
