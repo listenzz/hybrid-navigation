@@ -52,7 +52,7 @@ extern const NSInteger ResultCancel;
 
 - (UIViewController *)controllerWithLayout:(NSDictionary *)layout;
 
-- (HBDViewController *)controllerForSceneId:(NSString *)sceneId;
+- (UIViewController *)controllerForSceneId:(NSString *)sceneId;
 
 - (void)setRootViewController:(UIViewController *)rootViewController;
 
@@ -64,7 +64,7 @@ extern const NSInteger ResultCancel;
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc;
 
-- (void)handleNavigationWithViewController:(HBDViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras;
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras;
 
 - (void)registerNavigator:(id<HBDNavigator>)navigator;
 

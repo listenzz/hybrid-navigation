@@ -68,14 +68,14 @@ RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky) {
 }
 
 RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:(NSDictionary *)extras) {
-    HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     if (vc) {
         [[HBDReactBridgeManager sharedInstance] handleNavigationWithViewController:vc action:action extras:extras];
     }
 }
 
 RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     UINavigationController *nav = vc.navigationController;
     if (nav) {
         NSArray *children = nav.childViewControllers;
@@ -91,7 +91,7 @@ RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResol
 }
 
 RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode data:(NSDictionary *)data) {
-    HBDViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     [vc setResultCode:resultCode resultData:data];
 }
 

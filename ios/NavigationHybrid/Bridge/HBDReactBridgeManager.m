@@ -168,9 +168,9 @@ const NSInteger ResultCancel = 0;
     return vc;
 }
 
-- (HBDViewController *)controllerForSceneId:(NSString *)sceneId {
+- (UIViewController *)controllerForSceneId:(NSString *)sceneId {
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    HBDViewController *vc = nil;
+    UIViewController *vc = nil;
     for (UIWindow *window in application.windows) {
         vc = [self controllerForSceneId:sceneId inController:window.rootViewController];
         if (vc) {
@@ -180,14 +180,11 @@ const NSInteger ResultCancel = 0;
     return vc;
 }
 
-- (HBDViewController *)controllerForSceneId:(NSString *)sceneId inController:(UIViewController *)controller {
-    HBDViewController *target;
+- (UIViewController *)controllerForSceneId:(NSString *)sceneId inController:(UIViewController *)controller {
+    UIViewController *target;
     
-    if ([controller isKindOfClass:[HBDViewController class]]) {
-        HBDViewController *vc = (HBDViewController *)controller;
-        if ([vc.sceneId isEqualToString:sceneId]) {
-            target = vc;
-        }
+    if ([controller.sceneId isEqualToString:sceneId]) {
+        target = controller;
     }
     
     if (!target && [controller isKindOfClass:[HBDModalViewController class]]) {
@@ -304,7 +301,7 @@ const NSInteger ResultCancel = 0;
     }
 }
 
-- (void)handleNavigationWithViewController:(HBDViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras {
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras {
     for (id<HBDNavigator> navigator in self.navigators) {
         NSArray<NSString *> *supportActions = navigator.supportActions;
         if ([supportActions containsObject:action]) {
