@@ -31,7 +31,7 @@ ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha, {
 
 TopBarAlpha 依赖 TopBarMisc, TopBarMisc 依赖 Options, 当我们通过 `hbd://topBarAlpha/0.7/#FFFFFF` 这样的 url 打开 TopBarAlpha 这个页面时，会检查 app 当前的路由图，以决定是否切换到 tab Options, 在打开 TopBarAlpha 之前是否需要创建 TopBarMisc。
 
-mode 表示显示模式，不设置在跳转时使用 push，设置为 modal 时使用 present。譬如 playground 项目中，Result 这个页面就是以 modal 的形式打开的。
+mode 表示跳转模式，present 表示使用 `navigator.present` 打开目标页面， `modal` 表示使用 `navigator.showModal` 打开页面，默认是通过 push 的方式打开。
 
 ## 激活
 

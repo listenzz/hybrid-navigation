@@ -2,10 +2,6 @@ import pathToRegexp from 'path-to-regexp';
 import { Linking } from 'react-native';
 import Navigator from './Navigator';
 
-let configs = new Map();
-let interceptors = new Set();
-let active = 0;
-
 function routeDependencies(routeConfig) {
   let dependencies = [];
   while (routeConfig && routeConfig.dependency) {
@@ -60,15 +56,15 @@ function navigateTo(graph, route) {
       let peddingModuleNames = moduleNames.slice(index + 1);
       console.info('>>>>>>>>>>>>>>>>>>>>>>>>>>');
       console.info(graph);
-      const navigation = navigatorFromRouteGraph(graph);
+      const navigator = navigatorFromRouteGraph(graph);
       if (peddingModuleNames.length === 0) {
-        navigation.replace(route.moduleName, route.props);
+        navigator.replace(route.moduleName, route.props);
       } else {
         for (let i = 0; i < peddingModuleNames.length; i++) {
           if (i === peddingModuleNames.length - 1) {
-            navigation.push(route.moduleName, route.props);
+            navigator.push(route.moduleName, route.props);
           } else {
-            navigation.push(peddingModuleNames[i]);
+            navigator.push(peddingModuleNames[i]);
           }
         }
       }
@@ -96,12 +92,16 @@ function navigatorFromRouteGraph(graph) {
     const children = graph.children;
     return navigatorFromRouteGraph(children[0]);
   } else if (graph.layout === 'screen') {
-    return new Navigator(graph.sceneId);
+    return Navigator.get(graph.sceneId);
   } else {
     // TODO 提供自定义容器注册处理的钩子
     throw new Error('还没有实现此类布局');
   }
 }
+
+let configs = new Map();
+let interceptors = new Set();
+let active = 0;
 
 class Router {
   constructor() {
@@ -114,7 +114,7 @@ class Router {
     configs.clear();
   }
 
-  addRoute(key, routeConfig = {}) {
+  addRouteConfig(key, routeConfig = {}) {
     if (routeConfig.path) {
       routeConfig.pathRegexp = pathToRegexp(routeConfig.path);
       let params = pathToRegexp.parse(routeConfig.path).slice(1);
@@ -172,19 +172,24 @@ class Router {
     if (route && route.moduleName) {
       try {
         const graph = await Navigator.routeGraph();
-        if (route.mode === 'modal') {
-          let navigation = navigatorFromRouteGraph(graph[0]);
-          navigation.present(route.moduleName, 0, route.props);
+        if (route.mode === 'present') {
+          // present
+          let navigator = navigatorFromRouteGraph(graph[0]);
+          navigator.present(route.moduleName, 0, route.props);
+        } else if (route.mode === 'modal') {
+          // showModal
+          let navigator = navigatorFromRouteGraph(graph[0]);
+          navigator.showModal(route.moduleName, 0, route.props);
         } else {
           // push
           if (graph.length > 1) {
-            let navigation = navigatorFromRouteGraph(graph[1]);
-            navigation.dismiss();
+            let navigator = navigatorFromRouteGraph(graph[1]);
+            navigator.dismiss();
           }
           if (!navigateTo(graph[0], route)) {
-            let navigation = navigatorFromRouteGraph(graph[0]);
-            navigation.closeMenu();
-            navigation.push(route.moduleName, route.props);
+            let navigator = navigatorFromRouteGraph(graph[0]);
+            navigator.closeMenu();
+            navigator.push(route.moduleName, route.props);
           }
         }
       } catch (error) {

@@ -77,7 +77,7 @@ function screenWrapper(screenProvider) {
 ReactRegistry.startRegisterComponent(screenWrapper);
 
 ReactRegistry.registerComponent('Navigation', () => Navigation);
-ReactRegistry.registerComponent('Result', () => Result, { path: 'result', mode: 'modal' });
+ReactRegistry.registerComponent('Result', () => Result, { path: 'result', mode: 'present' });
 ReactRegistry.registerComponent('Options', () => Options, { path: 'options' });
 ReactRegistry.registerComponent('Menu', () => Menu, { path: 'menu' });
 ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter, { path: 'redux' });
@@ -104,7 +104,7 @@ ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle);
 
 ReactRegistry.registerComponent('Transparent', () => Transparent);
 ReactRegistry.registerComponent('HUDTest', () => HUDTest);
-ReactRegistry.registerComponent('ReactModal', () => ReactModal);
+ReactRegistry.registerComponent('ReactModal', () => ReactModal, { path: 'modal', mode: 'modal' });
 
 ReactRegistry.endRegisterComponent();
 

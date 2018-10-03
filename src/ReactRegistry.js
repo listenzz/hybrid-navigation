@@ -27,10 +27,9 @@ export default {
     const RealComponent = componentProvider();
     if (RealComponent.routeConfig) {
       RealComponent.routeConfig.moduleName = appKey;
-      router.addRoute(appKey, RealComponent.routeConfig);
-    }
-    if (routeConfig) {
-      router.addRoute(appKey, routeConfig);
+      router.addRouteConfig(appKey, RealComponent.routeConfig);
+    } else if (routeConfig) {
+      router.addRouteConfig(appKey, routeConfig);
     }
 
     class Screen extends Component {
