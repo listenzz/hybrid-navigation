@@ -9,7 +9,7 @@ import {
   Easing,
   Dimensions,
 } from 'react-native';
-import { RESULT_OK, router } from 'react-native-navigation-hybrid';
+import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid';
 
 export default class ReactModal extends React.Component {
   constructor(props) {
@@ -22,7 +22,7 @@ export default class ReactModal extends React.Component {
       {
         text: 'Male',
         onPress: async () => {
-          const graph = await router.routeGraph();
+          const graph = await Navigator.routeGraph();
           console.info(graph);
           this.hideModal('Male');
         },

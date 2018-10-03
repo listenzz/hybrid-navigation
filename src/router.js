@@ -1,7 +1,6 @@
 import pathToRegexp from 'path-to-regexp';
 import { Linking } from 'react-native';
 import Navigator from './Navigator';
-import NavigationModule from './NavigationModule';
 
 let configs = new Map();
 let interceptors = new Set();
@@ -115,14 +114,6 @@ class Router {
     configs.clear();
   }
 
-  async routeGraph() {
-    return await NavigationModule.routeGraph();
-  }
-
-  async currentRoute() {
-    return await NavigationModule.currentRoute();
-  }
-
   addRoute(key, routeConfig = {}) {
     if (routeConfig.path) {
       routeConfig.pathRegexp = pathToRegexp(routeConfig.path);
@@ -180,7 +171,7 @@ class Router {
     const route = this.pathToRoute(path);
     if (route && route.moduleName) {
       try {
-        const graph = await this.routeGraph();
+        const graph = await Navigator.routeGraph();
         if (route.mode === 'modal') {
           let navigation = navigatorFromRouteGraph(graph[0]);
           navigation.present(route.moduleName, 0, route.props);

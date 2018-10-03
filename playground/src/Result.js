@@ -3,8 +3,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { TouchableOpacity, Text, View, TextInput, Platform } from 'react-native';
 import styles from './Styles';
 
-import { RESULT_OK, router } from 'react-native-navigation-hybrid';
-import TopBarStyle from './TopBarStyle';
+import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid';
 
 export default class Result extends Component {
   static navigationItem = {
@@ -75,7 +74,7 @@ export default class Result extends Component {
   }
 
   async sendResult() {
-    const graph = await router.routeGraph();
+    const graph = await Navigator.routeGraph();
     console.info(graph);
 
     this.props.navigator.setResult(RESULT_OK, {

@@ -1,7 +1,6 @@
 import NavigationModule from './NavigationModule';
 import { bindBarButtonItemClickEvent } from './utils';
 import store from './store';
-import router from './router';
 
 let intercept;
 
@@ -14,8 +13,16 @@ export default class Navigator {
   }
 
   static async current() {
-    const { sceneId } = await router.currentRoute();
+    const { sceneId } = await Navigator.currentRoute();
     return Navigator.get(sceneId);
+  }
+
+  static async currentRoute() {
+    return await NavigationModule.currentRoute();
+  }
+
+  static async routeGraph() {
+    return await NavigationModule.routeGraph();
   }
 
   static setRoot(layout, sticky = false) {
@@ -28,7 +35,7 @@ export default class Navigator {
   }
 
   static dispatch(sceneId, action, extras = {}) {
-    if (!intercept || !intercept(action, this.moduleName, extras.moduleName, extras)) {
+    if (!intercept || !intercept(action, extras.from, extras.moduleName, extras)) {
       NavigationModule.dispatch(sceneId, action, extras);
     }
   }
@@ -65,6 +72,7 @@ export default class Navigator {
   }
 
   dispatch(action, extras = {}) {
+    extras.from = this.moduleName;
     Navigator.dispatch(this.sceneId, action, extras);
   }
 
