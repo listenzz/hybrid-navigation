@@ -35,6 +35,7 @@ export default class Navigator {
   }
 
   static dispatch(sceneId, action, extras = {}) {
+    extras.from = extras.from || Navigator.get(sceneId).moduleName;
     if (!intercept || !intercept(action, extras.from, extras.moduleName, extras)) {
       NavigationModule.dispatch(sceneId, action, extras);
     }
