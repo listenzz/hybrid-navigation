@@ -95,7 +95,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     if (readableMap.hasKey("passThroughTouches")) {
@@ -113,7 +113,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     Bundle buttonItem = mergeOptions(options, "leftBarButtonItem", readableMap);
@@ -130,7 +130,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     Bundle buttonItem = mergeOptions(options, "rightBarButtonItem", readableMap);
@@ -147,7 +147,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     Bundle titleItem = mergeOptions(options, "titleItem", readableMap);
@@ -165,7 +165,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     if (readableMap.hasKey("statusBarColor")) {
@@ -184,7 +184,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
                     if (readableMap.hasKey("statusBarHidden")) {
@@ -203,7 +203,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     fragment.getGarden().updateToolbar(readableMap);
                 }
@@ -217,7 +217,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment instanceof ReactTabBarFragment) {
@@ -233,7 +233,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
@@ -262,7 +262,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
@@ -279,7 +279,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
@@ -296,7 +296,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
@@ -332,18 +332,22 @@ public class GardenModule extends ReactContextBaseJavaModule {
         return null;
     }
 
-    private HybridFragment findFragmentBySceneId(String sceneId) {
+    private AwesomeFragment findFragmentBySceneId(String sceneId) {
         Activity activity = getCurrentActivity();
         if (activity instanceof ReactAppCompatActivity) {
             ReactAppCompatActivity reactActivity = (ReactAppCompatActivity) activity;
             FragmentManager fragmentManager = reactActivity.getSupportFragmentManager();
-            return findFragmentBySceneId(fragmentManager, sceneId);
+            return (AwesomeFragment)FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
         }
         return null;
     }
 
-    private HybridFragment findFragmentBySceneId(FragmentManager fragmentManager, String sceneId) {
-        return (HybridFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
+    private HybridFragment findHybridFragmentBySceneId(String sceneId) {
+        AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+        if (fragment instanceof HybridFragment) {
+            return (HybridFragment) fragment;
+        }
+        return null;
     }
 
 }

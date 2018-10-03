@@ -124,7 +124,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 reactBridgeManager.handleNavigation(fragment, action, extras);
             }
         });
@@ -135,7 +135,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     promise.resolve(fragment.isNavigationRoot());
                 }
@@ -148,7 +148,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                HybridFragment fragment = findFragmentBySceneId(sceneId);
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null) {
                     fragment.setResult(resultCode, Arguments.toBundle(result));
                 }
@@ -225,18 +225,13 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         reactBridgeManager.buildRouteGraph(fragment, root, modal);
     }
 
-    private HybridFragment findFragmentBySceneId(String sceneId) {
+    private AwesomeFragment findFragmentBySceneId(String sceneId) {
         Activity activity = getCurrentActivity();
         if (activity instanceof ReactAppCompatActivity) {
             ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
             FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-            return findFragmentBySceneId(fragmentManager, sceneId);
+            return (AwesomeFragment)FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
         }
         return null;
     }
-
-    private HybridFragment findFragmentBySceneId(FragmentManager fragmentManager, String sceneId) {
-        return (HybridFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
-    }
-
 }
