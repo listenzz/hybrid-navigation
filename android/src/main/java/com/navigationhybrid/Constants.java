@@ -23,4 +23,6 @@ public class Constants {
     public static final String RESULT_CODE_KEY = "resultCode";
     public static final String RESULT_DATA_KEY = "data";
 
+    public static final String ON_ROOT_SET = "ON_ROOT_SET";
+
 }

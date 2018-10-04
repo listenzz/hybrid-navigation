@@ -299,6 +299,10 @@ class Router {
     if (active == 0) {
       Linking.removeEventListener('url', this._routeEventHandler);
     }
+
+    if (active < 0) {
+      active = 0;
+    }
   }
 
   _routeEventHandler(event) {

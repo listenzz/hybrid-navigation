@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  View,
-  ScrollView,
-  PixelRatio,
-  Linking,
-  Platform,
-} from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView, PixelRatio, Platform } from 'react-native';
 
 import styles from './Styles';
-import { RESULT_OK, router } from 'react-native-navigation-hybrid';
+import { RESULT_OK } from 'react-native-navigation-hybrid';
 import fontUri from './FontUtil';
 
 const REQUEST_CODE = 1;
@@ -76,14 +68,11 @@ export default class Navigation extends Component {
 
   componentDidMount() {
     console.info('navigation componentDidMount');
-    const prefix = Platform.OS == 'android' ? 'hbd://hbd/' : 'hbd://';
-    router.activate(prefix);
     this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
   }
 
   componentWillUnmount() {
     console.info('navigation componentWillUnmount');
-    router.inactivate();
   }
 
   onComponentResult(requestCode, resultCode, data) {
@@ -244,7 +233,10 @@ export default class Navigation extends Component {
           </TouchableOpacity>
 
           {this.state.text !== undefined && (
-            <Text style={styles.result}>received text：{this.state.text}</Text>
+            <Text style={styles.result}>
+              received text：
+              {this.state.text}
+            </Text>
           )}
 
           {this.state.error !== undefined && <Text style={styles.result}>{this.state.error}</Text>}

@@ -1,4 +1,4 @@
-import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid';
+import { ReactRegistry, Garden, Navigator, router } from 'react-native-navigation-hybrid';
 import { Image, Platform } from 'react-native';
 import React, { Component } from 'react';
 
@@ -26,6 +26,7 @@ import HUDTest from './src/HUDText';
 import ReactModal from './src/ReactModal';
 import StatusBarHidden from './src/StatusBarHidden';
 
+// 设置全局样式
 Garden.setStyle({
   topBarStyle: 'dark-content',
   titleTextSize: 17,
@@ -74,6 +75,7 @@ function screenWrapper(screenProvider) {
   return ScreenWrapper;
 }
 
+// 开始注册组件，即基本页面单元
 ReactRegistry.startRegisterComponent(screenWrapper);
 
 ReactRegistry.registerComponent('Navigation', () => Navigation);
@@ -106,6 +108,7 @@ ReactRegistry.registerComponent('Transparent', () => Transparent);
 ReactRegistry.registerComponent('HUDTest', () => HUDTest);
 ReactRegistry.registerComponent('ReactModal', () => ReactModal, { path: 'modal', mode: 'modal' });
 
+// 完成注册组件
 ReactRegistry.endRegisterComponent();
 
 const navigationStack = {
@@ -134,8 +137,21 @@ const drawer = {
   },
 };
 
+// 激活 DeepLink，在 Navigator.setRoot 之前
+Navigator.setRootLayoutUpdateListener(
+  () => {
+    router.inactivate();
+  },
+  () => {
+    const prefix = Platform.OS == 'android' ? 'hbd://hbd/' : 'hbd://';
+    router.activate(prefix);
+  }
+);
+
+// 设置 UI 层级
 Navigator.setRoot(drawer, true);
 
+// 设置导航拦截器
 Navigator.setInterceptor((action, from, to, extras) => {
   console.info(`action:${action} from:${from} to:${to}`);
 });

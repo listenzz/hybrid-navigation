@@ -8,6 +8,7 @@
 
 #import "HBDReactBridgeManager.h"
 #import <React/RCTLog.h>
+#import <React/RCTEventEmitter.h>
 #import "HBDUtils.h"
 #import "HBDReactViewController.h"
 #import "HBDNavigationController.h"
@@ -226,6 +227,8 @@ const NSInteger ResultCancel = 0;
 - (void)performSetRootViewController:(UIViewController *)rootViewController {
     UIWindow *keyWindow = RCTKeyWindow();
     keyWindow.rootViewController = rootViewController;
+    RCTEventEmitter *emitter = [self.bridge moduleForName:@"NavigationHybrid"];
+    [emitter sendEventWithName:@"ON_ROOT_SET" body:nil];
 }
 
 - (HBDViewController *)primaryViewController {

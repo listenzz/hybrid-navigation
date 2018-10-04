@@ -1,8 +1,10 @@
-import NavigationModule from './NavigationModule';
+import NavigationModule, { EventEmitter } from './NavigationModule';
 import { bindBarButtonItemClickEvent } from './utils';
 import store from './store';
 
 let intercept;
+let willSetRootCallback;
+let didSetRootEventSubscription;
 
 export default class Navigator {
   static RESULT_OK = NavigationModule.RESULT_OK;
@@ -26,12 +28,21 @@ export default class Navigator {
   }
 
   static setRoot(layout, sticky = false) {
+    if (willSetRootCallback) {
+      willSetRootCallback();
+    }
     const pureLayout = bindBarButtonItemClickEvent(layout, { inLayout: true });
     NavigationModule.setRoot(pureLayout, sticky);
   }
 
-  static setInterceptor(interceptor) {
-    intercept = interceptor;
+  static setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {}) {
+    if (didSetRootEventSubscription) {
+      didSetRootEventSubscription.remove();
+    }
+    willSetRootCallback = willSetRoot;
+    didSetRootEventSubscription = EventEmitter.addListener('ON_ROOT_SET', event => {
+      didSetRoot();
+    });
   }
 
   static dispatch(sceneId, action, extras = {}) {
@@ -39,6 +50,10 @@ export default class Navigator {
     if (!intercept || !intercept(action, extras.from, extras.moduleName, extras)) {
       NavigationModule.dispatch(sceneId, action, extras);
     }
+  }
+
+  static setInterceptor(interceptor) {
+    intercept = interceptor;
   }
 
   constructor(sceneId, moduleName) {

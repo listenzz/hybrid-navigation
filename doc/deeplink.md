@@ -1,10 +1,10 @@
 # DeepLink
 
-0.5.0 版本开始支持 deep link.
+0.5.0 版本开始支持 DeepLink.
 
 ## 注册
 
-需要支持 deep link 的页面，在注册时需要传入第三个参数
+需要支持 DeepLink 的页面，在注册时需要传入第三个参数
 
 ```javascript
 ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha, {
@@ -35,7 +35,7 @@ mode 表示跳转模式，present 表示使用 `navigator.present` 打开目标�
 
 ## 激活
 
-我们需要在一个稳定的页面（通常是主页面）激活路由功能。
+我们需要在一个稳定的页面（通常是主页面）激活 DeepLink 功能。
 
 譬如 playground 项目，在 Navigation.js 激活了路由功能
 
@@ -51,6 +51,24 @@ componentDidMount() {
 componentWillUnmount() {
   router.inactivate();
 }
+```
+
+也可以通过以下方式激活
+
+```javascript
+// 激活 DeepLink，在 Navigator.setRoot 之前
+Navigator.setRootLayoutUpdateListener(
+  () => {
+    router.inactivate();
+  },
+  () => {
+    const prefix = Platform.OS == 'android' ? 'hbd://hbd/' : 'hbd://';
+    router.activate(prefix);
+  }
+);
+
+// 设置 UI 层级
+Navigator.setRoot(drawer, true);
 ```
 
 ## 拦截
