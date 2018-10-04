@@ -11,58 +11,76 @@ function routeDependencies(routeConfig) {
   return dependencies.reverse();
 }
 
-function navigateTo(graph, route) {
-  console.info('===================================================');
-  console.info(graph);
-  if (graph.layout === 'drawer') {
-    const children = graph.children;
-    if (navigateTo(children[0], route)) {
-      const navigator = navigatorFromRouteGraph(children[0]);
-      navigator.closeMenu();
-      return true;
+const screenParser = {
+  navigatorFromRouteGraph(router, graph) {
+    const { layout, sceneId } = graph;
+    if (sceneId && layout === 'screen') {
+      return Navigator.get(sceneId);
     }
-    if (navigateTo(children[1], route)) {
-      // 打开侧边栏
-      const navigator = navigatorFromRouteGraph(children[0]);
-      navigator.openMenu();
-      return true;
-    }
-  } else if (graph.layout === 'tabs') {
-    const { children, state } = graph;
-    for (let i = 0; i < children.length; i++) {
-      if (navigateTo(children[i], route)) {
-        if (i !== state.selectedIndex) {
-          console.info('state:' + state.selectedIndex);
-          const navigator = navigatorFromRouteGraph(children[state.selectedIndex]);
-          navigator.switchTab(i);
-        }
-        return true;
+    return null;
+  },
+
+  navigateTo(router, graph, route) {
+    const { layout } = graph;
+    const { moduleName, mode, props } = route;
+    if (layout === 'screen' && (mode === 'present' || mode === 'modal')) {
+      const navigator = router.navigatorFromRouteGraph(graph);
+      if (mode === 'present') {
+        navigator.present(moduleName, 0, props);
+      } else {
+        navigator.showModal(moduleName, 0, props);
       }
+      return true;
     }
-  } else if (graph.layout === 'stack') {
-    const children = graph.children;
-    let moduleNames = [...route.dependencies, route.moduleName];
+    return false;
+  },
+};
+
+const stackParser = {
+  navigatorFromRouteGraph(router, graph) {
+    const { layout, children } = graph;
+    if (layout === 'stack') {
+      return router.navigatorFromRouteGraph(children[0]);
+    }
+    return null;
+  },
+
+  navigateTo(router, graph, route) {
+    const { layout, children } = graph;
+    const { mode, moduleName, dependencies, props } = route;
+
+    if (layout !== 'stack') {
+      return false;
+    }
+    if (router.navigateTo(children[0], route)) {
+      return true;
+    }
+
+    if (mode !== 'push') {
+      return false;
+    }
+
+    let moduleNames = [...dependencies, moduleName];
     let index = -1;
     for (let i = children.length - 1; i > -1; i--) {
-      if (children[i].layout === 'screen') {
-        const moduleName = children[i].moduleName;
+      const { layout, moduleName } = children[i];
+      if (layout === 'screen') {
         index = moduleNames.indexOf(moduleName);
         if (index !== -1) {
           break;
         }
       }
     }
+
     if (index !== -1) {
       let peddingModuleNames = moduleNames.slice(index + 1);
-      console.info('>>>>>>>>>>>>>>>>>>>>>>>>>>');
-      console.info(graph);
-      const navigator = navigatorFromRouteGraph(graph);
+      const navigator = router.navigatorFromRouteGraph(graph);
       if (peddingModuleNames.length === 0) {
-        navigator.replace(route.moduleName, route.props);
+        navigator.replace(moduleName, props);
       } else {
         for (let i = 0; i < peddingModuleNames.length; i++) {
           if (i === peddingModuleNames.length - 1) {
-            navigator.push(route.moduleName, route.props);
+            navigator.push(moduleName, props);
           } else {
             navigator.push(peddingModuleNames[i]);
           }
@@ -70,38 +88,71 @@ function navigateTo(graph, route) {
       }
       return true;
     }
-  } else if (graph.layout === 'screen') {
-    const { moduleName } = graph;
-    if (moduleName === route.moduleName) {
-      return true;
-    }
-  }
-  return false;
-}
 
-function navigatorFromRouteGraph(graph) {
-  console.info('---------------------------------------------');
-  console.info(graph);
-  if (graph.layout === 'drawer') {
-    const children = graph.children;
-    return navigatorFromRouteGraph(children[0]);
-  } else if (graph.layout === 'tabs') {
-    const { children, state } = graph;
-    return navigatorFromRouteGraph(children[state.selectedIndex]);
-  } else if (graph.layout === 'stack') {
-    const children = graph.children;
-    return navigatorFromRouteGraph(children[0]);
-  } else if (graph.layout === 'screen') {
-    return Navigator.get(graph.sceneId);
-  } else {
-    // TODO 提供自定义容器注册处理的钩子
-    throw new Error('还没有实现此类布局');
-  }
-}
+    return false;
+  },
+};
+
+const tabsParser = {
+  navigatorFromRouteGraph(router, graph = {}) {
+    const { layout, state, children } = graph;
+    if (layout === 'tabs') {
+      return router.navigatorFromRouteGraph(children[state.selectedIndex]);
+    }
+    return null;
+  },
+
+  navigateTo(router, graph = {}, route) {
+    const { layout, children, state } = graph;
+    if (layout === 'tabs') {
+      for (let i = 0; i < children.length; i++) {
+        if (router.navigateTo(children[i], route)) {
+          if (i !== state.selectedIndex) {
+            console.info('state:' + state.selectedIndex);
+            const navigator = router.navigatorFromRouteGraph(graph);
+            navigator.switchTab(i);
+          }
+          return true;
+        }
+      }
+    }
+    return false;
+  },
+};
+
+const drawerParser = {
+  navigatorFromRouteGraph(router, graph = {}) {
+    const { layout, children } = graph;
+    if (layout === 'drawer') {
+      return router.navigatorFromRouteGraph(children[0]);
+    }
+    return null;
+  },
+
+  navigateTo(router, graph = {}, route) {
+    const { layout, children } = graph;
+    if (layout === 'drawer') {
+      if (router.navigateTo(children[0], route) || router.navigateTo(children[1], route)) {
+        const navigator = router.navigatorFromRouteGraph(graph);
+        navigator.closeMenu();
+        return true;
+      }
+
+      const { moduleName } = children[1];
+      if (moduleName === route.moduleName) {
+        const navigator = router.navigatorFromRouteGraph(graph);
+        navigator.openMenu();
+        return true;
+      }
+    }
+    return false;
+  },
+};
 
 let configs = new Map();
 let interceptors = new Set();
 let active = 0;
+let parsers = new Set([stackParser, screenParser, tabsParser, drawerParser]);
 
 class Router {
   constructor() {
@@ -124,6 +175,7 @@ class Router {
       }
     }
     routeConfig.moduleName = key;
+    routeConfig.mode = routeConfig.mode || 'push';
     configs.set(key, routeConfig);
   }
 
@@ -133,6 +185,10 @@ class Router {
 
   unregisterInterceptor(func) {
     interceptors.delete(func);
+  }
+
+  registerParser(parser) {
+    parsers.add(parser);
   }
 
   pathToRoute(path) {
@@ -155,6 +211,27 @@ class Router {
     return {};
   }
 
+  navigatorFromRouteGraph(graph = {}) {
+    for (let parser of parsers.values()) {
+      const navigator = parser.navigatorFromRouteGraph(this, graph);
+      if (navigator) {
+        return navigator;
+      }
+    }
+    throw new Error(
+      '找不到合适的 navigator，如果你使用了自定义容器，请为该容器实现 RouteParser 并注册。'
+    );
+  }
+
+  navigateTo(graph = {}, route) {
+    for (let parser of parsers.values()) {
+      if (parser.navigateTo(this, graph, route)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   async open(path) {
     if (!path) {
       return;
@@ -172,25 +249,22 @@ class Router {
     if (route && route.moduleName) {
       try {
         const graph = await Navigator.routeGraph();
-        if (route.mode === 'present') {
-          // present
-          let navigator = navigatorFromRouteGraph(graph[0]);
-          navigator.present(route.moduleName, 0, route.props);
-        } else if (route.mode === 'modal') {
-          // showModal
-          let navigator = navigatorFromRouteGraph(graph[0]);
-          navigator.showModal(route.moduleName, 0, route.props);
-        } else {
-          // push
-          if (graph.length > 1) {
-            let navigator = navigatorFromRouteGraph(graph[1]);
+
+        if (graph.length > 1) {
+          const { mode } = graph[1];
+          const navigator = this.navigatorFromRouteGraph(graph[1]);
+          if (mode === 'present') {
             navigator.dismiss();
+          } else if (mode === 'modal') {
+            navigator.hideModal();
+          } else {
+            console.warn('尚未处理的 mode:' + mode);
           }
-          if (!navigateTo(graph[0], route)) {
-            let navigator = navigatorFromRouteGraph(graph[0]);
-            navigator.closeMenu();
-            navigator.push(route.moduleName, route.props);
-          }
+        }
+        if (!this.navigateTo(graph[0], route)) {
+          let navigator = this.navigatorFromRouteGraph(graph[0]);
+          navigator.closeMenu();
+          navigator.push(route.moduleName, route.props);
         }
       } catch (error) {
         console.warn(error);

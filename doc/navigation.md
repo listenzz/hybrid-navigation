@@ -4,7 +4,7 @@
 
 ## Navigator
 
-Navigator 是一个类，它的实例方法大都为导航服务。它还有一些静态方法。
+Navigator 是一个主管导航的类，它有一些静态（类）方法：
 
 - setRoot
 
@@ -215,6 +215,8 @@ const navigator = Navigator.get(sceneId);
 ```
 
 `Navigator.routeGraph` 帮助我们获得整张路由图，它是实现 DeepLink 的基础。本库已经提供了 DeepLink 的默认实现。
+
+下面，我们开始介绍实例方法：
 
 ## screen
 
