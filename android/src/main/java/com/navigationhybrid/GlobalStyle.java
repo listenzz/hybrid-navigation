@@ -149,7 +149,6 @@ public class GlobalStyle {
             String uri = backIcon.getString("uri");
             if (uri != null) {
                 Drawable drawable = DrawableUtils.fromUri(context, uri);
-                //drawable.setColorFilter(style.getToolbarTintColor(), PorterDuff.Mode.SRC_ATOP);
                 style.setBackIcon(drawable);
             }
         }
