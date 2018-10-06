@@ -23,7 +23,7 @@ public class SplashActivity extends AppCompatActivity {
                 public void run() {
                     startMainActivity();
                 }
-            }, 500);
+            }, 1500);
         } else {
             ReactBridgeManager.get().addReactModuleRegisterListener(new ReactBridgeManager.ReactModuleRegisterListener() {
                 @Override

@@ -149,7 +149,7 @@ Navigator.setRootLayoutUpdateListener(
 );
 
 // 设置 UI 层级
-Navigator.setRoot(drawer, true);
+Navigator.setRoot(drawer);
 
 // 设置导航拦截器
 Navigator.setInterceptor((action, from, to, extras) => {
