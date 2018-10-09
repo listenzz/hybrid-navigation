@@ -6,6 +6,11 @@ const gradles = [vectorIconsBuildGradle, hud];
 
 gradles.forEach(gradle => {
   fs.readFile(gradle, 'utf8', function(err, data) {
+    if (err) {
+      console.warn(err);
+      return;
+    }
+
     let str = data.replace(/^(\s+compileSdkVersion).*$/gm, '$1 rootProject.ext.compileSdkVersion');
     str = str.replace(/^(\s+buildToolsVersion).*$/gm, '$1 rootProject.ext.buildToolsVersion');
     str = str.replace(/^(\s+targetSdkVersion).*$/gm, '$1 rootProject.ext.targetSdkVersion');
@@ -26,7 +31,7 @@ gradles.forEach(gradle => {
       /classpath\s+'com\.android\.tools\.build:gradle:.+['""]/gm,
       `classpath 'com.android.tools.build:gradle:3.1.4'`
     );
-    if (str.search('google()') === -1) {
+    if (str.search('google\\(\\)') === -1) {
       str = str.replace(/(.+)jcenter\(\)/gm, '$1jcenter()\n$1google()');
     }
     fs.outputFile(gradle, str);

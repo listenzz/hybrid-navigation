@@ -2,7 +2,7 @@
 
 Navigation Hybrid 使用的构建版本是 28.0.1 ，你的项目可能使用了更高的版本，你也可能使用了 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 这样的库，它的构建版本是 26.0.1 ，我们需要用脚本把这些库的构建版本统一起来，否则编译项目时可能会出错。
 
-回到 RN 项目的根目录，创建一个叫 scripts 的文件夹，在里面创建一个叫 fix-build-version.js 的文件
+回到 RN 项目的根目录，创建一个叫 scripts 的文件夹，在里面创建一个叫 sync-build-version.js 的文件
 
 ```javascript
 const fs = require('fs-extra');
@@ -22,6 +22,11 @@ const gradles = [
 
 gradles.forEach(gradle => {
   fs.readFile(gradle, 'utf8', function(err, data) {
+    if (err) {
+      console.warn(err);
+      return;
+    }
+
     let str = data.replace(/^(\s+compileSdkVersion).*$/gm, '$1 rootProject.ext.compileSdkVersion');
     str = str.replace(/^(\s+buildToolsVersion).*$/gm, '$1 rootProject.ext.buildToolsVersion');
     str = str.replace(/^(\s+targetSdkVersion).*$/gm, '$1 rootProject.ext.targetSdkVersion');
@@ -42,7 +47,7 @@ gradles.forEach(gradle => {
       /classpath\s+'com\.android\.tools\.build:gradle:.+['""]/gm,
       `classpath 'com.android.tools.build:gradle:3.1.4'`
     );
-    if (str.search('google()') === -1) {
+    if (str.search('google\\(\\)') === -1) {
       str = str.replace(/(.+)jcenter\(\)/gm, '$1jcenter()\n$1google()');
     }
     fs.outputFile(gradle, str);
@@ -55,8 +60,8 @@ gradles.forEach(gradle => {
 ```diff
 "scripts": {
 "start": "react-native start",
-+   "fbv": "node scripts/fix-build-version.js",
-+   "postinstall": "npm run fbv"
++   "sbv": "node scripts/sync-build-version.js",
++   "postinstall": "npm run sbv"
 }
 ```
 
