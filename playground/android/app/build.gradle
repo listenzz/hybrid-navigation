@@ -4,6 +4,7 @@ project.ext.react = [
         root     : "../../../",
         entryFile: "playground/index.js",
         bundleInRelease       : true,
+        bundleInDebug       : true,
 ]
 
 // Android studio bug hack

@@ -12,6 +12,10 @@ import {
 import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid';
 
 export default class ReactModal extends React.Component {
+  static navigationItem = {
+    navigationBarColorAndroid: '#FFFFFF',
+  };
+
   constructor(props) {
     super(props);
     this.hideModal = this.hideModal.bind(this);

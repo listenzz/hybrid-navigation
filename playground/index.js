@@ -28,9 +28,9 @@ import StatusBarHidden from './src/StatusBarHidden';
 
 // 设置全局样式
 Garden.setStyle({
+  screenBackgroundColor: '#F8F8F8',
   topBarStyle: 'dark-content',
   titleTextSize: 17,
-  // statusBarColor: '#0000FF',
   topBarColor: '#FFFFFF',
 
   swipeBackEnabledAndroid: true,

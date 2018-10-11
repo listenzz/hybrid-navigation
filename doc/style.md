@@ -192,6 +192,7 @@ class Screen extends Component {
     topBarHidden: true, // 是否隐藏当前页面 topBar
     statusBarHidden: true, // 是否隐藏当前页面的状态栏，对 iPhoneX 无效
     statusBarColor: String, // 状态栏颜色，仅对 Android 生效
+    navigationBarColorAndroid: String, // Android 导航栏颜色，通常不需要设置
     backButtonHidden: true, // 当前页面是否隐藏返回按钮
     backInteractive: true, // 当前页面是否可以通过右滑或返回键返回
     swipeBackEnabled: true, // 当前页面是否可以通过右滑返回。如果 `backInteractive` 设置为 false, 那么该值无效。Android 下，只有开启了侧滑返回功能，该值才会生效。

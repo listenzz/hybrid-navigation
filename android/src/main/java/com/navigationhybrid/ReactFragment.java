@@ -3,6 +3,7 @@ package com.navigationhybrid;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 
+import me.listenzz.navigation.AnimationType;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.PresentAnimation;
 
@@ -191,6 +193,11 @@ public class ReactFragment extends HybridFragment {
         if (getActivity() != null) {
             getActivity().supportStartPostponedEnterTransition();
         }
+    }
+
+    @Override
+    protected Integer preferredNavigationBarColor() {
+        return getGarden().navigationBarColor;
     }
 
     @Override

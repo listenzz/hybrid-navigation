@@ -74,7 +74,9 @@ public class ReactTabBarFragment extends TabBarFragment {
         TabBar tabBar = getTabBar();
         if (readableMap.hasKey("tabBarColor")) {
             String tabBarColor = readableMap.getString("tabBarColor");
+            style.setTabBarBackgroundColor(tabBarColor);
             tabBar.setTabBarBackgroundColor(tabBarColor);
+            setNeedsNavigationBarAppearanceUpdate();
         }
 
         if (readableMap.hasKey("tabBarItemColor") && readableMap.hasKey("tabBarUnselectedItemColor")) {

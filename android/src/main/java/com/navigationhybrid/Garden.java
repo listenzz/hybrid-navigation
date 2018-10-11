@@ -69,6 +69,8 @@ public class Garden {
 
     boolean extendedLayoutIncludesTopBar;
 
+    Integer navigationBarColor;
+
     Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
@@ -85,6 +87,11 @@ public class Garden {
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush");
         this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
+
+        String navigationBarColor = options.getString("navigationBarColorAndroid");
+        if (!TextUtils.isEmpty(navigationBarColor)) {
+            this.navigationBarColor = Color.parseColor(navigationBarColor);
+        }
 
         String screenColor = options.getString("screenBackgroundColor");
         if (!TextUtils.isEmpty(screenColor)) {
