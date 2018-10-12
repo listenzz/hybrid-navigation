@@ -38,7 +38,7 @@
     "react-test-renderer": "16.5.0",
     "react": "16.5.0",
     "react-native": "0.57.1",
-    "react-native-hud-hybrid": "0.15.0",
+    "react-native-hud-hybrid": "0.18.0",
     "react-native-iphone-x-helper": "^1.0.2",
     "react-native-keyboard-aware-scroll-view": "0.4.1",
     "react-native-vector-icons": "^4.4.3",
