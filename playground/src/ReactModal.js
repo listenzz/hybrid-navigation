@@ -106,9 +106,9 @@ export default class ReactModal extends React.Component {
           useNativeDriver
           style={[styles.bottomModal, { opacity: 1, transform: [{ translateY: this.state.anim }] }]}
         >
-          <View onLayout={this.handleLayout}>
+          <View onLayout={this.handleLayout} style={{ backgroundColor: '#F3F3F3' }}>
             {this.state.actionSheets.map(({ text, onPress }, index) => {
-              let isLast = index === this.state.actionSheets.length - 1;
+              const isLast = index === this.state.actionSheets.length - 1;
               return (
                 <View key={text} style={!isLast && styles.divider}>
                   {this.renderItem(text, onPress)}
@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     margin: 0,
-    //backgroundColor: '#00000000',
   },
   item: {
     height: 50,
@@ -137,13 +136,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   divider: {
-    borderStyle: 'solid',
-    borderBottomWidth: 0.6,
-    borderBottomColor: '#DDD',
+    marginBottom: 1,
   },
   itemCancel: {
-    paddingTop: 10,
-    backgroundColor: '#F3F3F5',
+    marginTop: 10,
+    backgroundColor: '#FFFFFF',
   },
   itemText: {
     fontSize: 18,

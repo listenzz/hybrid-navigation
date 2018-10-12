@@ -44,11 +44,11 @@ Garden.setStyle({
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
   // hideBackTitle: true,
-  elevation: 2,
+  elevation: 1,
 
   tabBarColor: '#FFFFFF',
   tabBarShadowImage: {
-    color: '#DDDDDD',
+    color: '#F0F0F0',
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
   //tabBarItemColor: '#CCCCCC',
