@@ -96,7 +96,7 @@ public class ReactFragment extends HybridFragment {
     }
 
     private void sendViewAppearEvent(boolean appear) {
-        if (getReactBridgeManager().isReactModuleRegisterCompleted() && this.appear != appear) {
+        if ((isResumed() || isRemoving()) && getReactBridgeManager().isReactModuleRegisterCompleted() && this.appear != appear) {
             this.appear = appear;
             Bundle bundle = new Bundle();
             bundle.putString(Constants.ARG_SCENE_ID, getSceneId());
