@@ -92,7 +92,19 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.9.0`
+最新版本: `0.9.1`
+
+### 0.9.1 - 2018/10/14
+
+navigationItem 添加 `navigationBarColorAndroid` 可配置项，用于修改虚拟键的背景颜色，对 Andriod 26 以上版本生效。默认规则如下：
+
+- 含「底部 Tab」的页面，虚拟键设置为「底部 Tab」的颜色
+
+- 不含「底部 Tab」的页面，默认使用页面背景颜色，也就是 `screenBackgroundColor`
+
+- modal 默认是透明色
+
+某些页面，比如从底部往上滑的 modal, 需要开发者使用 `navigationBarColorAndroid` 自行适配，请参考 playground/src/ReactModal.js 这个文件
 
 ### 0.9.0 - 2018/10/7
 
