@@ -1,5 +1,6 @@
 package com.navigationhybrid;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -59,6 +60,14 @@ public class HybridFragment extends AwesomeFragment {
     @Override
     protected boolean hidesBottomBarWhenPushed() {
         return garden.hidesBottomBarWhenPushed;
+    }
+
+    @Override
+    protected int preferredStatusBarColor() {
+        if (garden.toolbarHidden && super.preferredStatusBarColor() == preferredToolbarColor()) {
+            return Color.TRANSPARENT;
+        }
+        return super.preferredStatusBarColor();
     }
 
     @Override
