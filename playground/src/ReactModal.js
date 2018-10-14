@@ -8,6 +8,7 @@ import {
   Animated,
   Easing,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid';
 
@@ -120,6 +121,7 @@ export default class ReactModal extends React.Component {
               );
             })}
             <View style={styles.itemCancel}>{this.renderItem('Cancel', this.handleCancel)}</View>
+            <SafeAreaView></SafeAreaView>
           </View>
         </Animated.View>
       </TouchableWithoutFeedback>
@@ -147,6 +149,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   itemText: {
+
     fontSize: 18,
     color: '#212121',
   },
