@@ -291,6 +291,18 @@ this.props.navigator.setParams({});
 
 hideTabBarWhenPush 表示当 stack 嵌套在 tabs 的时候，push 到另一个页面时是否隐藏 TabBar。
 
+- navigationBarColorAndroid
+
+用于修改虚拟键的背景颜色，对 Andriod 26 以上版本生效。默认规则如下：
+
+- 含「底部 Tab」的页面，虚拟键设置为「底部 Tab」的颜色
+
+- 不含「底部 Tab」的页面，默认使用页面背景颜色，也就是 screenBackgroundColor
+
+- modal 默认是透明色
+
+某些页面，比如从底部往上滑的 modal, 需要开发者使用 navigationBarColorAndroid 自行适配，请参考 playground/src/ReactModal.js 这个文件
+
 ## 动态配置页面
 
 有时，需要根据业务状态来动态改变导航栏中的项目。比如 rightBarButtonItem 是否可以点击，就是个很好的例子。
