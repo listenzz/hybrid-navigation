@@ -29,6 +29,7 @@ extern const NSInteger ResultCancel;
 @property(nonatomic, strong, readonly) RCTBridge *bridge;
 @property(nonatomic, weak) id<HBDReactBridgeManagerDelegate> delegate;
 @property(nonatomic, assign, readonly, getter=isReactModuleRegisterCompleted) BOOL reactModuleRegisterCompleted;
+@property(nonatomic, assign) BOOL hasRootLayout;
 
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions;
 

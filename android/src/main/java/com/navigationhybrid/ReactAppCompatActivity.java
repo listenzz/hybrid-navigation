@@ -83,7 +83,9 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     public void setActivityRootFragment(@NonNull AwesomeFragment rootFragment) {
         super.setActivityRootFragment(rootFragment);
         ReactBridgeManager bridgeManager = getReactBridgeManager();
-        bridgeManager.sendEvent(Constants.ON_ROOT_SET);
+        if (bridgeManager.hasRootLayout()) {
+            bridgeManager.sendEvent(Constants.ON_ROOT_SET);
+        }
     }
 
     private void createMainComponent() {

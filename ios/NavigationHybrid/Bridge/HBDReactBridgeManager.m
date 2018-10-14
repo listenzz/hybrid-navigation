@@ -227,8 +227,10 @@ const NSInteger ResultCancel = 0;
 - (void)performSetRootViewController:(UIViewController *)rootViewController {
     UIWindow *keyWindow = RCTKeyWindow();
     keyWindow.rootViewController = rootViewController;
-    RCTEventEmitter *emitter = [self.bridge moduleForName:@"NavigationHybrid"];
-    [emitter sendEventWithName:@"ON_ROOT_SET" body:nil];
+    if (self.hasRootLayout) {
+        RCTEventEmitter *emitter = [self.bridge moduleForName:@"NavigationHybrid"];
+        [emitter sendEventWithName:@"ON_ROOT_SET" body:nil];
+    }
 }
 
 - (HBDViewController *)primaryViewController {

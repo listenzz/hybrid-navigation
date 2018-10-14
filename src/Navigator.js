@@ -5,6 +5,7 @@ import store from './store';
 let intercept;
 let willSetRootCallback;
 let didSetRootEventSubscription;
+let didSetRootCallback;
 
 export default class Navigator {
   static RESULT_OK = NavigationModule.RESULT_OK;
@@ -31,18 +32,24 @@ export default class Navigator {
     if (willSetRootCallback) {
       willSetRootCallback();
     }
+
+    if (didSetRootEventSubscription) {
+      didSetRootEventSubscription.remove();
+    }
+    
+    didSetRootEventSubscription = EventEmitter.addListener('ON_ROOT_SET', event => {
+      if (didSetRootCallback) {
+        didSetRootCallback();
+      }
+    });
+
     const pureLayout = bindBarButtonItemClickEvent(layout, { inLayout: true });
     NavigationModule.setRoot(pureLayout, sticky);
   }
 
   static setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {}) {
-    if (didSetRootEventSubscription) {
-      didSetRootEventSubscription.remove();
-    }
     willSetRootCallback = willSetRoot;
-    didSetRootEventSubscription = EventEmitter.addListener('ON_ROOT_SET', event => {
-      didSetRoot();
-    });
+    didSetRootCallback = didSetRoot;
   }
 
   static dispatch(sceneId, action, extras = {}) {

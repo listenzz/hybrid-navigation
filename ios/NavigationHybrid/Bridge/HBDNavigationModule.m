@@ -64,6 +64,7 @@ RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
 RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky) {
     UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
     if (vc) {
+        [HBDReactBridgeManager sharedInstance].hasRootLayout = YES;
         [[HBDReactBridgeManager sharedInstance] setRootViewController:vc];
     }
 }
