@@ -19,7 +19,7 @@ public interface Navigator {
     String MODE_PRESENT = "present";
 
     class Util {
-        static String getMode(@NonNull AwesomeFragment fragment) {
+        public static String getMode(@NonNull AwesomeFragment fragment) {
             if (fragment.isInDialog()) {
                 return MODE_MODAL;
             } else if (fragment.getPresentingFragment() != null) {
