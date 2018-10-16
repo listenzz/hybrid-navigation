@@ -91,6 +91,8 @@ public class Garden {
         String navigationBarColor = options.getString("navigationBarColorAndroid");
         if (!TextUtils.isEmpty(navigationBarColor)) {
             this.navigationBarColor = Color.parseColor(navigationBarColor);
+        } else {
+            this.navigationBarColor = style.getNavigationBarColor();
         }
 
         String screenColor = options.getString("screenBackgroundColor");

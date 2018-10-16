@@ -82,6 +82,14 @@ public class GlobalStyle {
             style.setStatusBarColor(style.getToolbarBackgroundColor());
         }
 
+        // navigationBarColor
+        String navigationBarColor = options.getString("navigationBarColorAndroid");
+        if (navigationBarColor != null) {
+            style.setNavigationBarColor(Color.parseColor(navigationBarColor));
+        } else {
+            style.setNavigationBarColor(null);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // elevation
             double elevation = options.getDouble("elevation", -1);

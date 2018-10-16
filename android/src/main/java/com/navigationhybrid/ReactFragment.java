@@ -197,6 +197,11 @@ public class ReactFragment extends HybridFragment {
 
     @Override
     protected Integer preferredNavigationBarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (getShowsDialog() && getAnimationType() == AnimationType.Slide) {
+                return requireActivity().getWindow().getNavigationBarColor();
+            }
+        }
         return getGarden().navigationBarColor;
     }
 
