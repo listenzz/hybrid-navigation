@@ -29,7 +29,7 @@ gradles.forEach(gradle => {
     str = str.replace(/\scompile\s/gm, ' implementation ');
     str = str.replace(
       /classpath\s+'com\.android\.tools\.build:gradle:.+['""]/gm,
-      `classpath 'com.android.tools.build:gradle:3.1.4'`
+      `classpath 'com.android.tools.build:gradle:3.2.1'`
     );
     if (str.search('google\\(\\)') === -1) {
       str = str.replace(/(.+)jcenter\(\)/gm, '$1jcenter()\n$1google()');
