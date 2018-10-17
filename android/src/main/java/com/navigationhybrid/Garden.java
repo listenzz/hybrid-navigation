@@ -69,8 +69,6 @@ public class Garden {
 
     boolean extendedLayoutIncludesTopBar;
 
-    Integer navigationBarColor;
-
     Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
@@ -88,13 +86,6 @@ public class Garden {
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush");
         this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
 
-        String navigationBarColor = options.getString("navigationBarColorAndroid");
-        if (!TextUtils.isEmpty(navigationBarColor)) {
-            this.navigationBarColor = Color.parseColor(navigationBarColor);
-        } else {
-            this.navigationBarColor = style.getNavigationBarColor();
-        }
-
         String screenColor = options.getString("screenBackgroundColor");
         if (!TextUtils.isEmpty(screenColor)) {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));
@@ -107,6 +98,11 @@ public class Garden {
 
         boolean statusBarHidden = options.getBoolean("statusBarHidden");
         style.setStatusBarHidden(statusBarHidden);
+
+        String navigationBarColor = options.getString("navigationBarColorAndroid");
+        if (!TextUtils.isEmpty(navigationBarColor)) {
+            style.setNavigationBarColor(Color.parseColor(navigationBarColor));
+        }
 
         applyToolbarOptions(options);
     }
@@ -207,7 +203,7 @@ public class Garden {
 
     void setPassThroughTouches(boolean passThroughTouches) {
         View view = fragment.getView();
-        if (view != null && view instanceof BubbleTouchEventReactRootView) {
+        if (view instanceof BubbleTouchEventReactRootView) {
             ((BubbleTouchEventReactRootView) view).setShouldConsumeTouchEvent(!passThroughTouches);
         }
     }
