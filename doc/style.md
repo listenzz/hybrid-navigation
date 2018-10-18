@@ -48,6 +48,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
   topBarStyle: String; // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
   topBarColor: String; // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
   statusBarColor: String; // 状态栏背景色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
+  navigationBarColorAndroid: String; // 导航栏背景颜色，仅对 Android 8.0 以上版本生效
   hideBackTitle: Bool; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
   elevation: Number; // 导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
   shadowImage: Object; // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
@@ -167,6 +168,18 @@ Garden.setStyle({
 UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只有设置了 tabBarColor 才会生效。
 
 配置方式请参考 `shadowImage`
+
+- navigationBarColorAndroid
+
+  用于修改虚拟键的背景颜色，对 Andriod 8.0 以上版本生效。默认规则如下：
+
+  - 含「底部 Tab」的页面，虚拟键设置为「底部 Tab」的颜色
+
+  - 不含「底部 Tab」的页面，默认使用页面背景颜色，也就是 screenBackgroundColor
+
+  - modal 默认是透明色
+
+  一旦全局设置了 navigationBarColorAndroid，默认规则就会失效。
 
 <a name="static-options"></a>
 
@@ -293,7 +306,7 @@ hideTabBarWhenPush 表示当 stack 嵌套在 tabs 的时候，push 到另一个�
 
 - navigationBarColorAndroid
 
-  用于修改虚拟键的背景颜色，对 Andriod 26 以上版本生效。默认规则如下：
+  用于修改虚拟键的背景颜色，对 Andriod 8.0 以上版本生效。默认规则如下：
 
   - 含「底部 Tab」的页面，虚拟键设置为「底部 Tab」的颜色
 
