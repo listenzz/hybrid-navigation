@@ -96,7 +96,7 @@ npm run run:ios
 
 ### 0.9.1 - 2018/10/14
 
-navigationItem 添加 `navigationBarColorAndroid` 可配置项，用于修改虚拟键的背景颜色，对 Andriod 26 以上版本生效。默认规则如下：
+navigationItem 添加 `navigationBarColorAndroid` 可配置项，用于修改虚拟键的背景颜色，对 Andriod 8.0 以上版本生效。默认规则如下：
 
 - 含「底部 Tab」的页面，虚拟键设置为「底部 Tab」的颜色
 

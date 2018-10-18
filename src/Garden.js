@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 const GardenModule = NativeModules.GardenHybrid;
 import { bindBarButtonItemClickEvent } from './utils';
 
@@ -21,7 +21,14 @@ export default class Garden {
   // --------------- instance method --------------
 
   setStatusBarColor(item) {
-    GardenModule.setStatusBarColor(this.sceneId, item);
+    this.setStatusBarColorAndroid(item);
+    console.warn(`setStatusBarColor 已经弃用，请使用 setStatusBarColorAndroid`);
+  }
+
+  setStatusBarColorAndroid(item) {
+    if (Platform.OS === 'android') {
+      GardenModule.setStatusBarColor(this.sceneId, item);
+    }
   }
 
   setStatusBarHidden(hidden = true) {

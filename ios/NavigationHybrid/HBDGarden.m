@@ -70,7 +70,10 @@ static GlobalStyle *globalStyle;
 - (HBDBarButtonItem *)createBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     HBDBarButtonItem *barButtonItem;
     
-    NSDictionary *insetsOption = item[@"insets"];
+    NSDictionary *insetsOption = item[@"insetsIOS"];
+    if (!insetsOption) {
+        insetsOption = item[@"insets"];
+    }
     UIEdgeInsets insets = UIEdgeInsetsZero;
     if (insetsOption) {
         insets =  [RCTConvert UIEdgeInsets:insetsOption];

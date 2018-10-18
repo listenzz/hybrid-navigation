@@ -47,16 +47,16 @@ setStyle 接受一个对象为参数，可配置字段如下：
   screenBackgroundColor: String; // 页面背景，默认是白色
   topBarStyle: String; // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
   topBarColor: String; // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
-  statusBarColor: String; // 状态栏背景色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
-  navigationBarColorAndroid: String; // 导航栏背景颜色，仅对 Android 8.0 以上版本生效
-  hideBackTitle: Bool; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-  elevation: Number; // 导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
+  statusBarColorAndroid: String; // 状态栏背景色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
+  navigationBarColorAndroid: String; // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
+  hideBackTitleIOS: Bool; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
+  elevationAndroid: Number; // 导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
   shadowImage: Object; // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
   backIcon: Object; // 返回按钮图片
   topBarTintColor: String; // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
   titleTextColor: String; // 顶部导航栏标题颜色，默认根据 topBarStyle 来计算
   titleTextSize: Int; // 顶部导航栏标题字体大小，默认是 17 dp(pt)
-  titleAlignment: String; // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left，仅对 Android 生效
+  titleAlignmentAndroid: String; // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left，仅对 Android 生效
   barButtonItemTextSize: Int; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
   swipeBackEnabledAndroid: Bool; // Android 是否开启右滑返回，默认是 false
 
@@ -64,7 +64,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
   tabBarShadowImage: Object; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
   tabBarItemColor: String; // 当 `tabBarSelectedItemColor` 未设置时，此值为选中效果，否则为未选中效果
   tabBarSelectedItemColor: String; // 底部 TabBarItem icon 选中效果
-  badgeColor: Stringg; // Badge 以及小红点的颜色
+  badgeColor: String; // Badge 以及小红点的颜色
 }
 ```
 
@@ -204,8 +204,8 @@ class Screen extends Component {
     topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
     topBarHidden: true, // 是否隐藏当前页面 topBar
     statusBarHidden: true, // 是否隐藏当前页面的状态栏，对 iPhoneX 无效
-    statusBarColor: String, // 状态栏颜色，仅对 Android 生效
-    navigationBarColorAndroid: String, // Android 导航栏颜色，通常不需要设置
+    statusBarColorAndroid: String, // 状态栏颜色，仅对 Android 生效
+    navigationBarColorAndroid: String, // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
     backButtonHidden: true, // 当前页面是否隐藏返回按钮
     backInteractive: true, // 当前页面是否可以通过右滑或返回键返回
     swipeBackEnabled: true, // 当前页面是否可以通过右滑返回。如果 `backInteractive` 设置为 false, 那么该值无效。Android 下，只有开启了侧滑返回功能，该值才会生效。
@@ -226,7 +226,7 @@ class Screen extends Component {
       // icon 图片
       icon: Image.resolveAssetSource(require('./ic_settings.png')),
       // 图片位置调整，仅对 iOS 生效
-      insets: { top: -1, left: -8, bottom: 0, right: 0 },
+      insetsIOS: { top: -1, left: -8, bottom: 0, right: 0 },
       // 按钮点击事件处理
       action: navigator => {
         navigator.toggleMenu();
@@ -234,8 +234,8 @@ class Screen extends Component {
       // 按钮是否可以点击
       enabled: true,
       // 按钮颜色
-      tintColor: '#FFFF00',
-      renderOriginal: true, // 是否保留图片原来的颜色
+      tintColor: '#FFFF00', // 默认取 topBarTintColor 的值
+      renderOriginal: true, // 是否保留图片原来的颜色，默认为 false，如果该值为 true，tintColor 将失效
     },
 
     rightBarButtonItem: {
@@ -262,7 +262,7 @@ class Screen extends Component {
     ],
 
     // 返回按钮文字和颜色，仅对 iOS 生效
-    backItem: {
+    backItemIOS: {
       title: 'Back',
       tintColor: '#000000', // 仅对 iOS 11.0 以上生效
     },
@@ -369,12 +369,12 @@ this.props.navigator.push(
 
 Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
 
-- setStatusBarColor
+- setStatusBarColorAndroid
 
 动态更改状态栏背景颜色，仅对 Android 生效
 
 ```javascript
-this.props.garden.setStatusBarColor({ statusBarColor: '#FF0000' });
+this.props.garden.setStatusBarColorAndroid({ statusBarColor: '#FF0000' });
 ```
 
 - setStatusBarHidden
@@ -418,7 +418,7 @@ this.props.garden.setTitleItem({
 ```javascript
 this.props.garden.setLeftBarButtonItem({
   title: 'Cancel',
-  insets: { top: -1, left: -8, bottom: 0, right: 8 },
+  insetsIOS: { top: -1, left: -8, bottom: 0, right: 8 },
   action: navigator => {
     navigator.dismiss();
   },

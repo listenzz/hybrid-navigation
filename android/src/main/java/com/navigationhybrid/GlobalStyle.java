@@ -75,7 +75,10 @@ public class GlobalStyle {
         }
 
         // statusBarColor
-        String statusBarColor = options.getString("statusBarColor");
+        String statusBarColor = options.getString("statusBarColorAndroid");
+        if (statusBarColor== null) {
+            statusBarColor = options.getString("statusBarColor");
+        }
         if (statusBarColor != null) {
             style.setStatusBarColor(Color.parseColor(statusBarColor));
         } else {
@@ -92,7 +95,10 @@ public class GlobalStyle {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // elevation
-            double elevation = options.getDouble("elevation", -1);
+            double elevation = options.getDouble("elevationAndroid", -1);
+            if (elevation == -1) {
+                elevation = options.getDouble("elevation", -1);
+            }
             if (elevation != -1) {
                 style.setElevation((int)elevation);
             }
@@ -138,7 +144,10 @@ public class GlobalStyle {
         }
 
         // titleAlignment
-        String titleAlignment = options.getString("titleAlignment");
+        String titleAlignment = options.getString("titleAlignmentAndroid");
+        if (titleAlignment == null) {
+            titleAlignment = options.getString("titleAlignment");
+        }
         if (titleAlignment != null) {
             style.setTitleGravity(titleAlignment.equals("center") ? Gravity.CENTER : Gravity.START);
         } else {

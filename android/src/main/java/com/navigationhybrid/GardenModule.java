@@ -168,8 +168,13 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     Bundle options = fragment.getOptions();
-                    if (readableMap.hasKey("statusBarColor")) {
-                        String statusBarColor = readableMap.getString("statusBarColor");
+                    String statusBarColor = null;
+                    if (readableMap.hasKey("statusBarColorAndroid")) {
+                        statusBarColor = readableMap.getString("statusBarColorAndroid");
+                    } else if (readableMap.hasKey("statusBarColor")) {
+                        statusBarColor = readableMap.getString("statusBarColor");
+                    }
+                    if (statusBarColor != null) {
                         options.putString("statusBarColor", statusBarColor);
                         fragment.getGarden().setStatusBarColor(Color.parseColor(statusBarColor));
                     }
@@ -337,7 +342,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         if (activity instanceof ReactAppCompatActivity) {
             ReactAppCompatActivity reactActivity = (ReactAppCompatActivity) activity;
             FragmentManager fragmentManager = reactActivity.getSupportFragmentManager();
-            return (AwesomeFragment)FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
+            return (AwesomeFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
         }
         return null;
     }

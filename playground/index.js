@@ -37,14 +37,14 @@ Garden.setStyle({
   topBarTintColor: '#000000',
   // badgeColor: '#00FFFF',
   // titleTextColor: '#00ff00',
-  titleAlignment: 'center',
+  titleAlignmentAndroid: 'center',
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
   shadowImage: {
     color: '#DDDDDD',
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
-  // hideBackTitle: true,
-  elevation: 1,
+  // hideBackTitleIOS: true,
+  elevationAndroid: 1,
 
   tabBarColor: '#FFFFFF',
   tabBarShadowImage: {

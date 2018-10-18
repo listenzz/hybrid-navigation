@@ -91,7 +91,10 @@ public class Garden {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));
         }
 
-        String statusBarColor = options.getString("statusBarColor");
+        String statusBarColor = options.getString("statusBarColorAndroid");
+        if (statusBarColor == null) {
+            options.getString("statusBarColor");
+        }
         if (!TextUtils.isEmpty(statusBarColor)) {
             style.setStatusBarColor(Color.parseColor(statusBarColor));
         }

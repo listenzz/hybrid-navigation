@@ -71,7 +71,10 @@
         }
 
         // hideBackTitle
-        NSNumber *hideBackTitle = options[@"hideBackTitle"];
+        NSNumber *hideBackTitle = options[@"hideBackTitleIOS"];
+        if (!hideBackTitle) {
+            hideBackTitle = options[@"hideBackTitle"];
+        }
         if (hideBackTitle) {
             _backTitleHidden = [hideBackTitle boolValue];
         }

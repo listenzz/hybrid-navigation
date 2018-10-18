@@ -5,7 +5,7 @@ import styles from './Styles';
 
 export default class StatusBarColor extends Component {
   static navigationItem = {
-    statusBarColor: '#0000FF',
+    statusBarColorAndroid: '#0000FF',
     titleItem: {
       title: 'StatusBar Color',
     },
@@ -20,15 +20,15 @@ export default class StatusBarColor extends Component {
   }
 
   red() {
-    this.props.garden.setStatusBarColor({ statusBarColor: '#FF0000' });
+    this.props.garden.setStatusBarColorAndroid({ statusBarColor: '#FF0000' });
   }
 
   green() {
-    this.props.garden.setStatusBarColor({ statusBarColor: '#00FF00' });
+    this.props.garden.setStatusBarColorAndroid({ statusBarColor: '#00FF00' });
   }
 
   blue() {
-    this.props.garden.setStatusBarColor({ statusBarColor: '#0000FF' });
+    this.props.garden.setStatusBarColorAndroid({ statusBarColor: '#0000FF' });
   }
 
   statusBarColor() {

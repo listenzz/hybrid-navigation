@@ -5,7 +5,7 @@ import styles from './Styles';
 
 export default class Transparent extends Component {
   static navigationItem = {
-    screenColor: '#00000000',
+    screenBackgroundColor: '#00000000',
     passThroughTouches: true,
   };
 

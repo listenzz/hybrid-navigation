@@ -85,7 +85,10 @@
         }
     }
     
-    NSDictionary *backItem = self.options[@"backItem"];
+    NSDictionary *backItem = self.options[@"backItemIOS"];
+    if (!backItem) {
+        backItem = self.options[@"backItem"];
+    }
     if (backItem) {
         NSString *title = backItem[@"title"];
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
