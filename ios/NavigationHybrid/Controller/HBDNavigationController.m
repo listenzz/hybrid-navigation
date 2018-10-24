@@ -194,6 +194,12 @@
     }
 }
 
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    // 修复一个神奇的 BUG https://github.com/listenzz/HBDNavigationBar/issues/29
+    self.topViewController.view.frame = self.topViewController.view.frame;
+}
+
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     if (self.poppingViewController && [self.poppingViewController isKindOfClass:[HBDViewController class]]) {
         [viewController didReceiveResultCode:self.poppingViewController.resultCode resultData:self.poppingViewController.resultData requestCode:0];
