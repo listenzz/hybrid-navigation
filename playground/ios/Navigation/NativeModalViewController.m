@@ -7,7 +7,7 @@
 //
 
 #import "NativeModalViewController.h"
-#import <NavigationHybrid/HBDModalViewController.h>
+#import <NavigationHybrid/NavigationHybrid.h>
 
 @interface NativeModalViewController ()
 
@@ -67,15 +67,10 @@
             }
         }];
     };
-    
-    __weak typeof (self) weakSelf = self;
-    modal.willDismissBlock = ^(HBDModalViewController *modalViewController) {
-        [weakSelf.hbd_targetViewController didReceiveResultCode:-1 resultData:@{@"text": @"gretting from native modal.", @"backId": weakSelf.sceneId} requestCode:1];
-    };
-    
 }
 
 - (IBAction)closeModal:(UIButton *)sender {
+    [self setResultCode:ResultOK resultData:@{@"text": @"gretting from native modal.", @"backId": self.sceneId}];
     [self hbd_hideViewControllerAnimated:YES completion:^(BOOL finished) {
         
     }];

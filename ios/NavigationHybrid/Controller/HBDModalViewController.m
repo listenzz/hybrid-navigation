@@ -56,6 +56,7 @@
 
 - (void)dealloc {
     self.modalWindow = nil;
+    NSLog(@"%s", __FUNCTION__);
 }
 
 - (void)viewDidLoad {
@@ -128,6 +129,7 @@
         if (!UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
             self.view.frame = CGRectMake(0, 0, size.width, size.height);
         }
+        [self updateLayout];
     } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         
     }];
@@ -176,10 +178,7 @@
 }
 
 - (void)handleDimmingViewTapGestureRecognizer:(UITapGestureRecognizer *)tapGestureRecognizer {
-    // __weak __typeof(self)weakSelf = self;
-    [self hideWithAnimated:YES completion:^(BOOL finished) {
-        // DO something
-    }];
+    [self.contentViewController hbd_hideViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - ContentView
@@ -413,19 +412,39 @@
 }
 
 - (void)hbd_showViewController:(UIViewController *)vc animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    [self hbd_showViewController:vc requestCode:0 animated:animated completion:completion];
+}
+
+- (void)hbd_showViewController:(UIViewController *)vc requestCode:(NSInteger)requestCode animated:(BOOL)animated completion:(void (^)(BOOL))completion {
     HBDModalViewController *modalViewController = [[HBDModalViewController alloc] init];
     modalViewController.contentViewController = vc;
     self.hbd_popupViewController = vc;
     vc.hbd_targetViewController = self;
+    vc.requestCode = requestCode;
     [modalViewController showWithAnimated:animated completion:completion];
 }
 
 - (void)hbd_hideViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
     if (self.hbd_popupViewController) {
-        [self.hbd_popupViewController.hbd_modalViewController hideWithAnimated:animated completion:completion];
-    } else {
-        [self.hbd_targetViewController hbd_hideViewControllerAnimated:animated completion:completion];
+        [self.hbd_popupViewController hbd_hideViewControllerAnimated:animated completion:completion];
+        return;
     }
+    
+    if (!self.hbd_modalViewController) {
+        UIViewController *parent = self.parentViewController;
+        parent.resultData = self.resultData;
+        parent.resultCode = self.resultCode;
+        [parent hbd_hideViewControllerAnimated:animated completion:completion];
+        return;
+    }
+    
+    [self.hbd_modalViewController hideWithAnimated:animated completion:^(BOOL finished) {
+        if (completion) {
+            completion(finished);
+        }
+        UIViewController *target = self.hbd_targetViewController;
+        [target didReceiveResultCode:self.resultCode resultData:self.resultData requestCode:self.requestCode];
+    }];
 }
 
 @end

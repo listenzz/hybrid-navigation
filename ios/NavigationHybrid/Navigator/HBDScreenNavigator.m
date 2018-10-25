@@ -33,23 +33,26 @@
 }
 
 - (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
+    
+    HBDViewController *screen = nil;
     if ([vc isKindOfClass:[HBDViewController class]]) {
-        HBDViewController *screen = nil;
-        if ([vc isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)vc;
-            screen = (HBDViewController *)modal.contentViewController;
-            [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:screen root:root];
-        } else {
-            screen = (HBDViewController *)vc;
-            [root addObject:@{
-                               @"layout": @"screen",
-                               @"sceneId": screen.sceneId,
-                               @"moduleName": screen.moduleName,
-                               @"mode": [vc hbd_mode],
-                            }];
-        }
+        screen = (HBDViewController *)vc;
+    } else if ([vc isKindOfClass:[HBDModalViewController class]]) {
+        HBDModalViewController *modal = (HBDModalViewController *)vc;
+        screen = (HBDViewController *)modal.contentViewController;
+        [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:screen root:root];
+    }
+    
+    if (screen) {
+        [root addObject:@{
+                          @"layout": @"screen",
+                          @"sceneId": screen.sceneId,
+                          @"moduleName": screen.moduleName,
+                          @"mode": [vc hbd_mode],
+                          }];
         return YES;
     }
+    
     return NO;
 }
 
@@ -87,24 +90,14 @@
         [vc beginAppearanceTransition:NO animated:animated];
         [vc endAppearanceTransition];
         [presenting dismissViewControllerAnimated:animated completion:^{
-            [presenting didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:vc.requestCode];
+            
         }];
     } else if ([action isEqualToString:@"showModal"]) {
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         [target setRequestCode:requestCode];
-        [vc hbd_showViewController:target animated:YES completion:^(BOOL finished) {
-            
-        }];
+        [vc hbd_showViewController:target requestCode:requestCode animated:YES completion:nil];
     } else if ([action isEqualToString:@"hideModal"]) {
-        UIViewController *target = vc.hbd_targetViewController;
-        UIViewController *parent = vc.parentViewController;
-        while (!target && parent) {
-            target = parent.hbd_targetViewController;
-            parent = parent.parentViewController;
-        }
-        [target hbd_hideViewControllerAnimated:YES completion:^(BOOL finished) {
-            [target didReceiveResultCode:vc.resultCode resultData:vc.resultData requestCode:vc.requestCode];
-        }];
+        [vc hbd_hideViewControllerAnimated:YES completion:nil];
     } else if ([action isEqualToString:@"presentLayout"]) {
         NSDictionary *layout = [extras objectForKey:@"layout"];
         UIViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];

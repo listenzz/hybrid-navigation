@@ -31,15 +31,11 @@
 - (void)hbd_setNeedsUpdateNavigationBarColor;
 - (void)hbd_setNeedsUpdateNavigationBarShadowImageAlpha;
 
+@property (nonatomic, assign) NSInteger resultCode;
+@property (nonatomic, assign) NSInteger requestCode;
+@property (nonatomic, copy) NSDictionary *resultData;
+
 - (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data;
-
-- (NSInteger)resultCode;
-
-- (NSDictionary *)resultData;
-
-- (void)setRequestCode:(NSInteger)requestCode;
-
-- (NSInteger)requestCode;
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode;
 

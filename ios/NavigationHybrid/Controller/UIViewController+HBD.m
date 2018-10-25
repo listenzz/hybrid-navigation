@@ -14,6 +14,32 @@
 
 @implementation UIViewController (HBD)
 
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = [self class];
+        hbd_exchangeImplementations(class, @selector(dismissViewControllerAnimated:completion:), @selector(hbd_dismissViewControllerAnimated:completion:));
+    });
+}
+
+
+
+- (void)hbd_dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    UIViewController *presented = self.presentedViewController;
+    UIViewController *presenting = presented.presentingViewController;
+    if (!presented) {
+        presenting = self.presentingViewController;
+        presented = presenting.presentedViewController;
+    }
+    
+    [self hbd_dismissViewControllerAnimated:flag completion:^{
+        if (completion) {
+            completion();
+        }
+        [presenting didReceiveResultCode:presented.resultCode resultData:presented.resultData requestCode:presented.requestCode];
+    }];
+}
+
 - (UIBarStyle)hbd_barStyle {
     id obj = objc_getAssociatedObject(self, _cmd);
     if (obj) {
@@ -170,13 +196,12 @@
     }
 }
 
-- (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data {
-    [self setResultCode:@(resultCode)];
-    [self setResultData:data];
-}
-
-- (void)setResultCode:(NSNumber *)resultCode {
-    objc_setAssociatedObject(self, @selector(resultCode), resultCode, OBJC_ASSOCIATION_COPY_NONATOMIC);
+- (void)setResultCode:(NSInteger)resultCode {
+    UIViewController *presenting = self.presentingViewController;
+    if (presenting) {
+        objc_setAssociatedObject(presenting.presentedViewController, @selector(resultCode),@(resultCode), OBJC_ASSOCIATION_COPY_NONATOMIC);
+    }
+    objc_setAssociatedObject(self, @selector(resultCode),@(resultCode), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (NSInteger)resultCode {
@@ -185,6 +210,10 @@
 }
 
 - (void)setResultData:(NSDictionary *)data {
+    UIViewController *presenting = self.presentingViewController;
+    if (presenting) {
+        objc_setAssociatedObject(presenting.presentedViewController, @selector(resultData), data, OBJC_ASSOCIATION_COPY_NONATOMIC);
+    }
     objc_setAssociatedObject(self, @selector(resultData), data, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
@@ -197,12 +226,13 @@
 }
 
 - (NSInteger)requestCode {
-    UIViewController *parent =  [self parentViewController];
-    if (parent) {
-        return [parent requestCode];
-    }
     NSNumber *code = objc_getAssociatedObject(self, _cmd);
     return [code integerValue];
+}
+
+- (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data {
+    self.resultCode = resultCode;
+    self.resultData = data;
 }
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {

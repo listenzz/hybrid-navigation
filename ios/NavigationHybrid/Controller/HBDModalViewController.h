@@ -16,7 +16,7 @@ typedef NS_ENUM(NSUInteger, HBDModalAnimationStyle) {
 
 @class HBDModalViewController;
 
-@interface HBDModalViewController : HBDViewController
+@interface HBDModalViewController : UIViewController
 
 @property(nonatomic, assign, readonly, getter=isBeingHidden) BOOL beingHidden;
 @property(nonatomic, weak, readonly) UIWindow *previousKeyWindow;
@@ -112,6 +112,8 @@ typedef NS_ENUM(NSUInteger, HBDModalAnimationStyle) {
 /// vc 可以通过 hbd_targetViewController 访问到此方法的调用者。
 /// 此方法的调用者可以通过 hbd_popupViewController 访问到 vc，也就是 HBDModalViewController 的 contentViewController。
 - (void)hbd_showViewController:(UIViewController *)vc animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
+
+- (void)hbd_showViewController:(UIViewController *)vc requestCode:(NSInteger)requestCode animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 
 - (void)hbd_hideViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 

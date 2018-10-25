@@ -70,12 +70,15 @@ export default class ReactModal extends React.Component {
   async hideModal(gender) {
     const graph = await Navigator.routeGraph();
     console.info(graph);
+    console.info('------------------------------------------');
+    const route = await Navigator.currentRoute();
+    console.info(route);
+
     Animated.timing(this.state.anim, {
       toValue: this.height,
       duration: 200,
       easing: Easing.linear,
     }).start(state => {
-      console.log(state);
       this.props.navigator.setResult(RESULT_OK, {
         text: gender || 'Are you male or female?',
         backId: this.props.sceneId,
