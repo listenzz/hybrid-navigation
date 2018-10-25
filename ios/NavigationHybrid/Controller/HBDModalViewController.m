@@ -25,17 +25,9 @@
 
 @property (nonatomic, strong, readwrite) UIView *contentView;
 
-@property(nonatomic, strong) HBDModalWindow *containerWindow;
+@property(nonatomic, strong) HBDModalWindow *modalWindow;
 @property(nonatomic, weak, readwrite) UIWindow *previousKeyWindow;
 @property(nonatomic, strong) UITapGestureRecognizer *dimmingViewTapGestureRecognizer;
-
-@property(nonatomic, assign, readwrite, getter=isVisible) BOOL visible;
-
-@property(nonatomic, assign) BOOL appearAnimated;
-@property(nonatomic, copy) void (^appearCompletionBlock)(BOOL finished);
-
-@property(nonatomic, assign) BOOL disappearAnimated;
-@property(nonatomic, copy) void (^disappearCompletionBlock)(BOOL finished);
 
 @end
 
@@ -63,12 +55,7 @@
 }
 
 - (void)dealloc {
-    self.containerWindow = nil;
-}
-
-- (BOOL)shouldAutomaticallyForwardAppearanceMethods {
-    // 屏蔽对childViewController的生命周期函数的自动调用，改为手动控制
-    return NO;
+    self.modalWindow = nil;
 }
 
 - (void)viewDidLoad {
@@ -112,117 +99,6 @@
     return contentViewFrame;
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    RCTLogInfo(@"modal viewWillAppear");
-    // 只有使用showWithAnimated:completion:显示出来的浮层，才需要修改之前就记住的animated的值
-    animated = self.appearAnimated;
-    
-    if (self.contentViewController) {
-        [self.contentViewController beginAppearanceTransition:YES animated:animated];
-    }
-
-    void (^didShownCompletion)(BOOL finished) = ^(BOOL finished) {
-        if (self.contentViewController) {
-            [self.contentViewController endAppearanceTransition];
-        }
-        
-        self.visible = YES;
-        
-        if (self.appearCompletionBlock) {
-            self.appearCompletionBlock(finished);
-            self.appearCompletionBlock = nil;
-        }
-        
-        self.appearAnimated = NO;
-    };
-    
-    if (animated) {
-        [self.view addSubview:self.contentView];
-        [self.view layoutIfNeeded];
-        CGRect contentViewFrame = [self contentViewFrameForShowing];
-        if (self.showingAnimation) {
-            // 使用自定义的动画
-            if (self.layoutBlock) {
-                self.layoutBlock(self, contentViewFrame);
-                contentViewFrame = self.contentView.frame;
-            }
-            self.showingAnimation(self, contentViewFrame, didShownCompletion);
-        } else {
-            self.contentView.frame = contentViewFrame;
-            [self.contentView setNeedsLayout];
-            [self.contentView layoutIfNeeded];
-            [self showingAnimationWithCompletion:didShownCompletion];
-        }
-    } else {
-        CGRect contentViewFrame = [self contentViewFrameForShowing];
-        self.contentView.frame = contentViewFrame;
-        [self.view addSubview:self.contentView];
-        self.dimmingView.alpha = 1;
-        didShownCompletion(YES);
-    }
-}
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    RCTLogInfo(@"modal viewWillDisappear");
-    animated = self.disappearAnimated;
-    [self.view endEditing:YES];
-
-    if (self.contentViewController) {
-        [self.contentViewController beginAppearanceTransition:NO animated:animated];
-    }
-    
-    void (^didHiddenCompletion)(BOOL finished) = ^(BOOL finished) {
-        if ([[UIApplication sharedApplication] keyWindow] == self.containerWindow) {
-            if (self.previousKeyWindow.hidden) {
-                [[UIApplication sharedApplication].delegate.window makeKeyWindow];
-            } else {
-                [self.previousKeyWindow makeKeyWindow];
-            }
-        }
-        self.containerWindow.hidden = YES;
-        self.containerWindow.rootViewController = nil;
-        self.previousKeyWindow = nil;
-        [self endAppearanceTransition];
-    
-        [self.contentView removeFromSuperview];
-        if (self.contentViewController) {
-            [self.contentViewController endAppearanceTransition];
-        }
-        
-        self.visible = NO;
-        
-        if (self.willDismissBlock) {
-            self.willDismissBlock(self);
-        }
-        
-        if (self.disappearCompletionBlock) {
-            self.disappearCompletionBlock(YES);
-            self.disappearCompletionBlock = nil;
-        }
-        
-        if (self.contentViewController) {
-            self.contentViewController.hbd_targetViewController.hbd_popupViewController = nil;
-            self.contentViewController.hbd_targetViewController = nil;
-            self.contentViewController.hbd_modalViewController = nil;
-            self.contentViewController = nil;
-        }
-        
-        self.disappearAnimated = NO;
-    };
-    
-    if (animated) {
-        if (self.hidingAnimation) {
-            self.hidingAnimation(self, didHiddenCompletion);
-        } else {
-            [self hidingAnimationWithCompletion:didHiddenCompletion];
-        }
-    } else {
-        didHiddenCompletion(YES);
-    }
-}
-
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:)name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
@@ -255,7 +131,6 @@
     } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
         
     }];
-   
 }
 
 #pragma mark - Dimming View
@@ -311,7 +186,11 @@
 
 - (void)setContentViewController:(UIViewController *)contentViewController {
     _contentViewController = contentViewController;
-    _contentViewController.hbd_modalViewController = self;
+    if (contentViewController) {
+        _contentViewController.hbd_modalViewController = self;
+        [self addChildViewController:contentViewController];
+        [contentViewController didMoveToParentViewController:self];
+    }
 }
 
 - (void)setContentView:(UIView *)contentView {
@@ -401,23 +280,99 @@
 - (void)showWithAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
     // makeKeyAndVisible 导致的 viewWillAppear: 必定 animated 是 NO 的，所以这里用额外的变量保存这个 animated 的值
     self.contentView = self.contentViewController.view;
-    self.appearAnimated = animated;
-    self.appearCompletionBlock = completion;
     self.previousKeyWindow = [UIApplication sharedApplication].keyWindow;
-    if (!self.containerWindow) {
-        self.containerWindow = [[HBDModalWindow alloc] init];
-        self.containerWindow.windowLevel = UIWindowLevelAlert - 4.0;;
-        self.containerWindow.backgroundColor = UIColor.clearColor;// 避免横竖屏旋转时出现黑色
+    if (!self.modalWindow) {
+        self.modalWindow = [[HBDModalWindow alloc] init];
+        self.modalWindow.windowLevel = UIWindowLevelAlert - 4.0;;
+        self.modalWindow.backgroundColor = UIColor.clearColor;// 避免横竖屏旋转时出现黑色
     }
-    self.containerWindow.rootViewController = self;
-    [self.containerWindow makeKeyAndVisible];
+    self.modalWindow.rootViewController = self;
+    [self.modalWindow makeKeyAndVisible];
+    
+    void (^didShownCompletion)(BOOL finished) = ^(BOOL finished) {
+        if (completion) {
+            completion(finished);
+        }
+    };
+    
+    if (animated) {
+        [self.view addSubview:self.contentView];
+        [self.view layoutIfNeeded];
+        CGRect contentViewFrame = [self contentViewFrameForShowing];
+        if (self.showingAnimation) {
+            // 使用自定义的动画
+            if (self.layoutBlock) {
+                self.layoutBlock(self, contentViewFrame);
+                contentViewFrame = self.contentView.frame;
+            }
+            self.showingAnimation(self, contentViewFrame, didShownCompletion);
+        } else {
+            self.contentView.frame = contentViewFrame;
+            [self.contentView setNeedsLayout];
+            [self.contentView layoutIfNeeded];
+            [self showingAnimationWithCompletion:didShownCompletion];
+        }
+    } else {
+        CGRect contentViewFrame = [self contentViewFrameForShowing];
+        self.contentView.frame = contentViewFrame;
+        [self.view addSubview:self.contentView];
+        self.dimmingView.alpha = 1;
+        didShownCompletion(YES);
+    }
 }
 
 - (void)hideWithAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
     self.beingHidden = YES;
-    self.disappearAnimated = animated;
-    self.disappearCompletionBlock = completion;
-    [self beginAppearanceTransition:NO animated:animated];
+    [self.view endEditing:YES];
+    
+    if (self.contentViewController) {
+        [self.contentViewController beginAppearanceTransition:NO animated:animated];
+    }
+    
+    void (^didHiddenCompletion)(BOOL finished) = ^(BOOL finished) {
+        
+        if (self.contentViewController) {
+            [self.contentViewController endAppearanceTransition];
+        }
+        
+        if ([[UIApplication sharedApplication] keyWindow] == self.modalWindow) {
+            if (self.previousKeyWindow.hidden) {
+                [[UIApplication sharedApplication].delegate.window makeKeyWindow];
+            } else {
+                [self.previousKeyWindow makeKeyWindow];
+            }
+        }
+        self.modalWindow.hidden = YES;
+        self.modalWindow.rootViewController = nil;
+        self.previousKeyWindow = nil;
+
+        [self.contentView removeFromSuperview];
+
+        if (self.willDismissBlock) {
+            self.willDismissBlock(self);
+        }
+        
+        if (completion) {
+            completion(YES);
+        }
+        
+        if (self.contentViewController) {
+            self.contentViewController.hbd_targetViewController.hbd_popupViewController = nil;
+            self.contentViewController.hbd_targetViewController = nil;
+            self.contentViewController.hbd_modalViewController = nil;
+            self.contentViewController = nil;
+        }
+    };
+    
+    if (animated) {
+        if (self.hidingAnimation) {
+            self.hidingAnimation(self, didHiddenCompletion);
+        } else {
+            [self hidingAnimationWithCompletion:didHiddenCompletion];
+        }
+    } else {
+        didHiddenCompletion(YES);
+    }
 }
 
 @end

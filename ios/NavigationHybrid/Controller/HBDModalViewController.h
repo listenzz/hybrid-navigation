@@ -101,12 +101,16 @@ typedef NS_ENUM(NSUInteger, HBDModalAnimationStyle) {
 
 @interface UIViewController (HBDModalViewController)
 
-@property(nonatomic, strong, readonly) HBDModalViewController *hbd_modalViewController;
+@property(nonatomic, weak, readonly) HBDModalViewController *hbd_modalViewController;
 
 @property(nonatomic, strong, readonly) UIViewController *hbd_targetViewController;
 
-@property(nonatomic, strong, readonly) UIViewController *hbd_popupViewController;
+@property(nonatomic, weak, readonly) UIViewController *hbd_popupViewController;
 
+/// 把参数 vc 作为 contentViewController 包裹在 HBDModalViewController 中进行显示。
+/// vc 可以通过 hbd_modalViewController 访问到包裹它的 HBDModalViewController。
+/// vc 可以通过 hbd_targetViewController 访问到此方法的调用者。
+/// 此方法的调用者可以通过 hbd_popupViewController 访问到 vc，也就是 HBDModalViewController 的 contentViewController。
 - (void)hbd_showViewController:(UIViewController *)vc animated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 
 - (void)hbd_hideViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
