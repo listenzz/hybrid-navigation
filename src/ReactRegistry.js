@@ -34,15 +34,52 @@ export default {
 
     class Screen extends Component {
       static InternalComponent = RealComponent;
-
       events;
 
       constructor(props) {
         super(props);
-        this.navigator = store.getNavigator(props.sceneId) || new Navigator(props.sceneId, appKey);
-        store.addNavigator(props.sceneId, this.navigator);
-        this.garden = new Garden(props.sceneId);
-        this.events = [];
+        if (props.sceneId) {
+          this.navigator =
+            store.getNavigator(props.sceneId) || new Navigator(props.sceneId, appKey);
+          store.addNavigator(props.sceneId, this.navigator);
+          this.garden = new Garden(props.sceneId);
+          this.events = [];
+        }
+      }
+
+      componentDidMount() {
+        // console.debug('componentDidMount    = ' + this.props.sceneId);
+        if (this.props.sceneId) {
+          this.listenComponentResultEvent();
+          this.listenBarButtonItemClickEvent();
+          this.listenComponentResumeEvent();
+          this.listenComponentPauseEvent();
+          this.listenDialogBackPressedEvent();
+          this.navigator.signalFirstRenderComplete();
+        }
+      }
+
+      componentWillUnmount() {
+        // console.debug('componentWillUnmount = ' + this.props.sceneId);
+        if (this.props.sceneId) {
+          store.removeNavigator(this.props.sceneId);
+          removeBarButtonItemClickEvent(this.props.sceneId);
+          this.events.forEach(event => {
+            event.remove();
+          });
+        }
+      }
+
+      render() {
+        return (
+          <RealComponent
+            ref="real"
+            {...this.props}
+            navigation={this.navigator} // 向后兼容
+            navigator={this.navigator}
+            garden={this.garden}
+          />
+        );
       }
 
       listenBarButtonItemClickEvent() {
@@ -94,37 +131,6 @@ export default {
         });
         this.events.push(event);
       }
-
-      componentDidMount() {
-        // console.debug('componentDidMount    = ' + this.props.sceneId);
-        this.listenComponentResultEvent();
-        this.listenBarButtonItemClickEvent();
-        this.listenComponentResumeEvent();
-        this.listenComponentPauseEvent();
-        this.listenDialogBackPressedEvent();
-        this.navigator.signalFirstRenderComplete();
-      }
-
-      componentWillUnmount() {
-        // console.debug('componentWillUnmount = ' + this.props.sceneId);
-        store.removeNavigator(this.props.sceneId);
-        removeBarButtonItemClickEvent(this.props.sceneId);
-        this.events.forEach(event => {
-          event.remove();
-        });
-      }
-
-      render() {
-        return (
-          <RealComponent
-            ref="real"
-            {...this.props}
-            navigation={this.navigator} // 向后兼容
-            navigator={this.navigator}
-            garden={this.garden}
-          />
-        );
-      }
     }
 
     let RootComponent;
@@ -136,7 +142,9 @@ export default {
     }
 
     // build static options
-    let options = bindBarButtonItemClickEvent(RealComponent.navigationItem);
+    let options = RealComponent.navigationItem
+      ? bindBarButtonItemClickEvent(RealComponent.navigationItem)
+      : {};
 
     // console.info('register component:' + appKey + ' options:' + JSON.stringify(options));
 
