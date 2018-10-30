@@ -34,16 +34,14 @@
 
 - (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
     
-    HBDViewController *screen = nil;
-    if ([vc isKindOfClass:[HBDViewController class]]) {
-        screen = (HBDViewController *)vc;
-    } else if ([vc isKindOfClass:[HBDModalViewController class]]) {
+    if ([vc isKindOfClass:[HBDModalViewController class]]) {
         HBDModalViewController *modal = (HBDModalViewController *)vc;
-        screen = (HBDViewController *)modal.contentViewController;
-        [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:screen root:root];
+        [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:modal.contentViewController root:root];
+        return YES;
     }
     
-    if (screen) {
+    if ([vc isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *screen = (HBDViewController *)vc;
         [root addObject:@{
                           @"layout": @"screen",
                           @"sceneId": screen.sceneId,
@@ -52,7 +50,7 @@
                           }];
         return YES;
     }
-    
+
     return NO;
 }
 

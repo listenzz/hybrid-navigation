@@ -66,8 +66,16 @@ const NSInteger ResultCancel = 0;
 
 - (void)handleReload {
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    application.keyWindow.rootViewController = [[UIViewController alloc] init];
-    application.keyWindow.rootViewController.view.backgroundColor = UIColor.whiteColor;
+    for (NSUInteger i = application.windows.count; i > 0; i --) {
+        UIWindow *window = application.windows[i-1];
+        UIViewController *controller = window.rootViewController;
+        if ([controller isKindOfClass:[HBDModalViewController class]]) {
+            window.hidden = YES;
+        }
+    }
+    UIWindow *window = [UIApplication sharedApplication].delegate.window;
+    window.rootViewController = [[UIViewController alloc] init];
+    window.rootViewController.view.backgroundColor = UIColor.whiteColor;
 }
 
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
@@ -173,7 +181,7 @@ const NSInteger ResultCancel = 0;
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     UIViewController *vc = nil;
     for (UIWindow *window in application.windows) {
-        vc = [self controllerForSceneId:sceneId inController:window.rootViewController];
+        vc = [self controllerForSceneId:sceneId withController:window.rootViewController];
         if (vc) {
             break;
         }
@@ -181,7 +189,7 @@ const NSInteger ResultCancel = 0;
     return vc;
 }
 
-- (UIViewController *)controllerForSceneId:(NSString *)sceneId inController:(UIViewController *)controller {
+- (UIViewController *)controllerForSceneId:(NSString *)sceneId withController:(UIViewController *)controller {
     UIViewController *target;
     
     if ([controller.sceneId isEqualToString:sceneId]) {
@@ -190,13 +198,13 @@ const NSInteger ResultCancel = 0;
     
     if (!target && [controller isKindOfClass:[HBDModalViewController class]]) {
         HBDModalViewController *modal = (HBDModalViewController *)controller;
-        target = [self controllerForSceneId:sceneId inController:modal.contentViewController];
+        target = [self controllerForSceneId:sceneId withController:modal.contentViewController];
     }
     
     if (!target) {
         UIViewController *presentedController = controller.presentedViewController;
         if (presentedController && ![presentedController isBeingDismissed]) {
-            target = [self controllerForSceneId:sceneId inController:presentedController];
+            target = [self controllerForSceneId:sceneId withController:presentedController];
         }
     }
     
@@ -204,7 +212,7 @@ const NSInteger ResultCancel = 0;
         NSUInteger count = controller.childViewControllers.count;
         for (NSUInteger i = 0; i < count; i ++) {
             UIViewController *child = controller.childViewControllers[i];
-            target = [self controllerForSceneId:sceneId inController:child];
+            target = [self controllerForSceneId:sceneId withController:child];
             if (target) {
                 break;
             }
@@ -214,6 +222,15 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)setRootViewController:(UIViewController *)rootViewController {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    for (NSUInteger i = application.windows.count; i > 0; i --) {
+        UIWindow *window = application.windows[i-1];
+        UIViewController *controller = window.rootViewController;
+        if ([controller isKindOfClass:[HBDModalViewController class]]) {
+            HBDModalViewController *modal = (HBDModalViewController *)controller;
+            [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
+        }
+    }
     UIWindow *keyWindow = RCTKeyWindow();
     if (keyWindow.rootViewController.presentedViewController && !keyWindow.rootViewController.presentedViewController.isBeingDismissed) {
         [keyWindow.rootViewController dismissViewControllerAnimated:NO completion:^{

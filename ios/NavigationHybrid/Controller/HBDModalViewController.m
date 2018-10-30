@@ -277,14 +277,15 @@
 }
 
 - (void)showWithAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
-    // makeKeyAndVisible 导致的 viewWillAppear: 必定 animated 是 NO 的，所以这里用额外的变量保存这个 animated 的值
     self.contentView = self.contentViewController.view;
-    self.previousKeyWindow = [UIApplication sharedApplication].keyWindow;
+    self.previousKeyWindow = self.contentViewController.hbd_targetViewController.view.window;
+    
     if (!self.modalWindow) {
         self.modalWindow = [[HBDModalWindow alloc] init];
         self.modalWindow.windowLevel = UIWindowLevelAlert - 4.0;;
         self.modalWindow.backgroundColor = UIColor.clearColor;// 避免横竖屏旋转时出现黑色
     }
+    
     self.modalWindow.rootViewController = self;
     [self.modalWindow makeKeyAndVisible];
     
@@ -334,18 +335,23 @@
             [self.contentViewController endAppearanceTransition];
         }
         
-        if ([[UIApplication sharedApplication] keyWindow] == self.modalWindow) {
-            if (self.previousKeyWindow.hidden) {
+        if (RCTKeyWindow() == self.modalWindow) {
+            if (!self.previousKeyWindow) {
                 [[UIApplication sharedApplication].delegate.window makeKeyWindow];
+             } else if ([self.previousKeyWindow isKindOfClass:[HBDModalWindow class]]) {
+                HBDModalWindow *modalWindow = (HBDModalWindow *)self.previousKeyWindow;
+                HBDModalViewController *modalVC = (HBDModalViewController *)modalWindow.rootViewController;
+                if (!modalVC.isBeingHidden) {
+                    [self.previousKeyWindow makeKeyWindow];
+                }
             } else {
                 [self.previousKeyWindow makeKeyWindow];
             }
         }
+        
         self.modalWindow.hidden = YES;
         self.modalWindow.rootViewController = nil;
         self.previousKeyWindow = nil;
-
-        [self.contentView removeFromSuperview];
 
         if (self.willDismissBlock) {
             self.willDismissBlock(self);
@@ -425,10 +431,10 @@
 }
 
 - (void)hbd_hideViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
-    if (self.hbd_popupViewController) {
-        [self.hbd_popupViewController hbd_hideViewControllerAnimated:animated completion:completion];
-        return;
-    }
+//    if (self.hbd_popupViewController) {
+//        [self.hbd_popupViewController hbd_hideViewControllerAnimated:animated completion:completion];
+//        return;
+//    }
     
     if (!self.hbd_modalViewController) {
         UIViewController *parent = self.parentViewController;

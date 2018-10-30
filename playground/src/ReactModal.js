@@ -26,9 +26,7 @@ export default class ReactModal extends React.Component {
     actionSheets: [
       {
         text: 'Male',
-        onPress: async () => {
-          const graph = await Navigator.routeGraph();
-          console.info(graph);
+        onPress: () => {
           this.hideModal('Male');
         },
       },
