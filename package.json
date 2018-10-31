@@ -4,12 +4,12 @@
     "type": "git",
     "url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
   },
-  "version": "0.9.9",
+  "version": "0.9.10",
   "nativePackage": true,
   "description": "Seamless navigation between native and React Native",
   "author": "listen <listenzz@163.com>",
   "license": "MIT",
-  "homepage": "https://github.com/listenzz/react-native-navigation-hybrid",
+  "homepage": "https://github.com/listenzz/react-native-navigation-hybrid#readme",
   "keywords": [
     "react native",
     "navigation",
