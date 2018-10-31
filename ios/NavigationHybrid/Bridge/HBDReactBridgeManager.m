@@ -251,17 +251,7 @@ const NSInteger ResultCancel = 0;
 }
 
 - (HBDViewController *)primaryViewController {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    UIViewController *controller = application.keyWindow.rootViewController;
-    
-    while (controller != nil && [controller isKindOfClass:[HBDModalViewController class]]) {
-        HBDModalViewController *modal = (HBDModalViewController *)controller;
-        if (modal.isBeingHidden) {
-            controller = modal.previousKeyWindow.rootViewController;
-        } else {
-            controller = modal.contentViewController;
-        }
-    }
+    UIViewController *controller = RCTKeyWindow().rootViewController;
     
     while (controller != nil) {
         UIViewController *presentedController = controller.presentedViewController;

@@ -55,7 +55,10 @@
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
-    if ([vc isKindOfClass:[HBDViewController class]]) {
+    if ([vc isKindOfClass:[HBDModalViewController class]]) {
+        HBDModalViewController *modal = (HBDModalViewController *)vc;
+        return [[HBDReactBridgeManager sharedInstance] primaryViewControllerWithViewController:modal.contentViewController];
+    } else if ([vc isKindOfClass:[HBDViewController class]]) {
         return (HBDViewController *)vc;
     }
     return nil;

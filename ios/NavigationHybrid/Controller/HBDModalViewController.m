@@ -243,7 +243,6 @@
 }
 
 - (void)hidingAnimationWithCompletion:(void (^)(BOOL))completion {
-    self.beingHidden = YES;
     if (self.animationStyle == HBDModalAnimationStyleFade) {
         [UIView animateWithDuration:.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.dimmingView.alpha = 0.0;
@@ -325,6 +324,14 @@
     self.beingHidden = YES;
     [self.view endEditing:YES];
     
+    if (RCTKeyWindow() == self.modalWindow) {
+        if (self.previousKeyWindow) {
+            [self.previousKeyWindow makeKeyWindow];
+        } else {
+            [[UIApplication sharedApplication].delegate.window makeKeyWindow];
+        }
+    }
+    
     if (self.contentViewController) {
         [self.contentViewController beginAppearanceTransition:NO animated:animated];
     }
@@ -333,20 +340,6 @@
         
         if (self.contentViewController) {
             [self.contentViewController endAppearanceTransition];
-        }
-        
-        if (RCTKeyWindow() == self.modalWindow) {
-            if (!self.previousKeyWindow) {
-                [[UIApplication sharedApplication].delegate.window makeKeyWindow];
-             } else if ([self.previousKeyWindow isKindOfClass:[HBDModalWindow class]]) {
-                HBDModalWindow *modalWindow = (HBDModalWindow *)self.previousKeyWindow;
-                HBDModalViewController *modalVC = (HBDModalViewController *)modalWindow.rootViewController;
-                if (!modalVC.isBeingHidden) {
-                    [self.previousKeyWindow makeKeyWindow];
-                }
-            } else {
-                [self.previousKeyWindow makeKeyWindow];
-            }
         }
         
         self.modalWindow.hidden = YES;
