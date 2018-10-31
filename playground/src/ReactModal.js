@@ -113,18 +113,19 @@ export default class ReactModal extends React.Component {
           useNativeDriver
           style={[styles.bottomModal, { opacity: 1, transform: [{ translateY: this.state.anim }] }]}
         >
-          <View onLayout={this.handleLayout} style={{ backgroundColor: '#F3F3F3' }}>
-            {this.state.actionSheets.map(({ text, onPress }, index) => {
-              const isLast = index === this.state.actionSheets.length - 1;
-              return (
-                <View key={text} style={!isLast && styles.divider}>
-                  {this.renderItem(text, onPress)}
-                </View>
-              );
-            })}
-            <View style={styles.itemCancel}>{this.renderItem('Cancel', this.handleCancel)}</View>
-            <SafeAreaView />
-          </View>
+          <SafeAreaView style={{ backgroundColor: '#F3F3F3' }}>
+            <View onLayout={this.handleLayout}>
+              {this.state.actionSheets.map(({ text, onPress }, index) => {
+                const isLast = index === this.state.actionSheets.length - 1;
+                return (
+                  <View key={text} style={!isLast && styles.divider}>
+                    {this.renderItem(text, onPress)}
+                  </View>
+                );
+              })}
+              <View style={styles.itemCancel}>{this.renderItem('Cancel', this.handleCancel)}</View>
+            </View>
+          </SafeAreaView>
         </Animated.View>
       </TouchableWithoutFeedback>
     );
