@@ -11,82 +11,40 @@ function routeDependencies(routeConfig) {
   return dependencies.reverse();
 }
 
-const screenParser = {
-  navigatorFromRouteGraph(router, graph) {
-    const { layout, sceneId } = graph;
-    if (sceneId && layout === 'screen') {
-      return Navigator.get(sceneId);
-    }
-    return null;
-  },
-
-  navigateTo(router, graph, route) {
-    const { layout } = graph;
-    const { moduleName, mode, props } = route;
-    if (layout === 'screen' && (mode === 'present' || mode === 'modal')) {
-      const navigator = router.navigatorFromRouteGraph(graph);
-      if (mode === 'present') {
-        navigator.present(moduleName, 0, props);
-      } else {
-        navigator.showModal(moduleName, 0, props);
-      }
-      return true;
-    }
-    return false;
-  },
-};
-
 const stackParser = {
-  navigatorFromRouteGraph(router, graph) {
-    const { layout, children } = graph;
-    if (layout === 'stack') {
-      return router.navigatorFromRouteGraph(children[0]);
-    }
-    return null;
-  },
-
   navigateTo(router, graph, route) {
     const { layout, children } = graph;
     const { mode, moduleName, dependencies, props } = route;
 
-    if (layout !== 'stack') {
-      return false;
-    }
-    if (router.navigateTo(children[0], route)) {
-      return true;
-    }
-
-    if (mode !== 'push') {
-      return false;
-    }
-
-    let moduleNames = [...dependencies, moduleName];
-    let index = -1;
-    for (let i = children.length - 1; i > -1; i--) {
-      const { layout, moduleName } = children[i];
-      if (layout === 'screen') {
-        index = moduleNames.indexOf(moduleName);
-        if (index !== -1) {
-          break;
-        }
-      }
-    }
-
-    if (index !== -1) {
-      let peddingModuleNames = moduleNames.slice(index + 1);
-      const navigator = router.navigatorFromRouteGraph(graph);
-      if (peddingModuleNames.length === 0) {
-        navigator.replace(moduleName, props);
-      } else {
-        for (let i = 0; i < peddingModuleNames.length; i++) {
-          if (i === peddingModuleNames.length - 1) {
-            navigator.push(moduleName, props);
-          } else {
-            navigator.push(peddingModuleNames[i]);
+    if (layout === 'stack' && mode === 'push') {
+      let moduleNames = [...dependencies, moduleName];
+      let index = -1;
+      for (let i = children.length - 1; i > -1; i--) {
+        const { layout, moduleName } = children[i];
+        if (layout === 'screen') {
+          index = moduleNames.indexOf(moduleName);
+          if (index !== -1) {
+            break;
           }
         }
       }
-      return true;
+
+      if (index !== -1) {
+        let peddingModuleNames = moduleNames.slice(index + 1);
+        const navigator = new Navigator(children[children.length - 1].sceneId);
+        if (peddingModuleNames.length === 0) {
+          navigator.replace(moduleName, props);
+        } else {
+          for (let i = 0; i < peddingModuleNames.length; i++) {
+            if (i === peddingModuleNames.length - 1) {
+              navigator.push(moduleName, props);
+            } else {
+              navigator.push(peddingModuleNames[i]);
+            }
+          }
+        }
+        return true;
+      }
     }
 
     return false;
@@ -94,14 +52,6 @@ const stackParser = {
 };
 
 const tabsParser = {
-  navigatorFromRouteGraph(router, graph = {}) {
-    const { layout, state, children } = graph;
-    if (layout === 'tabs') {
-      return router.navigatorFromRouteGraph(children[state.selectedIndex]);
-    }
-    return null;
-  },
-
   navigateTo(router, graph = {}, route) {
     const { layout, children, state } = graph;
     if (layout === 'tabs') {
@@ -109,7 +59,7 @@ const tabsParser = {
         if (router.navigateTo(children[i], route)) {
           if (i !== state.selectedIndex) {
             console.info('state:' + state.selectedIndex);
-            const navigator = router.navigatorFromRouteGraph(graph);
+            const navigator = new Navigator(children[i].sceneId);
             navigator.switchTab(i);
           }
           return true;
@@ -121,26 +71,18 @@ const tabsParser = {
 };
 
 const drawerParser = {
-  navigatorFromRouteGraph(router, graph = {}) {
-    const { layout, children } = graph;
-    if (layout === 'drawer') {
-      return router.navigatorFromRouteGraph(children[0]);
-    }
-    return null;
-  },
-
   navigateTo(router, graph = {}, route) {
-    const { layout, children } = graph;
+    const { layout, sceneId, children } = graph;
     if (layout === 'drawer') {
       if (router.navigateTo(children[0], route) || router.navigateTo(children[1], route)) {
-        const navigator = router.navigatorFromRouteGraph(graph);
+        const navigator = new Navigator(children[0].sceneId);
         navigator.closeMenu();
         return true;
       }
 
       const { moduleName } = children[1];
       if (moduleName === route.moduleName) {
-        const navigator = router.navigatorFromRouteGraph(graph);
+        const navigator = new Navigator(children[1].sceneId);
         navigator.openMenu();
         return true;
       }
@@ -152,7 +94,7 @@ const drawerParser = {
 let configs = new Map();
 let interceptors = new Set();
 let active = 0;
-let parsers = new Set([stackParser, screenParser, tabsParser, drawerParser]);
+let parsers = new Set([drawerParser, tabsParser, stackParser]);
 
 class Router {
   constructor() {
@@ -211,18 +153,6 @@ class Router {
     return {};
   }
 
-  navigatorFromRouteGraph(graph = {}) {
-    for (let parser of parsers.values()) {
-      const navigator = parser.navigatorFromRouteGraph(this, graph);
-      if (navigator) {
-        return navigator;
-      }
-    }
-    throw new Error(
-      '找不到合适的 navigator，如果你使用了自定义容器，请为该容器实现 RouteParser 并注册。'
-    );
-  }
-
   navigateTo(graph = {}, route) {
     for (let parser of parsers.values()) {
       if (parser.navigateTo(this, graph, route)) {
@@ -251,20 +181,31 @@ class Router {
         const graph = await Navigator.routeGraph();
 
         if (graph.length > 1) {
-          const { mode } = graph[1];
-          const navigator = this.navigatorFromRouteGraph(graph[1]);
-          if (mode === 'present') {
-            navigator.dismiss();
-          } else if (mode === 'modal') {
-            navigator.hideModal();
-          } else {
-            console.warn('尚未处理的 mode:' + mode);
+          for (let index = graph.length - 1; index > 0; index--) {
+            const { mode: layoutMode } = graph[index];
+            const navigator = await Navigator.current();
+            if (layoutMode === 'present') {
+              navigator.dismiss();
+            } else if (layoutMode === 'modal') {
+              navigator.hideModal();
+            } else {
+              console.warn('尚未处理的 mode:' + mode);
+            }
           }
         }
+
         if (!this.navigateTo(graph[0], route)) {
-          let navigator = this.navigatorFromRouteGraph(graph[0]);
+          const navigator = await Navigator.current();
           navigator.closeMenu();
-          navigator.push(route.moduleName, route.props);
+          const { moduleName, mode: routeMode, props } = route;
+          if (routeMode === 'present') {
+            navigator.present(moduleName, 0, props);
+          } else if (routeMode === 'modal') {
+            navigator.showModal(moduleName, 0, props);
+          } else {
+            // default push
+            navigator.push(moduleName, props);
+          }
         }
       } catch (error) {
         console.warn(error);
