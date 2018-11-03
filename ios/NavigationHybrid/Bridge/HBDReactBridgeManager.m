@@ -65,17 +65,19 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)handleReload {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    for (NSUInteger i = application.windows.count; i > 0; i --) {
-        UIWindow *window = application.windows[i-1];
-        UIViewController *controller = window.rootViewController;
-        if ([controller isKindOfClass:[HBDModalViewController class]]) {
-            window.hidden = YES;
+    if (self.hasRootLayout) {
+        UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+        for (NSUInteger i = application.windows.count; i > 0; i --) {
+            UIWindow *window = application.windows[i-1];
+            UIViewController *controller = window.rootViewController;
+            if ([controller isKindOfClass:[HBDModalViewController class]]) {
+                window.hidden = YES;
+            }
         }
+        UIWindow *window = [UIApplication sharedApplication].delegate.window;
+        window.rootViewController = [[UIViewController alloc] init];
+        window.rootViewController.view.backgroundColor = UIColor.whiteColor;
     }
-    UIWindow *window = [UIApplication sharedApplication].delegate.window;
-    window.rootViewController = [[UIViewController alloc] init];
-    window.rootViewController.view.backgroundColor = UIColor.whiteColor;
 }
 
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
