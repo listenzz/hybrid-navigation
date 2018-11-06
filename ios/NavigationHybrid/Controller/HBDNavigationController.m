@@ -349,6 +349,16 @@
     UIView *back = self.navigationBar.subviews[0];
     CGRect frame = [self.navigationBar convertRect:back.frame toView:vc.view];
     frame.origin.x = vc.view.frame.origin.x;
+    //  解决根视图为scrollView的时候，Push不正常
+    if ([vc.view isKindOfClass:[UIScrollView class]]) {
+        UIScrollView *scrollview = (UIScrollView *)vc.view;
+        //  适配iPhoneX iPhoneXR
+        NSArray *xrs =@[ @812, @896 ];
+        BOOL isIPhoneX = [xrs containsObject:@([UIScreen mainScreen].bounds.size.height)];
+        if (scrollview.contentOffset.y == 0) {
+            frame.origin.y = -(isIPhoneX ? 88 : 64);
+        }
+    }
     return frame;
 }
 
