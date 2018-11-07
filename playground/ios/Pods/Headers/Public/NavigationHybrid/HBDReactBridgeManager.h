@@ -1,0 +1,1 @@
+../../../../../../ios/NavigationHybrid/Bridge/HBDReactBridgeManager.h

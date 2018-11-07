@@ -37,19 +37,7 @@ npm run run:android
 
 ### run on iOS
 
-First, make sure that you have install [cocoapods](https://guides.cocoapods.org/).
-
-Then,
-
-```shell
-cd playground/ios
-
-pod install
-
-cd ../../
-```
-
-Then,
+First,
 
 ```shell
 npm install
