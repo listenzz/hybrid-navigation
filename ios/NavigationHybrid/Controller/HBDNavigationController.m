@@ -70,21 +70,6 @@
     [self updateNavigationBarForViewController:self.topViewController];
 }
 
-- (void)handlePopGesture:(UIScreenEdgePanGestureRecognizer *)recognizer {
-    id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
-    UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
-    UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
-    if (recognizer.state == UIGestureRecognizerStateBegan || recognizer.state == UIGestureRecognizerStateChanged) {
-        self.inGesture = YES;
-        self.navigationBar.tintColor = blendColor(from.hbd_tintColor, to.hbd_tintColor, coordinator.percentComplete);
-    } else {
-        if (coordinator.isCancelled) {
-            self.navigationBar.tintColor = from.hbd_tintColor;
-        }
-        self.inGesture = NO;
-    }
-}
-
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if (self.viewControllers.count > 1) {
         return self.topViewController.hbd_backInteractive && self.topViewController.hbd_swipeBackEnabled;
@@ -102,124 +87,30 @@
     return [super navigationBar:navigationBar shouldPopItem:item];
 }
 
-- (void)resetSubviewsInNavBar:(UINavigationBar *)navBar {
-    if (@available(iOS 11, *)) {
-    } else {
-        // Workaround for >= iOS7.1. Thanks to @boliva - http://stackoverflow.com/posts/comments/34452906
-        [navBar.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull subview, NSUInteger idx, BOOL * _Nonnull stop) {
-            if (subview.alpha < 1.0) {
-                [UIView animateWithDuration:.25 animations:^{
-                    subview.alpha = 1.0;
-                }];
-            }
-        }];
-    }
-}
-
-- (void)showViewControllerAlongsideTransition:(UIViewController *)viewController from:(UIViewController *)from to:(UIViewController * _Nonnull)to {
-    if (self.inGesture) {
-        self.navigationBar.titleTextAttributes = viewController.hbd_titleTextAttributes;
-        self.navigationBar.barStyle = viewController.hbd_barStyle;
-        // 手势处理 tintColor
-        //self.navigationBar.tintColor = viewController.hbd_tintColor;
-    } else {
-        [self updateNavigationBarAnimatedForViewController:viewController];
-    }
-    [UIView setAnimationsEnabled:NO];
-    self.navigationBar.fakeView.alpha = 0;
-    self.navigationBar.shadowImageView.alpha = 0;
-    
-    // from
-    self.fromFakeBar.subviews.lastObject.backgroundColor = from.hbd_barTintColor;
-    self.fromFakeBar.alpha = from.hbd_barAlpha == 0 ? 0.01:from.hbd_barAlpha;
-    if (from.hbd_barAlpha == 0) {
-        self.fromFakeBar.subviews.lastObject.alpha = 0.01;
-    }
-    self.fromFakeBar.frame = [self fakeBarFrameForViewController:from];
-    [from.view addSubview:self.fromFakeBar];
-    self.fromFakeShadow.alpha = from.hbd_barShadowAlpha;
-    self.fromFakeShadow.frame = [self fakeShadowFrameWithBarFrame:self.fromFakeBar.frame];
-    [from.view addSubview:self.fromFakeShadow];
-    // to
-    self.toFakeBar.subviews.lastObject.backgroundColor = to.hbd_barTintColor;
-    self.toFakeBar.alpha = to.hbd_barAlpha;
-    self.toFakeBar.frame = [self fakeBarFrameForViewController:to];
-    [to.view addSubview:self.toFakeBar];
-    self.toFakeShadow.alpha = to.hbd_barShadowAlpha;
-    self.toFakeShadow.frame = [self fakeShadowFrameWithBarFrame:self.toFakeBar.frame];
-    [to.view addSubview:self.toFakeShadow];
-    
-    [UIView setAnimationsEnabled:YES];
-}
-
-- (void)showViewControllerAlongsideTransition:(UIViewController * _Nonnull)viewController {
-    if (self.inGesture) {
-        self.navigationBar.titleTextAttributes = viewController.hbd_titleTextAttributes;
-        self.navigationBar.barStyle = viewController.hbd_barStyle;
-        // 手势处理 tintColor
-        //self.navigationBar.tintColor = viewController.hbd_tintColor;
-        [self updateNavigationBarAlphaForViewController:viewController];
-        [self updateNavigationBarColorForViewController:viewController];
-        [self updateNavigationBarShadowImageAlphaForViewController:viewController];
-    } else {
-        [self updateNavigationBarForViewController:viewController];
-    }
-}
-
-- (void)showViewController:(UIViewController * _Nonnull)viewController withCoordinator: (id<UIViewControllerTransitionCoordinator>)coordinator{
-    UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
-    UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
-    
-    if (self == to) {
-        [self updateNavigationBarForViewController:viewController];
-    }
-    
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-        BOOL shouldFake = to == viewController && (![from.hbd_barTintColor.description  isEqual:to.hbd_barTintColor.description] || ABS(from.hbd_barAlpha - to.hbd_barAlpha) > 0.1);
-        if (shouldFake) {
-            [self showViewControllerAlongsideTransition:viewController from:from to:to];
-        } else {
-            [self showViewControllerAlongsideTransition:viewController];
-        }
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-        if (context.isCancelled) {
-            [self updateNavigationBarForViewController:from];
-        } else {
-            // 当 present 时 to 不等于 viewController
-            [self updateNavigationBarForViewController:viewController];
-        }
-        if (to == viewController) {
-            [self clearFake];
-        }
-    }];
-    
-    if (@available(iOS 10.0, *)) {
-        [coordinator notifyWhenInteractionChangesUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-            if (!context.isCancelled && self.inGesture) {
-                [self updateNavigationBarAnimatedForViewController:viewController];
-            }
-        }];
-    } else {
-        [coordinator notifyWhenInteractionEndsUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-            if (!context.isCancelled && self.inGesture) {
-                [self updateNavigationBarAnimatedForViewController:viewController];
-            }
-        }];
-    }
-}
-
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     self.navigationBar.barStyle = viewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = viewController.hbd_titleTextAttributes;
+    
     id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     if (coordinator) {
         [self showViewController:viewController withCoordinator:coordinator];
     } else {
+        if (!animated && self.childViewControllers.count > 1) {
+            UIViewController *lastButOne = self.childViewControllers[self.childViewControllers.count - 2];
+            if ([self shouldShowFakeBarFrom:lastButOne to:viewController viewController:viewController]) {
+                [self showFakeBarFrom:lastButOne to:viewController];
+                return;
+            }
+        }
         [self updateNavigationBarForViewController:viewController];
     }
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if (!animated) {
+        [self updateNavigationBarForViewController:viewController];
+        [self clearFake];
+    }
     if (self.poppingViewController && [self.poppingViewController isKindOfClass:[HBDViewController class]]) {
         [viewController didReceiveResultCode:self.poppingViewController.resultCode resultData:self.poppingViewController.resultData requestCode:0];
     }
@@ -264,7 +155,7 @@
     } else {
         array = [super popToViewController:viewController animated:animated];
     }
-
+    
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
     return array;
@@ -282,6 +173,168 @@
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
     return array;
+}
+
+- (void)handlePopGesture:(UIScreenEdgePanGestureRecognizer *)recognizer {
+    id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
+    UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
+    if (recognizer.state == UIGestureRecognizerStateBegan || recognizer.state == UIGestureRecognizerStateChanged) {
+        self.inGesture = YES;
+        self.navigationBar.tintColor = blendColor(from.hbd_tintColor, to.hbd_tintColor, coordinator.percentComplete);
+    } else {
+        if (coordinator.isCancelled) {
+            self.navigationBar.tintColor = from.hbd_tintColor;
+        }
+        self.inGesture = NO;
+    }
+}
+
+- (void)resetSubviewsInNavBar:(UINavigationBar *)navBar {
+    if (@available(iOS 11, *)) {
+    } else {
+        // Workaround for >= iOS7.1. Thanks to @boliva - http://stackoverflow.com/posts/comments/34452906
+        [navBar.subviews enumerateObjectsUsingBlock:^(__kindof UIView * _Nonnull subview, NSUInteger idx, BOOL * _Nonnull stop) {
+            if (subview.alpha < 1.0) {
+                [UIView animateWithDuration:.25 animations:^{
+                    subview.alpha = 1.0;
+                }];
+            }
+        }];
+    }
+}
+
+- (void)updateNavigationBarForViewController:(UIViewController *)vc {
+    [self updateNavigationBarAlphaForViewController:vc];
+    [self updateNavigationBarColorForViewController:vc];
+    [self updateNavigationBarShadowImageAlphaForViewController:vc];
+    [self updateNavigationBarAnimatedForViewController:vc];
+}
+
+- (void)updateNavigationBarAnimatedForViewController:(UIViewController *)vc {
+    self.navigationBar.barStyle = vc.hbd_barStyle;
+    self.navigationBar.titleTextAttributes = vc.hbd_titleTextAttributes;
+    self.navigationBar.tintColor = vc.hbd_tintColor;
+}
+
+- (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc {
+    self.navigationBar.fakeView.alpha = vc.hbd_barAlpha;
+    self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
+}
+
+- (void)updateNavigationBarColorForViewController:(UIViewController *)vc {
+    self.navigationBar.barTintColor = vc.hbd_barTintColor;
+}
+
+- (void)updateNavigationBarShadowImageAlphaForViewController:(UIViewController *)vc {
+    self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
+}
+
+- (void)showViewController:(UIViewController * _Nonnull)viewController withCoordinator: (id<UIViewControllerTransitionCoordinator>)coordinator{
+    UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
+    
+    if (self == to) {
+        [self updateNavigationBarForViewController:viewController];
+    }
+    
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+        BOOL shouldFake = [self shouldShowFakeBarFrom:from to:to viewController:viewController];
+        if (shouldFake) {
+            [self showViewControllerAlongsideTransition:viewController from:from to:to];
+        } else {
+            [self showViewControllerAlongsideTransition:viewController];
+        }
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+        if (context.isCancelled) {
+            [self updateNavigationBarForViewController:from];
+        } else {
+            // 当 present 时 to 不等于 viewController
+            [self updateNavigationBarForViewController:viewController];
+        }
+        if (to == viewController) {
+            [self clearFake];
+        }
+    }];
+    
+    if (@available(iOS 10.0, *)) {
+        [coordinator notifyWhenInteractionChangesUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+            if (!context.isCancelled && self.inGesture) {
+                [self updateNavigationBarAnimatedForViewController:viewController];
+            }
+        }];
+    } else {
+        [coordinator notifyWhenInteractionEndsUsingBlock:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+            if (!context.isCancelled && self.inGesture) {
+                [self updateNavigationBarAnimatedForViewController:viewController];
+            }
+        }];
+    }
+}
+
+- (void)showViewControllerAlongsideTransition:(UIViewController * _Nonnull)viewController {
+    if (self.inGesture) {
+        self.navigationBar.titleTextAttributes = viewController.hbd_titleTextAttributes;
+        self.navigationBar.barStyle = viewController.hbd_barStyle;
+        // 手势处理 tintColor
+        //self.navigationBar.tintColor = viewController.hbd_tintColor;
+        [self updateNavigationBarAlphaForViewController:viewController];
+        [self updateNavigationBarColorForViewController:viewController];
+        [self updateNavigationBarShadowImageAlphaForViewController:viewController];
+    } else {
+        [self updateNavigationBarForViewController:viewController];
+    }
+}
+
+- (void)showViewControllerAlongsideTransition:(UIViewController *)viewController from:(UIViewController *)from to:(UIViewController * _Nonnull)to {
+    if (self.inGesture) {
+        self.navigationBar.titleTextAttributes = viewController.hbd_titleTextAttributes;
+        self.navigationBar.barStyle = viewController.hbd_barStyle;
+        // 手势处理 tintColor
+        //self.navigationBar.tintColor = viewController.hbd_tintColor;
+    } else {
+        // 标题样式，按钮颜色，barStyle
+        [self updateNavigationBarAnimatedForViewController:viewController];
+    }
+    // 背景透明度，背景颜色，阴影透明度
+    [self showFakeBarFrom:from to:to];
+}
+
+- (void)showFakeBarFrom:(UIViewController *)from to:(UIViewController * _Nonnull)to {
+    [UIView setAnimationsEnabled:NO];
+    self.navigationBar.fakeView.alpha = 0;
+    self.navigationBar.shadowImageView.alpha = 0;
+    [self showFakeBarFrom:from];
+    [self showFakeBarTo:to];
+    [UIView setAnimationsEnabled:YES];
+}
+
+- (void)showFakeBarFrom:(UIViewController *)from {
+    self.fromFakeBar.subviews.lastObject.backgroundColor = from.hbd_barTintColor;
+    self.fromFakeBar.alpha = from.hbd_barAlpha == 0 ? 0.01 : from.hbd_barAlpha;
+    if (from.hbd_barAlpha == 0) {
+        self.fromFakeBar.subviews.lastObject.alpha = 0.01;
+    }
+    self.fromFakeBar.frame = [self fakeBarFrameForViewController:from];
+    [from.view addSubview:self.fromFakeBar];
+    self.fromFakeShadow.alpha = from.hbd_barShadowAlpha;
+    self.fromFakeShadow.frame = [self fakeShadowFrameWithBarFrame:self.fromFakeBar.frame];
+    [from.view addSubview:self.fromFakeShadow];
+}
+
+- (void)showFakeBarTo:(UIViewController * _Nonnull)to {
+    self.toFakeBar.subviews.lastObject.backgroundColor = to.hbd_barTintColor;
+    self.toFakeBar.alpha = to.hbd_barAlpha;
+    self.toFakeBar.frame = [self fakeBarFrameForViewController:to];
+    [to.view addSubview:self.toFakeBar];
+    self.toFakeShadow.alpha = to.hbd_barShadowAlpha;
+    self.toFakeShadow.frame = [self fakeShadowFrameWithBarFrame:self.toFakeBar.frame];
+    [to.view addSubview:self.toFakeShadow];
+}
+
+- (BOOL)shouldShowFakeBarFrom:(UIViewController *)from to:(UIViewController *)to viewController:(UIViewController * _Nonnull)viewController {
+    BOOL shouldFake = to == viewController && (![from.hbd_barTintColor.description  isEqual:to.hbd_barTintColor.description] || ABS(from.hbd_barAlpha - to.hbd_barAlpha) > 0.1);
+    return shouldFake;
 }
 
 - (BOOL)shouldBetterTransitionWithViewController:(UIViewController *)vc {
@@ -364,32 +417,6 @@
 
 - (CGRect)fakeShadowFrameWithBarFrame:(CGRect)frame {
     return CGRectMake(frame.origin.x, frame.size.height + frame.origin.y, frame.size.width, 0.5);
-}
-
-- (void)updateNavigationBarForViewController:(UIViewController *)vc {
-    [self updateNavigationBarAlphaForViewController:vc];
-    [self updateNavigationBarColorForViewController:vc];
-    [self updateNavigationBarShadowImageAlphaForViewController:vc];
-    [self updateNavigationBarAnimatedForViewController:vc];
-}
-
-- (void)updateNavigationBarAnimatedForViewController:(UIViewController *)vc {
-    self.navigationBar.barStyle = vc.hbd_barStyle;
-    self.navigationBar.titleTextAttributes = vc.hbd_titleTextAttributes;
-    self.navigationBar.tintColor = vc.hbd_tintColor;
-}
-
-- (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc {
-    self.navigationBar.fakeView.alpha = vc.hbd_barAlpha;
-    self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
-}
-
-- (void)updateNavigationBarColorForViewController:(UIViewController *)vc {
-    self.navigationBar.barTintColor = vc.hbd_barTintColor;
-}
-
-- (void)updateNavigationBarShadowImageAlphaForViewController:(UIViewController *)vc {
-    self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
 }
 
 UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
