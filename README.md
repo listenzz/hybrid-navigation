@@ -1,6 +1,6 @@
 # react-native-navigation-hybrid
 
-Seamless navigation between native and React Native.
+Native navigation library for ReactNative, supporting navigating between native and ReactNative seamlessly.
 
 ![navigation-android](./screenshot/android.png)
 
@@ -80,7 +80,7 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.9.15` - 2018/11/07
+最新版本: `0.9.16` - 2018/11/12
 
 ### 0.9.1 - 2018/10/14
 
