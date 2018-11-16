@@ -147,11 +147,18 @@ dependencies {
   import com.facebook.react.ReactNativeHost;
 + import com.navigationhybrid.HybridReactNativeHost;
 + import com.navigationhybrid.ReactBridgeManager;
-
++ import com.navigationhybrid.NavigationHybridPackage;
 
 - private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
 + private final ReactNativeHost mReactNativeHost = new HybridReactNativeHost(this) {
-
+      @Override
+      protected List<ReactPackage> getPackages() {
+          return Arrays.<ReactPackage>asList(
+-             new MainReactPackage()
++             new MainReactPackage(),
++             new NavigationHybridPackage()
+          );
+      }
 }
 
 public void onCreate() {
