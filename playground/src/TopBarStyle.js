@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native';
-
+import { BarStyleLightContent, BarStyleDarkContent } from 'react-native-navigation-hybrid';
 import styles, { paddingTop } from './Styles';
 
 export default class TopBarStyle extends Component {
   static navigationItem = {
     extendedLayoutIncludesTopBar: true,
-    topBarStyle: 'light-content',
+    topBarStyle: BarStyleLightContent,
     topBarTintColor: '#FFFFFF',
     titleTextColor: '#FFFFFF',
     ...Platform.select({
@@ -35,7 +35,7 @@ export default class TopBarStyle extends Component {
     this.switchTopBarStyle = this.switchTopBarStyle.bind(this);
     this.topBarStyle = this.topBarStyle.bind(this);
     this.state = {
-      topBarStyle: 'dark-content',
+      topBarStyle: BarStyleDarkContent,
       topBarTintColor: '#000000',
     };
   }
@@ -46,10 +46,10 @@ export default class TopBarStyle extends Component {
       topBarTintColor: this.state.topBarTintColor,
       titleTextColor: this.state.topBarTintColor,
     });
-    if (this.state.topBarStyle === 'dark-content') {
-      this.setState({ topBarStyle: 'light-content', topBarTintColor: '#FFFFFF' });
+    if (this.state.topBarStyle === BarStyleDarkContent) {
+      this.setState({ topBarStyle: BarStyleLightContent, topBarTintColor: '#FFFFFF' });
     } else {
-      this.setState({ topBarStyle: 'dark-content', topBarTintColor: '#000000' });
+      this.setState({ topBarStyle: BarStyleDarkContent, topBarTintColor: '#000000' });
     }
   }
 

@@ -4,22 +4,28 @@
     "type": "git",
     "url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
   },
-  "version": "0.9.16",
+  "version": "0.10.0",
   "nativePackage": true,
   "description": "Native navigation library for ReactNative, supporting navigating between native and ReactNative seamlessly.",
   "author": "listen <listenzz@163.com>",
   "license": "MIT",
-  "homepage": "https://github.com/listenzz/react-native-navigation-hybrid#readme",
+  "homepage": "https://github.com/listenzz/react-native-navigation-hybrid",
+  "readme": "https://github.com/listenzz/react-native-navigation-hybrid#readme",
   "keywords": [
     "react native",
     "navigation",
     "navigator"
   ],
-  "main": "index.js",
+  "main": "./build/index.js",
+  "typings": "./build/index.d.ts",
   "scripts": {
+    "build": "rm -rf ./build && tsc",
+    "prestart": "npm run build",
+    "prepare": "npm run build",
+    "tsc": "tsc",
     "start": "npm run syncbv && node node_modules/react-native/local-cli/cli.js start",
     "lint": "./node_modules/.bin/eslint --fix --ext .js ./ && echo \"lint finished\" ",
-    "run:ios": "react-native run-ios --project-path ./playground/ios --simulator \"iPhone X\"",
+    "run:ios": "react-native run-ios --project-path ./playground/ios",
     "start:android": "adb shell am start -n com.navigationhybrid.playground/.MainActivity",
     "run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
     "test": "jest",
@@ -30,6 +36,10 @@
     "react-native": ">=0.57.1"
   },
   "devDependencies": {
+    "@types/jest": "^23.3.9",
+    "@types/react": "^16.4.18",
+    "@types/react-native": "0.57.1",
+    "@types/react-test-renderer": "^16.0.3",
     "@babel/core": "^7.1.2",
     "@babel/runtime": "^7.1.2",
     "babel-jest": "23.6.0",
@@ -38,12 +48,13 @@
     "react-test-renderer": "16.5.0",
     "react": "16.5.0",
     "react-native": "0.57.1",
-    "react-native-hud-hybrid": "0.18.0",
+    "react-native-hud-hybrid": "0.25.0",
     "react-native-iphone-x-helper": "^1.0.2",
     "react-native-keyboard-aware-scroll-view": "0.4.1",
     "react-native-vector-icons": "^4.4.3",
     "react-redux": "^5.0.5",
-    "redux": "^3.7.2"
+    "redux": "^3.7.2",
+    "typescript": "^3.1.5"
   },
   "jest": {
     "preset": "react-native"

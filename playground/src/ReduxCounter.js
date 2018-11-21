@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, ScrollView, Platform } from 'react-native';
-
+import { BarStyleLightContent } from 'react-native-navigation-hybrid';
 import { createStore } from 'redux';
 import { connect } from 'react-redux';
 
@@ -11,7 +11,7 @@ import fontUri from './FontUtil';
 class ReduxCounter extends Component {
   static navigationItem = {
     extendedLayoutIncludesTopBar: true,
-    topBarStyle: 'light-content',
+    topBarStyle: BarStyleLightContent,
     topBarTintColor: '#FFFFFF',
     titleTextColor: '#FFFF00',
     ...Platform.select({
@@ -96,6 +96,9 @@ function mapDispatchToProps(dispatch) {
 }
 
 // Connected Component
-export default connect(mapStateToProps, mapDispatchToProps)(ReduxCounter);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ReduxCounter);
 
 export { store };

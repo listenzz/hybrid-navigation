@@ -1,4 +1,11 @@
-import { ReactRegistry, Garden, Navigator, router } from 'react-native-navigation-hybrid';
+import {
+  ReactRegistry,
+  Garden,
+  Navigator,
+  router,
+  BarStyleDarkContent,
+  TitleAlignmentCenter,
+} from 'react-native-navigation-hybrid';
 import { Image, Platform } from 'react-native';
 import React, { Component } from 'react';
 
@@ -29,7 +36,7 @@ import StatusBarHidden from './src/StatusBarHidden';
 // 设置全局样式
 Garden.setStyle({
   screenBackgroundColor: '#F8F8F8',
-  topBarStyle: 'dark-content',
+  topBarStyle: BarStyleDarkContent,
   titleTextSize: 17,
   topBarColor: '#FFFFFF',
 
@@ -37,7 +44,7 @@ Garden.setStyle({
   topBarTintColor: '#000000',
   // badgeColor: '#00FFFF',
   // titleTextColor: '#00ff00',
-  titleAlignmentAndroid: 'center',
+  titleAlignmentAndroid: TitleAlignmentCenter,
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
   shadowImage: {
     color: '#DDDDDD',

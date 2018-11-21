@@ -3,14 +3,14 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { TouchableOpacity, Text, View, TextInput, Platform } from 'react-native';
 import styles from './Styles';
 
-import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid';
+import { RESULT_OK, Navigator, BarStyleLightContent } from 'react-native-navigation-hybrid';
 
 export default class Result extends Component {
   static navigationItem = {
     titleItem: {
       title: 'RN result',
     },
-    topBarStyle: 'light-content',
+    topBarStyle: BarStyleLightContent,
     topBarTintColor: '#FFFFFF',
     ...Platform.select({
       ios: {

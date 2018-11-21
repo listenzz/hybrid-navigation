@@ -1,17 +1,70 @@
 import NavigationModule, { EventEmitter } from './NavigationModule';
 import { bindBarButtonItemClickEvent } from './utils';
 import store from './store';
+import { EmitterSubscription } from 'react-native';
+import { NavigationItem } from './Garden';
+import { Route, RouteGraph } from './router';
 
-let intercept;
-let willSetRootCallback;
-let didSetRootEventSubscription;
-let didSetRootCallback;
+let intercept: NavigationInterceptor;
+let willSetRootCallback: () => void;
+let didSetRootEventSubscription: EmitterSubscription;
+let didSetRootCallback: () => void;
 
-export default class Navigator {
-  static RESULT_OK = NavigationModule.RESULT_OK;
-  static RESULT_CANCEL = NavigationModule.RESULT_CANCEL;
+interface NavigationProps {
+  [propName: string]: any;
+}
 
-  static get(sceneId) {
+interface NavigationExtras {
+  [propName: string]: any;
+}
+
+export type NavigationInterceptor = (
+  action: string,
+  from?: string,
+  to?: string,
+  extras?: NavigationExtras
+) => boolean;
+
+export interface Layout {}
+
+export interface Screen extends Layout {
+  screen: {
+    moduleName: string;
+    props?: {};
+    options?: NavigationItem;
+  };
+}
+
+export interface Stack extends Layout {
+  stack: {
+    children: Layout[];
+    options?: {};
+  };
+}
+
+export interface Tabs extends Layout {
+  tabs: {
+    children: Layout[];
+    options?: { selectedIndex?: number };
+  };
+}
+
+export interface Drawer extends Layout {
+  drawer: {
+    children: Layout[];
+    options?: {
+      maxDrawerWidth?: number;
+      minDrawerMargin?: number;
+      menuInteractive?: boolean;
+    };
+  };
+}
+
+export class Navigator {
+  static RESULT_OK: -1 = NavigationModule.RESULT_OK;
+  static RESULT_CANCEL: 0 = NavigationModule.RESULT_CANCEL;
+
+  static get(sceneId: string): Navigator {
     return store.getNavigator(sceneId) || new Navigator(sceneId);
   }
 
@@ -20,15 +73,15 @@ export default class Navigator {
     return Navigator.get(sceneId);
   }
 
-  static async currentRoute() {
+  static async currentRoute(): Promise<Route> {
     return await NavigationModule.currentRoute();
   }
 
-  static async routeGraph() {
+  static async routeGraph(): Promise<RouteGraph[]> {
     return await NavigationModule.routeGraph();
   }
 
-  static setRoot(layout, sticky = false) {
+  static setRoot(layout: Layout, sticky = false) {
     if (willSetRootCallback) {
       willSetRootCallback();
     }
@@ -36,8 +89,8 @@ export default class Navigator {
     if (didSetRootEventSubscription) {
       didSetRootEventSubscription.remove();
     }
-    
-    didSetRootEventSubscription = EventEmitter.addListener('ON_ROOT_SET', event => {
+
+    didSetRootEventSubscription = EventEmitter.addListener('ON_ROOT_SET', _ => {
       if (didSetRootCallback) {
         didSetRootCallback();
       }
@@ -52,18 +105,18 @@ export default class Navigator {
     didSetRootCallback = didSetRoot;
   }
 
-  static dispatch(sceneId, action, extras = {}) {
+  static dispatch(sceneId: string, action: string, extras: NavigationExtras = {}): void {
     extras.from = extras.from || Navigator.get(sceneId).moduleName;
     if (!intercept || !intercept(action, extras.from, extras.moduleName, extras)) {
       NavigationModule.dispatch(sceneId, action, extras);
     }
   }
 
-  static setInterceptor(interceptor) {
+  static setInterceptor(interceptor: NavigationInterceptor) {
     intercept = interceptor;
   }
 
-  constructor(sceneId, moduleName) {
+  constructor(public sceneId: string, public moduleName?: string) {
     this.sceneId = sceneId;
     this.moduleName = moduleName;
     this.dispatch = this.dispatch.bind(this);
@@ -88,22 +141,27 @@ export default class Navigator {
     this.closeMenu = this.closeMenu.bind(this);
   }
 
-  state = { params: {} };
+  state: { params: { readonly [x: string]: any } } = { params: {} };
 
-  setParams(params = {}) {
+  setParams(params: { [x: string]: any }) {
     this.state.params = { ...this.state.params, ...params };
   }
 
-  dispatch(action, extras = {}) {
+  dispatch(action: string, extras: NavigationExtras = {}) {
     extras.from = this.moduleName;
     Navigator.dispatch(this.sceneId, action, extras);
   }
 
-  push(moduleName, props = {}, options = {}, animated = true) {
+  push(
+    moduleName: string,
+    props: NavigationProps = {},
+    options: NavigationItem = {},
+    animated = true
+  ) {
     this.dispatch('push', { moduleName, props, options, animated });
   }
 
-  pushLayout(layout = {}, animated = true) {
+  pushLayout(layout: Layout, animated = true) {
     this.dispatch('pushLayout', { layout, animated });
   }
 
@@ -111,7 +169,7 @@ export default class Navigator {
     this.dispatch('pop', { animated });
   }
 
-  popTo(sceneId, animated = true) {
+  popTo(sceneId: string, animated = true) {
     this.dispatch('popTo', { animated, targetId: sceneId });
   }
 
@@ -119,19 +177,25 @@ export default class Navigator {
     this.dispatch('popToRoot', { animated });
   }
 
-  replace(moduleName, props = {}, options = {}) {
+  replace(moduleName: string, props: NavigationProps = {}, options: NavigationItem = {}) {
     this.dispatch('replace', { moduleName, props, options, animated: true });
   }
 
-  replaceToRoot(moduleName, props = {}, options = {}) {
+  replaceToRoot(moduleName: string, props: NavigationProps = {}, options: NavigationItem = {}) {
     this.dispatch('replaceToRoot', { moduleName, props, options, animated: true });
   }
 
-  isRoot() {
+  isRoot(): Promise<boolean> {
     return NavigationModule.isNavigationRoot(this.sceneId);
   }
 
-  present(moduleName, requestCode = 0, props = {}, options = {}, animated = true) {
+  present(
+    moduleName: string,
+    requestCode = 0,
+    props: NavigationProps = {},
+    options: NavigationItem = {},
+    animated = true
+  ) {
     this.dispatch('present', {
       moduleName,
       props,
@@ -141,7 +205,7 @@ export default class Navigator {
     });
   }
 
-  presentLayout(layout = {}, requestCode = 0, animated = true) {
+  presentLayout(layout: Layout, requestCode = 0, animated = true) {
     this.dispatch('presentLayout', { layout, requestCode, animated });
   }
 
@@ -149,7 +213,12 @@ export default class Navigator {
     this.dispatch('dismiss', { animated });
   }
 
-  showModal(moduleName, requestCode = 0, props = {}, options = {}) {
+  showModal(
+    moduleName: string,
+    requestCode = 0,
+    props: NavigationProps = {},
+    options: NavigationItem = {}
+  ) {
     this.dispatch('showModal', {
       moduleName,
       props,
@@ -158,7 +227,7 @@ export default class Navigator {
     });
   }
 
-  showModalLayout(layout = {}, requestCode = 0) {
+  showModalLayout(layout: Layout, requestCode = 0) {
     this.dispatch('showModalLayout', { layout, requestCode });
   }
 
@@ -166,11 +235,11 @@ export default class Navigator {
     this.dispatch('hideModal');
   }
 
-  setResult(resultCode, data = {}) {
+  setResult(resultCode: number, data: { [x: string]: any } = {}): void {
     NavigationModule.setResult(this.sceneId, resultCode, data);
   }
 
-  switchTab(index) {
+  switchTab(index: number) {
     this.dispatch('switchTab', { index });
   }
 
@@ -186,7 +255,7 @@ export default class Navigator {
     this.dispatch('closeMenu');
   }
 
-  signalFirstRenderComplete() {
+  signalFirstRenderComplete(): void {
     NavigationModule.signalFirstRenderComplete(this.sceneId);
   }
 }

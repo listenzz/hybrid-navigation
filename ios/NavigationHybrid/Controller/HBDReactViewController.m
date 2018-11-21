@@ -105,6 +105,11 @@
             [emitter sendEventWithName:@"ON_COMPONENT_APPEAR" body:@{
                                                                      @"sceneId": self.sceneId,
                                                                      }];
+        } else {
+            RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
+            [emitter sendEventWithName:@"MAKE_SURE_COMPONENT_DID_MOUNT" body:@{
+                                                                     @"sceneId": self.sceneId,
+                                                                     }];
         }
     }
 }
@@ -123,6 +128,9 @@
 }
 
 - (void)signalFirstRenderComplete {
+    if (self.firstRenderComplete) {
+        return;
+    }
     self.firstRenderComplete = YES;
     if (self.viewAppeared) {
         RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];

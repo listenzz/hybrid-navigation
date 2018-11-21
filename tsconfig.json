@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig-strict.json",
+  "compilerOptions": {
+    "outDir": "./build",
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react-native",
+    "lib": ["es6"],
+    "moduleResolution": "node",
+    "declaration": true,
+    "target": "esnext"
+  },
+  "exclude": ["node_modules", "build", "scripts", "playground"]
+}

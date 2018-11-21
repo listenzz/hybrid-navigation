@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import { LayoutFittingExpanded } from 'react-native-navigation-hybrid';
 import styles from './Styles';
 
 class CustomTitleView extends Component {
@@ -34,7 +34,7 @@ export default class TopBarTitleView extends Component {
     backButtonHidden: true,
     titleItem: {
       moduleName: 'CustomTitleView', // registered component name
-      layoutFitting: 'expanded', // expanded or compressed, default is compressed
+      layoutFitting: LayoutFittingExpanded, // `LayoutFittingExpanded` or `LayoutFittingCompressed`, default is `LayoutFittingExpanded`
     },
   };
 

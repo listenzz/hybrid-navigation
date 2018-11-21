@@ -2,7 +2,7 @@ import { NativeModules, DeviceEventEmitter, NativeEventEmitter, Platform } from 
 
 const NavigationModule = NativeModules.NavigationHybrid;
 
-const EventEmitter = Platform.select({
+const EventEmitter: NativeEventEmitter = Platform.select({
   ios: new NativeEventEmitter(NavigationModule),
   android: DeviceEventEmitter,
 });

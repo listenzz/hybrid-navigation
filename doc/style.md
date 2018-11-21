@@ -45,7 +45,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 ```javascript
 {
   screenBackgroundColor: String; // 页面背景，默认是白色
-  topBarStyle: String; // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
+  topBarStyle: String; // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
   topBarColor: String; // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
   statusBarColorAndroid: String; // 状态栏背景色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
   navigationBarColorAndroid: String; // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
@@ -56,7 +56,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
   topBarTintColor: String; // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
   titleTextColor: String; // 顶部导航栏标题颜色，默认根据 topBarStyle 来计算
   titleTextSize: Int; // 顶部导航栏标题字体大小，默认是 17 dp(pt)
-  titleAlignmentAndroid: String; // 顶部导航栏标题的位置，有 left 和 center 两个值可选，默认是 left，仅对 Android 生效
+  titleAlignmentAndroid: String; // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
   barButtonItemTextSize: Int; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
   swipeBackEnabledAndroid: Bool; // Android 是否开启右滑返回，默认是 false
 
@@ -78,7 +78,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 导航栏和状态栏前景色，在 iOS 中，默认是白底黑字，在 Android 中，默认是黑底白字。
 
-这个字段一共有两个常量可选： `dark-content` 和 `light-content`，在 Android 6.0 效果如下。
+可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`，在 Android 6.0 效果如下：
 
 ![topbar-default](../screenshot/topbar-default.png)
 
@@ -194,7 +194,7 @@ class Screen extends Component {
   static navigationItem = {
     passThroughTouches: false, // 当前页面是否允许 touch 事件穿透，通常和透明背景一起使用
     screenBackgroundColor: '#FFFFFF', // 当前页面背景
-    topBarStyle: String, // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
+    topBarStyle: String, // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
     topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
     topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
     extendedLayoutIncludesTopBar: false, // 当前页面的内容是否延伸到 topBar 底下，通常用于需要动态改变 `topBarAlpha` 的场合
@@ -215,7 +215,7 @@ class Screen extends Component {
       tilte: '这是标题',
       // 自定义标题栏模块名
       moduleName: 'ModuleName',
-      // 自定义标题栏填充模式，expanded 或 compressed。仅对自定义标题模块生效
+      // 自定义标题栏填充模式，可选项有 `LayoutFittingExpanded` 和  `LayoutFittingCompressed`。仅对自定义标题模块生效
       layoutFitting: 'expanded',
     },
 
@@ -391,7 +391,7 @@ this.props.garden.setStatusBarHidden(false);
 
 ```javascript
 this.props.garden.updateTopBar({
-  topBarStyle: 'light-content', // 状态栏和导航栏前景色，可选值有 light-content 和 dark-content
+  topBarStyle: BarStyleLightContent, // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
   topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
   topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
   topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
