@@ -65,11 +65,11 @@
     [super viewWillLayoutSubviews];
     // 修复一个神奇的 BUG https://github.com/listenzz/HBDNavigationBar/issues/29
     self.topViewController.view.frame = self.topViewController.view.frame;
-    // issue: https://github.com/listenzz/HBDNavigationBar/issues/31
+    // 再修复一个神奇的 BUG: https://github.com/listenzz/HBDNavigationBar/issues/31
     id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
-     UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
-    if (coordinator && self != to) {
+    if (coordinator && from == self.poppingViewController) {
+        // 解决神奇的 BUG 修复后阴影过渡不正常的问题
         [self updateNavigationBarForViewController:from];
     } else {
         [self updateNavigationBarForViewController:self.topViewController];
@@ -140,14 +140,13 @@
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
     UIViewController *vc;
+    self.poppingViewController = self.topViewController;
     if ([self shouldBetterTransitionWithViewController:self.topViewController]) {
         [self prepareForPopTransitionAnimated:animated];
         vc = [super popViewControllerAnimated:NO];
     } else {
         vc = [super popViewControllerAnimated:animated];
     }
-    
-    self.poppingViewController = vc;
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
     return vc;
