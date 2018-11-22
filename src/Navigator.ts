@@ -239,8 +239,8 @@ export class Navigator {
     NavigationModule.setResult(this.sceneId, resultCode, data);
   }
 
-  switchTab(index: number) {
-    this.dispatch('switchTab', { index });
+  switchTab(index: number, popToRoot: boolean = true) {
+    this.dispatch('switchTab', { index, popToRoot });
   }
 
   toggleMenu() {

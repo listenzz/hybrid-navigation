@@ -91,7 +91,22 @@
                 
             }];
         }
+        
+        BOOL popToRoot = [[extras objectForKey:@"popToRoot"] boolValue];
         NSInteger index = [[extras objectForKey:@"index"] integerValue];
+        
+        if (popToRoot && tabBarController.selectedIndex != index) {
+            UIViewController *vc = [tabBarController selectedViewController];
+            UINavigationController *nav = nil;
+            if ([vc isKindOfClass:[UINavigationController class]]) {
+                nav = (UINavigationController *)vc;
+            } else {
+                nav = vc.navigationController;
+            }
+            if (nav) {
+                [nav popToRootViewControllerAnimated:NO];
+            }
+        }
         tabBarController.selectedIndex = index;
     }
 }

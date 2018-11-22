@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import me.listenzz.navigation.AwesomeFragment;
+import me.listenzz.navigation.NavigationFragment;
 import me.listenzz.navigation.TabBarFragment;
 
 public class TabNavigator implements Navigator {
@@ -110,6 +111,13 @@ public class TabNavigator implements Navigator {
                         presented.dismissFragment();
                     }
                     int index = extras.getInt("index");
+                    boolean popToRoot = extras.getBoolean("popToRoot");
+                    if (popToRoot && index != tabBarFragment.getSelectedIndex()) {
+                        NavigationFragment nav = fragment.getNavigationFragment();
+                        if (nav != null) {
+                            nav.popToRootFragment(false);
+                        }
+                    }
                     tabBarFragment.setSelectedIndex(index);
                 }
                 break;
