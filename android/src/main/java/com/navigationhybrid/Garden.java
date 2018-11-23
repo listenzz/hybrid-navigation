@@ -93,7 +93,7 @@ public class Garden {
 
         String statusBarColor = options.getString("statusBarColorAndroid");
         if (statusBarColor == null) {
-            options.getString("statusBarColor");
+            statusBarColor = options.getString("statusBarColor");
         }
         if (!TextUtils.isEmpty(statusBarColor)) {
             style.setStatusBarColor(Color.parseColor(statusBarColor));
