@@ -71,6 +71,8 @@ Navigator.setRoot({
 
 具体应用请查看 [Navigator#setRoot](./navigation.md)
 
+> 注意：如果你需要等待异步数据结果来决定显示什么样的 UI 层级，那么 `ReactRegistry.endRegisterComponent` 也需要放到异步结果的代码中执行，在 `Navigator.setRoot` 之前。注意不要多次调用 `ReactRegistry.endRegisterComponent`。
+
 ### 支持 Redux
 
 想要为每个页面都注入相同的属性，可以利用 `ReactRegistry.startRegisterComponent()` 这个方法，它接受一个函数作为参数，该函数的参数是一个返回我们将要构建的组件的函数，返回值是一个新的组件。

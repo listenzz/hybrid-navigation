@@ -157,15 +157,22 @@ class NavigationDriver extends React.Component<{
 let screenWrapperFunc: ScreenWrapper | undefined;
 
 export class ReactRegistry {
+  static registerEnded: boolean;
   static startRegisterComponent(screenWrapper?: ScreenWrapper) {
     console.info('begin register react component');
     router.clear();
     store.clear();
     screenWrapperFunc = screenWrapper;
+    ReactRegistry.registerEnded = false;
     NavigationModule.startRegisterReactComponent();
   }
 
   static endRegisterComponent() {
+    if (ReactRegistry.registerEnded) {
+      console.warn('Please do not clall ReactRegistry#endRegisterComponent multiple times.');
+      return;
+    }
+    ReactRegistry.registerEnded = true;
     NavigationModule.endRegisterReactComponent();
     console.info('end register react component');
   }
