@@ -23,7 +23,7 @@
 @property (nonatomic, strong) UIVisualEffectView *toFakeBar;
 @property (nonatomic, strong) UIImageView *fromFakeShadow;
 @property (nonatomic, strong) UIImageView *toFakeShadow;
-@property (nonatomic, strong) UIViewController *poppingViewController;
+@property (nonatomic, weak) UIViewController *poppingViewController;
 
 @end
 
@@ -65,13 +65,16 @@
     [super viewWillLayoutSubviews];
     // 修复一个神奇的 BUG https://github.com/listenzz/HBDNavigationBar/issues/29
     self.topViewController.view.frame = self.topViewController.view.frame;
-    // 再修复一个神奇的 BUG: https://github.com/listenzz/HBDNavigationBar/issues/31
+    
     id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
-    UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
-    if (coordinator && from == self.poppingViewController) {
-        // 解决神奇的 BUG 修复后阴影过渡不正常的问题
-        [self updateNavigationBarForViewController:from];
+    if (coordinator) {
+        // 解决 ios 11 手势反弹的问题
+        UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
+        if (from == self.poppingViewController) {
+            [self updateNavigationBarForViewController:from];
+        }
     } else {
+        // 再修复一个神奇的 BUG: https://github.com/listenzz/HBDNavigationBar/issues/31
         [self updateNavigationBarForViewController:self.topViewController];
     }
 }
@@ -267,12 +270,7 @@
     UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
     
-    if (self == to) {
-       // 当 present 或 dismiss 时
-        return;
-    }
-    
-    // fix issue https://github.com/listenzz/HBDNavigationBar/issues/35
+    // 修复一个系统 BUG https://github.com/listenzz/HBDNavigationBar/issues/35
     [self resetButtonLabelInNavBar:self.navigationBar];
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {

@@ -239,7 +239,7 @@ export class Navigator {
     NavigationModule.setResult(this.sceneId, resultCode, data);
   }
 
-  switchTab(index: number, popToRoot: boolean = true) {
+  switchTab(index: number, popToRoot: boolean = false) {
     this.dispatch('switchTab', { index, popToRoot });
   }
 
