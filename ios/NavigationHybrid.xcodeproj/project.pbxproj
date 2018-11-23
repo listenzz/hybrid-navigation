@@ -129,8 +129,8 @@
 		910362D41FE9318600F4DA8E /* NavigationHybrid */ = {
 			isa = PBXGroup;
 			children = (
-				9113EC0A2126E01400B35D06 /* Bridge */,
-				9113EC092126DFAA00B35D06 /* Controller */,
+				9113EC0A2126E01400B35D06 /* ReactBridge */,
+				9113EC092126DFAA00B35D06 /* ViewController */,
 				9113EC082126DF5A00B35D06 /* Navigator */,
 				91C884A2202C3E8600EC0A20 /* HBDUtils.h */,
 				91C884A1202C3E8600EC0A20 /* HBDUtils.m */,
@@ -169,7 +169,7 @@
 			path = Navigator;
 			sourceTree = "<group>";
 		};
-		9113EC092126DFAA00B35D06 /* Controller */ = {
+		9113EC092126DFAA00B35D06 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
 				91C8849B202C3E8600EC0A20 /* HBDDrawerController.h */,
@@ -191,10 +191,10 @@
 				91B4ECF02136466100B8AC24 /* UIViewController+StatusBar.h */,
 				91B4ECF12136466100B8AC24 /* UIViewController+StatusBar.m */,
 			);
-			path = Controller;
+			path = ViewController;
 			sourceTree = "<group>";
 		};
-		9113EC0A2126E01400B35D06 /* Bridge */ = {
+		9113EC0A2126E01400B35D06 /* ReactBridge */ = {
 			isa = PBXGroup;
 			children = (
 				910362E31FE931DF00F4DA8E /* HBDGardenModule.h */,
@@ -204,7 +204,7 @@
 				910362E21FE931DF00F4DA8E /* HBDReactBridgeManager.h */,
 				910362E41FE931DF00F4DA8E /* HBDReactBridgeManager.m */,
 			);
-			path = Bridge;
+			path = ReactBridge;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -1,1 +1,1 @@
-../../../../../../ios/NavigationHybrid/Controller/HBDNavigationController.h
+../../../../../../ios/NavigationHybrid/ViewController/HBDNavigationController.h

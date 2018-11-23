@@ -1,1 +1,1 @@
-../../../../../../ios/NavigationHybrid/Controller/UIViewController+StatusBar.h
+../../../../../../ios/NavigationHybrid/ViewController/UIViewController+StatusBar.h
