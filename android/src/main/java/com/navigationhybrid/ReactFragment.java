@@ -3,7 +3,6 @@ package com.navigationhybrid;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +19,6 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 
-import me.listenzz.navigation.AnimationType;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.PresentAnimation;
 
@@ -98,6 +96,7 @@ public class ReactFragment extends HybridFragment {
     }
 
     private void sendViewAppearEvent(boolean appear) {
+        // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
         if ((isResumed() || isRemoving()) && getReactBridgeManager().isReactModuleRegisterCompleted() && this.appear != appear) {
             this.appear = appear;
             Bundle bundle = new Bundle();
@@ -166,21 +165,15 @@ public class ReactFragment extends HybridFragment {
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume");
-    }
-
     public void signalFirstRenderComplete() {
-        Log.d(TAG, "signalFirstRenderComplete");
+        Log.d(TAG, getModuleName() + " signalFirstRenderComplete");
         startPostponedEnterTransition();
     }
 
     @Override
     public void postponeEnterTransition() {
         super.postponeEnterTransition();
-        Log.d(TAG, "postponeEnterTransition");
+        Log.d(TAG, getModuleName() + " postponeEnterTransition");
         if (getActivity() != null) {
             getActivity().supportPostponeEnterTransition();
         }
@@ -189,7 +182,7 @@ public class ReactFragment extends HybridFragment {
     @Override
     public void startPostponedEnterTransition() {
         super.startPostponedEnterTransition();
-        Log.d(TAG, "startPostponeEnterTransition");
+        Log.d(TAG, getModuleName() + " startPostponeEnterTransition");
         if (getActivity() != null) {
             getActivity().supportStartPostponedEnterTransition();
         }
