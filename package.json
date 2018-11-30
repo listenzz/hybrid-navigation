@@ -24,7 +24,6 @@
     "prepare": "npm run build",
     "tsc": "tsc",
     "start": "npm run syncbv && node node_modules/react-native/local-cli/cli.js start",
-    "lint": "./node_modules/.bin/eslint --fix --ext .js ./ && echo \"lint finished\" ",
     "run:ios": "react-native run-ios --project-path ./playground/ios",
     "start:android": "adb shell am start -n com.navigationhybrid.playground/.MainActivity",
     "run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
@@ -36,25 +35,26 @@
     "react-native": ">=0.57.1"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.9",
-    "@types/react": "^16.4.18",
-    "@types/react-native": "0.57.1",
+    "@types/jest": "^23.3.10",
+    "@types/react": "^16.7.10",
+    "@types/react-native": "^0.57.15",
     "@types/react-test-renderer": "^16.0.3",
     "@babel/core": "^7.1.2",
     "@babel/runtime": "^7.1.2",
     "babel-jest": "23.6.0",
+    "babel-core": "^7.0.0-0",
     "jest": "23.6.0",
-    "metro-react-native-babel-preset": "0.47.0",
-    "react-test-renderer": "16.5.0",
-    "react": "16.5.0",
-    "react-native": "0.57.1",
+    "metro-react-native-babel-preset": "0.50.0",
+    "react-test-renderer": "16.6.1",
+    "react": "16.6.1",
+    "react-native": "0.57.7",
     "react-native-hud-hybrid": "0.25.0",
     "react-native-iphone-x-helper": "^1.0.2",
     "react-native-keyboard-aware-scroll-view": "0.4.1",
     "react-native-vector-icons": "^4.4.3",
     "react-redux": "^5.0.5",
     "redux": "^3.7.2",
-    "typescript": "^3.1.5"
+    "typescript": "^3.2.1"
   },
   "jest": {
     "preset": "react-native"
