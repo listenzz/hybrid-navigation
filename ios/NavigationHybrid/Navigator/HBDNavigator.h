@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "HBDViewController.h"
+#import "../ViewController/HBDViewController.h"
 
 @protocol HBDNavigator <NSObject>
 

@@ -7,8 +7,8 @@
 //
 
 #import <React/RCTBridge.h>
-#import "HBDViewController.h"
-#import "HBDNavigator.h"
+#import "../ViewController/HBDViewController.h"
+#import "../Navigator/HBDNavigator.h"
 
 extern NSString * const ReactModuleRegistryDidCompletedNotification;
 extern const NSInteger ResultOK;
