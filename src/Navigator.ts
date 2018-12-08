@@ -9,6 +9,7 @@ let intercept: NavigationInterceptor;
 let willSetRootCallback: () => void;
 let didSetRootEventSubscription: EmitterSubscription;
 let didSetRootCallback: () => void;
+let shouldSwitchTabSubscription: EmitterSubscription;
 
 interface NavigationProps {
   [propName: string]: any;
@@ -94,6 +95,18 @@ export class Navigator {
       if (didSetRootCallback) {
         didSetRootCallback();
       }
+    });
+
+    if (shouldSwitchTabSubscription) {
+      shouldSwitchTabSubscription.remove();
+    }
+
+    shouldSwitchTabSubscription = EventEmitter.addListener('SWITCH_TAB', event => {
+      Navigator.dispatch(event.sceneId, 'switchTab', {
+        index: event.index,
+        from: event.from,
+        moduleName: event.moduleName,
+      });
     });
 
     const pureLayout = bindBarButtonItemClickEvent(layout, { inLayout: true });

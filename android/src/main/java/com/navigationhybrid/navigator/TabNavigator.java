@@ -56,7 +56,9 @@ public class TabNavigator implements Navigator {
                     ReadableMap options = tabs.getMap("options");
                     if (options.hasKey("selectedIndex")) {
                         int selectedIndex = options.getInt("selectedIndex");
+                        tabBarFragment.setIntercepted(false);
                         tabBarFragment.setSelectedIndex(selectedIndex);
+                        tabBarFragment.setIntercepted(true);
                     }
                 }
                 return tabBarFragment;
@@ -111,14 +113,24 @@ public class TabNavigator implements Navigator {
                         presented.dismissFragment();
                     }
                     int index = extras.getInt("index");
-                    boolean popToRoot = extras.getBoolean("popToRoot");
+
+                    boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
+
                     if (popToRoot && index != tabBarFragment.getSelectedIndex()) {
                         NavigationFragment nav = fragment.getNavigationFragment();
                         if (nav != null) {
                             nav.popToRootFragment(false);
                         }
                     }
-                    tabBarFragment.setSelectedIndex(index);
+
+                    if (tabBarFragment instanceof ReactTabBarFragment) {
+                        ReactTabBarFragment reactTabBarFragment = (ReactTabBarFragment) tabBarFragment;
+                        reactTabBarFragment.setIntercepted(false);
+                        tabBarFragment.setSelectedIndex(index);
+                        reactTabBarFragment.setIntercepted(true);
+                    } else {
+                        tabBarFragment.setSelectedIndex(index);
+                    }
                 }
                 break;
         }

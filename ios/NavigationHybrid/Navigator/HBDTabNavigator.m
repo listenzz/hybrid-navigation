@@ -40,7 +40,9 @@
             if (options) {
                 NSNumber *selectedIndex = [options objectForKey:@"selectedIndex"];
                 if (selectedIndex) {
+                    tabBarController.intercepted = NO;
                     tabBarController.selectedIndex = [selectedIndex integerValue];
+                    tabBarController.intercepted = YES;
                 }
             }
             
@@ -107,7 +109,15 @@
                 [nav popToRootViewControllerAnimated:NO];
             }
         }
-        tabBarController.selectedIndex = index;
+        
+        if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
+            HBDTabBarController *hbdTabBarVC = (HBDTabBarController *)tabBarController;
+            hbdTabBarVC.intercepted = NO;
+            tabBarController.selectedIndex = index;
+            hbdTabBarVC.intercepted = YES;
+        } else {
+            tabBarController.selectedIndex = index;
+        }
     }
 }
 

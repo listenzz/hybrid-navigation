@@ -11,11 +11,22 @@ import android.support.annotation.NonNull;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 
+import java.util.List;
+
+import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.DrawableUtils;
 import me.listenzz.navigation.FragmentHelper;
+import me.listenzz.navigation.NavigationFragment;
 import me.listenzz.navigation.Style;
 import me.listenzz.navigation.TabBar;
 import me.listenzz.navigation.TabBarFragment;
+
+import static com.navigationhybrid.Constants.ARG_SCENE_ID;
+import static com.navigationhybrid.Constants.ON_COMPONENT_RESULT_EVENT;
+import static com.navigationhybrid.Constants.REQUEST_CODE_KEY;
+import static com.navigationhybrid.Constants.RESULT_CODE_KEY;
+import static com.navigationhybrid.Constants.RESULT_DATA_KEY;
+import static com.navigationhybrid.Constants.SWITCH_TAB;
 
 
 /**
@@ -62,6 +73,61 @@ public class ReactTabBarFragment extends TabBarFragment {
             bundle = new Bundle();
         }
         return bundle;
+    }
+
+    public void setIntercepted(boolean intercepted) {
+        this.intercepted = intercepted;
+    }
+
+    private boolean intercepted = true;
+
+    @Override
+    public void setSelectedIndex(int index) {
+        AwesomeFragment selectedFragment = getSelectedFragment();
+        if (selectedFragment == null) {
+            super.setSelectedIndex(index);
+            return;
+        }
+
+        if (selectedFragment instanceof NavigationFragment) {
+            NavigationFragment nav = (NavigationFragment) selectedFragment;
+            selectedFragment = nav.getRootFragment();
+        }
+
+        ReactFragment selectedReactFragment = null;
+        if (selectedFragment instanceof ReactFragment) {
+            selectedReactFragment = (ReactFragment) selectedFragment;
+        }
+
+        // 必须先判断选中的 fragment 是否为 ReactFragment
+        if (selectedReactFragment == null || !this.intercepted) {
+            super.setSelectedIndex(index);
+            return;
+        }
+
+        super.setSelectedIndex(getSelectedIndex());
+
+        List<AwesomeFragment> fragments = getChildFragments();
+        AwesomeFragment fragment = fragments.get(index);
+
+        if (fragment instanceof NavigationFragment) {
+            NavigationFragment nav = (NavigationFragment) fragment;
+            fragment = nav.getRootFragment();
+        }
+
+        ReactFragment reactFragment = null;
+        if (fragment instanceof ReactFragment) {
+            reactFragment = (ReactFragment) fragment;
+        }
+
+        Bundle data = new Bundle();
+        data.putString("from", selectedReactFragment.getModuleName());
+        data.putString(ARG_SCENE_ID, selectedReactFragment.getSceneId());
+        if (reactFragment != null) {
+            data.putString("moduleName", reactFragment.getModuleName());
+        }
+        data.putInt("index", index);
+        getReactBridgeManager().sendEvent(SWITCH_TAB, Arguments.fromBundle(data));
     }
 
     public void setOptions(@NonNull Bundle options) {

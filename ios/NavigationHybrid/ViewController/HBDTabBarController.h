@@ -10,6 +10,8 @@
 
 @interface HBDTabBarController : UITabBarController
 
+@property (nonatomic, assign) BOOL intercepted;
+
 - (void)updateTabBar:(NSDictionary *)options;
 
 @end

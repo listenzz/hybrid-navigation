@@ -41,6 +41,7 @@ RCT_EXPORT_MODULE(NavigationHybrid)
              @"MAKE_SURE_COMPONENT_DID_MOUNT",
              @"ON_DIALOG_BACK_PRESSED", // for Android
              @"ON_ROOT_SET",
+             @"SWITCH_TAB",
              ];
 }
 
