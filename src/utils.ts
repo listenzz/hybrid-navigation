@@ -7,6 +7,7 @@ let actionIdGenerator = 0;
 export interface BindOptions {
   inLayout?: boolean;
   sceneId?: string | undefined;
+  navigatorFactory?: (sceneId: string) => Navigator;
 }
 
 function bindBarButtonItemClickEvent(item = {}, options: BindOptions = { inLayout: false }): void {
@@ -23,8 +24,8 @@ function bindBarButtonItemClickEvent(item = {}, options: BindOptions = { inLayou
           event => {
             if (event.action === action) {
               let navigator = store.getNavigator(event.sceneId);
-              if (!navigator && options.inLayout) {
-                navigator = new Navigator(event.sceneId);
+              if (!navigator && options.inLayout && options.navigatorFactory) {
+                navigator = options.navigatorFactory(event.sceneId);
               }
               navigator && value(navigator);
             }
@@ -47,9 +48,11 @@ function bindBarButtonItemClickEvent(item = {}, options: BindOptions = { inLayou
 }
 
 function removeBarButtonItemClickEventInLayout(): void {
-  store.filterBarButtonItemClickEvent(event => !!event.context.inLayout).forEach(event => {
-    store.removeBarButtonItemClickEvent(event);
-  });
+  store
+    .filterBarButtonItemClickEvent(event => !!event.context.inLayout)
+    .forEach(event => {
+      store.removeBarButtonItemClickEvent(event);
+    });
 }
 
 function removeBarButtonItemClickEvent(sceneId: string): void {

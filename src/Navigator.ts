@@ -109,7 +109,12 @@ export class Navigator {
       });
     });
 
-    const pureLayout = bindBarButtonItemClickEvent(layout, { inLayout: true });
+    const pureLayout = bindBarButtonItemClickEvent(layout, {
+      inLayout: true,
+      navigatorFactory: (sceneId: string) => {
+        return new Navigator(sceneId);
+      },
+    });
     NavigationModule.setRoot(pureLayout, sticky);
   }
 
