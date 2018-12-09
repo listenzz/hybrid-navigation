@@ -80,7 +80,24 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.10.1` - 2018/11/30
+最新版本: `0.10.2` - 2018/12/09
+
+### 0.10.2 - 2018/12/09
+
+- 导航拦截器现在支持拦截 tab 点击事件啦
+
+```js
+Navigator.setInterceptor((action, from, to, extras) => {
+  console.info(`action:${action} from:${from} to:${to}`);
+  // 当返回 true 时，表示你要拦截该操作
+  // 譬如用户想要跳到的页面需要登录，你可以在这里验证用户是否已经登录，否则就重定向到登录页面
+  return false;
+});
+```
+
+注意 `to` 可能为 `undefined` 的情况。譬如通过代码触发的 switchTab，`to` 为 `undefined`。
+
+extras 中有我们需要的额外信息。譬如 sceneId，它表示动作发出的页面， 通过 `Navigator.get(sceneId)` 可以获取对应页面的 navigator，通过该 navigator，你可以执行你想要的导航操作。如果 action 是 switchTab，我们还可以从 extras 中获取 index 这个属性，它表示将要切换到的 tab 的位置，从 0 开始。
 
 ### 0.10.0 - 2018/11/21
 
