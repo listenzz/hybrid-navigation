@@ -11,7 +11,7 @@
 #import <React/RCTLinkingManager.h>
 #import <React/RCTBridgeModule.h>
 #import <NavigationHybrid/NavigationHybrid.h>
-#import <ProgressHUD/HBDProgressHUD.h>
+#import <HudHybrid/HudHybrid.h>
 
 #import "OneNativeViewController.h"
 #import "NativeModalViewController.h"

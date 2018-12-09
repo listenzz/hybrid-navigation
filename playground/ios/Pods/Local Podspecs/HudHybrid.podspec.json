@@ -1,6 +1,6 @@
 {
-  "name": "ProgressHUD",
-  "version": "0.25.0",
+  "name": "HudHybrid",
+  "version": "0.30.0",
   "summary": "progress hud for react native app",
   "authors": {
     "listen": "listenzz@163.com"
@@ -10,15 +10,15 @@
   "platforms": {
     "ios": "8.0"
   },
-  "module_name": "ProgressHUD",
+  "module_name": "HudHybrid",
   "source": {
     "git": "https://github.com/listenzz/react-native-hud.git",
-    "tag": "v0.25.0"
+    "tag": "v0.30.0"
   },
-  "source_files": "ios/ProgressHUD/*.{h,m,swift}",
+  "source_files": "ios/**/*.{h,m,swift}",
   "resource_bundles": {
-    "ProgressHUD": [
-      "ios/ProgressHUD/**/*.{storyboard,xib,xcassets,json,imageset,png}"
+    "HudHybrid": [
+      "ios/*.{storyboard,xib,xcassets,json,imageset,png}"
     ]
   },
   "dependencies": {

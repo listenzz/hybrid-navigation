@@ -6,67 +6,67 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - HudHybrid (0.30.0):
+    - React
   - NavigationHybrid (0.10.1):
     - React
-  - ProgressHUD (0.25.0):
-    - React
-  - React (0.57.1):
-    - React/Core (= 0.57.1)
-  - React/Core (0.57.1):
-    - yoga (= 0.57.1.React)
-  - React/CxxBridge (0.57.1):
+  - React (0.57.7):
+    - React/Core (= 0.57.7)
+  - React/Core (0.57.7):
+    - yoga (= 0.57.7.React)
+  - React/CxxBridge (0.57.7):
     - Folly (= 2016.10.31.00)
     - React/Core
     - React/cxxreact
-  - React/cxxreact (0.57.1):
+  - React/cxxreact (0.57.7):
     - boost-for-react-native (= 1.63.0)
     - Folly (= 2016.10.31.00)
     - React/jschelpers
     - React/jsinspector
-  - React/DevSupport (0.57.1):
+  - React/DevSupport (0.57.7):
     - React/Core
     - React/RCTWebSocket
-  - React/fishhook (0.57.1)
-  - React/jschelpers (0.57.1):
+  - React/fishhook (0.57.7)
+  - React/jschelpers (0.57.7):
     - Folly (= 2016.10.31.00)
     - React/PrivateDatabase
-  - React/jsinspector (0.57.1)
-  - React/PrivateDatabase (0.57.1)
-  - React/RCTActionSheet (0.57.1):
+  - React/jsinspector (0.57.7)
+  - React/PrivateDatabase (0.57.7)
+  - React/RCTActionSheet (0.57.7):
     - React/Core
-  - React/RCTAnimation (0.57.1):
+  - React/RCTAnimation (0.57.7):
     - React/Core
-  - React/RCTBlob (0.57.1):
+  - React/RCTBlob (0.57.7):
     - React/Core
-  - React/RCTImage (0.57.1):
+  - React/RCTImage (0.57.7):
     - React/Core
     - React/RCTNetwork
-  - React/RCTLinkingIOS (0.57.1):
+  - React/RCTLinkingIOS (0.57.7):
     - React/Core
-  - React/RCTNetwork (0.57.1):
+  - React/RCTNetwork (0.57.7):
     - React/Core
-  - React/RCTPushNotification (0.57.1):
+  - React/RCTPushNotification (0.57.7):
     - React/Core
-  - React/RCTSettings (0.57.1):
+  - React/RCTSettings (0.57.7):
     - React/Core
-  - React/RCTText (0.57.1):
+  - React/RCTText (0.57.7):
     - React/Core
-  - React/RCTVibration (0.57.1):
+  - React/RCTVibration (0.57.7):
     - React/Core
-  - React/RCTWebSocket (0.57.1):
+  - React/RCTWebSocket (0.57.7):
     - React/Core
     - React/fishhook
     - React/RCTBlob
   - RNVectorIcons (4.6.0):
     - React
-  - yoga (0.57.1.React)
+  - yoga (0.57.7.React)
 
 DEPENDENCIES:
   - DoubleConversion (from `../../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Folly (from `../../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - HudHybrid (from `../../node_modules/react-native-hud-hybrid`)
   - NavigationHybrid (from `../../`)
-  - ProgressHUD (from `../../node_modules/react-native-hud-hybrid`)
   - React/Core (from `../../node_modules/react-native`)
   - React/CxxBridge (from `../../node_modules/react-native`)
   - React/DevSupport (from `../../node_modules/react-native`)
@@ -94,10 +94,10 @@ EXTERNAL SOURCES:
     :podspec: "../../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../../node_modules/react-native/third-party-podspecs/glog.podspec"
+  HudHybrid:
+    :path: "../../node_modules/react-native-hud-hybrid"
   NavigationHybrid:
     :path: "../../"
-  ProgressHUD:
-    :path: "../../node_modules/react-native-hud-hybrid"
   React:
     :path: "../../node_modules/react-native"
   RNVectorIcons:
@@ -110,12 +110,12 @@ SPEC CHECKSUMS:
   DoubleConversion: bb338842f62ab1d708ceb63ec3d999f0f3d98ecd
   Folly: c89ac2d5c6ab169cd7397ef27485c44f35f742c7
   glog: e8acf0ebbf99759d3ff18c86c292a5898282dcde
+  HudHybrid: f8272285965d770a79cf89c617bd6caf85f4a2a7
   NavigationHybrid: 8ee1e7c0651063c8cc8af32049507946c0180385
-  ProgressHUD: b0a1bd4a82ff14eec84071a9a956e7bbe192b3f9
   React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
   RNVectorIcons: c0dbfbf6068fefa240c37b0f71bd03b45dddac44
   yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
-PODFILE CHECKSUM: 6d95c73202275b663c18e08f31d1dd35e9289d23
+PODFILE CHECKSUM: 1fbfb49a0d6cf34a163a9bf1e46645b9b46d2d55
 
 COCOAPODS: 1.5.3

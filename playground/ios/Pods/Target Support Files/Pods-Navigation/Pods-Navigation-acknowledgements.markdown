@@ -212,11 +212,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    END OF TERMS AND CONDITIONS
 
 
-## NavigationHybrid
+## HudHybrid
 
 MIT License
 
-Copyright (c) 2018 李生 <listenzz@163.com>
+Copyright (c) 2018 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -237,11 +237,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-## ProgressHUD
+## NavigationHybrid
 
 MIT License
 
-Copyright (c) 2018 
+Copyright (c) 2018 李生 <listenzz@163.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
