@@ -125,6 +125,7 @@ export class Navigator {
 
   static dispatch(sceneId: string, action: string, extras: NavigationExtras = {}): void {
     extras.from = extras.from || Navigator.get(sceneId).moduleName;
+    extras.sceneId = sceneId;
     if (!intercept || !intercept(action, extras.from, extras.moduleName, extras)) {
       NavigationModule.dispatch(sceneId, action, extras);
     }
