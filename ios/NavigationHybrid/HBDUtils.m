@@ -154,7 +154,9 @@
 }
 
 + (BOOL)isIphoneX {
-    return [UIScreen mainScreen].bounds.size.height == 812.0;
+    NSArray *xrs =@[ @812, @896 ];
+    BOOL isIPhoneX = [xrs containsObject:@([UIScreen mainScreen].bounds.size.height)];
+    return isIPhoneX;
 }
 
 @end

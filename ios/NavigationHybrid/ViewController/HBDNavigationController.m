@@ -51,6 +51,10 @@
     return self;
 }
 
+- (UIViewController *)childViewControllerForStatusBarHidden {
+    return self.topViewController;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.definesPresentationContext = NO;

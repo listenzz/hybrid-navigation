@@ -129,8 +129,8 @@ static GlobalStyle *globalStyle;
 }
 
 - (void)setStatusBarHidden:(BOOL)hidden forController:(HBDViewController *)controller {
-    controller.hbd_statusBarHidden = hidden;
-    [controller setStatusBarHidden:hidden];
+    controller.hbd_statusBarHidden = hidden && ![HBDUtils isIphoneX];
+    [controller hbd_setNeedsStatusBarHiddenUpdate];
 }
 
 - (void)setPassThroughTouches:(BOOL)passThrough forController:(HBDViewController *)controller {

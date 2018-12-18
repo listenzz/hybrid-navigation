@@ -18,6 +18,10 @@
 
 @implementation HBDTabBarController
 
+- (UIViewController *)childViewControllerForStatusBarHidden {
+    return self.selectedViewController;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.definesPresentationContext = NO;

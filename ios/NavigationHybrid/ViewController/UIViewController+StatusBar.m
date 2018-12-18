@@ -8,7 +8,8 @@
 
 #import "UIViewController+StatusBar.h"
 #import "HBDUtils.h"
-#import "UIViewController+HBD.h"
+#import <CoreTelephony/CTCallCenter.h>
+#import <CoreTelephony/CTCall.h>
 
 @implementation UIViewController (StatusBar)
 
@@ -16,7 +17,6 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         Class class = [self class];
-        hbd_exchangeImplementations(class, @selector(viewWillLayoutSubviews), @selector(hbd_viewWillLayoutSubviews));
         hbd_exchangeImplementations(class, @selector(viewWillAppear:), @selector(hbd_viewWillAppear:));
         hbd_exchangeImplementations(class, @selector(viewDidAppear:), @selector(hbd_viewDidAppear:));
         hbd_exchangeImplementations(class, @selector(viewWillDisappear:), @selector(hbd_viewWillDisappear:));
@@ -26,8 +26,18 @@
 }
 
 - (BOOL)hbd_inCall {
-    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-    return statusBarHeight == 40;
+    if ([HBDUtils isIphoneX]) {
+        CTCallCenter *callCenter = [[CTCallCenter alloc] init] ;
+        for (CTCall *call in callCenter.currentCalls)  {
+            if (call.callState == CTCallStateConnected) {
+                return YES;
+            }
+        }
+        return NO;
+    } else {
+        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        return statusBarHeight == 40;
+    }
 }
 
 - (BOOL)hbd_statusBarHidden {
@@ -39,22 +49,14 @@
     objc_setAssociatedObject(self, @selector(hbd_statusBarHidden), @(hidden), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (void)hbd_viewWillLayoutSubviews {
-    [self hbd_viewWillLayoutSubviews];
-    if (self.hbd_inCall && self.view.window.rootViewController.view.frame.origin.y == 0) {
-        CGRect frame = self.view.window.frame;
-        self.view.window.rootViewController.view.frame = CGRectMake(0, 20, CGRectGetWidth(frame), CGRectGetHeight(frame) - 20);
-    }
-}
-
 - (void)hbd_viewWillAppear:(BOOL)animated {
     [self hbd_viewWillAppear:animated];
-    [self setStatusBarHidden:self.hbd_statusBarHidden];
+    [self hbd_setNeedsStatusBarHiddenUpdate];
 }
 
 -(void)hbd_viewDidAppear:(BOOL)animated {
     [self hbd_viewDidAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:)name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hbd_statusBarFrameWillChange:)name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 }
 
 - (void)hbd_viewWillDisappear:(BOOL)animated {
@@ -69,36 +71,86 @@
 - (void)hbd_viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [self hbd_viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-        if (!self.hbd_inCall && !(self.view.window.rootViewController.view.frame.origin.y == 0)) {
-            self.view.window.rootViewController.view.frame = self.view.window.frame;
+        if ([self hbd_isRootViewController]) {
+            [self hbd_setNeedsStatusBarHiddenUpdate];
         }
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-        if ([self isKindOfClass:NSClassFromString(@"UIInputWindowController")]) {
-            return;
-        }
-        UIViewController * vc = self;
-        while (vc.childViewControllerForStatusBarHidden && ![vc.childViewControllerForStatusBarHidden isKindOfClass:NSClassFromString(@"UIInputWindowController")]) {
-            vc = vc.childViewControllerForStatusBarHidden;
-        }
-        [vc setStatusBarHidden:vc.hbd_statusBarHidden];
-    }];
+    } completion:nil];
 }
 
-- (void)statusBarFrameWillChange:(NSNotification*)notification {
-     [self setStatusBarHidden:self.hbd_statusBarHidden];
+- (void)hbd_statusBarFrameWillChange:(NSNotification*)notification {
+    if ([self hbd_isRootViewController]) {
+        [self hbd_setNeedsStatusBarHiddenUpdate];
+    }
 }
 
-- (void)setStatusBarHidden:(BOOL)hidden {
-    if (!self.childViewControllerForStatusBarHidden && ![self isKindOfClass:NSClassFromString(@"UIInputWindowController")]) {
-        hidden = hidden && !self.hbd_inCall && ![HBDUtils isIphoneX];
-        UIWindow *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
-        if (!statusBar) {
-            return;
+- (BOOL)hbd_isRootViewController {
+    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+    UIViewController *rootViewController = keyWindow.rootViewController;
+    return self == rootViewController;
+}
+
+- (void)hbd_setNeedsStatusBarHiddenUpdate {
+    
+    UIWindow *keyWindow = [UIApplication sharedApplication].keyWindow;
+    UIViewController *rootViewController = keyWindow.rootViewController;
+    
+    if (!rootViewController) {
+        return;
+    }
+    
+    if ( self != rootViewController) {
+        [rootViewController hbd_setNeedsStatusBarHiddenUpdate];
+        return;
+    }
+    
+    UIViewController *vc = self.childViewControllerForStatusBarHidden;
+    while (vc.childViewControllerForStatusBarHidden) {
+        vc = vc.childViewControllerForStatusBarHidden;
+    }
+    
+    if (!vc) {
+        vc = self;
+    }
+    
+    [self hbd_setStatusBarHidden:vc.hbd_statusBarHidden forViewController:vc];
+}
+
+- (void)hbd_setStatusBarHidden:(BOOL)hidden forViewController:(UIViewController *)vc {
+    hidden = hidden && !self.hbd_inCall;
+    UIWindow *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
+    if (!statusBar) {
+        return;
+    }
+    
+    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+    
+    UIStatusBarAnimation animation = vc.preferredStatusBarUpdateAnimation;
+    if (animation == UIStatusBarAnimationFade) {
+        if (!CGAffineTransformIsIdentity(statusBar.transform) && !hidden) {
+            statusBar.alpha = 1.0;
+            [UIView animateWithDuration:0.35 animations:^{
+                statusBar.transform = CGAffineTransformIdentity;
+            }];
+        } else {
+            [UIView animateWithDuration:0.35 animations:^{
+                statusBar.alpha = hidden ? 0 : 1.0;
+            }];
         }
-        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+    } else if (animation == UIStatusBarAnimationSlide) {
+        if (!hidden && statusBar.alpha == 0) {
+            statusBar.alpha = 1.0;
+        }
+        
         [UIView animateWithDuration:0.35 animations:^{
             statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
-        }];
+        } completion:^(BOOL finished) {
+            if (!self.hbd_inCall) {
+                statusBar.alpha = hidden ? 0 : 1.0;
+            }
+        }] ;
+    } else {
+        statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
+        statusBar.alpha = hidden ? 0 : 1.0;
     }
 }
 

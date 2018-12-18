@@ -70,7 +70,7 @@
     
     NSNumber *statusBarHidden = self.options[@"statusBarHidden"];
     if (statusBarHidden) {
-        self.hbd_statusBarHidden = [statusBarHidden boolValue];
+        self.hbd_statusBarHidden = [statusBarHidden boolValue] && ![HBDUtils isIphoneX];
     }
     
     if ([HBDGarden globalStyle].isBackTitleHidden) {
@@ -192,6 +192,10 @@
     if (hideShadow) {
         self.hbd_barShadowHidden = [hideShadow boolValue];
     }
+}
+
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+    return UIStatusBarAnimationSlide;
 }
 
 @end

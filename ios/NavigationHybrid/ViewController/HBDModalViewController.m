@@ -59,6 +59,10 @@
     NSLog(@"%s", __FUNCTION__);
 }
 
+- (UIViewController *)childViewControllerForStatusBarHidden {
+    return self.contentViewController;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.clearColor;
