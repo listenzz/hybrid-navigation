@@ -14,6 +14,10 @@
 
 @property (nonatomic, assign, readonly, getter=isBackTitleHidden) BOOL backTitleHidden;
 
+@property (nonatomic, copy) NSString *badgeColorHexString;
+@property (nonatomic, copy) NSString *tabBarItemColorHexString;
+@property (nonatomic, copy) NSString *tabBarSelectedItemColorHexString;
+
 - (instancetype)initWithOptions:(NSDictionary *)options;
 
 - (void)inflateNavigationBar:(UINavigationBar *)navigationBar;

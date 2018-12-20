@@ -51,6 +51,16 @@ public class Garden {
         return Arguments.toBundle(writableMap);
     }
 
+    static @NonNull Bundle mergeOptions(@NonNull Bundle options, @Nullable Bundle bundle) {
+        if (bundle == null) {
+            return options;
+        }
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(Arguments.fromBundle(options));
+        writableMap.merge(Arguments.fromBundle(bundle));
+        return Arguments.toBundle(writableMap);
+    }
+
     private final HybridFragment fragment;
 
     private final Style style;

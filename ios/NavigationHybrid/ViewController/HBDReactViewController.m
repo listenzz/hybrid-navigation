@@ -143,11 +143,12 @@
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-    [emitter sendEventWithName:@"ON_COMPONENT_RESULT" body:@{@"requestCode": @(requestCode),
-                                                                @"resultCode": @(resultCode),
-                                                                @"data": data ?: [NSNull null],
-                                                                @"sceneId": self.sceneId,
-                                                                }];
+    [emitter sendEventWithName:@"ON_COMPONENT_RESULT" body:@{
+                                                             @"requestCode": @(requestCode),
+                                                             @"resultCode": @(resultCode),
+                                                             @"data": data ?: [NSNull null],
+                                                             @"sceneId": self.sceneId,
+                                                             }];
 }
 
 

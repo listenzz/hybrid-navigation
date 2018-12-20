@@ -89,8 +89,9 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                ReactFragment fragment = (ReactFragment) findFragmentBySceneId(sceneId);
-                if (fragment != null) {
+                AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
+                if (awesomeFragment instanceof ReactFragment) {
+                    ReactFragment fragment = (ReactFragment) awesomeFragment;
                     fragment.signalFirstRenderComplete();
                 }
             }

@@ -26,4 +26,18 @@ public class Constants {
 
     public static final String ON_ROOT_SET = "ON_ROOT_SET";
 
+    public static final String ACTION_SET_RED_POINT = "SET_RED_POINT";
+    public static final String ACTION_SET_TAB_ICON = "SET_TAB_ICON";
+    public static final String ACTION_SET_BADGE_TEXT = "SET_BADGE_TEXT";
+    public static final String ACTION_UPDATE_TAB_BAR = "UPDATE_TAB_BAR";
+
+    public static final String KEY_ACTION = "action";
+    public static final String KEY_INDEX = "index";
+    public static final String KEY_VISIBLE = "visible";
+    public static final String KEY_BADGE_TEXT = "badge_text";
+    public static final String KEY_ICON = "icon";
+    public static final String KEY_ICON_SELECTED = "icon_selected";
+    public static final String KEY_OPTIONS = "options";
+
+
 }

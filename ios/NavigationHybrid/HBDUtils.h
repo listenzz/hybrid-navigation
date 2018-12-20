@@ -43,6 +43,8 @@ UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class class, SEL originalSe
 
 + (UIImage*)imageWithColor:(UIColor*)color;
 
++ (NSString *)iconUriFromUri:(NSString *)uri;
+
 + (BOOL)isIphoneX;
 
 @end

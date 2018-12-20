@@ -10,13 +10,27 @@
 #import "HBDReactViewController.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDUtils.h"
-#import <React/RCTEventEmitter.h>
+#import "UITabBar+Badge.h"
 
-@interface HBDTabBarController () <UITabBarControllerDelegate>
+#import <React/RCTEventEmitter.h>
+#import <React/RCTRootView.h>
+#import <React/RCTRootViewDelegate.h>
+
+@interface HBDTabBarController () <UITabBarControllerDelegate, RCTRootViewDelegate>
+
+@property (nonatomic, strong) RCTRootView *rootView;
+@property(nonatomic, copy) NSDictionary *tabBarOptions;
+@property(nonatomic, assign) BOOL hasCustomTabBar;
 
 @end
 
 @implementation HBDTabBarController
+
+- (instancetype)initWithTabBarOptions:(NSDictionary *)options {
+    self.tabBarOptions = options;
+    self.hasCustomTabBar = YES;
+    return [super init];
+}
 
 - (UIViewController *)childViewControllerForStatusBarHidden {
     return self.selectedViewController;
@@ -27,22 +41,138 @@
     self.definesPresentationContext = NO;
     self.delegate = self;
     self.intercepted = YES;
+    if (self.hasCustomTabBar) {
+        [self customTabBar];
+    }
+}
+
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    if (self.hasCustomTabBar) {
+        [self removeTabBarAboriginal];
+        [self.tabBar bringSubviewToFront:self.rootView];
+    }
+}
+
+- (void)customTabBar {
+    NSString *moduleName = self.tabBarOptions[@"tabBarModuleName"];
+    NSMutableDictionary *props = [[self props] mutableCopy];
+    props[@"selectedIndex"] = self.tabBarOptions[@"selectedIndex"];
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:moduleName initialProperties:props];
+    rootView.backgroundColor = UIColor.clearColor;
+    
+    BOOL sizeIndeterminate = [self.tabBarOptions[@"sizeIndeterminate"] boolValue];
+    if (sizeIndeterminate) {
+        rootView.delegate = self;
+        rootView.sizeFlexibility = RCTRootViewSizeFlexibilityWidthAndHeight;
+    } else {
+        rootView.frame = CGRectMake(0, 1, CGRectGetWidth(self.tabBar.bounds), 48);
+    }
+    [self.tabBar addSubview:rootView];
+    self.rootView = rootView;
+}
+
+- (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView {
+    CGFloat width = rootView.intrinsicContentSize.width;
+    CGFloat height = rootView.intrinsicContentSize.height;
+    CGRect frame = CGRectMake(0, 48 - height, width, height);
+    self.rootView.frame = frame;
+}
+
+- (NSDictionary *)props {
+    NSMutableDictionary *props = [[NSMutableDictionary alloc] init];
+    NSDictionary *options = self.tabBarOptions;
+    props[@"sceneId"] = self.sceneId;
+    props[@"tabs"] = options[@"tabs"];
+    props[@"selectedIndex"] = @(self.selectedIndex);
+    props[@"badgeColor"] = options[@"badgeColor"];
+    
+    NSString *tabBarItemColor = options[@"tabBarItemColor"];
+    NSString *tabBarSelectedItemColor = options[@"tabBarSelectedItemColor"];
+    NSString *tabBarUnselectedItemColor = options[@"tabBarUnselectedItemColor"];
+    if (tabBarItemColor) {
+        props[@"itemColor"] = tabBarItemColor;
+        if (tabBarSelectedItemColor) {
+            props[@"selectedItemColor"] = tabBarSelectedItemColor;
+        }
+        if (tabBarUnselectedItemColor) {
+            props[@"itemColor"] = tabBarUnselectedItemColor;
+            props[@"selectedItemColor"] = tabBarItemColor;
+        }
+    }
+    return props;
+}
+
+- (void)removeTabBarAboriginal {
+    NSUInteger count = self.tabBar.subviews.count;
+    for (NSInteger i = count -1; i > -1; i --) {
+        UIView *view = self.tabBar.subviews[i];
+        NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
+        if ([viewName isEqualToString:@"UITabBarButton"]) {
+            [view removeFromSuperview];
+        }
+    }
+}
+
+- (void)setSelectedIndex:(NSUInteger)selectedIndex {
+    [super setSelectedIndex:selectedIndex];
+    if (self.hasCustomTabBar && self.rootView) {
+        NSMutableDictionary *props = [[self props] mutableCopy];
+        props[@"selectedIndex"] = @(selectedIndex);
+        self.rootView.appProperties = props;
+    }
+}
+
+- (void)setBadgeText:(NSString *)text atIndex:(NSInteger)index {
+    if (self.hasCustomTabBar) {
+        NSMutableDictionary *tab = [self tabAtIndex:index];
+        tab[@"badgeText"] = text ?: NSNull.null;
+        self.rootView.appProperties = [self props];
+    } else {
+        UIViewController *vc = self.viewControllers[index];
+        vc.tabBarItem.badgeValue = text;
+    }
+}
+
+- (void)setRedPointVisible:(BOOL)visible atIndex:(NSInteger)index {
+    if (self.hasCustomTabBar) {
+        NSMutableDictionary *tab = [self tabAtIndex:index];
+        tab[@"remind"] = @(visible);
+        self.rootView.appProperties = [self props];
+    } else {
+        UITabBar *tabBar = self.tabBar;
+        if (visible) {
+            [tabBar showRedPointAtIndex:index];
+        } else {
+            [tabBar hideRedPointAtIndex:index];
+        }
+    }
+}
+
+- (NSMutableDictionary *)tabAtIndex:(NSInteger)index {
+    NSMutableDictionary *options = [self.tabBarOptions mutableCopy];
+    NSMutableArray *tabs = [options[@"tabs"] mutableCopy];
+    options[@"tabs"] = tabs;
+    NSMutableDictionary *tab = [tabs[index] mutableCopy];
+    tabs[index] = tab;
+    self.tabBarOptions = options;
+    return tab;
+}
+
+- (void)updateTabBarItem:(NSDictionary *)tabItem atIndex:(NSInteger)index {
+    if (self.hasCustomTabBar) {
+        NSMutableDictionary *tab = [self tabAtIndex:index];
+        tab[@"icon"] = [HBDUtils iconUriFromUri:tabItem[@"icon"][@"uri"]];
+        tab[@"selectedIcon"] = [HBDUtils iconUriFromUri:tabItem[@"selectedIcon"][@"uri"]];
+        self.rootView.appProperties = [self props];
+    } else {
+        UIViewController *tab = [self.viewControllers objectAtIndex:index];
+        [tab hbd_updateTabBarItem:tabItem];
+    }
 }
 
 - (void)updateTabBar:(NSDictionary *)options {
     UITabBar *tabBar = self.tabBar;
-    
-    NSString *tabBarItemColor = options[@"tabBarItemColor"];
-    if (tabBarItemColor) {
-        tabBar.tintColor = [HBDUtils colorWithHexString:tabBarItemColor];
-        NSString *tabBarUnselectedItemColor = options[@"tabBarUnselectedItemColor"];
-        if (tabBarUnselectedItemColor) {
-            if (@available(iOS 10.0, *)) {
-                tabBar.unselectedItemTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
-            }
-        }
-    }
-    
     NSString *tabBarColor = [options objectForKey:@"tabBarColor"];
     if (tabBarColor) {
         [tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]]];
@@ -61,6 +191,35 @@
         tabBar.shadowImage = image;
     }
     
+    NSString *tabBarItemColor = options[@"tabBarItemColor"];
+    NSString *tabBarUnselectedItemColor = options[@"tabBarUnselectedItemColor"];
+    if (tabBarItemColor && tabBarUnselectedItemColor) {
+        if (self.hasCustomTabBar) {
+            NSMutableDictionary *options = [self.tabBarOptions mutableCopy];
+            options[@"tabBarItemColor"] = tabBarItemColor;
+            options[@"tabBarUnselectedItemColor"] = tabBarUnselectedItemColor ?: NSNull.null;
+            self.tabBarOptions = options;
+            self.rootView.appProperties = [self props];
+        } else {
+             tabBar.tintColor = [HBDUtils colorWithHexString:tabBarItemColor];
+            if (@available(iOS 10.0, *)) {
+                tabBar.unselectedItemTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
+            }
+        }
+    }
+}
+
+- (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
+    [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
+    if (self.hasCustomTabBar) {
+        RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
+        [emitter sendEventWithName:@"ON_COMPONENT_RESULT" body:@{
+                                                                 @"requestCode": @(requestCode),
+                                                                 @"resultCode": @(resultCode),
+                                                                 @"data": data ?: [NSNull null],
+                                                                 @"sceneId": self.sceneId,
+                                                                 }];
+    }
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {

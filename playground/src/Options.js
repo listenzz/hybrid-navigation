@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native';
+import { Navigator } from 'react-native-navigation-hybrid';
 
 import styles from './Styles';
 import fontUri from './FontUtil';
+import getLayout from './layout';
 
 export default class Options extends Component {
   static navigationItem = {
@@ -30,6 +32,7 @@ export default class Options extends Component {
     tabItem: {
       title: 'Options',
       icon: { uri: fontUri('FontAwesome', 'leaf', 24) },
+      // icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
       hideTabBarWhenPush: true,
     },
   };
@@ -47,6 +50,7 @@ export default class Options extends Component {
     this.replaceTabIcon = this.replaceTabIcon.bind(this);
     this.replaceTabItemColor = this.replaceTabItemColor.bind(this);
     this.setTabBarColor = this.setTabBarColor.bind(this);
+    this.changeTabBar = this.changeTabBar.bind(this);
     this.state = {
       leftButtonShowText: true,
       rightButtonEnabled: false,
@@ -106,11 +110,11 @@ export default class Options extends Component {
   toggleTabBadge() {
     if (this.state.badge) {
       this.setState({ badge: null });
-      this.props.garden.setTabBadge(1, null);
+      this.props.garden.setTabBadgeText(1, null);
       this.props.garden.hideRedPointAtIndex(0);
     } else {
       this.setState({ badge: '5' });
-      this.props.garden.setTabBadge(1, '99');
+      this.props.garden.setTabBadgeText(1, '99');
       this.props.garden.showRedPointAtIndex(0);
     }
   }
@@ -124,29 +128,53 @@ export default class Options extends Component {
   }
 
   replaceTabIcon() {
-    this.props.garden.replaceTabIcon(
-      1,
-      { uri: 'flower', scale: PixelRatio.get() }
-      //{ uri: 'blue_solid', scale: PixelRatio.get() }
-      // { uri: 'red_ring', scale: PixelRatio.get() }
-    );
+    if (this.icon === 'flower') {
+      this.icon = '';
+      this.props.garden.replaceTabIcon(1, { uri: fontUri('FontAwesome', 'leaf', 24) });
+    } else {
+      this.icon = 'flower';
+      this.props.garden.replaceTabIcon(1, { uri: 'flower', scale: PixelRatio.get() });
+    }
   }
 
   replaceTabItemColor() {
-    this.props.garden.updateTabBar({
-      tabBarItemColor: '#8BC34A',
-      tabBarUnselectedItemColor: '#BDBDBD',
-    });
+    if (this.tabItemColor === '#8BC34A') {
+      this.tabItemColor = '#FF5722';
+      this.props.garden.updateTabBar({
+        tabBarItemColor: '#FF5722',
+        tabBarUnselectedItemColor: '#BDBDBD',
+      });
+    } else {
+      this.tabItemColor = '#8BC34A';
+      this.props.garden.updateTabBar({
+        tabBarItemColor: '#8BC34A',
+        tabBarUnselectedItemColor: '#BDBDBD',
+      });
+    }
   }
 
   setTabBarColor() {
-    this.props.garden.updateTabBar({
-      tabBarColor: '#EEEEEE',
-      tabBarShadowImage: {
-        // color: '#FF0000',
-        image: Image.resolveAssetSource(require('./images/divider.png')),
-      },
-    });
+    if (this.tabBarColor === '#EEEEEE') {
+      this.tabBarColor = '#FFFFFF';
+      this.props.garden.updateTabBar({
+        tabBarColor: '#FFFFFF',
+        tabBarShadowImage: {
+          color: '#F0F0F0',
+        },
+      });
+    } else {
+      this.tabBarColor = '#EEEEEE';
+      this.props.garden.updateTabBar({
+        tabBarColor: '#EEEEEE',
+        tabBarShadowImage: {
+          image: Image.resolveAssetSource(require('./images/divider.png')),
+        },
+      });
+    }
+  }
+
+  changeTabBar() {
+    Navigator.setRoot(getLayout());
   }
 
   render() {
@@ -221,6 +249,10 @@ export default class Options extends Component {
 
           <TouchableOpacity onPress={this.setTabBarColor} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>change tab bar color</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.changeTabBar} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>change TabBar</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

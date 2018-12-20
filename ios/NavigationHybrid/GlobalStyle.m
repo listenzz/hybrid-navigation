@@ -134,22 +134,30 @@
         
         // tabBar tintColor
         NSString *tabBarItemColor = self.options[@"tabBarItemColor"];
+        self.tabBarItemColorHexString = @"#BDBDBD";
+        self.tabBarSelectedItemColorHexString = @"#FF5722";
         if (tabBarItemColor) {
             self.tabBarTintColor = [HBDUtils colorWithHexString:tabBarItemColor];
+            self.tabBarSelectedItemColorHexString = tabBarItemColor;
             NSString *tabBarSelectedItemColor = self.options[@"tabBarSelectedItemColor"];
             if (tabBarSelectedItemColor) {
                 self.tabBarTintColor = [HBDUtils colorWithHexString:tabBarSelectedItemColor];
                 self.tabBarUnselectedTintColor = [HBDUtils colorWithHexString:tabBarItemColor];
+                self.tabBarItemColorHexString = tabBarItemColor;
+                self.tabBarSelectedItemColorHexString = tabBarSelectedItemColor;
             }
         }
         
+        NSString *badgeColor = self.options[@"badgeColor"];
+        self.badgeColorHexString = @"#FF3B30";
         if (@available(iOS 10.0, *)) {
-            NSString *badgeColor = self.options[@"badgeColor"];
             if (badgeColor) {
                 [UITabBarItem appearance].badgeColor = [HBDUtils colorWithHexString:badgeColor];
+                self.badgeColorHexString = badgeColor;
             }
         } else {
             // Fallback on earlier versions
+            
         }
     }
     return self;

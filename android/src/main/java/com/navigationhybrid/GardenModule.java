@@ -3,14 +3,12 @@ package com.navigationhybrid;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 
@@ -27,12 +25,21 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.DrawableUtils;
 import me.listenzz.navigation.DrawerFragment;
 import me.listenzz.navigation.FragmentHelper;
-import me.listenzz.navigation.TabBar;
 import me.listenzz.navigation.TabBarFragment;
 
+import static com.navigationhybrid.Constants.ACTION_SET_BADGE_TEXT;
+import static com.navigationhybrid.Constants.ACTION_SET_RED_POINT;
+import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;
+import static com.navigationhybrid.Constants.ACTION_UPDATE_TAB_BAR;
+import static com.navigationhybrid.Constants.KEY_ACTION;
+import static com.navigationhybrid.Constants.KEY_BADGE_TEXT;
+import static com.navigationhybrid.Constants.KEY_ICON;
+import static com.navigationhybrid.Constants.KEY_ICON_SELECTED;
+import static com.navigationhybrid.Constants.KEY_INDEX;
+import static com.navigationhybrid.Constants.KEY_OPTIONS;
+import static com.navigationhybrid.Constants.KEY_VISIBLE;
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_DARK_CONTENT;
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_LIGHT_CONTENT;
 
@@ -225,8 +232,11 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
                 if (fragment != null && fragment.getView() != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                    if (tabBarFragment instanceof ReactTabBarFragment) {
-                        ((ReactTabBarFragment) tabBarFragment).updateTabBar(readableMap);
+                    if (tabBarFragment != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(KEY_ACTION, ACTION_UPDATE_TAB_BAR);
+                        bundle.putBundle(KEY_OPTIONS, Arguments.toBundle(readableMap));
+                        tabBarFragment.updateTabbar(bundle);
                     }
                 }
             }
@@ -242,20 +252,12 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 if (fragment != null && fragment.getView() != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
-                        TabBar tabBar = tabBarFragment.getTabBar();
-                        Drawable drawable = drawableFromReadableMap(tabBar.getContext(), icon);
-                        if (drawable == null) {
-                            return;
-                        }
-                        Drawable selectedDrawable = drawableFromReadableMap(tabBar.getContext(), selectedIcon);
-                        tabBar.setTabIcon(index, drawable, selectedDrawable);
-                        AwesomeFragment f = tabBarFragment.getChildFragments().get(index);
-                        f.getTabBarItem().iconUri = icon.getString("uri");
-                        if (selectedIcon != null && selectedIcon.hasKey("uri")) {
-                            tabBar.setTabIcon(index, selectedDrawable, drawable);
-                        } else {
-                            tabBar.setTabIcon(index, drawable, null);
-                        }
+                        Bundle bundle = new Bundle();
+                        bundle.putString(KEY_ACTION, ACTION_SET_TAB_ICON);
+                        bundle.putInt(KEY_INDEX, index);
+                        bundle.putBundle(KEY_ICON, Arguments.toBundle(icon));
+                        bundle.putBundle(KEY_ICON_SELECTED, Arguments.toBundle(selectedIcon));
+                        tabBarFragment.updateTabbar(bundle);
                     }
                 }
             }
@@ -263,7 +265,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setTabBadge(final String sceneId, final int index, final String text) {
+    public void setTabBadgeText(final String sceneId, final int index, final String text) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -271,8 +273,11 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 if (fragment != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
-                        TabBar tabBar = tabBarFragment.getTabBar();
-                        tabBar.setBadge(index, text);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(KEY_ACTION, ACTION_SET_BADGE_TEXT);
+                        bundle.putInt(KEY_INDEX, index);
+                        bundle.putString(KEY_BADGE_TEXT, text);
+                        tabBarFragment.updateTabbar(bundle);
                     }
                 }
             }
@@ -288,8 +293,11 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 if (fragment != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
-                        TabBar tabBar = tabBarFragment.getTabBar();
-                        tabBar.setRedPoint(index, true);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(KEY_ACTION, ACTION_SET_RED_POINT);
+                        bundle.putInt(KEY_INDEX, index);
+                        bundle.putBoolean(KEY_VISIBLE, true);
+                        tabBarFragment.updateTabbar(bundle);
                     }
                 }
             }
@@ -305,8 +313,11 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 if (fragment != null) {
                     TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                     if (tabBarFragment != null) {
-                        TabBar tabBar = tabBarFragment.getTabBar();
-                        tabBar.setRedPoint(index, false);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(KEY_ACTION, ACTION_SET_RED_POINT);
+                        bundle.putInt(KEY_INDEX, index);
+                        bundle.putBoolean(KEY_VISIBLE, false);
+                        tabBarFragment.updateTabbar(bundle);
                     }
                 }
             }
@@ -327,14 +338,6 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 }
             }
         });
-    }
-
-    private Drawable drawableFromReadableMap(Context context, ReadableMap icon) {
-        if (icon != null && icon.hasKey("uri")) {
-            String uri = icon.getString("uri");
-            return DrawableCompat.wrap(DrawableUtils.fromUri(context, uri));
-        }
-        return null;
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {

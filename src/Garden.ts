@@ -176,8 +176,13 @@ export class Garden {
     GardenModule.replaceTabIcon(this.sceneId, index, icon, inactiveIcon);
   }
 
+  setTabBadgeText(index: number, text: string) {
+    GardenModule.setTabBadgeText(this.sceneId, index, text);
+  }
+
   setTabBadge(index: number, text: string) {
-    GardenModule.setTabBadge(this.sceneId, index, text);
+    console.warn('setTabBadge 已经弃用，将在下一个版本移除，请使用 setTabBadgeText');
+    GardenModule.setTabBadgeText(this.sceneId, index, text);
   }
 
   showRedPointAtIndex(index: number) {

@@ -9,9 +9,9 @@ import com.facebook.react.bridge.ReadableMap;
 import com.navigationhybrid.HybridFragment;
 import com.navigationhybrid.ReactBridgeManager;
 import com.navigationhybrid.ReactTabBarFragment;
+import com.navigationhybrid.ReactTabBarProvider;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,6 +42,7 @@ public class TabNavigator implements Navigator {
             ReadableMap tabs = layout.getMap(name());
             ReadableArray children = tabs.getArray("children");
             List<AwesomeFragment> fragments = new ArrayList<>();
+
             for (int i = 0, size = children.size(); i < size; i++) {
                 ReadableMap tab = children.getMap(i);
                 AwesomeFragment awesomeFragment = getReactBridgeManager().createFragment(tab);
@@ -49,9 +50,11 @@ public class TabNavigator implements Navigator {
                     fragments.add(awesomeFragment);
                 }
             }
+
             if (fragments.size() > 0) {
                 ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
                 tabBarFragment.setChildFragments(fragments);
+                Bundle bundle = new Bundle();
                 if (tabs.hasKey("options")) {
                     ReadableMap options = tabs.getMap("options");
                     if (options.hasKey("selectedIndex")) {
@@ -59,8 +62,22 @@ public class TabNavigator implements Navigator {
                         tabBarFragment.setIntercepted(false);
                         tabBarFragment.setSelectedIndex(selectedIndex);
                         tabBarFragment.setIntercepted(true);
+                        bundle.putInt("selectedIndex", selectedIndex);
+                    }
+
+                    if (options.hasKey("tabBarModuleName")) {
+                        String tabBarModuleName = options.getString("tabBarModuleName");
+                        bundle.putString("tabBarModuleName", tabBarModuleName);
+                        tabBarFragment.setTabBarProvider(new ReactTabBarProvider());
+                    }
+
+                    if (options.hasKey("sizeIndeterminate")) {
+                        boolean sizeIndeterminate = options.getBoolean("sizeIndeterminate");
+                        bundle.putBoolean("sizeIndeterminate", sizeIndeterminate);
                     }
                 }
+
+                tabBarFragment.setOptions(bundle);
                 return tabBarFragment;
             } else {
                 throw new IllegalArgumentException("tabs layout should has a child at least");

@@ -12,6 +12,14 @@
 
 @property (nonatomic, assign) BOOL intercepted;
 
+- (instancetype)initWithTabBarOptions:(NSDictionary *)options;
+
 - (void)updateTabBar:(NSDictionary *)options;
+
+- (void)setBadgeText:(NSString *)text atIndex:(NSInteger)index;
+
+- (void)setRedPointVisible:(BOOL)visible atIndex:(NSInteger)index;
+
+- (void)updateTabBarItem:(NSDictionary *)tabItem atIndex:(NSInteger)index;
 
 @end

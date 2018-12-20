@@ -32,6 +32,8 @@ import Transparent from './src/Transparent';
 import HUDTest from './src/HUDText';
 import ReactModal from './src/ReactModal';
 import StatusBarHidden from './src/StatusBarHidden';
+import CustomTabBar from './src/CustomTabBar';
+import BulgeTabBar from './src/BulgeTabBar';
 
 // 设置全局样式
 Garden.setStyle({
@@ -58,6 +60,7 @@ Garden.setStyle({
     color: '#F0F0F0',
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
+
   //tabBarItemColor: '#CCCCCC',
   //tabBarSelectedItemColor: '#00ff00',
 });
@@ -115,6 +118,9 @@ ReactRegistry.registerComponent('Transparent', () => Transparent);
 ReactRegistry.registerComponent('HUDTest', () => HUDTest);
 ReactRegistry.registerComponent('ReactModal', () => ReactModal, { path: 'modal', mode: 'modal' });
 
+ReactRegistry.registerComponent('CustomTabBar', () => CustomTabBar);
+ReactRegistry.registerComponent('BulgeTabBar', () => BulgeTabBar);
+
 // 完成注册组件
 ReactRegistry.endRegisterComponent();
 
@@ -130,7 +136,18 @@ const optionsStack = {
   },
 };
 
-const tabs = { tabs: { children: [navigationStack, optionsStack] } };
+const tabs = {
+  tabs: {
+    children: [navigationStack, optionsStack],
+    options: {
+      //tabBarModuleName: 'BulgeTabBar',
+      //sizeIndeterminate: true,
+      //tabBarModuleName: 'CustomTabBar',
+      //sizeIndeterminate: false,
+      //selectedIndex: 1,
+    },
+  },
+};
 
 const menu = { screen: { moduleName: 'Menu' } };
 

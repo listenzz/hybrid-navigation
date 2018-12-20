@@ -62,10 +62,16 @@ Navigator.setRoot({
     ],
     options: {
       selectedIndex: 1, // 默认选中的 tab
+      tabBarModuleName: 'CustomTabBar',
+      sizeIndeterminate: true, // 如果希望自定义 TabBar 实现中间凸起效果，必须指定这个字段。
     },
   },
 });
 ```
+
+tabs 有一个默认的 TabBar， 支持未读消息数，小红点提示等功能。你也可以通过在 options 中传递 tabBarModuleName 来实现自定义 TabBar，但此时未读消息数，小红点提示等功能均需要你自己实现。如何自定义 TabBar, 请参考[自定义 TabBar](./custom-tabbar.md)。
+
+> 注意，tabBarModuleName 指定的组件需要和其它普通页面一样，通过 `ReactRegistry.registerComponent` 进行注册
 
 抽屉(drawer) 起源于 Android，不过我们在 iOS 也支持了它。
 
@@ -297,7 +303,7 @@ A 页面通过实现 `onComponentResult` 方法来接收结果（略）。
 
 - dismiss
 
-关闭 `present` 出来的页面，如果该页面是容器，可以在容器的任何子页面调用此法。
+关闭 `present` 出来的页面，如果该页面是容器，可以在容器的任何子页面调用此方法。
 
 在调用 `this.props.navigator.dismiss` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。
 
@@ -536,6 +542,13 @@ tabs 支持以下导航操作
 
 ```javascript
 this.props.navigator.switchTab(1);
+```
+
+该方法还接受第二个参数，是个布尔值，用来控制在切换到其它 tab 时，当前 tab (该 tab 是个 stack) 要不要重置到根页面，默认是 false.
+
+```javascript
+// 当前 tab 会调用 popToRoot
+this.props.navigator.switchTab(1, true);
 ```
 
 ## drawer

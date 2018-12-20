@@ -182,11 +182,15 @@ public class GlobalStyle {
         String tabBarItemColor = options.getString("tabBarItemColor");
         if (tabBarItemColor != null) {
             style.setTabBarItemColor(tabBarItemColor);
+        } else {
+            style.setTabBarItemColor("#BDBDBD");
         }
 
         String tabBarSelectedItemColor = options.getString("tabBarSelectedItemColor");
         if (tabBarSelectedItemColor != null) {
             style.setTabBarSelectedItemColor(tabBarSelectedItemColor);
+        } else {
+            style.setTabBarSelectedItemColor("#FF5722");
         }
 
         // tabBarShadowImage

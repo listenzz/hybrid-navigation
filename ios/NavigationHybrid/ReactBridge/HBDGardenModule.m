@@ -12,7 +12,6 @@
 #import "HBDTabBarController.h"
 #import "HBDGarden.h"
 #import "HBDUtils.h"
-#import "UITabBar+Badge.h"
 
 #import <React/RCTLog.h>
 
@@ -112,54 +111,64 @@ RCT_EXPORT_METHOD(updateTopBar:(NSString *)sceneId item:(NSDictionary *)item) {
 RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
     NSLog(@"updateTabBar: %@", item);
     UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
-    UITabBarController *tabBarVC = vc.tabBarController;
+    UITabBarController *tabBarVC = [self tabBarControllerWithViewController:vc];
     if (tabBarVC && [tabBarVC isKindOfClass:[HBDTabBarController class]]) {
         [((HBDTabBarController *)tabBarVC) updateTabBar:item];
     }
 }
 
-RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId index:(NSInteger)index text:(NSString *)text) {
+RCT_EXPORT_METHOD(setTabBadgeText:(NSString *)sceneId index:(NSInteger)index text:(NSString *)text) {
     UIViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
-    UITabBarController *tabBarController = vc.tabBarController;
-    if (tabBarController) {
-        UIViewController *vc = tabBarController.viewControllers[index];
-        vc.tabBarItem.badgeValue = text;
+    UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
+    if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
+        HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
+        [tabBarVC setBadgeText:text atIndex:index];
     }
-    NSLog(@"setTabBadge: %ld", (long)index);
+    NSLog(@"setTabBadgeText: %ld, %@", (long)index, text);
 }
 
 RCT_EXPORT_METHOD(showRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
     UIViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
-    UITabBarController *tabBarController = vc.tabBarController;
-    if (tabBarController) {
-        UITabBar *tabBar = tabBarController.tabBar;
-        [tabBar showRedPointAtIndex:index];
+    UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
+    if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
+        HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
+        [tabBarVC setRedPointVisible:YES atIndex:index];
     }
     NSLog(@"showRedPointAtIndex: %ld", (long)index);
 }
 
 RCT_EXPORT_METHOD(hideRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
     UIViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
-    UITabBarController *tabBarController = vc.tabBarController;
-    if (tabBarController) {
-        UITabBar *tabBar = tabBarController.tabBar;
-        [tabBar hideRedPointAtIndex:index];
+    UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
+    if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
+        HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
+        [tabBarVC setRedPointVisible:NO atIndex:index];
     }
     NSLog(@"hideRedPointAtIndex: %ld", (long)index);
 }
 
 RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon:(NSDictionary *)icon inactiveIcon:(NSDictionary *)selectedIcon) {
     UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
-    UITabBarController *tabBarVC = vc.tabBarController;
-    if (tabBarVC) {
-        UIViewController *tab = [tabBarVC.viewControllers objectAtIndex:index];
+    UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
+    if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
+        HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
         NSMutableDictionary *options = [@{@"icon": icon} mutableCopy];
         if (selectedIcon) {
             [options setObject:selectedIcon forKey:@"selectedIcon"];
         }
-        [tab hbd_updateTabBarItem:options];
+        [tabBarVC updateTabBarItem:options atIndex:index];
     }
     NSLog(@"replaceTabIcon: %ld", (long)index);
+}
+
+- (UITabBarController *)tabBarControllerWithViewController:(UIViewController *)vc {
+    UITabBarController *tabBarController;
+    if ([vc isKindOfClass:[UITabBarController class]]) {
+        tabBarController = (UITabBarController *)vc;
+    } else {
+        tabBarController = vc.tabBarController;
+    }
+    return tabBarController;
 }
 
 RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) {

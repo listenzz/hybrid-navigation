@@ -115,7 +115,13 @@
 }
 
 - (UINavigationController *)navigationControllerForController:(UIViewController *)controller {
-    UINavigationController *nav = controller.navigationController;;
+    UINavigationController *nav = nil;
+    if ([controller isKindOfClass:[UINavigationController class]]) {
+        nav = (UINavigationController *)controller;
+    } else {
+        nav = controller.navigationController;
+    }
+    
     if (!nav && controller.drawerController) {
         HBDDrawerController *drawer = controller.drawerController;
         if ([drawer.contentController isKindOfClass:[UITabBarController class]]) {

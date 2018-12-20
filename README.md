@@ -80,7 +80,11 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.10.3` - 2018/12/13
+最新版本: `0.11.0` - 2018/12/23
+
+### 0.11.0 - 2018/12/23
+
+- 支持[自定义 TabBar](./doc/custom-tabbar.md)
 
 ### 0.10.2 - 2018/12/09
 
@@ -128,77 +132,3 @@ navigationItem 添加 `navigationBarColorAndroid` 可配置项，用于修改虚
 - `currentRoute` 从 `router` 移动到 `Navigator`
 
 - 移除了所有已经弃用的 API
-
-### 0.8.31 - 2018/9/26
-
-#### iOS
-
-```objc
-// HBDNavigator.h
-- (HBDViewController *)primaryChildViewControllerInController:(UIViewController *)vc;
-```
-
-方法签名变更为
-
-```objc
-// HBDNavigator.h
-- (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc;
-```
-
-#### Android
-
-```java
-// Navigator.java
-boolean primaryChildFragment(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer);
-```
-
-方法签名更改为：
-
-```java
-// Navigator.java
-boolean primaryFragment(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal);
-```
-
-### 0.8.30 - 2018/9/26
-
-#### iOS
-
-```objc
-// HBDNavigator.h
-- (BOOL)buildRouteGraphWithController:(UIViewController *)vc graph:(NSMutableArray *)container;
-```
-
-方法签名变更为
-
-```objc
-// HBDNavigator.h
-- (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root;
-```
-
-`HBDReactBridgeManager` 中移除了 `isReactModuleInRegistry` 方法，添加了 `reactModuleRegisterCompleted` 属性
-
-#### Android
-
-```java
-// Navigator.java
-boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> graph, ArrayList<Bundle> modalContainer);
-```
-
-方法签名更改为：
-
-```java
-// Navigator.java
-boolean buildRouteGraph(AwesomeFragment fragment, ArrayList<Bundle> root, ArrayList<Bundle> modal);
-```
-
-`ReactBrideManager` 中 `instance` 静态变量不再公开，提供 `get` 方法来获取单例实例
-
-`ReactModuleRegistryListener` 重构为 `ReactModuleRegisterListener`
-
-移除了 `ReactBrideManager` 中的 `isReactModuleInRegistry` 变量以及相关方法，添加了 `reactModuleRegisterCompleted` 变量及相关方法
-
-### 0.8.29 - 2018/9/21
-
-安卓推荐用 HybridReactNativeHost 替代 ReactNativeHost，它为 reload bundle 做了些优化
-
-Navigator 添加 get 和 current 静态方法，帮助我们随时随地获取我们想要的 navigator.

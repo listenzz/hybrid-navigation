@@ -59,8 +59,10 @@ RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionar
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
     // NSLog(@"signalFirstRenderComplete sceneId:%@",sceneId);
-    HBDReactViewController *vc =  (HBDReactViewController *)[[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
-    [vc signalFirstRenderComplete];
+    UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    if ([vc isKindOfClass:[HBDReactViewController class]]) {
+        [(HBDReactViewController *)vc signalFirstRenderComplete];
+    }
 }
 
 RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky) {

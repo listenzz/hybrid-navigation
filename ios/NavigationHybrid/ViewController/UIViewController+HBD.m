@@ -22,8 +22,6 @@
     });
 }
 
-
-
 - (void)hbd_dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
     UIViewController *presented = self.presentedViewController;
     UIViewController *presenting = presented.presentingViewController;

@@ -9,6 +9,9 @@
 #import "HBDTabNavigator.h"
 #import "HBDTabBarController.h"
 #import "HBDReactBridgeManager.h"
+#import "HBDUtils.h"
+#import "HBDGarden.h"
+#import "GlobalStyle.h"
 
 @implementation HBDTabNavigator
 
@@ -24,6 +27,11 @@
     NSDictionary *tabs = [layout objectForKey:self.name];
     NSArray *children = [tabs objectForKey:@"children"];
     if (children) {
+        NSDictionary *options = [tabs objectForKey:@"options"];
+        NSMutableDictionary *tabBarOptions = [@{} mutableCopy];
+        NSString *tabBarModuleName = [options objectForKey:@"tabBarModuleName"];
+        BOOL hasCustomTabBar = tabBarModuleName.length > 0;
+        
         NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:4];
         for (NSDictionary *tab in children) {
             UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:tab];
@@ -32,24 +40,69 @@
             }
         }
         
-        if (controllers.count > 0) {
-            HBDTabBarController *tabBarController = [[HBDTabBarController alloc] init];
-            [tabBarController setViewControllers:controllers];
-            
-            NSDictionary *options = [tabs objectForKey:@"options"];
-            if (options) {
-                NSNumber *selectedIndex = [options objectForKey:@"selectedIndex"];
-                if (selectedIndex) {
-                    tabBarController.intercepted = NO;
-                    tabBarController.selectedIndex = [selectedIndex integerValue];
-                    tabBarController.intercepted = YES;
-                }
-            }
-            
-            return tabBarController;
+        if (hasCustomTabBar) {
+            NSArray *tabInfos = [self tabsInfoWithChildren:controllers];
+            tabBarOptions[@"tabs"] = tabInfos;
+            tabBarOptions[@"tabBarModuleName"] = tabBarModuleName;
+            tabBarOptions[@"sizeIndeterminate"] = @([[options objectForKey:@"sizeIndeterminate"] boolValue]);
+            tabBarOptions[@"selectedIndex"] = [options objectForKey:@"selectedIndex"] ?: @(0);
+            GlobalStyle *style = [HBDGarden globalStyle];
+            tabBarOptions[@"tabBarItemColor"] = style.tabBarItemColorHexString;
+            tabBarOptions[@"tabBarSelectedItemColor"] = style.tabBarSelectedItemColorHexString;
+            tabBarOptions[@"badgeColor"] = style.badgeColorHexString;
         }
+        
+        HBDTabBarController *tabBarController = nil;
+        
+        if (hasCustomTabBar) {
+            tabBarController = [[HBDTabBarController alloc] initWithTabBarOptions:tabBarOptions];
+        } else {
+            tabBarController = [[HBDTabBarController alloc] init];
+        }
+        
+        [tabBarController setViewControllers:controllers];
+        
+        if (options) {
+            NSNumber *selectedIndex = [options objectForKey:@"selectedIndex"];
+            if (selectedIndex) {
+                tabBarController.intercepted = NO;
+                tabBarController.selectedIndex = [selectedIndex integerValue];
+                tabBarController.intercepted = YES;
+            }
+        }
+        
+        return tabBarController;
     }
     return nil;
+}
+
+- (NSArray<NSDictionary *> *)tabsInfoWithChildren:(NSArray<UIViewController *> *)children {
+    NSInteger count = children.count;
+    UIViewController *vc = nil;
+    NSMutableArray *tabInfos = [[NSMutableArray alloc] initWithCapacity:4];
+    for (NSInteger i = 0; i < count; i ++) {
+        vc = children[i];
+        if ([vc isKindOfClass:[UINavigationController class]]) {
+            UINavigationController *nav = (UINavigationController *)vc;
+            vc = nav.childViewControllers[0];
+        }
+        if ([vc isKindOfClass:[HBDViewController class]]) {
+            HBDViewController *hbdVC = (HBDViewController *)vc;
+            NSDictionary *tabItem = [hbdVC.options objectForKey:@"tabItem"];
+            if (tabItem) {
+                NSDictionary *tab = @{
+                      @"index": @(i),
+                      @"sceneId": hbdVC.sceneId,
+                      @"moduleName": hbdVC.moduleName ?: NSNull.null,
+                      @"icon": [HBDUtils iconUriFromUri:tabItem[@"icon"][@"uri"]] ?: NSNull.null,
+                      @"selectedIcon": [HBDUtils iconUriFromUri:tabItem[@"selectedIcon"][@"uri"]] ?: NSNull.null,
+                      @"title": tabItem[@"title"] ?: NSNull.null
+                      };
+                [tabInfos addObject:tab];
+            }
+        }
+    }
+    return [tabInfos copy];
 }
 
 - (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
@@ -83,7 +136,14 @@
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras {
-    UITabBarController *tabBarController = vc.tabBarController;
+    
+    UITabBarController *tabBarController = nil;
+    if ([vc isKindOfClass:[UITabBarController class]]) {
+        tabBarController = (UITabBarController *)vc;
+    } else {
+        tabBarController = vc.tabBarController;
+    }
+    
     if (!tabBarController) {
         return;
     }

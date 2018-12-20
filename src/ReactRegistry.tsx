@@ -142,11 +142,11 @@ class NavigationDriver extends React.Component<{
   }
 
   render() {
-    const NavigationComponent = this.props.NavigationComponent;
+    const { NavigationComponent, ...props } = this.props;
     return (
       <NavigationComponent
         ref="navigation"
-        {...this.props}
+        {...props}
         navigator={this.navigator}
         garden={this.garden}
       />

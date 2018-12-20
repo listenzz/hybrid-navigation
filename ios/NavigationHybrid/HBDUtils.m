@@ -78,25 +78,11 @@
     return theImage;
 }
 
-
 + (UIImage *)UIImage:(NSDictionary *)json {
     if ([json isKindOfClass:[NSDictionary class]]) {
          NSString *uri = json[@"uri"];
         if (uri && [uri hasPrefix:@"font:"]) {
-            uri = [uri substringFromIndex:7];
-            // NSLog(@"font uri:%@", uri);
-            NSArray *components = [uri componentsSeparatedByString:@"/"];
-            if (components.count < 3) {
-                return nil;
-            }
-            NSString *font = components[0];
-            NSString *glyph = components[1];
-            CGFloat size = [components[2] floatValue];
-            UIColor *color = UIColor.whiteColor;
-            if (components.count >=4) {
-                color = [self colorWithHexString:components[3]];
-            }
-            NSString *path = [self imagePathForFont:font withGlyph:glyph withFontSize:size withColor:color];
+            NSString *path = [self imagePathFromFontUri:uri];
             // NSLog(@"font path:%@", path);
             UIImage *image = [UIImage imageWithContentsOfFile:path];
             return image;
@@ -107,6 +93,31 @@
         return [RCTConvert UIImage:json];
     }
     return nil;
+}
+
++ (NSString *)iconUriFromUri:(NSString *)uri {
+    if ([uri hasPrefix:@"font:"]) {
+        return [self imagePathFromFontUri:uri];
+    }
+    return uri;
+}
+
++ (NSString *)imagePathFromFontUri:(NSString *)uri {
+    uri = [uri substringFromIndex:7];
+    // NSLog(@"font uri:%@", uri);
+    NSArray *components = [uri componentsSeparatedByString:@"/"];
+    if (components.count < 3) {
+        return nil;
+    }
+    NSString *font = components[0];
+    NSString *glyph = components[1];
+    CGFloat size = [components[2] floatValue];
+    UIColor *color = UIColor.whiteColor;
+    if (components.count >=4) {
+        color = [self colorWithHexString:components[3]];
+    }
+    NSString *path = [self imagePathForFont:font withGlyph:glyph withFontSize:size withColor:color];
+    return path;
 }
 
 + (NSString *)imagePathForFont:(NSString*)fontName withGlyph:(NSString*)glyph withFontSize:(CGFloat)fontSize withColor:(UIColor *)color {
