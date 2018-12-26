@@ -17,25 +17,14 @@ public class ReactNavigationFragment extends NavigationFragment {
     public ReactBridgeManager getReactBridgeManager() {
         return bridgeManager;
     }
-
-    private AwesomeFragment rootFragment;
-
+    
     @Override
     public void setRootFragment(@NonNull AwesomeFragment fragment) {
         super.setRootFragment(fragment);
         if (fragment instanceof HybridFragment) {
             HybridFragment hybridFragment = (HybridFragment) fragment;
             setTabBarItem(hybridFragment.getTabBarItem());
-            rootFragment = fragment;
         }
     }
 
-    @Override
-    public AwesomeFragment getRootFragment() {
-        if (rootFragment != null) {
-            return rootFragment;
-        } else {
-            return super.getRootFragment();
-        }
-    }
 }
