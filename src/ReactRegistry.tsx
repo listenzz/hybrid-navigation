@@ -45,6 +45,7 @@ class NavigationDriver extends React.Component<{
   navigator: Navigator;
   garden: Garden;
   private events: EmitterSubscription[] = [];
+  private navigationRef: React.RefObject<React.Component<Props>>;
   constructor(props: any) {
     super(props);
 
@@ -53,6 +54,7 @@ class NavigationDriver extends React.Component<{
     store.addNavigator(props.sceneId, this.navigator);
     this.garden = new Garden(props.sceneId);
     this.events = [];
+    this.navigationRef = React.createRef();
   }
 
   componentDidMount() {
@@ -78,7 +80,7 @@ class NavigationDriver extends React.Component<{
   listenBarButtonItemClickEvent() {
     let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', event => {
       const navigation = this.asNavigationType();
-      if (this.props.sceneId === event.sceneId && navigation.onBarButtonItemClick) {
+      if (this.props.sceneId === event.sceneId && navigation && navigation.onBarButtonItemClick) {
         navigation.onBarButtonItemClick(event.action); // 向后兼容
       }
     });
@@ -88,7 +90,7 @@ class NavigationDriver extends React.Component<{
   listenComponentResultEvent() {
     let event = EventEmitter.addListener('ON_COMPONENT_RESULT', event => {
       const navigation = this.asNavigationType();
-      if (this.props.sceneId === event.sceneId && navigation.onComponentResult) {
+      if (this.props.sceneId === event.sceneId && navigation && navigation.onComponentResult) {
         navigation.onComponentResult(event.requestCode, event.resultCode, event.data);
       }
     });
@@ -99,7 +101,7 @@ class NavigationDriver extends React.Component<{
     // console.info('listenComponentResumeEvent');
     let event = EventEmitter.addListener('ON_COMPONENT_APPEAR', event => {
       const navigation = this.asNavigationType();
-      if (this.props.sceneId === event.sceneId && navigation.componentDidAppear) {
+      if (this.props.sceneId === event.sceneId && navigation && navigation.componentDidAppear) {
         navigation.componentDidAppear();
       }
     });
@@ -109,7 +111,7 @@ class NavigationDriver extends React.Component<{
   listenComponentPauseEvent() {
     let event = EventEmitter.addListener('ON_COMPONENT_DISAPPEAR', event => {
       const navigation = this.asNavigationType();
-      if (this.props.sceneId === event.sceneId && navigation.componentDidDisappear) {
+      if (this.props.sceneId === event.sceneId && navigation && navigation.componentDidDisappear) {
         navigation.componentDidDisappear();
       }
     });
@@ -130,22 +132,22 @@ class NavigationDriver extends React.Component<{
   listenDialogBackPressedEvent() {
     let event = EventEmitter.addListener('ON_DIALOG_BACK_PRESSED', event => {
       const navigation = this.asNavigationType();
-      if (this.props.sceneId === event.sceneId && navigation.onBackPressed) {
+      if (this.props.sceneId === event.sceneId && navigation && navigation.onBackPressed) {
         navigation.onBackPressed();
       }
     });
     this.events.push(event);
   }
 
-  asNavigationType() {
-    return this.refs.navigation as Navigation;
+  asNavigationType(): Navigation | undefined {
+    return this.navigationRef.current as Navigation;
   }
 
   render() {
     const { NavigationComponent, ...props } = this.props;
     return (
       <NavigationComponent
-        ref="navigation"
+        ref={this.navigationRef}
         {...props}
         navigator={this.navigator}
         garden={this.garden}
