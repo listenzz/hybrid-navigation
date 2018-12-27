@@ -21,7 +21,11 @@ import me.listenzz.navigation.BarStyle;
 import me.listenzz.navigation.Style;
 import me.listenzz.navigation.ToolbarButtonItem;
 
-import static com.navigationhybrid.Constants.ON_BAR_BUTTON_ITEM_CLICK_EVENT;
+import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
+import static com.navigationhybrid.HBDEventEmitter.KEY_ACTION;
+import static com.navigationhybrid.HBDEventEmitter.KEY_ON;
+import static com.navigationhybrid.HBDEventEmitter.KEY_SCENE_ID;
+import static com.navigationhybrid.HBDEventEmitter.ON_BAR_BUTTON_ITEM_CLICK;
 
 
 /**
@@ -205,11 +209,11 @@ public class Garden {
         return new ToolbarButtonItem(uri, 0, renderOriginal, title, tintColor, enabled, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ReactBridgeManager bridgeManager = ReactBridgeManager.get();
                 Bundle bundle = new Bundle();
-                bundle.putString("action", action);
-                bundle.putString("sceneId", fragment.getSceneId());
-                bridgeManager.sendEvent(ON_BAR_BUTTON_ITEM_CLICK_EVENT, Arguments.fromBundle(bundle));
+                bundle.putString(KEY_ACTION, action);
+                bundle.putString(KEY_SCENE_ID, fragment.getSceneId());
+                bundle.putString(KEY_ON, ON_BAR_BUTTON_ITEM_CLICK);
+                HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
             }
         });
     }

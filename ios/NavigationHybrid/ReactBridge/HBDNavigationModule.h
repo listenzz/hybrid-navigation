@@ -8,11 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <React/RCTBridgeModule.h>
-#import <React/RCTEventEmitter.h>
 
-@class HBDViewController;
-
-@interface HBDNavigationModule : RCTEventEmitter <RCTBridgeModule>
+@interface HBDNavigationModule : NSObject <RCTBridgeModule>
 
 @end
 

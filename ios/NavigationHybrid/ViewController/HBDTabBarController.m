@@ -11,8 +11,8 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDUtils.h"
 #import "UITabBar+Badge.h"
+#import "HBDEventEmitter.h"
 
-#import <React/RCTEventEmitter.h>
 #import <React/RCTRootView.h>
 #import <React/RCTRootViewDelegate.h>
 
@@ -212,13 +212,13 @@
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     if (self.hasCustomTabBar) {
-        RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-        [emitter sendEventWithName:@"ON_COMPONENT_RESULT" body:@{
-                                                                 @"requestCode": @(requestCode),
-                                                                 @"resultCode": @(resultCode),
-                                                                 @"data": data ?: [NSNull null],
-                                                                 @"sceneId": self.sceneId,
-                                                                 }];
+        [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+                                                           KEY_ON: ON_COMPONENT_RESULT,
+                                                           KEY_REQUEST_CODE: @(requestCode),
+                                                           KEY_RESULT_CODE: @(resultCode),
+                                                           KEY_RESULT_DATA: data ?: [NSNull null],
+                                                           KEY_SCENE_ID: self.sceneId,
+                                                           }];
     }
 }
 
@@ -251,14 +251,12 @@
         reactVC = (HBDReactViewController *)viewController;
     }
     
-    RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-    [emitter sendEventWithName:@"SWITCH_TAB" body:@{
-            @"from": selectedReactVC.moduleName ?: NSNull.null,
-            @"sceneId": selectedReactVC.sceneId,
-            @"moduleName": reactVC.moduleName?: NSNull.null,
-            @"index": @(index)
-        }];
-    
+    [HBDEventEmitter sendEvent:EVENT_SWITCH_TAB data:@{
+                                                       KEY_FROM: selectedReactVC.moduleName ?: NSNull.null,
+                                                       KEY_SCENE_ID: selectedReactVC.sceneId,
+                                                       KEY_MODULE_NAME: reactVC.moduleName?: NSNull.null,
+                                                       KEY_INDEX: @(index)
+                                                       }];
     return NO;
 }
 

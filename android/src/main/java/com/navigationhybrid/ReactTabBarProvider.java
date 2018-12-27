@@ -29,13 +29,13 @@ import static com.navigationhybrid.Constants.ACTION_SET_BADGE_TEXT;
 import static com.navigationhybrid.Constants.ACTION_SET_RED_POINT;
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;
 import static com.navigationhybrid.Constants.ACTION_UPDATE_TAB_BAR;
-import static com.navigationhybrid.Constants.KEY_ACTION;
-import static com.navigationhybrid.Constants.KEY_BADGE_TEXT;
-import static com.navigationhybrid.Constants.KEY_ICON;
-import static com.navigationhybrid.Constants.KEY_ICON_SELECTED;
-import static com.navigationhybrid.Constants.KEY_INDEX;
-import static com.navigationhybrid.Constants.KEY_OPTIONS;
-import static com.navigationhybrid.Constants.KEY_VISIBLE;
+import static com.navigationhybrid.Constants.ARG_ACTION;
+import static com.navigationhybrid.Constants.ARG_BADGE_TEXT;
+import static com.navigationhybrid.Constants.ARG_ICON;
+import static com.navigationhybrid.Constants.ARG_ICON_SELECTED;
+import static com.navigationhybrid.Constants.ARG_INDEX;
+import static com.navigationhybrid.Constants.ARG_OPTIONS;
+import static com.navigationhybrid.Constants.ARG_VISIBLE;
 
 public class ReactTabBarProvider implements TabBarProvider {
 
@@ -173,23 +173,23 @@ public class ReactTabBarProvider implements TabBarProvider {
 
     @Override
     public void updateTabBar(@NonNull Bundle options) {
-        String action = options.getString(KEY_ACTION);
+        String action = options.getString(ARG_ACTION);
         if (action == null) {
             return;
         }
 
         switch (action) {
             case ACTION_SET_BADGE_TEXT:
-                setBadge(options.getInt(KEY_INDEX), options.getString(KEY_BADGE_TEXT));
+                setBadge(options.getInt(ARG_INDEX), options.getString(ARG_BADGE_TEXT));
                 break;
             case ACTION_SET_RED_POINT:
-                setRedPoint(options.getInt(KEY_INDEX), options.getBoolean(KEY_VISIBLE));
+                setRedPoint(options.getInt(ARG_INDEX), options.getBoolean(ARG_VISIBLE));
                 break;
             case ACTION_SET_TAB_ICON:
-                setTabIcon(options.getInt(KEY_INDEX), options.getBundle(KEY_ICON), options.getBundle(KEY_ICON_SELECTED));
+                setTabIcon(options.getInt(ARG_INDEX), options.getBundle(ARG_ICON), options.getBundle(ARG_ICON_SELECTED));
                 break;
             case ACTION_UPDATE_TAB_BAR:
-                updateTabBarAppearance(options.getBundle(KEY_OPTIONS));
+                updateTabBarAppearance(options.getBundle(ARG_OPTIONS));
                 break;
         }
     }

@@ -33,18 +33,6 @@ RCT_EXPORT_MODULE(NavigationHybrid)
               };
 }
 
-- (NSArray<NSString *> *)supportedEvents {
-    return @[@"ON_COMPONENT_RESULT",
-             @"ON_BAR_BUTTON_ITEM_CLICK",
-             @"ON_COMPONENT_APPEAR",
-             @"ON_COMPONENT_DISAPPEAR",
-             @"MAKE_SURE_COMPONENT_DID_MOUNT",
-             @"ON_DIALOG_BACK_PRESSED", // for Android
-             @"ON_ROOT_SET",
-             @"SWITCH_TAB",
-             ];
-}
-
 RCT_EXPORT_METHOD(startRegisterReactComponent) {
     [[HBDReactBridgeManager sharedInstance] startRegisterReactModule];
 }

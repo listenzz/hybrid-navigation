@@ -80,17 +80,18 @@ Navigator.setRoot({
 想要支持 Redux，像下面这样配置即可
 
 ```jsx
-function screenWrapper(screenProvider) {
-  const Screen = screenProvider();
+function withRedux(WrappedComponent) {
   return props => (
     <Provider store={store}>
-      <Screen {...props} />
+      <WrappedComponent {...props} />
     </Provider>
   );
 }
 
-ReactRegistry.startRegisterComponent(screenWrapper);
+ReactRegistry.startRegisterComponent(withRedux);
 ```
+
+`withRedux` 是个 [HOC](https://reactjs.org/docs/higher-order-components.html)
 
 ## Android 项目配置
 

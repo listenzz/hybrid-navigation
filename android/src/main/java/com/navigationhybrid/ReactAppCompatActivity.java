@@ -10,6 +10,7 @@ import android.view.WindowManager;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
@@ -84,7 +85,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         super.setActivityRootFragment(rootFragment);
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         if (bridgeManager.hasRootLayout()) {
-            bridgeManager.sendEvent(Constants.ON_ROOT_SET);
+            HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_SET_ROOT_COMPLETED, Arguments.createMap());
         }
     }
 

@@ -65,28 +65,27 @@ Garden.setStyle({
   //tabBarSelectedItemColor: '#00ff00',
 });
 
-function screenWrapper(screenProvider) {
-  const Screen = screenProvider();
-  class ScreenWrapper extends Component {
+function withRedux(WrappedComponent) {
+  class ReduxProvider extends Component {
     componentDidMount() {
-      // 获取屏幕名称
-      const screenName = Screen.componentName;
-      console.info(`screenName:${screenName}`);
+      // 获取 displayName
+      console.info(`displayName:${ReduxProvider.displayName}`);
     }
 
     render() {
       return (
         <Provider store={store}>
-          <Screen {...this.props} />
+          <WrappedComponent {...this.props} />
         </Provider>
       );
     }
   }
-  return ScreenWrapper;
+  ReduxProvider.displayName = `WithRedux(${WrappedComponent.displayName})`;
+  return ReduxProvider;
 }
 
 // 开始注册组件，即基本页面单元
-ReactRegistry.startRegisterComponent(screenWrapper);
+ReactRegistry.startRegisterComponent(withRedux);
 
 ReactRegistry.registerComponent('Navigation', () => Navigation);
 ReactRegistry.registerComponent('Result', () => Result, { path: 'result', mode: 'present' });

@@ -19,7 +19,8 @@ public class NavigationHybridPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
                 new NavigationModule(reactContext, ReactBridgeManager.get()),
-                new GardenModule(reactContext)
+                new GardenModule(reactContext),
+                new HBDEventEmitter(reactContext)
         );
     }
 

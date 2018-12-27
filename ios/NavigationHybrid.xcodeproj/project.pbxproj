@@ -17,6 +17,7 @@
 		910362F91FE931E000F4DA8E /* HBDReactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 910362EF1FE931E000F4DA8E /* HBDReactViewController.m */; };
 		910BA6E9204E29E3004CB741 /* HBDNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 910BA6E8204E29E3004CB741 /* HBDNavigationBar.m */; };
 		910BA6EC204E8157004CB741 /* HBDTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 910BA6EB204E8157004CB741 /* HBDTitleView.m */; };
+		9118B12B21D4C17A005EB15A /* HBDEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9118B12A21D4C17A005EB15A /* HBDEventEmitter.m */; };
 		912D958120C5769F0075AE31 /* HBDModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 912D958020C5769F0075AE31 /* HBDModalViewController.m */; };
 		91608F3C20E526D000D11D9F /* HBDDrawerNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 91608F3B20E526D000D11D9F /* HBDDrawerNavigator.m */; };
 		91608F3F20E526ED00D11D9F /* HBDScreenNavigator.m in Sources */ = {isa = PBXBuildFile; fileRef = 91608F3E20E526ED00D11D9F /* HBDScreenNavigator.m */; };
@@ -68,6 +69,8 @@
 		910BA6E8204E29E3004CB741 /* HBDNavigationBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HBDNavigationBar.m; sourceTree = "<group>"; };
 		910BA6EA204E8157004CB741 /* HBDTitleView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HBDTitleView.h; sourceTree = "<group>"; };
 		910BA6EB204E8157004CB741 /* HBDTitleView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HBDTitleView.m; sourceTree = "<group>"; };
+		9118B12921D4C17A005EB15A /* HBDEventEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HBDEventEmitter.h; sourceTree = "<group>"; };
+		9118B12A21D4C17A005EB15A /* HBDEventEmitter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HBDEventEmitter.m; sourceTree = "<group>"; };
 		912D957F20C5769F0075AE31 /* HBDModalViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HBDModalViewController.h; sourceTree = "<group>"; };
 		912D958020C5769F0075AE31 /* HBDModalViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HBDModalViewController.m; sourceTree = "<group>"; };
 		91608F3920E526A200D11D9F /* HBDNavigator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HBDNavigator.h; sourceTree = "<group>"; };
@@ -203,6 +206,8 @@
 				910362E91FE931DF00F4DA8E /* HBDNavigationModule.m */,
 				910362E21FE931DF00F4DA8E /* HBDReactBridgeManager.h */,
 				910362E41FE931DF00F4DA8E /* HBDReactBridgeManager.m */,
+				9118B12921D4C17A005EB15A /* HBDEventEmitter.h */,
+				9118B12A21D4C17A005EB15A /* HBDEventEmitter.m */,
 			);
 			path = ReactBridge;
 			sourceTree = "<group>";
@@ -288,6 +293,7 @@
 				910362F41FE931E000F4DA8E /* HBDNavigationController.m in Sources */,
 				91B264EF20C4D87C009167E2 /* UINavigationController+HBD.m in Sources */,
 				910362F31FE931E000F4DA8E /* HBDBarButtonItem.m in Sources */,
+				9118B12B21D4C17A005EB15A /* HBDEventEmitter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

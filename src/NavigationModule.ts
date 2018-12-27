@@ -1,12 +1,26 @@
-import { NativeModules, DeviceEventEmitter, NativeEventEmitter, Platform } from 'react-native';
+import { NativeModules, NativeEventEmitter } from 'react-native';
 
 const NavigationModule = NativeModules.NavigationHybrid;
+const HBDEventEmitter = NativeModules.HBDEventEmitter;
 
-const EventEmitter: NativeEventEmitter = Platform.select({
-  ios: new NativeEventEmitter(NavigationModule),
-  android: DeviceEventEmitter,
-});
+const EventEmitter: NativeEventEmitter = new NativeEventEmitter(HBDEventEmitter);
 
-export { EventEmitter };
-
-export default NavigationModule;
+export const ON_COMPONENT_RESULT: string = HBDEventEmitter.ON_COMPONENT_RESULT;
+export const ON_BAR_BUTTON_ITEM_CLICK: string = HBDEventEmitter.ON_BAR_BUTTON_ITEM_CLICK;
+export const ON_COMPONENT_APPEAR: string = HBDEventEmitter.ON_COMPONENT_APPEAR;
+export const ON_COMPONENT_DISAPPEAR: string = HBDEventEmitter.ON_COMPONENT_DISAPPEAR;
+export const ON_DIALOG_BACK_PRESSED: string = HBDEventEmitter.ON_DIALOG_BACK_PRESSED;
+export const ON_COMPONENT_MOUNT: string = HBDEventEmitter.ON_COMPONENT_MOUNT;
+export const EVENT_SWITCH_TAB: string = HBDEventEmitter.EVENT_SWITCH_TAB;
+export const EVENT_NAVIGATION: string = HBDEventEmitter.EVENT_NAVIGATION;
+export const EVENT_SET_ROOT_COMPLETED: string = HBDEventEmitter.EVENT_SET_ROOT_COMPLETED;
+export const KEY_REQUEST_CODE: string = HBDEventEmitter.KEY_REQUEST_CODE;
+export const KEY_RESULT_CODE: string = HBDEventEmitter.KEY_RESULT_CODE;
+export const KEY_RESULT_DATA: string = HBDEventEmitter.KEY_RESULT_DATA;
+export const KEY_SCENE_ID: string = HBDEventEmitter.KEY_SCENE_ID;
+export const KEY_MODULE_NAME: string = HBDEventEmitter.KEY_MODULE_NAME;
+export const KEY_INDEX: string = HBDEventEmitter.KEY_INDEX;
+export const KEY_FROM: string = HBDEventEmitter.KEY_FROM;
+export const KEY_ACTION: string = HBDEventEmitter.KEY_ACTION;
+export const KEY_ON: string = HBDEventEmitter.KEY_ON;
+export { EventEmitter, NavigationModule };

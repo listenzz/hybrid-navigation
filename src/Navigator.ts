@@ -1,4 +1,13 @@
-import NavigationModule, { EventEmitter } from './NavigationModule';
+import {
+  EventEmitter,
+  NavigationModule,
+  EVENT_SET_ROOT_COMPLETED,
+  EVENT_SWITCH_TAB,
+  KEY_SCENE_ID,
+  KEY_INDEX,
+  KEY_FROM,
+  KEY_MODULE_NAME,
+} from './NavigationModule';
 import { bindBarButtonItemClickEvent } from './utils';
 import store from './store';
 import { EmitterSubscription } from 'react-native';
@@ -91,7 +100,7 @@ export class Navigator {
       didSetRootEventSubscription.remove();
     }
 
-    didSetRootEventSubscription = EventEmitter.addListener('ON_ROOT_SET', _ => {
+    didSetRootEventSubscription = EventEmitter.addListener(EVENT_SET_ROOT_COMPLETED, _ => {
       if (didSetRootCallback) {
         didSetRootCallback();
       }
@@ -101,11 +110,11 @@ export class Navigator {
       shouldSwitchTabSubscription.remove();
     }
 
-    shouldSwitchTabSubscription = EventEmitter.addListener('SWITCH_TAB', event => {
-      Navigator.dispatch(event.sceneId, 'switchTab', {
-        index: event.index,
-        from: event.from,
-        moduleName: event.moduleName,
+    shouldSwitchTabSubscription = EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
+      Navigator.dispatch(event[KEY_SCENE_ID], 'switchTab', {
+        index: event[KEY_INDEX],
+        from: event[KEY_FROM],
+        moduleName: event[KEY_MODULE_NAME],
       });
     });
 

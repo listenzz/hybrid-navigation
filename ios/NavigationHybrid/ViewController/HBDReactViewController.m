@@ -10,9 +10,8 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDTitleView.h"
 #import "HBDRootView.h"
+#import "HBDEventEmitter.h"
 
-#import <React/RCTRootView.h>
-#import <React/RCTEventEmitter.h>
 #import <React/RCTConvert.h>
 #import <React/RCTLog.h>
 
@@ -101,15 +100,15 @@
     if (!self.viewAppeared) {
         self.viewAppeared = YES;
         if (self.firstRenderComplete) {
-            RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-            [emitter sendEventWithName:@"ON_COMPONENT_APPEAR" body:@{
-                                                                     @"sceneId": self.sceneId,
-                                                                     }];
+            [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+                                                               KEY_SCENE_ID: self.sceneId,
+                                                               KEY_ON: ON_COMPONENT_APPEAR
+                                                               }];
         } else {
-            RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-            [emitter sendEventWithName:@"MAKE_SURE_COMPONENT_DID_MOUNT" body:@{
-                                                                     @"sceneId": self.sceneId,
-                                                                     }];
+            [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+                                                               KEY_SCENE_ID: self.sceneId,
+                                                               KEY_ON: ON_COMPONENT_MOUNT
+                                                               }];
         }
     }
 }
@@ -119,10 +118,10 @@
     if (self.viewAppeared) {
         self.viewAppeared = NO;
         if (self.firstRenderComplete) {
-            RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-            [emitter sendEventWithName:@"ON_COMPONENT_DISAPPEAR" body:@{
-                                                                        @"sceneId": self.sceneId,
-                                                                        }];
+            [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+                                                               KEY_SCENE_ID: self.sceneId,
+                                                               KEY_ON: ON_COMPONENT_DISAPPEAR
+                                                               }];
         }
     }
 }
@@ -133,22 +132,22 @@
     }
     self.firstRenderComplete = YES;
     if (self.viewAppeared) {
-        RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-        [emitter sendEventWithName:@"ON_COMPONENT_APPEAR" body:@{
-                                                                 @"sceneId": self.sceneId,
-                                                                 }];
+        [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+                                                           KEY_SCENE_ID: self.sceneId,
+                                                           KEY_ON: ON_COMPONENT_APPEAR
+                                                           }];
     }
 }
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
-    RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-    [emitter sendEventWithName:@"ON_COMPONENT_RESULT" body:@{
-                                                             @"requestCode": @(requestCode),
-                                                             @"resultCode": @(resultCode),
-                                                             @"data": data ?: [NSNull null],
-                                                             @"sceneId": self.sceneId,
-                                                             }];
+    [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+                                                       KEY_ON: ON_COMPONENT_RESULT,
+                                                       KEY_REQUEST_CODE: @(requestCode),
+                                                       KEY_RESULT_CODE: @(resultCode),
+                                                       KEY_RESULT_DATA: data ?: [NSNull null],
+                                                       KEY_SCENE_ID: self.sceneId,
+                                                       }];
 }
 
 

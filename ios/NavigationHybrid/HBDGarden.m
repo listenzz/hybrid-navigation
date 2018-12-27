@@ -8,7 +8,6 @@
 
 #import "HBDGarden.h"
 #import <React/RCTConvert.h>
-#import <React/RCTEventEmitter.h>
 #import <React/RCTRootView.h>
 
 #import "HBDBarButtonItem.h"
@@ -16,6 +15,7 @@
 #import "HBDUtils.h"
 #import "HBDTitleView.h"
 #import "HBDNavigationController.h"
+#import "HBDEventEmitter.h"
 
 
 @implementation HBDGarden
@@ -109,11 +109,11 @@ static GlobalStyle *globalStyle;
     
     if (action) {
         barButtonItem.actionBlock = ^{
-            RCTEventEmitter *emitter = [[HBDReactBridgeManager sharedInstance].bridge moduleForName:@"NavigationHybrid"];
-            [emitter sendEventWithName:@"ON_BAR_BUTTON_ITEM_CLICK" body:@{
-                                                                             @"action": action,
-                                                                             @"sceneId": sceneId
-                                                                             }];
+            [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+                                                               KEY_ON: ON_BAR_BUTTON_ITEM_CLICK,
+                                                               KEY_ACTION: action,
+                                                               KEY_SCENE_ID: sceneId,
+                                                               }];
         };
     }
     return barButtonItem;

@@ -1,4 +1,11 @@
-import { EventEmitter } from './NavigationModule';
+import {
+  EventEmitter,
+  EVENT_NAVIGATION,
+  KEY_ACTION,
+  KEY_SCENE_ID,
+  KEY_ON,
+  ON_BAR_BUTTON_ITEM_CLICK,
+} from './NavigationModule';
 import { Navigator } from './Navigator';
 import store from './store';
 
@@ -20,12 +27,12 @@ function bindBarButtonItemClickEvent(item = {}, options: BindOptions = { inLayou
         const action = 'ON_BAR_BUTTON_ITEM_CLICK_' + actionIdGenerator++;
 
         let event = EventEmitter.addListener(
-          'ON_BAR_BUTTON_ITEM_CLICK',
-          event => {
-            if (event.action === action) {
-              let navigator = store.getNavigator(event.sceneId);
+          EVENT_NAVIGATION,
+          data => {
+            if (data[KEY_ON] === ON_BAR_BUTTON_ITEM_CLICK && data[KEY_ACTION] === action) {
+              let navigator = store.getNavigator(data[KEY_SCENE_ID]);
               if (!navigator && options.inLayout && options.navigatorFactory) {
-                navigator = options.navigatorFactory(event.sceneId);
+                navigator = options.navigatorFactory(data[KEY_SCENE_ID]);
               }
               navigator && value(navigator);
             }

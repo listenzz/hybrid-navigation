@@ -24,19 +24,24 @@ import static com.navigationhybrid.Constants.ACTION_SET_BADGE_TEXT;
 import static com.navigationhybrid.Constants.ACTION_SET_RED_POINT;
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;
 import static com.navigationhybrid.Constants.ACTION_UPDATE_TAB_BAR;
-import static com.navigationhybrid.Constants.ARG_SCENE_ID;
-import static com.navigationhybrid.Constants.KEY_ACTION;
-import static com.navigationhybrid.Constants.KEY_BADGE_TEXT;
-import static com.navigationhybrid.Constants.KEY_ICON;
-import static com.navigationhybrid.Constants.KEY_ICON_SELECTED;
-import static com.navigationhybrid.Constants.KEY_INDEX;
-import static com.navigationhybrid.Constants.KEY_OPTIONS;
-import static com.navigationhybrid.Constants.KEY_VISIBLE;
-import static com.navigationhybrid.Constants.ON_COMPONENT_RESULT_EVENT;
-import static com.navigationhybrid.Constants.REQUEST_CODE_KEY;
-import static com.navigationhybrid.Constants.RESULT_CODE_KEY;
-import static com.navigationhybrid.Constants.RESULT_DATA_KEY;
-import static com.navigationhybrid.Constants.SWITCH_TAB;
+import static com.navigationhybrid.Constants.ARG_ACTION;
+import static com.navigationhybrid.Constants.ARG_BADGE_TEXT;
+import static com.navigationhybrid.Constants.ARG_ICON;
+import static com.navigationhybrid.Constants.ARG_ICON_SELECTED;
+import static com.navigationhybrid.Constants.ARG_INDEX;
+import static com.navigationhybrid.Constants.ARG_OPTIONS;
+import static com.navigationhybrid.Constants.ARG_VISIBLE;
+
+import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
+import static com.navigationhybrid.HBDEventEmitter.KEY_FROM;
+import static com.navigationhybrid.HBDEventEmitter.KEY_INDEX;
+import static com.navigationhybrid.HBDEventEmitter.KEY_MODULE_NAME;
+import static com.navigationhybrid.HBDEventEmitter.KEY_ON;
+import static com.navigationhybrid.HBDEventEmitter.KEY_REQUEST_CODE;
+import static com.navigationhybrid.HBDEventEmitter.KEY_RESULT_CODE;
+import static com.navigationhybrid.HBDEventEmitter.KEY_RESULT_DATA;
+import static com.navigationhybrid.HBDEventEmitter.KEY_SCENE_ID;
+import static com.navigationhybrid.HBDEventEmitter.ON_COMPONENT_RESULT;
 
 
 /**
@@ -83,23 +88,23 @@ public class ReactTabBarFragment extends TabBarFragment {
     public void updateTabbar(Bundle options) {
         super.updateTabbar(options);
         if (getTabBarProvider() instanceof DefaultTabBarProvider) {
-            String action = options.getString(KEY_ACTION);
+            String action = options.getString(ARG_ACTION);
             if (action == null) {
                 return;
             }
 
             switch (action) {
                 case ACTION_SET_BADGE_TEXT:
-                    setBadge(options.getInt(KEY_INDEX), options.getString(KEY_BADGE_TEXT));
+                    setBadge(options.getInt(ARG_INDEX), options.getString(ARG_BADGE_TEXT));
                     break;
                 case ACTION_SET_RED_POINT:
-                    setRedPoint(options.getInt(KEY_INDEX), options.getBoolean(KEY_VISIBLE));
+                    setRedPoint(options.getInt(ARG_INDEX), options.getBoolean(ARG_VISIBLE));
                     break;
                 case ACTION_SET_TAB_ICON:
-                    setTabIcon(options.getInt(KEY_INDEX), options.getBundle(KEY_ICON), options.getBundle(KEY_ICON_SELECTED));
+                    setTabIcon(options.getInt(ARG_INDEX), options.getBundle(ARG_ICON), options.getBundle(ARG_ICON_SELECTED));
                     break;
                 case ACTION_UPDATE_TAB_BAR:
-                    updateTabBarAppearance(options.getBundle(KEY_OPTIONS));
+                    updateTabBarAppearance(options.getBundle(ARG_OPTIONS));
                     break;
             }
         }
@@ -173,7 +178,7 @@ public class ReactTabBarFragment extends TabBarFragment {
     @NonNull
     public Bundle getOptions() {
         Bundle args = FragmentHelper.getArguments(this);
-        Bundle bundle = args.getBundle(Constants.ARG_OPTIONS);
+        Bundle bundle = args.getBundle(ARG_OPTIONS);
         if (bundle == null) {
             bundle = new Bundle();
         }
@@ -182,7 +187,7 @@ public class ReactTabBarFragment extends TabBarFragment {
 
     public void setOptions(@NonNull Bundle options) {
         Bundle args = FragmentHelper.getArguments(this);
-        args.putBundle(Constants.ARG_OPTIONS, options);
+        args.putBundle(ARG_OPTIONS, options);
         setArguments(args);
     }
 
@@ -232,13 +237,13 @@ public class ReactTabBarFragment extends TabBarFragment {
         }
 
         Bundle data = new Bundle();
-        data.putString("from", selectedReactFragment.getModuleName());
-        data.putString(ARG_SCENE_ID, selectedReactFragment.getSceneId());
+        data.putString(KEY_FROM, selectedReactFragment.getModuleName());
+        data.putString(KEY_SCENE_ID, selectedReactFragment.getSceneId());
         if (reactFragment != null) {
-            data.putString("moduleName", reactFragment.getModuleName());
+            data.putString(KEY_MODULE_NAME, reactFragment.getModuleName());
         }
-        data.putInt("index", index);
-        getReactBridgeManager().sendEvent(SWITCH_TAB, Arguments.fromBundle(data));
+        data.putInt(KEY_INDEX, index);
+        HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_SWITCH_TAB, Arguments.fromBundle(data));
     }
 
     @Override
@@ -248,11 +253,12 @@ public class ReactTabBarFragment extends TabBarFragment {
         String tabBarModuleName = options.getString("tabBarModuleName");
         if (tabBarModuleName != null) {
             Bundle result = new Bundle();
-            result.putInt(REQUEST_CODE_KEY, requestCode);
-            result.putInt(RESULT_CODE_KEY, resultCode);
-            result.putBundle(RESULT_DATA_KEY, data);
-            result.putString(ARG_SCENE_ID, getSceneId());
-            getReactBridgeManager().sendEvent(ON_COMPONENT_RESULT_EVENT, Arguments.fromBundle(result));
+            result.putInt(KEY_REQUEST_CODE, requestCode);
+            result.putInt(KEY_RESULT_CODE, resultCode);
+            result.putBundle(KEY_RESULT_DATA, data);
+            result.putString(KEY_SCENE_ID, getSceneId());
+            result.putString(KEY_ON, ON_COMPONENT_RESULT);
+            HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(result));
         }
     }
 

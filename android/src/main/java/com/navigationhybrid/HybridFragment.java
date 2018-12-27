@@ -13,6 +13,7 @@ import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.Style;
 
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
+import static com.navigationhybrid.Constants.ARG_OPTIONS;
 import static com.navigationhybrid.Constants.ARG_PROPS;
 import static com.navigationhybrid.Constants.ARG_SCENE_ID;
 
@@ -86,7 +87,7 @@ public class HybridFragment extends AwesomeFragment {
     @NonNull
     public Bundle getOptions() {
         Bundle args = FragmentHelper.getArguments(this);
-        Bundle bundle = args.getBundle(Constants.ARG_OPTIONS);
+        Bundle bundle = args.getBundle(ARG_OPTIONS);
         if (bundle == null) {
             bundle = new Bundle();
         }
@@ -95,7 +96,7 @@ public class HybridFragment extends AwesomeFragment {
 
     public void setOptions(@NonNull Bundle options) {
         Bundle args = FragmentHelper.getArguments(this);
-        args.putBundle(Constants.ARG_OPTIONS, options);
+        args.putBundle(ARG_OPTIONS, options);
         setArguments(args);
     }
 
@@ -113,7 +114,7 @@ public class HybridFragment extends AwesomeFragment {
     @CallSuper
     public void setAppProperties(@NonNull Bundle props) {
         Bundle args = FragmentHelper.getArguments(this);
-        args.putBundle(Constants.ARG_PROPS, props);
+        args.putBundle(ARG_PROPS, props);
     }
 
     public String getModuleName() {

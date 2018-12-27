@@ -14,7 +14,6 @@
 #import "HBDUtils.h"
 #import "HBDGarden.h"
 #import "HBDReactViewController.h"
-#import <React/RCTEventEmitter.h>
 
 @interface HBDNavigationController () <UIGestureRecognizerDelegate, UINavigationControllerDelegate>
 

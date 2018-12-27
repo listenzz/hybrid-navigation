@@ -23,13 +23,16 @@ import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.PresentAnimation;
 
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
-import static com.navigationhybrid.Constants.ARG_SCENE_ID;
-import static com.navigationhybrid.Constants.ON_COMPONENT_APPEAR;
-import static com.navigationhybrid.Constants.ON_COMPONENT_DISAPPEAR;
-import static com.navigationhybrid.Constants.ON_COMPONENT_RESULT_EVENT;
-import static com.navigationhybrid.Constants.REQUEST_CODE_KEY;
-import static com.navigationhybrid.Constants.RESULT_CODE_KEY;
-import static com.navigationhybrid.Constants.RESULT_DATA_KEY;
+import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
+import static com.navigationhybrid.HBDEventEmitter.KEY_ON;
+import static com.navigationhybrid.HBDEventEmitter.KEY_REQUEST_CODE;
+import static com.navigationhybrid.HBDEventEmitter.KEY_RESULT_CODE;
+import static com.navigationhybrid.HBDEventEmitter.KEY_RESULT_DATA;
+import static com.navigationhybrid.HBDEventEmitter.KEY_SCENE_ID;
+import static com.navigationhybrid.HBDEventEmitter.ON_COMPONENT_APPEAR;
+import static com.navigationhybrid.HBDEventEmitter.ON_COMPONENT_DISAPPEAR;
+import static com.navigationhybrid.HBDEventEmitter.ON_COMPONENT_RESULT;
+import static com.navigationhybrid.HBDEventEmitter.ON_DIALOG_BACK_PRESSED;
 
 /**
  * Created by Listen on 2018/1/15.
@@ -100,8 +103,9 @@ public class ReactFragment extends HybridFragment {
         if ((isResumed() || isRemoving()) && getReactBridgeManager().isReactModuleRegisterCompleted() && this.appear != appear) {
             this.appear = appear;
             Bundle bundle = new Bundle();
-            bundle.putString(Constants.ARG_SCENE_ID, getSceneId());
-            getReactBridgeManager().sendEvent(appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR, Arguments.fromBundle(bundle));
+            bundle.putString(KEY_SCENE_ID, getSceneId());
+            bundle.putString(KEY_ON, appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR);
+            HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
         }
     }
 
@@ -109,11 +113,12 @@ public class ReactFragment extends HybridFragment {
     public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
         super.onFragmentResult(requestCode, resultCode, data);
         Bundle result = new Bundle();
-        result.putInt(REQUEST_CODE_KEY, requestCode);
-        result.putInt(RESULT_CODE_KEY, resultCode);
-        result.putBundle(RESULT_DATA_KEY, data);
-        result.putString(ARG_SCENE_ID, getSceneId());
-        getReactBridgeManager().sendEvent(ON_COMPONENT_RESULT_EVENT, Arguments.fromBundle(result));
+        result.putInt(KEY_REQUEST_CODE, requestCode);
+        result.putInt(KEY_RESULT_CODE, resultCode);
+        result.putBundle(KEY_RESULT_DATA, data);
+        result.putString(KEY_SCENE_ID, getSceneId());
+        result.putString(KEY_ON, ON_COMPONENT_RESULT);
+        HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(result));
     }
 
     @Override
@@ -197,8 +202,9 @@ public class ReactFragment extends HybridFragment {
                     public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
                         if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
                             Bundle bundle = new Bundle();
-                            bundle.putString("sceneId", getSceneId());
-                            getReactBridgeManager().sendEvent("ON_DIALOG_BACK_PRESSED", Arguments.fromBundle(bundle));
+                            bundle.putString(KEY_SCENE_ID, getSceneId());
+                            bundle.putString(KEY_ON, ON_DIALOG_BACK_PRESSED);
+                            HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
                             return true;
                         }
 

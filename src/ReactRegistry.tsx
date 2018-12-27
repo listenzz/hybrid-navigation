@@ -1,30 +1,32 @@
-import { AppRegistry, EmitterSubscription, ComponentProvider, Platform } from 'react-native';
-import React, { Component, ComponentType } from 'react';
+import { AppRegistry, EmitterSubscription, ComponentProvider } from 'react-native';
+import React from 'react';
 import { Navigator } from './Navigator';
-import NavigationModule, { EventEmitter } from './NavigationModule';
+import {
+  EventEmitter,
+  NavigationModule,
+  EVENT_NAVIGATION,
+  KEY_SCENE_ID,
+  KEY_ON,
+  ON_BAR_BUTTON_ITEM_CLICK,
+  ON_COMPONENT_RESULT,
+  ON_COMPONENT_DISAPPEAR,
+  ON_COMPONENT_APPEAR,
+  ON_DIALOG_BACK_PRESSED,
+  KEY_REQUEST_CODE,
+  KEY_RESULT_CODE,
+  KEY_RESULT_DATA,
+  KEY_ACTION,
+} from './NavigationModule';
 import { Garden, NavigationItem } from './Garden';
 import { router, RouteConfig } from './router';
 import store from './store';
 import { bindBarButtonItemClickEvent, removeBarButtonItemClickEvent } from './utils';
 
-export type ScreenProvider = () => ScreenType;
-
-export type ScreenWrapper = (screenProvider: ScreenProvider) => React.ComponentType;
-
-export interface ScreenType extends React.ComponentClass {
-  componentName: string;
-}
-
-interface ScreenProps {
-  sceneId?: string;
-}
-
-export interface NavigationType<P = Props, S = {}> extends React.ComponentClass<P, S>, Navigation {
-  new (props: P, context?: any): Navigation;
+export interface NavigationType {
   navigationItem?: NavigationItem;
 }
 
-export interface Navigation extends Component {
+export interface Navigation {
   onBarButtonItemClick?(action: string): void;
   onComponentResult?(requestCode: number, resultCode: number, data: { [x: string]: any }): void;
   componentDidAppear?(): void;
@@ -37,141 +39,127 @@ export interface Props {
   garden: Garden;
 }
 
-class NavigationDriver extends React.Component<{
-  sceneId: string;
-  moduleName: string;
-  NavigationComponent: NavigationType;
-}> {
-  navigator: Navigator;
-  garden: Garden;
-  private events: EmitterSubscription[] = [];
-  private navigationRef: React.RefObject<React.Component<Props>>;
-  constructor(props: any) {
-    super(props);
-
-    this.navigator =
-      store.getNavigator(props.sceneId) || new Navigator(props.sceneId, props.moduleName);
-    store.addNavigator(props.sceneId, this.navigator);
-    this.garden = new Garden(props.sceneId);
-    this.events = [];
-    this.navigationRef = React.createRef();
-  }
-
-  componentDidMount() {
-    // console.debug('componentDidMount    = ' + this.props.sceneId);
-    this.listenComponentResultEvent();
-    this.listenBarButtonItemClickEvent();
-    this.listenComponentResumeEvent();
-    this.listenComponentPauseEvent();
-    this.listenDialogBackPressedEvent();
-    this.navigator.signalFirstRenderComplete();
-    this.listenMakeSureComponentDidMountEvent();
-  }
-
-  componentWillUnmount() {
-    // console.debug('componentWillUnmount = ' + this.props.sceneId);
-    store.removeNavigator(this.props.sceneId);
-    removeBarButtonItemClickEvent(this.props.sceneId);
-    this.events.forEach(event => {
-      event.remove();
-    });
-  }
-
-  listenBarButtonItemClickEvent() {
-    let event = EventEmitter.addListener('ON_BAR_BUTTON_ITEM_CLICK', event => {
-      const navigation = this.asNavigationType();
-      if (this.props.sceneId === event.sceneId && navigation && navigation.onBarButtonItemClick) {
-        navigation.onBarButtonItemClick(event.action); // 向后兼容
-      }
-    });
-    this.events.push(event);
-  }
-
-  listenComponentResultEvent() {
-    let event = EventEmitter.addListener('ON_COMPONENT_RESULT', event => {
-      const navigation = this.asNavigationType();
-      if (this.props.sceneId === event.sceneId && navigation && navigation.onComponentResult) {
-        navigation.onComponentResult(event.requestCode, event.resultCode, event.data);
-      }
-    });
-    this.events.push(event);
-  }
-
-  listenComponentResumeEvent() {
-    // console.info('listenComponentResumeEvent');
-    let event = EventEmitter.addListener('ON_COMPONENT_APPEAR', event => {
-      const navigation = this.asNavigationType();
-      if (this.props.sceneId === event.sceneId && navigation && navigation.componentDidAppear) {
-        navigation.componentDidAppear();
-      }
-    });
-    this.events.push(event);
-  }
-
-  listenComponentPauseEvent() {
-    let event = EventEmitter.addListener('ON_COMPONENT_DISAPPEAR', event => {
-      const navigation = this.asNavigationType();
-      if (this.props.sceneId === event.sceneId && navigation && navigation.componentDidDisappear) {
-        navigation.componentDidDisappear();
-      }
-    });
-    this.events.push(event);
-  }
-
-  listenMakeSureComponentDidMountEvent() {
-    if (Platform.OS === 'ios') {
-      let event = EventEmitter.addListener('MAKE_SURE_COMPONENT_DID_MOUNT', event => {
-        if (this.props.sceneId === event.sceneId) {
-          this.navigator.signalFirstRenderComplete();
-        }
-      });
-      this.events.push(event);
-    }
-  }
-
-  listenDialogBackPressedEvent() {
-    let event = EventEmitter.addListener('ON_DIALOG_BACK_PRESSED', event => {
-      const navigation = this.asNavigationType();
-      if (this.props.sceneId === event.sceneId && navigation && navigation.onBackPressed) {
-        navigation.onBackPressed();
-      }
-    });
-    this.events.push(event);
-  }
-
-  asNavigationType(): Navigation | undefined {
-    return this.navigationRef.current as Navigation;
-  }
-
-  render() {
-    const { NavigationComponent, ...props } = this.props;
-    return (
-      <NavigationComponent
-        ref={this.navigationRef}
-        {...props}
-        navigator={this.navigator}
-        garden={this.garden}
-      />
-    );
-  }
+function getDisplayName(WrappedComponent: React.ComponentType) {
+  return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-let screenWrapperFunc: ScreenWrapper | undefined;
+function withNavigation(moduleName: string) {
+  return function(
+    WrappedComponent: React.ComponentType<{
+      ref?: React.RefObject<React.Component>;
+      navigator?: Navigator;
+      garden?: Garden;
+    }>
+  ) {
+    return class extends React.Component<{ sceneId?: string }> {
+      static displayName = `WithNavigation(${getDisplayName(WrappedComponent)})`;
+
+      private subscription?: EmitterSubscription;
+      private navigator?: Navigator;
+      private garden?: Garden;
+      private navigationRef?: React.RefObject<React.Component>;
+
+      constructor(props: { sceneId?: string }) {
+        super(props);
+        if (props.sceneId) {
+          this.navigationRef = React.createRef();
+          this.navigator =
+            store.getNavigator(props.sceneId) || new Navigator(props.sceneId, moduleName);
+          store.addNavigator(props.sceneId, this.navigator);
+          this.garden = new Garden(props.sceneId);
+        }
+      }
+
+      componentDidMount() {
+        if (this.props.sceneId) {
+          this.navigator!.signalFirstRenderComplete();
+          this.subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+            if (this.props.sceneId !== data[KEY_SCENE_ID]) {
+              return;
+            }
+            const navigation = this.navigationRef!.current as Navigation;
+            if (!navigation) {
+              return;
+            }
+            switch (data[KEY_ON]) {
+              case ON_BAR_BUTTON_ITEM_CLICK:
+                if (navigation.onBarButtonItemClick) {
+                  navigation.onBarButtonItemClick(data[KEY_ACTION]);
+                }
+                break;
+              case ON_COMPONENT_RESULT:
+                if (navigation.onComponentResult) {
+                  navigation.onComponentResult(
+                    data[KEY_REQUEST_CODE],
+                    data[KEY_RESULT_CODE],
+                    data[KEY_RESULT_DATA]
+                  );
+                }
+                break;
+              case ON_COMPONENT_APPEAR:
+                if (navigation.componentDidAppear) {
+                  navigation.componentDidAppear();
+                }
+                break;
+              case ON_COMPONENT_DISAPPEAR:
+                if (navigation.componentDidDisappear) {
+                  navigation.componentDidDisappear();
+                }
+                break;
+              case 'MAKE_SURE_COMPONENT_DID_MOUNT':
+                if (this.navigator) {
+                  this.navigator.signalFirstRenderComplete();
+                }
+                break;
+              case ON_DIALOG_BACK_PRESSED:
+                if (navigation.onBackPressed) {
+                  navigation.onBackPressed();
+                }
+                break;
+            }
+          });
+        }
+      }
+
+      componentWillUnmount() {
+        if (this.props.sceneId) {
+          removeBarButtonItemClickEvent(this.props.sceneId);
+          store.removeNavigator(this.props.sceneId);
+          this.subscription!.remove();
+        }
+      }
+
+      render() {
+        return (
+          <WrappedComponent
+            {...this.props}
+            ref={this.navigationRef}
+            garden={this.garden}
+            navigator={this.navigator}
+          />
+        );
+      }
+    };
+  };
+}
+
+export type HigherOrderComponent = (WrappedComponent: React.ComponentType) => React.ComponentType;
+let wrap: HigherOrderComponent | undefined;
 
 export class ReactRegistry {
   static registerEnded: boolean;
-  static startRegisterComponent(screenWrapper?: ScreenWrapper) {
+  static startRegisterComponent(hoc?: HigherOrderComponent) {
     console.info('begin register react component');
     router.clear();
     store.clear();
-    screenWrapperFunc = screenWrapper;
+    wrap = hoc;
     ReactRegistry.registerEnded = false;
     NavigationModule.startRegisterReactComponent();
   }
 
   static endRegisterComponent() {
     if (ReactRegistry.registerEnded) {
-      console.warn('Please do not clall ReactRegistry#endRegisterComponent multiple times.');
+      console.warn(`Please don't call ReactRegistry#endRegisterComponent multiple times.`);
       return;
     }
     ReactRegistry.registerEnded = true;
@@ -184,45 +172,26 @@ export class ReactRegistry {
     getComponentFunc: ComponentProvider,
     routeConfig?: RouteConfig
   ) {
-    const NavigationComponent = getComponentFunc() as NavigationType;
-
     if (routeConfig) {
       router.addRouteConfig(appKey, routeConfig);
     }
 
-    class Screen extends React.Component<ScreenProps> {
-      static componentName: string = appKey;
-      render() {
-        if (this.props.sceneId) {
-          return (
-            <NavigationDriver
-              {...this.props}
-              sceneId={this.props.sceneId}
-              moduleName={appKey}
-              NavigationComponent={NavigationComponent}
-            />
-          );
-        } else {
-          return <NavigationComponent {...this.props} />;
-        }
-      }
-    }
-
-    let RootComponent: ComponentType;
-    if (screenWrapperFunc) {
-      RootComponent = screenWrapperFunc(() => Screen);
-    } else {
-      RootComponent = Screen;
-    }
+    const WrappedComponent = getComponentFunc();
+    const navigation = WrappedComponent as NavigationType;
 
     // build static options
-    let options = NavigationComponent.navigationItem
-      ? bindBarButtonItemClickEvent(NavigationComponent.navigationItem)
+    let options = navigation.navigationItem
+      ? bindBarButtonItemClickEvent(navigation.navigationItem)
       : {};
 
-    // console.info('register component:' + appKey + ' options:' + JSON.stringify(options));
-
-    AppRegistry.registerComponent(appKey, () => RootComponent);
     NavigationModule.registerReactComponent(appKey, options);
+
+    let RootComponent: React.ComponentType;
+    if (wrap) {
+      RootComponent = wrap(withNavigation(appKey)(WrappedComponent));
+    } else {
+      RootComponent = withNavigation(appKey)(WrappedComponent);
+    }
+    AppRegistry.registerComponent(appKey, () => RootComponent);
   }
 }

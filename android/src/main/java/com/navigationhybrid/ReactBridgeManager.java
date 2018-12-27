@@ -15,7 +15,6 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.navigationhybrid.navigator.DrawerNavigator;
 import com.navigationhybrid.navigator.Navigator;
 import com.navigationhybrid.navigator.ScreenNavigator;
@@ -96,7 +95,7 @@ public class ReactBridgeManager {
         }
     }
 
-    ReactNativeHost getReactNativeHost() {
+    public ReactNativeHost getReactNativeHost() {
         checkReactNativeHost();
         return reactNativeHost;
     }
@@ -104,6 +103,10 @@ public class ReactBridgeManager {
     public ReactInstanceManager getReactInstanceManager() {
         checkReactNativeHost();
         return reactNativeHost.getReactInstanceManager();
+    }
+
+    public ReactContext getReactContext() {
+        return getReactInstanceManager().getCurrentReactContext();
     }
 
     private void checkReactNativeHost() {
@@ -170,21 +173,6 @@ public class ReactBridgeManager {
     @UiThread
     public void removeReactModuleRegisterListener(ReactModuleRegisterListener listener) {
         reactModuleRegisterListeners.remove(listener);
-    }
-
-    public void sendEvent(String eventName, WritableMap data) {
-        if (isReactModuleRegisterCompleted()) {
-            ReactContext reactContext = getReactInstanceManager().getCurrentReactContext();
-            if (reactContext != null) {
-                DeviceEventManagerModule.RCTDeviceEventEmitter emitter = reactContext
-                        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class);
-                emitter.emit(eventName, data);
-            }
-        }
-    }
-
-    public void sendEvent(String eventName) {
-        sendEvent(eventName, Arguments.createMap());
     }
 
     public void setRootLayout(ReadableMap root, boolean sticky) {

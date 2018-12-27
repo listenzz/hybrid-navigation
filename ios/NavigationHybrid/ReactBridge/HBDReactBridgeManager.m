@@ -8,7 +8,6 @@
 
 #import "HBDReactBridgeManager.h"
 #import <React/RCTLog.h>
-#import <React/RCTEventEmitter.h>
 #import "HBDUtils.h"
 #import "HBDReactViewController.h"
 #import "HBDNavigationController.h"
@@ -19,6 +18,7 @@
 #import "HBDTabNavigator.h"
 #import "HBDDrawerNavigator.h"
 #import "HBDModalViewController.h"
+#import "HBDEventEmitter.h"
 
 NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
 const NSInteger ResultOK = -1;
@@ -247,8 +247,7 @@ const NSInteger ResultCancel = 0;
     UIWindow *keyWindow = RCTKeyWindow();
     keyWindow.rootViewController = rootViewController;
     if (self.hasRootLayout) {
-        RCTEventEmitter *emitter = [self.bridge moduleForName:@"NavigationHybrid"];
-        [emitter sendEventWithName:@"ON_ROOT_SET" body:nil];
+        [HBDEventEmitter sendEvent:EVENT_SET_ROOT_COMPLETED data:@{}];
     }
 }
 
