@@ -80,7 +80,29 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.11.0` - 2018/12/23
+最新版本: `0.11.1` - 2018/12/27
+
+### 0.11.1 - 2018/12/27
+
+`ReactRegistry.startRegisterComponent` 参数变更，现在接受一个 [HOC](https://reactjs.org/docs/higher-order-components.html) 作为参数。
+
+想要为每个页面都注入相同的属性，可以利用 `ReactRegistry.startRegisterComponent()` 这个方法，它接受一个 [HOC](https://reactjs.org/docs/higher-order-components.html) 作为参数。
+
+想要支持 Redux，像下面这样配置即可
+
+```jsx
+function withRedux(WrappedComponent) {
+  return props => (
+    <Provider store={store}>
+      <WrappedComponent {...props} />
+    </Provider>
+  );
+}
+
+ReactRegistry.startRegisterComponent(withRedux);
+```
+
+其中 `withRedux` 就是一个 [HOC](https://reactjs.org/docs/higher-order-components.html)
 
 ### 0.11.0 - 2018/12/23
 

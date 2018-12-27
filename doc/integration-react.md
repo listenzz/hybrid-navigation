@@ -75,7 +75,7 @@ Navigator.setRoot({
 
 ### 支持 Redux
 
-想要为每个页面都注入相同的属性，可以利用 `ReactRegistry.startRegisterComponent()` 这个方法，它接受一个函数作为参数，该函数的参数是一个返回我们将要构建的组件的函数，返回值是一个新的组件。
+想要为每个页面都注入相同的属性，可以利用 `ReactRegistry.startRegisterComponent()` 这个方法，它接受一个 [HOC](https://reactjs.org/docs/higher-order-components.html) 作为参数。
 
 想要支持 Redux，像下面这样配置即可
 
@@ -91,7 +91,7 @@ function withRedux(WrappedComponent) {
 ReactRegistry.startRegisterComponent(withRedux);
 ```
 
-`withRedux` 是个 [HOC](https://reactjs.org/docs/higher-order-components.html)
+其中 `withRedux` 就是一个 [HOC](https://reactjs.org/docs/higher-order-components.html)
 
 ## Android 项目配置
 
