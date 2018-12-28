@@ -22,7 +22,7 @@ ReactRegistry.registerComponent('BulgeTabBar', () => BulgeTabBar);
 
 ### 在布局对象中，通过 `tabBarModuleName` 指定 TabBar 组件
 
-如果**不需要**中间按钮凸起效果，`sizeIndeterminate` 需要设置为 `false`，同时指定 TabBar 的宽高为 `flex: 1`
+如果**不需要**中间按钮凸起效果，`sizeIndeterminate` 需要设置为 `false`，同时指定 TabBar 的宽高。
 
 ```javascript
 Navigator.setRoot({
@@ -38,14 +38,15 @@ Navigator.setRoot({
 
 ```javascript
 tabBar: {
-  flex: 1,
+  height: Platform.OS === 'android' ? 56 : 48,
+  width: Dimensions.get('window').width,
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'stretch',
 },
 ```
 
-这样 TabBar 就会自动撑满它底层的原生容器。
+56 和 48 是原生 TabBar 容器的高度，是固定值。
 
 如果**需要**实现中间按钮凸起效果，`sizeIndeterminate` 需要设置为 `true`，同时指定 TabBar 期待的（包含凸起按钮后的）宽高，以及 TabBar 的实际宽高。
 

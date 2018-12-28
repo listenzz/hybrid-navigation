@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Badge from './Badge';
 
-export default class CustomTabBar extends Component {
+export default class BulgeTabBar extends Component {
   constructor(props) {
     super(props);
   }
@@ -30,11 +30,11 @@ export default class CustomTabBar extends Component {
   }
 
   componentDidMount() {
-    console.info('CustomTabBar componentDidMount');
+    console.info('BulgeTabBar componentDidMount');
   }
 
   onComponentResult(requestCode, resultCode, data) {
-    console.info('CustomTabBar onComponentResult');
+    console.info('BulgeTabBar onComponentResult');
   }
 
   render() {

@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, StyleSheet, PixelRatio } from 'react-native';
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  PixelRatio,
+  Dimensions,
+  Platform,
+} from 'react-native';
 import Badge from './Badge';
 
 export default class CustomTabBar extends Component {
@@ -115,7 +124,8 @@ function Reminder(props) {
 
 const styles = StyleSheet.create({
   tabBar: {
-    flex: 1,
+    height: Platform.OS === 'android' ? 56 : 48,
+    width: Dimensions.get('window').width,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'stretch',
