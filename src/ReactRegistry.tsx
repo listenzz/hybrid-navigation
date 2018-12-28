@@ -12,6 +12,7 @@ import {
   ON_COMPONENT_DISAPPEAR,
   ON_COMPONENT_APPEAR,
   ON_DIALOG_BACK_PRESSED,
+  ON_COMPONENT_MOUNT,
   KEY_REQUEST_CODE,
   KEY_RESULT_CODE,
   KEY_RESULT_DATA,
@@ -106,7 +107,7 @@ function withNavigation(moduleName: string) {
                   navigation.componentDidDisappear();
                 }
                 break;
-              case 'MAKE_SURE_COMPONENT_DID_MOUNT':
+              case ON_COMPONENT_MOUNT:
                 if (this.navigator) {
                   this.navigator.signalFirstRenderComplete();
                 }
@@ -116,6 +117,8 @@ function withNavigation(moduleName: string) {
                   navigation.onBackPressed();
                 }
                 break;
+              default:
+                throw new Error(`event ${data[KEY_ON]} has not been processed yet.`);
             }
           });
         }

@@ -181,7 +181,9 @@ export class Garden {
   }
 
   setTabBadge(index: number, text: string) {
-    console.warn('setTabBadge 已经弃用，将在下一个版本移除，请使用 setTabBadgeText');
+    console.warn(
+      '`setTabBadge` has been deprecated and will be removed in the next release, please use `setTabBadgeText`'
+    );
     GardenModule.setTabBadgeText(this.sceneId, index, text);
   }
 
