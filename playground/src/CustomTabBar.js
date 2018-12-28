@@ -45,15 +45,7 @@ export default class CustomTabBar extends Component {
           selected={selectedIndex == 0}
           {...style}
         />
-
-        <TouchableOpacity
-          onPress={() => this.handleTabClick(-1)}
-          activeOpacity={0.8}
-          style={styles.tab}
-        >
-          <Image source={require('./images/tabbar_add_blue.png')} />
-        </TouchableOpacity>
-
+        <Add onTabClick={() => this.handleTabClick(-1)} />
         <Tab
           onTabClick={() => this.handleTabClick(1)}
           {...this.props.tabs[1]}
@@ -63,6 +55,14 @@ export default class CustomTabBar extends Component {
       </View>
     );
   }
+}
+
+function Add(props) {
+  return (
+    <TouchableOpacity onPress={props.onTabClick} activeOpacity={0.8} style={styles.tab}>
+      <Image source={require('./images/tabbar_add_blue.png')} />
+    </TouchableOpacity>
+  );
 }
 
 function Tab(props) {
