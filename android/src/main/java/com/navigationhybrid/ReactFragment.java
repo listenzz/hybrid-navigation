@@ -13,7 +13,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
@@ -22,6 +21,7 @@ import com.facebook.react.bridge.ReactContext;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.PresentAnimation;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
 import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
 import static com.navigationhybrid.HBDEventEmitter.KEY_ON;
@@ -134,12 +134,12 @@ public class ReactFragment extends HybridFragment {
             return;
         }
 
-        BubbleTouchEventReactRootView reactRootView = new BubbleTouchEventReactRootView(getContext());
+        ReactView reactRootView = new ReactView(getContext());
         boolean passThroughTouches = getOptions().getBoolean("passThroughTouches", false);
         reactRootView.setShouldConsumeTouchEvent(!passThroughTouches);
         this.reactRootView = reactRootView;
 
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         containerLayout.addView(reactRootView, layoutParams);
         Bundle args = FragmentHelper.getArguments(this);
         String moduleName = args.getString(ARG_MODULE_NAME);
@@ -171,7 +171,7 @@ public class ReactFragment extends HybridFragment {
     }
 
     public void signalFirstRenderComplete() {
-        Log.d(TAG, getModuleName() + " signalFirstRenderComplete");
+        Log.i(TAG, getModuleName() + " signalFirstRenderComplete");
         startPostponedEnterTransition();
     }
 
