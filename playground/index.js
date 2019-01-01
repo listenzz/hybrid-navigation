@@ -35,6 +35,12 @@ import StatusBarHidden from './src/StatusBarHidden';
 import CustomTabBar from './src/CustomTabBar';
 import BulgeTabBar from './src/BulgeTabBar';
 
+import MessageQueue from 'react-native/Libraries/BatchedBridge/MessageQueue.js';
+const spyFunction = msg => {
+  console.debug(msg);
+};
+MessageQueue.spy(spyFunction);
+
 // 设置全局样式
 Garden.setStyle({
   screenBackgroundColor: '#F8F8F8',
