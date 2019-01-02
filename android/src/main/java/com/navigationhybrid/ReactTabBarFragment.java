@@ -198,6 +198,11 @@ public class ReactTabBarFragment extends TabBarFragment {
     private boolean intercepted = true;
 
     @Override
+    protected void restoreSelectedIndex(int index) {
+        super.setSelectedIndex(index);
+    }
+
+    @Override
     public void setSelectedIndex(int index) {
         AwesomeFragment selectedFragment = getSelectedFragment();
         if (selectedFragment == null) {
