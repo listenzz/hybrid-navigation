@@ -38,14 +38,15 @@ import static com.navigationhybrid.HBDEventEmitter.ON_DIALOG_BACK_PRESSED;
  * Created by Listen on 2018/1/15.
  */
 
-public class ReactFragment extends HybridFragment {
+public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver {
 
     protected static final String TAG = "ReactNative";
 
     private ReactRootView reactRootView;
     private ViewGroup containerLayout;
     private ReactRootView reactTitleView;
-    private boolean appear;
+    private ReactRootViewHolder reactRootViewHolder;
+    private boolean isAppeared;
 
     @Nullable
     @Override
@@ -54,12 +55,16 @@ public class ReactFragment extends HybridFragment {
         boolean extendedLayoutIncludesToolbar = Color.alpha(color) < 255 || getGarden().extendedLayoutIncludesTopBar;
         View view;
         if (extendedLayoutIncludesToolbar) {
-            view= inflater.inflate(R.layout.nav_fragment_react_translucent, container, false);
+            view = inflater.inflate(R.layout.nav_fragment_react_translucent, container, false);
         } else {
-            view= inflater.inflate(R.layout.nav_fragment_react, container, false);
+            view = inflater.inflate(R.layout.nav_fragment_react, container, false);
         }
         containerLayout = view.findViewById(R.id.react_content);
-        if (getReactBridgeManager().isReactModuleRegisterCompleted()) {
+        if (containerLayout instanceof ReactRootViewHolder) {
+            reactRootViewHolder = (ReactRootViewHolder) containerLayout;
+            reactRootViewHolder.setVisibilityObserver(this);
+        }
+        if (getReactBridgeManager().isReactModuleRegisterCompleted() && ! isHidden()) {
             if (getAnimation() != PresentAnimation.None) {
                 postponeEnterTransition();
             }
@@ -70,9 +75,19 @@ public class ReactFragment extends HybridFragment {
     }
 
     @Override
+    public void inspectVisibility(int visibility) {
+        if (visibility == View.VISIBLE && isResumed() && reactRootView == null) {
+            initReactNative();
+            initTitleViewIfNeeded();
+        }
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initTitleViewIfNeeded();
+        if (!isHidden()) {
+            initTitleViewIfNeeded();
+        }
     }
 
     @Override
@@ -100,8 +115,8 @@ public class ReactFragment extends HybridFragment {
 
     private void sendViewAppearEvent(boolean appear) {
         // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
-        if ((isResumed() || isRemoving()) && getReactBridgeManager().isReactModuleRegisterCompleted() && this.appear != appear) {
-            this.appear = appear;
+        if ((isResumed() || isRemoving()) && getReactBridgeManager().isReactModuleRegisterCompleted() && this.isAppeared != appear) {
+            this.isAppeared = appear;
             Bundle bundle = new Bundle();
             bundle.putString(KEY_SCENE_ID, getSceneId());
             bundle.putString(KEY_ON, appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR);
@@ -223,4 +238,5 @@ public class ReactFragment extends HybridFragment {
                     }
                 });
     }
+
 }

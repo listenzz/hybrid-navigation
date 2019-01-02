@@ -11,10 +11,11 @@ import com.facebook.react.ReactRootView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-public class ReactFrameLayout extends FrameLayout {
+public class ReactFrameLayout extends FrameLayout implements ReactRootViewHolder {
     protected static final String TAG = "ReactNative";
 
     private ReactRootView mReactRootView;
+    private VisibilityObserver mVisibilityObserver;
 
     public ReactFrameLayout(Context context) {
         this(context, null);
@@ -61,5 +62,14 @@ public class ReactFrameLayout extends FrameLayout {
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
             addView(mReactRootView, 0, layoutParams);
         }
+
+        if (mVisibilityObserver != null) {
+            mVisibilityObserver.inspectVisibility(visibility);
+        }
+    }
+
+    @Override
+    public void setVisibilityObserver(VisibilityObserver observer) {
+        mVisibilityObserver = observer;
     }
 }

@@ -11,11 +11,12 @@ import com.facebook.react.ReactRootView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-public class ReactLinearLayout extends LinearLayout {
+public class ReactLinearLayout extends LinearLayout implements ReactRootViewHolder{
 
     protected static final String TAG = "ReactNative";
 
     private ReactRootView mReactRootView;
+    private VisibilityObserver mVisibilityObserver;
 
     public ReactLinearLayout(Context context) {
         this(context, null);
@@ -58,10 +59,19 @@ public class ReactLinearLayout extends LinearLayout {
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
-        if (getVisibility() == View.VISIBLE && mReactRootView != null && mReactRootView.getParent() == null) {
+        if (visibility == View.VISIBLE && mReactRootView != null && mReactRootView.getParent() == null) {
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
             addView(mReactRootView, layoutParams);
         }
+
+        if (mVisibilityObserver != null) {
+            mVisibilityObserver.inspectVisibility(visibility);
+        }
     }
 
+
+    @Override
+    public void setVisibilityObserver(VisibilityObserver observer) {
+        mVisibilityObserver = observer;
+    }
 }

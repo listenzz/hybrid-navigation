@@ -214,17 +214,4 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     public boolean isReactModuleRegisterCompleted() {
         return getReactBridgeManager().isReactModuleRegisterCompleted();
     }
-
-    public List<AwesomeFragment> getFragmentsAtAddedList() {
-        List<AwesomeFragment> children = new ArrayList<>();
-        List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (int i = 0, size = fragments.size(); i < size; i++) {
-            Fragment fragment = fragments.get(i);
-            if (fragment instanceof AwesomeFragment) {
-                children.add((AwesomeFragment) fragment);
-            }
-        }
-        return children;
-    }
-
 }
