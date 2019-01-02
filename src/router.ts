@@ -224,11 +224,16 @@ class Router {
     if (route && route.moduleName) {
       try {
         const graphArray = await Navigator.routeGraph();
-
+        if (!graphArray) {
+          return;
+        }
         if (graphArray.length > 1) {
           for (let index = graphArray.length - 1; index > 0; index--) {
             const { mode: layoutMode } = graphArray[index];
             const navigator = await Navigator.current();
+            if (!navigator) {
+              return;
+            }
             if (layoutMode === 'present') {
               navigator.dismiss();
             } else if (layoutMode === 'modal') {
@@ -241,6 +246,9 @@ class Router {
 
         if (!this.navigateTo(graphArray[0], route)) {
           const navigator = await Navigator.current();
+          if (!navigator) {
+            return;
+          }
           navigator.closeMenu();
           const { moduleName, mode: routeMode, props } = route;
           if (routeMode === 'present') {

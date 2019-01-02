@@ -79,15 +79,18 @@ export class Navigator {
   }
 
   static async current() {
-    const { sceneId } = await Navigator.currentRoute();
-    return Navigator.get(sceneId);
+    const route = await Navigator.currentRoute();
+    if (route) {
+      return Navigator.get(route.sceneId);
+    }
+    return null;
   }
 
-  static async currentRoute(): Promise<Route> {
+  static async currentRoute(): Promise<Route | null> {
     return await NavigationModule.currentRoute();
   }
 
-  static async routeGraph(): Promise<RouteGraph[]> {
+  static async routeGraph(): Promise<RouteGraph[] | null> {
     return await NavigationModule.routeGraph();
   }
 

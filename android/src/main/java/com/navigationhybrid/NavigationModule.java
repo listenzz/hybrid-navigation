@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -164,21 +165,23 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 Activity activity = getCurrentActivity();
                 if (!(activity instanceof ReactAppCompatActivity)) {
-                    promise.reject("1", "UI 层级还没有准备好");
+                    FLog.w(TAG, "View Hierarchy is not ready when you call currentRoute");
+                    promise.resolve(null);
                     return;
                 }
-
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
                 Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
                 HybridFragment current = getPrimaryFragment(fragment);
+
                 if (current != null) {
                     Bundle bundle = new Bundle();
                     bundle.putString("moduleName", current.getModuleName());
                     bundle.putString("sceneId", current.getSceneId());
                     promise.resolve(Arguments.fromBundle(bundle));
                 } else {
-                    promise.reject("2", "UI 层级还没有准备好");
+                    FLog.w(TAG, "View Hierarchy is not ready when you call currentRoute");
+                    promise.resolve(null);
                 }
             }
         });
@@ -198,7 +201,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 Activity activity = getCurrentActivity();
                 if (!(activity instanceof ReactAppCompatActivity)) {
-                    promise.reject("1", "UI 层级还没有准备好");
+                    FLog.w(TAG, "View Hierarchy is not ready when you call Navigator#routeGraph. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
+                    promise.resolve(null);
                     return;
                 }
                 
@@ -216,7 +220,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 if (root.size() > 0) {
                     promise.resolve(Arguments.fromList(root));
                 } else {
-                    promise.reject("2", "UI 层级还没有准备好");
+                    FLog.w(TAG, "View Hierarchy is not ready when you call Navigator#routeGraph. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
+                    promise.resolve(null);
                 }
             }
         });

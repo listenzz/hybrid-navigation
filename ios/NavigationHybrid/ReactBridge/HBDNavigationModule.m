@@ -94,7 +94,8 @@ RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
     if (current) {
         resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId });
     } else {
-        reject(@"1", @"UI 层级还没准备好", [NSError errorWithDomain:RCTErrorDomain code:1 userInfo:nil]);
+        RCTLogWarn(@"View Hierarchy is not ready when you call Navigator#currentRoute. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
+        resolve(NSNull.null);
     }
 }
 
@@ -103,7 +104,8 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
     if (root.count > 0) {
         resolve(root);
     } else {
-        reject(@"2", @"UI 层级还没准备好", [NSError errorWithDomain:RCTErrorDomain code:2 userInfo:nil]);
+        RCTLogWarn(@"View Hierarchy is not ready when you call Navigator#routeGraph. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
+        resolve(NSNull.null);
     }
 }
 
