@@ -68,7 +68,7 @@ export default class BulgeTabBar extends Component {
           activeOpacity={0.8}
           style={styles.bulge}
         >
-          <Image source={require('./images/tabbar_add_yellow.png')} />
+          <Image source={require('./images/tabbar_add_yellow.png')} fadeDuration={0} />
         </TouchableOpacity>
       </View>
     );
@@ -100,6 +100,7 @@ function Tab(props) {
           }}
           style={{ tintColor: selected ? selectedItemColor : itemColor }}
           resizeMode="center"
+          fadeDuration={0}
         />
       ) : (
         <View style={{ width: 24, height: 24 }} />

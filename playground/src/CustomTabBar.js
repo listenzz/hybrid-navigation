@@ -69,7 +69,7 @@ export default class CustomTabBar extends Component {
 function Add(props) {
   return (
     <TouchableOpacity onPress={props.onTabClick} activeOpacity={0.8} style={styles.tab}>
-      <Image source={require('./images/tabbar_add_blue.png')} />
+      <Image source={require('./images/tabbar_add_blue.png')} fadeDuration={0} />
     </TouchableOpacity>
   );
 }
@@ -99,6 +99,7 @@ function Tab(props) {
           }}
           style={{ tintColor: selected ? selectedItemColor : itemColor }}
           resizeMode="center"
+          fadeDuration={0}
         />
       ) : (
         <View style={{ width: 24, height: 24 }} />
