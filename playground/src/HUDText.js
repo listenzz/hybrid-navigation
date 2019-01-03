@@ -21,18 +21,25 @@ export default class HUDTest extends Component {
       // dimAmount: 0.0, // only for andriod
       loadingText: 'Loading...',
     });
-    this.hud = new LoadingHUD();
+    this.loadingHud = new LoadingHUD();
   }
 
   componentWillUnmount() {
-    this.hud.hideAll();
+    this.loadingHud.hideAll();
   }
 
   loading() {
-    this.hud.show();
+    // this.loadingHud.show();
+    // setTimeout(() => {
+    //   this.loadingHud.hide();
+    //   new HUD().done('Work is Done!').hideDelayDefault();
+    // }, 2000);
+
+    const hud = new HUD();
+    hud.spinner();
     setTimeout(() => {
-      new HUD().done('Work is Done!').hideDelayDefault();
-      this.hud.hide();
+      hud.text('Ho Ho Ho');
+      hud.hideDelayDefault();
     }, 2000);
   }
 
