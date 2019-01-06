@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -45,7 +46,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     private ReactRootView reactRootView;
     private ViewGroup containerLayout;
     private ReactRootView reactTitleView;
-    private ReactRootViewHolder reactRootViewHolder;
     private boolean isAppeared;
 
     @Nullable
@@ -61,10 +61,10 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
         containerLayout = view.findViewById(R.id.react_content);
         if (containerLayout instanceof ReactRootViewHolder) {
-            reactRootViewHolder = (ReactRootViewHolder) containerLayout;
+            ReactRootViewHolder reactRootViewHolder = (ReactRootViewHolder) containerLayout;
             reactRootViewHolder.setVisibilityObserver(this);
         }
-        if (getReactBridgeManager().isReactModuleRegisterCompleted() && ! isHidden()) {
+        if (getReactBridgeManager().isReactModuleRegisterCompleted() && !isHidden()) {
             if (getAnimation() != PresentAnimation.None) {
                 postponeEnterTransition();
             }
@@ -206,6 +206,17 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         if (getActivity() != null) {
             getActivity().supportStartPostponedEnterTransition();
         }
+    }
+
+    @Override
+    public void dismissFragment() {
+        Fragment target = getTargetFragment();
+        if (target instanceof HybridFragment) {
+            if (!target.isAdded()) {
+                throw new IllegalStateException("should not present " + getModuleName() + " over dismissed " + ((HybridFragment)target).getModuleName() + ".");
+            }
+        }
+        super.dismissFragment();
     }
 
     @Override

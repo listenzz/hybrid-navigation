@@ -3,7 +3,6 @@ package com.navigationhybrid.navigator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
@@ -17,7 +16,6 @@ import java.util.List;
 
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.FragmentHelper;
-import me.listenzz.navigation.NavigationFragment;
 
 public class ScreenNavigator implements Navigator {
 
@@ -70,11 +68,6 @@ public class ScreenNavigator implements Navigator {
             return true;
         }
         return false;
-    }
-
-    private boolean isChildOfNavigationFragment(@NonNull AwesomeFragment fragment) {
-        Fragment parent = fragment.getParentFragment();
-        return parent instanceof NavigationFragment;
     }
 
     @Override

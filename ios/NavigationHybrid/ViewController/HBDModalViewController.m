@@ -428,11 +428,6 @@
 }
 
 - (void)hbd_hideViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
-//    if (self.hbd_popupViewController) {
-//        [self.hbd_popupViewController hbd_hideViewControllerAnimated:animated completion:completion];
-//        return;
-//    }
-    
     if (!self.hbd_modalViewController) {
         UIViewController *parent = self.parentViewController;
         parent.resultData = self.resultData;
