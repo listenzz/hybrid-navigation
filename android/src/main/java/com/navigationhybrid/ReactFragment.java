@@ -209,17 +209,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     @Override
-    public void dismissFragment() {
-        Fragment target = getTargetFragment();
-        if (target instanceof HybridFragment) {
-            if (!target.isAdded()) {
-                throw new IllegalStateException("should not present " + getModuleName() + " over dismissed " + ((HybridFragment)target).getModuleName() + ".");
-            }
-        }
-        super.dismissFragment();
-    }
-
-    @Override
     protected void setupDialog() {
         super.setupDialog();
         getDialog().setOnKeyListener(

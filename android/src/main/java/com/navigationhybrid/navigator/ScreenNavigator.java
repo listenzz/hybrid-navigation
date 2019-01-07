@@ -109,7 +109,12 @@ public class ScreenNavigator implements Navigator {
                 }
                 break;
             case "dismiss":
-                fragment.dismissFragment();
+                AwesomeFragment presenting = fragment.getPresentingFragment();
+                if (presenting != null) {
+                    presenting.dismissFragment();
+                } else {
+                    fragment.dismissFragment();
+                }
                 break;
             case "showModal":
                 if (target != null) {
