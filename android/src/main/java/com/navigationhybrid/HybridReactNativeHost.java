@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.facebook.infer.annotation.Assertions;
@@ -18,7 +19,6 @@ import com.facebook.react.bridge.ReactMarkerConstants;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.devsupport.interfaces.DevBundleDownloadListener;
 
-import javax.annotation.Nullable;
 
 import me.listenzz.navigation.AwesomeActivity;
 
