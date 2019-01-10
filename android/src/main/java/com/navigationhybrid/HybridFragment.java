@@ -23,9 +23,28 @@ import static com.navigationhybrid.Constants.ARG_SCENE_ID;
 
 public class HybridFragment extends AwesomeFragment {
 
+    private static final String SAVED_OPTIONS = "hybrid_options";
+    private static final String SAVED_PROPS = "hybrid_props";
+
     private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 
     private Garden garden;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            options = savedInstanceState.getBundle(SAVED_OPTIONS);
+            props = savedInstanceState.getBundle(SAVED_PROPS);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle(SAVED_OPTIONS, options);
+        outState.putBundle(SAVED_PROPS, props);
+    }
 
     @Override
     protected void onCustomStyle(@NonNull Style style) {
@@ -84,37 +103,48 @@ public class HybridFragment extends AwesomeFragment {
         return bridgeManager;
     }
 
+    private Bundle options;
+
     @NonNull
     public Bundle getOptions() {
-        Bundle args = FragmentHelper.getArguments(this);
-        Bundle bundle = args.getBundle(ARG_OPTIONS);
-        if (bundle == null) {
-            bundle = new Bundle();
+        if (options == null) {
+            Bundle args = FragmentHelper.getArguments(this);
+            options = args.getBundle(ARG_OPTIONS);
+            if (options == null) {
+                options = new Bundle();
+            }
         }
-        return bundle;
+        return options;
     }
 
     public void setOptions(@NonNull Bundle options) {
-        Bundle args = FragmentHelper.getArguments(this);
-        args.putBundle(ARG_OPTIONS, options);
-        setArguments(args);
+        this.options = options;
     }
+
+    private Bundle props;
 
     @NonNull
     public Bundle getProps() {
-        Bundle args = FragmentHelper.getArguments(this);
-        Bundle initialProps = args.getBundle(ARG_PROPS);
-        if (initialProps == null) {
-            initialProps = new Bundle();
+        if (props == null) {
+            Bundle args = FragmentHelper.getArguments(this);
+            props = args.getBundle(ARG_PROPS);
+            if (props == null) {
+                props = new Bundle();
+            }
+            props.putString(ARG_SCENE_ID, getSceneId());
         }
-        initialProps.putString(ARG_SCENE_ID, getSceneId());
-        return initialProps;
+        return props;
     }
 
     @CallSuper
     public void setAppProperties(@NonNull Bundle props) {
-        Bundle args = FragmentHelper.getArguments(this);
-        args.putBundle(ARG_PROPS, props);
+        if (isAdded()) {
+            props.putString(ARG_SCENE_ID, getSceneId());
+            this.props = props;
+        } else {
+            Bundle args = FragmentHelper.getArguments(this);
+            args.putBundle(ARG_PROPS, props);
+        }
     }
 
     public String getModuleName() {

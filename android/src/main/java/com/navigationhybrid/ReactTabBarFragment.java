@@ -31,7 +31,6 @@ import static com.navigationhybrid.Constants.ARG_ICON_SELECTED;
 import static com.navigationhybrid.Constants.ARG_INDEX;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
 import static com.navigationhybrid.Constants.ARG_VISIBLE;
-
 import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
 import static com.navigationhybrid.HBDEventEmitter.KEY_FROM;
 import static com.navigationhybrid.HBDEventEmitter.KEY_INDEX;
@@ -50,11 +49,27 @@ import static com.navigationhybrid.HBDEventEmitter.ON_COMPONENT_RESULT;
 
 public class ReactTabBarFragment extends TabBarFragment {
 
+    private static final String SAVED_OPTIONS = "hybrid_options";
+
     private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 
     public @NonNull
     ReactBridgeManager getReactBridgeManager() {
         return bridgeManager;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            options = savedInstanceState.getBundle(SAVED_OPTIONS);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBundle(SAVED_OPTIONS, options);
     }
 
     @Override
@@ -175,20 +190,22 @@ public class ReactTabBarFragment extends TabBarFragment {
         return null;
     }
 
+    private Bundle options;
+
     @NonNull
     public Bundle getOptions() {
-        Bundle args = FragmentHelper.getArguments(this);
-        Bundle bundle = args.getBundle(ARG_OPTIONS);
-        if (bundle == null) {
-            bundle = new Bundle();
+        if (options == null) {
+            Bundle args = FragmentHelper.getArguments(this);
+            options = args.getBundle(ARG_OPTIONS);
+            if (options == null) {
+                options = new Bundle();
+            }
         }
-        return bundle;
+        return options;
     }
 
     public void setOptions(@NonNull Bundle options) {
-        Bundle args = FragmentHelper.getArguments(this);
-        args.putBundle(ARG_OPTIONS, options);
-        setArguments(args);
+        this.options = options;
     }
 
     public void setIntercepted(boolean intercepted) {

@@ -156,8 +156,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         containerLayout.addView(reactRootView, layoutParams);
-        Bundle args = FragmentHelper.getArguments(this);
-        String moduleName = args.getString(ARG_MODULE_NAME);
+        String moduleName = getModuleName();
         reactRootView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
     }
 
