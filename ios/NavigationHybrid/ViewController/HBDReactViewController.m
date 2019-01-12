@@ -19,7 +19,7 @@
 
 @property(nonatomic, assign) BOOL firstRenderComplete;
 @property(nonatomic, assign) BOOL viewAppeared;
-@property(nonatomic, strong) RCTRootView *rootView;
+@property(nonatomic, strong, readwrite) RCTRootView *rootView;
 
 @end
 

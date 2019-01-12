@@ -38,6 +38,7 @@ Navigator.setRoot({
 
 ```javascript
 tabBar: {
+  // 56 和 48 是原生 TabBar 容器的实际高度，是固定值。
   height: Platform.OS === 'android' ? 56 : 48,
   width: Dimensions.get('window').width,
   flexDirection: 'row',
@@ -45,8 +46,6 @@ tabBar: {
   alignItems: 'stretch',
 },
 ```
-
-56 和 48 是原生 TabBar 容器的高度，是固定值。
 
 如果**需要**实现中间按钮凸起效果，`sizeIndeterminate` 需要设置为 `true`，同时指定 TabBar 期待的（包含凸起按钮后的）宽高，以及 TabBar 的实际宽高。
 
@@ -63,8 +62,8 @@ Navigator.setRoot({
 ```
 
 ```javascript
-// TabBar 期待的宽高
 container: {
+  // TabBar 期待的宽高
   height: Platform.OS === 'android' ? 78 : 72,
   width: Dimensions.get('window').width,
   justifyContent: 'flex-start',
@@ -137,7 +136,3 @@ const navigator = Navigator.get(this.props.tabs[0].sceneId);
 ```
 
 > TabBar 的背景颜色，分割线，仍然由原生控制。
-
-### 凸起部分不响应事件
-
-如果你需要实现中间按钮凸起效果，注意该按钮不宜太大，也不宜太凸起，因为凸起部分不响应事件，只是起到装饰作用。

@@ -19,7 +19,6 @@ import com.facebook.react.bridge.ReactMarkerConstants;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.devsupport.interfaces.DevBundleDownloadListener;
 
-
 import me.listenzz.navigation.AwesomeActivity;
 
 public abstract class HybridReactNativeHost extends ReactNativeHost {

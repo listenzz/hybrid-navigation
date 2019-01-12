@@ -1,6 +1,6 @@
 {
   "name": "HudHybrid",
-  "version": "0.30.0",
+  "version": "0.32.0",
   "summary": "progress hud for react native app",
   "authors": {
     "listen": "listenzz@163.com"
@@ -13,7 +13,7 @@
   "module_name": "HudHybrid",
   "source": {
     "git": "https://github.com/listenzz/react-native-hud.git",
-    "tag": "v0.30.0"
+    "tag": "v0.32.0"
   },
   "source_files": "ios/**/*.{h,m,swift}",
   "resource_bundles": {

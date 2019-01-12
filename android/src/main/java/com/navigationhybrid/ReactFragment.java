@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -19,11 +18,9 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 
-import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.PresentAnimation;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
 import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
 import static com.navigationhybrid.HBDEventEmitter.KEY_ON;
 import static com.navigationhybrid.HBDEventEmitter.KEY_REQUEST_CODE;
@@ -149,15 +146,15 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             return;
         }
 
-        ReactView reactRootView = new ReactView(getContext());
+        ReactView reactView = new ReactView(getContext());
         boolean passThroughTouches = getOptions().getBoolean("passThroughTouches", false);
-        reactRootView.setShouldConsumeTouchEvent(!passThroughTouches);
-        this.reactRootView = reactRootView;
+        reactView.setShouldConsumeTouchEvent(!passThroughTouches);
+        this.reactRootView = reactView;
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        containerLayout.addView(reactRootView, layoutParams);
+        containerLayout.addView(reactView, layoutParams);
         String moduleName = getModuleName();
-        reactRootView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+        reactView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
     }
 
     private void initTitleViewIfNeeded() {
@@ -171,7 +168,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             if (moduleName != null) {
                 String fitting = titleItem.getString("layoutFitting");
                 boolean expanded = "expanded".equals(fitting);
-                reactTitleView = new ReactRootView(getContext());
+                reactTitleView = new ReactView(getContext());
                 Toolbar.LayoutParams layoutParams;
                 if (expanded) {
                     layoutParams = new Toolbar.LayoutParams(-1, -1, Gravity.CENTER);

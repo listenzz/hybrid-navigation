@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.facebook.react.ReactInstanceManager;
-import com.facebook.react.ReactRootView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +24,8 @@ import me.listenzz.navigation.TabBarFragment;
 import me.listenzz.navigation.TabBarItem;
 import me.listenzz.navigation.TabBarProvider;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.navigationhybrid.Constants.ACTION_SET_BADGE_TEXT;
 import static com.navigationhybrid.Constants.ACTION_SET_RED_POINT;
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;
@@ -39,8 +40,10 @@ import static com.navigationhybrid.Constants.ARG_VISIBLE;
 
 public class ReactTabBarProvider implements TabBarProvider {
 
-    private ReactRootView reactRootView;
-    private ReactTabBarFragment reactTabBarFragment;
+    private static final String TAG = "ReactNative";
+
+    private ReactView reactView;
+    private ReactTabBarFragment tabBarFragment;
     private ReactTabBar tabBar;
 
     @Override
@@ -78,29 +81,26 @@ public class ReactTabBarProvider implements TabBarProvider {
             throw new IllegalStateException("tabBarModuleName 不能为 null");
         }
 
-        reactRootView = new ReactRootView(tabBarFragment.requireContext());
+        reactView = new ReactView(tabBarFragment.requireContext());
         boolean sizeIndeterminate = options.getBoolean("sizeIndeterminate");
         if (sizeIndeterminate) {
-            ViewGroup viewGroup = (ViewGroup) tabBarFragment.getView();
-            if (viewGroup != null) {
-                viewGroup.setClipChildren(false);
-            }
-            reactRootView.setLayoutParams(new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM));
+            reactView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.BOTTOM));
+            reactView.setShouldConsumeTouchEvent(false);
         } else {
-            reactRootView.setLayoutParams(new FrameLayout.LayoutParams(-1, -1, Gravity.BOTTOM));
+            reactView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT, Gravity.BOTTOM));
         }
 
-        ReactInstanceManager reactInstanceManager = getReactBridgeManager().getReactInstanceManager();
-        ReactTabBar reactTabBar = new ReactTabBar(tabBarFragment.requireContext());
-        reactTabBar.setRootView(reactRootView);
+        ReactTabBar tabBar = new ReactTabBar(tabBarFragment.requireContext(), sizeIndeterminate);
+        tabBar.setRootView(reactView);
 
         Bundle props = getProps(reactTabBarFragment);
         props.putInt("selectedIndex", options.getInt("selectedIndex"));
-        reactRootView.startReactApplication(reactInstanceManager, tabBarModuleName, props);
-        configureTabBar(reactTabBar, reactTabBarFragment.getStyle());
-        this.reactTabBarFragment = reactTabBarFragment;
-        this.tabBar = reactTabBar;
-        return reactTabBar;
+        ReactInstanceManager reactInstanceManager = getReactBridgeManager().getReactInstanceManager();
+        reactView.startReactApplication(reactInstanceManager, tabBarModuleName, props);
+        configureTabBar(tabBar, reactTabBarFragment.getStyle());
+        this.tabBarFragment = reactTabBarFragment;
+        this.tabBar = tabBar;
+        return tabBar;
     }
 
     private Pair<String, String> extractSceneIdAndModuleName(AwesomeFragment awesomeFragment) {
@@ -116,7 +116,7 @@ public class ReactTabBarProvider implements TabBarProvider {
     }
 
     private void configureTabBar(ReactTabBar tabBar, Style style) {
-        tabBar.setBackground(new ColorDrawable(Color.parseColor(style.getTabBarBackgroundColor())));
+        tabBar.setTabBarBackground(new ColorDrawable(Color.parseColor(style.getTabBarBackgroundColor())));
         tabBar.setShadow(style.getTabBarShadow());
     }
 
@@ -151,10 +151,10 @@ public class ReactTabBarProvider implements TabBarProvider {
 
     @Override
     public void onDestroyTabBar() {
-        if (reactRootView != null) {
-            reactRootView.unmountReactApplication();
+        if (reactView != null) {
+            reactView.unmountReactApplication();
         }
-        reactTabBarFragment = null;
+        tabBarFragment = null;
     }
 
     @Override
@@ -164,10 +164,10 @@ public class ReactTabBarProvider implements TabBarProvider {
 
     @Override
     public void setSelectedIndex(int index) {
-        if (reactTabBarFragment != null) {
-            Bundle bundle = getProps(reactTabBarFragment);
+        if (tabBarFragment != null) {
+            Bundle bundle = getProps(tabBarFragment);
             bundle.putInt("selectedIndex", index);
-            reactRootView.setAppProperties(bundle);
+            reactView.setAppProperties(bundle);
         }
     }
 
@@ -195,7 +195,7 @@ public class ReactTabBarProvider implements TabBarProvider {
     }
 
     private void setBadge(int index, String text) {
-        Bundle options = reactTabBarFragment.getOptions();
+        Bundle options = tabBarFragment.getOptions();
         ArrayList<Bundle> tabs = options.getParcelableArrayList("tabs");
         if (tabs == null) {
             // should never happen
@@ -203,11 +203,11 @@ public class ReactTabBarProvider implements TabBarProvider {
         }
         Bundle tab = tabs.get(index);
         tab.putString("badgeText", text);
-        reactRootView.setAppProperties(getProps(reactTabBarFragment));
+        reactView.setAppProperties(getProps(tabBarFragment));
     }
 
     private void setRedPoint(int index, boolean visible) {
-        Bundle options = reactTabBarFragment.getOptions();
+        Bundle options = tabBarFragment.getOptions();
         ArrayList<Bundle> tabs = options.getParcelableArrayList("tabs");
         if (tabs == null) {
             // should never happen
@@ -215,7 +215,7 @@ public class ReactTabBarProvider implements TabBarProvider {
         }
         Bundle tab = tabs.get(index);
         tab.putBoolean("remind", visible);
-        reactRootView.setAppProperties(getProps(reactTabBarFragment));
+        reactView.setAppProperties(getProps(tabBarFragment));
     }
 
     private void setTabIcon(int index, @Nullable Bundle icon, @Nullable Bundle selectedIcon) {
@@ -223,7 +223,7 @@ public class ReactTabBarProvider implements TabBarProvider {
             return;
         }
 
-        Bundle options = reactTabBarFragment.getOptions();
+        Bundle options = tabBarFragment.getOptions();
         ArrayList<Bundle> tabs = options.getParcelableArrayList("tabs");
         if (tabs == null) {
             // should never happen
@@ -231,7 +231,7 @@ public class ReactTabBarProvider implements TabBarProvider {
         }
         Bundle tab = tabs.get(index);
 
-        Context context = reactTabBarFragment.requireContext();
+        Context context = tabBarFragment.requireContext();
         String iconUri = Utils.getIconUri(context, icon.getString("uri"));
         tab.putString("icon", iconUri);
 
@@ -239,7 +239,7 @@ public class ReactTabBarProvider implements TabBarProvider {
             String selectedIconUri = Utils.getIconUri(context, selectedIcon.getString("uri"));
             tab.putString("selectedIcon", selectedIconUri);
         }
-        reactRootView.setAppProperties(getProps(reactTabBarFragment));
+        reactView.setAppProperties(getProps(tabBarFragment));
     }
 
     private void updateTabBarAppearance(@Nullable Bundle bundle) {
@@ -247,31 +247,31 @@ public class ReactTabBarProvider implements TabBarProvider {
             return;
         }
 
-        Style style = reactTabBarFragment.getStyle();
+        Style style = tabBarFragment.getStyle();
+        Bundle options = tabBarFragment.getOptions();
         ReactTabBar tabBar = this.tabBar;
 
         String tabBarColor = bundle.getString("tabBarColor");
         if (tabBarColor != null) {
+            options.putString("tabBarColor", tabBarColor);
             style.setTabBarBackgroundColor(tabBarColor);
-            tabBar.setBackground(new ColorDrawable(Color.parseColor(tabBarColor)));
-            reactTabBarFragment.setNeedsNavigationBarAppearanceUpdate();
+            tabBar.setTabBarBackground(new ColorDrawable(Color.parseColor(tabBarColor)));
+            tabBarFragment.setNeedsNavigationBarAppearanceUpdate();
         }
 
         Bundle shadowImage = bundle.getBundle("tabBarShadowImage");
         if (shadowImage != null) {
-            tabBar.setShadow(Utils.createTabBarShadow(reactTabBarFragment.requireContext(), shadowImage));
+            options.putBundle("tabBarShadowImage", shadowImage);
+            tabBar.setShadow(Utils.createTabBarShadow(tabBarFragment.requireContext(), shadowImage));
         }
 
         String tabBarItemColor = bundle.getString("tabBarItemColor");
         String tabBarUnselectedItemColor = bundle.getString("tabBarUnselectedItemColor");
         if (tabBarItemColor != null && tabBarUnselectedItemColor != null) {
-            Bundle options = reactTabBarFragment.getOptions();
             options.putString("tabBarItemColor", tabBarItemColor);
             options.putString("tabBarUnselectedItemColor", tabBarUnselectedItemColor);
-            Bundle props = getProps(reactTabBarFragment);
-            props.putString("itemColor", tabBarUnselectedItemColor);
-            props.putString("selectedItemColor", tabBarItemColor);
-            reactRootView.setAppProperties(props);
+            Bundle props = getProps(tabBarFragment);
+            reactView.setAppProperties(props);
         }
     }
 

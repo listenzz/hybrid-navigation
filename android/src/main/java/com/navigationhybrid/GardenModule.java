@@ -235,7 +235,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                         Bundle bundle = new Bundle();
                         bundle.putString(ARG_ACTION, ACTION_UPDATE_TAB_BAR);
                         bundle.putBundle(ARG_OPTIONS, Arguments.toBundle(readableMap));
-                        tabBarFragment.updateTabbar(bundle);
+                        tabBarFragment.updateTabBar(bundle);
                     }
                 }
             }
@@ -256,7 +256,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                         bundle.putInt(ARG_INDEX, index);
                         bundle.putBundle(ARG_ICON, Arguments.toBundle(icon));
                         bundle.putBundle(ARG_ICON_SELECTED, Arguments.toBundle(selectedIcon));
-                        tabBarFragment.updateTabbar(bundle);
+                        tabBarFragment.updateTabBar(bundle);
                     }
                 }
             }
@@ -276,7 +276,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                         bundle.putString(ARG_ACTION, ACTION_SET_BADGE_TEXT);
                         bundle.putInt(ARG_INDEX, index);
                         bundle.putString(ARG_BADGE_TEXT, text);
-                        tabBarFragment.updateTabbar(bundle);
+                        tabBarFragment.updateTabBar(bundle);
                     }
                 }
             }
@@ -296,7 +296,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                         bundle.putString(ARG_ACTION, ACTION_SET_RED_POINT);
                         bundle.putInt(ARG_INDEX, index);
                         bundle.putBoolean(ARG_VISIBLE, true);
-                        tabBarFragment.updateTabbar(bundle);
+                        tabBarFragment.updateTabBar(bundle);
                     }
                 }
             }
@@ -316,7 +316,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                         bundle.putString(ARG_ACTION, ACTION_SET_RED_POINT);
                         bundle.putInt(ARG_INDEX, index);
                         bundle.putBoolean(ARG_VISIBLE, false);
-                        tabBarFragment.updateTabbar(bundle);
+                        tabBarFragment.updateTabBar(bundle);
                     }
                 }
             }

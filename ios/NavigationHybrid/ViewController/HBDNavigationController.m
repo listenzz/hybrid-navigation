@@ -14,6 +14,7 @@
 #import "HBDUtils.h"
 #import "HBDGarden.h"
 #import "HBDReactViewController.h"
+#import "HBDRootView.h"
 
 @interface HBDNavigationController () <UIGestureRecognizerDelegate, UINavigationControllerDelegate>
 
@@ -84,6 +85,10 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if (self.viewControllers.count > 1) {
+        if ([self.topViewController isKindOfClass:[HBDReactViewController class]]) {
+            HBDReactViewController *vc = (HBDReactViewController *)self.topViewController;
+            [vc.rootView cancelTouches];
+        }
         return self.topViewController.hbd_backInteractive && self.topViewController.hbd_swipeBackEnabled;
     }
     return NO;

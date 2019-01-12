@@ -53,8 +53,8 @@ public class ReactTabBarFragment extends TabBarFragment {
 
     private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 
-    public @NonNull
-    ReactBridgeManager getReactBridgeManager() {
+    @NonNull
+    public ReactBridgeManager getReactBridgeManager() {
         return bridgeManager;
     }
 
@@ -100,8 +100,8 @@ public class ReactTabBarFragment extends TabBarFragment {
     }
 
     @Override
-    public void updateTabbar(Bundle options) {
-        super.updateTabbar(options);
+    public void updateTabBar(Bundle options) {
+        super.updateTabBar(options);
         if (getTabBarProvider() instanceof DefaultTabBarProvider) {
             String action = options.getString(ARG_ACTION);
             if (action == null) {

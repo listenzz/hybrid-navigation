@@ -10,8 +10,7 @@
 
 @implementation HBDRootView
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     UIView *hitView = [super hitTest:point withEvent:event];
     if (self.passThroughTouches && hitView) {
         UIView *view = self.contentView.subviews.firstObject;

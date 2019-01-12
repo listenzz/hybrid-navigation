@@ -12,6 +12,8 @@
 #import "HBDUtils.h"
 #import "UITabBar+Badge.h"
 #import "HBDEventEmitter.h"
+#import "HBDReactTabBar.h"
+#import "HBDRootView.h"
 
 #import <React/RCTRootView.h>
 #import <React/RCTRootViewDelegate.h>
@@ -42,6 +44,7 @@
     self.delegate = self;
     self.intercepted = YES;
     if (self.hasCustomTabBar) {
+        [self setValue:[[HBDReactTabBar alloc] init] forKey:@"tabBar"];
         [self customTabBar];
     }
 }
@@ -58,12 +61,13 @@
     NSString *moduleName = self.tabBarOptions[@"tabBarModuleName"];
     NSMutableDictionary *props = [[self props] mutableCopy];
     props[@"selectedIndex"] = self.tabBarOptions[@"selectedIndex"];
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:moduleName initialProperties:props];
+    RCTRootView *rootView = [[HBDRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:moduleName initialProperties:props];
     rootView.backgroundColor = UIColor.clearColor;
     
     BOOL sizeIndeterminate = [self.tabBarOptions[@"sizeIndeterminate"] boolValue];
     if (sizeIndeterminate) {
         rootView.delegate = self;
+        rootView.passThroughTouches = YES;
         rootView.sizeFlexibility = RCTRootViewSizeFlexibilityWidthAndHeight;
     } else {
         rootView.frame = CGRectMake(0, 1, CGRectGetWidth(self.tabBar.bounds), 48);
