@@ -42,8 +42,8 @@ dependencies {
     implementation "com.android.support:design:$rootProject.ext.supportLibVersion"
     implementation 'com.facebook.react:react-native:+'
 
-    //api project(':navigation')
-    api 'me.listenzz:navigation:2.1.4'
+    // api project(':navigation')
+    api 'me.listenzz:navigation:2.1.5'
     api 'com.ashokvarma.android:bottom-navigation-bar:2.1.0'
 
 }
