@@ -19,3 +19,10 @@ typedef void(^HBDButtonActionBlock)(void);
 - (instancetype)initWithImage:(UIImage *)image style:(UIBarButtonItemStyle)style;
 
 @end
+
+
+@interface HBDBarButton : UIButton
+
+@property (nonatomic) UIEdgeInsets alignmentRectInsetsOverride;
+
+@end

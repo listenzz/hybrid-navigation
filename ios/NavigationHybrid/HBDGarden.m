@@ -35,31 +35,102 @@ static GlobalStyle *globalStyle;
 
 - (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     if (item) {
-        controller.navigationItem.leftBarButtonItem = [self createBarButtonItem:item forController:controller];
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        if (@available(iOS 11.0, *)) {
+            UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+            spacer.width = -8;
+            [array addObject:spacer];
+        }
+        
+        UIBarButtonItem *buttonItem = [self createBarButtonItem:item forController:controller];
+        UIView *customView = buttonItem.customView;
+        if ([customView isKindOfClass:[HBDBarButton class]]) {
+            HBDBarButton *button = (HBDBarButton *)customView;
+            button.imageEdgeInsets = buttonItem.imageInsets;
+            button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, 4, 0, -4);
+        }
+        [array addObject:buttonItem];
+        
+        controller.navigationItem.leftBarButtonItems = array;
     }
 }
 
 - (void)setRightBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
     if (item) {
-        controller.navigationItem.rightBarButtonItem = [self createBarButtonItem:item forController:controller];
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        if (@available(iOS 11.0, *)) {
+            UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+            spacer.width = -8;
+            [array addObject:spacer];
+        }
+        
+        UIBarButtonItem *buttonItem = [self createBarButtonItem:item forController:controller];
+        UIView *customView = buttonItem.customView;
+        if ([customView isKindOfClass:[HBDBarButton class]]) {
+            HBDBarButton *button = (HBDBarButton *)customView;
+            button.imageEdgeInsets = buttonItem.imageInsets;
+            button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, -4, 0, 4);
+        }
+        [array addObject:buttonItem];
+        
+        controller.navigationItem.rightBarButtonItems = array;
     }
 }
 
 - (void)setLeftBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller {
     if (items) {
-        controller.navigationItem.leftBarButtonItems = [self createBarButtonItems:items forController:controller];
+        NSArray *barButtonItems = [self createBarButtonItems:items forController:controller];
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        
+        if (@available(iOS 11.0, *)) {
+            UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+            spacer.width = -8;
+            [array addObject:spacer];
+        }
+    
+        [array addObjectsFromArray:barButtonItems];
+        for (NSUInteger i = 0; i < barButtonItems.count; i++) {
+            UIBarButtonItem *buttonItem = barButtonItems[i];
+            UIView *customView = buttonItem.customView;
+            if ([customView isKindOfClass:[HBDBarButton class]]) {
+                HBDBarButton *button = (HBDBarButton *)customView;
+                button.imageEdgeInsets = buttonItem.imageInsets;
+                button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, 4, 0, -4);
+            }
+        }
+        
+        controller.navigationItem.leftBarButtonItems = array;
     }
 }
 
 - (void)setRightBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller {
     if (items) {
-        controller.navigationItem.rightBarButtonItems = [self createBarButtonItems:items forController:controller];
+        NSArray *barButtonItems = [self createBarButtonItems:items forController:controller];
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        if (@available(iOS 11.0, *)) {
+            UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+            spacer.width = -8;
+            [array addObject:spacer];
+        }
+        
+        [array addObjectsFromArray:barButtonItems];
+        for (NSUInteger i = 0; i < barButtonItems.count; i++) {
+            UIBarButtonItem *buttonItem = barButtonItems[i];
+            UIView *customView = buttonItem.customView;
+            if ([customView isKindOfClass:[HBDBarButton class]]) {
+                HBDBarButton *button = (HBDBarButton *)customView;
+                button.imageEdgeInsets = buttonItem.imageInsets;
+                button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, -4, 0, 4);
+            }
+        }
+        
+        controller.navigationItem.rightBarButtonItems = array;
     }
 }
 
 - (NSArray *)createBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller {
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    for (NSUInteger i =0; i < items.count; i++) {
+    for (NSUInteger i = 0; i < items.count; i++) {
         NSDictionary *item = [items objectAtIndex:i];
         HBDBarButtonItem *barButtonItem = [self createBarButtonItem:item forController:controller];
         [array addObject:barButtonItem];
@@ -110,10 +181,10 @@ static GlobalStyle *globalStyle;
     if (action) {
         barButtonItem.actionBlock = ^{
             [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                                                               KEY_ON: ON_BAR_BUTTON_ITEM_CLICK,
-                                                               KEY_ACTION: action,
-                                                               KEY_SCENE_ID: sceneId,
-                                                               }];
+               KEY_ON: ON_BAR_BUTTON_ITEM_CLICK,
+               KEY_ACTION: action,
+               KEY_SCENE_ID: sceneId,
+            }];
         };
     }
     return barButtonItem;
