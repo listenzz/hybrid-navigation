@@ -18,6 +18,10 @@
 @implementation HBDReactTabBar
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    if (!self.isUserInteractionEnabled || self.isHidden || self.alpha <= 0.01) {
+        return nil;
+    }
+    
     UIView *hitView = [super hitTest:point withEvent:event];
     if (hitView == self.rootView) {
         return hitView;
