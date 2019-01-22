@@ -95,7 +95,7 @@
 }
 
 - (BOOL)navigationBar:(UINavigationBar *)navigationBar shouldPopItem:(UINavigationItem *)item {
-    if (self.viewControllers.count > 1 && self.topViewController.navigationItem == item ) {
+    if (self.viewControllers.count > 1 && self.topViewController.navigationItem == item) {
         if (!self.topViewController.hbd_backInteractive) {
             [self resetSubviewsInNavBar:self.navigationBar];
             return NO;
