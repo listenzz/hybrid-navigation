@@ -80,7 +80,29 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.11.7` - 2019/01/21
+最新版本: `0.11.8` - 2019/01/22
+
+### 0.11.8 - 2019/01/22
+
+添加选项来决定是否开启 Android 性能优化。
+
+Android 性能优化默认开启，可以通过以下方式全局关闭：
+
+```javascript
+Garden.setStyle({
+  optimizationEnabledAndroid: false,
+});
+```
+
+也可以只在特定页面打开或关闭，这会覆盖全局设置
+
+```javascript
+class MyComponent extends React.Component {
+  static navigationItem = {
+    optimizationEnabledAndroid: false,
+  };
+}
+```
 
 ### 0.11.5 - 2019/01/12
 

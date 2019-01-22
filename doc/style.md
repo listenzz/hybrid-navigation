@@ -44,27 +44,28 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 ```javascript
 {
-  screenBackgroundColor: String; // 页面背景，默认是白色
-  topBarStyle: String; // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
-  topBarColor: String; // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
-  statusBarColorAndroid: String; // 状态栏背景色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
-  navigationBarColorAndroid: String; // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
-  hideBackTitleIOS: Bool; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-  elevationAndroid: Number; // 导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
-  shadowImage: Object; // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
-  backIcon: Object; // 返回按钮图片
-  topBarTintColor: String; // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
-  titleTextColor: String; // 顶部导航栏标题颜色，默认根据 topBarStyle 来计算
-  titleTextSize: Int; // 顶部导航栏标题字体大小，默认是 17 dp(pt)
-  titleAlignmentAndroid: String; // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
-  barButtonItemTextSize: Int; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
-  swipeBackEnabledAndroid: Bool; // Android 是否开启右滑返回，默认是 false
+  screenBackgroundColor: string; // 页面背景，默认是白色
+  topBarStyle: string; // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
+  topBarColor: string; // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
+  statusBarColorAndroid: string; // 状态栏背景色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
+  navigationBarColorAndroid: string; // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
+  hideBackTitleIOS: boolean; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
+  elevationAndroid: number; // 导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
+  shadowImage: object; // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
+  backIcon: object; // 返回按钮图片
+  topBarTintColor: string; // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
+  titleTextColor: string; // 顶部导航栏标题颜色，默认根据 topBarStyle 来计算
+  titleTextSize: number; // 顶部导航栏标题字体大小，默认是 17 dp(pt)
+  titleAlignmentAndroid: string; // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
+  barButtonItemTextSize: number; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
+  swipeBackEnabledAndroid: boolean; // Android 是否开启右滑返回，默认是 false
+  optimizationEnabledAndroid: boolean; // Android 是否需要开启优化，默认是 true，可在指定页面关闭。
 
-  tabBarColor: String; // 底部 TabBar 背景颜色
-  tabBarShadowImage: Object; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
-  tabBarItemColor: String; // 当 `tabBarSelectedItemColor` 未设置时，此值为选中效果，否则为未选中效果
-  tabBarSelectedItemColor: String; // 底部 TabBarItem icon 选中效果
-  badgeColor: String; // Badge 以及小红点的颜色
+  tabBarColor: string; // 底部 TabBar 背景颜色
+  tabBarShadowImage: object; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
+  tabBarItemColor: string; // 当 `tabBarSelectedItemColor` 未设置时，此值为选中效果，否则为未选中效果
+  tabBarSelectedItemColor: string; // 底部 TabBarItem icon 选中效果
+  badgeColor: string; // Badge 以及小红点的颜色
 }
 ```
 
@@ -181,6 +182,10 @@ UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只�
 
   一旦全局设置了 navigationBarColorAndroid，默认规则就会失效。
 
+- optimizationEnabledAndroid
+
+  打开页面过多时，在 Android 下会变得卡顿，该项优化设置会将不可见的 React 页面暂时地从 UI 层级中移除，当页面重新可见时，再添加回来。这可能会使某些页面出现[问题](https://github.com/listenzz/react-native-navigation-hybrid/issues/106)，此时，可使用该项设置关闭全局优化。如果希望保留全局优化，只在有问题的页面关闭优化，可以在页面对应的 `navigationItem` 中设置该项，详情见下。
+
 <a name="static-options"></a>
 
 ## 静态配置页面
@@ -194,7 +199,7 @@ class Screen extends Component {
   static navigationItem = {
     passThroughTouches: false, // 当前页面是否允许 touch 事件穿透，通常和透明背景一起使用
     screenBackgroundColor: '#FFFFFF', // 当前页面背景
-    topBarStyle: String, // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
+    topBarStyle: string, // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
     topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
     topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
     extendedLayoutIncludesTopBar: false, // 当前页面的内容是否延伸到 topBar 底下，通常用于需要动态改变 `topBarAlpha` 的场合
@@ -204,11 +209,12 @@ class Screen extends Component {
     topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
     topBarHidden: true, // 是否隐藏当前页面 topBar
     statusBarHidden: true, // 是否隐藏当前页面的状态栏，对 iPhoneX 无效
-    statusBarColorAndroid: String, // 状态栏颜色，仅对 Android 生效
-    navigationBarColorAndroid: String, // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
+    statusBarColorAndroid: string, // 状态栏颜色，仅对 Android 生效
+    navigationBarColorAndroid: string, // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
     backButtonHidden: true, // 当前页面是否隐藏返回按钮
     backInteractive: true, // 当前页面是否可以通过右滑或返回键返回
     swipeBackEnabled: true, // 当前页面是否可以通过右滑返回。如果 `backInteractive` 设置为 false, 那么该值无效。Android 下，只有开启了侧滑返回功能，该值才会生效。
+    optimizationEnabledAndroid: boolean; // 当前页面是否需要优化。
 
     titleItem: {
       // 导航栏标题

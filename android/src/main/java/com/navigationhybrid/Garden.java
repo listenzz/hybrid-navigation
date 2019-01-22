@@ -37,15 +37,19 @@ public class Garden {
 
     private static GlobalStyle globalStyle;
 
+    private static boolean globalOptimizationEnabled;
+
     static void createGlobalStyle(Bundle options) {
         globalStyle = new GlobalStyle(options);
+        globalOptimizationEnabled = options.getBoolean("optimizationEnabledAndroid", true);
     }
 
     static GlobalStyle getGlobalStyle() {
         return globalStyle;
     }
 
-    static @NonNull Bundle mergeOptions(@NonNull Bundle options, @Nullable ReadableMap readableMap) {
+    @NonNull
+    static Bundle mergeOptions(@NonNull Bundle options, @Nullable ReadableMap readableMap) {
         if (readableMap == null) {
             return options;
         }
@@ -55,7 +59,8 @@ public class Garden {
         return Arguments.toBundle(writableMap);
     }
 
-    static @NonNull Bundle mergeOptions(@NonNull Bundle options, @Nullable Bundle bundle) {
+    @NonNull
+    static Bundle mergeOptions(@NonNull Bundle options, @Nullable Bundle bundle) {
         if (bundle == null) {
             return options;
         }
@@ -83,6 +88,8 @@ public class Garden {
 
     boolean extendedLayoutIncludesTopBar;
 
+    boolean optimizationEnabled;
+
     Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
@@ -99,6 +106,7 @@ public class Garden {
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush");
         this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
+        this.optimizationEnabled = options.get("optimizationEnabledAndroid") != null ? options.getBoolean("optimizationEnabledAndroid") : globalOptimizationEnabled;
 
         String screenColor = options.getString("screenBackgroundColor");
         if (!TextUtils.isEmpty(screenColor)) {
@@ -247,7 +255,7 @@ public class Garden {
 
         double titleTextSize = options.getDouble("titleTextSize", -1);
         if (titleTextSize != -1) {
-            style.setTitleTextSize((int)titleTextSize);
+            style.setTitleTextSize((int) titleTextSize);
         }
 
         String topBarColor = options.getString("topBarColor");

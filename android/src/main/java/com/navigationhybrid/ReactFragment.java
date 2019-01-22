@@ -61,6 +61,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             ReactRootViewHolder reactRootViewHolder = (ReactRootViewHolder) containerLayout;
             reactRootViewHolder.setVisibilityObserver(this);
         }
+
         if (getReactBridgeManager().isReactModuleRegisterCompleted() && !isHidden()) {
             if (getAnimation() != PresentAnimation.None) {
                 postponeEnterTransition();
@@ -77,6 +78,11 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             initReactNative();
             initTitleViewIfNeeded();
         }
+    }
+
+    @Override
+    public boolean isOptimizationEnabled() {
+        return getGarden().optimizationEnabled;
     }
 
     @Override

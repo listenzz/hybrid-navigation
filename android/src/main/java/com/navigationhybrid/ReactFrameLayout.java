@@ -37,14 +37,16 @@ public class ReactFrameLayout extends FrameLayout implements ReactRootViewHolder
     @Override
     protected void onAnimationEnd() {
         super.onAnimationEnd();
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if (getVisibility() == View.GONE && mReactRootView != null) {
-                    removeView(mReactRootView);
+        if (mVisibilityObserver != null && mVisibilityObserver.isOptimizationEnabled()) {
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    if (getVisibility() == View.GONE && mReactRootView != null) {
+                        removeView(mReactRootView);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
