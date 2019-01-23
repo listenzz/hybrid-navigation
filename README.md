@@ -21,9 +21,7 @@ Then,
 
 ```shell
 npm install
-```
-
-```shell
+# &
 npm start
 ```
 
@@ -41,9 +39,7 @@ First,
 
 ```shell
 npm install
-```
-
-```shell
+# &
 npm start
 ```
 
@@ -80,7 +76,7 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.11.8` - 2019/01/22
+最新版本: `0.11.9` - 2019/01/23
 
 ### 0.11.8 - 2019/01/22
 
