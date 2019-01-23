@@ -18,15 +18,15 @@ public class ReactFrameLayout extends FrameLayout implements ReactRootViewHolder
     private VisibilityObserver mVisibilityObserver;
 
     public ReactFrameLayout(Context context) {
-        this(context, null);
+        super(context);
     }
 
     public ReactFrameLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public ReactFrameLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
     }
 
     @TargetApi(21)

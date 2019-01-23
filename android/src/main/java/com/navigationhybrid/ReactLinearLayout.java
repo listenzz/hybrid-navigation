@@ -11,7 +11,7 @@ import com.facebook.react.ReactRootView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-public class ReactLinearLayout extends LinearLayout implements ReactRootViewHolder{
+public class ReactLinearLayout extends LinearLayout implements ReactRootViewHolder {
 
     protected static final String TAG = "ReactNative";
 
@@ -19,15 +19,15 @@ public class ReactLinearLayout extends LinearLayout implements ReactRootViewHold
     private VisibilityObserver mVisibilityObserver;
 
     public ReactLinearLayout(Context context) {
-        this(context, null);
+        super(context);
     }
 
     public ReactLinearLayout(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public ReactLinearLayout(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
     }
 
     @TargetApi(21)
