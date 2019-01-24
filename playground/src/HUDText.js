@@ -35,8 +35,7 @@ export default class HUDTest extends Component {
     //   new HUD().done('Work is Done!').hideDelayDefault();
     // }, 2000);
 
-    const hud = new HUD();
-    hud.spinner();
+    const hud = HUD.spinner();
     setTimeout(() => {
       hud.text('Ho Ho Ho');
       hud.hideDelayDefault();
@@ -44,19 +43,19 @@ export default class HUDTest extends Component {
   }
 
   text() {
-    new HUD().text('Hello World!!').hideDelayDefault();
+    HUD.text('Hello World!!');
   }
 
   info() {
-    new HUD().info('A message to you.').hideDelayDefault();
+    HUD.info('A message to you.');
   }
 
   done() {
-    new HUD().done('Work is Done!').hideDelayDefault();
+    HUD.done('Work is Done!');
   }
 
   error() {
-    new HUD().error('Somthing Wrong!').hideDelayDefault();
+    HUD.error('Somthing Wrong!');
   }
 
   render() {
