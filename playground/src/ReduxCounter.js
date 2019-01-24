@@ -35,6 +35,14 @@ class ReduxCounter extends Component {
     },
   };
 
+  componentDidAppear() {
+    console.info('ReduxCounter componentDidAppear');
+  }
+
+  componentDidDisappear() {
+    console.info('ReduxCounter componentDidDisappear');
+  }
+
   componentWillMount() {
     const { navigator, onDecreaseClick } = this.props;
     navigator.setParams({ onDecreaseClick });
@@ -98,7 +106,9 @@ function mapDispatchToProps(dispatch) {
 // Connected Component
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  undefined,
+  { forwardRef: true } // 注意这行代码，开启引用转发功能
 )(ReduxCounter);
 
 export { store };
