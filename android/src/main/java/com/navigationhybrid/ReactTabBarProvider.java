@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.facebook.react.ReactInstanceManager;
@@ -277,8 +276,8 @@ public class ReactTabBarProvider implements TabBarProvider {
 
     private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 
-    public @NonNull
-    ReactBridgeManager getReactBridgeManager() {
+    @NonNull
+    public ReactBridgeManager getReactBridgeManager() {
         return bridgeManager;
     }
 }
