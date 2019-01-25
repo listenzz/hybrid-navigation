@@ -44,7 +44,7 @@ function getDisplayName(WrappedComponent: React.ComponentType) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
-function withNavigation(moduleName: string) {
+function withNavigator(moduleName: string) {
   return function(
     WrappedComponent: React.ComponentType<{
       ref?: React.RefObject<React.Component>;
@@ -53,7 +53,7 @@ function withNavigation(moduleName: string) {
     }>
   ) {
     return class extends React.Component<{ sceneId?: string }> {
-      static displayName = `WithNavigation(${getDisplayName(WrappedComponent)})`;
+      static displayName = `WithNavigator(${getDisplayName(WrappedComponent)})`;
 
       private subscription?: EmitterSubscription;
       private navigator?: Navigator;
@@ -191,9 +191,9 @@ export class ReactRegistry {
 
     let RootComponent: React.ComponentType;
     if (wrap) {
-      RootComponent = wrap(withNavigation(appKey)(WrappedComponent));
+      RootComponent = wrap(withNavigator(appKey)(WrappedComponent));
     } else {
-      RootComponent = withNavigation(appKey)(WrappedComponent);
+      RootComponent = withNavigator(appKey)(WrappedComponent);
     }
     AppRegistry.registerComponent(appKey, () => RootComponent);
   }
