@@ -103,9 +103,13 @@ public class ScreenNavigator implements Navigator {
             case "present":
                 if (target != null) {
                     int requestCode = extras.getInt("requestCode");
-                    ReactNavigationFragment reactNavigationFragment = new ReactNavigationFragment();
-                    reactNavigationFragment.setRootFragment(target);
-                    fragment.presentFragment(reactNavigationFragment, requestCode);
+                    AwesomeFragment presented = fragment.getPresentedFragment();
+                    if (presented != null) {
+                        throw new IllegalStateException("This scene has present another scene already. You could use Navigator.current() to gain the current navigator to do this job.");
+                    }
+                    ReactNavigationFragment navFragment = new ReactNavigationFragment();
+                    navFragment.setRootFragment(target);
+                    fragment.presentFragment(navFragment, requestCode);
                 }
                 break;
             case "dismiss":
@@ -126,6 +130,10 @@ public class ScreenNavigator implements Navigator {
                 fragment.dismissDialog();
                 break;
             case "presentLayout":
+                AwesomeFragment presented = fragment.getPresentedFragment();
+                if (presented != null) {
+                    throw new IllegalStateException("This scene has present another scene already. You could use Navigator.current() to gain the current navigator to do this job.");
+                }
                 ReadableMap layout = extras.getMap("layout");
                 target = getReactBridgeManager().createFragment(layout);
                 if (target != null) {

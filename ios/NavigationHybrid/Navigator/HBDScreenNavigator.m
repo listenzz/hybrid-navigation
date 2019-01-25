@@ -10,6 +10,7 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDNavigationController.h"
 #import "HBDModalViewController.h"
+#import <React/RCTAssert.h>
 
 @implementation HBDScreenNavigator
 
@@ -74,14 +75,16 @@
     }
     
     if ([action isEqualToString:@"present"]) {
+        UIViewController *presented = vc.presentedViewController;
+        RCTAssert(presented, @"This scene has present another scene already. You could use Navigator.current() to gain the current navigator to do this job.");
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
-        HBDNavigationController *presented = [[HBDNavigationController alloc] initWithRootViewController:target];
-        presented.modalPresentationStyle = UIModalPresentationCurrentContext;
-        [presented setRequestCode:requestCode];
+        HBDNavigationController *navVC = [[HBDNavigationController alloc] initWithRootViewController:target];
+        navVC.modalPresentationStyle = UIModalPresentationCurrentContext;
+        [navVC setRequestCode:requestCode];
         [vc beginAppearanceTransition:NO animated:animated];
         [vc endAppearanceTransition];
-        [vc presentViewController:presented animated:animated completion:^{
+        [vc presentViewController:navVC animated:animated completion:^{
             
         }];
     } else if ([action isEqualToString:@"dismiss"]) {
@@ -100,6 +103,8 @@
     } else if ([action isEqualToString:@"hideModal"]) {
         [vc hbd_hideViewControllerAnimated:YES completion:nil];
     } else if ([action isEqualToString:@"presentLayout"]) {
+        UIViewController *presented = vc.presentedViewController;
+        RCTAssert(presented, @"This scene has present another scene already. You could use Navigator.current() to gain the current navigator to do this job.");
         NSDictionary *layout = [extras objectForKey:@"layout"];
         UIViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
