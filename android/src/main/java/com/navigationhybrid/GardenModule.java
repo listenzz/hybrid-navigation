@@ -23,6 +23,7 @@ import com.facebook.react.bridge.WritableMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.listenzz.navigation.AwesomeActivity;
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.DrawerFragment;
 import me.listenzz.navigation.FragmentHelper;
@@ -90,6 +91,10 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 Context context = getReactApplicationContext();
                 if (context != null) {
                     Garden.createGlobalStyle(Arguments.toBundle(style));
+                    ReactAppCompatActivity activity = (ReactAppCompatActivity) getCurrentActivity();
+                    if (activity != null && !activity.isFinishing()) {
+                        activity.inflateStyle();
+                    }
                 }
             }
         });

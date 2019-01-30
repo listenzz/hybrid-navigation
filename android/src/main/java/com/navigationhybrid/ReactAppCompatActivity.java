@@ -63,6 +63,10 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         }
     }
 
+    public void inflateStyle() {
+        onCustomStyle(getStyle());
+    }
+
     @Override
     protected void onDestroy() {
         getReactBridgeManager().removeReactModuleRegisterListener(this);
