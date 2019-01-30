@@ -10,6 +10,7 @@
 #import "HBDGarden.h"
 #import "HBDUtils.h"
 #import "HBDNavigationController.h"
+#import <React/RCTLog.h>
 
 @interface HBDViewController ()
 
@@ -20,7 +21,7 @@
 @implementation HBDViewController
 
 - (void)dealloc {
-    NSLog(@"%s", __FUNCTION__);
+    RCTLogInfo(@"%s", __FUNCTION__);
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {

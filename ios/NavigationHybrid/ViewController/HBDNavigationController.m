@@ -24,6 +24,7 @@
 @property (nonatomic, strong) UIImageView *fromFakeShadow;
 @property (nonatomic, strong) UIImageView *toFakeShadow;
 @property (nonatomic, weak) UIViewController *poppingViewController;
+@property (nonatomic, assign) BOOL transitional;
 
 @end
 
@@ -69,12 +70,11 @@
     [super viewWillLayoutSubviews];
     // 修复一个神奇的 BUG https://github.com/listenzz/HBDNavigationBar/issues/29
     self.topViewController.view.frame = self.topViewController.view.frame;
-    
     id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     if (coordinator) {
         // 解决 ios 11 手势反弹的问题
         UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
-        if (from == self.poppingViewController) {
+        if (from == self.poppingViewController && !self.transitional) {
             [self updateNavigationBarForViewController:from];
         }
     } else {
@@ -105,7 +105,7 @@
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    
+    self.transitional = YES;
     self.navigationBar.titleTextAttributes = viewController.hbd_titleTextAttributes;
     self.navigationBar.barStyle = viewController.hbd_barStyle;
     
@@ -125,6 +125,7 @@
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    self.transitional = NO;
     if (!animated) {
         [self updateNavigationBarForViewController:viewController];
         [self clearFake];
@@ -240,7 +241,7 @@
 
 - (void)printSubViews:(UIView *)view prefix:(NSString *)prefix {
     NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-    NSLog(@"%@%@", prefix, viewName);
+    // NSLog(@"%@%@", prefix, viewName);
     if (view.subviews.count > 0) {
         for (UIView *sub in view.subviews) {
             [self printSubViews:sub prefix:[NSString stringWithFormat:@"--%@", prefix]];
@@ -274,7 +275,7 @@
     self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
 }
 
-- (void)showViewController:(UIViewController * _Nonnull)viewController withCoordinator: (id<UIViewControllerTransitionCoordinator>)coordinator{
+- (void)showViewController:(UIViewController * _Nonnull)viewController withCoordinator: (id<UIViewControllerTransitionCoordinator>)coordinator {
     UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
     
@@ -289,6 +290,7 @@
             [self showViewControllerAlongsideTransition:viewController interactive:context.interactive];
         }
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+        self.transitional = NO;
         if (context.isCancelled) {
             [self updateNavigationBarForViewController:from];
         } else {
