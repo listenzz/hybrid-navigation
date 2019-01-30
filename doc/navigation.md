@@ -387,6 +387,23 @@ navigator && navigator.push('C');
 
 方法二不能保证 B 页面完全消失后才开始 push C 页面
 
+- clearModal
+
+立即隐藏所有的 modal，可以在任何页面操作，但是这个操作不能代替 hideModal，因为它没有动画。
+
+这个方法有时是很有用的，比如接收到服务器通知，需要 present 出一个界面，如果当前界面是个 modal，那么是有问题的，因为我们不能在一个 modal 上 present 出另一个页面，所以我们在 present 之前需要隐藏所有的 modal。就像下面所做的那样：
+
+```javascript
+// ... receive message from server
+
+let navigator = await Navigator.current();
+// current may be a modal
+navigator.crearModal();
+// we must request the right current after hide modal
+navigator = await Navigator.current();
+navigator.present('Some');
+```
+
 - presentLayout
 
 present 的加强版，通过传递一个布局对象，用来 present UI 层级比较复杂的页面：
