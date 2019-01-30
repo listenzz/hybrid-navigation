@@ -279,12 +279,12 @@ public class ReactBridgeManager {
         }
     }
 
-    @Nullable
+    @NonNull
     public HybridFragment createFragment(@NonNull String moduleName) {
         return createFragment(moduleName, null, null);
     }
 
-    @Nullable
+    @NonNull
     public HybridFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
         if (!isReactModuleRegisterCompleted()) {
             throw new IllegalStateException("模块还没有注册完，不能执行此操作");
@@ -306,52 +306,53 @@ public class ReactBridgeManager {
             }
         }
 
-        if (fragment != null) {
-            if (options == null) {
-                options = new Bundle();
-            }
-
-            if (props == null) {
-                props = new Bundle();
-            }
-
-            if (hasReactModule(moduleName)) {
-                ReadableMap readableMap = reactModuleOptionsForKey(moduleName);
-                if (readableMap == null) {
-                    readableMap = Arguments.createMap();
-                }
-                WritableMap writableMap = Arguments.createMap();
-                writableMap.merge(readableMap);
-                writableMap.merge(Arguments.fromBundle(options));
-                options = Arguments.toBundle(writableMap);
-            }
-
-            if (options != null) {
-                Bundle tabItem = options.getBundle("tabItem");
-                if (tabItem != null) {
-                    String title = tabItem.getString("title");
-                    Bundle icon = tabItem.getBundle("icon");
-                    String uri = null;
-                    if (icon != null) {
-                        uri = icon.getString("uri");
-                    }
-                    TabBarItem tabBarItem = new TabBarItem(uri, title);
-
-                    Bundle selectedIcon = tabItem.getBundle("selectedIcon");
-                    if (selectedIcon != null) {
-                        tabBarItem.selectedIconUri = selectedIcon.getString("uri");
-                    }
-                    fragment.setTabBarItem(tabBarItem);
-                }
-            }
-
-            Bundle args = FragmentHelper.getArguments(fragment);
-            args.putBundle(Constants.ARG_PROPS, props);
-            args.putBundle(Constants.ARG_OPTIONS, options);
-            args.putString(Constants.ARG_MODULE_NAME, moduleName);
-            fragment.setArguments(args);
-
+        if (fragment == null) {
+            throw new NullPointerException("无法创建名为 " + moduleName + " 的模块。");
         }
+
+        if (options == null) {
+            options = new Bundle();
+        }
+
+        if (props == null) {
+            props = new Bundle();
+        }
+
+        if (hasReactModule(moduleName)) {
+            ReadableMap readableMap = reactModuleOptionsForKey(moduleName);
+            if (readableMap == null) {
+                readableMap = Arguments.createMap();
+            }
+            WritableMap writableMap = Arguments.createMap();
+            writableMap.merge(readableMap);
+            writableMap.merge(Arguments.fromBundle(options));
+            options = Arguments.toBundle(writableMap);
+        }
+
+        if (options != null) {
+            Bundle tabItem = options.getBundle("tabItem");
+            if (tabItem != null) {
+                String title = tabItem.getString("title");
+                Bundle icon = tabItem.getBundle("icon");
+                String uri = null;
+                if (icon != null) {
+                    uri = icon.getString("uri");
+                }
+                TabBarItem tabBarItem = new TabBarItem(uri, title);
+
+                Bundle selectedIcon = tabItem.getBundle("selectedIcon");
+                if (selectedIcon != null) {
+                    tabBarItem.selectedIconUri = selectedIcon.getString("uri");
+                }
+                fragment.setTabBarItem(tabBarItem);
+            }
+        }
+
+        Bundle args = FragmentHelper.getArguments(fragment);
+        args.putBundle(Constants.ARG_PROPS, props);
+        args.putBundle(Constants.ARG_OPTIONS, options);
+        args.putString(Constants.ARG_MODULE_NAME, moduleName);
+        fragment.setArguments(args);
 
         return fragment;
     }
