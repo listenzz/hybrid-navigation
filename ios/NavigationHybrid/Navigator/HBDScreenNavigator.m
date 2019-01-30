@@ -46,7 +46,7 @@
         [root addObject:@{
                           @"layout": @"screen",
                           @"sceneId": screen.sceneId,
-                          @"moduleName": screen.moduleName,
+                          @"moduleName": screen.moduleName ?: NSNull.null,
                           @"mode": [vc hbd_mode],
                           }];
         return YES;
