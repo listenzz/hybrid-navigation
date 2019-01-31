@@ -256,7 +256,6 @@
     }
     
     [HBDEventEmitter sendEvent:EVENT_SWITCH_TAB data:@{
-                                                       KEY_FROM: selectedReactVC.moduleName ?: NSNull.null,
                                                        KEY_SCENE_ID: selectedReactVC.sceneId,
                                                        KEY_MODULE_NAME: reactVC.moduleName?: NSNull.null,
                                                        KEY_INDEX: @(index)

@@ -5,7 +5,6 @@ import {
   EVENT_SWITCH_TAB,
   KEY_SCENE_ID,
   KEY_INDEX,
-  KEY_FROM,
   KEY_MODULE_NAME,
 } from './NavigationModule';
 import { bindBarButtonItemClickEvent } from './utils';
@@ -20,19 +19,28 @@ let didSetRootEventSubscription: EmitterSubscription;
 let didSetRootCallback: () => void;
 let shouldSwitchTabSubscription: EmitterSubscription;
 
-interface NavigationProps {
-  [propName: string]: any;
+interface Extras {
+  sceneId: string;
+  index?: number;
 }
 
-interface NavigationExtras {
-  [propName: string]: any;
+interface Params {
+  animated?: boolean;
+  moduleName?: string;
+  layout?: Layout;
+  index?: number;
+  popToRoot?: boolean;
+  targetId?: string;
+  requestCode?: number;
+  props?: { [x: string]: any };
+  options?: NavigationItem;
 }
 
 export type NavigationInterceptor = (
   action: string,
   from?: string,
   to?: string,
-  extras?: NavigationExtras
+  extras?: Extras
 ) => boolean;
 
 export interface Layout {}
@@ -116,7 +124,6 @@ export class Navigator {
     shouldSwitchTabSubscription = EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
       Navigator.dispatch(event[KEY_SCENE_ID], 'switchTab', {
         index: event[KEY_INDEX],
-        from: event[KEY_FROM],
         moduleName: event[KEY_MODULE_NAME],
       });
     });
@@ -135,11 +142,13 @@ export class Navigator {
     didSetRootCallback = didSetRoot;
   }
 
-  static dispatch(sceneId: string, action: string, extras: NavigationExtras = {}): void {
-    extras.from = extras.from || Navigator.get(sceneId).moduleName;
-    extras.sceneId = sceneId;
-    if (!intercept || !intercept(action, extras.from, extras.moduleName, extras)) {
-      NavigationModule.dispatch(sceneId, action, extras);
+  static dispatch(sceneId: string, action: string, params: Params = {}): void {
+    const navigator = Navigator.get(sceneId);
+    if (
+      !intercept ||
+      !intercept(action, navigator.moduleName, params.moduleName, { sceneId, index: params.index })
+    ) {
+      NavigationModule.dispatch(sceneId, action, params);
     }
   }
 
@@ -179,14 +188,13 @@ export class Navigator {
     this.state.params = { ...this.state.params, ...params };
   }
 
-  dispatch(action: string, extras: NavigationExtras = {}) {
-    extras.from = this.moduleName;
-    Navigator.dispatch(this.sceneId, action, extras);
+  dispatch(action: string, params: Params = {}) {
+    Navigator.dispatch(this.sceneId, action, params);
   }
 
   push(
     moduleName: string,
-    props: NavigationProps = {},
+    props: { [x: string]: any } = {},
     options: NavigationItem = {},
     animated = true
   ) {
@@ -209,11 +217,15 @@ export class Navigator {
     this.dispatch('popToRoot', { animated });
   }
 
-  replace(moduleName: string, props: NavigationProps = {}, options: NavigationItem = {}) {
+  replace(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {}) {
     this.dispatch('replace', { moduleName, props, options, animated: true });
   }
 
-  replaceToRoot(moduleName: string, props: NavigationProps = {}, options: NavigationItem = {}) {
+  replaceToRoot(
+    moduleName: string,
+    props: { [x: string]: any } = {},
+    options: NavigationItem = {}
+  ) {
     this.dispatch('replaceToRoot', { moduleName, props, options, animated: true });
   }
 
@@ -224,7 +236,7 @@ export class Navigator {
   present(
     moduleName: string,
     requestCode = 0,
-    props: NavigationProps = {},
+    props: { [x: string]: any } = {},
     options: NavigationItem = {},
     animated = true
   ) {
@@ -248,7 +260,7 @@ export class Navigator {
   showModal(
     moduleName: string,
     requestCode = 0,
-    props: NavigationProps = {},
+    props: { [x: string]: any } = {},
     options: NavigationItem = {}
   ) {
     this.dispatch('showModal', {

@@ -25,7 +25,7 @@
     "tsc": "tsc",
     "start": "npm run syncbv && node node_modules/react-native/local-cli/cli.js start",
     "run:ios": "react-native run-ios --project-path ./playground/ios",
-    "start:android": "adb shell am start -n com.navigationhybrid.playground/.MainActivity",
+    "start:android": "adb shell am start -n com.navigationhybrid.playground/.SplashActivity",
     "run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
     "test": "jest",
     "syncbv": "node scripts/sync-build-version.js"

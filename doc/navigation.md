@@ -159,6 +159,7 @@ const route = await Navigator.currentRoute();
 // {
 //   sceneId: 'xxxxxxxx',
 //   moduleName: 'Name'
+//   mode: 'modal'
 // }
 
 const navigator = Navigator.get(route.sceneId);

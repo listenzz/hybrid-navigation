@@ -183,6 +183,7 @@ Navigator.setRoot(drawer);
 // 设置导航拦截器
 Navigator.setInterceptor((action, from, to, extras) => {
   console.info(`action:${action} from:${from} to:${to}`);
+  console.info(extras);
   // 不拦截任何操作
   return false;
 });

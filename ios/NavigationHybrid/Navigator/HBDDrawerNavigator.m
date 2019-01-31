@@ -60,11 +60,12 @@
         NSMutableArray *children = [[NSMutableArray alloc] init];
         [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:drawerController.contentController root:children];
         [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:drawerController.menuController root:children];
-        [root addObject:@{ @"layout": @"drawer",
-                           @"sceneId": vc.sceneId,
-                           @"children": children,
-                           @"mode": [vc hbd_mode],
-                           }];
+        [root addObject:@{
+                          @"layout": @"drawer",
+                          @"sceneId": vc.sceneId,
+                          @"children": children,
+                          @"mode": [vc hbd_mode],
+                        }];
         return YES;
     }
     return NO;

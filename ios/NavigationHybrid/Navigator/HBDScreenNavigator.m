@@ -76,7 +76,7 @@
     
     if ([action isEqualToString:@"present"]) {
         UIViewController *presented = vc.presentedViewController;
-        RCTAssert(presented == nil, @"This scene has present another scene already. You could use Navigator.current() to gain the current navigator to do this job.");
+        RCTAssert(presented == nil || presented.isBeingDismissed, @"This scene has present another scene already. You could use Navigator.current() to gain the current navigator to do this job.");
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
         HBDNavigationController *navVC = [[HBDNavigationController alloc] initWithRootViewController:target];

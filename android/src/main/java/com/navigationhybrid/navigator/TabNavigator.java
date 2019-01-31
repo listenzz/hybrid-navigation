@@ -101,9 +101,7 @@ public class TabNavigator implements Navigator {
             graph.putString("sceneId", fragment.getSceneId());
             graph.putParcelableArrayList("children", children);
             graph.putString("mode", Navigator.Util.getMode(fragment));
-            Bundle state = new Bundle();
-            state.putInt("selectedIndex", tabs.getSelectedIndex());
-            graph.putBundle("state", state);
+            graph.putInt("selectedIndex", tabs.getSelectedIndex());
             root.add(graph);
             return true;
         }

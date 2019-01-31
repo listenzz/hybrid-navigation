@@ -133,11 +133,11 @@ In SimpleApp/android/app/src/main/AndroidManifest.xml, add the new intent-filter
 iOS:
 
 ```
-xcrun simctl openurl booted hbd://topBarAlpha/1/#333333
+xcrun simctl openurl booted hbd://topBarAlpha/1/#FF344C
 ```
 
 Android:
 
 ```
-adb shell am start -W -a android.intent.action.VIEW -d "hbd://hbd/topBarAlpha/0.5/#FFFFF" com.navigationhybrid.playground
+adb shell am start -W -a android.intent.action.VIEW -d "hbd://hbd/topBarAlpha/0.5/#FFFFFF" com.navigationhybrid.playground
 ```

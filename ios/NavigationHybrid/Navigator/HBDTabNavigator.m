@@ -118,10 +118,8 @@
                           @"sceneId": vc.sceneId,
                           @"children": children,
                           @"mode": [vc hbd_mode],
-                          @"state": @{
-                                  @"selectedIndex": @(tabBarController.selectedIndex)
-                              }
-                          }];
+                          @"selectedIndex": @(tabBarController.selectedIndex)
+                        }];
         return YES;
     }
     return NO;

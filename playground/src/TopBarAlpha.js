@@ -57,7 +57,15 @@ export default class TopBarAlpha extends Component {
     super(props);
     this.topBarAlpha = this.topBarAlpha.bind(this);
     this.onAlphaChange = this.onAlphaChange.bind(this);
-    this.state = { alpha: 0.5 };
+    let alpha = props.alpha ? Number(props.alpha) : 0.5;
+    let topBarColor = props.color || '#FFFFFF';
+    this.state = { alpha };
+    if (alpha !== 0.5 || topBarColor !== '#FFFFFF') {
+      this.props.garden.updateTopBar({
+        topBarAlpha: alpha,
+        topBarColor: topBarColor,
+      });
+    }
   }
 
   topBarAlpha() {

@@ -241,7 +241,7 @@
 
 - (void)printSubViews:(UIView *)view prefix:(NSString *)prefix {
     NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-    // NSLog(@"%@%@", prefix, viewName);
+    NSLog(@"%@%@", prefix, viewName);
     if (view.subviews.count > 0) {
         for (UIView *sub in view.subviews) {
             [self printSubViews:sub prefix:[NSString stringWithFormat:@"--%@", prefix]];

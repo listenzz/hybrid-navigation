@@ -25,7 +25,6 @@ extern NSString * const KEY_RESULT_DATA;
 extern NSString * const KEY_SCENE_ID;
 extern NSString * const KEY_MODULE_NAME;
 extern NSString * const KEY_INDEX;
-extern NSString * const KEY_FROM;
 extern NSString * const KEY_ACTION;
 extern NSString * const KEY_ON;
 

@@ -16,6 +16,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.navigationhybrid.navigator.Navigator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -177,6 +178,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     Bundle bundle = new Bundle();
                     bundle.putString("moduleName", current.getModuleName());
                     bundle.putString("sceneId", current.getSceneId());
+                    bundle.putString("mode", Navigator.Util.getMode(current));
                     promise.resolve(Arguments.fromBundle(bundle));
                 } else {
                     FLog.w(TAG, "View Hierarchy is not ready when you call currentRoute");

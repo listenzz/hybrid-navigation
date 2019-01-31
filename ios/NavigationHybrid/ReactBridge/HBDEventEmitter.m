@@ -26,7 +26,6 @@ NSString * const KEY_RESULT_DATA = @"data";
 NSString * const KEY_SCENE_ID = @"scene_id";
 NSString * const KEY_MODULE_NAME = @"module_name";
 NSString * const KEY_INDEX = @"index";
-NSString * const KEY_FROM = @"from";
 NSString * const KEY_ACTION = @"action";
 NSString * const KEY_ON = @"on";
 
@@ -56,7 +55,6 @@ RCT_EXPORT_MODULE(HBDEventEmitter);
              @"KEY_SCENE_ID": KEY_SCENE_ID,
              @"KEY_MODULE_NAME": KEY_MODULE_NAME,
              @"KEY_INDEX": KEY_INDEX,
-             @"KEY_FROM": KEY_FROM,
              @"KEY_ACTION": KEY_ACTION,
              @"KEY_ON": KEY_ON,
              };

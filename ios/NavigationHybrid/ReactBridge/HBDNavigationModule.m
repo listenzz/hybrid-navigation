@@ -92,7 +92,7 @@ RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode
 RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     HBDViewController *current = [[HBDReactBridgeManager sharedInstance] primaryViewController];
     if (current) {
-        resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId });
+        resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId, @"mode": [current hbd_mode] });
     } else {
         RCTLogWarn(@"View Hierarchy is not ready when you call Navigator#currentRoute. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
         resolve(NSNull.null);

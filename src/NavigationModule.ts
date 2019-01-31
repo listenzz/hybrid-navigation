@@ -20,7 +20,6 @@ export const KEY_RESULT_DATA: string = HBDEventEmitter.KEY_RESULT_DATA;
 export const KEY_SCENE_ID: string = HBDEventEmitter.KEY_SCENE_ID;
 export const KEY_MODULE_NAME: string = HBDEventEmitter.KEY_MODULE_NAME;
 export const KEY_INDEX: string = HBDEventEmitter.KEY_INDEX;
-export const KEY_FROM: string = HBDEventEmitter.KEY_FROM;
 export const KEY_ACTION: string = HBDEventEmitter.KEY_ACTION;
 export const KEY_ON: string = HBDEventEmitter.KEY_ON;
 export { EventEmitter, NavigationModule };

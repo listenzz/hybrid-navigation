@@ -32,7 +32,6 @@ import static com.navigationhybrid.Constants.ARG_INDEX;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
 import static com.navigationhybrid.Constants.ARG_VISIBLE;
 import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
-import static com.navigationhybrid.HBDEventEmitter.KEY_FROM;
 import static com.navigationhybrid.HBDEventEmitter.KEY_INDEX;
 import static com.navigationhybrid.HBDEventEmitter.KEY_MODULE_NAME;
 import static com.navigationhybrid.HBDEventEmitter.KEY_ON;
@@ -259,7 +258,6 @@ public class ReactTabBarFragment extends TabBarFragment {
         }
 
         Bundle data = new Bundle();
-        data.putString(KEY_FROM, selectedReactFragment.getModuleName());
         data.putString(KEY_SCENE_ID, selectedReactFragment.getSceneId());
         if (reactFragment != null) {
             data.putString(KEY_MODULE_NAME, reactFragment.getModuleName());

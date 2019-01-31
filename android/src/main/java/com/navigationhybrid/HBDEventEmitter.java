@@ -21,7 +21,6 @@ public class HBDEventEmitter extends ReactContextBaseJavaModule {
     public static final String KEY_SCENE_ID = "scene_id";
     public static final String KEY_MODULE_NAME = "module_name";
     public static final String KEY_INDEX = "index";
-    public static final String KEY_FROM = "from";
     public static final String KEY_ACTION = "action";
     public static final String KEY_ON = "on";
 
@@ -59,7 +58,6 @@ public class HBDEventEmitter extends ReactContextBaseJavaModule {
         constants.put("KEY_SCENE_ID", KEY_SCENE_ID);
         constants.put("KEY_MODULE_NAME", KEY_MODULE_NAME);
         constants.put("KEY_INDEX", KEY_INDEX);
-        constants.put("KEY_FROM", KEY_FROM);
         constants.put("KEY_ACTION", KEY_ACTION);
         constants.put("KEY_ON", KEY_ON);
         constants.put("EVENT_SWITCH_TAB", EVENT_SWITCH_TAB);
