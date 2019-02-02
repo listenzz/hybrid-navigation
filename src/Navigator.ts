@@ -48,7 +48,7 @@ export interface Layout {}
 export interface Screen extends Layout {
   screen: {
     moduleName: string;
-    props?: {};
+    props?: { [x: string]: any };
     options?: NavigationItem;
   };
 }
@@ -63,13 +63,17 @@ export interface Stack extends Layout {
 export interface Tabs extends Layout {
   tabs: {
     children: Layout[];
-    options?: { selectedIndex?: number };
+    options?: {
+      selectedIndex?: number;
+      tabBarModuleName?: string;
+      sizeIndeterminate?: boolean;
+    };
   };
 }
 
 export interface Drawer extends Layout {
   drawer: {
-    children: Layout[];
+    children: [Layout, Layout];
     options?: {
       maxDrawerWidth?: number;
       minDrawerMargin?: number;
