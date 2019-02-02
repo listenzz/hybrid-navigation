@@ -137,9 +137,11 @@ Navigator.setInterceptor((action, from, to, extras) => {
 });
 ```
 
+`extras` 中有我们需要的额外信息。譬如 `sceneId`，它表示动作发出的页面， 通过 `Navigator.get(sceneId)` 可以获取该页面的 `navigator`。如果 action 是 switchTab，我们还可以从 `extras` 中获取 `index` 这个属性，它表示将要切换到的 tab 的位置，从 0 开始。
+
 - dispatch
 
-大多数导航操作都是转发给该方法完成，你也可以直接使用，尤其是当你自定义了容器和导航之后
+大多数导航操作都是转发给该方法完成，也可以直接使用，尤其是自定义了容器和导航之后
 
 ```javascript
 // 以下两行代码的效果是等同的
@@ -302,6 +304,31 @@ this.props.navigator.dismiss();
 
 A 页面通过实现 `onComponentResult` 方法来接收结果（略）。
 
+**如果一个页面已经 present 出一个页面，那么在该页面未关闭之前，它不能再 present 出另一个页面，则将导致崩溃。**
+
+譬如：
+
+```javascript
+// A.js
+this.props.navigator.present('B');
+setTimeout(() => {
+  // 如果 B 还没关闭，那么应用将会崩溃
+  this.props.navigator.present('C');
+}, 3000);
+```
+
+正确的做法如下：
+
+```javascript
+// A.js
+this.props.navigator.present('B');
+setTimeout(async () => {
+  // 取得当前页面的 nvigator，当前页面可能是 A，也可能是 B，这取决于此时 B 有没有被 dismiss 掉
+  const current = await Navigator.current();
+  current.present('C');
+}, 3000);
+```
+
 - dismiss
 
 关闭 `present` 出来的页面，如果该页面是容器，可以在容器的任何子页面调用此方法。
@@ -347,6 +374,48 @@ navigator && navigator.push('C');
 
 ```javascript
 this.props.navigator.showModal('ReactModal', REQUEST_CODE);
+```
+
+> 同样可以通过第三个参数来传递数据
+
+**可以在 Modal 之上覆盖另外一个 Modal，但是不能在 Modal 之上执行 present 操作，这会导致应用崩溃。**
+
+譬如：
+
+```javascript
+// A.js
+this.props.navigator.showModal('B');
+```
+
+```javascript
+// B.js
+// 下面这行代码会导致崩溃
+this.props.navigator.present('C');
+```
+
+正确的做法如下：
+
+```javascript
+// B.js
+this.props.navigator.hideModal();
+// 取得当前页面（A）的 navigator
+const current = await Navigator.current();
+current.present('C');
+```
+
+如果你有这么一个需求，在收到服务器推送后，需要 present 出一个页面，可以这么做：
+
+```javascript
+// ... receive pushed message
+let route = await Navigator.currentRoute();
+while (route.mode === 'modal') {
+  const current = Navigator.get(route.sceneId);
+  current.hideModal();
+  route = await Navigator.currentRoute();
+}
+
+const current = Navigator.get(route.sceneId);
+current.present('Foo');
 ```
 
 - hideModal
