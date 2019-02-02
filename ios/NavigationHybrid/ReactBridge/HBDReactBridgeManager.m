@@ -225,7 +225,7 @@ const NSInteger ResultCancel = 0;
 
 - (void)setRootViewController:(UIViewController *)rootViewController {
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    for (NSUInteger i = application.windows.count; i > 0; i --) {
+    for (NSUInteger i = application.windows.count; i > 0; i--) {
         UIWindow *window = application.windows[i-1];
         UIViewController *controller = window.rootViewController;
         if ([controller isKindOfClass:[HBDModalViewController class]]) {
