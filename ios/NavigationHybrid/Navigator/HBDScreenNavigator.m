@@ -104,7 +104,7 @@
         [vc hbd_hideViewControllerAnimated:YES completion:nil];
     } else if ([action isEqualToString:@"presentLayout"]) {
         UIViewController *presented = vc.presentedViewController;
-        RCTAssert(presented == nil, @"This scene has present another scene already. You could use Navigator.current() to gain the current navigator to do this job.");
+        RCTAssert(presented == nil || presented.isBeingDismissed, @"This scene has present another scene already. You could use Navigator.current() to gain the current navigator to do this job.");
         NSDictionary *layout = [extras objectForKey:@"layout"];
         UIViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
