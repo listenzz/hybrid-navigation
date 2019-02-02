@@ -174,7 +174,6 @@ export class Navigator {
     this.dismiss = this.dismiss.bind(this);
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
-    this.clearModal = this.clearModal.bind(this);
     this.setResult = this.setResult.bind(this);
 
     this.toggleMenu = this.toggleMenu.bind(this);
@@ -277,10 +276,6 @@ export class Navigator {
 
   hideModal() {
     this.dispatch('hideModal');
-  }
-
-  clearModal() {
-    this.dispatch('clearModal');
   }
 
   setResult(resultCode: number, data: { [x: string]: any } = {}): void {

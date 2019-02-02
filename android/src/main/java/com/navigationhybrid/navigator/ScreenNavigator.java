@@ -3,7 +3,6 @@ package com.navigationhybrid.navigator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
@@ -15,13 +14,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import me.listenzz.navigation.AwesomeActivity;
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.FragmentHelper;
 
 public class ScreenNavigator implements Navigator {
 
-    private List<String> supportActions = Arrays.asList("present", "presentLayout", "dismiss", "showModal",  "hideModal", "clearModal", "showModalLayout");
+    private List<String> supportActions = Arrays.asList("present", "presentLayout", "dismiss", "showModal", "showModalLayout", "hideModal");
 
     @Override
     @NonNull
@@ -126,16 +124,6 @@ public class ScreenNavigator implements Navigator {
                 if (target != null) {
                     int requestCode = extras.getInt("requestCode");
                     fragment.showDialog(target, requestCode);
-                }
-                break;
-            case "clearModal":
-                AwesomeActivity activity = (AwesomeActivity) fragment.getActivity();
-                if (activity != null) {
-                    DialogFragment dialog = activity.getDialogFragment();
-                    while (dialog != null) {
-                        dialog.dismiss();
-                        dialog = activity.getDialogFragment();
-                    }
                 }
                 break;
             case "hideModal":

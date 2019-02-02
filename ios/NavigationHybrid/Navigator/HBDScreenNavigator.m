@@ -19,7 +19,7 @@
 }
 
 - (NSArray<NSString *> *)supportActions {
-    return @[ @"present", @"presentLayout", @"dismiss", @"showModal", @"hideModal", @"clearModal", @"showModalLayout"];
+    return @[ @"present", @"presentLayout", @"dismiss", @"showModal", @"showModalLayout", @"hideModal"];
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
@@ -102,16 +102,6 @@
         [vc hbd_showViewController:target requestCode:requestCode animated:YES completion:nil];
     } else if ([action isEqualToString:@"hideModal"]) {
         [vc hbd_hideViewControllerAnimated:YES completion:nil];
-    } else if ([action isEqualToString:@"clearModal"]) {
-        UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-        for (NSUInteger i = application.windows.count; i > 0; i--) {
-            UIWindow *window = application.windows[i-1];
-            UIViewController *controller = window.rootViewController;
-            if ([controller isKindOfClass:[HBDModalViewController class]]) {
-                HBDModalViewController *modal = (HBDModalViewController *)controller;
-                [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
-            }
-        }
     } else if ([action isEqualToString:@"presentLayout"]) {
         UIViewController *presented = vc.presentedViewController;
         RCTAssert(presented == nil, @"This scene has present another scene already. You could use Navigator.current() to gain the current navigator to do this job.");
