@@ -116,6 +116,8 @@
         NSString *tabBarColor = self.options[@"tabBarColor"];
         if (tabBarColor) {
             self.tabBarBackgroundColor = [HBDUtils colorWithHexString:tabBarColor];
+        } else {
+            self.tabBarBackgroundColor = [HBDUtils colorWithHexString:@"#FFFFFF"];
         }
         
         // shadowImeage
