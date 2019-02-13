@@ -51,7 +51,7 @@ export default class Result extends Component {
   }
 
   componentWillMount() {
-    this.props.navigator.isRoot().then(isRoot => {
+    this.props.navigator.isStackRoot().then(isRoot => {
       if (isRoot) {
         this.props.garden.setLeftBarButtonItem({
           title: 'Cancel',

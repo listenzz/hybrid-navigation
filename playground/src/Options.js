@@ -65,7 +65,7 @@ export default class Options extends Component {
 
   componentDidAppear() {
     console.info('options componentDidAppear');
-    this.props.navigator.isRoot().then(isRoot => {
+    this.props.navigator.isStackRoot().then(isRoot => {
       this.props.garden.setMenuInteractive(isRoot);
     });
   }

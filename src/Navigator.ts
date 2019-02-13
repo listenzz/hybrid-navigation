@@ -173,6 +173,7 @@ export class Navigator {
     this.replace = this.replace.bind(this);
     this.replaceToRoot = this.replaceToRoot.bind(this);
     this.isRoot = this.isRoot.bind(this);
+    this.isStackRoot = this.isStackRoot.bind(this);
 
     this.present = this.present.bind(this);
     this.dismiss = this.dismiss.bind(this);
@@ -233,6 +234,11 @@ export class Navigator {
   }
 
   isRoot(): Promise<boolean> {
+    console.warn('isRoot is deprecated, use isStackRoot instead.');
+    return NavigationModule.isNavigationRoot(this.sceneId);
+  }
+
+  isStackRoot(): Promise<boolean> {
     return NavigationModule.isNavigationRoot(this.sceneId);
   }
 

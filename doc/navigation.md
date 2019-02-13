@@ -587,13 +587,13 @@ this.props.navigator.replaceToRoot('E');
 
 A、B、C、D 页面被移除，E 页面被设置为 stack 的根页面。
 
-- isRoot
+- isStackRoot
 
-判断一个页面是否根页面，返回值是一个 Promise.
+判断一个页面是否所在 stack 的根页面，返回值是一个 Promise.
 
 ```javascript
 componentWillMount() {
-  this.props.navigator.isRoot().then((isRoot) => {
+  this.props.navigator.isStackRoot().then((isRoot) => {
     if(isRoot) {
       this.props.garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
       this.setState({isRoot});

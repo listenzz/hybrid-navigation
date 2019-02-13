@@ -47,7 +47,7 @@ export default class Navigation extends Component {
   }
 
   componentDidAppear() {
-    this.props.navigator.isRoot().then(isRoot => {
+    this.props.navigator.isStackRoot().then(isRoot => {
       this.props.garden.setMenuInteractive(isRoot);
     });
     console.info('navigation componentDidAppear');
@@ -59,7 +59,7 @@ export default class Navigation extends Component {
   }
 
   componentWillMount() {
-    this.props.navigator.isRoot().then(isRoot => {
+    this.props.navigator.isStackRoot().then(isRoot => {
       if (isRoot) {
         this.setState({ isRoot });
       }
