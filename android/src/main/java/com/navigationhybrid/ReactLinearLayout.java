@@ -51,8 +51,8 @@ public class ReactLinearLayout extends LinearLayout implements ReactRootViewHold
     }
 
     @Override
-    public void addView(View child, ViewGroup.LayoutParams params) {
-        super.addView(child, params);
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
         if (child instanceof ReactRootView) {
             mReactRootView = (ReactRootView) child;
         }
