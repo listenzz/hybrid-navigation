@@ -61,7 +61,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
   swipeBackEnabledAndroid: boolean; // Android 是否开启右滑返回，默认是 false
   optimizationEnabledAndroid: boolean; // Android 是否需要开启优化，默认是 true，可在指定页面关闭。
 
-  tabBarColor: string; // 底部 TabBar 背景颜色
+  tabBarColor: string; // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
   tabBarShadowImage: object; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
   tabBarItemColor: string; // 当 `tabBarSelectedItemColor` 未设置时，此值为选中效果，否则为未选中效果
   tabBarSelectedItemColor: string; // 底部 TabBarItem icon 选中效果
