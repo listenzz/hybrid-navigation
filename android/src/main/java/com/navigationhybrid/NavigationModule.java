@@ -188,6 +188,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         });
     }
 
+    @Nullable
     private HybridFragment getPrimaryFragment(Fragment fragment) {
         if (fragment instanceof AwesomeFragment) {
             return reactBridgeManager.primaryFragment((AwesomeFragment) fragment);

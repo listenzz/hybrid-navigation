@@ -41,6 +41,7 @@ public interface Navigator {
 
     boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal);
 
+    @Nullable
     HybridFragment primaryFragment(@NonNull AwesomeFragment fragment);
 
     void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras);
