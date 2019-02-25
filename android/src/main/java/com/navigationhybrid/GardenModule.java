@@ -52,12 +52,12 @@ public class GardenModule extends ReactContextBaseJavaModule {
     private static final String TAG = "ReactNative";
 
     static Bundle mergeOptions(@NonNull Bundle options, @NonNull String key, @NonNull ReadableMap readableMap) {
-        Bundle subBundle = options.getBundle(key);
-        if (subBundle == null) {
-            subBundle = new Bundle();
+        Bundle bundle = options.getBundle(key);
+        if (bundle == null) {
+            bundle = new Bundle();
         }
         WritableMap writableMap = Arguments.createMap();
-        writableMap.merge(Arguments.fromBundle(subBundle));
+        writableMap.merge(Arguments.fromBundle(bundle));
         writableMap.merge(readableMap);
         return Arguments.toBundle(writableMap);
     }
