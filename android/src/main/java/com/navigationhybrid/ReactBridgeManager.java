@@ -223,7 +223,11 @@ public class ReactBridgeManager {
     }
 
     public void buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
-        FragmentHelper.executePendingTransactionsSafe(fragment.requireFragmentManager());
+        FragmentManager fragmentManager = fragment.getFragmentManager();
+        if (fragmentManager == null || fragmentManager.isDestroyed()) {
+            return;
+        }
+        FragmentHelper.executePendingTransactionsSafe(fragmentManager);
 
         List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
         if (children.size() > 0) {
@@ -249,11 +253,10 @@ public class ReactBridgeManager {
     @Nullable
     public HybridFragment primaryFragment(AwesomeFragment fragment) {
         FragmentManager fragmentManager = fragment.getFragmentManager();
-        if (fragmentManager != null) {
-            FragmentHelper.executePendingTransactionsSafe(fragmentManager);
-        } else {
+        if (fragmentManager == null || fragmentManager.isDestroyed()) {
             return null;
         }
+        FragmentHelper.executePendingTransactionsSafe(fragmentManager);
 
         List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
         if (children.size() > 0) {
