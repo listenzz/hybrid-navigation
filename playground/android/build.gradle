@@ -5,15 +5,11 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven {
-            url "https://dl.bintray.com/matrix/maven/"
-        }
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.4'
         classpath 'com.novoda:bintray-release:0.8.1'
-        classpath ("com.tencent.matrix:matrix-gradle-plugin:${MATRIX_VERSION}") { changing = true }
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -27,9 +23,6 @@ allprojects {
         maven {
             url "$rootDir/../../node_modules/react-native/android"
         }
-        maven {
-            url "https://dl.bintray.com/matrix/maven/"
-        }
     }
 }
 
@@ -39,7 +32,7 @@ task clean(type: Delete) {
 
 ext {
     // sdk and tools
-    minSdkVersion = 19
+    minSdkVersion = 16
     targetSdkVersion = 26
     compileSdkVersion = 28
     buildToolsVersion = '28.0.1'
