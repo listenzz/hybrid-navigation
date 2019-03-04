@@ -2,17 +2,14 @@ package com.navigationhybrid;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -44,7 +41,7 @@ public class ReactAppCompatActivityDelegate {
             "Overlay permissions needs to be granted in order for react native apps to run in dev mode";
 
     private final AppCompatActivity mActivity;
-    private final ReactBridgeManager bridgeManager;
+    private final ReactBridgeManager mBridgeManager;
 
     private @Nullable
     DoubleTapReloadRecognizer mDoubleTapReloadRecognizer;
@@ -54,8 +51,8 @@ public class ReactAppCompatActivityDelegate {
     Callback mPermissionsCallback;
 
     public ReactAppCompatActivityDelegate(@NonNull AppCompatActivity activity, ReactBridgeManager bridgeManager) {
-        this.mActivity = activity;
-        this.bridgeManager = bridgeManager;
+        mActivity = activity;
+        mBridgeManager = bridgeManager;
     }
 
     private void askPermission() {
@@ -73,32 +70,33 @@ public class ReactAppCompatActivityDelegate {
     }
 
     protected ReactNativeHost getReactNativeHost() {
-        return bridgeManager.getReactNativeHost();
+        return mBridgeManager.getReactNativeHost();
     }
 
     protected ReactInstanceManager getReactInstanceManager() {
-        return bridgeManager.getReactInstanceManager();
+        return mBridgeManager.getReactInstanceManager();
     }
 
     protected ReactBridgeManager getReactBridgeManager() {
-        return bridgeManager;
+        return mBridgeManager;
     }
 
     protected void onCreate(Bundle savedInstanceState) {
         mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
-        if (bridgeManager.isReactModuleRegisterCompleted()) {
+        if (mBridgeManager.isReactModuleRegisterCompleted()) {
             askPermission();
+        } else {
+            mBridgeManager.addReactModuleRegisterListener(reactModuleRegisterListener);
         }
-        IntentFilter intentFilter = new IntentFilter(ReactBridgeManager.REACT_INSTANCE_CONTEXT_INITIALIZED);
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(receiver, intentFilter);
     }
 
-    BroadcastReceiver receiver = new BroadcastReceiver() {
+    ReactBridgeManager.ReactModuleRegisterListener reactModuleRegisterListener = new ReactBridgeManager.ReactModuleRegisterListener() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReactModuleRegisterCompleted() {
             askPermission();
         }
     };
+
 
     protected void onPause() {
         if (getReactNativeHost().hasInstance()) {
@@ -120,7 +118,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     protected void onDestroy() {
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(receiver);
+        mBridgeManager.removeReactModuleRegisterListener(reactModuleRegisterListener);
         if (getReactNativeHost().hasInstance()) {
             getReactNativeHost().getReactInstanceManager().onHostDestroy(getPlainActivity());
         }

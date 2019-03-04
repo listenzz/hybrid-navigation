@@ -1,13 +1,10 @@
 package com.navigationhybrid;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.facebook.react.ReactInstanceManager;
@@ -37,9 +34,6 @@ import me.listenzz.navigation.TabBarItem;
 
 public class ReactBridgeManager {
 
-    public static String REACT_MODULE_REGISTRY_COMPLETED_BROADCAST = "registry_completed";
-    public static String REACT_INSTANCE_CONTEXT_INITIALIZED = "context_initialized";
-
     public interface ReactModuleRegisterListener {
         void onReactModuleRegisterCompleted();
     }
@@ -58,13 +52,13 @@ public class ReactBridgeManager {
         registerNavigator(new DrawerNavigator());
     }
 
-    private HashMap<String, Class<? extends HybridFragment>> nativeModules = new HashMap<>();
-    private HashMap<String, ReadableMap> reactModules = new HashMap<>();
-    private CopyOnWriteArrayList<ReactModuleRegisterListener> reactModuleRegisterListeners = new CopyOnWriteArrayList<>();
+    private final HashMap<String, Class<? extends HybridFragment>> nativeModules = new HashMap<>();
+    private final HashMap<String, ReadableMap> reactModules = new HashMap<>();
+    private final CopyOnWriteArrayList<ReactModuleRegisterListener> reactModuleRegisterListeners = new CopyOnWriteArrayList<>();
 
-    private ReadableMap rootLayout;
-    private ReadableMap stickyLayout;
-    private ReadableMap pendingLayout;
+    private volatile ReadableMap rootLayout;
+    private volatile ReadableMap stickyLayout;
+    private volatile ReadableMap pendingLayout;
 
     private ReactNativeHost reactNativeHost;
 
@@ -82,11 +76,6 @@ public class ReactBridgeManager {
                 rootLayout = null;
                 stickyLayout = null;
                 pendingLayout = null;
-
-                if (context != null) {
-                    Intent intent = new Intent(REACT_INSTANCE_CONTEXT_INITIALIZED);
-                    LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
-                }
             }
         });
 
@@ -159,11 +148,6 @@ public class ReactBridgeManager {
         for (ReactModuleRegisterListener listener : reactModuleRegisterListeners) {
             listener.onReactModuleRegisterCompleted();
         }
-        Context context = getReactInstanceManager().getCurrentReactContext();
-        if (context != null) {
-            Intent intent = new Intent(REACT_MODULE_REGISTRY_COMPLETED_BROADCAST);
-            LocalBroadcastManager.getInstance(context.getApplicationContext()).sendBroadcast(intent);
-        }
     }
 
     @UiThread
@@ -211,6 +195,7 @@ public class ReactBridgeManager {
         return pendingLayout != null;
     }
 
+    @UiThread
     public AwesomeFragment createFragment(ReadableMap layout) {
         AwesomeFragment fragment = null;
         for (Navigator navigator : navigators) {
@@ -222,6 +207,7 @@ public class ReactBridgeManager {
         return fragment;
     }
 
+    @UiThread
     public void buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
         FragmentManager fragmentManager = fragment.getFragmentManager();
         if (fragmentManager == null || fragmentManager.isDestroyed()) {
@@ -250,6 +236,7 @@ public class ReactBridgeManager {
         }
     }
 
+    @UiThread
     @Nullable
     public HybridFragment primaryFragment(AwesomeFragment fragment) {
         FragmentManager fragmentManager = fragment.getFragmentManager();
@@ -276,6 +263,8 @@ public class ReactBridgeManager {
         return hybridFragment;
     }
 
+
+    @UiThread
     public void handleNavigation(@Nullable AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras) {
         if (fragment == null) {
             return;
@@ -289,11 +278,13 @@ public class ReactBridgeManager {
         }
     }
 
+    @UiThread
     @NonNull
     public HybridFragment createFragment(@NonNull String moduleName) {
         return createFragment(moduleName, null, null);
     }
 
+    @UiThread
     @NonNull
     public HybridFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
         if (!isReactModuleRegisterCompleted()) {
@@ -367,8 +358,9 @@ public class ReactBridgeManager {
         return fragment;
     }
 
-    private List<Navigator> navigators = new ArrayList<>();
+    private final List<Navigator> navigators = new ArrayList<>();
 
+    @UiThread
     public void registerNavigator(Navigator navigator) {
         navigators.add(0, navigator);
     }
