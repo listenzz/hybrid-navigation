@@ -197,7 +197,7 @@ UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只�
 ```javascript
 class Screen extends Component {
   static navigationItem = {
-    passThroughTouches: false, // 当前页面是否允许 touch 事件穿透，通常和透明背景一起使用
+    passThroughTouches: false, // 当前页面是否允许 touch 事件穿透，通常和透明的 `screenBackgroundColor` 一起使用
     screenBackgroundColor: '#FFFFFF', // 当前页面背景
     topBarStyle: string, // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
     topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
@@ -398,12 +398,13 @@ this.props.garden.setStatusBarHidden(false);
 ```javascript
 this.props.garden.updateTopBar({
   topBarStyle: BarStyleLightContent, // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
-  topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
+  topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下
   topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
   topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
   topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
   titleTextColor: '#FFFFFF', // 当前页面标题颜色
   titleTextSize: 17, // 当前页面顶部导航栏标题字体大小
+  backInteractive: false, // 是否允许侧滑返回或通过返回键返回，默认是 true
 });
 ```
 

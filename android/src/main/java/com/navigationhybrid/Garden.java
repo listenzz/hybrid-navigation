@@ -271,14 +271,21 @@ public class Garden {
 
         boolean topBarShadowHidden = options.getBoolean("topBarShadowHidden", false);
         style.setToolbarShadowHidden(topBarShadowHidden);
+
+        if (options.get("backInteractive") != null) {
+            this.backInteractive = options.getBoolean("backInteractive");
+        }
+
     }
 
     void updateToolbar(@NonNull ReadableMap readableMap) {
         Bundle options = Arguments.toBundle(readableMap);
-        applyToolbarOptions(options);
-        fragment.setNeedsStatusBarAppearanceUpdate(false);
-        fragment.setNeedsToolbarAppearanceUpdate();
-        fragment.setOptions(mergeOptions(fragment.getOptions(), readableMap));
+        if (options != null) {
+            applyToolbarOptions(options);
+            fragment.setNeedsStatusBarAppearanceUpdate(false);
+            fragment.setNeedsToolbarAppearanceUpdate();
+            fragment.setOptions(mergeOptions(fragment.getOptions(), readableMap));
+        }
     }
 
     void setStatusBarColor(@ColorInt int color) {

@@ -193,6 +193,11 @@
     if (hideShadow) {
         self.hbd_barShadowHidden = [hideShadow boolValue];
     }
+    
+    NSNumber *backInteractive = options[@"backInteractive"];
+    if (backInteractive) {
+        self.hbd_backInteractive = [backInteractive boolValue];
+    }
 }
 
 - (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
