@@ -16,8 +16,8 @@ import com.facebook.react.modules.core.PermissionListener;
 
 import me.listenzz.navigation.AwesomeActivity;
 import me.listenzz.navigation.AwesomeFragment;
+import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.Style;
-
 
 /**
  * Created by Listen on 2017/11/17.
@@ -49,6 +49,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         if (savedInstanceState == null) {
             if (isReactModuleRegisterCompleted()) {
                 createMainComponent();
+            }
+        } else {
+            if (!isReactModuleRegisterCompleted()) {
+                clearFragments();
+                FragmentHelper.executePendingTransactionsSafe(getSupportFragmentManager());
             }
         }
     }
@@ -120,7 +125,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
                 setActivityRootFragment(fragment);
             }
         } else {
-            Log.w(TAG, "no root to set when create main component");
+            Log.w(TAG, "no layout to set when create main component");
         }
     }
 

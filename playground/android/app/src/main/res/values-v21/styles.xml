@@ -7,4 +7,7 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowBackground">@drawable/splash</item>
     </style>
+    <style name="AppTheme" parent="AppBaseTheme">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
 </resources>

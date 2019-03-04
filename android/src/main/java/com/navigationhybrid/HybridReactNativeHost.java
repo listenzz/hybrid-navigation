@@ -2,9 +2,11 @@ package com.navigationhybrid;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.facebook.infer.annotation.Assertions;
@@ -24,6 +26,7 @@ import me.listenzz.navigation.AwesomeActivity;
 public abstract class HybridReactNativeHost extends ReactNativeHost {
 
     private static final String TAG = "ReactNative";
+
 
     protected HybridReactNativeHost(Application application) {
         super(application);
@@ -57,7 +60,6 @@ public abstract class HybridReactNativeHost extends ReactNativeHost {
         return reactInstanceManager;
     }
 
-
     private DevBundleDownloadListener devBundleDownloadListener = new DevBundleDownloadListener() {
 
         @Override
@@ -67,6 +69,7 @@ public abstract class HybridReactNativeHost extends ReactNativeHost {
                 public void run() {
                     ReactContext reactContext = getReactInstanceManager().getCurrentReactContext();
                     if (reactContext != null) {
+                        LocalBroadcastManager.getInstance(reactContext).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
                         Activity activity = reactContext.getCurrentActivity();
                         if (activity instanceof AwesomeActivity) {
                             ((AwesomeActivity) activity).clearFragments();

@@ -1,11 +1,16 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -39,7 +44,6 @@ import static com.navigationhybrid.HBDEventEmitter.ON_DIALOG_BACK_PRESSED;
 public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver {
 
     protected static final String TAG = "ReactNative";
-
     private ReactRootView reactRootView;
     private ViewGroup containerLayout;
     private ReactRootView reactTitleView;
@@ -62,7 +66,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             reactRootViewHolder.setVisibilityObserver(this);
         }
 
-        if (getReactBridgeManager().isReactModuleRegisterCompleted() && !isHidden()) {
+        if (!isHidden()) {
             if (getAnimation() != PresentAnimation.None) {
                 postponeEnterTransition();
             }
@@ -152,7 +156,11 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             return;
         }
 
-        ReactView reactView = new ReactView(getContext());
+        if (!getReactBridgeManager().isReactModuleRegisterCompleted()) {
+            throw new IllegalStateException("must wait for react module register completed before create view.");
+        }
+
+        final ReactView reactView = new ReactView(getContext());
         boolean passThroughTouches = getOptions().getBoolean("passThroughTouches", false);
         reactView.setShouldConsumeTouchEvent(!passThroughTouches);
         this.reactRootView = reactView;
@@ -161,11 +169,26 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         containerLayout.addView(reactView, layoutParams);
         String moduleName = getModuleName();
         reactView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
+                if (reactRootView != null) {
+                    reactRootView.unmountReactApplication();
+                }
+                reactRootView = null;
+            }
+        }, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
     }
 
     private void initTitleViewIfNeeded() {
-        if (!getReactBridgeManager().isReactModuleRegisterCompleted() || reactTitleView != null || getContext() == null) {
+        if (reactTitleView != null || getContext() == null) {
             return;
+        }
+
+        if (!getReactBridgeManager().isReactModuleRegisterCompleted()) {
+            throw new IllegalStateException("must wait for react module register completed before create view.");
         }
 
         Bundle titleItem = getOptions().getBundle("titleItem");
@@ -183,6 +206,17 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                 }
                 getAwesomeToolbar().addView(reactTitleView, layoutParams);
                 reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+
+                LocalBroadcastManager.getInstance(getContext()).registerReceiver(new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
+                        if (reactTitleView != null) {
+                            reactTitleView.unmountReactApplication();
+                        }
+                        reactTitleView = null;
+                    }
+                }, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
             }
         }
     }
