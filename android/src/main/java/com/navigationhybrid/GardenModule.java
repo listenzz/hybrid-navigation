@@ -5,8 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -18,12 +16,12 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import me.listenzz.navigation.AwesomeActivity;
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.DrawerFragment;
 import me.listenzz.navigation.FragmentHelper;
@@ -62,8 +60,6 @@ public class GardenModule extends ReactContextBaseJavaModule {
         return Arguments.toBundle(writableMap);
     }
 
-    private final Handler handler = new Handler(Looper.getMainLooper());
-
     public GardenModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
@@ -85,7 +81,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setStyle(final ReadableMap style) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Context context = getReactApplicationContext();
@@ -103,7 +99,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setPassThroughTouches(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "setPassThroughTouches:" + readableMap);
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
@@ -121,7 +117,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setLeftBarButtonItem(final String sceneId, final ReadableMap readableMap) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
@@ -138,7 +134,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setRightBarButtonItem(final String sceneId, final ReadableMap readableMap) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
@@ -155,7 +151,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setTitleItem(final String sceneId, final ReadableMap readableMap) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
@@ -173,7 +169,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setStatusBarColor(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "setStatusBarColor:" + readableMap);
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
@@ -197,7 +193,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setStatusBarHidden(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "setStatusBarHidden:" + readableMap);
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
@@ -216,7 +212,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateTopBar(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "updateTopBar:" + readableMap);
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
@@ -230,7 +226,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateTabBar(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "updateTabBar:" + readableMap);
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
@@ -249,7 +245,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void replaceTabIcon(final String sceneId, final int index, final ReadableMap icon, final ReadableMap selectedIcon) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
@@ -270,7 +266,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setTabBadgeText(final String sceneId, final int index, final String text) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
@@ -290,7 +286,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void showRedPointAtIndex(final int index, final String sceneId) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
@@ -310,7 +306,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void hideRedPointAtIndex(final int index, final String sceneId) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
@@ -330,7 +326,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setMenuInteractive(final String sceneId, final boolean enabled) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);

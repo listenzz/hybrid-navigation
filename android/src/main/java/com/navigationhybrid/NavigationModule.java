@@ -2,8 +2,6 @@ package com.navigationhybrid;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +14,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.navigationhybrid.navigator.Navigator;
 
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import me.listenzz.navigation.FragmentHelper;
 public class NavigationModule extends ReactContextBaseJavaModule {
 
     static final String TAG = "ReactNative";
-    private final Handler handler = new Handler(Looper.getMainLooper());
     private final ReactBridgeManager reactBridgeManager;
 
     NavigationModule(ReactApplicationContext reactContext, ReactBridgeManager reactBridgeManager) {
@@ -57,7 +55,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startRegisterReactComponent() {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 reactBridgeManager.startRegisterReactModule();
@@ -67,7 +65,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void endRegisterReactComponent() {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 reactBridgeManager.endRegisterReactModule();
@@ -77,7 +75,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void registerReactComponent(final String appKey, final ReadableMap options) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 reactBridgeManager.registerReactModule(appKey, options);
@@ -87,7 +85,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void signalFirstRenderComplete(final String sceneId) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
@@ -101,7 +99,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setRoot(final ReadableMap layout, final boolean sticky) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 reactBridgeManager.setRootLayout(layout, sticky);
@@ -123,7 +121,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void dispatch(final String sceneId, final String action, final ReadableMap extras) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
@@ -134,7 +132,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void isNavigationRoot(final String sceneId, final Promise promise) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
@@ -147,7 +145,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setResult(final String sceneId, final int resultCode, final ReadableMap result) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 AwesomeFragment fragment = findFragmentBySceneId(sceneId);
@@ -160,7 +158,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void currentRoute(final Promise promise) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Activity activity = getCurrentActivity();
@@ -198,7 +196,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void routeGraph(final Promise promise) {
-        handler.post(new Runnable() {
+        UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Activity activity = getCurrentActivity();
