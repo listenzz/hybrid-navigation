@@ -66,7 +66,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             reactRootViewHolder.setVisibilityObserver(this);
         }
 
-        if (!isHidden()) {
+        if (!isFragmentHidden()) {
             if (getAnimation() != PresentAnimation.None) {
                 postponeEnterTransition();
             }
@@ -85,6 +85,15 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden && isResumed() && reactRootView == null) {
+            initReactNative();
+            initTitleViewIfNeeded();
+        }
+    }
+
+    @Override
     public boolean isOptimizationEnabled() {
         return getGarden().optimizationEnabled;
     }
@@ -92,7 +101,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (!isHidden()) {
+        if (!isFragmentHidden()) {
             initTitleViewIfNeeded();
         }
     }
