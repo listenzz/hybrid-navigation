@@ -66,18 +66,32 @@ const NSInteger ResultCancel = 0;
 
 - (void)handleReload {
     if (self.hasRootLayout) {
+        self.reactModuleRegisterCompleted = NO;
+        
         UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-        for (NSUInteger i = application.windows.count; i > 0; i --) {
+        for (NSUInteger i = application.windows.count; i > 0; i--) {
             UIWindow *window = application.windows[i-1];
             UIViewController *controller = window.rootViewController;
             if ([controller isKindOfClass:[HBDModalViewController class]]) {
                 window.hidden = YES;
             }
         }
-        UIWindow *window = [UIApplication sharedApplication].delegate.window;
-        window.rootViewController = [[UIViewController alloc] init];
-        window.rootViewController.view.backgroundColor = UIColor.whiteColor;
+        UIWindow *keyWindow = RCTKeyWindow();
+        if (keyWindow.rootViewController.presentedViewController && !keyWindow.rootViewController.presentedViewController.isBeingDismissed) {
+            [keyWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
+                [self setLoadingViewController];
+            }];
+        } else {
+            [self setLoadingViewController];
+        }
     }
+}
+
+- (void)setLoadingViewController {
+    UIWindow *keyWindow = RCTKeyWindow();
+    UIViewController *vc = [UIViewController new];
+    vc.view.backgroundColor = UIColor.whiteColor;
+    keyWindow.rootViewController = vc;
 }
 
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
@@ -156,7 +170,7 @@ const NSInteger ResultCancel = 0;
         vc = [[HBDReactViewController alloc] initWithModuleName:moduleName props:props options:options];
     } else {
         Class clazz =  [self nativeModuleClassFromName:moduleName];
-        NSCAssert([self hasNativeModule:moduleName], @"找不到名为 %@ 的模块，你是否忘了注册？", moduleName);
+        NSCAssert([self hasNativeModule:moduleName], @"can't find module named with %@ , do you forget to register？", moduleName);
         vc = [[clazz alloc] initWithModuleName:moduleName props:props options:options];
     }
     
