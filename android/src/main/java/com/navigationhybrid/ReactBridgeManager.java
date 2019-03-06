@@ -60,7 +60,7 @@ public class ReactBridgeManager {
     private volatile ReadableMap stickyLayout;
     private volatile ReadableMap pendingLayout;
 
-    private ReactNativeHost reactNativeHost;
+    private volatile ReactNativeHost reactNativeHost;
 
     public void install(@NonNull ReactNativeHost reactNativeHost) {
         this.reactNativeHost = reactNativeHost;
@@ -85,16 +85,19 @@ public class ReactBridgeManager {
         }
     }
 
+    @NonNull
     public ReactNativeHost getReactNativeHost() {
         checkReactNativeHost();
         return reactNativeHost;
     }
 
+    @NonNull
     public ReactInstanceManager getReactInstanceManager() {
         checkReactNativeHost();
         return reactNativeHost.getReactInstanceManager();
     }
 
+    @Nullable
     public ReactContext getReactContext() {
         return getReactInstanceManager().getCurrentReactContext();
     }
@@ -113,6 +116,7 @@ public class ReactBridgeManager {
         return nativeModules.containsKey(moduleName);
     }
 
+    @Nullable
     public Class<? extends HybridFragment> nativeModuleClassForName(String moduleName) {
         return nativeModules.get(moduleName);
     }
@@ -125,6 +129,7 @@ public class ReactBridgeManager {
         return reactModules.containsKey(moduleName);
     }
 
+    @Nullable
     public ReadableMap reactModuleOptionsForKey(String moduleName) {
         return reactModules.get(moduleName);
     }
@@ -133,6 +138,11 @@ public class ReactBridgeManager {
 
     public boolean isReactModuleRegisterCompleted() {
         return reactModuleRegisterCompleted;
+    }
+
+    @UiThread
+    public void setReactModuleRegisterCompleted(boolean reactModuleRegisterCompleted) {
+        this.reactModuleRegisterCompleted = reactModuleRegisterCompleted;
     }
 
     @UiThread

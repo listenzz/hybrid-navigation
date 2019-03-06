@@ -3,8 +3,6 @@ package com.navigationhybrid;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -18,6 +16,7 @@ import com.facebook.react.bridge.NativeDeltaClient;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactMarker;
 import com.facebook.react.bridge.ReactMarkerConstants;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.devsupport.interfaces.DevBundleDownloadListener;
 
@@ -64,11 +63,12 @@ public abstract class HybridReactNativeHost extends ReactNativeHost {
 
         @Override
         public void onSuccess(@Nullable NativeDeltaClient nativeDeltaClient) {
-            new Handler(Looper.getMainLooper()).post(new Runnable() {
+            UiThreadUtil.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     ReactContext reactContext = getReactInstanceManager().getCurrentReactContext();
                     if (reactContext != null) {
+                        ReactBridgeManager.get().setReactModuleRegisterCompleted(false);
                         LocalBroadcastManager.getInstance(reactContext).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
                         Activity activity = reactContext.getCurrentActivity();
                         if (activity instanceof AwesomeActivity) {

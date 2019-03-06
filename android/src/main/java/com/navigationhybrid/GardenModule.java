@@ -88,7 +88,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 if (context != null) {
                     Garden.createGlobalStyle(Arguments.toBundle(style));
                     ReactAppCompatActivity activity = (ReactAppCompatActivity) getCurrentActivity();
-                    if (activity != null && !activity.isFinishing()) {
+                    if (activity != null && !activity.isFinishing() && ReactBridgeManager.get().isReactModuleRegisterCompleted()) {
                         activity.inflateStyle();
                     }
                 }
