@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import me.listenzz.navigation.AwesomeActivity;
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.FragmentHelper;
 
@@ -42,6 +43,20 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @Override
     public String getName() {
         return "NavigationHybrid";
+    }
+
+    @Override
+    public void onCatalystInstanceDestroy() {
+        super.onCatalystInstanceDestroy();
+        UiThreadUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Activity activity = getCurrentActivity();
+                if (activity instanceof AwesomeActivity) {
+                    ((AwesomeActivity) activity).clearFragments();
+                }
+            }
+        });
     }
 
     @Nullable
