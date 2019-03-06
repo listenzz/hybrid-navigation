@@ -56,12 +56,13 @@ public class ReactBridgeManager {
     private final HashMap<String, ReadableMap> reactModules = new HashMap<>();
     private final CopyOnWriteArrayList<ReactModuleRegisterListener> reactModuleRegisterListeners = new CopyOnWriteArrayList<>();
 
-    private volatile ReadableMap rootLayout;
-    private volatile ReadableMap stickyLayout;
-    private volatile ReadableMap pendingLayout;
+    private ReadableMap rootLayout;
+    private ReadableMap stickyLayout;
+    private ReadableMap pendingLayout;
 
-    private volatile ReactNativeHost reactNativeHost;
+    private ReactNativeHost reactNativeHost;
 
+    @UiThread
     public void install(@NonNull ReactNativeHost reactNativeHost) {
         this.reactNativeHost = reactNativeHost;
         this.setup();
@@ -85,12 +86,14 @@ public class ReactBridgeManager {
         }
     }
 
+    @UiThread
     @NonNull
     public ReactNativeHost getReactNativeHost() {
         checkReactNativeHost();
         return reactNativeHost;
     }
 
+    @UiThread
     @NonNull
     public ReactInstanceManager getReactInstanceManager() {
         checkReactNativeHost();
@@ -108,27 +111,33 @@ public class ReactBridgeManager {
         }
     }
 
+    @UiThread
     public void registerNativeModule(String moduleName, Class<? extends HybridFragment> clazz) {
         nativeModules.put(moduleName, clazz);
     }
 
+    @UiThread
     public boolean hasNativeModule(String moduleName) {
         return nativeModules.containsKey(moduleName);
     }
 
+    @UiThread
     @Nullable
     public Class<? extends HybridFragment> nativeModuleClassForName(String moduleName) {
         return nativeModules.get(moduleName);
     }
 
+    @UiThread
     public void registerReactModule(String moduleName, ReadableMap options) {
         reactModules.put(moduleName, options);
     }
 
+    @UiThread
     public boolean hasReactModule(String moduleName) {
         return reactModules.containsKey(moduleName);
     }
 
+    @UiThread
     @Nullable
     public ReadableMap reactModuleOptionsForKey(String moduleName) {
         return reactModules.get(moduleName);
@@ -136,6 +145,7 @@ public class ReactBridgeManager {
 
     private boolean reactModuleRegisterCompleted = false;
 
+    @UiThread
     public boolean isReactModuleRegisterCompleted() {
         return reactModuleRegisterCompleted;
     }
@@ -170,6 +180,7 @@ public class ReactBridgeManager {
         reactModuleRegisterListeners.remove(listener);
     }
 
+    @UiThread
     public void setRootLayout(ReadableMap root, boolean sticky) {
         if (sticky && !hasStickyLayout()) {
             this.stickyLayout = root;
@@ -177,30 +188,37 @@ public class ReactBridgeManager {
         this.rootLayout = root;
     }
 
+    @UiThread
     public ReadableMap getRootLayout() {
         return this.rootLayout;
     }
 
+    @UiThread
     public boolean hasRootLayout() {
         return rootLayout != null;
     }
 
+    @UiThread
     public ReadableMap getStickyLayout() {
         return stickyLayout;
     }
 
+    @UiThread
     public boolean hasStickyLayout() {
         return stickyLayout != null;
     }
 
+    @UiThread
     public void setPendingLayout(ReadableMap pendingLayout) {
         this.pendingLayout = pendingLayout;
     }
 
+    @UiThread
     public ReadableMap getPendingLayout() {
         return pendingLayout;
     }
 
+    @UiThread
     public boolean hasPendingLayout() {
         return pendingLayout != null;
     }
