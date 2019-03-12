@@ -248,6 +248,9 @@ public class ReactBridgeManager {
 
     @Nullable
     public HybridFragment primaryFragment(@Nullable AwesomeFragment fragment) {
+        if (fragment == null) {
+            return null;
+        }
         FragmentManager fragmentManager = fragment.getFragmentManager();
         if (fragmentManager == null || fragmentManager.isDestroyed()) {
             return null;
