@@ -31,7 +31,7 @@ import me.listenzz.navigation.TabBarItem;
 /**
  * Created by Listen on 2017/11/17.
  */
-
+@UiThread
 public class ReactBridgeManager {
 
     public interface ReactModuleRegisterListener {
@@ -62,7 +62,6 @@ public class ReactBridgeManager {
 
     private ReactNativeHost reactNativeHost;
 
-    @UiThread
     public void install(@NonNull ReactNativeHost reactNativeHost) {
         this.reactNativeHost = reactNativeHost;
         this.setup();
@@ -86,14 +85,12 @@ public class ReactBridgeManager {
         }
     }
 
-    @UiThread
     @NonNull
     public ReactNativeHost getReactNativeHost() {
         checkReactNativeHost();
         return reactNativeHost;
     }
 
-    @UiThread
     @NonNull
     public ReactInstanceManager getReactInstanceManager() {
         checkReactNativeHost();
@@ -111,57 +108,47 @@ public class ReactBridgeManager {
         }
     }
 
-    @UiThread
-    public void registerNativeModule(String moduleName, Class<? extends HybridFragment> clazz) {
+    public void registerNativeModule(@NonNull String moduleName, @NonNull Class<? extends HybridFragment> clazz) {
         nativeModules.put(moduleName, clazz);
     }
 
-    @UiThread
-    public boolean hasNativeModule(String moduleName) {
+    public boolean hasNativeModule(@NonNull String moduleName) {
         return nativeModules.containsKey(moduleName);
     }
 
-    @UiThread
     @Nullable
-    public Class<? extends HybridFragment> nativeModuleClassForName(String moduleName) {
+    public Class<? extends HybridFragment> nativeModuleClassForName(@NonNull String moduleName) {
         return nativeModules.get(moduleName);
     }
 
-    @UiThread
-    public void registerReactModule(String moduleName, ReadableMap options) {
+    public void registerReactModule(@NonNull String moduleName, @Nullable ReadableMap options) {
         reactModules.put(moduleName, options);
     }
 
-    @UiThread
-    public boolean hasReactModule(String moduleName) {
+    public boolean hasReactModule(@NonNull String moduleName) {
         return reactModules.containsKey(moduleName);
     }
 
-    @UiThread
     @Nullable
-    public ReadableMap reactModuleOptionsForKey(String moduleName) {
+    public ReadableMap reactModuleOptionsForKey(@NonNull String moduleName) {
         return reactModules.get(moduleName);
     }
 
     private boolean reactModuleRegisterCompleted = false;
 
-    @UiThread
     public boolean isReactModuleRegisterCompleted() {
         return reactModuleRegisterCompleted;
     }
 
-    @UiThread
     public void setReactModuleRegisterCompleted(boolean reactModuleRegisterCompleted) {
         this.reactModuleRegisterCompleted = reactModuleRegisterCompleted;
     }
 
-    @UiThread
     public void startRegisterReactModule() {
         reactModules.clear();
         reactModuleRegisterCompleted = false;
     }
 
-    @UiThread
     public void endRegisterReactModule() {
         reactModuleRegisterCompleted = true;
         Log.i(TAG, "react module registry completed");
@@ -170,61 +157,57 @@ public class ReactBridgeManager {
         }
     }
 
-    @UiThread
-    public void addReactModuleRegisterListener(ReactModuleRegisterListener listener) {
+    public void addReactModuleRegisterListener(@NonNull ReactModuleRegisterListener listener) {
         reactModuleRegisterListeners.add(listener);
     }
 
-    @UiThread
-    public void removeReactModuleRegisterListener(ReactModuleRegisterListener listener) {
+    public void removeReactModuleRegisterListener(@NonNull ReactModuleRegisterListener listener) {
         reactModuleRegisterListeners.remove(listener);
     }
 
-    @UiThread
-    public void setRootLayout(ReadableMap root, boolean sticky) {
+    public void setRootLayout(@NonNull ReadableMap root, boolean sticky) {
         if (sticky && !hasStickyLayout()) {
             this.stickyLayout = root;
         }
         this.rootLayout = root;
     }
 
-    @UiThread
+    @Nullable
     public ReadableMap getRootLayout() {
         return this.rootLayout;
     }
 
-    @UiThread
     public boolean hasRootLayout() {
         return rootLayout != null;
     }
 
-    @UiThread
+    @Nullable
     public ReadableMap getStickyLayout() {
         return stickyLayout;
     }
 
-    @UiThread
     public boolean hasStickyLayout() {
         return stickyLayout != null;
     }
 
-    @UiThread
-    public void setPendingLayout(ReadableMap pendingLayout) {
+    public void setPendingLayout(@Nullable ReadableMap pendingLayout) {
         this.pendingLayout = pendingLayout;
     }
 
-    @UiThread
+    @Nullable
     public ReadableMap getPendingLayout() {
         return pendingLayout;
     }
 
-    @UiThread
     public boolean hasPendingLayout() {
         return pendingLayout != null;
     }
 
-    @UiThread
-    public AwesomeFragment createFragment(ReadableMap layout) {
+    @Nullable
+    public AwesomeFragment createFragment(@Nullable ReadableMap layout) {
+        if (layout == null) {
+            return null;
+        }
         AwesomeFragment fragment = null;
         for (Navigator navigator : navigators) {
             fragment = navigator.createFragment(layout);
@@ -235,7 +218,6 @@ public class ReactBridgeManager {
         return fragment;
     }
 
-    @UiThread
     public void buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
         FragmentManager fragmentManager = fragment.getFragmentManager();
         if (fragmentManager == null || fragmentManager.isDestroyed()) {
@@ -264,9 +246,8 @@ public class ReactBridgeManager {
         }
     }
 
-    @UiThread
     @Nullable
-    public HybridFragment primaryFragment(AwesomeFragment fragment) {
+    public HybridFragment primaryFragment(@Nullable AwesomeFragment fragment) {
         FragmentManager fragmentManager = fragment.getFragmentManager();
         if (fragmentManager == null || fragmentManager.isDestroyed()) {
             return null;
@@ -291,8 +272,6 @@ public class ReactBridgeManager {
         return hybridFragment;
     }
 
-
-    @UiThread
     public void handleNavigation(@Nullable AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras) {
         if (fragment == null) {
             return;
@@ -306,15 +285,13 @@ public class ReactBridgeManager {
         }
     }
 
-    @UiThread
     @NonNull
     public HybridFragment createFragment(@NonNull String moduleName) {
         return createFragment(moduleName, null, null);
     }
 
-    @UiThread
     @NonNull
-    public HybridFragment createFragment(@NonNull String moduleName, Bundle props, Bundle options) {
+    public HybridFragment createFragment(@NonNull String moduleName, @Nullable Bundle props, @Nullable Bundle options) {
         if (!isReactModuleRegisterCompleted()) {
             throw new IllegalStateException("模块还没有注册完，不能执行此操作");
         }
@@ -388,8 +365,7 @@ public class ReactBridgeManager {
 
     private final List<Navigator> navigators = new ArrayList<>();
 
-    @UiThread
-    public void registerNavigator(Navigator navigator) {
+    public void registerNavigator(@NonNull Navigator navigator) {
         navigators.add(0, navigator);
     }
 }
