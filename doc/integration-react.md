@@ -4,10 +4,10 @@
 
 可以参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目。
 
-假设你是通过 `react-native init AwesomeProject` 创建的项目，目录结构是这样的：
+假设你是通过 `react-native init MyApp` 创建的项目，目录结构是这样的：
 
 ```
-AwesomeProject/
+MyApp/
 |—— android/
 |—— ios/
 |—— node_modules/
@@ -18,6 +18,8 @@ AwesomeProject/
 
 ```
 npm install react-native-navigation-hybrid --save
+# or
+yarn add react-native-navigation-hybrid
 ```
 
 ## Link
@@ -33,27 +35,33 @@ $ react-native link react-native-navigation-hybrid
 以前，你是这么注册 React 组件
 
 ```javascript
-AppRegistry.registerComponent('ReactNativeProject', () => App);
+import { AppRegistry } from "react-native";
+import App from "./App";
+import { name as appName } from "./app.json";
+
+AppRegistry.registerComponent(appName, () => App);
 ```
 
 现在，你需要像下面那样
 
 ```javascript
-import { ReactRegistry, Garden, Navigator } from 'react-native-navigation-hybrid';
-import Home from './HomeComponent';
-import Profile from './ProfileComponent';
+import {
+  ReactRegistry,
+  Garden,
+  Navigator
+} from "react-native-navigation-hybrid";
+import App from "./App";
 
 // 配置全局样式
 Garden.setStyle({
-  topBarStyle: 'dark-content',
+  topBarStyle: "dark-content"
 });
 
 // 重要必须
 ReactRegistry.startRegisterComponent();
 
 // 注意，你的每一个页面都需要注册
-ReactRegistry.registerComponent('Home', () => Home);
-ReactRegistry.registerComponent('Profile', () => Profile);
+ReactRegistry.registerComponent("App", () => App);
 
 // 重要必须
 ReactRegistry.endRegisterComponent();
@@ -64,8 +72,8 @@ ReactRegistry.endRegisterComponent();
 ```javascript
 Navigator.setRoot({
   stack: {
-    children: [{ screen: { moduleName: 'Navigation' } }],
-  },
+    children: [{ screen: { moduleName: "App" } }]
+  }
 });
 ```
 
@@ -104,18 +112,19 @@ buildscript {
     ext {
         // 为了支持凹凸屏、刘海屏，compileSdkVersion 必须 >= 28
 -        buildToolsVersion = "27.0.3"
-+        buildToolsVersion = "28.0.1"
-        minSdkVersion = 16
++        buildToolsVersion = "28.0.3"
+         minSdkVersion = 16
 -        compileSdkVersion = 27
 +        compileSdkVersion = 28
-        targetSdkVersion = 26
+-        targetSdkVersion = 26
++        targetSdkVersion = 28
 -        supportLibVersion = "27.1.1"
 +        supportLibVersion = "28.0.0"
     }
 
     dependencies {
 -        classpath 'com.android.tools.build:gradle:3.1.1'
-+        classpath 'com.android.tools.build:gradle:3.1.4'
++        classpath 'com.android.tools.build:gradle:3.3.2'
     }
 }
 ```
@@ -139,7 +148,7 @@ dependencies {
 + public class MainActivity extends ReactAppCompatActivity {
 -   @Override
 -   protected String getMainComponentName() {
--       return "AwesomeProject";
+-       return "MyApp";
 -   }
 }
 ```
@@ -185,10 +194,22 @@ public void onCreate() {
 
 ![header-search-paths](../screenshot/header-search-paths.jpg)
 
-如图，删掉后面的 NavigationHybrid, 配置成如下的样子：
+如图，删掉后面的 /NavigationHybrid, 配置成如下的样子：
 
 ```bash
 $(SRCROOT)/../node_modules/react-native-navigation-hybrid/ios
+```
+
+修改 AppDelegate.h 文件
+
+```objc
+#import <UIKit/UIKit.h>
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
+
+@property (nonatomic, strong) UIWindow *window;
+
+@end
 ```
 
 修改 AppDelegate.m 文件

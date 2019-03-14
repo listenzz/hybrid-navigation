@@ -49,6 +49,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     private static final String TAG = "ReactNative";
 
+    @NonNull
     static Bundle mergeOptions(@NonNull Bundle options, @NonNull String key, @NonNull ReadableMap readableMap) {
         Bundle bundle = options.getBundle(key);
         if (bundle == null) {
@@ -57,13 +58,18 @@ public class GardenModule extends ReactContextBaseJavaModule {
         WritableMap writableMap = Arguments.createMap();
         writableMap.merge(Arguments.fromBundle(bundle));
         writableMap.merge(readableMap);
-        return Arguments.toBundle(writableMap);
+        Bundle result = Arguments.toBundle(writableMap);
+        if (result == null) {
+            throw new NullPointerException("merge fail.");
+        }
+        return result;
     }
 
     public GardenModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
+    @NonNull
     @Override
     public String getName() {
         return "GardenHybrid";

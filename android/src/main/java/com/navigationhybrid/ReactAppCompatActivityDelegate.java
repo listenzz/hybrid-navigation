@@ -86,11 +86,11 @@ public class ReactAppCompatActivityDelegate {
         if (mBridgeManager.isReactModuleRegisterCompleted()) {
             askPermission();
         } else {
-            mBridgeManager.addReactModuleRegisterListener(reactModuleRegisterListener);
+            mBridgeManager.addReactModuleRegisterListener(mReactModuleRegisterListener);
         }
     }
 
-    ReactBridgeManager.ReactModuleRegisterListener reactModuleRegisterListener = new ReactBridgeManager.ReactModuleRegisterListener() {
+    ReactBridgeManager.ReactModuleRegisterListener mReactModuleRegisterListener = new ReactBridgeManager.ReactModuleRegisterListener() {
         @Override
         public void onReactModuleRegisterCompleted() {
             askPermission();
@@ -118,7 +118,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     protected void onDestroy() {
-        mBridgeManager.removeReactModuleRegisterListener(reactModuleRegisterListener);
+        mBridgeManager.removeReactModuleRegisterListener(mReactModuleRegisterListener);
         if (getReactNativeHost().hasInstance()) {
             getReactNativeHost().getReactInstanceManager().onHostDestroy(getPlainActivity());
         }

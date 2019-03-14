@@ -41,6 +41,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         this.reactBridgeManager = reactBridgeManager;
     }
 
+    @NonNull
     @Override
     public String getName() {
         return "NavigationHybrid";

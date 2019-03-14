@@ -32,8 +32,11 @@ public class DrawerNavigator implements Navigator {
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
             ReadableMap drawer = layout.getMap(name());
+            if (drawer == null) {
+                throw new IllegalArgumentException("drawer should be an object.");
+            }
             ReadableArray children = drawer.getArray("children");
-            if (children.size() == 2) {
+            if (children != null && children.size() == 2) {
 
                 ReadableMap content = children.getMap(0);
                 ReadableMap menu = children.getMap(1);
@@ -52,6 +55,9 @@ public class DrawerNavigator implements Navigator {
                 drawerFragment.setContentFragment(contentFragment);
                 if (drawer.hasKey("options")) {
                     ReadableMap options = drawer.getMap("options");
+                    if (options == null) {
+                        throw new IllegalArgumentException("options should be an object");
+                    }
                     if (options.hasKey("maxDrawerWidth")) {
                         int maxDrawerWidth = options.getInt("maxDrawerWidth");
                         drawerFragment.setMaxDrawerWidth(maxDrawerWidth);

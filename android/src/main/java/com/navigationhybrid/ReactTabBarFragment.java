@@ -19,6 +19,7 @@ import me.listenzz.navigation.NavigationFragment;
 import me.listenzz.navigation.Style;
 import me.listenzz.navigation.TabBar;
 import me.listenzz.navigation.TabBarFragment;
+import me.listenzz.navigation.TabBarItem;
 
 import static com.navigationhybrid.Constants.ACTION_SET_BADGE_TEXT;
 import static com.navigationhybrid.Constants.ACTION_SET_RED_POINT;

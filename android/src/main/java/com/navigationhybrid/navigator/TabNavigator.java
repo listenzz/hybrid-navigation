@@ -40,7 +40,15 @@ public class TabNavigator implements Navigator {
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
             ReadableMap tabs = layout.getMap(name());
+            if (tabs == null) {
+                throw new IllegalArgumentException("tabs should be an object");
+            }
             ReadableArray children = tabs.getArray("children");
+
+            if (children == null) {
+                throw new IllegalArgumentException("children is required and it is an array");
+            }
+
             List<AwesomeFragment> fragments = new ArrayList<>();
 
             for (int i = 0, size = children.size(); i < size; i++) {
@@ -57,6 +65,10 @@ public class TabNavigator implements Navigator {
                 Bundle bundle = new Bundle();
                 if (tabs.hasKey("options")) {
                     ReadableMap options = tabs.getMap("options");
+                    if (options == null) {
+                        throw new IllegalArgumentException("options should be an object");
+                    }
+
                     if (options.hasKey("selectedIndex")) {
                         int selectedIndex = options.getInt("selectedIndex");
                         tabBarFragment.setIntercepted(false);

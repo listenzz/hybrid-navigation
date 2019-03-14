@@ -38,7 +38,14 @@ public class ScreenNavigator implements Navigator {
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
             ReadableMap screen = layout.getMap(name());
+            if (screen == null) {
+                throw new IllegalArgumentException("screen should be an object.");
+            }
             String moduleName = screen.getString("moduleName");
+            if (moduleName == null) {
+                throw new IllegalArgumentException("moduleName is required.");
+            }
+
             Bundle props = null;
             if (screen.hasKey("props")) {
                 ReadableMap map = screen.getMap("props");

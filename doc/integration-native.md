@@ -71,26 +71,26 @@ npm install react-native-navigation-hybrid --save
 以前，你是这么注册的
 
 ```javascript
-AppRegistry.registerComponent('ReactNativeProject', () => App);
+AppRegistry.registerComponent("ReactNativeProject", () => App);
 ```
 
 现在，你需要作出改变
 
 ```javascript
-import { ReactRegistry, Garden } from 'react-native-navigation-hybrid';
-import Home from './HomeComponent';
-import Profile from './ProfileComponent';
+import { ReactRegistry, Garden } from "react-native-navigation-hybrid";
+import Home from "./HomeComponent";
+import Profile from "./ProfileComponent";
 
 // 配置全局样式
 Garden.setStyle({
-  topBarStyle: 'dark-content',
+  topBarStyle: "dark-content"
 });
 
 ReactRegistry.startRegisterComponent();
 
 // 注意，你的每一个页面都需要注册
-ReactRegistry.registerComponent('Home', () => Home);
-ReactRegistry.registerComponent('Profile', () => Profile);
+ReactRegistry.registerComponent("Home", () => Home);
+ReactRegistry.registerComponent("Profile", () => Profile);
 
 ReactRegistry.endRegisterComponent();
 ```
@@ -110,11 +110,9 @@ project(':react-native-navigation-hybrid').projectDir = new File(rootProject.pro
 ```diff
 ext {
 +   minSdkVersion = 16
-+   targetSdkVersion = 27
-+   // 为了适配凹凸屏、刘海屏，compileSdkVersion 必须 >= 28
++   targetSdkVersion = 28
 +   compileSdkVersion = 28
-+   buildToolsVersion = '28.0.1'
-+   // 必须保证支持包的版本 >= 27.1.1
++   buildToolsVersion = '28.0.3'
 +   supportLibVersion = '28.0.0'
 +   // 注意把 ReactNativeProject 替换成你的 RN 项目
 +   rn_root = "$rootDir/../ReactNativeProject"
@@ -122,12 +120,13 @@ ext {
 
 buildscript {
     repositories {
-        jcenter()
 +       google()
+        jcenter()
+
     }
     dependencies {
 -       classpath 'com.android.tools.build:gradle:2.2.3'
-+       classpath 'com.android.tools.build:gradle:3.1.4'
++       classpath 'com.android.tools.build:gradle:3.3.2'
     }
 }
 
@@ -177,7 +176,7 @@ dependencies {
 
 ```diff
 - distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip
-+ distributionUrl=https\://services.gradle.org/distributions/gradle-4.4-all.zip
++ distributionUrl=https\://services.gradle.org/distributions/gradle-4.10.2-all.zip
 ```
 
 修改 MainApplication.java 文件。在你的项目中，可能叫其它名字。

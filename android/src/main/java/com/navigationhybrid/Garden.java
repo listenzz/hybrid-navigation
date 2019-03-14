@@ -56,7 +56,11 @@ public class Garden {
         WritableMap writableMap = Arguments.createMap();
         writableMap.merge(Arguments.fromBundle(options));
         writableMap.merge(readableMap);
-        return Arguments.toBundle(writableMap);
+        Bundle result = Arguments.toBundle(writableMap);
+        if (result == null) {
+            throw new NullPointerException("merge fail.");
+        }
+        return result;
     }
 
     @NonNull
@@ -67,7 +71,11 @@ public class Garden {
         WritableMap writableMap = Arguments.createMap();
         writableMap.merge(Arguments.fromBundle(options));
         writableMap.merge(Arguments.fromBundle(bundle));
-        return Arguments.toBundle(writableMap);
+        Bundle result = Arguments.toBundle(writableMap);
+        if (result == null) {
+            throw new NullPointerException("merge fail.");
+        }
+        return result;
     }
 
     private final HybridFragment fragment;

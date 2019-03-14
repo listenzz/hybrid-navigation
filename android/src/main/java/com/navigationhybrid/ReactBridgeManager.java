@@ -218,7 +218,11 @@ public class ReactBridgeManager {
         return fragment;
     }
 
-    public void buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
+    public void buildRouteGraph(@Nullable AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
+        if (fragment == null) {
+            return;
+        }
+
         FragmentManager fragmentManager = fragment.getFragmentManager();
         if (fragmentManager == null || fragmentManager.isDestroyed()) {
             return;

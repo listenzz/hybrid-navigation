@@ -41,7 +41,13 @@ public class StackNavigator implements Navigator {
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
         if (layout.hasKey(name())) {
             ReadableMap stack = layout.getMap(name());
+            if (stack == null) {
+                throw new IllegalArgumentException("stack should be an object.");
+            }
             ReadableArray children = stack.getArray("children");
+            if (children == null) {
+                throw new IllegalArgumentException("children is required, and it is an array.");
+            }
             ReadableMap root = children.getMap(0);
             AwesomeFragment rootFragment = getReactBridgeManager().createFragment(root);
             if (rootFragment != null) {

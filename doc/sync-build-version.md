@@ -1,6 +1,6 @@
 ### 同步构建版本
 
-Navigation Hybrid 使用的构建版本是 28.0.1 ，你的项目可能使用了更高的版本，你也可能使用了 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 这样的库，它的构建版本是 26.0.1 ，我们需要用脚本把这些库的构建版本统一起来，否则编译项目时可能会出错。
+Navigation Hybrid 使用的构建版本是 28.0.3 ，你的项目可能使用了更高的版本，你也可能使用了 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 这样的库，它的构建版本是 26.0.1 ，我们需要用脚本把这些库的构建版本统一起来，否则编译项目时可能会出错。
 
 回到 RN 项目的根目录，创建一个叫 scripts 的文件夹，在里面创建一个叫 sync-build-version.js 的文件
 
@@ -45,7 +45,7 @@ gradles.forEach(gradle => {
     str = str.replace(/\scompile\s/gm, ' implementation ');
     str = str.replace(
       /classpath\s+'com\.android\.tools\.build:gradle:.+['""]/gm,
-      `classpath 'com.android.tools.build:gradle:3.1.4'`
+      `classpath 'com.android.tools.build:gradle:3.3.1'`
     );
     if (str.search('google\\(\\)') === -1) {
       str = str.replace(/(.+)jcenter\(\)/gm, '$1jcenter()\n$1google()');

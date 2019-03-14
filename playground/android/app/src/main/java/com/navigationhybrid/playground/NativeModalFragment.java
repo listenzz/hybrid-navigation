@@ -13,6 +13,7 @@ import me.listenzz.navigation.AnimationType;
 
 public class NativeModalFragment extends HybridFragment {
 
+    @NonNull
     @Override
     public AnimationType getAnimationType() {
         return AnimationType.Slide;

@@ -1,5 +1,7 @@
 package com.navigationhybrid;
 
+import android.support.annotation.NonNull;
+
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -15,8 +17,9 @@ import java.util.List;
 
 public class NavigationHybridPackage implements ReactPackage {
 
+    @NonNull
     @Override
-    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+    public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
                 new NavigationModule(reactContext, ReactBridgeManager.get()),
                 new GardenModule(reactContext),
@@ -24,8 +27,9 @@ public class NavigationHybridPackage implements ReactPackage {
         );
     }
 
+    @NonNull
     @Override
-    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+    public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
         return Collections.emptyList();
     }
 
