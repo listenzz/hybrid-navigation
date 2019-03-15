@@ -21,15 +21,14 @@
   "scripts": {
     "build": "rm -rf ./build && tsc",
     "prestart": "npm run build",
-    "prepare": "npm run build",
+    "prepublish": "npm run build",
     "tsc": "tsc",
     "start": "npm run syncbv && node node_modules/react-native/local-cli/cli.js start",
     "run:ios": "react-native run-ios --project-path ./playground/ios",
     "start:android": "adb shell am start -n com.navigationhybrid.playground/.SplashActivity",
     "run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
     "test": "jest",
-    "syncbv": "node scripts/sync-build-version.js",
-    "postinstall": "npm run syncbv"
+    "syncbv": "node scripts/sync-build-version.js"
   },
   "peerDependencies": {
     "react": ">=16.5.0",
@@ -49,7 +48,7 @@
     "typescript": "^3.3.3333",
     "react": "16.8.3",
     "react-native": "0.59.0",
-    "react-native-hud-hybrid": "0.38.0",
+    "react-native-hud-hybrid": "0.40.0",
     "react-native-iphone-x-helper": "^1.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.8.0",
     "react-native-vector-icons": "^4.4.3",
