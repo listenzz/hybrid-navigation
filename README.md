@@ -76,7 +76,11 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.11.16` - 2019/03/12
+最新版本: `0.11.17` - 2019/03/15
+
+### 0.11.17 - 2019/03.15
+
+Android Tab 页面可以通过 `optimizationEnabledAndroid` 关闭懒加载
 
 ### 0.11.15 - 2019/03/05
 
@@ -94,7 +98,7 @@ Android 性能优化默认开启，可以通过以下方式全局关闭：
 
 ```javascript
 Garden.setStyle({
-  optimizationEnabledAndroid: false,
+  optimizationEnabledAndroid: false
 });
 ```
 
@@ -103,7 +107,7 @@ Garden.setStyle({
 ```javascript
 class MyComponent extends React.Component {
   static navigationItem = {
-    optimizationEnabledAndroid: false,
+    optimizationEnabledAndroid: false
   };
 }
 ```
