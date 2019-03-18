@@ -1,11 +1,13 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.facebook.common.logging.FLog;
@@ -50,12 +52,15 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
+        Log.i(TAG, "NavigationModule#onCatalystInstanceDestroy");
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                reactBridgeManager.setReactModuleRegisterCompleted(false);
                 Activity activity = getCurrentActivity();
                 if (activity instanceof AwesomeActivity) {
-                    ((AwesomeActivity) activity).clearFragments();
+                    LocalBroadcastManager.getInstance(activity).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
+                   ((AwesomeActivity) activity).clearFragments();
                 }
             }
         });

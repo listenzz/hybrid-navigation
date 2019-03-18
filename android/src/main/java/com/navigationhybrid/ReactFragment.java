@@ -44,10 +44,11 @@ import static com.navigationhybrid.HBDEventEmitter.ON_DIALOG_BACK_PRESSED;
 public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver {
 
     protected static final String TAG = "ReactNative";
-    private ReactRootView reactRootView;
     private ViewGroup containerLayout;
+    private ReactRootView reactRootView;
     private ReactRootView reactTitleView;
     private boolean isAppeared;
+    private BroadcastReceiver jsBundleReloadBroadcastReceiver;
 
     @Nullable
     @Override
@@ -108,6 +109,11 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     @Override
     public void onDestroy() {
+        if (jsBundleReloadBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
+            jsBundleReloadBroadcastReceiver = null;
+        }
+
         if (reactRootView != null) {
             reactRootView.unmountReactApplication();
         }
@@ -179,16 +185,25 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         String moduleName = getModuleName();
         reactView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
 
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(new BroadcastReceiver() {
+        jsBundleReloadBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
+                jsBundleReloadBroadcastReceiver = null;
+
                 if (reactRootView != null) {
                     reactRootView.unmountReactApplication();
+                    reactRootView = null;
                 }
-                reactRootView = null;
+
+                if (reactTitleView != null) {
+                    reactTitleView.unmountReactApplication();
+                    reactTitleView = null;
+                }
             }
-        }, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
+        };
+
+        LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(jsBundleReloadBroadcastReceiver, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
     }
 
     private void initTitleViewIfNeeded() {
@@ -215,17 +230,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                 }
                 getAwesomeToolbar().addView(reactTitleView, layoutParams);
                 reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
-
-                LocalBroadcastManager.getInstance(getContext()).registerReceiver(new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
-                        if (reactTitleView != null) {
-                            reactTitleView.unmountReactApplication();
-                        }
-                        reactTitleView = null;
-                    }
-                }, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
             }
         }
     }

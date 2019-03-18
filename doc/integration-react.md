@@ -157,12 +157,10 @@ dependencies {
 
 ```diff
   import com.facebook.react.ReactNativeHost;
-+ import com.navigationhybrid.HybridReactNativeHost;
 + import com.navigationhybrid.ReactBridgeManager;
 + import com.navigationhybrid.NavigationHybridPackage;
 
-- private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-+ private final ReactNativeHost mReactNativeHost = new HybridReactNativeHost(this) {
+  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
       @Override
       protected List<ReactPackage> getPackages() {
           return Arrays.<ReactPackage>asList(
@@ -181,8 +179,6 @@ public void onCreate() {
 +   bridgeManager.install(getReactNativeHost());
 }
 ```
-
-> 注意：ReactNativeHost 的实例是 HybridReactNativeHost 对象，它为 reload bundle 做了些优化。
 
 ### 同步构建版本
 
