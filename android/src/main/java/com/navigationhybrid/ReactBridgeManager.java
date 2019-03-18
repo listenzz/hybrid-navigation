@@ -375,4 +375,20 @@ public class ReactBridgeManager {
     public void registerNavigator(@NonNull Navigator navigator) {
         navigators.add(0, navigator);
     }
+
+    public interface MemoryWatcher {
+        void watch(Object object);
+    }
+
+    private MemoryWatcher memoryWatcher = null;
+
+    public void setMemoryWatcher(MemoryWatcher memoryWatcher) {
+        this.memoryWatcher = memoryWatcher;
+    }
+
+    public void watchMemory(Object object) {
+        if (memoryWatcher != null) {
+            memoryWatcher.watch(object);
+        }
+    }
 }

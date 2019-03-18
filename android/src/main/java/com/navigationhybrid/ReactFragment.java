@@ -45,6 +45,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     protected static final String TAG = "ReactNative";
     private ViewGroup containerLayout;
+    private ReactRootViewHolder reactRootViewHolder;
     private ReactRootView reactRootView;
     private ReactRootView reactTitleView;
     private boolean isAppeared;
@@ -61,9 +62,10 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         } else {
             view = inflater.inflate(R.layout.nav_fragment_react, container, false);
         }
+
         containerLayout = view.findViewById(R.id.react_content);
         if (containerLayout instanceof ReactRootViewHolder) {
-            ReactRootViewHolder reactRootViewHolder = (ReactRootViewHolder) containerLayout;
+            reactRootViewHolder = (ReactRootViewHolder) containerLayout;
             reactRootViewHolder.setVisibilityObserver(this);
         }
 
@@ -109,6 +111,10 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     @Override
     public void onDestroy() {
+        if (reactRootViewHolder != null) {
+            reactRootViewHolder.setVisibilityObserver(null);
+        }
+
         if (jsBundleReloadBroadcastReceiver != null) {
             LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
             jsBundleReloadBroadcastReceiver = null;
@@ -117,6 +123,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         if (reactRootView != null) {
             reactRootView.unmountReactApplication();
         }
+
         if (reactTitleView != null) {
             reactTitleView.unmountReactApplication();
         }

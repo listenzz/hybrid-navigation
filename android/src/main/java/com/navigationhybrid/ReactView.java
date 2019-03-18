@@ -41,6 +41,17 @@ public class ReactView extends ReactRootView {
 
     @Override
     protected void onAttachedToWindow() {
+        removeOnGlobalLayoutListener();
+        super.onAttachedToWindow();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeOnGlobalLayoutListener();
+    }
+
+    void removeOnGlobalLayoutListener() {
         try {
             Method method = ReactRootView.class.getDeclaredMethod("getCustomGlobalLayoutListener");
             method.setAccessible(true);
@@ -57,6 +68,6 @@ public class ReactView extends ReactRootView {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-        super.onAttachedToWindow();
     }
+
 }

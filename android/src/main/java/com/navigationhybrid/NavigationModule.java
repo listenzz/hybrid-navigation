@@ -60,7 +60,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 Activity activity = getCurrentActivity();
                 if (activity instanceof AwesomeActivity) {
                     LocalBroadcastManager.getInstance(activity).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
-                   ((AwesomeActivity) activity).clearFragments();
+                    ((AwesomeActivity) activity).clearFragments();
                 }
             }
         });
@@ -227,7 +227,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     promise.resolve(null);
                     return;
                 }
-                
+
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 FragmentHelper.executePendingTransactionsSafe(reactAppCompatActivity.getSupportFragmentManager());
 
@@ -258,7 +258,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         if (activity instanceof ReactAppCompatActivity) {
             ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
             FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-            return (AwesomeFragment)FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
+            return (AwesomeFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
         }
         return null;
     }

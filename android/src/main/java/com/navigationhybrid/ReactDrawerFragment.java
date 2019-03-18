@@ -16,4 +16,9 @@ public class ReactDrawerFragment extends DrawerFragment {
         return bridgeManager;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bridgeManager.watchMemory(this);
+    }
 }

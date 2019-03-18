@@ -10,6 +10,8 @@ import com.facebook.soloader.SoLoader;
 import com.navigationhybrid.NavigationHybridPackage;
 import com.navigationhybrid.ReactBridgeManager;
 import com.oblador.vectoricons.VectorIconsPackage;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 import com.taihua.hud.HUDReactPackage;
 
 import java.util.Arrays;
@@ -61,5 +63,21 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
         bridgeManager.registerNativeModule("OneNative", OneNativeFragment.class);
         bridgeManager.registerNativeModule("NativeModal", NativeModalFragment.class);
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        refWatcher = LeakCanary.install(this);
+
+        bridgeManager.setMemoryWatcher(new ReactBridgeManager.MemoryWatcher() {
+            @Override
+            public void watch(Object object) {
+                refWatcher.watch(object);
+            }
+        });
     }
+
+    private RefWatcher refWatcher;
+
 }

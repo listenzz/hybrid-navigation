@@ -27,4 +27,10 @@ public class ReactNavigationFragment extends NavigationFragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bridgeManager.watchMemory(this);
+    }
+
 }

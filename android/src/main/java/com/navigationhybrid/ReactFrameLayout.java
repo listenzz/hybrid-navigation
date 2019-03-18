@@ -58,6 +58,14 @@ public class ReactFrameLayout extends FrameLayout implements ReactRootViewHolder
     }
 
     @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mReactRootView != null) {
+            removeView(mReactRootView);
+        }
+    }
+
+    @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
         if (getVisibility() == View.VISIBLE && mReactRootView != null && mReactRootView.getParent() == null) {

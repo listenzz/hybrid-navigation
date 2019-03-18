@@ -67,6 +67,12 @@ public class ReactTabBarFragment extends TabBarFragment {
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        bridgeManager.watchMemory(this);
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBundle(SAVED_OPTIONS, options);
