@@ -63,7 +63,7 @@ public class StackNavigator implements Navigator {
 
     @Override
     public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
-        if (fragment instanceof NavigationFragment) {
+        if (fragment instanceof NavigationFragment && fragment.isAdded()) {
             NavigationFragment stack = (NavigationFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
             List<AwesomeFragment> fragments = stack.getChildFragmentsAtAddedList();
@@ -86,7 +86,7 @@ public class StackNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof NavigationFragment) {
+        if (fragment instanceof NavigationFragment && fragment.isAdded()) {
             NavigationFragment stack = (NavigationFragment) fragment;
             return getReactBridgeManager().primaryFragment(stack.getTopFragment());
         }

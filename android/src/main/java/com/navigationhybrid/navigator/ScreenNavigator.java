@@ -64,7 +64,7 @@ public class ScreenNavigator implements Navigator {
 
     @Override
     public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
-        if (fragment instanceof HybridFragment) {
+        if (fragment instanceof HybridFragment && fragment.isAdded()) {
             HybridFragment screen = (HybridFragment) fragment;
             Bundle route = new Bundle();
             route.putString("layout", name());
@@ -79,7 +79,7 @@ public class ScreenNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof HybridFragment) {
+        if (fragment instanceof HybridFragment && fragment.isAdded()) {
             AwesomeFragment presented = FragmentHelper.getLatterFragment(fragment.requireFragmentManager(), fragment);
             if (presented != null) {
                 return (HybridFragment) presented;

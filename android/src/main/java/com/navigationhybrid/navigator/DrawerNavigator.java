@@ -84,7 +84,7 @@ public class DrawerNavigator implements Navigator {
 
     @Override
     public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull  ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
-        if (fragment instanceof DrawerFragment) {
+        if (fragment instanceof DrawerFragment && fragment.isAdded()) {
             DrawerFragment drawer = (DrawerFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
             getReactBridgeManager().buildRouteGraph(drawer.getContentFragment(), children, modal);
@@ -102,7 +102,7 @@ public class DrawerNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof DrawerFragment) {
+        if (fragment instanceof DrawerFragment && fragment.isAdded()) {
             DrawerFragment drawer = (DrawerFragment) fragment;
             if (drawer.isMenuOpened()) {
                 return getReactBridgeManager().primaryFragment(drawer.getMenuFragment());

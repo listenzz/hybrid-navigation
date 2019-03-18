@@ -100,7 +100,7 @@ public class TabNavigator implements Navigator {
 
     @Override
     public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
-        if (fragment instanceof TabBarFragment) {
+        if (fragment instanceof TabBarFragment && fragment.isAdded()) {
             TabBarFragment tabs = (TabBarFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
             List<AwesomeFragment> fragments = tabs.getChildFragments();
@@ -122,7 +122,7 @@ public class TabNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof TabBarFragment) {
+        if (fragment instanceof TabBarFragment && fragment.isAdded()) {
             TabBarFragment tabs = (TabBarFragment) fragment;
             return getReactBridgeManager().primaryFragment(tabs.getSelectedFragment());
         }
