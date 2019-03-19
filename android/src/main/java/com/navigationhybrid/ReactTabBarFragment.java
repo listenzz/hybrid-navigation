@@ -150,13 +150,20 @@ public class ReactTabBarFragment extends TabBarFragment {
         Drawable selectedDrawable = drawableFromReadableMap(requireContext(), selectedIcon);
         AwesomeFragment fragment = getChildFragments().get(index);
         if (selectedDrawable != null) {
-            fragment.getTabBarItem().iconUri = icon.getString("uri");
-            fragment.getTabBarItem().selectedIconUri = selectedIcon.getString("uri");
+            fragment.setTabBarItem(newTabBarItem(fragment, icon.getString("uri"), selectedIcon.getString("uri")));
             tabBar.setTabIcon(index, selectedDrawable, drawable);
         } else {
-            fragment.getTabBarItem().iconUri = icon.getString("uri");
+            fragment.setTabBarItem(newTabBarItem(fragment, icon.getString("uri"), null));
             tabBar.setTabIcon(index, drawable, null);
         }
+    }
+
+    private TabBarItem newTabBarItem(@NonNull AwesomeFragment fragment, @Nullable String icon, @Nullable String selectedIcon) {
+        TabBarItem tabBarItem = fragment.getTabBarItem();
+        if (tabBarItem == null) {
+            throw new IllegalArgumentException("the fragment must have a tabBarItem");
+        }
+        return new TabBarItem(icon, selectedIcon, tabBarItem.title);
     }
 
     private void updateTabBarAppearance(@Nullable Bundle options) {

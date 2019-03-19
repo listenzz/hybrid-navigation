@@ -51,7 +51,7 @@
     "react-native-hud-hybrid": "0.40.0",
     "react-native-iphone-x-helper": "^1.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.8.0",
-    "react-native-vector-icons": "^4.4.3",
+    "react-native-vector-icons": "^6.4.1",
     "react-redux": "^6.0.0",
     "redux": "^3.7.2"
   },
