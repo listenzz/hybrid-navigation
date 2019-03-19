@@ -76,7 +76,7 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.12.0` - 2019/03/19
+最新版本: `0.12.1` - 2019/03/19
 
 ### 0.12.0 - 2019/03/19
 
@@ -114,7 +114,7 @@ Android 性能优化默认开启，可以通过以下方式全局关闭：
 
 ```javascript
 Garden.setStyle({
-  optimizationEnabledAndroid: false
+  optimizationEnabledAndroid: false,
 });
 ```
 
@@ -123,7 +123,7 @@ Garden.setStyle({
 ```javascript
 class MyComponent extends React.Component {
   static navigationItem = {
-    optimizationEnabledAndroid: false
+    optimizationEnabledAndroid: false,
   };
 }
 ```
