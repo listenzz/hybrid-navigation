@@ -76,9 +76,25 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.11.17` - 2019/03/15
+最新版本: `0.12.0` - 2019/03/19
 
-### 0.11.17 - 2019/03.15
+### 0.12.0 - 2019/03/19
+
+[Breaking] Android 移除了 `HybirdReactNativeHost`，MainApplication.java 文件请作如下修改
+
+```diff
+- import com.navigationhybrid.HybridReactNativeHost;
+  import com.navigationhybrid.NavigationHybridPackage;
+  import com.navigationhybrid.ReactBridgeManager;
+
+  public class MainApplication extends MultiDexApplication implements ReactApplication {
+
+-     private final ReactNativeHost mReactNativeHost = new HybridReactNativeHost(this) {
++     private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+
+```
+
+### 0.11.17 - 2019/03/15
 
 Android Tab 页面可以通过 `optimizationEnabledAndroid` 关闭懒加载
 
