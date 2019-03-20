@@ -74,6 +74,12 @@ public class ReactTabBar extends FrameLayout {
         mReactHolder.addView(rootView);
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mReactHolder.removeAllViews();
+    }
+
     public void setTabBarBackground(Drawable drawable) {
         background = drawable;
         if (mBackgroundView != null) {
