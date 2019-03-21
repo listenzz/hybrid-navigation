@@ -1,48 +1,40 @@
-import React, { Component } from "react";
-import {
-  TouchableOpacity,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  PixelRatio
-} from "react-native";
-import { Navigator } from "react-native-navigation-hybrid";
+import React, { Component } from 'react';
+import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native';
+import { Navigator } from 'react-native-navigation-hybrid';
 
-import styles from "./Styles";
-import fontUri from "./FontUtil";
-import getLayout from "./layout";
+import styles from './Styles';
+import fontUri from './FontUtil';
+import getLayout from './layout';
 
 export default class Options extends Component {
   static navigationItem = {
-    optimizationEnabledAndroid: false,
     titleItem: {
-      title: "Options"
+      title: 'Options',
     },
 
     leftBarButtonItem: {
-      icon: { uri: fontUri("FontAwesome", "navicon", 24) },
-      title: "Menu",
+      icon: { uri: fontUri('FontAwesome', 'navicon', 24) },
+      title: 'Menu',
       action: navigator => {
         navigator.toggleMenu();
-      }
+      },
     },
 
     rightBarButtonItem: {
-      icon: Image.resolveAssetSource(require("./images/ic_settings.png")),
-      title: "SETTING",
+      icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+      title: 'SETTING',
       action: navigator => {
-        navigator.push("TopBarMisc");
+        navigator.push('TopBarMisc');
       },
-      enabled: false
+      enabled: false,
     },
 
     tabItem: {
-      title: "Options",
-      icon: { uri: fontUri("FontAwesome", "leaf", 24) },
+      title: 'Options',
+      icon: { uri: fontUri('FontAwesome', 'leaf', 24) },
       // icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
-      hideTabBarWhenPush: true
-    }
+      hideTabBarWhenPush: true,
+    },
   };
 
   constructor(props) {
@@ -62,24 +54,24 @@ export default class Options extends Component {
     this.state = {
       leftButtonShowText: true,
       rightButtonEnabled: false,
-      title: "配置",
-      badge: null
+      title: '配置',
+      badge: null,
     };
   }
 
   componentDidMount() {
-    console.info("options componentDidMount");
+    console.info('options componentDidMount');
   }
 
   componentDidAppear() {
-    console.info("options componentDidAppear");
+    console.info('options componentDidAppear');
     this.props.navigator.isStackRoot().then(isRoot => {
       this.props.garden.setMenuInteractive(isRoot);
     });
   }
 
   componentDidDisappear() {
-    console.info("options componentDidDisappear");
+    console.info('options componentDidDisappear');
     this.props.garden.setMenuInteractive(false);
   }
 
@@ -88,7 +80,7 @@ export default class Options extends Component {
       this.props.garden.setLeftBarButtonItem({ icon: null });
     } else {
       this.props.garden.setLeftBarButtonItem({
-        icon: { uri: fontUri("FontAwesome", "navicon", 24) }
+        icon: { uri: fontUri('FontAwesome', 'navicon', 24) },
         // icon: { uri: 'flower', scale: PixelRatio.get() },
       });
     }
@@ -97,7 +89,7 @@ export default class Options extends Component {
 
   changeRightButton() {
     this.props.garden.setRightBarButtonItem({
-      enabled: !this.state.rightButtonEnabled
+      enabled: !this.state.rightButtonEnabled,
     });
     this.setState({ rightButtonEnabled: !this.state.rightButtonEnabled });
   }
@@ -105,16 +97,12 @@ export default class Options extends Component {
   changeTitle() {
     this.props.garden.setTitleItem({ title: this.state.title });
     this.setState({
-      title: this.state.title === "Options" ? "配置" : "Options"
+      title: this.state.title === 'Options' ? '配置' : 'Options',
     });
   }
 
   passOptions() {
-    this.props.navigator.push(
-      "PassOptions",
-      {},
-      { titleItem: { title: "The Passing Title" } }
-    );
+    this.props.navigator.push('PassOptions', {}, { titleItem: { title: 'The Passing Title' } });
   }
 
   switchTab() {
@@ -127,67 +115,67 @@ export default class Options extends Component {
       this.props.garden.setTabBadgeText(1, null);
       this.props.garden.hideRedPointAtIndex(0);
     } else {
-      this.setState({ badge: "5" });
-      this.props.garden.setTabBadgeText(1, "99");
+      this.setState({ badge: '5' });
+      this.props.garden.setTabBadgeText(1, '99');
       this.props.garden.showRedPointAtIndex(0);
     }
   }
 
   topBarMisc() {
-    this.props.navigator.push("TopBarMisc");
+    this.props.navigator.push('TopBarMisc');
   }
 
   lifecycle() {
-    this.props.navigator.push("Lifecycle");
+    this.props.navigator.push('Lifecycle');
   }
 
   replaceTabIcon() {
-    if (this.icon === "flower") {
-      this.icon = "";
+    if (this.icon === 'flower') {
+      this.icon = '';
       this.props.garden.replaceTabIcon(1, {
-        uri: fontUri("FontAwesome", "leaf", 24)
+        uri: fontUri('FontAwesome', 'leaf', 24),
       });
     } else {
-      this.icon = "flower";
+      this.icon = 'flower';
       this.props.garden.replaceTabIcon(1, {
-        uri: "flower",
-        scale: PixelRatio.get()
+        uri: 'flower',
+        scale: PixelRatio.get(),
       });
     }
   }
 
   replaceTabItemColor() {
-    if (this.tabItemColor === "#8BC34A") {
-      this.tabItemColor = "#FF5722";
+    if (this.tabItemColor === '#8BC34A') {
+      this.tabItemColor = '#FF5722';
       this.props.garden.updateTabBar({
-        tabBarItemColor: "#FF5722",
-        tabBarUnselectedItemColor: "#BDBDBD"
+        tabBarItemColor: '#FF5722',
+        tabBarUnselectedItemColor: '#BDBDBD',
       });
     } else {
-      this.tabItemColor = "#8BC34A";
+      this.tabItemColor = '#8BC34A';
       this.props.garden.updateTabBar({
-        tabBarItemColor: "#8BC34A",
-        tabBarUnselectedItemColor: "#BDBDBD"
+        tabBarItemColor: '#8BC34A',
+        tabBarUnselectedItemColor: '#BDBDBD',
       });
     }
   }
 
   setTabBarColor() {
-    if (this.tabBarColor === "#EEEEEE") {
-      this.tabBarColor = "#FFFFFF";
+    if (this.tabBarColor === '#EEEEEE') {
+      this.tabBarColor = '#FFFFFF';
       this.props.garden.updateTabBar({
-        tabBarColor: "#FFFFFF",
+        tabBarColor: '#FFFFFF',
         tabBarShadowImage: {
-          color: "#F0F0F0"
-        }
+          color: '#F0F0F0',
+        },
       });
     } else {
-      this.tabBarColor = "#EEEEEE";
+      this.tabBarColor = '#EEEEEE';
       this.props.garden.updateTabBar({
-        tabBarColor: "#EEEEEE",
+        tabBarColor: '#EEEEEE',
         tabBarShadowImage: {
-          image: Image.resolveAssetSource(require("./images/divider.png"))
-        }
+          image: Image.resolveAssetSource(require('./images/divider.png')),
+        },
       });
     }
   }
@@ -206,27 +194,15 @@ export default class Options extends Component {
         <View style={styles.container}>
           <Text style={styles.welcome}>This's a React Native scene.</Text>
 
-          <TouchableOpacity
-            onPress={this.topBarMisc}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.topBarMisc} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>topBar options</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.lifecycle}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.lifecycle} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>Lifecycle</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.passOptions}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.passOptions} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>pass options to another scene</Text>
           </TouchableOpacity>
 
@@ -237,8 +213,8 @@ export default class Options extends Component {
           >
             <Text style={styles.buttonText}>
               {this.state.leftButtonShowText
-                ? "change left button to text"
-                : "change left button to icon"}
+                ? 'change left button to text'
+                : 'change left button to icon'}
             </Text>
           </TouchableOpacity>
 
@@ -248,45 +224,25 @@ export default class Options extends Component {
             style={styles.button}
           >
             <Text style={styles.buttonText}>
-              {this.state.rightButtonEnabled
-                ? "disable right button"
-                : "enable right button"}
+              {this.state.rightButtonEnabled ? 'disable right button' : 'enable right button'}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.changeTitle}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
-            <Text style={styles.buttonText}>{`change title to '${
-              this.state.title
-            }'`}</Text>
+          <TouchableOpacity onPress={this.changeTitle} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>{`change title to '${this.state.title}'`}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.toggleTabBadge}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.toggleTabBadge} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>
-              {this.state.badge ? "hide tab badge" : "show tab badge"}
+              {this.state.badge ? 'hide tab badge' : 'show tab badge'}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.switchTab}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.switchTab} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.replaceTabIcon}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.replaceTabIcon} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>replalce tab icon</Text>
           </TouchableOpacity>
 
@@ -298,19 +254,11 @@ export default class Options extends Component {
             <Text style={styles.buttonText}>replalce tab item color</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.setTabBarColor}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.setTabBarColor} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>change tab bar color</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.changeTabBar}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.changeTabBar} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>change TabBar</Text>
           </TouchableOpacity>
         </View>

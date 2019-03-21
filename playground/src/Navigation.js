@@ -58,16 +58,13 @@ export default class Navigation extends Component {
     console.info('navigation componentDidDisappear');
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    console.info('navigation componentDidMount');
     this.props.navigator.isStackRoot().then(isRoot => {
       if (isRoot) {
         this.setState({ isRoot });
       }
     });
-  }
-
-  componentDidMount() {
-    console.info('navigation componentDidMount');
     this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
   }
 
