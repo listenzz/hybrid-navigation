@@ -229,12 +229,12 @@ public class ReactTabBarFragment extends TabBarFragment {
 
     @Override
     public void setSelectedIndex(int index) {
-        AwesomeFragment selectedFragment = getSelectedFragment();
-        if (selectedFragment == null) {
+        if (!isAdded()) {
             super.setSelectedIndex(index);
             return;
         }
 
+        AwesomeFragment selectedFragment = getSelectedFragment();
         if (selectedFragment instanceof NavigationFragment) {
             NavigationFragment nav = (NavigationFragment) selectedFragment;
             selectedFragment = nav.getRootFragment();
@@ -250,8 +250,6 @@ public class ReactTabBarFragment extends TabBarFragment {
             super.setSelectedIndex(index);
             return;
         }
-
-        super.setSelectedIndex(getSelectedIndex());
 
         List<AwesomeFragment> fragments = getChildFragments();
         AwesomeFragment fragment = fragments.get(index);

@@ -71,9 +71,7 @@ public class TabNavigator implements Navigator {
 
                     if (options.hasKey("selectedIndex")) {
                         int selectedIndex = options.getInt("selectedIndex");
-                        tabBarFragment.setIntercepted(false);
                         tabBarFragment.setSelectedIndex(selectedIndex);
-                        tabBarFragment.setIntercepted(true);
                         bundle.putInt("selectedIndex", selectedIndex);
                     }
 
