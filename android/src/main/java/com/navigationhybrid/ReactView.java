@@ -51,6 +51,26 @@ public class ReactView extends ReactRootView {
         removeOnGlobalLayoutListener();
     }
 
+    void addOnGlobalLayoutListener() {
+        try {
+            Method method = ReactRootView.class.getDeclaredMethod("getCustomGlobalLayoutListener");
+            method.setAccessible(true);
+            // remove duplicated GlobalLayoutListener
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                getViewTreeObserver().removeOnGlobalLayoutListener((ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this));
+            } else {
+                getViewTreeObserver().removeGlobalOnLayoutListener((ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this));
+            }
+            getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this));
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
     void removeOnGlobalLayoutListener() {
         try {
             Method method = ReactRootView.class.getDeclaredMethod("getCustomGlobalLayoutListener");

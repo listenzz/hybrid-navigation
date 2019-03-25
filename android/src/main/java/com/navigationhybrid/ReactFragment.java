@@ -46,8 +46,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     protected static final String TAG = "ReactNative";
     private ViewGroup containerLayout;
     private ReactRootViewHolder reactRootViewHolder;
-    private ReactRootView reactRootView;
-    private ReactRootView reactTitleView;
+    private ReactView reactRootView;
+    private ReactView reactTitleView;
     private boolean isAppeared;
     private BroadcastReceiver jsBundleReloadBroadcastReceiver;
 
@@ -85,6 +85,14 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             initReactNative();
             initTitleViewIfNeeded();
         }
+
+        if (reactRootView != null) {
+            if (visibility == View.VISIBLE) {
+                reactRootView.addOnGlobalLayoutListener();
+            } else {
+                reactRootView.removeOnGlobalLayoutListener();
+            }
+        }
     }
 
     @Override
@@ -94,9 +102,16 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             initReactNative();
             initTitleViewIfNeeded();
         }
+
+        if (reactRootView != null) {
+            if (!hidden) {
+                reactRootView.addOnGlobalLayoutListener();
+            } else {
+                reactRootView.removeOnGlobalLayoutListener();
+            }
+        }
     }
 
-    @Override
     public boolean isOptimizationEnabled() {
         return getGarden().optimizationEnabled;
     }
@@ -185,11 +200,12 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         final ReactView reactView = new ReactView(getContext());
         boolean passThroughTouches = getOptions().getBoolean("passThroughTouches", false);
         reactView.setShouldConsumeTouchEvent(!passThroughTouches);
-        this.reactRootView = reactView;
+        reactRootView = reactView;
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
         containerLayout.addView(reactView, layoutParams);
         String moduleName = getModuleName();
+
         reactView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
 
         jsBundleReloadBroadcastReceiver = new BroadcastReceiver() {
@@ -236,6 +252,13 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                     layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
                 }
                 getAwesomeToolbar().addView(reactTitleView, layoutParams);
+                reactTitleView.setEventListener(new ReactRootView.ReactRootViewEventListener() {
+                    @Override
+                    public void onAttachedToReactInstance(ReactRootView rootView) {
+                        reactTitleView.setEventListener(null);
+                        reactTitleView.removeOnGlobalLayoutListener();
+                    }
+                });
                 reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
             }
         }
