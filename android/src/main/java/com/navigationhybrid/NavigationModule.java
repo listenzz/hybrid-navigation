@@ -146,8 +146,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-                reactBridgeManager.handleNavigation(fragment, action, extras);
+                AwesomeFragment target = findFragmentBySceneId(sceneId);
+                reactBridgeManager.handleNavigation(target, action, extras);
             }
         });
     }

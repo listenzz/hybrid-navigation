@@ -60,25 +60,25 @@
     return nil;
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras {
-    UINavigationController *nav = [self navigationControllerForController:vc];
+- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras {
+    UINavigationController *nav = [self navigationControllerForController:target];
     if (!nav) {
         return;
     }
     
-    HBDViewController *target = nil;
+    HBDViewController *viewController = nil;
     NSString *moduleName = [extras objectForKey:@"moduleName"];
     if (moduleName) {
         NSDictionary *props = [extras objectForKey:@"props"];
         NSDictionary *options = [extras objectForKey:@"options"];
-        target =[[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
+        viewController =[[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
     }
     BOOL animated = [[extras objectForKey:@"animated"] boolValue];
     
     if ([action isEqualToString:@"push"]) {
-        if (target) {
-            target.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
-            [nav pushViewController:target animated:animated];
+        if (viewController) {
+            viewController.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
+            [nav pushViewController:viewController animated:animated];
         }
     } else if ([action isEqualToString:@"pop"]) {
         [nav popViewControllerAnimated:animated];
@@ -101,9 +101,9 @@
     } else if ([action isEqualToString:@"popToRoot"]) {
         [nav popToRootViewControllerAnimated:animated];
     } else if ([action isEqualToString:@"replace"]) {
-        [nav replaceViewController:target animated:YES];
+        [nav replaceViewController:viewController target:target animated:YES];
     } else if ([action isEqualToString:@"replaceToRoot"]) {
-        [nav replaceToRootViewController:target animated:YES];
+        [nav replaceToRootViewController:viewController animated:YES];
     } else if ([action isEqualToString:@"pushLayout"]) {
         NSDictionary *layout = [extras objectForKey:@"layout"];
         UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];

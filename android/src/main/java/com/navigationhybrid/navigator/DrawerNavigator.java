@@ -120,8 +120,8 @@ public class DrawerNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull ReadableMap extras) {
-        DrawerFragment drawerFragment = fragment.getDrawerFragment();
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action,  @NonNull ReadableMap extras) {
+        DrawerFragment drawerFragment = target.getDrawerFragment();
         if (drawerFragment == null) {
             return;
         }

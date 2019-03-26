@@ -44,6 +44,6 @@ public interface Navigator {
     @Nullable
     HybridFragment primaryFragment(@NonNull AwesomeFragment fragment);
 
-    void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras);
+    void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras);
 
 }

@@ -12,6 +12,8 @@
 
 - (void)replaceViewController:(UIViewController *)controller animated:(BOOL)animated;
 
+- (void)replaceViewController:(UIViewController *)controller target:(UIViewController *)target animated:(BOOL)animated;
+
 - (void)replaceToRootViewController:(UIViewController *)controller animated:(BOOL)animated;
 
 @end

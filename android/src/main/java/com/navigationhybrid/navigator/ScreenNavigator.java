@@ -1,12 +1,17 @@
 package com.navigationhybrid.navigator;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigationhybrid.HybridFragment;
+import com.navigationhybrid.ReactAppCompatActivity;
 import com.navigationhybrid.ReactBridgeManager;
 import com.navigationhybrid.ReactNavigationFragment;
 
@@ -18,6 +23,8 @@ import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.FragmentHelper;
 
 public class ScreenNavigator implements Navigator {
+
+    final static String TAG = "ReactNative";
 
     private List<String> supportActions = Arrays.asList("present", "presentLayout", "dismiss", "showModal", "showModalLayout", "hideModal");
 
@@ -90,8 +97,8 @@ public class ScreenNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action,  @NonNull ReadableMap extras) {
-        AwesomeFragment target = null;
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
+        AwesomeFragment fragment = null;
         if (extras.hasKey("moduleName")) {
             String moduleName = extras.getString("moduleName");
             if (moduleName != null) {
@@ -103,61 +110,101 @@ public class ScreenNavigator implements Navigator {
                 if (extras.hasKey("options")) {
                     options = Arguments.toBundle(extras.getMap("options"));
                 }
-                target = getReactBridgeManager().createFragment(moduleName, props, options);
+                fragment = getReactBridgeManager().createFragment(moduleName, props, options);
             }
         }
         switch (action) {
             case "present":
-                if (target != null) {
+                if (fragment != null && canPresentFragment(target)) {
                     int requestCode = extras.getInt("requestCode");
-                    AwesomeFragment presented = fragment.getPresentedFragment();
-                    if (presented != null) {
-                        throw new IllegalStateException("This scene has present another scene already. You should use `Navigator.current()` to do this job.");
-                    }
                     ReactNavigationFragment navFragment = new ReactNavigationFragment();
-                    navFragment.setRootFragment(target);
-                    fragment.presentFragment(navFragment, requestCode);
+                    navFragment.setRootFragment(fragment);
+                    target.presentFragment(navFragment, requestCode);
                 }
                 break;
             case "dismiss":
-                AwesomeFragment presenting = fragment.getPresentingFragment();
+                AwesomeFragment presenting = target.getPresentingFragment();
                 if (presenting != null) {
                     presenting.dismissFragment();
                 } else {
-                    fragment.dismissFragment();
+                    target.dismissFragment();
                 }
                 break;
             case "showModal":
-                if (target != null) {
+                if (fragment != null && canShowModal(target)) {
                     int requestCode = extras.getInt("requestCode");
-                    fragment.showDialog(target, requestCode);
+                    target.showDialog(fragment, requestCode);
                 }
                 break;
             case "hideModal":
-                fragment.dismissDialog();
+                target.dismissDialog();
                 break;
             case "presentLayout":
-                AwesomeFragment presented = fragment.getPresentedFragment();
-                if (presented != null) {
-                    throw new IllegalStateException("This scene has present another scene already. You could use `Navigator.current()` to do this job.");
-                }
-                ReadableMap layout = extras.getMap("layout");
-                target = getReactBridgeManager().createFragment(layout);
-                if (target != null) {
-                    int requestCode = extras.getInt("requestCode");
-                    fragment.presentFragment(target, requestCode);
+                if (canPresentFragment(target)) {
+                    ReadableMap layout = extras.getMap("layout");
+                    fragment = getReactBridgeManager().createFragment(layout);
+                    if (fragment != null) {
+                        int requestCode = extras.getInt("requestCode");
+                        target.presentFragment(fragment, requestCode);
+                    }
                 }
                 break;
             case "showModalLayout":
-                ReadableMap modalLayout = extras.getMap("layout");
-                target = getReactBridgeManager().createFragment(modalLayout);
-                if (target != null) {
-                    int requestCode = extras.getInt("requestCode");
-                    fragment.showDialog(target, requestCode);
+                if (canShowModal(target)) {
+                    ReadableMap modalLayout = extras.getMap("layout");
+                    fragment = getReactBridgeManager().createFragment(modalLayout);
+                    if (fragment != null) {
+                        int requestCode = extras.getInt("requestCode");
+                        target.showDialog(fragment, requestCode);
+                    }
                 }
                 break;
-
         }
+    }
+
+    private boolean canPresentFragment(@NonNull AwesomeFragment fragment) {
+        AwesomeFragment presented = fragment.getPresentedFragment();
+        if (presented != null) {
+            FLog.w(TAG, "can not present since the scene had present another scene already.");
+            return false;
+        }
+
+        ReactContext reactContext = getReactBridgeManager().getReactContext();
+        if (reactContext != null) {
+            Activity activity = reactContext.getCurrentActivity();
+            if (activity instanceof ReactAppCompatActivity) {
+                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                DialogFragment dialog = FragmentHelper.getDialogFragment(reactAppCompatActivity.getSupportFragmentManager());
+                if (dialog != null && dialog != fragment) {
+                    FLog.w(TAG, "can not present a scene over a modal.");
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean canShowModal(@NonNull AwesomeFragment fragment) {
+        AwesomeFragment presented = fragment.getPresentedFragment();
+        if (presented != null) {
+            FLog.w(TAG, "can not show modal since the scene had present another scene already.");
+            return false;
+        }
+
+        ReactContext reactContext = getReactBridgeManager().getReactContext();
+        if (reactContext != null) {
+            Activity activity = reactContext.getCurrentActivity();
+            if (activity instanceof ReactAppCompatActivity) {
+                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                DialogFragment dialog = FragmentHelper.getDialogFragment(reactAppCompatActivity.getSupportFragmentManager());
+                if (dialog != null && dialog != fragment) {
+                    FLog.w(TAG, "can not show modal since the scene had show another modal already.");
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private ReactBridgeManager getReactBridgeManager() {

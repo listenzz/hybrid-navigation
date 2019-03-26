@@ -11,21 +11,30 @@
 @implementation UINavigationController (HBD)
 
 - (void)replaceViewController:(UIViewController *)controller animated:(BOOL)animated {
+    [self replaceViewController:controller target:self.topViewController animated:animated];
+}
+
+- (void)replaceViewController:(UIViewController *)controller target:(UIViewController *)target animated:(BOOL)animated {
     if (animated) {
         CATransition *transition = [CATransition animation];
         transition.duration = 0.25;
         transition.type = kCATransitionFade;
         [self.view.layer addAnimation:transition forKey:kCATransition];
     }
-    if (self.childViewControllers.count > 1) {
-        controller.hidesBottomBarWhenPushed = self.hidesBottomBarWhenPushed;
-        NSMutableArray *children = [self.childViewControllers mutableCopy];
-        [children removeObjectAtIndex:self.childViewControllers.count - 1];
-        [children addObject:controller];
-        [self setViewControllers:children animated:NO];
-    } else {
-        [self setViewControllers:@[ controller ] animated:NO];
+    NSMutableArray *children = [self.childViewControllers mutableCopy];
+    NSInteger count = self.childViewControllers.count;
+    for (NSInteger i = count - 1; i > -1; i--) {
+        UIViewController *child = [children objectAtIndex:i];
+        [children removeObjectAtIndex:i];
+        if (child == target) {
+            break;
+        }
     }
+    [children addObject:controller];
+    if (children.count > 1) {
+        controller.hidesBottomBarWhenPushed = self.hidesBottomBarWhenPushed;
+    }
+    [self setViewControllers:children animated:NO];
 }
 
 - (void)replaceToRootViewController:(UIViewController *)controller animated:(BOOL)animated {

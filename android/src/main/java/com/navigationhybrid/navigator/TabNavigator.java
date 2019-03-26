@@ -128,10 +128,10 @@ public class TabNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
         switch (action) {
             case "switchTab":
-                TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                TabBarFragment tabBarFragment = target.getTabBarFragment();
                 if (tabBarFragment != null) {
                     AwesomeFragment presented = tabBarFragment.getPresentedFragment();
                     if (presented != null) {
@@ -142,7 +142,7 @@ public class TabNavigator implements Navigator {
                     boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
 
                     if (popToRoot && index != tabBarFragment.getSelectedIndex()) {
-                        NavigationFragment nav = fragment.getNavigationFragment();
+                        NavigationFragment nav = target.getNavigationFragment();
                         if (nav != null) {
                             nav.popToRootFragment(false);
                         }

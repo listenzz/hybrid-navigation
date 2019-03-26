@@ -39,7 +39,7 @@ Navigator.setRoot({
 });
 ```
 
-> 注意：stack 中 不可嵌套 stack
+**注意：stack 中 不可嵌套 stack**
 
 如果我们需要像微信那样，底部有几个 tab 可以切换，那么我们需要用到 tabs。
 
@@ -231,6 +231,47 @@ const navigator = Navigator.get(sceneId);
 
 screen 是最基本的页面，它用来表示通过 `ReactRegistry.registerComponent` 注册的组件。它有一些基本的导航能力，所有容器均继承了这些能力。
 
+- showModal
+
+将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件，比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
+
+```javascript
+this.props.navigator.showModal('ReactModal', REQUEST_CODE);
+```
+
+可以通过第三个参数来给 modal 传递属性：
+
+```javascript
+this.props.navigator.showModal('ReactModal', REQUEST_CODE, { x: '123' });
+```
+
+modal 通过 `this.props` 来获取传递过来的属性
+
+modal 在关闭前通过以下方式设置返回值：
+
+```javascript
+this.props.navigator.setResult(resultCode, data);
+this.props.navigator.hideModal();
+```
+
+目标页面（即将 modal 显示出来的页面）通过部署 `onComponentResult` 方法来接收结果：
+
+```javascript
+onComponentResult(requestCode, resultCode, data) {
+  // ...
+}
+```
+
+- hideModal
+
+隐藏作为 Modal 显示的页面，如果 Modal 是一个容器，可以在该容器的任何子页面调用此方法。
+
+**在调用 `this.props.navigator.hideModal` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
+
+- showModalLayout
+
+showModal 的加强版，可以将布局对象作为 Modal 显示，同样使用 hideModal 来关闭
+
 - present
 
 present 是一种模态交互方式，类似于 Android 的 `startActivityForResult`，要求被 present 的页面返回结果给发起 present 的页面。在 iOS 中，present 表现为从底往上弹出界面。
@@ -250,7 +291,7 @@ this.props.navigator.setResult(RESULT_OK, { text: 'greeting' });
 this.props.navigator.dismiss();
 ```
 
-> 注意：仅支持返回可以序列化为 json 的对象，不支持函数
+**注意：仅支持返回可以序列化为 json 的对象，不支持函数**
 
 A 页面通过实现 `onComponentResult` 方法来接收结果
 
@@ -276,7 +317,7 @@ this.props.navigator.present('B', 1, {});
 
 B 页面可以通过 `this.props` 来获取传递的值
 
-> 注意：第三个参数仅支持可以序列化为 json 的对象，不支持函数
+**注意：第三个参数仅支持可以序列化为 json 的对象，不支持函数**
 
 有些时候，比如选择一张照片，我们先要跳到相册列表页面，然后进入某个相册选择相片返回。这也是没有问题的。
 
@@ -304,162 +345,15 @@ this.props.navigator.dismiss();
 
 A 页面通过实现 `onComponentResult` 方法来接收结果（略）。
 
-**如果一个页面已经 present 出一个页面，那么在该页面未关闭之前，它不能再 present 出另一个页面，则将导致崩溃。**
-
-譬如：
-
-```javascript
-// A.js
-this.props.navigator.present('B');
-setTimeout(() => {
-  // 如果 B 还没关闭，那么应用将会崩溃
-  this.props.navigator.present('C');
-}, 3000);
-```
-
-正确的做法如下：
-
-```javascript
-// A.js
-this.props.navigator.present('B');
-setTimeout(async () => {
-  // 取得当前页面的 nvigator，当前页面可能是 A，也可能是 B，这取决于此时 B 有没有被 dismiss 掉
-  const current = await Navigator.current();
-  current.present('C');
-}, 3000);
-```
-
 - dismiss
 
 关闭 `present` 出来的页面，如果该页面是容器，可以在容器的任何子页面调用此方法。
 
-在调用 `this.props.navigator.dismiss` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。
-
-如果想要在 dismiss 后执行导航操作，建议在前一个页面的 `onComponentResult` 中进行操作，也可以使用 `Navigator.current()` 取得当前有效的 navigator 来执行操作。
-
-譬如 A 页面 present 出 B 页面，B 页面 dismiss 后想要 push 出 C 页面
-
-方法一：
-
-```javascript
-// B.js
-this.props.navigator.setResult(100, data);
-this.props.navigator.dismiss();
-```
-
-```javascript
-// A.js
-onComponentResult(requestCode, resultCode, data) {
-  if (resultCode === 100) {
-    // 处理数据，然后决定要 push 到哪个页面
-    this.props.navigator.push('C');
-  }
-}
-```
-
-方法二：
-
-```javascript
-// B.js
-this.props.navigator.dismiss();
-const navigator = await Navigator.current();
-navigator && navigator.push('C');
-```
-
-方法二不能保证 B 页面完全消失后才开始 push C 页面
-
-- showModal
-
-将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件。这也是一种模态交互方式，作用与 present 类似，同样可以通过 `onComponentResult` 来接收结果。不同的是，它比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
-
-```javascript
-this.props.navigator.showModal('ReactModal', REQUEST_CODE);
-```
-
-> 同样可以通过第三个参数来传递数据
-
-**可以在 Modal 之上覆盖另外一个 Modal，但是不能在 Modal 之上执行 present 操作，这会导致应用崩溃。**
-
-譬如：
-
-```javascript
-// A.js
-this.props.navigator.showModal('B');
-```
-
-```javascript
-// B.js
-// 下面这行代码会导致崩溃
-this.props.navigator.present('C');
-```
-
-正确的做法如下：
-
-```javascript
-// B.js
-this.props.navigator.hideModal();
-// 取得当前页面（A）的 navigator
-const current = await Navigator.current();
-current.present('C');
-```
-
-如果你有这么一个需求，在收到服务器推送后，需要 present 出一个页面，可以这么做：
-
-```javascript
-// ... receive pushed message
-let route = await Navigator.currentRoute();
-while (route.mode === 'modal') {
-  const current = Navigator.get(route.sceneId);
-  current.hideModal();
-  route = await Navigator.currentRoute();
-}
-
-const current = Navigator.get(route.sceneId);
-current.present('Foo');
-```
-
-- hideModal
-
-隐藏作为 Modal 显示的页面，如果 Modal 是一个容器，可以在该容器的任何子页面调用此方法。
-
-在调用 `this.props.navigator.hideModal` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。
-
-如果想要在 hideModal 后执行导航操作，建议在前一个页面的 `onComponentResult` 中进行操作，也可以使用 `Navigator.current()` 取得当前有效的 navigator 来执行操作。
-
-譬如 A 页面 showModal 出 B 页面，B 页面 hideModal 后想要 push 出 C 页面
-
-方法一：
-
-```javascript
-// B.js
-this.props.navigator.setResult(100, data);
-this.props.navigator.hideModal();
-```
-
-```javascript
-// A.js
-onComponentResult(requestCode, resultCode, data) {
-  if (resultCode === 100) {
-    // 处理数据，然后决定要 push 到哪个页面
-    this.props.navigator.push('C');
-  }
-}
-```
-
-方法二：
-
-```javascript
-// B.js
-this.props.navigator.hideModal();
-const navigator = await Navigator.current();
-navigator && navigator.push('C');
-```
-
-方法二不能保证 B 页面完全消失后才开始 push C 页面
+**在调用 `this.props.navigator.dismiss` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
 - presentLayout
 
-present 的加强版，通过传递一个布局对象，用来 present UI 层级比较复杂的页面：
+present 的加强版，通过传递一个布局对象，用来 present UI 层级比较复杂的页面，同样使用 dismiss 来关闭。
 
 ```javascript
 // A.js
@@ -481,14 +375,6 @@ this.props.navigator.present('B', 1);
 ```
 
 也就是说，present 出来的组件，默认会嵌套在 stack 里面，因为当使用 present 时，把目标页面嵌套在 stack 里面是比较常见的操作。
-
-> 同样使用 dismiss 来关闭
-
-- showModalLayout
-
-showModal 的加强版，可以将布局对象作为 Modal 显示
-
-> 同样使用 hideModal 来关闭
 
 ## stack
 
@@ -648,3 +534,61 @@ this.props.navigator.openMenu();
 ```javascript
 this.props.navigator.closeMenu();
 ```
+
+## 注意事项
+
+- **永远不可能 pesent 一个页面在 modal 之上**
+
+  譬如 A 是个 modal，那么不可能在它上面执行 `this.props.navigator.present` 操作。
+
+  譬如 A 是个普通页面(非 modal)，它通过 `this.props.navigator.showModal` 显示 B，那么在 B 被关闭前，A 不能通过 `this.props.navigator.present` 显示 C。
+
+- **如果一个页面已经 present 出一个页面，那么在该页面未关闭之前，它不能再 present 出另一个页面。**
+
+  譬如 A 是个普通页面(非 modal)，它通过 `this.props.navigator.present` 显示 B，那么在 B 被关闭前，A 不能通过 `this.props.navigator.present` 显示 C。
+
+- **如果一个页面已经 show 出一个 modal，那么在该 modal 未关闭之前，它不能再 show 出另一个 modal。**
+
+  譬如 A (可以是 modal)，它通过 `this.props.navigator.showModal` 显示 B，那么在 B 被关闭前，A 不能通过 `this.props.navigator.showModal` 显示 C。
+
+- **在调用 `this.props.navigator.dismiss` 或者 `this.props.navigator.hideModal` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
+
+  ```javascript
+  this.props.navigator.hideModal();
+  // 下面这行代码不会生效
+  this.props.navigator.present('XXX', 1);
+  ```
+
+  一个变通的办法是使用 `Navigator.current`
+
+  ```javascript
+  this.props.navigator.hideModal();
+  // 使用 modal 隐藏后出现的页面的 navigator
+  const currrent = await Navigator.currrent();
+  currrent.present('XXX', 1);
+  ```
+
+- 如果由于某些原因，需要**异步地**或者**在页面之外**执行路由操作，那么请合理使用 `Navigator.current`、`Navigator.currentRoute`、`Navigator.routeGraph`、`Navigator.get` 等静态方法。
+
+  假如你有这么一个需求，在收到服务器推送后，需要 present 出一个页面，可以这么做：
+
+  ```javascript
+  // 通过 currentRoute 获取当前的路由信息
+  let route = await Navigator.currentRoute();
+  while (route.mode === 'modal') {
+    // 通过路由信息中的 sceneId 来获取当前页面的 navigator
+    const current = Navigator.get(route.sceneId);
+    // 因为我们不能 present 一个页面在 modal 之上，所以先要隐藏 modal
+    current.hideModal();
+    // 再次获取**当前**的路由信息
+    route = await Navigator.currentRoute();
+  }
+  // 关闭 modal 后，再次获取**当前页面**的 navigator
+  const current = Navigator.get(route.sceneId);
+  // 最后，终于到这一步了
+  current.present('Foo');
+  ```
+
+  如果收到服务器推送后，需要通过特定页面执行路由操作，那么可以通过 `Navigator.routeGraph` 获取整张路由图来解析，获得相应的 navigator 来关闭所有不需要的页面，最后通过特定页面的 navigator 来执行目标动作。
+
+  [DeepLink](./deeplink.md) 也是一种方式，它会自动获取合适的 navigator 来执行操作，必要时关闭一些页面。

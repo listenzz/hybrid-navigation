@@ -279,14 +279,14 @@ public class ReactBridgeManager {
         return hybridFragment;
     }
 
-    public void handleNavigation(@Nullable AwesomeFragment fragment, @NonNull String action, @NonNull ReadableMap extras) {
-        if (fragment == null) {
+    public void handleNavigation(@Nullable AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
+        if (target == null) {
             return;
         }
         for (Navigator navigator : navigators) {
             List<String> supportActions = navigator.supportActions();
             if (supportActions.contains(action)) {
-                navigator.handleNavigation(fragment, action, extras);
+                navigator.handleNavigation(target, action, extras);
                 break;
             }
         }
