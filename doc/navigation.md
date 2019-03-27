@@ -527,6 +527,8 @@ this.props.navigator.toggleMenu();
 this.props.navigator.openMenu();
 ```
 
+<a name="navigation-caveat"></a>
+
 - closeMenu
 
 关闭抽屉
