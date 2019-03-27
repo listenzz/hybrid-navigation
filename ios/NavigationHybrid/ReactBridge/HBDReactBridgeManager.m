@@ -197,7 +197,15 @@ const NSInteger ResultCancel = 0;
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     UIViewController *vc = nil;
     for (UIWindow *window in application.windows) {
+        if ([window isKindOfClass:[HBDModalWindow class]]) {
+            HBDModalViewController *modal = (HBDModalViewController *)window.rootViewController;
+            if (modal.isBeingHidden) {
+                continue;
+            }
+        }
+        
         vc = [self controllerForSceneId:sceneId withController:window.rootViewController];
+        
         if (vc) {
             break;
         }

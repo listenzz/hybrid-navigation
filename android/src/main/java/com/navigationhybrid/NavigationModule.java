@@ -147,7 +147,9 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 AwesomeFragment target = findFragmentBySceneId(sceneId);
-                reactBridgeManager.handleNavigation(target, action, extras);
+                if (target != null) {
+                    reactBridgeManager.handleNavigation(target, action, extras);
+                }
             }
         });
     }
