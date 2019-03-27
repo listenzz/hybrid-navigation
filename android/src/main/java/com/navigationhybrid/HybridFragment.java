@@ -9,6 +9,7 @@ import android.view.View;
 
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.AwesomeToolbar;
+import me.listenzz.navigation.BarStyle;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.Style;
 
@@ -86,6 +87,15 @@ public class HybridFragment extends AwesomeFragment {
     @Override
     protected boolean hidesBottomBarWhenPushed() {
         return garden.hidesBottomBarWhenPushed;
+    }
+
+    @NonNull
+    @Override
+    protected BarStyle preferredStatusBarStyle() {
+        if (garden.statusBarStyle != null) {
+            return garden.statusBarStyle;
+        }
+        return super.preferredStatusBarStyle();
     }
 
     @Override

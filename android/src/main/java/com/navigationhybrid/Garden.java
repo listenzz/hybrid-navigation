@@ -98,6 +98,8 @@ public class Garden {
 
     boolean optimizationEnabled;
 
+    BarStyle statusBarStyle;
+
     Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
@@ -246,8 +248,10 @@ public class Garden {
         if (barStyle != null) {
             if (barStyle.equals("dark-content")) {
                 style.setStatusBarStyle(BarStyle.DarkContent);
+                this.statusBarStyle = BarStyle.DarkContent;
             } else {
                 style.setStatusBarStyle(BarStyle.LightContent);
+                this.statusBarStyle = BarStyle.LightContent;
             }
         }
 

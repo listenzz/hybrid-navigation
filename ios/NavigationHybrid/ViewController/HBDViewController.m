@@ -46,7 +46,8 @@
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-    if (self.hbd_barStyle) {
+    NSString *topBarStyle = self.options[@"topBarStyle"];
+    if (topBarStyle) {
         return self.hbd_barStyle == UIBarStyleBlack ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
     }
     return [UIApplication sharedApplication].statusBarStyle;

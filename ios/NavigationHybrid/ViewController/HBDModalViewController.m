@@ -59,6 +59,10 @@
     NSLog(@"%s", __FUNCTION__);
 }
 
+- (UIViewController *)childViewControllerForStatusBarStyle {
+    return self.contentViewController;
+}
+
 - (UIViewController *)childViewControllerForStatusBarHidden {
     return self.contentViewController;
 }
