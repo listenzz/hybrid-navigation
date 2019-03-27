@@ -21,7 +21,7 @@
   "scripts": {
     "build": "rm -rf ./build && tsc",
     "prestart": "npm run build",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "tsc": "tsc",
     "start": "npm run syncbv && node node_modules/react-native/local-cli/cli.js start",
     "run:ios": "react-native run-ios --project-path ./playground/ios",
