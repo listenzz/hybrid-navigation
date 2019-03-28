@@ -175,7 +175,7 @@ public class ScreenNavigator implements Navigator {
             if (activity instanceof ReactAppCompatActivity) {
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 DialogFragment dialog = FragmentHelper.getDialogFragment(reactAppCompatActivity.getSupportFragmentManager());
-                if (dialog != null && dialog != fragment) {
+                if (dialog != null) {
                     FLog.w(TAG, "can not present a scene over a modal.");
                     return false;
                 }
