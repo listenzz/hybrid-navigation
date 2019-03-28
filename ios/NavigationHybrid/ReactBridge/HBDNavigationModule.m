@@ -65,6 +65,8 @@ RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:
     UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
     if (vc) {
         [[HBDReactBridgeManager sharedInstance] handleNavigationWithViewController:vc action:action extras:extras];
+    } else {
+        RCTLogWarn(@"Can't find target scene for action:%@, maybe the scene is gone. \nextras: %@", action, extras);
     }
 }
 

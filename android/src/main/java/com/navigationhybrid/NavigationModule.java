@@ -148,7 +148,13 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             public void run() {
                 AwesomeFragment target = findFragmentBySceneId(sceneId);
                 if (target != null) {
+                    FragmentHelper.executePendingTransactionsSafe(target.requireFragmentManager());
+                }
+
+                if (target != null && target.isAdded()) {
                     reactBridgeManager.handleNavigation(target, action, extras);
+                } else {
+                    FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
                 }
             }
         });
