@@ -20,6 +20,7 @@ import me.listenzz.navigation.Style;
 import me.listenzz.navigation.TabBar;
 import me.listenzz.navigation.TabBarFragment;
 import me.listenzz.navigation.TabBarItem;
+import me.listenzz.navigation.TabBarProvider;
 
 import static com.navigationhybrid.Constants.ACTION_SET_BADGE_TEXT;
 import static com.navigationhybrid.Constants.ACTION_SET_RED_POINT;
@@ -249,6 +250,11 @@ public class ReactTabBarFragment extends TabBarFragment {
         if (selectedReactFragment == null || !this.intercepted) {
             super.setSelectedIndex(index);
             return;
+        }
+
+        TabBarProvider tabBarProvider = getTabBarProvider();
+        if (tabBarProvider != null) {
+            tabBarProvider.setSelectedIndex(getSelectedIndex());
         }
 
         List<AwesomeFragment> fragments = getChildFragments();
