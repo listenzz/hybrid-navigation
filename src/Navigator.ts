@@ -43,7 +43,9 @@ export type NavigationInterceptor = (
   extras?: Extras
 ) => boolean;
 
-export interface Layout {}
+export interface Layout {
+  [x: string]: {};
+}
 
 export interface Screen extends Layout {
   screen: {

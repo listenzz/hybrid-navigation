@@ -27,16 +27,20 @@ export interface RouteConfig {
 type RouteMode = 'modal' | 'present' | 'push';
 type LayoutMode = 'modal' | 'present' | 'normal';
 
-export type RouteGraph = ScreenGraph | StackGraph | TabsGraph | DrawerGraph;
+export interface RouteGraph {
+  layout: string;
+  sceneId: string;
+  mode: LayoutMode;
+}
 
-export interface StackGraph {
+export interface StackGraph extends RouteGraph {
   layout: 'stack';
   sceneId: string;
   mode: LayoutMode;
   children: ScreenGraph[];
 }
 
-export interface TabsGraph {
+export interface TabsGraph extends RouteGraph {
   layout: 'tabs';
   sceneId: string;
   selectedIndex: number;
@@ -44,14 +48,14 @@ export interface TabsGraph {
   children: RouteGraph[];
 }
 
-export interface DrawerGraph {
+export interface DrawerGraph extends RouteGraph {
   layout: 'drawer';
   sceneId: string;
   mode: LayoutMode;
   children: [RouteGraph, ScreenGraph];
 }
 
-export interface ScreenGraph {
+export interface ScreenGraph extends RouteGraph {
   layout: 'screen';
   sceneId: string;
   mode: LayoutMode;
