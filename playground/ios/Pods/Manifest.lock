@@ -6,9 +6,9 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - HudHybrid (0.38.0):
+  - HudHybrid (0.40.0):
     - React
-  - NavigationHybrid (0.11.16):
+  - NavigationHybrid (0.12.11):
     - React
   - React (0.59.0):
     - React/Core (= 0.59.0)
@@ -65,7 +65,7 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
-  - RNVectorIcons (4.6.0):
+  - RNVectorIcons (6.4.2):
     - React
   - yoga (0.59.0.React)
 
@@ -121,7 +121,7 @@ SPEC CHECKSUMS:
   HudHybrid: f8272285965d770a79cf89c617bd6caf85f4a2a7
   NavigationHybrid: 8ee1e7c0651063c8cc8af32049507946c0180385
   React: 1d605e098d69bdf08960787f3446f0a9dc2e2ccf
-  RNVectorIcons: c0dbfbf6068fefa240c37b0f71bd03b45dddac44
+  RNVectorIcons: 8c52e1e8da1153613fdef44748e865c25556cb9c
   yoga: 128daf064cacaede0c3bb27424b6b4c71052e6cd
 
 PODFILE CHECKSUM: 1fbfb49a0d6cf34a163a9bf1e46645b9b46d2d55
