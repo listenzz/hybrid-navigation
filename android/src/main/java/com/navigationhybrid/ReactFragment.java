@@ -69,7 +69,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             reactRootViewHolder.setVisibilityObserver(this);
         }
 
-        if (!isFragmentHidden() || !isOptimizationEnabled()) {
+        if (!isFragmentHidden() || !isOptimizationEnabled() || getShowsDialog()) {
             if (getAnimation() != PresentAnimation.None) {
                 postponeEnterTransition();
             }
