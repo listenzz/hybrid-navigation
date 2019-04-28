@@ -1,7 +1,7 @@
 {
   "extends": "./tsconfig-strict.json",
   "compilerOptions": {
-    "outDir": "./build",
+    "outDir": "./lib",
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

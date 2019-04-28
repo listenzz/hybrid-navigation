@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
   },
-  "version": "0.12.14",
+  "version": "0.12.15",
   "nativePackage": true,
   "description": "Native navigation library for ReactNative, supporting navigating between native and ReactNative seamlessly.",
   "author": "listen <listenzz@163.com>",
@@ -16,10 +16,10 @@
     "navigation",
     "navigator"
   ],
-  "main": "./build/index.js",
-  "typings": "./build/index.d.ts",
+  "main": "./lib/index.js",
+  "typings": "./lib/index.d.ts",
   "scripts": {
-    "build": "rm -rf ./build && tsc",
+    "build": "rm -rf ./lib && tsc",
     "prestart": "npm run build",
     "prepare": "npm run build",
     "tsc": "tsc",
