@@ -2,6 +2,7 @@ package com.navigationhybrid.playground;
 
 import android.support.multidex.MultiDexApplication;
 
+import com.facebook.drawee.view.DraweeView;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -54,6 +55,12 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     @Override
     public void onCreate() {
         super.onCreate();
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+
         SoLoader.init(this, false);
 
         ReactBridgeManager bridgeManager = ReactBridgeManager.get();
@@ -63,11 +70,6 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
         bridgeManager.registerNativeModule("OneNative", OneNativeFragment.class);
         bridgeManager.registerNativeModule("NativeModal", NativeModalFragment.class);
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return;
-        }
         refWatcher = LeakCanary.install(this);
 
         bridgeManager.setMemoryWatcher(new ReactBridgeManager.MemoryWatcher() {
@@ -76,6 +78,8 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
                 refWatcher.watch(object);
             }
         });
+
+        DraweeView.setGlobalLegacyVisibilityHandlingEnabled(true);
     }
 
     private RefWatcher refWatcher;

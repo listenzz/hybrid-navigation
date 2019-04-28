@@ -189,12 +189,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     private void initReactNative() {
-        if (reactRootView != null || getContext() == null) {
+        if (reactRootView != null || getContext() == null || !getReactBridgeManager().isReactModuleRegisterCompleted()) {
             return;
-        }
-
-        if (!getReactBridgeManager().isReactModuleRegisterCompleted()) {
-            throw new IllegalStateException("must wait for react module register completed before create view.");
         }
 
         final ReactView reactView = new ReactView(getContext());
@@ -230,12 +226,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     private void initTitleViewIfNeeded() {
-        if (reactTitleView != null || getContext() == null) {
+        if (reactTitleView != null || getContext() == null || !getReactBridgeManager().isReactModuleRegisterCompleted()) {
             return;
-        }
-
-        if (!getReactBridgeManager().isReactModuleRegisterCompleted()) {
-            throw new IllegalStateException("must wait for react module register completed before create view.");
         }
 
         Bundle titleItem = getOptions().getBundle("titleItem");
