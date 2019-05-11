@@ -1,15 +1,18 @@
 package com.navigationhybrid;
 
 import android.content.Context;
-import android.os.Build;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import javax.annotation.Nullable;
 
 public class ReactView extends ReactRootView {
 
@@ -41,8 +44,8 @@ public class ReactView extends ReactRootView {
 
     @Override
     protected void onAttachedToWindow() {
-        removeOnGlobalLayoutListener();
         super.onAttachedToWindow();
+        removeOnGlobalLayoutListener();
     }
 
     @Override
@@ -52,46 +55,42 @@ public class ReactView extends ReactRootView {
     }
 
     @Override
-    public void unmountReactApplication() {
+    public void startReactApplication(ReactInstanceManager reactInstanceManager, String moduleName, @Nullable Bundle initialProperties, @Nullable String initialUITemplate) {
+        super.startReactApplication(reactInstanceManager, moduleName, initialProperties, initialUITemplate);
         removeOnGlobalLayoutListener();
+    }
+
+    @Override
+    public void unmountReactApplication() {
         super.unmountReactApplication();
+        removeOnGlobalLayoutListener();
+    }
+
+
+    private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
+    private ViewTreeObserver.OnGlobalLayoutListener getGlobalLayoutListener() {
+        if (mGlobalLayoutListener == null) {
+            try {
+                Method method = ReactRootView.class.getDeclaredMethod("getCustomGlobalLayoutListener");
+                method.setAccessible(true);
+                mGlobalLayoutListener = (ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+        return mGlobalLayoutListener;
     }
 
     void addOnGlobalLayoutListener() {
-        try {
-            Method method = ReactRootView.class.getDeclaredMethod("getCustomGlobalLayoutListener");
-            method.setAccessible(true);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                getViewTreeObserver().removeOnGlobalLayoutListener((ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this));
-            } else {
-                getViewTreeObserver().removeGlobalOnLayoutListener((ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this));
-            }
-            getViewTreeObserver().addOnGlobalLayoutListener((ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this));
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        getViewTreeObserver().addOnGlobalLayoutListener(getGlobalLayoutListener());
     }
 
     void removeOnGlobalLayoutListener() {
-        try {
-            Method method = ReactRootView.class.getDeclaredMethod("getCustomGlobalLayoutListener");
-            method.setAccessible(true);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                getViewTreeObserver().removeOnGlobalLayoutListener((ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this));
-            } else {
-                getViewTreeObserver().removeGlobalOnLayoutListener((ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this));
-            }
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        getViewTreeObserver().removeOnGlobalLayoutListener(getGlobalLayoutListener());
     }
 
 }

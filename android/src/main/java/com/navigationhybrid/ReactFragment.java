@@ -3,7 +3,6 @@ package com.navigationhybrid;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -19,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 
@@ -85,14 +83,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             initReactNative();
             initTitleViewIfNeeded();
         }
-
-        if (reactRootView != null) {
-            if (visibility == View.VISIBLE) {
-                reactRootView.addOnGlobalLayoutListener();
-            } else {
-                reactRootView.removeOnGlobalLayoutListener();
-            }
-        }
     }
 
     @Override
@@ -101,14 +91,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         if (!hidden && isResumed() && reactRootView == null) {
             initReactNative();
             initTitleViewIfNeeded();
-        }
-
-        if (reactRootView != null) {
-            if (!hidden) {
-                reactRootView.addOnGlobalLayoutListener();
-            } else {
-                reactRootView.removeOnGlobalLayoutListener();
-            }
         }
     }
 
@@ -149,12 +131,19 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     protected void onViewAppear() {
         super.onViewAppear();
         sendViewAppearEvent(true);
+        if (reactRootView != null) {
+            Log.i(TAG, "onViewAppear");
+            reactRootView.addOnGlobalLayoutListener();
+        }
     }
 
     @Override
     protected void onViewDisappear() {
         super.onViewDisappear();
         sendViewAppearEvent(false);
+        if (reactRootView != null) {
+            reactRootView.removeOnGlobalLayoutListener();
+        }
     }
 
     private void sendViewAppearEvent(boolean appear) {
@@ -245,10 +234,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                     layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
                 }
                 getAwesomeToolbar().addView(reactTitleView, layoutParams);
-                reactTitleView.setEventListener(rootView -> {
-                    reactTitleView.setEventListener(null);
-                    reactTitleView.removeOnGlobalLayoutListener();
-                });
                 reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
             }
         }
@@ -257,6 +242,10 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     public void signalFirstRenderComplete() {
         Log.i(TAG, getModuleName() + " signalFirstRenderComplete");
         startPostponedEnterTransition();
+        if (reactRootView != null && isAppeared) {
+            reactRootView.removeOnGlobalLayoutListener();
+            reactRootView.addOnGlobalLayoutListener();
+        }
     }
 
     @Override
