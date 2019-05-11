@@ -198,7 +198,10 @@ public class ReactTabBarFragment extends TabBarFragment {
         if (icon != null) {
             String uri = icon.getString("uri");
             if (uri != null) {
-                return DrawableCompat.wrap(DrawableUtils.fromUri(context, uri));
+                Drawable drawable = DrawableUtils.fromUri(context, uri);
+                if (drawable != null) {
+                    return DrawableCompat.wrap(drawable);
+                }
             }
         }
         return null;
