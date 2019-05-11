@@ -21,6 +21,12 @@ buildscript {
 apply plugin: 'com.android.library'
 
 android {
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
@@ -43,7 +49,7 @@ dependencies {
     implementation 'com.facebook.react:react-native:+'
 
     // api project(':navigation')
-    api 'me.listenzz:navigation:2.4.4'
+    api 'me.listenzz:navigation:2.5.0'
     api 'com.ashokvarma.android:bottom-navigation-bar:2.1.0'
 
 }

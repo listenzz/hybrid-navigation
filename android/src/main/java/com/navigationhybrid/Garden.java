@@ -224,15 +224,12 @@ public class Garden {
             tintColor = Color.parseColor(color);
         }
         boolean renderOriginal = item.getBoolean("renderOriginal", false);
-        return new ToolbarButtonItem(uri, 0, renderOriginal, title, tintColor, enabled, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString(KEY_ACTION, action);
-                bundle.putString(KEY_SCENE_ID, fragment.getSceneId());
-                bundle.putString(KEY_ON, ON_BAR_BUTTON_ITEM_CLICK);
-                HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
-            }
+        return new ToolbarButtonItem(uri, 0, renderOriginal, title, tintColor, enabled, view -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_ACTION, action);
+            bundle.putString(KEY_SCENE_ID, fragment.getSceneId());
+            bundle.putString(KEY_ON, ON_BAR_BUTTON_ITEM_CLICK);
+            HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
         });
     }
 

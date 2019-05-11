@@ -22,6 +22,12 @@ project.ext.vectoricons = [
 apply from: "../../../node_modules/react-native-vector-icons/fonts.gradle"
 
 android {
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     signingConfigs {
         config {
             keyAlias 'navigation'

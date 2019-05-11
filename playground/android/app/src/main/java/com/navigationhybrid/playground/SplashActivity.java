@@ -18,12 +18,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if (ReactBridgeManager.get().isReactModuleRegisterCompleted()) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    startMainActivity();
-                }
-            }, 1500);
+            new Handler().postDelayed(() -> startMainActivity(), 1500);
         } else {
             ReactBridgeManager.get().addReactModuleRegisterListener(new ReactBridgeManager.ReactModuleRegisterListener() {
                 @Override

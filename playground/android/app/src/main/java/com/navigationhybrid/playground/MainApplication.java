@@ -72,12 +72,7 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
 
         refWatcher = LeakCanary.install(this);
 
-        bridgeManager.setMemoryWatcher(new ReactBridgeManager.MemoryWatcher() {
-            @Override
-            public void watch(Object object) {
-                refWatcher.watch(object);
-            }
-        });
+        bridgeManager.setMemoryWatcher(object -> refWatcher.watch(object));
 
         DraweeView.setGlobalLegacyVisibilityHandlingEnabled(true);
     }

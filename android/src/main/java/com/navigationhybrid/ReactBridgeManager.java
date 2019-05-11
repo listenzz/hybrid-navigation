@@ -69,14 +69,11 @@ public class ReactBridgeManager {
 
     private void setup() {
         final ReactInstanceManager reactInstanceManager = getReactInstanceManager();
-        reactInstanceManager.addReactInstanceEventListener(new ReactInstanceManager.ReactInstanceEventListener() {
-            @Override
-            public void onReactContextInitialized(ReactContext context) {
-                Log.i(TAG, "react instance context initialized.");
-                rootLayout = null;
-                stickyLayout = null;
-                pendingLayout = null;
-            }
+        reactInstanceManager.addReactInstanceEventListener(context -> {
+            Log.i(TAG, "react instance context initialized.");
+            rootLayout = null;
+            stickyLayout = null;
+            pendingLayout = null;
         });
 
         if (!reactInstanceManager.hasStartedCreatingInitialContext()) {

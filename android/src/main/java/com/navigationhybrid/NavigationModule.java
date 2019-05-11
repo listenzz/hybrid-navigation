@@ -53,15 +53,12 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
         Log.i(TAG, "NavigationModule#onCatalystInstanceDestroy");
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                reactBridgeManager.setReactModuleRegisterCompleted(false);
-                Activity activity = getCurrentActivity();
-                if (activity instanceof AwesomeActivity) {
-                    LocalBroadcastManager.getInstance(activity).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
-                    ((AwesomeActivity) activity).clearFragments();
-                }
+        UiThreadUtil.runOnUiThread(() -> {
+            reactBridgeManager.setReactModuleRegisterCompleted(false);
+            Activity activity = getCurrentActivity();
+            if (activity instanceof AwesomeActivity) {
+                LocalBroadcastManager.getInstance(activity).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
+                ((AwesomeActivity) activity).clearFragments();
             }
         });
     }
@@ -77,141 +74,108 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startRegisterReactComponent() {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                reactBridgeManager.startRegisterReactModule();
-            }
-        });
+        UiThreadUtil.runOnUiThread(reactBridgeManager::startRegisterReactModule);
     }
 
     @ReactMethod
     public void endRegisterReactComponent() {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                reactBridgeManager.endRegisterReactModule();
-            }
-        });
+        UiThreadUtil.runOnUiThread(reactBridgeManager::endRegisterReactModule);
     }
 
     @ReactMethod
     public void registerReactComponent(final String appKey, final ReadableMap options) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                reactBridgeManager.registerReactModule(appKey, options);
-            }
-        });
+        UiThreadUtil.runOnUiThread(() -> reactBridgeManager.registerReactModule(appKey, options));
     }
 
     @ReactMethod
     public void signalFirstRenderComplete(final String sceneId) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
-                if (awesomeFragment instanceof ReactFragment) {
-                    ReactFragment fragment = (ReactFragment) awesomeFragment;
-                    fragment.signalFirstRenderComplete();
-                }
+        UiThreadUtil.runOnUiThread(() -> {
+            AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
+            if (awesomeFragment instanceof ReactFragment) {
+                ReactFragment fragment = (ReactFragment) awesomeFragment;
+                fragment.signalFirstRenderComplete();
             }
         });
     }
 
     @ReactMethod
     public void setRoot(final ReadableMap layout, final boolean sticky) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                reactBridgeManager.setRootLayout(layout, sticky);
-                Activity activity = getCurrentActivity();
-                if (activity instanceof ReactAppCompatActivity) {
-                    ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                    AwesomeFragment fragment = reactBridgeManager.createFragment(layout);
-                    if (fragment != null) {
-                        Log.i(TAG, "has active activity, set root directly");
-                        reactAppCompatActivity.setActivityRootFragment(fragment);
-                    }
-                } else {
-                    Log.w(TAG, "no active activity, schedule pending root");
-                    reactBridgeManager.setPendingLayout(layout);
+        UiThreadUtil.runOnUiThread(() -> {
+            reactBridgeManager.setRootLayout(layout, sticky);
+            Activity activity = getCurrentActivity();
+            if (activity instanceof ReactAppCompatActivity) {
+                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                AwesomeFragment fragment = reactBridgeManager.createFragment(layout);
+                if (fragment != null) {
+                    Log.i(TAG, "has active activity, set root directly");
+                    reactAppCompatActivity.setActivityRootFragment(fragment);
                 }
+            } else {
+                Log.w(TAG, "no active activity, schedule pending root");
+                reactBridgeManager.setPendingLayout(layout);
             }
         });
     }
 
     @ReactMethod
     public void dispatch(final String sceneId, final String action, final ReadableMap extras) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AwesomeFragment target = findFragmentBySceneId(sceneId);
-                if (target != null) {
-                    FragmentHelper.executePendingTransactionsSafe(target.requireFragmentManager());
-                }
+        UiThreadUtil.runOnUiThread(() -> {
+            AwesomeFragment target = findFragmentBySceneId(sceneId);
+            if (target != null) {
+                FragmentHelper.executePendingTransactionsSafe(target.requireFragmentManager());
+            }
 
-                if (target != null && target.isAdded()) {
-                    reactBridgeManager.handleNavigation(target, action, extras);
-                } else {
-                    FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
-                }
+            if (target != null && target.isAdded()) {
+                reactBridgeManager.handleNavigation(target, action, extras);
+            } else {
+                FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
             }
         });
     }
 
     @ReactMethod
     public void isNavigationRoot(final String sceneId, final Promise promise) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-                if (fragment != null) {
-                    promise.resolve(fragment.isNavigationRoot());
-                }
+        UiThreadUtil.runOnUiThread(() -> {
+            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+            if (fragment != null) {
+                promise.resolve(fragment.isNavigationRoot());
             }
         });
     }
 
     @ReactMethod
     public void setResult(final String sceneId, final int resultCode, final ReadableMap result) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-                if (fragment != null) {
-                    fragment.setResult(resultCode, Arguments.toBundle(result));
-                }
+        UiThreadUtil.runOnUiThread(() -> {
+            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+            if (fragment != null) {
+                fragment.setResult(resultCode, Arguments.toBundle(result));
             }
         });
     }
 
     @ReactMethod
     public void currentRoute(final Promise promise) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Activity activity = getCurrentActivity();
-                if (!(activity instanceof ReactAppCompatActivity)) {
-                    FLog.w(TAG, "View Hierarchy is not ready when you call currentRoute");
-                    promise.resolve(null);
-                    return;
-                }
-                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-                Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
-                HybridFragment current = getPrimaryFragment(fragment);
+        UiThreadUtil.runOnUiThread(() -> {
+            Activity activity = getCurrentActivity();
+            if (!(activity instanceof ReactAppCompatActivity)) {
+                FLog.w(TAG, "View Hierarchy is not ready when you call currentRoute");
+                promise.resolve(null);
+                return;
+            }
+            ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+            FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+            Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
+            HybridFragment current = getPrimaryFragment(fragment);
 
-                if (current != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("moduleName", current.getModuleName());
-                    bundle.putString("sceneId", current.getSceneId());
-                    bundle.putString("mode", Navigator.Util.getMode(current));
-                    promise.resolve(Arguments.fromBundle(bundle));
-                } else {
-                    FLog.w(TAG, "View Hierarchy is not ready when you call currentRoute");
-                    promise.resolve(null);
-                }
+            if (current != null) {
+                Bundle bundle = new Bundle();
+                bundle.putString("moduleName", current.getModuleName());
+                bundle.putString("sceneId", current.getSceneId());
+                bundle.putString("mode", Navigator.Util.getMode(current));
+                promise.resolve(Arguments.fromBundle(bundle));
+            } else {
+                FLog.w(TAG, "View Hierarchy is not ready when you call currentRoute");
+                promise.resolve(null);
             }
         });
     }
@@ -226,33 +190,31 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void routeGraph(final Promise promise) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Activity activity = getCurrentActivity();
-                if (!(activity instanceof ReactAppCompatActivity)) {
-                    FLog.w(TAG, "View Hierarchy is not ready when you call Navigator#routeGraph. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
-                    promise.resolve(null);
-                    return;
-                }
+        UiThreadUtil.runOnUiThread(() -> {
+            Activity activity = getCurrentActivity();
+            if (!(activity instanceof ReactAppCompatActivity)) {
+                FLog.w(TAG, "View Hierarchy is not ready when you call Navigator#routeGraph. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
+                promise.resolve(null);
+                return;
+            }
 
-                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                FragmentHelper.executePendingTransactionsSafe(reactAppCompatActivity.getSupportFragmentManager());
+            ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+            FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+            FragmentHelper.executePendingTransactionsSafe(fragmentManager);
 
-                ArrayList<Bundle> root = new ArrayList<>();
-                ArrayList<Bundle> modal = new ArrayList<>();
-                List<AwesomeFragment> fragments = reactAppCompatActivity.getFragmentsAtAddedList();
-                for (int i = 0; i < fragments.size(); i++) {
-                    AwesomeFragment fragment = fragments.get(i);
-                    buildRouteGraph(fragment, root, modal);
-                }
-                root.addAll(modal);
-                if (root.size() > 0) {
-                    promise.resolve(Arguments.fromList(root));
-                } else {
-                    FLog.w(TAG, "View Hierarchy is not ready when you call Navigator#routeGraph. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
-                    promise.resolve(null);
-                }
+            ArrayList<Bundle> root = new ArrayList<>();
+            ArrayList<Bundle> modal = new ArrayList<>();
+            List<AwesomeFragment> fragments = FragmentHelper.getFragmentsAtAddedList(fragmentManager);
+            for (int i = 0; i < fragments.size(); i++) {
+                AwesomeFragment fragment = fragments.get(i);
+                buildRouteGraph(fragment, root, modal);
+            }
+            root.addAll(modal);
+            if (root.size() > 0) {
+                promise.resolve(Arguments.fromList(root));
+            } else {
+                FLog.w(TAG, "View Hierarchy is not ready when you call Navigator#routeGraph. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
+                promise.resolve(null);
             }
         });
     }

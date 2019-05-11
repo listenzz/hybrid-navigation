@@ -87,16 +87,13 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setStyle(final ReadableMap style) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Context context = getReactApplicationContext();
-                if (context != null) {
-                    Garden.createGlobalStyle(Arguments.toBundle(style));
-                    ReactAppCompatActivity activity = (ReactAppCompatActivity) getCurrentActivity();
-                    if (activity != null && !activity.isFinishing() && ReactBridgeManager.get().isReactModuleRegisterCompleted()) {
-                        activity.inflateStyle();
-                    }
+        UiThreadUtil.runOnUiThread(() -> {
+            Context context = getReactApplicationContext();
+            if (context != null) {
+                Garden.createGlobalStyle(Arguments.toBundle(style));
+                ReactAppCompatActivity activity = (ReactAppCompatActivity) getCurrentActivity();
+                if (activity != null && !activity.isFinishing() && ReactBridgeManager.get().isReactModuleRegisterCompleted()) {
+                    activity.inflateStyle();
                 }
             }
         });
@@ -105,17 +102,14 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setPassThroughTouches(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "setPassThroughTouches:" + readableMap);
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-                if (fragment != null && fragment.getView() != null) {
-                    Bundle options = fragment.getOptions();
-                    if (readableMap.hasKey("passThroughTouches")) {
-                        boolean passThroughTouches = readableMap.getBoolean("passThroughTouches");
-                        options.putBoolean("passThroughTouches", passThroughTouches);
-                        fragment.getGarden().setPassThroughTouches(passThroughTouches);
-                    }
+        UiThreadUtil.runOnUiThread(() -> {
+            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                Bundle options = fragment.getOptions();
+                if (readableMap.hasKey("passThroughTouches")) {
+                    boolean passThroughTouches = readableMap.getBoolean("passThroughTouches");
+                    options.putBoolean("passThroughTouches", passThroughTouches);
+                    fragment.getGarden().setPassThroughTouches(passThroughTouches);
                 }
             }
         });
@@ -123,51 +117,42 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setLeftBarButtonItem(final String sceneId, final ReadableMap readableMap) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-                if (fragment != null && fragment.getView() != null) {
-                    Bundle options = fragment.getOptions();
-                    Bundle buttonItem = mergeOptions(options, "leftBarButtonItem", readableMap);
-                    options.putBundle("leftBarButtonItem", buttonItem);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setLeftBarButtonItem(buttonItem);
-                }
+        UiThreadUtil.runOnUiThread(() -> {
+            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                Bundle options = fragment.getOptions();
+                Bundle buttonItem = mergeOptions(options, "leftBarButtonItem", readableMap);
+                options.putBundle("leftBarButtonItem", buttonItem);
+                fragment.setOptions(options);
+                fragment.getGarden().setLeftBarButtonItem(buttonItem);
             }
         });
     }
 
     @ReactMethod
     public void setRightBarButtonItem(final String sceneId, final ReadableMap readableMap) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-                if (fragment != null && fragment.getView() != null) {
-                    Bundle options = fragment.getOptions();
-                    Bundle buttonItem = mergeOptions(options, "rightBarButtonItem", readableMap);
-                    options.putBundle("rightBarButtonItem", buttonItem);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setRightBarButtonItem(buttonItem);
-                }
+        UiThreadUtil.runOnUiThread(() -> {
+            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                Bundle options = fragment.getOptions();
+                Bundle buttonItem = mergeOptions(options, "rightBarButtonItem", readableMap);
+                options.putBundle("rightBarButtonItem", buttonItem);
+                fragment.setOptions(options);
+                fragment.getGarden().setRightBarButtonItem(buttonItem);
             }
         });
     }
 
     @ReactMethod
     public void setTitleItem(final String sceneId, final ReadableMap readableMap) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-                if (fragment != null && fragment.getView() != null) {
-                    Bundle options = fragment.getOptions();
-                    Bundle titleItem = mergeOptions(options, "titleItem", readableMap);
-                    options.putBundle("titleItem", titleItem);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setTitleItem(titleItem);
-                }
+        UiThreadUtil.runOnUiThread(() -> {
+            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                Bundle options = fragment.getOptions();
+                Bundle titleItem = mergeOptions(options, "titleItem", readableMap);
+                options.putBundle("titleItem", titleItem);
+                fragment.setOptions(options);
+                fragment.getGarden().setTitleItem(titleItem);
             }
         });
     }
@@ -175,22 +160,19 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setStatusBarColor(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "setStatusBarColor:" + readableMap);
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-                if (fragment != null && fragment.getView() != null) {
-                    Bundle options = fragment.getOptions();
-                    String statusBarColor = null;
-                    if (readableMap.hasKey("statusBarColorAndroid")) {
-                        statusBarColor = readableMap.getString("statusBarColorAndroid");
-                    } else if (readableMap.hasKey("statusBarColor")) {
-                        statusBarColor = readableMap.getString("statusBarColor");
-                    }
-                    if (statusBarColor != null) {
-                        options.putString("statusBarColor", statusBarColor);
-                        fragment.getGarden().setStatusBarColor(Color.parseColor(statusBarColor));
-                    }
+        UiThreadUtil.runOnUiThread(() -> {
+            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                Bundle options = fragment.getOptions();
+                String statusBarColor = null;
+                if (readableMap.hasKey("statusBarColorAndroid")) {
+                    statusBarColor = readableMap.getString("statusBarColorAndroid");
+                } else if (readableMap.hasKey("statusBarColor")) {
+                    statusBarColor = readableMap.getString("statusBarColor");
+                }
+                if (statusBarColor != null) {
+                    options.putString("statusBarColor", statusBarColor);
+                    fragment.getGarden().setStatusBarColor(Color.parseColor(statusBarColor));
                 }
             }
         });
@@ -199,17 +181,14 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setStatusBarHidden(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "setStatusBarHidden:" + readableMap);
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-                if (fragment != null && fragment.getView() != null) {
-                    Bundle options = fragment.getOptions();
-                    if (readableMap.hasKey("statusBarHidden")) {
-                        boolean hidden = readableMap.getBoolean("statusBarHidden");
-                        options.putBoolean("statusBarHidden", hidden);
-                        fragment.getGarden().setStatusBarHidden(hidden);
-                    }
+        UiThreadUtil.runOnUiThread(() -> {
+            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                Bundle options = fragment.getOptions();
+                if (readableMap.hasKey("statusBarHidden")) {
+                    boolean hidden = readableMap.getBoolean("statusBarHidden");
+                    options.putBoolean("statusBarHidden", hidden);
+                    fragment.getGarden().setStatusBarHidden(hidden);
                 }
             }
         });
@@ -218,13 +197,10 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateTopBar(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "updateTopBar:" + readableMap);
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-                if (fragment != null && fragment.getView() != null) {
-                    fragment.getGarden().updateToolbar(readableMap);
-                }
+        UiThreadUtil.runOnUiThread(() -> {
+            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                fragment.getGarden().updateToolbar(readableMap);
             }
         });
     }
@@ -232,18 +208,15 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateTabBar(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "updateTabBar:" + readableMap);
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-                if (fragment != null && fragment.getView() != null) {
-                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                    if (tabBarFragment != null) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(ARG_ACTION, ACTION_UPDATE_TAB_BAR);
-                        bundle.putBundle(ARG_OPTIONS, Arguments.toBundle(readableMap));
-                        tabBarFragment.updateTabBar(bundle);
-                    }
+        UiThreadUtil.runOnUiThread(() -> {
+            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                if (tabBarFragment != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ARG_ACTION, ACTION_UPDATE_TAB_BAR);
+                    bundle.putBundle(ARG_OPTIONS, Arguments.toBundle(readableMap));
+                    tabBarFragment.updateTabBar(bundle);
                 }
             }
         });
@@ -251,20 +224,17 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void replaceTabIcon(final String sceneId, final int index, final ReadableMap icon, final ReadableMap selectedIcon) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-                if (fragment != null && fragment.getView() != null) {
-                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                    if (tabBarFragment != null) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(ARG_ACTION, ACTION_SET_TAB_ICON);
-                        bundle.putInt(ARG_INDEX, index);
-                        bundle.putBundle(ARG_ICON, Arguments.toBundle(icon));
-                        bundle.putBundle(ARG_ICON_SELECTED, Arguments.toBundle(selectedIcon));
-                        tabBarFragment.updateTabBar(bundle);
-                    }
+        UiThreadUtil.runOnUiThread(() -> {
+            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                if (tabBarFragment != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ARG_ACTION, ACTION_SET_TAB_ICON);
+                    bundle.putInt(ARG_INDEX, index);
+                    bundle.putBundle(ARG_ICON, Arguments.toBundle(icon));
+                    bundle.putBundle(ARG_ICON_SELECTED, Arguments.toBundle(selectedIcon));
+                    tabBarFragment.updateTabBar(bundle);
                 }
             }
         });
@@ -272,19 +242,16 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setTabBadgeText(final String sceneId, final int index, final String text) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-                if (fragment != null) {
-                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                    if (tabBarFragment != null) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(ARG_ACTION, ACTION_SET_BADGE_TEXT);
-                        bundle.putInt(ARG_INDEX, index);
-                        bundle.putString(ARG_BADGE_TEXT, text);
-                        tabBarFragment.updateTabBar(bundle);
-                    }
+        UiThreadUtil.runOnUiThread(() -> {
+            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+            if (fragment != null) {
+                TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                if (tabBarFragment != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ARG_ACTION, ACTION_SET_BADGE_TEXT);
+                    bundle.putInt(ARG_INDEX, index);
+                    bundle.putString(ARG_BADGE_TEXT, text);
+                    tabBarFragment.updateTabBar(bundle);
                 }
             }
         });
@@ -292,19 +259,16 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void showRedPointAtIndex(final int index, final String sceneId) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-                if (fragment != null) {
-                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                    if (tabBarFragment != null) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(ARG_ACTION, ACTION_SET_RED_POINT);
-                        bundle.putInt(ARG_INDEX, index);
-                        bundle.putBoolean(ARG_VISIBLE, true);
-                        tabBarFragment.updateTabBar(bundle);
-                    }
+        UiThreadUtil.runOnUiThread(() -> {
+            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+            if (fragment != null) {
+                TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                if (tabBarFragment != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ARG_ACTION, ACTION_SET_RED_POINT);
+                    bundle.putInt(ARG_INDEX, index);
+                    bundle.putBoolean(ARG_VISIBLE, true);
+                    tabBarFragment.updateTabBar(bundle);
                 }
             }
         });
@@ -312,19 +276,16 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void hideRedPointAtIndex(final int index, final String sceneId) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-                if (fragment != null) {
-                    TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                    if (tabBarFragment != null) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(ARG_ACTION, ACTION_SET_RED_POINT);
-                        bundle.putInt(ARG_INDEX, index);
-                        bundle.putBoolean(ARG_VISIBLE, false);
-                        tabBarFragment.updateTabBar(bundle);
-                    }
+        UiThreadUtil.runOnUiThread(() -> {
+            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+            if (fragment != null) {
+                TabBarFragment tabBarFragment = fragment.getTabBarFragment();
+                if (tabBarFragment != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ARG_ACTION, ACTION_SET_RED_POINT);
+                    bundle.putInt(ARG_INDEX, index);
+                    bundle.putBoolean(ARG_VISIBLE, false);
+                    tabBarFragment.updateTabBar(bundle);
                 }
             }
         });
@@ -332,15 +293,12 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setMenuInteractive(final String sceneId, final boolean enabled) {
-        UiThreadUtil.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
-                if (awesomeFragment != null) {
-                    DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
-                    if (drawerFragment != null) {
-                        drawerFragment.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                    }
+        UiThreadUtil.runOnUiThread(() -> {
+            AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
+            if (awesomeFragment != null) {
+                DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
+                if (drawerFragment != null) {
+                    drawerFragment.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 }
             }
         });

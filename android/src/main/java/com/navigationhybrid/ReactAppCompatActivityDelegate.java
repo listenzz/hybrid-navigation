@@ -90,12 +90,7 @@ public class ReactAppCompatActivityDelegate {
         }
     }
 
-    ReactBridgeManager.ReactModuleRegisterListener mReactModuleRegisterListener = new ReactBridgeManager.ReactModuleRegisterListener() {
-        @Override
-        public void onReactModuleRegisterCompleted() {
-            askPermission();
-        }
-    };
+    ReactBridgeManager.ReactModuleRegisterListener mReactModuleRegisterListener = this::askPermission;
 
 
     protected void onPause() {
@@ -197,12 +192,9 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public void onRequestPermissionsResult(final int requestCode, final String[] permissions, final int[] grantResults) {
-        mPermissionsCallback = new Callback() {
-            @Override
-            public void invoke(Object... args) {
-                if (mPermissionListener != null && mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-                    mPermissionListener = null;
-                }
+        mPermissionsCallback = args -> {
+            if (mPermissionListener != null && mPermissionListener.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+                mPermissionListener = null;
             }
         };
     }

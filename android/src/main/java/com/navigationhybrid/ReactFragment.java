@@ -222,7 +222,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             }
         };
 
-        LocalBroadcastManager.getInstance(requireActivity()).registerReceiver(jsBundleReloadBroadcastReceiver, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
+        LocalBroadcastManager.getInstance(requireActivity())
+                .registerReceiver(jsBundleReloadBroadcastReceiver, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
     }
 
     private void initTitleViewIfNeeded() {
@@ -244,12 +245,9 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                     layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
                 }
                 getAwesomeToolbar().addView(reactTitleView, layoutParams);
-                reactTitleView.setEventListener(new ReactRootView.ReactRootViewEventListener() {
-                    @Override
-                    public void onAttachedToReactInstance(ReactRootView rootView) {
-                        reactTitleView.setEventListener(null);
-                        reactTitleView.removeOnGlobalLayoutListener();
-                    }
+                reactTitleView.setEventListener(rootView -> {
+                    reactTitleView.setEventListener(null);
+                    reactTitleView.removeOnGlobalLayoutListener();
                 });
                 reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
             }
@@ -283,30 +281,27 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     protected void setupDialog() {
         super.setupDialog();
         getDialog().setOnKeyListener(
-                new DialogInterface.OnKeyListener() {
-                    @Override
-                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                        if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                            Bundle bundle = new Bundle();
-                            bundle.putString(KEY_SCENE_ID, getSceneId());
-                            bundle.putString(KEY_ON, ON_DIALOG_BACK_PRESSED);
-                            HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
-                            return true;
-                        }
+                (dialog, keyCode, event) -> {
+                    if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(KEY_SCENE_ID, getSceneId());
+                        bundle.putString(KEY_ON, ON_DIALOG_BACK_PRESSED);
+                        HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
+                        return true;
+                    }
 
-                        ReactContext reactContext = getReactBridgeManager().getReactInstanceManager().getCurrentReactContext();
-                        if (reactContext != null && getReactBridgeManager().isReactModuleRegisterCompleted()) {
-                            Activity activity = reactContext.getCurrentActivity();
-                            if (activity != null) {
-                                if (KeyEvent.ACTION_UP == event.getAction()) {
-                                    activity.onKeyUp(keyCode, event);
-                                } else if (KeyEvent.ACTION_DOWN == event.getAction()) {
-                                    activity.onKeyDown(keyCode, event);
-                                }
+                    ReactContext reactContext = getReactBridgeManager().getReactInstanceManager().getCurrentReactContext();
+                    if (reactContext != null && getReactBridgeManager().isReactModuleRegisterCompleted()) {
+                        Activity activity = reactContext.getCurrentActivity();
+                        if (activity != null) {
+                            if (KeyEvent.ACTION_UP == event.getAction()) {
+                                activity.onKeyUp(keyCode, event);
+                            } else if (KeyEvent.ACTION_DOWN == event.getAction()) {
+                                activity.onKeyDown(keyCode, event);
                             }
                         }
-                        return false;
                     }
+                    return false;
                 });
     }
 
