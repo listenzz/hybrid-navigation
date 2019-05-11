@@ -51,11 +51,16 @@ public class ReactView extends ReactRootView {
         removeOnGlobalLayoutListener();
     }
 
+    @Override
+    public void unmountReactApplication() {
+        removeOnGlobalLayoutListener();
+        super.unmountReactApplication();
+    }
+
     void addOnGlobalLayoutListener() {
         try {
             Method method = ReactRootView.class.getDeclaredMethod("getCustomGlobalLayoutListener");
             method.setAccessible(true);
-            // remove duplicated GlobalLayoutListener
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 getViewTreeObserver().removeOnGlobalLayoutListener((ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this));
             } else {
@@ -75,7 +80,6 @@ public class ReactView extends ReactRootView {
         try {
             Method method = ReactRootView.class.getDeclaredMethod("getCustomGlobalLayoutListener");
             method.setAccessible(true);
-            // remove duplicated GlobalLayoutListener
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 getViewTreeObserver().removeOnGlobalLayoutListener((ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this));
             } else {
