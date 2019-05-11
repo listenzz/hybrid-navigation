@@ -184,7 +184,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Navigation/Pods-Navigation-resources.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Navigation/Pods-Navigation-resources.sh",
 				"${PODS_CONFIGURATION_BUILD_DIR}/HudHybrid/HudHybrid.bundle",
 				"${PODS_ROOT}/../../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
 				"${PODS_ROOT}/../../../node_modules/react-native-vector-icons/Fonts/Entypo.ttf",
@@ -223,7 +223,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Navigation/Pods-Navigation-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Navigation/Pods-Navigation-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		91E338371FC09211006A2C8B /* Bundle React Native code and images */ = {
