@@ -180,13 +180,6 @@ export class Garden {
     GardenModule.setTabBadgeText(this.sceneId, index, text);
   }
 
-  setTabBadge(index: number, text: string) {
-    console.warn(
-      '`setTabBadge` has been deprecated and will be removed in the next release, please use `setTabBadgeText`'
-    );
-    GardenModule.setTabBadgeText(this.sceneId, index, text);
-  }
-
   showRedPointAtIndex(index: number) {
     GardenModule.showRedPointAtIndex(index, this.sceneId);
   }
