@@ -184,7 +184,7 @@ UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只�
 
 - optimizationEnabledAndroid
 
-  打开页面过多时，在 Android 下会变得卡顿，该项优化设置会将不可见的 React 页面暂时地从 UI 层级中移除，当页面重新可见时，再添加回来。这可能会使某些页面出现[问题](https://github.com/listenzz/react-native-navigation-hybrid/issues/106)，此时，可使用该项设置关闭全局优化。如果希望保留全局优化，只在有问题的页面关闭优化，可以在页面对应的 `navigationItem` 中设置该项，详情见下。
+  目前只有这个作用：Android 的 tab 页面是否开启懒加载，默认是 true。
 
 <a name="static-options"></a>
 
