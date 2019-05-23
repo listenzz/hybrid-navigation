@@ -55,8 +55,8 @@ public class ReactView extends ReactRootView {
     }
 
     @Override
-    public void startReactApplication(ReactInstanceManager reactInstanceManager, String moduleName, @Nullable Bundle initialProperties, @Nullable String initialUITemplate) {
-        super.startReactApplication(reactInstanceManager, moduleName, initialProperties, initialUITemplate);
+    public void startReactApplication(ReactInstanceManager reactInstanceManager, String moduleName, @Nullable Bundle initialProperties) {
+        super.startReactApplication(reactInstanceManager, moduleName, initialProperties);
         removeOnGlobalLayoutListener();
     }
 
