@@ -7,6 +7,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.ReactNativeHost;
+import com.facebook.react.bridge.ReactContext;
+
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.AwesomeToolbar;
 import me.listenzz.navigation.BarStyle;
@@ -30,6 +34,30 @@ public class HybridFragment extends AwesomeFragment {
     private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 
     private Garden garden;
+
+    @NonNull
+    public ReactNativeHost getReactNativeHost() {
+        return bridgeManager.getReactNativeHost();
+    }
+
+    @NonNull
+    public ReactInstanceManager getReactInstanceManager() {
+        return bridgeManager.getReactInstanceManager();
+    }
+
+    @NonNull
+    public ReactBridgeManager getReactBridgeManager() {
+        return bridgeManager;
+    }
+
+    @Nullable
+    public ReactContext getCurrentReactContext() {
+        return getReactBridgeManager().getReactContext();
+    }
+
+    public boolean isReactModuleRegisterCompleted() {
+        return bridgeManager.isReactModuleRegisterCompleted();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,11 +140,6 @@ public class HybridFragment extends AwesomeFragment {
             return null;
         }
         return super.onCreateAwesomeToolbar(parent);
-    }
-
-    @NonNull
-    public ReactBridgeManager getReactBridgeManager() {
-        return bridgeManager;
     }
 
     private Bundle options;

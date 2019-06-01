@@ -148,7 +148,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     private void sendViewAppearEvent(boolean appear) {
         // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
-        if ((isResumed() || isRemoving()) && getReactBridgeManager().isReactModuleRegisterCompleted() && this.isAppeared != appear) {
+        if (isReactModuleRegisterCompleted() && (isResumed() || isRemoving()) && this.isAppeared != appear) {
             this.isAppeared = appear;
             Bundle bundle = new Bundle();
             bundle.putString(KEY_SCENE_ID, getSceneId());
@@ -172,17 +172,19 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Override
     public void setAppProperties(@NonNull Bundle props) {
         super.setAppProperties(props);
-        if (reactRootView != null && getReactBridgeManager().isReactModuleRegisterCompleted()) {
+        if (reactRootView != null && isReactModuleRegisterCompleted()) {
             this.reactRootView.setAppProperties(getProps());
         }
     }
 
     private void initReactNative() {
-        if (reactRootView != null || getContext() == null || !getReactBridgeManager().isReactModuleRegisterCompleted()) {
+        Context context = getContext();
+
+        if (context == null || reactRootView != null || !isReactModuleRegisterCompleted()) {
             return;
         }
 
-        final ReactView reactView = new ReactView(getContext());
+        final ReactView reactView = new ReactView(context);
         boolean passThroughTouches = getOptions().getBoolean("passThroughTouches", false);
         reactView.setShouldConsumeTouchEvent(!passThroughTouches);
         reactRootView = reactView;
@@ -216,7 +218,9 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     private void initTitleViewIfNeeded() {
-        if (reactTitleView != null || getContext() == null || !getReactBridgeManager().isReactModuleRegisterCompleted()) {
+        Context context = getContext();
+
+        if (context == null || reactTitleView != null || !isReactModuleRegisterCompleted()) {
             return;
         }
 
@@ -226,7 +230,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             if (moduleName != null) {
                 String fitting = titleItem.getString("layoutFitting");
                 boolean expanded = "expanded".equals(fitting);
-                reactTitleView = new ReactView(getContext());
+                reactTitleView = new ReactView(context);
                 Toolbar.LayoutParams layoutParams;
                 if (expanded) {
                     layoutParams = new Toolbar.LayoutParams(-1, -1, Gravity.CENTER);
@@ -293,5 +297,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                     return false;
                 });
     }
+
 
 }
