@@ -219,14 +219,13 @@ public class ReactBridgeManager {
         if (fragment == null) {
             return;
         }
-
-        FragmentManager fragmentManager = fragment.getFragmentManager();
-        if (fragmentManager == null || fragmentManager.isDestroyed()) {
-            return;
+        FragmentManager childFragmentManager = fragment.getChildFragmentManager();
+        if (!childFragmentManager.isDestroyed()) {
+            FragmentHelper.executePendingTransactionsSafe(childFragmentManager);
         }
-        FragmentHelper.executePendingTransactionsSafe(fragmentManager);
 
         List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
+
         if (children.size() > 0) {
             for (int i = 0; i < children.size(); i++) {
                 AwesomeFragment child = children.get(i);
@@ -252,11 +251,10 @@ public class ReactBridgeManager {
         if (fragment == null) {
             return null;
         }
-        FragmentManager fragmentManager = fragment.getFragmentManager();
-        if (fragmentManager == null || fragmentManager.isDestroyed()) {
-            return null;
+        FragmentManager childFragmentManager = fragment.getChildFragmentManager();
+        if (!childFragmentManager.isDestroyed()) {
+            FragmentHelper.executePendingTransactionsSafe(childFragmentManager);
         }
-        FragmentHelper.executePendingTransactionsSafe(fragmentManager);
 
         List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
         if (children.size() > 0) {

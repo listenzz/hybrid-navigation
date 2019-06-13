@@ -164,6 +164,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             }
             ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
             FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+            FragmentHelper.executePendingTransactionsSafe(fragmentManager);
+
             Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
             HybridFragment current = getPrimaryFragment(fragment);
 
