@@ -126,34 +126,14 @@ RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
     }
 }
 
-RCT_EXPORT_METHOD(setTabBadgeText:(NSString *)sceneId index:(NSInteger)index text:(NSString *)text) {
+RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId options:(NSArray<NSDictionary *> *)options) {
     UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
-        [tabBarVC setBadgeText:text atIndex:index];
+        [tabBarVC setTabBadge:options];
     }
-    NSLog(@"setTabBadgeText: %ld, %@", (long)index, text);
-}
-
-RCT_EXPORT_METHOD(showRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
-    UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
-    UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
-    if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
-        HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
-        [tabBarVC setRedPointVisible:YES atIndex:index];
-    }
-    NSLog(@"showRedPointAtIndex: %ld", (long)index);
-}
-
-RCT_EXPORT_METHOD(hideRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
-    UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
-    UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
-    if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
-        HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
-        [tabBarVC setRedPointVisible:NO atIndex:index];
-    }
-    NSLog(@"hideRedPointAtIndex: %ld", (long)index);
+    NSLog(@"setTabBadge: %@", options);
 }
 
 RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon:(NSDictionary *)icon inactiveIcon:(NSDictionary *)selectedIcon) {

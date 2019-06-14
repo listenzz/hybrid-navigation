@@ -118,38 +118,33 @@
     }
 }
 
-- (void)setSelectedIndex:(NSUInteger)selectedIndex {
-    [super setSelectedIndex:selectedIndex];
-    if (self.hasCustomTabBar && self.rootView) {
-        NSMutableDictionary *props = [[self props] mutableCopy];
-        props[@"selectedIndex"] = @(selectedIndex);
-        self.rootView.appProperties = props;
-    }
-}
-
-- (void)setBadgeText:(NSString *)text atIndex:(NSInteger)index {
-    if (self.hasCustomTabBar) {
-        NSMutableDictionary *tab = [self tabAtIndex:index];
-        tab[@"badgeText"] = text ?: NSNull.null;
-        self.rootView.appProperties = [self props];
-    } else {
-        UIViewController *vc = self.viewControllers[index];
-        vc.tabBarItem.badgeValue = text;
-    }
-}
-
-- (void)setRedPointVisible:(BOOL)visible atIndex:(NSInteger)index {
-    if (self.hasCustomTabBar) {
-        NSMutableDictionary *tab = [self tabAtIndex:index];
-        tab[@"remind"] = @(visible);
-        self.rootView.appProperties = [self props];
-    } else {
-        UITabBar *tabBar = self.tabBar;
-        if (visible) {
-            [tabBar showRedPointAtIndex:index];
+- (void)setTabBadge:(NSArray<NSDictionary *> *)options {
+    for (NSDictionary *option in options) {
+        NSUInteger index = option[@"index"] ? [option[@"index"] integerValue] : 0;
+        BOOL hidden = option[@"hidden"] ? [option[@"hidden"] boolValue] : YES;
+        
+        NSString *text = hidden ? nil : (option[@"text"] ? option[@"text"] : nil);
+        BOOL dot = hidden ?  NO : (option[@"dot"] ? [option[@"dot"] boolValue] : NO);
+        
+        if (self.hasCustomTabBar) {
+            NSMutableDictionary *tab = [self tabAtIndex:index];
+            tab[@"dotBadge"] = @(dot);
+            tab[@"remind"] = @(dot);
+            tab[@"badgeText"] = text ?: NSNull.null;
         } else {
-            [tabBar hideRedPointAtIndex:index];
+            UIViewController *vc = self.viewControllers[index];
+            vc.tabBarItem.badgeValue = text;
+            UITabBar *tabBar = self.tabBar;
+            if (dot) {
+                [tabBar showDotBadgeAtIndex:index];
+            } else {
+                [tabBar hideDotBadgeAtIndex:index];
+            }
         }
+    }
+    
+    if (self.hasCustomTabBar) {
+        self.rootView.appProperties = [self props];
     }
 }
 
@@ -223,6 +218,15 @@
                                                            KEY_RESULT_DATA: data ?: [NSNull null],
                                                            KEY_SCENE_ID: self.sceneId,
                                                            }];
+    }
+}
+
+- (void)setSelectedIndex:(NSUInteger)selectedIndex {
+    [super setSelectedIndex:selectedIndex];
+    if (self.hasCustomTabBar && self.rootView) {
+        NSMutableDictionary *props = [[self props] mutableCopy];
+        props[@"selectedIndex"] = @(selectedIndex);
+        self.rootView.appProperties = props;
     }
 }
 

@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UITabBar (Badge)
+@interface UITabBar (DotBadge)
 
-- (void)showRedPointAtIndex:(NSInteger)index;
-- (void)hideRedPointAtIndex:(NSInteger)index;
+- (void)showDotBadgeAtIndex:(NSInteger)index;
+- (void)hideDotBadgeAtIndex:(NSInteger)index;
+
 @end

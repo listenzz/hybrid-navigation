@@ -16,6 +16,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 
@@ -27,17 +28,15 @@ import me.listenzz.navigation.DrawerFragment;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.TabBarFragment;
 
-import static com.navigationhybrid.Constants.ACTION_SET_BADGE_TEXT;
-import static com.navigationhybrid.Constants.ACTION_SET_RED_POINT;
+import static com.navigationhybrid.Constants.ACTION_SET_BADGE;
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;
 import static com.navigationhybrid.Constants.ACTION_UPDATE_TAB_BAR;
 import static com.navigationhybrid.Constants.ARG_ACTION;
-import static com.navigationhybrid.Constants.ARG_BADGE_TEXT;
+import static com.navigationhybrid.Constants.ARG_BADGE;
 import static com.navigationhybrid.Constants.ARG_ICON;
 import static com.navigationhybrid.Constants.ARG_ICON_SELECTED;
 import static com.navigationhybrid.Constants.ARG_INDEX;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
-import static com.navigationhybrid.Constants.ARG_VISIBLE;
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_DARK_CONTENT;
 import static com.navigationhybrid.Constants.TOP_BAR_STYLE_LIGHT_CONTENT;
 
@@ -246,50 +245,15 @@ public class GardenModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setTabBadgeText(final String sceneId, final int index, final String text) {
+    public void setTabBadge(@NonNull final String sceneId, @NonNull final ReadableArray options) {
         sHandler.post(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
                 if (tabBarFragment != null) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(ARG_ACTION, ACTION_SET_BADGE_TEXT);
-                    bundle.putInt(ARG_INDEX, index);
-                    bundle.putString(ARG_BADGE_TEXT, text);
-                    tabBarFragment.updateTabBar(bundle);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void showRedPointAtIndex(final int index, final String sceneId) {
-        sHandler.post(() -> {
-            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment != null) {
-                TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                if (tabBarFragment != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ARG_ACTION, ACTION_SET_RED_POINT);
-                    bundle.putInt(ARG_INDEX, index);
-                    bundle.putBoolean(ARG_VISIBLE, true);
-                    tabBarFragment.updateTabBar(bundle);
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void hideRedPointAtIndex(final int index, final String sceneId) {
-        sHandler.post(() -> {
-            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment != null) {
-                TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                if (tabBarFragment != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ARG_ACTION, ACTION_SET_RED_POINT);
-                    bundle.putInt(ARG_INDEX, index);
-                    bundle.putBoolean(ARG_VISIBLE, false);
+                    bundle.putString(ARG_ACTION, ACTION_SET_BADGE);
+                    bundle.putParcelableArrayList(ARG_BADGE, Arguments.toList(options));
                     tabBarFragment.updateTabBar(bundle);
                 }
             }

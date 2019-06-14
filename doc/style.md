@@ -470,28 +470,24 @@ this.props.garden.replaceTabIcon(1, { uri: 'blue_solid', scale: PixelRatio.get()
 
 设置 badge
 
-```javascript
-if (this.state.badge) {
-  this.props.garden.setTabBadge(1, null);
-} else {
-  this.props.garden.setTabBadge(1, '99');
+```ts
+export interface Badge {
+  index: number;
+  text?: string;
+  hidden: boolean;
+  dot?: boolean; // 是否作为红点显示
 }
 ```
 
-- showRedPointAtIndex
-
-显示小红点
-
 ```javascript
-this.props.garden.showRedPointAtIndex(0);
-```
-
-- hideRedPointAtIndex
-
-隐藏小红点
-
-```javascript
-this.props.garden.hideRedPointAtIndex(0);
+if (hideBadge) {
+  this.props.garden.setTabBadge([{ index: 0, hidden: true }, { index: 1, hidden: true }]);
+} else {
+  this.props.garden.setTabBadge([
+    { index: 0, hidden: false, dot: true },
+    { index: 1, hidden: false, text: '99' },
+  ]);
+}
 ```
 
 - setMenuInteractive

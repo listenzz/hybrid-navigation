@@ -112,12 +112,17 @@ export default class Options extends Component {
   toggleTabBadge() {
     if (this.state.badge) {
       this.setState({ badge: null });
-      this.props.garden.setTabBadgeText(1, null);
-      this.props.garden.hideRedPointAtIndex(0);
+      //this.props.garden.setTabBadgeText(1, null);
+      //this.props.garden.hideRedPointAtIndex(0);
+      this.props.garden.setTabBadge([{ index: 0, hidden: true }, { index: 1, hidden: true }]);
     } else {
       this.setState({ badge: '5' });
-      this.props.garden.setTabBadgeText(1, '99');
-      this.props.garden.showRedPointAtIndex(0);
+      //this.props.garden.setTabBadgeText(1, '99');
+      //this.props.garden.showRedPointAtIndex(0);
+      this.props.garden.setTabBadge([
+        { index: 0, hidden: false, dot: true },
+        { index: 1, hidden: false, text: '99' },
+      ]);
     }
   }
 

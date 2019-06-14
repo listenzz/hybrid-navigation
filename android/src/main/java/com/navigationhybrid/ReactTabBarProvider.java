@@ -29,17 +29,15 @@ import me.listenzz.navigation.TabBarProvider;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.navigationhybrid.Constants.ACTION_SET_BADGE_TEXT;
-import static com.navigationhybrid.Constants.ACTION_SET_RED_POINT;
+import static com.navigationhybrid.Constants.ACTION_SET_BADGE;
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;
 import static com.navigationhybrid.Constants.ACTION_UPDATE_TAB_BAR;
 import static com.navigationhybrid.Constants.ARG_ACTION;
-import static com.navigationhybrid.Constants.ARG_BADGE_TEXT;
+import static com.navigationhybrid.Constants.ARG_BADGE;
 import static com.navigationhybrid.Constants.ARG_ICON;
 import static com.navigationhybrid.Constants.ARG_ICON_SELECTED;
 import static com.navigationhybrid.Constants.ARG_INDEX;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
-import static com.navigationhybrid.Constants.ARG_VISIBLE;
 
 public class ReactTabBarProvider implements TabBarProvider {
 
@@ -204,11 +202,8 @@ public class ReactTabBarProvider implements TabBarProvider {
         }
 
         switch (action) {
-            case ACTION_SET_BADGE_TEXT:
-                setBadge(options.getInt(ARG_INDEX), options.getString(ARG_BADGE_TEXT));
-                break;
-            case ACTION_SET_RED_POINT:
-                setRedPoint(options.getInt(ARG_INDEX), options.getBoolean(ARG_VISIBLE));
+            case ACTION_SET_BADGE:
+                setBadge(options.getParcelableArrayList(ARG_BADGE));
                 break;
             case ACTION_SET_TAB_ICON:
                 setTabIcon(options.getInt(ARG_INDEX), options.getBundle(ARG_ICON), options.getBundle(ARG_ICON_SELECTED));
@@ -219,29 +214,36 @@ public class ReactTabBarProvider implements TabBarProvider {
         }
     }
 
-    private void setBadge(int index, String text) {
-        Bundle options = tabBarFragment.getOptions();
-        ArrayList<Bundle> tabs = options.getParcelableArrayList("tabs");
-        if (tabs == null) {
-            // should never happen
-            throw new IllegalStateException("现在还不能执行设置 badge 的操作");
+
+    private void setBadge(@Nullable ArrayList<Bundle> options) {
+        if (options == null) {
+            return;
         }
-        Bundle tab = tabs.get(index);
-        tab.putString("badgeText", text);
+
+        Bundle tabBar = tabBarFragment.getOptions();
+        ArrayList<Bundle> tabs = tabBar.getParcelableArrayList("tabs");
+
+        if (tabs == null) {
+            return;
+        }
+
+        for (Bundle option : options) {
+            int index = (int) option.getDouble("index");
+            boolean hidden = option.getBoolean("hidden", true);
+
+            String text = !hidden ? option.getString("text", null) : null;
+            boolean dot = !hidden && option.getBoolean("dot", false);
+
+            Bundle tab = tabs.get(index);
+            tab.putString("badgeText", text);
+            tab.putBoolean("remind", dot);
+            tab.putBoolean("dotBadge", dot);
+        }
+
         reactView.setAppProperties(getProps(tabBarFragment));
     }
 
-    private void setRedPoint(int index, boolean visible) {
-        Bundle options = tabBarFragment.getOptions();
-        ArrayList<Bundle> tabs = options.getParcelableArrayList("tabs");
-        if (tabs == null) {
-            // should never happen
-            throw new IllegalStateException("现在还不能执行设置 badge 的操作");
-        }
-        Bundle tab = tabs.get(index);
-        tab.putBoolean("remind", visible);
-        reactView.setAppProperties(getProps(tabBarFragment));
-    }
+
 
     private void setTabIcon(int index, @Nullable Bundle icon, @Nullable Bundle selectedIcon) {
         if (icon == null) {

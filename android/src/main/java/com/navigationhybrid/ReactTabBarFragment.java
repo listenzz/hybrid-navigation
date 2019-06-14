@@ -9,6 +9,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 
 import com.facebook.react.bridge.Arguments;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.listenzz.navigation.AwesomeFragment;
@@ -22,17 +23,15 @@ import me.listenzz.navigation.TabBarFragment;
 import me.listenzz.navigation.TabBarItem;
 import me.listenzz.navigation.TabBarProvider;
 
-import static com.navigationhybrid.Constants.ACTION_SET_BADGE_TEXT;
-import static com.navigationhybrid.Constants.ACTION_SET_RED_POINT;
+import static com.navigationhybrid.Constants.ACTION_SET_BADGE;
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;
 import static com.navigationhybrid.Constants.ACTION_UPDATE_TAB_BAR;
 import static com.navigationhybrid.Constants.ARG_ACTION;
-import static com.navigationhybrid.Constants.ARG_BADGE_TEXT;
+import static com.navigationhybrid.Constants.ARG_BADGE;
 import static com.navigationhybrid.Constants.ARG_ICON;
 import static com.navigationhybrid.Constants.ARG_ICON_SELECTED;
 import static com.navigationhybrid.Constants.ARG_INDEX;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
-import static com.navigationhybrid.Constants.ARG_VISIBLE;
 import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
 import static com.navigationhybrid.HBDEventEmitter.KEY_INDEX;
 import static com.navigationhybrid.HBDEventEmitter.KEY_MODULE_NAME;
@@ -116,11 +115,8 @@ public class ReactTabBarFragment extends TabBarFragment {
             }
 
             switch (action) {
-                case ACTION_SET_BADGE_TEXT:
-                    setBadge(options.getInt(ARG_INDEX), options.getString(ARG_BADGE_TEXT));
-                    break;
-                case ACTION_SET_RED_POINT:
-                    setRedPoint(options.getInt(ARG_INDEX), options.getBoolean(ARG_VISIBLE));
+                case ACTION_SET_BADGE:
+                    setBadge(options.getParcelableArrayList(ARG_BADGE));
                     break;
                 case ACTION_SET_TAB_ICON:
                     setTabIcon(options.getInt(ARG_INDEX), options.getBundle(ARG_ICON), options.getBundle(ARG_ICON_SELECTED));
@@ -132,14 +128,22 @@ public class ReactTabBarFragment extends TabBarFragment {
         }
     }
 
-    private void setBadge(int index, String text) {
-        TabBar tabBar = getTabBar();
-        tabBar.setBadge(index, text);
-    }
+    private void setBadge(@Nullable ArrayList<Bundle> options) {
+        if (options == null) {
+            return;
+        }
 
-    private void setRedPoint(int index, boolean visible) {
         TabBar tabBar = getTabBar();
-        tabBar.setRedPoint(index, visible);
+        for (Bundle option : options) {
+            int index = (int) option.getDouble("index");
+            boolean hidden = option.getBoolean("hidden", true);
+
+            String text = !hidden ? option.getString("text", "") : "";
+            boolean dot = !hidden && option.getBoolean("dot", false);
+
+            tabBar.setBadgeText(index, text);
+            tabBar.showDotBadge(index, !dot);
+        }
     }
 
     private void setTabIcon(int index, Bundle icon, Bundle selectedIcon) {

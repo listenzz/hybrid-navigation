@@ -16,9 +16,7 @@
 
 - (void)updateTabBar:(NSDictionary *)options;
 
-- (void)setBadgeText:(NSString *)text atIndex:(NSInteger)index;
-
-- (void)setRedPointVisible:(BOOL)visible atIndex:(NSInteger)index;
+- (void)setTabBadge:(NSArray<NSDictionary *> *)options;
 
 - (void)updateTabBarItem:(NSDictionary *)tabItem atIndex:(NSInteger)index;
 

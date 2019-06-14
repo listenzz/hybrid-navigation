@@ -9,7 +9,7 @@ import {
   Dimensions,
   Platform,
 } from 'react-native';
-import Badge from './Badge';
+import TextBadge from './Badge';
 
 export default class CustomTabBar extends Component {
   constructor(props) {
@@ -40,8 +40,8 @@ export default class CustomTabBar extends Component {
   render() {
     const { itemColor, selectedItemColor, selectedIndex, badgeColor } = this.props;
     const style = {
-      badgeStyle: { backgroundColor: badgeColor },
-      redPointStyle: { backgroundColor: badgeColor },
+      textBadgeStyle: { backgroundColor: badgeColor },
+      dotBadgeStyle: { backgroundColor: badgeColor },
       selectedItemColor,
       itemColor,
     };
@@ -83,9 +83,9 @@ function Tab(props) {
     selectedItemColor,
     itemColor,
     badgeText,
-    badgeStyle,
-    remind,
-    redPointStyle,
+    textBadgeStyle,
+    dotBadge,
+    dotBadgeStyle,
   } = props;
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
@@ -113,14 +113,14 @@ function Tab(props) {
       >
         {title}
       </Text>
-      {badgeText && <Badge style={[styles.badge, badgeStyle]}>{badgeText}</Badge>}
-      {remind && <Reminder style={redPointStyle} />}
+      {badgeText && <TextBadge style={[styles.textBadge, textBadgeStyle]}>{badgeText}</TextBadge>}
+      {dotBadge && <DotBadge style={dotBadgeStyle} />}
     </TouchableOpacity>
   );
 }
 
-function Reminder(props) {
-  return <View style={[styles.redPoint, props.style]} />;
+function DotBadge(props) {
+  return <View style={[styles.dotBadge, props.style]} />;
 }
 
 const styles = StyleSheet.create({
@@ -144,14 +144,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     fontSize: 12,
   },
-  badge: {
+  textBadge: {
     position: 'absolute',
     bottom: '50%',
     left: '50%',
     marginBottom: 6,
     marginLeft: 6,
   },
-  redPoint: {
+  dotBadge: {
     position: 'absolute',
     bottom: '50%',
     left: '50%',

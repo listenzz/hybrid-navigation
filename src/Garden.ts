@@ -121,6 +121,13 @@ export interface StatusBarOptions {
   statusBarColor: Color;
 }
 
+export interface Badge {
+  index: number;
+  text?: string;
+  hidden: boolean;
+  dot?: boolean;
+}
+
 export class Garden {
   static toolbarHeight: number = GardenModule.TOOLBAR_HEIGHT;
   static DARK_CONTENT: BarStyleDarkContent = GardenModule.DARK_CONTENT;
@@ -176,16 +183,30 @@ export class Garden {
     GardenModule.replaceTabIcon(this.sceneId, index, icon, inactiveIcon);
   }
 
-  setTabBadgeText(index: number, text: string) {
-    GardenModule.setTabBadgeText(this.sceneId, index, text);
+  setTabBadgeText(index: number, text?: string) {
+    console.warn('setTabBadgeText 已经弃用，请使用 setTabBadge');
+    this.setTabBadge({
+      index,
+      hidden: !text || text.length === 0,
+      text,
+    });
   }
 
   showRedPointAtIndex(index: number) {
-    GardenModule.showRedPointAtIndex(index, this.sceneId);
+    console.warn('showRedPointAtIndex 已经弃用，请使用 setTabBadge');
+    this.setTabBadge({ index, hidden: false, dot: true });
   }
 
   hideRedPointAtIndex(index: number) {
-    GardenModule.hideRedPointAtIndex(index, this.sceneId);
+    console.warn('hideRedPointAtIndex 已经弃用，请使用 setTabBadge');
+    this.setTabBadge({ index, hidden: true, dot: true });
+  }
+
+  setTabBadge(badge: Badge | Badge[]) {
+    if (!Array.isArray(badge)) {
+      badge = [badge];
+    }
+    GardenModule.setTabBadge(this.sceneId, badge);
   }
 
   setMenuInteractive(enabled: boolean) {
