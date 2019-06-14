@@ -22,7 +22,7 @@ public class NavigationHybridPackage implements ReactPackage {
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
                 new NavigationModule(reactContext, ReactBridgeManager.get()),
-                new GardenModule(reactContext),
+                new GardenModule(reactContext, ReactBridgeManager.get()),
                 new HBDEventEmitter(reactContext)
         );
     }

@@ -169,7 +169,7 @@ public class ScreenNavigator implements Navigator {
             return false;
         }
 
-        ReactContext reactContext = getReactBridgeManager().getReactContext();
+        ReactContext reactContext = getReactBridgeManager().getCurrentReactContext();
         if (reactContext != null) {
             Activity activity = reactContext.getCurrentActivity();
             if (activity instanceof ReactAppCompatActivity) {
@@ -192,7 +192,7 @@ public class ScreenNavigator implements Navigator {
             return false;
         }
 
-        ReactContext reactContext = getReactBridgeManager().getReactContext();
+        ReactContext reactContext = getReactBridgeManager().getCurrentReactContext();
         if (reactContext != null) {
             Activity activity = reactContext.getCurrentActivity();
             if (activity instanceof ReactAppCompatActivity) {

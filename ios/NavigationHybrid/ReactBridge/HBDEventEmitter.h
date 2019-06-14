@@ -10,6 +10,8 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 extern NSString * const ON_COMPONENT_RESULT;
 extern NSString * const ON_BAR_BUTTON_ITEM_CLICK;
 extern NSString * const ON_COMPONENT_APPEAR;
@@ -27,9 +29,6 @@ extern NSString * const KEY_MODULE_NAME;
 extern NSString * const KEY_INDEX;
 extern NSString * const KEY_ACTION;
 extern NSString * const KEY_ON;
-
-
-NS_ASSUME_NONNULL_BEGIN
 
 @interface HBDEventEmitter : RCTEventEmitter <RCTBridgeModule>
 

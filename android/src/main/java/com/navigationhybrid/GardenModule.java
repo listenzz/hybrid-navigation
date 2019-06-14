@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
@@ -16,7 +17,6 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
 
 import java.util.HashMap;
@@ -65,8 +65,13 @@ public class GardenModule extends ReactContextBaseJavaModule {
         return result;
     }
 
-    public GardenModule(ReactApplicationContext reactContext) {
+    static final Handler sHandler = NavigationModule.sHandler;
+
+    private final ReactBridgeManager reactBridgeManager;
+
+    public GardenModule(ReactApplicationContext reactContext, ReactBridgeManager reactBridgeManager) {
         super(reactContext);
+        this.reactBridgeManager = reactBridgeManager;
     }
 
     @NonNull
@@ -87,7 +92,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setStyle(final ReadableMap style) {
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             Context context = getReactApplicationContext();
             if (context != null) {
                 Garden.createGlobalStyle(Arguments.toBundle(style));
@@ -102,7 +107,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setPassThroughTouches(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "setPassThroughTouches:" + readableMap);
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
@@ -117,7 +122,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setLeftBarButtonItem(final String sceneId, final ReadableMap readableMap) {
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
@@ -131,7 +136,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setRightBarButtonItem(final String sceneId, final ReadableMap readableMap) {
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
@@ -145,7 +150,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setTitleItem(final String sceneId, final ReadableMap readableMap) {
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
@@ -160,7 +165,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setStatusBarColor(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "setStatusBarColor:" + readableMap);
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
@@ -181,7 +186,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setStatusBarHidden(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "setStatusBarHidden:" + readableMap);
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
@@ -197,7 +202,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateTopBar(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "updateTopBar:" + readableMap);
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 fragment.getGarden().updateToolbar(readableMap);
@@ -208,7 +213,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateTabBar(final String sceneId, final ReadableMap readableMap) {
         Log.i(TAG, "updateTabBar:" + readableMap);
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -224,7 +229,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void replaceTabIcon(final String sceneId, final int index, final ReadableMap icon, final ReadableMap selectedIcon) {
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -242,7 +247,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setTabBadgeText(final String sceneId, final int index, final String text) {
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -259,7 +264,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void showRedPointAtIndex(final int index, final String sceneId) {
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -276,7 +281,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void hideRedPointAtIndex(final int index, final String sceneId) {
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -293,7 +298,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setMenuInteractive(final String sceneId, final boolean enabled) {
-        UiThreadUtil.runOnUiThread(() -> {
+        sHandler.post(() -> {
             AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
             if (awesomeFragment != null) {
                 DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
@@ -305,6 +310,10 @@ public class GardenModule extends ReactContextBaseJavaModule {
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
+        if (!reactBridgeManager.isReactModuleRegisterCompleted()) {
+            Log.w(TAG, "React module has not register completed.");
+            return null;
+        }
         Activity activity = getCurrentActivity();
         if (activity instanceof ReactAppCompatActivity) {
             ReactAppCompatActivity reactActivity = (ReactAppCompatActivity) activity;

@@ -17,6 +17,8 @@
 
 @interface HBDGardenModule()
 
+@property(nonatomic, strong, readonly) HBDReactBridgeManager *bridgeManager;
+
 @end
 
 @implementation HBDGardenModule
@@ -26,6 +28,13 @@
 }
 
 RCT_EXPORT_MODULE(GardenHybrid)
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _bridgeManager = [HBDReactBridgeManager sharedInstance];
+    }
+    return self;
+}
 
 - (dispatch_queue_t)methodQueue {
     return dispatch_get_main_queue();
@@ -64,7 +73,7 @@ RCT_EXPORT_METHOD(setTitleItem:(NSString *)sceneId item:(NSDictionary *)item) {
 }
 
 - (HBDViewController *)HBDViewControllerForSceneId:(NSString *)sceneId {
-    UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     if ([vc isKindOfClass:[HBDViewController class]]) {
         return (HBDViewController *)vc;
     }
@@ -110,7 +119,7 @@ RCT_EXPORT_METHOD(updateTopBar:(NSString *)sceneId item:(NSDictionary *)item) {
 
 RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
     NSLog(@"updateTabBar: %@", item);
-    UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarVC = [self tabBarControllerWithViewController:vc];
     if (tabBarVC && [tabBarVC isKindOfClass:[HBDTabBarController class]]) {
         [((HBDTabBarController *)tabBarVC) updateTabBar:item];
@@ -118,7 +127,7 @@ RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
 }
 
 RCT_EXPORT_METHOD(setTabBadgeText:(NSString *)sceneId index:(NSInteger)index text:(NSString *)text) {
-    UIViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
@@ -128,7 +137,7 @@ RCT_EXPORT_METHOD(setTabBadgeText:(NSString *)sceneId index:(NSInteger)index tex
 }
 
 RCT_EXPORT_METHOD(showRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
-    UIViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
@@ -138,7 +147,7 @@ RCT_EXPORT_METHOD(showRedPointAtIndex:(NSInteger)index sceneId:(NSString *)scene
 }
 
 RCT_EXPORT_METHOD(hideRedPointAtIndex:(NSInteger)index sceneId:(NSString *)sceneId) {
-    UIViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
@@ -148,7 +157,7 @@ RCT_EXPORT_METHOD(hideRedPointAtIndex:(NSInteger)index sceneId:(NSString *)scene
 }
 
 RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon:(NSDictionary *)icon inactiveIcon:(NSDictionary *)selectedIcon) {
-    UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
@@ -172,7 +181,7 @@ RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon
 }
 
 RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) {
-    UIViewController *vc =  [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
     HBDDrawerController *drawer = [vc drawerController];
     if (drawer) {
         drawer.menuInteractive = enabled;

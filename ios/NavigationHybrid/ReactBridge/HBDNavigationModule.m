@@ -11,7 +11,29 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDReactViewController.h"
 
+@interface Promiss : NSObject
+
+@property(nonatomic, copy) RCTPromiseResolveBlock resolve;
+@property(nonatomic, copy) RCTPromiseRejectBlock reject;
+
+@end
+
+@implementation Promiss
+
+
+- (instancetype)initWithResolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter {
+    if (self = [super init]) {
+        _resolve = resolver;
+        _reject = rejecter;
+    }
+    return self;
+}
+
+@end
+
 @interface HBDNavigationModule()
+
+@property(nonatomic, strong, readonly) HBDReactBridgeManager *bridgeManager;
 
 @end
 
@@ -22,6 +44,22 @@
 }
 
 RCT_EXPORT_MODULE(NavigationHybrid)
+
+- (instancetype)init {
+    if (self = [super init]) {
+        _bridgeManager = [HBDReactBridgeManager sharedInstance];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReload) name:RCTBridgeWillReloadNotification object:nil];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillReloadNotification object:nil];
+}
+
+- (void)handleReload {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+}
 
 - (dispatch_queue_t)methodQueue {
     return dispatch_get_main_queue();
@@ -34,44 +72,45 @@ RCT_EXPORT_MODULE(NavigationHybrid)
 }
 
 RCT_EXPORT_METHOD(startRegisterReactComponent) {
-    [[HBDReactBridgeManager sharedInstance] startRegisterReactModule];
+    [self.bridgeManager startRegisterReactModule];
 }
 
 RCT_EXPORT_METHOD(endRegisterReactComponent) {
-    [[HBDReactBridgeManager sharedInstance] endRegisterReactModule];
+    [self.bridgeManager endRegisterReactModule];
 }
 
 RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionary *)options) {
-    [[HBDReactBridgeManager sharedInstance] registerReactModule:appKey options:options];
+    [self.bridgeManager registerReactModule:appKey options:options];
 }
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
     // NSLog(@"signalFirstRenderComplete sceneId:%@",sceneId);
-    UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     if ([vc isKindOfClass:[HBDReactViewController class]]) {
         [(HBDReactViewController *)vc signalFirstRenderComplete];
     }
 }
 
 RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky) {
-    UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
+    self.bridgeManager.viewHierarchyReady = NO;
+    UIViewController *vc = [self.bridgeManager controllerWithLayout:layout];
     if (vc) {
-        [HBDReactBridgeManager sharedInstance].hasRootLayout = YES;
-        [[HBDReactBridgeManager sharedInstance] setRootViewController:vc];
+        self.bridgeManager.hasRootLayout = YES;
+        [self.bridgeManager setRootViewController:vc];
     }
 }
 
 RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:(NSDictionary *)extras) {
-    UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     if (vc) {
-        [[HBDReactBridgeManager sharedInstance] handleNavigationWithViewController:vc action:action extras:extras];
+        [self.bridgeManager handleNavigationWithViewController:vc action:action extras:extras];
     } else {
         RCTLogWarn(@"Can't find target scene for action:%@, maybe the scene is gone. \nextras: %@", action, extras);
     }
 }
 
 RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UINavigationController *nav = vc.navigationController;
     if (nav) {
         NSArray *children = nav.childViewControllers;
@@ -87,27 +126,47 @@ RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResol
 }
 
 RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode data:(NSDictionary *)data) {
-    UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     [vc setResultCode:resultCode resultData:data];
 }
 
 RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    HBDViewController *current = [[HBDReactBridgeManager sharedInstance] primaryViewController];
+    Promiss *promiss = [[Promiss alloc] initWithResolver:resolve rejecter:reject];
+    [self performSelector:@selector(currentRouteWithPromiss:) withObject:promiss];
+}
+
+- (void)currentRouteWithPromiss:(Promiss *)promiss {
+    if (!self.bridgeManager.isViewHierarchyReady) {
+        [self performSelector:@selector(currentRouteWithPromiss:) withObject:promiss afterDelay:2];
+        return;
+    }
+    
+    HBDViewController *current = [self.bridgeManager primaryViewController];
     if (current) {
-        resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId, @"mode": [current hbd_mode] });
+        promiss.resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId, @"mode": [current hbd_mode] });
     } else {
-        RCTLogWarn(@"View Hierarchy is not ready when you call Navigator#currentRoute. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
-        resolve(NSNull.null);
+        promiss.reject(@"404", @"No current route",
+                       [NSError errorWithDomain:RCTErrorDomain code:404 userInfo:@{ NSLocalizedDescriptionKey: @"No current route." }]);
     }
 }
 
 RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    NSArray *root = [[HBDReactBridgeManager sharedInstance] routeGraph];
+    Promiss *promiss = [[Promiss alloc] initWithResolver:resolve rejecter:reject];
+    [self performSelector:@selector(routeGraphWithPromiss:) withObject:promiss];
+}
+
+- (void)routeGraphWithPromiss:(Promiss*)promiss {
+    if (!self.bridgeManager.isViewHierarchyReady) {
+        [self performSelector:@selector(routeGraphWithPromiss:) withObject:promiss afterDelay:2];
+        return;
+    }
+    
+    NSArray *root = [self.bridgeManager routeGraph];
     if (root.count > 0) {
-        resolve(root);
+        promiss.resolve(root);
     } else {
-        RCTLogWarn(@"View Hierarchy is not ready when you call Navigator#routeGraph. In order to avoid this warning, please use Navigator#setRootLayoutUpdateListener coordinately.");
-        resolve(NSNull.null);
+        promiss.reject(@"404", @"No route graph",
+                       [NSError errorWithDomain:RCTErrorDomain code:404 userInfo:@{ NSLocalizedDescriptionKey: @"No route graph." }]);
     }
 }
 

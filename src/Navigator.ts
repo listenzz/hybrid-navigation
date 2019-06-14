@@ -94,17 +94,14 @@ export class Navigator {
 
   static async current() {
     const route = await Navigator.currentRoute();
-    if (route) {
-      return Navigator.get(route.sceneId);
-    }
-    return null;
+    return Navigator.get(route.sceneId);
   }
 
-  static async currentRoute(): Promise<Route | null> {
+  static async currentRoute(): Promise<Route> {
     return await NavigationModule.currentRoute();
   }
 
-  static async routeGraph(): Promise<RouteGraph[] | null> {
+  static async routeGraph(): Promise<RouteGraph[]> {
     return await NavigationModule.routeGraph();
   }
 

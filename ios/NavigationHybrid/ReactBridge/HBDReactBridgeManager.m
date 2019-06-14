@@ -54,6 +54,7 @@ const NSInteger ResultCancel = 0;
         _nativeModules = [[NSMutableDictionary alloc] init];
         _reactModules = [[NSMutableDictionary alloc] init];
         _reactModuleRegisterCompleted = NO;
+        _viewHierarchyReady = NO;
         _navigators = [[NSMutableArray alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReload) name:RCTBridgeWillReloadNotification object:nil];
     }
@@ -65,9 +66,10 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)handleReload {
+    self.viewHierarchyReady = NO;
+    self.reactModuleRegisterCompleted = NO;
+    
     if (self.hasRootLayout) {
-        self.reactModuleRegisterCompleted = NO;
-        
         UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
         for (NSUInteger i = application.windows.count; i > 0; i--) {
             UIWindow *window = application.windows[i-1];
@@ -268,6 +270,7 @@ const NSInteger ResultCancel = 0;
 - (void)performSetRootViewController:(UIViewController *)rootViewController {
     UIWindow *keyWindow = RCTKeyWindow();
     keyWindow.rootViewController = rootViewController;
+    self.viewHierarchyReady = YES;
     if (self.hasRootLayout) {
         [HBDEventEmitter sendEvent:EVENT_SET_ROOT_COMPLETED data:@{}];
     }

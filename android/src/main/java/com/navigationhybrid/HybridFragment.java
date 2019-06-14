@@ -52,7 +52,7 @@ public class HybridFragment extends AwesomeFragment {
 
     @Nullable
     public ReactContext getCurrentReactContext() {
-        return getReactBridgeManager().getReactContext();
+        return getReactBridgeManager().getCurrentReactContext();
     }
 
     public boolean isReactModuleRegisterCompleted() {

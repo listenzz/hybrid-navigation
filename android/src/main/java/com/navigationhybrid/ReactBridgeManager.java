@@ -59,6 +59,7 @@ public class ReactBridgeManager {
     private ReadableMap rootLayout;
     private ReadableMap stickyLayout;
     private ReadableMap pendingLayout;
+    private boolean viewHierarchyReady;
 
     private ReactNativeHost reactNativeHost;
 
@@ -74,6 +75,7 @@ public class ReactBridgeManager {
             rootLayout = null;
             stickyLayout = null;
             pendingLayout = null;
+            viewHierarchyReady = false;
         });
 
         if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
@@ -95,7 +97,7 @@ public class ReactBridgeManager {
     }
 
     @Nullable
-    public ReactContext getReactContext() {
+    public ReactContext getCurrentReactContext() {
         return getReactInstanceManager().getCurrentReactContext();
     }
 
@@ -198,6 +200,14 @@ public class ReactBridgeManager {
 
     public boolean hasPendingLayout() {
         return pendingLayout != null;
+    }
+
+    public boolean isViewHierarchyReady() {
+        return viewHierarchyReady;
+    }
+
+    public void setViewHierarchyReady(boolean ready) {
+        viewHierarchyReady = ready;
     }
 
     @Nullable

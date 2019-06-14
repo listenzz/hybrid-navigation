@@ -132,7 +132,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         super.onViewAppear();
         sendViewAppearEvent(true);
         if (reactRootView != null) {
-            Log.i(TAG, "onViewAppear");
             reactRootView.addOnGlobalLayoutListener();
         }
     }
@@ -283,8 +282,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                         return true;
                     }
 
-                    ReactContext reactContext = getReactBridgeManager().getReactInstanceManager().getCurrentReactContext();
-                    if (reactContext != null && getReactBridgeManager().isReactModuleRegisterCompleted()) {
+                    ReactContext reactContext = getCurrentReactContext();
+                    if (reactContext != null && isReactModuleRegisterCompleted()) {
                         Activity activity = reactContext.getCurrentActivity();
                         if (activity != null) {
                             if (KeyEvent.ACTION_UP == event.getAction()) {
@@ -297,6 +296,5 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                     return false;
                 });
     }
-
 
 }

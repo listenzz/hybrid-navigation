@@ -92,6 +92,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         super.setActivityRootFragment(rootFragment);
         scheduleTaskAtStarted(() -> {
             ReactBridgeManager bridgeManager = getReactBridgeManager();
+            bridgeManager.setViewHierarchyReady(true);
             if (bridgeManager.hasRootLayout()) {
                 HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_SET_ROOT_COMPLETED, Arguments.createMap());
             }
@@ -233,6 +234,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Nullable
     public ReactContext getCurrentReactContext() {
-        return getReactBridgeManager().getReactContext();
+        return getReactBridgeManager().getCurrentReactContext();
     }
 }
