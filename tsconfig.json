@@ -11,12 +11,5 @@
     "declaration": true,
     "target": "esnext"
   },
-  "exclude": [
-    "node_modules",
-    "babel.config.js",
-    "metro.config.js",
-    "jest.config.js",
-    "scripts",
-    "playground"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "index.ts"]
 }
