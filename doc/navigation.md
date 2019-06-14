@@ -105,6 +105,10 @@ Navigator.setRoot({
 
 > Navigator.setRoot 还接受第二个参数，是个 boolean，用来决定 Android 按返回键退出 app 后，再次打开时，是否恢复到首次将该参数设置为 true 时的那个 layout。通常用来决定按返回键退出 app 后重新打开时，要不要走闪屏逻辑。请参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目对 Navigator.setRoot 的使用
 
+- setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {})
+
+通过这个方法可以监听 setRoot 的调用情况
+
 - get
 
 接受 sceneId 作为参数，返回一个已经存在的 navigator 实例
