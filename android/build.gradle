@@ -1,55 +1,34 @@
-import groovy.json.JsonSlurper
-
-def computeVersionName() {
-    // dynamically retrieve version from package.json
-    def slurper = new JsonSlurper()
-    def json = slurper.parse(file('../package.json'), "utf-8")
-    return json.version
-}
-
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
-    }
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
 
 apply plugin: 'com.android.library'
 
 android {
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion safeExtGet('compileSdkVersion', 26)
+    buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion safeExtGet('minSdkVersion', 16)
+        targetSdkVersion safeExtGet('targetSdkVersion', 26)
         versionCode 1
-        versionName computeVersionName()
+        versionName "1.0.0"
     }
 }
 
-repositories {
-    google()
-}
-
 dependencies {
-    implementation "com.android.support:appcompat-v7:$rootProject.ext.supportLibVersion"
-    implementation "com.android.support:support-v4:$rootProject.ext.supportLibVersion"
-    implementation "com.android.support:design:$rootProject.ext.supportLibVersion"
+    implementation "com.android.support:appcompat-v7:${safeExtGet('supportLibVersion', '28.0.0')}"
+    implementation "com.android.support:support-v4:${safeExtGet('supportLibVersion', '28.0.0')}"
+    implementation "com.android.support:design:${safeExtGet('supportLibVersion', '28.0.0')}"
     implementation 'com.facebook.react:react-native:+'
 
-    api project(':navigation')
-    // api 'me.listenzz:navigation:2.5.2'
+    // api project(':navigation')
+    api 'me.listenzz:navigation:2.5.3'
     api 'com.ashokvarma.android:bottom-navigation-bar:2.1.0'
 
 }

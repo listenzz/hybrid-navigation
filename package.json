@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
   },
-  "version": "0.13.3",
+  "version": "0.13.4",
   "nativePackage": true,
   "description": "Native navigation library for ReactNative, supporting navigating between native and ReactNative seamlessly.",
   "author": "listen <listenzz@163.com>",
@@ -48,7 +48,7 @@
     "typescript": "^3.5.1",
     "react": "16.8.3",
     "react-native": "0.59.8",
-    "react-native-hud-hybrid": "0.40.0",
+    "react-native-hud-hybrid": "0.42.0",
     "react-native-iphone-x-helper": "^1.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.8.0",
     "react-native-vector-icons": "^6.4.1",
