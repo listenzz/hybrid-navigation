@@ -39,6 +39,7 @@ export interface Style {
   titleAlignmentAndroid?: TitleAlignment;
   barButtonItemTextSize?: number;
   swipeBackEnabledAndroid?: boolean;
+  optimizationEnabledAndroid?: boolean;
 
   tabBarColor?: Color;
   tabBarShadowImage?: ShadowImage;
@@ -62,6 +63,7 @@ export interface NavigationItem {
   statusBarHidden?: boolean;
   statusBarColorAndroid?: Color;
   navigationBarColorAndroid?: Color;
+  optimizationEnabledAndroid?: boolean;
   backButtonHidden?: boolean;
   backInteractive?: boolean;
   swipeBackEnabled?: boolean;

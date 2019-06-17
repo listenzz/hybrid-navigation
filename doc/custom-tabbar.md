@@ -112,7 +112,7 @@ tabBar: {
       "sceneId": "86195762-DB47-4354-AE62-753D308818BC",
       "moduleName": "Navigation",
       "title": "Navigation",
-      "remind": false,
+      "dotBadge": false,
       "icon": "font://FontAwesome//24/#FFFFFF",
       "iconSelected": null
     },
