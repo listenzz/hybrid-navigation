@@ -239,8 +239,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
-        if (!reactBridgeManager.isReactModuleRegisterCompleted()) {
-            Log.w(TAG, "React module has not register completed.");
+        if (!reactBridgeManager.isViewHierarchyReady()) {
+            Log.w(TAG, "View hierarchy is not ready now.");
             return null;
         }
 

@@ -196,6 +196,10 @@ const NSInteger ResultCancel = 0;
 }
 
 - (UIViewController *)controllerForSceneId:(NSString *)sceneId {
+    if (!self.viewHierarchyReady) {
+        return nil;
+    }
+    
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     UIViewController *vc = nil;
     for (UIWindow *window in application.windows) {
