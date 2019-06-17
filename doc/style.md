@@ -405,6 +405,7 @@ this.props.garden.updateTopBar({
   titleTextColor: '#FFFFFF', // 当前页面标题颜色
   titleTextSize: 17, // 当前页面顶部导航栏标题字体大小
   backInteractive: false, // 是否允许侧滑返回或通过返回键返回，默认是 true
+  backButtonHidden: false, // 是否显示返回按钮，默认是 true
 });
 ```
 

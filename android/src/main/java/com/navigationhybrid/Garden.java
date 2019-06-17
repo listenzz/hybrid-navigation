@@ -285,6 +285,9 @@ public class Garden {
             this.backInteractive = options.getBoolean("backInteractive");
         }
 
+        if (options.get("backButtonHidden") != null) {
+            this.backButtonHidden = options.getBoolean("backButtonHidden");
+        }
     }
 
     void updateToolbar(@NonNull ReadableMap readableMap) {

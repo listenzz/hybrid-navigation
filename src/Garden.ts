@@ -173,7 +173,20 @@ export class Garden {
     GardenModule.setTitleItem(this.sceneId, item);
   }
 
-  updateTopBar(item: NavigationItem = {}) {
+  updateTopBar(
+    item: Pick<
+      NavigationItem,
+      | 'backInteractive'
+      | 'backButtonHidden'
+      | 'topBarStyle'
+      | 'topBarColor'
+      | 'topBarAlpha'
+      | 'topBarShadowHidden'
+      | 'topBarTintColor'
+      | 'titleTextColor'
+      | 'titleTextSize'
+    >
+  ) {
     GardenModule.updateTopBar(this.sceneId, item);
   }
 

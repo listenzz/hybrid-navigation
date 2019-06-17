@@ -102,16 +102,6 @@
         self.navigationItem.backBarButtonItem = backButton;
     }
     
-    NSNumber *backButtonHidden = self.options[@"backButtonHidden"];
-    if ([backButtonHidden boolValue]) {
-        if (@available(iOS 11, *)) {
-             [self.navigationItem setHidesBackButton:YES];
-        } else {
-            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
-            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
-        }
-    }
-    
     NSNumber *interactive = self.options[@"backInteractive"];
     if (interactive) {
         self.hbd_backInteractive = [interactive boolValue];
@@ -198,6 +188,23 @@
     NSNumber *backInteractive = options[@"backInteractive"];
     if (backInteractive) {
         self.hbd_backInteractive = [backInteractive boolValue];
+    }
+    
+    NSNumber *backButtonHidden = options[@"backButtonHidden"];
+    if (backButtonHidden) {
+        if ([backButtonHidden boolValue]) {
+            if (@available(iOS 11, *)) {
+                [self.navigationItem setHidesBackButton:YES];
+            } else {
+                self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
+            }
+        } else {
+            if (@available(iOS 11, *)) {
+                [self.navigationItem setHidesBackButton:NO];
+            } else {
+                self.navigationItem.leftBarButtonItem = nil;
+            }
+        }
     }
 }
 

@@ -5,7 +5,7 @@ import styles from './Styles';
 
 export default class Noninteractive extends Component {
   static navigationItem = {
-    // backButtonHidden: true,
+    backButtonHidden: true,
     // swipeBackEnabled: false,
     backInteractive: false,
     titleItem: {
@@ -27,6 +27,7 @@ export default class Noninteractive extends Component {
 
   enableBackInteractive() {
     this.props.garden.updateTopBar({
+      backButtonHidden: false,
       backInteractive: true,
     });
     this.setState({
@@ -36,6 +37,7 @@ export default class Noninteractive extends Component {
 
   disableBackInteractive() {
     this.props.garden.updateTopBar({
+      backButtonHidden: true,
       backInteractive: false,
     });
     this.setState({
