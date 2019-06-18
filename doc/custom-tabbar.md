@@ -103,8 +103,8 @@ tabBar: {
     "sceneId": "82a466fb-4a33-452d-b53e-d5122bf93078"
   },
   "selectedIndex": 1,
-  "itemColor": "#BDBDBD",
-  "selectedItemColor": "#8BC34A",
+  "itemColor": "#8BC34A",
+  "unselectedItemColor": "#BDBDBD",
   "badgeColor": "#FF3B30",
   "tabs": [
     {
@@ -112,9 +112,9 @@ tabBar: {
       "sceneId": "86195762-DB47-4354-AE62-753D308818BC",
       "moduleName": "Navigation",
       "title": "Navigation",
-      "dotBadge": false,
+      "dot": false,
       "icon": "font://FontAwesome//24/#FFFFFF",
-      "iconSelected": null
+      "unselectedIcon": null
     },
     {
       "index": 1,
@@ -123,7 +123,7 @@ tabBar: {
       "title": "Options",
       "badgeText": "99",
       "icon": "flower",
-      "iconSelected": null
+      "unselectedIcon": null
     }
   ]
 }

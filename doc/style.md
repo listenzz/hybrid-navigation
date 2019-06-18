@@ -40,33 +40,48 @@ icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
 
 ## 设置全局主题
 
-setStyle 接受一个对象为参数，可配置字段如下：
+我们通过 `Garden.setStyle(style: Style = {})` 来设置全局样式。可配置项如下：
 
-```javascript
-{
-  screenBackgroundColor: string; // 页面背景，默认是白色
-  topBarStyle: string; // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
-  topBarColor: string; // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
-  statusBarColorAndroid: string; // 状态栏背景色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
-  navigationBarColorAndroid: string; // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
-  hideBackTitleIOS: boolean; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-  elevationAndroid: number; // 导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
-  shadowImage: object; // 导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
-  backIcon: object; // 返回按钮图片
-  topBarTintColor: string; // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
-  titleTextColor: string; // 顶部导航栏标题颜色，默认根据 topBarStyle 来计算
-  titleTextSize: number; // 顶部导航栏标题字体大小，默认是 17 dp(pt)
-  titleAlignmentAndroid: string; // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
-  barButtonItemTextSize: number; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
-  swipeBackEnabledAndroid: boolean; // Android 是否开启右滑返回，默认是 false
-  optimizationEnabledAndroid: boolean; // Android 是否需要开启优化，默认是 true，可在指定页面关闭。
+```ts
+export interface Style {
+  screenBackgroundColor?: Color; // 页面背景，默认是白色
+  topBarStyle?: BarStyle; // 顶部导航栏样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
+  topBarColor?: Color; // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
+  statusBarColorAndroid?: Color; // 状态栏背景颜色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
+  navigationBarColorAndroid?: Color; // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
+  hideBackTitleIOS?: boolean; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
+  elevationAndroid?: number; // 顶部导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
+  shadowImage?: ShadowImage; // 顶部导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
+  backIcon?: Image; // 返回按钮图片
+  topBarTintColor?: Color; // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
+  titleTextColor?: Color; // 顶部导航栏标题颜色，默认根据 topBarStyle 来计算
+  titleTextSize?: number; // 顶部导航栏标题字体大小，默认是 17 dp(pt)
+  titleAlignmentAndroid?: TitleAlignment; // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
+  barButtonItemTextSize?: number; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
+  swipeBackEnabledAndroid?: boolean; // Android 是否开启右滑返回，默认是 false
+  optimizationEnabledAndroid?: boolean; // Android 是否需要开启优化，默认是 true，可在指定页面关闭。
 
-  tabBarColor: string; // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
-  tabBarShadowImage: object; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
-  tabBarItemColor: string; // 当 `tabBarSelectedItemColor` 未设置时，此值为选中效果，否则为未选中效果
-  tabBarSelectedItemColor: string; // 底部 TabBarItem icon 选中效果
-  badgeColor: string; // Badge 以及小红点的颜色
+  tabBarColor?: Color; // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
+  tabBarShadowImage?: ShadowImage; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
+  tabBarItemColor?: Color; // 底部 TabBarItem icon 选中颜色
+  tabBarUnselectedItemColor?: Color; // 底部 TabBarItem icon 未选中颜色，默认为 #BDBDBD
+  tabBarBadgeColor?: Color; //  Tab badge 颜色
 }
+
+export type Color = string;
+export type Image = { uri: string; scale?: number; height?: number; width?: number };
+export interface ShadowImage {
+  image?: Image;
+  color?: Color;
+}
+
+export const BarStyleLightContent = 'light-content';
+export const BarStyleDarkContent = 'dark-content';
+export type BarStyle = BarStyleLightContent | BarStyleDarkContent;
+
+export const TitleAlignmentLeft = 'left';
+export const TitleAlignmentCenter = 'center';
+export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft;
 ```
 
 > 全局设置主题，有些样式需要重新运行原生应用才能看到效果。
@@ -83,7 +98,7 @@ setStyle 接受一个对象为参数，可配置字段如下：
 
 ![topbar-default](../screenshot/topbar-default.png)
 
-- statusBarColor
+- statusBarColorAndroid
 
 仅对 Android 5.0 以上版本生效。默认取 `topBarColor` 的值。
 
@@ -172,7 +187,7 @@ UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只�
 
 - navigationBarColorAndroid
 
-  用于修改虚拟键的背景颜色，对 Andriod 8.0 以上版本生效。默认规则如下：
+  用于修改底部虚拟键的背景颜色，对 Andriod 8.0 以上版本生效。默认规则如下：
 
   - 含「底部 Tab」的页面，虚拟键设置为「底部 Tab」的颜色
 
@@ -197,11 +212,11 @@ UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只�
 ```javascript
 class Screen extends Component {
   static navigationItem = {
-    passThroughTouches: false, // 当前页面是否允许 touch 事件穿透，通常和透明的 `screenBackgroundColor` 一起使用
+    passThroughTouches: false, // 触摸事件是否可以穿透到下一层页面，很少用。
     screenBackgroundColor: '#FFFFFF', // 当前页面背景
     topBarStyle: string, // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
-    topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
-    topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
+    topBarColor: '#FDFF0000', // 当前页面顶部导航栏背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
+    topBarAlpha: 0.5, // 当前页面顶部导航背景透明度
     extendedLayoutIncludesTopBar: false, // 当前页面的内容是否延伸到 topBar 底下，通常用于需要动态改变 `topBarAlpha` 的场合
     topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
     titleTextColor: '#FFFFFF', // 当前页面标题颜色
@@ -279,14 +294,18 @@ class Screen extends Component {
       title: 'Style',
       // tab 图片
       icon: { uri: fontUri('FontAwesome', 'leaf', 20) },
-      // tab 选中时的图片，可选
-      selectedIcon: { uri: fontUri('FontAwesome', 'leaf', 20) },
+      // tab 未选中时的图片，可选
+      unselectedIcon: { uri: fontUri('FontAwesome', 'leaf', 20) },
       // push 时是否隐藏 tabBar
       hideTabBarWhenPush: true,
     },
   };
 }
 ```
+
+- extendedLayoutIncludesTopBar
+
+默认情况下，这个值根据 `topBarColor` 的初始值计算得出，如果 `topBarColor` 含有透明度，那么这个值为 true，否则为 false。通常用于需要动态改变 `topBarAlpha` 的场合。参看 [playground/TopBarAlpha](https://github.com/listenzz/react-native-navigation-hybrid/blob/master/playground/src/TopBarAlpha.js) 这个例子。
 
 - titleItem
 
@@ -306,7 +325,7 @@ this.props.navigator.setParams({});
 
 - tabItem
 
-如果同时设置了 icon 与 selectedIcon, 则保留图片原始颜色，否则用全局配置中的 `tabBarItemColor` 与 `tabBarSelectedItemColor` 对 icon 进行染色。
+如果同时设置了 icon 与 unselectedIcon, 则保留图片原始颜色，否则用全局配置中的 `tabBarItemColor` 与 `tabBarUnselectedItemColor` 对 icon 进行染色。
 
 hideTabBarWhenPush 表示当 stack 嵌套在 tabs 的时候，push 到另一个页面时是否隐藏 TabBar。
 
@@ -375,53 +394,59 @@ this.props.navigator.push(
 
 Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
 
-- setStatusBarColorAndroid
+- updateOptions(options: NavigationOption)
 
-动态更改状态栏背景颜色，仅对 Android 生效
+动态改变设置, 可配置项如下
 
-```javascript
-this.props.garden.setStatusBarColorAndroid({ statusBarColor: '#FF0000' });
+```ts
+export interface NavigationOption {
+  passThroughTouches?: boolean; // 触摸事件是否可以穿透到下一层页面，很少用。
+  statusBarHidden?: boolean; // 是否隐藏状态栏
+  statusBarColorAndroid?: Color; // 状态栏背景颜色
+  topBarStyle?: BarStyle; // 顶部导航栏样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
+  topBarColor?: Color; // 当前页面顶部导航栏背景颜色
+  topBarShadowHidden?: boolean; // 是否隐藏当前页面导航栏的阴影
+  topBarAlpha?: number; // 当前页面顶部导航栏背景透明度
+  topBarTintColor?: Color; // 当前页面按钮颜色
+  titleTextColor?: Color; // 当前页面顶部导航栏标题字体颜色
+  titleTextSize?: number; // 当前页面顶部导航栏标题字体大小
+  navigationBarColorAndroid?: Color; // Android 底部虚拟按钮背景颜色
+  backButtonHidden?: boolean; // 是否显示返回按钮
+  backInteractive?: boolean; // 是否允许侧滑返回或通过返回键返回
+}
 ```
 
-- setStatusBarHidden
-
-动态隐藏或显示状态栏
-
-```javascript
-this.props.garden.setStatusBarHidden(false);
-```
-
-- updateTopBar
-
-动态改变导航栏样式, 可配置项如下
-
-```javascript
-this.props.garden.updateTopBar({
-  topBarStyle: BarStyleLightContent, // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
-  topBarColor: '#FDFF0000', // 当前页面 topBar 背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下
-  topBarAlpha: 0.5, // 当前页面 topBar 背景透明度
-  topBarShadowHidden: true, // 是否隐藏当前页面 topBar 的阴影
-  topBarTintColor: '#FFFFFF', // 当前页面按钮颜色
-  titleTextColor: '#FFFFFF', // 当前页面标题颜色
-  titleTextSize: 17, // 当前页面顶部导航栏标题字体大小
-  backInteractive: false, // 是否允许侧滑返回或通过返回键返回，默认是 true
-  backButtonHidden: false, // 是否显示返回按钮，默认是 true
-});
-```
-
-- setTitleItem
+- setTitleItem(titleItem: TitleItem)
 
 更改标题
 
-```javascript
+```ts
+export interface TitleItem {
+  title?: string;
+}
+```
+
+```ts
 this.props.garden.setTitleItem({
   title: '新的标题',
 });
 ```
 
-- setLeftBarButtonItem
+- setLeftBarButtonItem(buttonItem: BarButtonItem)
 
 更改左侧按钮
+
+```ts
+export interface BarButtonItem {
+  title?: string;
+  icon?: Image;
+  insetsIOS?: Insets;
+  action?: string | Action;
+  enabled?: boolean;
+  tintColor?: Color;
+  renderOriginal?: boolean;
+}
+```
 
 ```javascript
 this.props.garden.setLeftBarButtonItem({
@@ -433,7 +458,7 @@ this.props.garden.setLeftBarButtonItem({
 });
 ```
 
-- setRightBarButtonItem
+- setRightBarButtonItem(buttonItem: BarButtonItem)
 
 更改右侧按钮
 
@@ -459,20 +484,31 @@ this.props.garden.updateTabBar({
 });
 ```
 
-- replaceTabIcon
+- setTabIcon(icon: TabIcon | TabIcon[])
 
 替换 tab 图标
 
-```javascript
-this.props.garden.replaceTabIcon(1, { uri: 'blue_solid', scale: PixelRatio.get() });
+```ts
+export interface TabIcon {
+  index: number;
+  icon: Image;
+  unselectedIcon?: Image;
+}
 ```
 
-- setTabBadge
+```javascript
+this.props.garden.setTabIcon({
+  index: 1,
+  icon: { uri: fontUri('FontAwesome', 'leaf', 24) },
+});
+```
+
+- setTabBadge(badge: TabBadge | TabBadge[])
 
 设置 badge
 
 ```ts
-export interface Badge {
+export interface TabBadge {
   index: number;
   text?: string;
   hidden: boolean;
@@ -491,7 +527,7 @@ if (hideBadge) {
 }
 ```
 
-- setMenuInteractive
+- setMenuInteractive(enabled: boolean)
 
 是否允许侧滑打开抽屉
 

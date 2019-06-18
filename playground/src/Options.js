@@ -137,14 +137,15 @@ export default class Options extends Component {
   replaceTabIcon() {
     if (this.icon === 'flower') {
       this.icon = '';
-      this.props.garden.replaceTabIcon(1, {
-        uri: fontUri('FontAwesome', 'leaf', 24),
+      this.props.garden.setTabIcon({
+        index: 1,
+        icon: { uri: fontUri('FontAwesome', 'leaf', 24) },
       });
     } else {
       this.icon = 'flower';
-      this.props.garden.replaceTabIcon(1, {
-        uri: 'flower',
-        scale: PixelRatio.get(),
+      this.props.garden.setTabIcon({
+        index: 1,
+        icon: { uri: 'flower', scale: PixelRatio.get() },
       });
     }
   }

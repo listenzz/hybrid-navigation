@@ -23,14 +23,10 @@ import me.listenzz.navigation.TabBarFragment;
 import me.listenzz.navigation.TabBarItem;
 import me.listenzz.navigation.TabBarProvider;
 
-import static com.navigationhybrid.Constants.ACTION_SET_BADGE;
+import static com.navigationhybrid.Constants.ACTION_SET_TAB_BADGE;
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;
 import static com.navigationhybrid.Constants.ACTION_UPDATE_TAB_BAR;
 import static com.navigationhybrid.Constants.ARG_ACTION;
-import static com.navigationhybrid.Constants.ARG_BADGE;
-import static com.navigationhybrid.Constants.ARG_ICON;
-import static com.navigationhybrid.Constants.ARG_ICON_SELECTED;
-import static com.navigationhybrid.Constants.ARG_INDEX;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
 import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
 import static com.navigationhybrid.HBDEventEmitter.KEY_INDEX;
@@ -90,13 +86,13 @@ public class ReactTabBarFragment extends TabBarFragment {
         String tabBarItemColor = options.getString("tabBarItemColor");
         String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
 
-        if (tabBarUnselectedItemColor != null) {
-            style.setTabBarItemColor(tabBarUnselectedItemColor);
-            style.setTabBarSelectedItemColor(tabBarItemColor);
+        if (tabBarItemColor != null) {
+            style.setTabBarItemColor(tabBarItemColor);
+            style.setTabBarUnselectedItemColor(tabBarUnselectedItemColor);
         } else {
             options.putString("tabBarItemColor", style.getTabBarItemColor());
-            options.putString("tabBarSelectedItemColor", style.getTabBarSelectedItemColor());
-            options.putString("badgeColor", style.getBadgeColor());
+            options.putString("tabBarUnselectedItemColor", style.getTabBarUnselectedItemColor());
+            options.putString("tabBarBadgeColor", style.getTabBarBadgeColor());
         }
 
         Bundle shadowImage = options.getBundle("tabBarShadowImage");
@@ -115,11 +111,11 @@ public class ReactTabBarFragment extends TabBarFragment {
             }
 
             switch (action) {
-                case ACTION_SET_BADGE:
-                    setBadge(options.getParcelableArrayList(ARG_BADGE));
+                case ACTION_SET_TAB_BADGE:
+                    setTabBadge(options.getParcelableArrayList(ARG_OPTIONS));
                     break;
                 case ACTION_SET_TAB_ICON:
-                    setTabIcon(options.getInt(ARG_INDEX), options.getBundle(ARG_ICON), options.getBundle(ARG_ICON_SELECTED));
+                    setTabIcon(options.getParcelableArrayList(ARG_OPTIONS));
                     break;
                 case ACTION_UPDATE_TAB_BAR:
                     updateTabBarAppearance(options.getBundle(ARG_OPTIONS));
@@ -128,7 +124,7 @@ public class ReactTabBarFragment extends TabBarFragment {
         }
     }
 
-    private void setBadge(@Nullable ArrayList<Bundle> options) {
+    private void setTabBadge(@Nullable ArrayList<Bundle> options) {
         if (options == null) {
             return;
         }
@@ -146,29 +142,41 @@ public class ReactTabBarFragment extends TabBarFragment {
         }
     }
 
-    private void setTabIcon(int index, Bundle icon, Bundle selectedIcon) {
-        TabBar tabBar = getTabBar();
-        Drawable drawable = drawableFromReadableMap(requireContext(), icon);
-        if (drawable == null) {
+    private void setTabIcon(@Nullable ArrayList<Bundle> options) {
+        if (options == null) {
             return;
         }
-        Drawable selectedDrawable = drawableFromReadableMap(requireContext(), selectedIcon);
-        AwesomeFragment fragment = getChildFragments().get(index);
-        if (selectedDrawable != null) {
-            fragment.setTabBarItem(newTabBarItem(fragment, icon.getString("uri"), selectedIcon.getString("uri")));
-            tabBar.setTabIcon(index, selectedDrawable, drawable);
-        } else {
-            fragment.setTabBarItem(newTabBarItem(fragment, icon.getString("uri"), null));
-            tabBar.setTabIcon(index, drawable, null);
+
+        TabBar tabBar = getTabBar();
+
+        for (Bundle option : options) {
+            int index = (int) option.getDouble("index");
+
+            Bundle icon = option.getBundle("icon");
+            Bundle unselectedIcon = option.getBundle("unselectedIcon");
+            Drawable drawable = drawableFromReadableMap(requireContext(), icon);
+            Drawable unselectedDrawable = drawableFromReadableMap(requireContext(), unselectedIcon);
+
+            AwesomeFragment fragment = getChildFragments().get(index);
+
+            if (icon != null) {
+                if (unselectedIcon != null) {
+                    fragment.setTabBarItem(newTabBarItem(fragment, icon.getString("uri"), unselectedIcon.getString("uri")));
+                } else {
+                    fragment.setTabBarItem(newTabBarItem(fragment, icon.getString("uri"), null));
+                }
+            }
+
+            tabBar.setTabIcon(index, drawable, unselectedDrawable);
         }
     }
 
-    private TabBarItem newTabBarItem(@NonNull AwesomeFragment fragment, @Nullable String icon, @Nullable String selectedIcon) {
+    private TabBarItem newTabBarItem(@NonNull AwesomeFragment fragment, @Nullable String icon, @Nullable String unselectedIcon) {
         TabBarItem tabBarItem = fragment.getTabBarItem();
         if (tabBarItem == null) {
             throw new IllegalArgumentException("the fragment must have a tabBarItem");
         }
-        return new TabBarItem(icon, selectedIcon, tabBarItem.title);
+        return new TabBarItem(icon, unselectedIcon, tabBarItem.title);
     }
 
     private void updateTabBarAppearance(@Nullable Bundle options) {
@@ -186,7 +194,7 @@ public class ReactTabBarFragment extends TabBarFragment {
 
         String tabBarItemColor = options.getString("tabBarItemColor");
         String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
-        if (tabBarItemColor != null && tabBarUnselectedItemColor != null) {
+        if (tabBarItemColor != null) {
             tabBar.setTabItemColor(tabBarItemColor, tabBarUnselectedItemColor);
         }
 
@@ -198,7 +206,8 @@ public class ReactTabBarFragment extends TabBarFragment {
         setOptions(Garden.mergeOptions(getOptions(), options));
     }
 
-    private Drawable drawableFromReadableMap(Context context, Bundle icon) {
+    @Nullable
+    private Drawable drawableFromReadableMap(@NonNull Context context, @Nullable Bundle icon) {
         if (icon != null) {
             String uri = icon.getString("uri");
             if (uri != null) {

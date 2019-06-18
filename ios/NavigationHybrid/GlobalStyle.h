@@ -16,7 +16,7 @@
 
 @property (nonatomic, copy) NSString *badgeColorHexString;
 @property (nonatomic, copy) NSString *tabBarItemColorHexString;
-@property (nonatomic, copy) NSString *tabBarSelectedItemColorHexString;
+@property (nonatomic, copy) NSString *tabBarUnselectedItemColorHexString;
 @property (nonatomic, strong, readonly) UIColor *tabBarBackgroundColor;
 
 - (instancetype)initWithOptions:(NSDictionary *)options;

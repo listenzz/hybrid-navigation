@@ -4,7 +4,6 @@ package com.navigationhybrid;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -27,7 +26,6 @@ import static com.navigationhybrid.HBDEventEmitter.KEY_ON;
 import static com.navigationhybrid.HBDEventEmitter.KEY_SCENE_ID;
 import static com.navigationhybrid.HBDEventEmitter.ON_BAR_BUTTON_ITEM_CLICK;
 
-
 /**
  * Created by Listen on 2017/11/22.
  */
@@ -46,21 +44,6 @@ public class Garden {
 
     static GlobalStyle getGlobalStyle() {
         return globalStyle;
-    }
-
-    @NonNull
-    static Bundle mergeOptions(@NonNull Bundle options, @Nullable ReadableMap readableMap) {
-        if (readableMap == null) {
-            return options;
-        }
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.merge(Arguments.fromBundle(options));
-        writableMap.merge(readableMap);
-        Bundle result = Arguments.toBundle(writableMap);
-        if (result == null) {
-            throw new NullPointerException("merge fail.");
-        }
-        return result;
     }
 
     @NonNull
@@ -122,17 +105,6 @@ public class Garden {
         if (!TextUtils.isEmpty(screenColor)) {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));
         }
-
-        String statusBarColor = options.getString("statusBarColorAndroid");
-        if (statusBarColor == null) {
-            statusBarColor = options.getString("statusBarColor");
-        }
-        if (!TextUtils.isEmpty(statusBarColor)) {
-            style.setStatusBarColor(Color.parseColor(statusBarColor));
-        }
-
-        boolean statusBarHidden = options.getBoolean("statusBarHidden");
-        style.setStatusBarHidden(statusBarHidden);
 
         String navigationBarColor = options.getString("navigationBarColorAndroid");
         if (!TextUtils.isEmpty(navigationBarColor)) {
@@ -233,13 +205,6 @@ public class Garden {
         });
     }
 
-    void setPassThroughTouches(boolean passThroughTouches) {
-        View view = fragment.getView();
-        if (view instanceof ReactView) {
-            ((ReactView) view).setShouldConsumeTouchEvent(!passThroughTouches);
-        }
-    }
-
     private void applyToolbarOptions(@NonNull Bundle options) {
         String barStyle = options.getString("topBarStyle");
         if (barStyle != null) {
@@ -251,6 +216,14 @@ public class Garden {
                 this.statusBarStyle = BarStyle.LightContent;
             }
         }
+
+        String statusBarColor = options.getString("statusBarColorAndroid");
+        if (!TextUtils.isEmpty(statusBarColor)) {
+            style.setStatusBarColor(Color.parseColor(statusBarColor));
+        }
+
+        boolean statusBarHidden = options.getBoolean("statusBarHidden");
+        style.setStatusBarHidden(statusBarHidden);
 
         String topBarTintColor = options.getString("topBarTintColor");
         if (!TextUtils.isEmpty(topBarTintColor)) {
@@ -290,24 +263,72 @@ public class Garden {
         }
     }
 
-    void updateToolbar(@NonNull ReadableMap readableMap) {
+
+    private boolean shouldUpdateStatusBar(@NonNull ReadableMap readableMap) {
+        String[] keys = new String[]{"statusBarColorAndroid", "statusBarHidden", "topBarStyle", "topBarColor"};
+        for (String key : keys) {
+            if (readableMap.hasKey(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean shouldUpdateToolbar(@NonNull ReadableMap readableMap) {
+        String[] keys = new String[]{
+                "topBarColor", "topBarAlpha", "topBarShadowHidden", "topBarTintColor",
+                "titleTextSize", "titleTextColor", "backButtonHidden"
+        };
+
+        for (String key : keys) {
+            if (readableMap.hasKey(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean shouldUpdateNavigationBar(@NonNull ReadableMap readableMap) {
+        String[] keys = new String[]{"navigationBarColorAndroid"};
+        for (String key : keys) {
+            if (readableMap.hasKey(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void updateOptions(@NonNull ReadableMap readableMap) {
         Bundle options = Arguments.toBundle(readableMap);
         if (options != null) {
             applyToolbarOptions(options);
-            fragment.setNeedsStatusBarAppearanceUpdate(false);
-            fragment.setNeedsToolbarAppearanceUpdate();
-            fragment.setOptions(mergeOptions(fragment.getOptions(), readableMap));
+
+            if (shouldUpdateStatusBar(readableMap)) {
+                fragment.setNeedsStatusBarAppearanceUpdate();
+            }
+
+            if (shouldUpdateToolbar(readableMap)) {
+                fragment.setNeedsToolbarAppearanceUpdate();
+            }
+
+            if (shouldUpdateNavigationBar(readableMap)) {
+                fragment.setNeedsNavigationBarAppearanceUpdate();
+            }
+
+            if (readableMap.hasKey("passThroughTouches")) {
+                boolean passThroughTouches = readableMap.getBoolean("passThroughTouches");
+                setPassThroughTouches(passThroughTouches);
+            }
+
+            fragment.setOptions(Utils.mergeOptions(fragment.getOptions(), readableMap));
         }
     }
 
-    void setStatusBarColor(@ColorInt int color) {
-        style.setStatusBarColor(color);
-        fragment.setNeedsStatusBarAppearanceUpdate();
-    }
-
-    void setStatusBarHidden(boolean hidden) {
-        style.setStatusBarHidden(hidden);
-        fragment.setNeedsStatusBarAppearanceUpdate();
+    void setPassThroughTouches(boolean passThroughTouches) {
+        View view = fragment.getView();
+        if (view instanceof ReactView) {
+            ((ReactView) view).setShouldConsumeTouchEvent(!passThroughTouches);
+        }
     }
 
 }

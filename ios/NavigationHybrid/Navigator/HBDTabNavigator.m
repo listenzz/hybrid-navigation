@@ -48,7 +48,7 @@
             tabBarOptions[@"selectedIndex"] = [options objectForKey:@"selectedIndex"] ?: @(0);
             GlobalStyle *style = [HBDGarden globalStyle];
             tabBarOptions[@"tabBarItemColor"] = style.tabBarItemColorHexString;
-            tabBarOptions[@"tabBarSelectedItemColor"] = style.tabBarSelectedItemColorHexString;
+            tabBarOptions[@"tabBarUnselectedItemColor"] = style.tabBarUnselectedItemColorHexString;
             tabBarOptions[@"badgeColor"] = style.badgeColorHexString;
         }
         
@@ -95,7 +95,7 @@
                       @"sceneId": hbdVC.sceneId,
                       @"moduleName": hbdVC.moduleName ?: NSNull.null,
                       @"icon": [HBDUtils iconUriFromUri:tabItem[@"icon"][@"uri"]] ?: NSNull.null,
-                      @"selectedIcon": [HBDUtils iconUriFromUri:tabItem[@"selectedIcon"][@"uri"]] ?: NSNull.null,
+                      @"unselectedIcon": [HBDUtils iconUriFromUri:tabItem[@"unselectedIcon"][@"uri"]] ?: NSNull.null,
                       @"title": tabItem[@"title"] ?: NSNull.null
                       };
                 [tabInfos addObject:tab];

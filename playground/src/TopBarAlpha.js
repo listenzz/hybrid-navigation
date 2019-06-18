@@ -73,7 +73,7 @@ export default class TopBarAlpha extends Component {
   }
 
   onAlphaChange(value) {
-    this.props.garden.updateTopBar({
+    this.props.garden.updateOptions({
       topBarAlpha: value,
     });
     this.setState({ alpha: value });

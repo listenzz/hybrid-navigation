@@ -7,6 +7,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 
 import me.listenzz.navigation.DrawableUtils;
 
@@ -39,5 +45,36 @@ public class Utils {
             iconUri = DrawableUtils.filepathFromFont(context, uri);
         }
         return  iconUri;
+    }
+
+    @NonNull
+    static Bundle mergeOptions(@NonNull Bundle options, @NonNull String key, @NonNull ReadableMap readableMap) {
+        Bundle bundle = options.getBundle(key);
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(Arguments.fromBundle(bundle));
+        writableMap.merge(readableMap);
+        Bundle result = Arguments.toBundle(writableMap);
+        if (result == null) {
+            throw new NullPointerException("merge fail.");
+        }
+        return result;
+    }
+
+    @NonNull
+    static Bundle mergeOptions(@NonNull Bundle options, @Nullable ReadableMap readableMap) {
+        if (readableMap == null) {
+            return options;
+        }
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(Arguments.fromBundle(options));
+        writableMap.merge(readableMap);
+        Bundle result = Arguments.toBundle(writableMap);
+        if (result == null) {
+            throw new NullPointerException("merge fail.");
+        }
+        return result;
     }
 }

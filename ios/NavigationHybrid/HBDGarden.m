@@ -11,12 +11,15 @@
 #import <React/RCTRootView.h>
 
 #import "HBDBarButtonItem.h"
-#import "HBDReactBridgeManager.h"
 #import "HBDUtils.h"
-#import "HBDTitleView.h"
-#import "HBDNavigationController.h"
 #import "HBDEventEmitter.h"
 
+
+@interface HBDGarden ()
+
+@property(nonatomic, weak, readonly) HBDViewController *viewController;
+
+@end
 
 @implementation HBDGarden
 
@@ -33,7 +36,14 @@ static GlobalStyle *globalStyle;
     return globalStyle;
 }
 
-- (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
+- (instancetype)initWithViewController:(HBDViewController *)vc {
+    if (self = [super init]) {
+        _viewController = vc;
+    }
+    return self;
+}
+
+- (void)setLeftBarButtonItem:(NSDictionary *)item {
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
@@ -42,7 +52,7 @@ static GlobalStyle *globalStyle;
             [array addObject:spacer];
         }
         
-        UIBarButtonItem *buttonItem = [self createBarButtonItem:item forController:controller];
+        UIBarButtonItem *buttonItem = [self createBarButtonItem:item];
         UIView *customView = buttonItem.customView;
         if ([customView isKindOfClass:[HBDBarButton class]]) {
             HBDBarButton *button = (HBDBarButton *)customView;
@@ -51,11 +61,11 @@ static GlobalStyle *globalStyle;
         }
         [array addObject:buttonItem];
         
-        controller.navigationItem.leftBarButtonItems = array;
+        self.viewController.navigationItem.leftBarButtonItems = array;
     }
 }
 
-- (void)setRightBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
+- (void)setRightBarButtonItem:(NSDictionary *)item {
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
@@ -64,7 +74,7 @@ static GlobalStyle *globalStyle;
             [array addObject:spacer];
         }
         
-        UIBarButtonItem *buttonItem = [self createBarButtonItem:item forController:controller];
+        UIBarButtonItem *buttonItem = [self createBarButtonItem:item];
         UIView *customView = buttonItem.customView;
         if ([customView isKindOfClass:[HBDBarButton class]]) {
             HBDBarButton *button = (HBDBarButton *)customView;
@@ -73,13 +83,13 @@ static GlobalStyle *globalStyle;
         }
         [array addObject:buttonItem];
         
-        controller.navigationItem.rightBarButtonItems = array;
+        self.viewController.navigationItem.rightBarButtonItems = array;
     }
 }
 
-- (void)setLeftBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller {
+- (void)setLeftBarButtonItems:(NSArray *)items {
     if (items) {
-        NSArray *barButtonItems = [self createBarButtonItems:items forController:controller];
+        NSArray *barButtonItems = [self createBarButtonItems:items];
         NSMutableArray *array = [[NSMutableArray alloc] init];
         
         if (@available(iOS 11.0, *)) {
@@ -99,13 +109,13 @@ static GlobalStyle *globalStyle;
             }
         }
         
-        controller.navigationItem.leftBarButtonItems = array;
+        self.viewController.navigationItem.leftBarButtonItems = array;
     }
 }
 
-- (void)setRightBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller {
+- (void)setRightBarButtonItems:(NSArray *)items {
     if (items) {
-        NSArray *barButtonItems = [self createBarButtonItems:items forController:controller];
+        NSArray *barButtonItems = [self createBarButtonItems:items];
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
             UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
@@ -124,27 +134,23 @@ static GlobalStyle *globalStyle;
             }
         }
         
-        controller.navigationItem.rightBarButtonItems = array;
+        self.viewController.navigationItem.rightBarButtonItems = array;
     }
 }
 
-- (NSArray *)createBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller {
+- (NSArray *)createBarButtonItems:(NSArray *)items {
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (NSUInteger i = 0; i < items.count; i++) {
         NSDictionary *item = [items objectAtIndex:i];
-        HBDBarButtonItem *barButtonItem = [self createBarButtonItem:item forController:controller];
-        [array addObject:barButtonItem];
+        [array addObject:[self createBarButtonItem:item]];
     }
     return array;
 }
 
-- (HBDBarButtonItem *)createBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller {
+- (HBDBarButtonItem *)createBarButtonItem:(NSDictionary *)item {
     HBDBarButtonItem *barButtonItem;
     
     NSDictionary *insetsOption = item[@"insetsIOS"];
-    if (!insetsOption) {
-        insetsOption = item[@"insets"];
-    }
     UIEdgeInsets insets = UIEdgeInsetsZero;
     if (insetsOption) {
         insets =  [RCTConvert UIEdgeInsets:insetsOption];
@@ -171,7 +177,7 @@ static GlobalStyle *globalStyle;
     }
     
     NSString *action = item[@"action"];
-    NSString *sceneId = controller.sceneId;
+    NSString *sceneId = self.viewController.sceneId;
     
     NSString *tintColor = item[@"tintColor"];
     if (tintColor) {
@@ -190,23 +196,9 @@ static GlobalStyle *globalStyle;
     return barButtonItem;
 }
 
-- (void)setTitleItem:(NSDictionary *)item forController:(HBDViewController *)controller {
-    if (item) {
-        NSString *title = item[@"title"];
-        controller.navigationItem.title = title;
-    } else {
-        controller.navigationItem.title = nil;
-    }
-}
-
-- (void)setStatusBarHidden:(BOOL)hidden forController:(HBDViewController *)controller {
-    controller.hbd_statusBarHidden = hidden && ![HBDUtils isIphoneX];
-    [controller hbd_setNeedsStatusBarHiddenUpdate];
-}
-
-- (void)setPassThroughTouches:(BOOL)passThrough forController:(HBDViewController *)controller {
-    if ([controller.view isKindOfClass:[RCTRootView class]]) {
-        RCTRootView *rootView = (RCTRootView *)controller.view;
+- (void)setPassThroughTouches:(BOOL)passThrough {
+    if ([self.viewController.view isKindOfClass:[RCTRootView class]]) {
+        RCTRootView *rootView = (RCTRootView *)self.viewController.view;
         rootView.passThroughTouches = passThrough;
     }
 }

@@ -136,17 +136,15 @@
         
         // tabBar tintColor
         NSString *tabBarItemColor = self.options[@"tabBarItemColor"];
-        self.tabBarItemColorHexString = @"#BDBDBD";
-        self.tabBarSelectedItemColorHexString = @"#FF5722";
+        self.tabBarUnselectedItemColorHexString = @"#BDBDBD";
+        self.tabBarItemColorHexString = @"#FF5722";
         if (tabBarItemColor) {
             self.tabBarTintColor = [HBDUtils colorWithHexString:tabBarItemColor];
-            self.tabBarSelectedItemColorHexString = tabBarItemColor;
-            NSString *tabBarSelectedItemColor = self.options[@"tabBarSelectedItemColor"];
-            if (tabBarSelectedItemColor) {
-                self.tabBarTintColor = [HBDUtils colorWithHexString:tabBarSelectedItemColor];
-                self.tabBarUnselectedTintColor = [HBDUtils colorWithHexString:tabBarItemColor];
-                self.tabBarItemColorHexString = tabBarItemColor;
-                self.tabBarSelectedItemColorHexString = tabBarSelectedItemColor;
+            self.tabBarItemColorHexString = tabBarItemColor;
+            NSString *tabBarUnselectedItemColor = self.options[@"tabBarUnselectedItemColor"];
+            if (tabBarUnselectedItemColor) {
+                self.tabBarUnselectedTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
+                self.tabBarUnselectedItemColorHexString = tabBarUnselectedItemColor;
             }
         }
         

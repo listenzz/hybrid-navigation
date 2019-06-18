@@ -20,15 +20,15 @@ export default class StatusBarColor extends Component {
   }
 
   red() {
-    this.props.garden.setStatusBarColorAndroid({ statusBarColor: '#FF0000' });
+    this.props.garden.updateOptions({ statusBarColorAndroid: '#FF0000' });
   }
 
   green() {
-    this.props.garden.setStatusBarColorAndroid({ statusBarColor: '#00FF00' });
+    this.props.garden.updateOptions({ statusBarColorAndroid: '#00FF00' });
   }
 
   blue() {
-    this.props.garden.setStatusBarColorAndroid({ statusBarColor: '#0000FF' });
+    this.props.garden.updateOptions({ statusBarColorAndroid: '#0000FF' });
   }
 
   statusBarColor() {

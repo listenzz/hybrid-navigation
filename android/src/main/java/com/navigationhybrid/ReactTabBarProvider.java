@@ -29,14 +29,10 @@ import me.listenzz.navigation.TabBarProvider;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.navigationhybrid.Constants.ACTION_SET_BADGE;
+import static com.navigationhybrid.Constants.ACTION_SET_TAB_BADGE;
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;
 import static com.navigationhybrid.Constants.ACTION_UPDATE_TAB_BAR;
 import static com.navigationhybrid.Constants.ARG_ACTION;
-import static com.navigationhybrid.Constants.ARG_BADGE;
-import static com.navigationhybrid.Constants.ARG_ICON;
-import static com.navigationhybrid.Constants.ARG_ICON_SELECTED;
-import static com.navigationhybrid.Constants.ARG_INDEX;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
 
 public class ReactTabBarProvider implements TabBarProvider {
@@ -66,7 +62,7 @@ public class ReactTabBarProvider implements TabBarProvider {
                 Bundle tab = new Bundle();
                 tab.putInt("index", i);
                 tab.putString("icon", Utils.getIconUri(context, tabBarItem.iconUri));
-                tab.putString("selectedIcon", Utils.getIconUri(context, tabBarItem.selectedIconUri));
+                tab.putString("unselectedIcon", Utils.getIconUri(context, tabBarItem.unselectedIconUri));
                 tab.putString("title", tabBarItem.title);
                 Pair<String, String> pair = extractSceneIdAndModuleName(children.get(i));
                 tab.putString("sceneId", pair.first);
@@ -149,21 +145,14 @@ public class ReactTabBarProvider implements TabBarProvider {
         props.putInt("selectedIndex", tabBarFragment.getSelectedIndex());
 
         String tabBarItemColor = options.getString("tabBarItemColor");
-        String tabBarSelectedItemColor = options.getString("tabBarSelectedItemColor");
         String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
 
         if (tabBarItemColor != null) {
             props.putString("itemColor", tabBarItemColor);
-            if (tabBarSelectedItemColor != null) {
-                props.putString("selectedItemColor", tabBarSelectedItemColor);
-            }
-            if (tabBarUnselectedItemColor != null) {
-                props.putString("itemColor", tabBarUnselectedItemColor);
-                props.putString("selectedItemColor", tabBarItemColor);
-            }
+            props.putString("unselectedItemColor", tabBarUnselectedItemColor);
         }
 
-        props.putString("badgeColor", options.getString("badgeColor"));
+        props.putString("badgeColor", options.getString("tabBarBadgeColor"));
         return props;
     }
 
@@ -202,11 +191,11 @@ public class ReactTabBarProvider implements TabBarProvider {
         }
 
         switch (action) {
-            case ACTION_SET_BADGE:
-                setBadge(options.getParcelableArrayList(ARG_BADGE));
+            case ACTION_SET_TAB_BADGE:
+                setTabBadge(options.getParcelableArrayList(ARG_OPTIONS));
                 break;
             case ACTION_SET_TAB_ICON:
-                setTabIcon(options.getInt(ARG_INDEX), options.getBundle(ARG_ICON), options.getBundle(ARG_ICON_SELECTED));
+                setTabIcon(options.getParcelableArrayList(ARG_OPTIONS));
                 break;
             case ACTION_UPDATE_TAB_BAR:
                 updateTabBarAppearance(options.getBundle(ARG_OPTIONS));
@@ -215,7 +204,7 @@ public class ReactTabBarProvider implements TabBarProvider {
     }
 
 
-    private void setBadge(@Nullable ArrayList<Bundle> options) {
+    private void setTabBadge(@Nullable ArrayList<Bundle> options) {
         if (options == null) {
             return;
         }
@@ -236,38 +225,45 @@ public class ReactTabBarProvider implements TabBarProvider {
 
             Bundle tab = tabs.get(index);
             tab.putString("badgeText", text);
-            tab.putBoolean("remind", dot);
-            tab.putBoolean("dotBadge", dot);
+            tab.putBoolean("dot", dot);
         }
 
         reactView.setAppProperties(getProps(tabBarFragment));
     }
 
-
-
-    private void setTabIcon(int index, @Nullable Bundle icon, @Nullable Bundle selectedIcon) {
-        if (icon == null) {
+    private void setTabIcon(@Nullable ArrayList<Bundle> options) {
+        if (options == null) {
             return;
         }
 
-        Bundle options = tabBarFragment.getOptions();
-        ArrayList<Bundle> tabs = options.getParcelableArrayList("tabs");
+        Bundle tabBar = tabBarFragment.getOptions();
+        ArrayList<Bundle> tabs = tabBar.getParcelableArrayList("tabs");
+
         if (tabs == null) {
-            // should never happen
-            throw new IllegalStateException("现在还不能执行设置 badge 的操作");
+            return;
         }
-        Bundle tab = tabs.get(index);
 
-        Context context = tabBarFragment.requireContext();
-        String iconUri = Utils.getIconUri(context, icon.getString("uri"));
-        tab.putString("icon", iconUri);
+        for (Bundle option : options) {
+            int index = (int) option.getDouble("index");
+            Bundle icon = option.getBundle("icon");
+            Bundle unselectedIcon = option.getBundle("unselectedIcon");
+            Context context = tabBarFragment.requireContext();
+            Bundle tab = tabs.get(index);
+            if (icon != null) {
+                String uri = Utils.getIconUri(context, icon.getString("uri"));
+                tab.putString("icon", uri);
+                tab.putString("unselectedIcon", null);
+            }
 
-        if (selectedIcon != null) {
-            String selectedIconUri = Utils.getIconUri(context, selectedIcon.getString("uri"));
-            tab.putString("selectedIcon", selectedIconUri);
+            if (unselectedIcon != null) {
+                String uri = Utils.getIconUri(context, unselectedIcon.getString("uri"));
+                tab.putString("unselectedIcon", uri);
+            }
         }
+
         reactView.setAppProperties(getProps(tabBarFragment));
     }
+
 
     private void updateTabBarAppearance(@Nullable Bundle bundle) {
         if (bundle == null) {
@@ -294,7 +290,7 @@ public class ReactTabBarProvider implements TabBarProvider {
 
         String tabBarItemColor = bundle.getString("tabBarItemColor");
         String tabBarUnselectedItemColor = bundle.getString("tabBarUnselectedItemColor");
-        if (tabBarItemColor != null && tabBarUnselectedItemColor != null) {
+        if (tabBarItemColor != null) {
             options.putString("tabBarItemColor", tabBarItemColor);
             options.putString("tabBarUnselectedItemColor", tabBarUnselectedItemColor);
             Bundle props = getProps(tabBarFragment);

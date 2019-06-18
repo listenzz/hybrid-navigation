@@ -53,11 +53,11 @@ export default class StatusBarHidden extends Component {
   }
 
   showStatusBar() {
-    this.props.garden.setStatusBarHidden(false);
+    this.props.garden.updateOptions({ statusBarHidden: false });
   }
 
   hideStatusBar() {
-    this.props.garden.setStatusBarHidden();
+    this.props.garden.updateOptions({ statusBarHidden: true });
   }
 
   render() {

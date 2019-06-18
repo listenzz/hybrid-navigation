@@ -92,17 +92,10 @@
     props[@"badgeColor"] = options[@"badgeColor"];
     
     NSString *tabBarItemColor = options[@"tabBarItemColor"];
-    NSString *tabBarSelectedItemColor = options[@"tabBarSelectedItemColor"];
     NSString *tabBarUnselectedItemColor = options[@"tabBarUnselectedItemColor"];
     if (tabBarItemColor) {
         props[@"itemColor"] = tabBarItemColor;
-        if (tabBarSelectedItemColor) {
-            props[@"selectedItemColor"] = tabBarSelectedItemColor;
-        }
-        if (tabBarUnselectedItemColor) {
-            props[@"itemColor"] = tabBarUnselectedItemColor;
-            props[@"selectedItemColor"] = tabBarItemColor;
-        }
+        props[@"unselectedItemColor"] = tabBarUnselectedItemColor ?: NSNull.null;
     }
     return props;
 }
@@ -128,8 +121,7 @@
         
         if (self.hasCustomTabBar) {
             NSMutableDictionary *tab = [self tabAtIndex:index];
-            tab[@"dotBadge"] = @(dot);
-            tab[@"remind"] = @(dot);
+            tab[@"dot"] = @(dot);
             tab[@"badgeText"] = text ?: NSNull.null;
         } else {
             UIViewController *vc = self.viewControllers[index];
@@ -148,6 +140,24 @@
     }
 }
 
+- (void)setTabIcon:(NSArray<NSDictionary *> *)options {
+    for (NSDictionary *option in options) {
+        NSUInteger index = option[@"index"] ? [option[@"index"] integerValue] : 0;
+        if (self.hasCustomTabBar) {
+            NSMutableDictionary *tab = [self tabAtIndex:index];
+            tab[@"icon"] = [HBDUtils iconUriFromUri:option[@"icon"][@"uri"]];
+            tab[@"unselectedIcon"] = [HBDUtils iconUriFromUri:option[@"unselectedIcon"][@"uri"]] ?: NSNull.null;
+        } else {
+            UIViewController *tab = [self.viewControllers objectAtIndex:index];
+            [tab hbd_updateTabBarItem:option];
+        }
+    }
+    
+    if (self.hasCustomTabBar) {
+        self.rootView.appProperties = [self props];
+    }
+}
+
 - (NSMutableDictionary *)tabAtIndex:(NSInteger)index {
     NSMutableDictionary *options = [self.tabBarOptions mutableCopy];
     NSMutableArray *tabs = [options[@"tabs"] mutableCopy];
@@ -156,18 +166,6 @@
     tabs[index] = tab;
     self.tabBarOptions = options;
     return tab;
-}
-
-- (void)updateTabBarItem:(NSDictionary *)tabItem atIndex:(NSInteger)index {
-    if (self.hasCustomTabBar) {
-        NSMutableDictionary *tab = [self tabAtIndex:index];
-        tab[@"icon"] = [HBDUtils iconUriFromUri:tabItem[@"icon"][@"uri"]];
-        tab[@"selectedIcon"] = [HBDUtils iconUriFromUri:tabItem[@"selectedIcon"][@"uri"]];
-        self.rootView.appProperties = [self props];
-    } else {
-        UIViewController *tab = [self.viewControllers objectAtIndex:index];
-        [tab hbd_updateTabBarItem:tabItem];
-    }
 }
 
 - (void)updateTabBar:(NSDictionary *)options {
@@ -192,7 +190,7 @@
     
     NSString *tabBarItemColor = options[@"tabBarItemColor"];
     NSString *tabBarUnselectedItemColor = options[@"tabBarUnselectedItemColor"];
-    if (tabBarItemColor && tabBarUnselectedItemColor) {
+    if (tabBarItemColor) {
         if (self.hasCustomTabBar) {
             NSMutableDictionary *options = [self.tabBarOptions mutableCopy];
             options[@"tabBarItemColor"] = tabBarItemColor;
@@ -202,7 +200,9 @@
         } else {
              tabBar.tintColor = [HBDUtils colorWithHexString:tabBarItemColor];
             if (@available(iOS 10.0, *)) {
-                tabBar.unselectedItemTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
+                if (tabBarUnselectedItemColor) {
+                    tabBar.unselectedItemTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
+                }
             }
         }
     }

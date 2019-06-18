@@ -38,11 +38,11 @@ export default class BulgeTabBar extends Component {
   }
 
   render() {
-    const { itemColor, selectedItemColor, selectedIndex, badgeColor } = this.props;
+    const { itemColor, unselectedItemColor, selectedIndex, badgeColor } = this.props;
     const style = {
       textBadgeStyle: { backgroundColor: badgeColor },
       dotBadgeStyle: { backgroundColor: badgeColor },
-      selectedItemColor,
+      unselectedItemColor,
       itemColor,
     };
 
@@ -55,7 +55,7 @@ export default class BulgeTabBar extends Component {
             selected={selectedIndex == 0}
             {...style}
           />
-          <Tab itemColor="rgb(255,197,99)" title="发布" />
+          <Tab unselectedItemColor="rgb(255,197,99)" title="发布" />
           <Tab
             onTabClick={() => this.handleTabClick(1)}
             {...this.props.tabs[1]}
@@ -81,11 +81,11 @@ function Tab(props) {
     icon,
     title,
     selected,
-    selectedItemColor,
+    unselectedItemColor,
     itemColor,
     badgeText,
     textBadgeStyle,
-    dotBadge,
+    dot,
     dotBadgeStyle,
   } = props;
   return (
@@ -98,7 +98,7 @@ function Tab(props) {
             height: 24,
             scale: PixelRatio.get(),
           }}
-          style={{ tintColor: selected ? selectedItemColor : itemColor }}
+          style={{ tintColor: selected ? itemColor : unselectedItemColor }}
           resizeMode="center"
           fadeDuration={0}
         />
@@ -108,14 +108,14 @@ function Tab(props) {
       <Text
         style={
           selected
-            ? [styles.buttonTextSelected, { color: selectedItemColor }]
-            : [styles.buttonText, { color: itemColor }]
+            ? [styles.buttonTextSelected, { color: itemColor }]
+            : [styles.buttonText, { color: unselectedItemColor }]
         }
       >
         {title}
       </Text>
       {badgeText && <TextBadge style={[styles.textBadge, textBadgeStyle]}>{badgeText}</TextBadge>}
-      {dotBadge && <DotBadge style={dotBadgeStyle} />}
+      {dot && <DotBadge style={dotBadgeStyle} />}
     </TouchableOpacity>
   );
 }

@@ -10,6 +10,8 @@
 #import "HBDViewController.h"
 #import "GlobalStyle.h"
 
+@class HBDViewController;
+
 @interface HBDGarden : NSObject
 
 + (void)createGlobalStyleWithOptions:(NSDictionary *)options;
@@ -18,19 +20,17 @@
 
 // ------
 
-- (void)setLeftBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller;
+- (instancetype)initWithViewController:(HBDViewController *)vc;
 
-- (void)setRightBarButtonItem:(NSDictionary *)item forController:(HBDViewController *)controller;
+- (void)setLeftBarButtonItem:(NSDictionary *)item;
 
-- (void)setLeftBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller;
+- (void)setRightBarButtonItem:(NSDictionary *)item;
 
-- (void)setRightBarButtonItems:(NSArray *)items forController:(HBDViewController *)controller;
+- (void)setLeftBarButtonItems:(NSArray *)items;
 
-- (void)setTitleItem:(NSDictionary *)item forController:(HBDViewController *)controller;
+- (void)setRightBarButtonItems:(NSArray *)items;
 
-- (void)setStatusBarHidden:(BOOL)hidden forController:(HBDViewController *)controller;
-
-- (void)setPassThroughTouches:(BOOL)passThrough forController:(HBDViewController *)controller;
+- (void)setPassThroughTouches:(BOOL)passThrough;
 
 
 @end

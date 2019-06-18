@@ -35,9 +35,9 @@ $ react-native link react-native-navigation-hybrid
 以前，你是这么注册 React 组件
 
 ```javascript
-import { AppRegistry } from "react-native";
-import App from "./App";
-import { name as appName } from "./app.json";
+import { AppRegistry } from 'react-native';
+import App from './App';
+import { name as appName } from './app.json';
 
 AppRegistry.registerComponent(appName, () => App);
 ```
@@ -48,20 +48,21 @@ AppRegistry.registerComponent(appName, () => App);
 import {
   ReactRegistry,
   Garden,
-  Navigator
-} from "react-native-navigation-hybrid";
-import App from "./App";
+  Navigator,
+  BarStyleDarkContent,
+} from 'react-native-navigation-hybrid';
+import App from './App';
 
 // 配置全局样式
 Garden.setStyle({
-  topBarStyle: "dark-content"
+  topBarStyle: BarStyleDarkContent,
 });
 
 // 重要必须
 ReactRegistry.startRegisterComponent();
 
 // 注意，你的每一个页面都需要注册
-ReactRegistry.registerComponent("App", () => App);
+ReactRegistry.registerComponent('App', () => App);
 
 // 重要必须
 ReactRegistry.endRegisterComponent();
@@ -72,8 +73,8 @@ ReactRegistry.endRegisterComponent();
 ```javascript
 Navigator.setRoot({
   stack: {
-    children: [{ screen: { moduleName: "App" } }]
-  }
+    children: [{ screen: { moduleName: 'App' } }],
+  },
 });
 ```
 

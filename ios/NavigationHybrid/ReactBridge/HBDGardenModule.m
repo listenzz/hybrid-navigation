@@ -8,11 +8,8 @@
 
 #import "HBDGardenModule.h"
 #import "HBDReactBridgeManager.h"
-#import "HBDReactViewController.h"
+#import "HBDViewController.h"
 #import "HBDTabBarController.h"
-#import "HBDGarden.h"
-#import "HBDUtils.h"
-
 #import <React/RCTLog.h>
 
 @interface HBDGardenModule()
@@ -51,70 +48,33 @@ RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
     [HBDGarden createGlobalStyleWithOptions:style];
 }
 
+RCT_EXPORT_METHOD(setTitleItem:(NSString *)sceneId item:(NSDictionary *)item) {
+    HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
+    if (vc) {
+        [(HBDViewController *)vc updateOptions:@{ @"titleItem": item}];
+    }
+}
+
 RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
-    HBDGarden *garden = [[HBDGarden alloc] init];
-    item = [self mergeItem:item key:@"leftBarButtonItem" forController:vc];
-    [garden setLeftBarButtonItem:item forController:vc];
+    if (vc) {
+        [(HBDViewController *)vc updateOptions:@{ @"leftBarButtonItem": item}];
+    }
 }
 
 RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
-    HBDGarden *garden = [[HBDGarden alloc] init];
-    item = [self mergeItem:item key:@"rightBarButtonItem" forController:vc];
-    [garden setRightBarButtonItem:item forController:vc];
+    if (vc) {
+        [(HBDViewController *)vc updateOptions:@{ @"rightBarButtonItem": item}];
+    }
 }
 
-RCT_EXPORT_METHOD(setTitleItem:(NSString *)sceneId item:(NSDictionary *)item) {
+RCT_EXPORT_METHOD(updateOptions:(NSString *)sceneId item:(NSDictionary *)options) {
+    NSLog(@"updateOptions: %@", options);
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
-    HBDGarden *garden = [[HBDGarden alloc] init];
-    item = [self mergeItem:item key:@"titleItem" forController:vc];
-    [garden setTitleItem:item forController:vc];
-}
-
-- (HBDViewController *)HBDViewControllerForSceneId:(NSString *)sceneId {
-    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
-    if ([vc isKindOfClass:[HBDViewController class]]) {
-        return (HBDViewController *)vc;
+    if (vc) {
+        [(HBDViewController *)vc updateOptions:options];
     }
-    return nil;
-}
-
-RCT_EXPORT_METHOD(setStatusBarColor:(NSString *)sceneId item:(NSDictionary *)item) {
-    NSLog(@"setStatusBarColor: %@", item);
-}
-
-RCT_EXPORT_METHOD(setStatusBarHidden:(NSString *)sceneId item:(NSDictionary *)item) {
-    NSNumber *statusBarHidden = [item objectForKey:@"statusBarHidden"];
-    if (statusBarHidden) {
-        HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
-        NSDictionary *options = vc.options;
-        NSMutableDictionary *mutable =  [options mutableCopy];
-        [mutable setObject:statusBarHidden forKey:@"statusBarHidden"];
-        vc.options = [mutable copy];
-        HBDGarden *garden = [[HBDGarden alloc] init];
-        [garden setStatusBarHidden:[statusBarHidden boolValue] forController:vc];
-    }
-}
-
-RCT_EXPORT_METHOD(setPassThroughTouches:(NSString *)sceneId item:(NSDictionary *)item) {
-    NSNumber *passThroughTouches = [item objectForKey:@"passThroughTouches"];
-    if (passThroughTouches) {
-        HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
-        NSDictionary *options = vc.options;
-        NSMutableDictionary *mutable =  [options mutableCopy];
-        [mutable setObject:passThroughTouches forKey:@"passThroughTouches"];
-        vc.options = [mutable copy];
-        HBDGarden *garden = [[HBDGarden alloc] init];
-        [garden setPassThroughTouches:[passThroughTouches boolValue] forController:vc];
-    }
-    NSLog(@"setPassThroughTouches: %@", item);
-}
-
-RCT_EXPORT_METHOD(updateTopBar:(NSString *)sceneId item:(NSDictionary *)item) {
-    NSLog(@"updateTopBar: %@", item);
-    HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
-    [(HBDViewController *)vc updateNavigationBar:item];
 }
 
 RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
@@ -136,28 +96,14 @@ RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId options:(NSArray<NSDictionary 
     NSLog(@"setTabBadge: %@", options);
 }
 
-RCT_EXPORT_METHOD(replaceTabIcon:(NSString *)sceneId index:(NSInteger)index icon:(NSDictionary *)icon inactiveIcon:(NSDictionary *)selectedIcon) {
-    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
+RCT_EXPORT_METHOD(setTabIcon:(NSString *)sceneId options:(NSArray<NSDictionary *> *)options) {
+    UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
-        NSMutableDictionary *options = [@{@"icon": icon} mutableCopy];
-        if (selectedIcon) {
-            [options setObject:selectedIcon forKey:@"selectedIcon"];
-        }
-        [tabBarVC updateTabBarItem:options atIndex:index];
+        [tabBarVC setTabIcon:options];
     }
-    NSLog(@"replaceTabIcon: %ld", (long)index);
-}
-
-- (UITabBarController *)tabBarControllerWithViewController:(UIViewController *)vc {
-    UITabBarController *tabBarController;
-    if ([vc isKindOfClass:[UITabBarController class]]) {
-        tabBarController = (UITabBarController *)vc;
-    } else {
-        tabBarController = vc.tabBarController;
-    }
-    return tabBarController;
+    NSLog(@"setTabIcon: %@", options);
 }
 
 RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) {
@@ -168,18 +114,22 @@ RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) 
     }
 }
 
-- (NSDictionary *)mergeItem:(NSDictionary *)item key:(NSString *)key forController:(HBDViewController *)vc {
-    NSDictionary *options = vc.options;
-    NSDictionary *target = options[key];
-    if (!target) {
-        target = @{};
+- (HBDViewController *)HBDViewControllerForSceneId:(NSString *)sceneId {
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
+    if ([vc isKindOfClass:[HBDViewController class]]) {
+        return (HBDViewController *)vc;
     }
-    target = [HBDUtils mergeItem:item withTarget:target];
-    NSMutableDictionary *mutable =  [options mutableCopy];
-    [mutable setObject:target forKey:key];
-    vc.options = [mutable copy];
-    
-    return target;
+    return nil;
+}
+
+- (UITabBarController *)tabBarControllerWithViewController:(UIViewController *)vc {
+    UITabBarController *tabBarController;
+    if ([vc isKindOfClass:[UITabBarController class]]) {
+        tabBarController = (UITabBarController *)vc;
+    } else {
+        tabBarController = vc.tabBarController;
+    }
+    return tabBarController;
 }
 
 @end

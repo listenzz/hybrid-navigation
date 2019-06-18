@@ -26,7 +26,7 @@ export default class Noninteractive extends Component {
   }
 
   enableBackInteractive() {
-    this.props.garden.updateTopBar({
+    this.props.garden.updateOptions({
       backButtonHidden: false,
       backInteractive: true,
     });
@@ -36,7 +36,7 @@ export default class Noninteractive extends Component {
   }
 
   disableBackInteractive() {
-    this.props.garden.updateTopBar({
+    this.props.garden.updateOptions({
       backButtonHidden: true,
       backInteractive: false,
     });

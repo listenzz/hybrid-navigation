@@ -41,7 +41,7 @@ export default class TopBarStyle extends Component {
   }
 
   switchTopBarStyle() {
-    this.props.garden.updateTopBar({
+    this.props.garden.updateOptions({
       topBarStyle: this.state.topBarStyle,
       topBarTintColor: this.state.topBarTintColor,
       titleTextColor: this.state.topBarTintColor,

@@ -109,7 +109,7 @@ export class Navigator {
     return store.getNavigator(sceneId) || new Navigator(sceneId);
   }
 
-  static async current() {
+  static async current(): Promise<Navigator> {
     const route = await Navigator.currentRoute();
     return Navigator.get(route.sceneId);
   }

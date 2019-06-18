@@ -77,13 +77,13 @@ AppRegistry.registerComponent('ReactNativeProject', () => App);
 现在，你需要作出改变
 
 ```javascript
-import { ReactRegistry, Garden } from 'react-native-navigation-hybrid';
+import { ReactRegistry, Garden, BarStyleDarkContent } from 'react-native-navigation-hybrid';
 import Home from './HomeComponent';
 import Profile from './ProfileComponent';
 
 // 配置全局样式
 Garden.setStyle({
-  topBarStyle: 'dark-content',
+  topBarStyle: BarStyleDarkContent,
 });
 
 ReactRegistry.startRegisterComponent();

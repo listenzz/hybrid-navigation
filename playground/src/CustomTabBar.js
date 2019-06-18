@@ -38,11 +38,11 @@ export default class CustomTabBar extends Component {
   }
 
   render() {
-    const { itemColor, selectedItemColor, selectedIndex, badgeColor } = this.props;
+    const { itemColor, unselectedItemColor, selectedIndex, badgeColor } = this.props;
     const style = {
       textBadgeStyle: { backgroundColor: badgeColor },
       dotBadgeStyle: { backgroundColor: badgeColor },
-      selectedItemColor,
+      unselectedItemColor,
       itemColor,
     };
 
@@ -80,11 +80,11 @@ function Tab(props) {
     icon,
     title,
     selected,
-    selectedItemColor,
     itemColor,
+    unselectedItemColor,
     badgeText,
     textBadgeStyle,
-    dotBadge,
+    dot,
     dotBadgeStyle,
   } = props;
   return (
@@ -97,7 +97,7 @@ function Tab(props) {
             height: 24,
             scale: PixelRatio.get(),
           }}
-          style={{ tintColor: selected ? selectedItemColor : itemColor }}
+          style={{ tintColor: selected ? itemColor : unselectedItemColor }}
           resizeMode="center"
           fadeDuration={0}
         />
@@ -107,14 +107,14 @@ function Tab(props) {
       <Text
         style={
           selected
-            ? [styles.buttonTextSelected, { color: selectedItemColor }]
-            : [styles.buttonText, { color: itemColor }]
+            ? [styles.buttonTextSelected, { color: itemColor }]
+            : [styles.buttonText, { color: unselectedItemColor }]
         }
       >
         {title}
       </Text>
       {badgeText && <TextBadge style={[styles.textBadge, textBadgeStyle]}>{badgeText}</TextBadge>}
-      {dotBadge && <DotBadge style={dotBadgeStyle} />}
+      {dot && <DotBadge style={dotBadgeStyle} />}
     </TouchableOpacity>
   );
 }

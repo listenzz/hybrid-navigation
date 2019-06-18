@@ -7,7 +7,6 @@
 //
 
 #import "HBDViewController.h"
-#import "HBDGarden.h"
 #import "HBDUtils.h"
 #import "HBDNavigationController.h"
 #import <React/RCTLog.h>
@@ -15,6 +14,7 @@
 @interface HBDViewController ()
 
 @property(nonatomic, copy, readwrite) NSDictionary *props;
+@property(nonatomic, strong, readwrite) HBDGarden *garden;
 
 @end
 
@@ -37,6 +37,7 @@
         _moduleName = moduleName;
         _options = options;
         _props = props;
+        _garden = [[HBDGarden alloc] initWithViewController:self];
     }
     return self;
 }
@@ -70,27 +71,11 @@
         self.hbd_barHidden = YES;
     }
     
-    NSNumber *statusBarHidden = self.options[@"statusBarHidden"];
-    if (statusBarHidden) {
-        self.hbd_statusBarHidden = [statusBarHidden boolValue] && ![HBDUtils isIphoneX];
-    }
-    
     if ([HBDGarden globalStyle].isBackTitleHidden) {
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
     }
     
-    NSDictionary *titleItem = self.options[@"titleItem"];
-    if (titleItem) {
-        NSString *moduleName = titleItem[@"moduleName"];
-        if (!moduleName) {
-            self.navigationItem.title = titleItem[@"title"];
-        }
-    }
-    
     NSDictionary *backItem = self.options[@"backItemIOS"];
-    if (!backItem) {
-        backItem = self.options[@"backItem"];
-    }
     if (backItem) {
         NSString *title = backItem[@"title"];
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
@@ -100,11 +85,6 @@
             backButton.tintColor = [HBDUtils colorWithHexString:tintColor];
         }
         self.navigationItem.backBarButtonItem = backButton;
-    }
-    
-    NSNumber *interactive = self.options[@"backInteractive"];
-    if (interactive) {
-        self.hbd_backInteractive = [interactive boolValue];
     }
     
     NSNumber *swipeBackEnabled = self.options[@"swipeBackEnabled"];
@@ -120,24 +100,37 @@
     if (!(self.hbd_extendedLayoutIncludesTopBar || hasAlpha(self.hbd_barTintColor))) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
-    
-    HBDGarden *garden = [[HBDGarden alloc] init];
-    
-    NSDictionary *rightBarButtonItem = self.options[@"rightBarButtonItem"];
-    [garden setRightBarButtonItem:rightBarButtonItem forController:self];
-    
-    NSDictionary *leftBarButtonItem = self.options[@"leftBarButtonItem"];
-    [garden setLeftBarButtonItem:leftBarButtonItem forController:self];
-    
-    NSArray *rightBarButtonItems = self.options[@"rightBarButtonItems"];
-    [garden setRightBarButtonItems:rightBarButtonItems forController:self];
-    
-    NSArray *leftBarButtonItems = self.options[@"leftBarButtonItems"];
-    [garden setLeftBarButtonItems:leftBarButtonItems forController:self];
 }
 
-- (void)updateNavigationBar:(NSDictionary *)options {
-    [self applyNavigationBarOptions:options];
+- (void)updateOptions:(NSDictionary *)options {
+    self.options = [HBDUtils mergeItem:options withTarget:self.options];
+    
+    NSMutableDictionary *target = [options mutableCopy];
+    
+    if (options[@"titleItem"]) {
+        target[@"titleItem"] = self.options[@"titleItem"];
+    }
+    
+    if (options[@"leftBarButtonItem"]) {
+        target[@"leftBarButtonItem"] = self.options[@"leftBarButtonItem"];
+    }
+    
+    if (options[@"rightBarButtonItem"]) {
+        target[@"rightBarButtonItem"] = self.options[@"rightBarButtonItem"];
+    }
+    
+    [self applyNavigationBarOptions:target];
+    
+    NSNumber *statusBarHidden = [options objectForKey:@"statusBarHidden"];
+    if (statusBarHidden) {
+        [self hbd_setNeedsStatusBarHiddenUpdate];
+    }
+    
+    NSNumber *passThroughTouches = [options objectForKey:@"passThroughTouches"];
+    if (passThroughTouches) {
+        [self.garden setPassThroughTouches:[passThroughTouches boolValue]];
+    }
+    
     [self hbd_setNeedsUpdateNavigationBar];
 }
 
@@ -185,6 +178,11 @@
         self.hbd_barShadowHidden = [hideShadow boolValue];
     }
     
+    NSNumber *statusBarHidden = options[@"statusBarHidden"];
+    if (statusBarHidden) {
+        self.hbd_statusBarHidden = [statusBarHidden boolValue] && ![HBDUtils isIphoneX];
+    }
+    
     NSNumber *backInteractive = options[@"backInteractive"];
     if (backInteractive) {
         self.hbd_backInteractive = [backInteractive boolValue];
@@ -205,6 +203,34 @@
                 self.navigationItem.leftBarButtonItem = nil;
             }
         }
+    }
+    
+    NSDictionary *titleItem = options[@"titleItem"];
+    if (titleItem) {
+        NSString *moduleName = titleItem[@"moduleName"];
+        if (!moduleName) {
+            self.navigationItem.title = titleItem[@"title"];
+        }
+    }
+    
+    NSDictionary *rightBarButtonItem = options[@"rightBarButtonItem"];
+    if (rightBarButtonItem) {
+        [self.garden setRightBarButtonItem:rightBarButtonItem];
+    }
+    
+    NSDictionary *leftBarButtonItem = options[@"leftBarButtonItem"];
+    if (leftBarButtonItem) {
+        [self.garden setLeftBarButtonItem:leftBarButtonItem];
+    }
+    
+    NSArray *rightBarButtonItems = options[@"rightBarButtonItems"];
+    if (rightBarButtonItems) {
+        [self.garden setRightBarButtonItems:rightBarButtonItems];
+    }
+    
+    NSArray *leftBarButtonItems = options[@"leftBarButtonItems"];
+    if (leftBarButtonItems) {
+        [self.garden setLeftBarButtonItems:leftBarButtonItems];
     }
 }
 
