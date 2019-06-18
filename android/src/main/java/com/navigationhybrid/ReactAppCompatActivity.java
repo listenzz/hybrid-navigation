@@ -89,13 +89,12 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     public void setActivityRootFragment(@NonNull AwesomeFragment rootFragment) {
+        HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());
         super.setActivityRootFragment(rootFragment);
         scheduleTaskAtStarted(() -> {
             ReactBridgeManager bridgeManager = getReactBridgeManager();
             bridgeManager.setViewHierarchyReady(true);
-            if (bridgeManager.hasRootLayout()) {
-                HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_SET_ROOT_COMPLETED, Arguments.createMap());
-            }
+            HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, Arguments.createMap());
         });
     }
 
@@ -195,7 +194,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     public void invokeDefaultOnBackPressed() {
-        super.onBackPressed();
+        scheduleTaskAtStarted(ReactAppCompatActivity.super::onBackPressed);
     }
 
     @Override

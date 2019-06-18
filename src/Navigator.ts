@@ -1,7 +1,8 @@
 import {
   EventEmitter,
   NavigationModule,
-  EVENT_SET_ROOT_COMPLETED,
+  EVENT_WILL_SET_ROOT,
+  EVENT_DID_SET_ROOT,
   EVENT_SWITCH_TAB,
   KEY_SCENE_ID,
   KEY_INDEX,
@@ -9,15 +10,12 @@ import {
 } from './NavigationModule';
 import { bindBarButtonItemClickEvent } from './utils';
 import store from './store';
-import { EmitterSubscription } from 'react-native';
 import { NavigationItem } from './Garden';
 import { Route, RouteGraph } from './router';
 
 let intercept: NavigationInterceptor;
 let willSetRootCallback: () => void;
-let didSetRootEventSubscription: EmitterSubscription;
 let didSetRootCallback: () => void;
-let shouldSwitchTabSubscription: EmitterSubscription;
 
 interface Extras {
   sceneId: string;
@@ -84,6 +82,25 @@ export interface Drawer extends Layout {
   };
 }
 
+EventEmitter.addListener(EVENT_DID_SET_ROOT, _ => {
+  if (didSetRootCallback) {
+    didSetRootCallback();
+  }
+});
+
+EventEmitter.addListener(EVENT_WILL_SET_ROOT, _ => {
+  if (willSetRootCallback) {
+    willSetRootCallback();
+  }
+});
+
+EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
+  Navigator.dispatch(event[KEY_SCENE_ID], 'switchTab', {
+    index: event[KEY_INDEX],
+    moduleName: event[KEY_MODULE_NAME],
+  });
+});
+
 export class Navigator {
   static RESULT_OK: -1 = NavigationModule.RESULT_OK;
   static RESULT_CANCEL: 0 = NavigationModule.RESULT_CANCEL;
@@ -106,31 +123,6 @@ export class Navigator {
   }
 
   static setRoot(layout: Layout, sticky = false) {
-    if (willSetRootCallback) {
-      willSetRootCallback();
-    }
-
-    if (didSetRootEventSubscription) {
-      didSetRootEventSubscription.remove();
-    }
-
-    didSetRootEventSubscription = EventEmitter.addListener(EVENT_SET_ROOT_COMPLETED, _ => {
-      if (didSetRootCallback) {
-        didSetRootCallback();
-      }
-    });
-
-    if (shouldSwitchTabSubscription) {
-      shouldSwitchTabSubscription.remove();
-    }
-
-    shouldSwitchTabSubscription = EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
-      Navigator.dispatch(event[KEY_SCENE_ID], 'switchTab', {
-        index: event[KEY_INDEX],
-        moduleName: event[KEY_MODULE_NAME],
-      });
-    });
-
     const pureLayout = bindBarButtonItemClickEvent(layout, {
       inLayout: true,
       navigatorFactory: (sceneId: string) => {

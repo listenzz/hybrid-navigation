@@ -41,6 +41,13 @@ import BulgeTabBar from './src/BulgeTabBar';
 // };
 // MessageQueue.spy(spyFunction);
 
+async function graph() {
+  const graph = await Navigator.routeGraph();
+  console.log(graph);
+}
+
+graph();
+
 // 设置全局样式
 Garden.setStyle({
   screenBackgroundColor: '#F8F8F8',
@@ -170,10 +177,12 @@ const drawer = {
 Navigator.setRootLayoutUpdateListener(
   () => {
     router.inactivate();
+    console.log('------------------------inactive router');
   },
   () => {
     const prefix = Platform.OS == 'android' ? 'hbd://hbd/' : 'hbd://';
     router.activate(prefix);
+    console.log('------------------------active router');
   }
 );
 

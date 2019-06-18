@@ -105,6 +105,10 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setRoot(final ReadableMap layout, final boolean sticky) {
         sHandler.post(() -> {
+            if (reactBridgeManager.getCurrentReactContext() == null) {
+                Log.w(TAG, "current react context is null, skip action `setRoot`");
+                return;
+            }
             reactBridgeManager.setViewHierarchyReady(false);
             reactBridgeManager.setRootLayout(layout, sticky);
             Activity activity = getCurrentActivity();
@@ -156,6 +160,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 fragment.setResult(resultCode, Arguments.toBundle(result));
             }
         });
+
     }
 
     @ReactMethod
@@ -163,6 +168,11 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         Runnable task = new Runnable() {
             @Override
             public void run() {
+                if (reactBridgeManager.getCurrentReactContext() == null) {
+                    Log.w(TAG, "current react context is null, skip action `currentRoute`");
+                    return;
+                }
+
                 Activity activity = getCurrentActivity();
                 if (!reactBridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
                     sHandler.postDelayed(this, 16);
@@ -204,6 +214,11 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         Runnable task = new Runnable() {
             @Override
             public void run() {
+                if (reactBridgeManager.getCurrentReactContext() == null) {
+                    Log.w(TAG, "current react context is null, skip action `routeGraph`");
+                    return;
+                }
+
                 Activity activity = getCurrentActivity();
                 if (!reactBridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity) ) {
                     sHandler.postDelayed(this, 16);
@@ -239,7 +254,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
-        if (!reactBridgeManager.isViewHierarchyReady()) {
+        if (!reactBridgeManager.isViewHierarchyReady() || reactBridgeManager.getCurrentReactContext() == null) {
             Log.w(TAG, "View hierarchy is not ready now.");
             return null;
         }

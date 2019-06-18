@@ -31,7 +31,8 @@ public class HBDEventEmitter extends ReactContextBaseJavaModule {
     public static final String ON_DIALOG_BACK_PRESSED = "ON_DIALOG_BACK_PRESSED";
 
     public static final String EVENT_SWITCH_TAB = "EVENT_SWITCH_TAB";
-    public static final String EVENT_SET_ROOT_COMPLETED = "EVENT_SET_ROOT_COMPLETED";
+    public static final String EVENT_DID_SET_ROOT = "EVENT_DID_SET_ROOT";
+    public static final String EVENT_WILL_SET_ROOT = "EVENT_WILL_SET_ROOT";
     public static final String EVENT_NAVIGATION = "EVENT_NAVIGATION";
 
     public HBDEventEmitter(ReactApplicationContext reactContext) {
@@ -62,7 +63,8 @@ public class HBDEventEmitter extends ReactContextBaseJavaModule {
         constants.put("KEY_ON", KEY_ON);
         constants.put("EVENT_SWITCH_TAB", EVENT_SWITCH_TAB);
         constants.put("EVENT_NAVIGATION", EVENT_NAVIGATION);
-        constants.put("EVENT_SET_ROOT_COMPLETED", EVENT_SET_ROOT_COMPLETED);
+        constants.put("EVENT_DID_SET_ROOT", EVENT_DID_SET_ROOT);
+        constants.put("EVENT_WILL_SET_ROOT", EVENT_WILL_SET_ROOT);
         return constants;
     }
 

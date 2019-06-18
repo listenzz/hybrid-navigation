@@ -71,26 +71,26 @@ npm install react-native-navigation-hybrid --save
 以前，你是这么注册的
 
 ```javascript
-AppRegistry.registerComponent("ReactNativeProject", () => App);
+AppRegistry.registerComponent('ReactNativeProject', () => App);
 ```
 
 现在，你需要作出改变
 
 ```javascript
-import { ReactRegistry, Garden } from "react-native-navigation-hybrid";
-import Home from "./HomeComponent";
-import Profile from "./ProfileComponent";
+import { ReactRegistry, Garden } from 'react-native-navigation-hybrid';
+import Home from './HomeComponent';
+import Profile from './ProfileComponent';
 
 // 配置全局样式
 Garden.setStyle({
-  topBarStyle: "dark-content"
+  topBarStyle: 'dark-content',
 });
 
 ReactRegistry.startRegisterComponent();
 
 // 注意，你的每一个页面都需要注册
-ReactRegistry.registerComponent("Home", () => Home);
-ReactRegistry.registerComponent("Profile", () => Profile);
+ReactRegistry.registerComponent('Home', () => Home);
+ReactRegistry.registerComponent('Profile', () => Profile);
 
 ReactRegistry.endRegisterComponent();
 ```
@@ -238,18 +238,19 @@ public class ReactEntryActivity extends ReactAppCompatActivity {
 ```java
 @Override
 protected void onCreateMainComponent() {
-    AwesomeFragment react = getReactBridgeManager().createFragment("ReactNavigation");
-    ReactNavigationFragment reactNavigation = new ReactNavigationFragment();
-    reactNavigation.setRootFragment(react);
+    // 注意不要调用下面这行代码
+    // super.onCreateMainComponent
+    ReactBridgeManager bridgeManager = getReactBridgeManager();
 
-    AwesomeFragment custom = getReactBridgeManager().createFragment("CustomStyle");
-    ReactNavigationFragment customNavigation = new ReactNavigationFragment();
-    customNavigation.setRootFragment(custom);
+    ReactNavigationFragment navigation = new ReactNavigationFragment();
+    navigation.setRootFragment(bridgeManager.createFragment("Navigation"));
+    ReactNavigationFragment options = new ReactNavigationFragment();
+    options.setRootFragment(bridgeManager.createFragment("Options"));
 
-    ReactTabBarFragment reactTabBarFragment = new ReactTabBarFragment();
-    reactTabBarFragment.setFragments(reactNavigation, customNavigation);
+    ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
+    tabBarFragment.setChildFragments(navigation, options);
 
-    setRootFragment(reactTabBarFragment);
+    setActivityRootFragment(tabBarFragment);
 }
 ```
 
@@ -262,7 +263,7 @@ protected void onCreateMainComponent() {
     ReactNavigationFragment navigation = new ReactNavigationFragment();
     navigation.setRootFragment(home);
 
-    setRootFragment(navigation);
+    setActivityRootFragment(navigation);
 }
 ```
 
@@ -363,6 +364,10 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
 #import <NavigationHybrid/NavigationHybrid.h>
 #import <React/RCTBundleURLProvider.h>
 
+@interface AppDelegate () <HBDReactBridgeManagerDelegate>
+
+@end
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -370,11 +375,19 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
     NSURL *jsCodeLocation;
     jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
     [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
-
-    UIViewController *rootViewController = [UIViewController new];
-    self.window.rootViewController = rootViewController;
-    [self.window makeKeyAndVisible];
+    [HBDReactBridgeManager sharedInstance].delegate = self;
     return YES;
 }
+
+- (void)reactModuleRegisterDidCompleted:(HBDReactBridgeManager *)manager {
+    HBDTabBarController *tabs = [[HBDTabBarController alloc] init];
+    HBDNavigationController *navigation = [[HBDNavigationController alloc] initWithRootViewController:[manager controllerWithModuleName:@"Navigation" props:nil options:nil]];
+    HBDNavigationController *options = [[HBDNavigationController alloc] initWithRootViewController:[manager controllerWithModuleName:@"Options" props:nil options:nil]];
+
+    [tabs setViewControllers:@[ navigation, options]];
+    [manager setRootViewController:tabs];
+    [self.window makeKeyAndVisible];
+}
+
 @end
 ```

@@ -18,7 +18,8 @@ NSString * const ON_COMPONENT_MOUNT = @"ON_COMPONENT_MOUNT";
 
 NSString * const EVENT_SWITCH_TAB = @"EVENT_SWITCH_TAB";
 NSString * const EVENT_NAVIGATION = @"EVENT_NAVIGATION";
-NSString * const EVENT_SET_ROOT_COMPLETED = @"EVENT_SET_ROOT_COMPLETED";
+NSString * const EVENT_DID_SET_ROOT = @"EVENT_DID_SET_ROOT";
+NSString * const EVENT_WILL_SET_ROOT = @"EVENT_WILL_SET_ROOT";
 
 NSString * const KEY_REQUEST_CODE = @"request_code";
 NSString * const KEY_RESULT_CODE = @"result_code";
@@ -35,14 +36,15 @@ NSString * const KEY_ON = @"on";
 RCT_EXPORT_MODULE(HBDEventEmitter);
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[EVENT_NAVIGATION, EVENT_SWITCH_TAB, EVENT_SET_ROOT_COMPLETED];
+    return @[EVENT_NAVIGATION, EVENT_SWITCH_TAB, EVENT_DID_SET_ROOT, EVENT_WILL_SET_ROOT];
 }
 
 - (NSDictionary<NSString *, NSString *> *)constantsToExport {
     return @{
              @"EVENT_NAVIGATION": EVENT_NAVIGATION,
              @"EVENT_SWITCH_TAB": EVENT_SWITCH_TAB,
-             @"EVENT_SET_ROOT_COMPLETED": EVENT_SET_ROOT_COMPLETED,
+             @"EVENT_DID_SET_ROOT": EVENT_DID_SET_ROOT,
+             @"EVENT_WILL_SET_ROOT": EVENT_WILL_SET_ROOT,
              @"ON_COMPONENT_RESULT": ON_COMPONENT_RESULT,
              @"ON_BAR_BUTTON_ITEM_CLICK": ON_BAR_BUTTON_ITEM_CLICK,
              @"ON_COMPONENT_APPEAR": ON_COMPONENT_APPEAR,

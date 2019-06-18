@@ -36,7 +36,6 @@
     // splash
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
-
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
     return YES;

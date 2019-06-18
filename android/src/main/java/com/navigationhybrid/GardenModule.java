@@ -92,7 +92,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setStyle(final ReadableMap style) {
         sHandler.post(() -> {
-            Context context = getReactApplicationContext();
+            Context context = reactBridgeManager.getCurrentReactContext();
             if (context != null) {
                 Garden.createGlobalStyle(Arguments.toBundle(style));
                 ReactAppCompatActivity activity = (ReactAppCompatActivity) getCurrentActivity();
@@ -274,7 +274,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
-        if (!reactBridgeManager.isViewHierarchyReady()) {
+        if (!reactBridgeManager.isViewHierarchyReady() || reactBridgeManager.getCurrentReactContext() == null) {
             Log.w(TAG, "View hierarchy is not ready now.");
             return null;
         }

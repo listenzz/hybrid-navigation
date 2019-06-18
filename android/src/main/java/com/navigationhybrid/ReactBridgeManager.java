@@ -75,7 +75,7 @@ public class ReactBridgeManager {
             rootLayout = null;
             stickyLayout = null;
             pendingLayout = null;
-            viewHierarchyReady = false;
+            setViewHierarchyReady(false);
         });
 
         if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
@@ -145,11 +145,11 @@ public class ReactBridgeManager {
 
     public void startRegisterReactModule() {
         reactModules.clear();
-        reactModuleRegisterCompleted = false;
+        setReactModuleRegisterCompleted(false);
     }
 
     public void endRegisterReactModule() {
-        reactModuleRegisterCompleted = true;
+        setReactModuleRegisterCompleted(true);
         Log.i(TAG, "react module registry completed");
         for (ReactModuleRegisterListener listener : reactModuleRegisterListeners) {
             listener.onReactModuleRegisterCompleted();
@@ -301,6 +301,10 @@ public class ReactBridgeManager {
 
     @NonNull
     public HybridFragment createFragment(@NonNull String moduleName, @Nullable Bundle props, @Nullable Bundle options) {
+        if (getCurrentReactContext() == null) {
+            throw new IllegalStateException("current react context is null.");
+        }
+
         if (!isReactModuleRegisterCompleted()) {
             throw new IllegalStateException("模块还没有注册完，不能执行此操作");
         }

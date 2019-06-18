@@ -141,6 +141,10 @@ const NSInteger ResultCancel = 0;
 }
 
 - (UIViewController *)controllerWithLayout:(NSDictionary *)layout {
+    if (!self.isReactModuleRegisterCompleted) {
+        return nil;
+    }
+    
     UIViewController *vc;
     for (id<HBDNavigator> navigator in self.navigators) {
         if ((vc = [navigator createViewControllerWithLayout:layout])) {
@@ -153,9 +157,8 @@ const NSInteger ResultCancel = 0;
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
     HBDViewController *vc = nil;
     
-    while (!self.isReactModuleRegisterCompleted) {
-        NSDate* later = [NSDate dateWithTimeIntervalSinceNow:0.1];
-        [[NSRunLoop mainRunLoop] runUntilDate:later];
+    if (!self.isReactModuleRegisterCompleted) {
+        @throw [NSException exceptionWithName:@"IllegalStateException" reason:@"react module has not register completed." userInfo:@{}];
     }
     
     if (!props) {
@@ -252,6 +255,7 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)setRootViewController:(UIViewController *)rootViewController {
+    [HBDEventEmitter sendEvent:EVENT_WILL_SET_ROOT data:@{}];
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     for (NSUInteger i = application.windows.count; i > 0; i--) {
         UIWindow *window = application.windows[i-1];
@@ -275,9 +279,7 @@ const NSInteger ResultCancel = 0;
     UIWindow *keyWindow = RCTKeyWindow();
     keyWindow.rootViewController = rootViewController;
     self.viewHierarchyReady = YES;
-    if (self.hasRootLayout) {
-        [HBDEventEmitter sendEvent:EVENT_SET_ROOT_COMPLETED data:@{}];
-    }
+    [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
 }
 
 - (HBDViewController *)primaryViewController {
