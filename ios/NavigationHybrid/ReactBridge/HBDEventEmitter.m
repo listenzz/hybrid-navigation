@@ -71,7 +71,7 @@ RCT_EXPORT_MODULE(HBDEventEmitter);
 }
 
 + (void)sendEvent:(NSString *)eventName data:(NSDictionary *)data {
-    HBDReactBridgeManager *manager = [HBDReactBridgeManager sharedInstance];
+    HBDReactBridgeManager *manager = [HBDReactBridgeManager get];
     RCTBridge *bride = manager.bridge;
     if (bride.valid && manager.isReactModuleRegisterCompleted) {
         RCTEventEmitter *emitter = [bride moduleForName:@"HBDEventEmitter"];

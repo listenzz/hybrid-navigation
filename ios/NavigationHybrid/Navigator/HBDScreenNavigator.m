@@ -29,7 +29,7 @@
         NSString *moduleName = [screen objectForKey:@"moduleName"];
         NSDictionary *props = [screen objectForKey:@"props"];
         NSDictionary *options = [screen objectForKey:@"options"];
-        return [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
+        return [[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
     }
     return nil;
 }
@@ -38,7 +38,7 @@
     
     if ([vc isKindOfClass:[HBDModalViewController class]]) {
         HBDModalViewController *modal = (HBDModalViewController *)vc;
-        [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:modal.contentViewController root:root];
+        [[HBDReactBridgeManager get] buildRouteGraphWithController:modal.contentViewController root:root];
         return YES;
     }
     
@@ -59,7 +59,7 @@
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[HBDModalViewController class]]) {
         HBDModalViewController *modal = (HBDModalViewController *)vc;
-        return [[HBDReactBridgeManager sharedInstance] primaryViewControllerWithViewController:modal.contentViewController];
+        return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:modal.contentViewController];
     } else if ([vc isKindOfClass:[HBDViewController class]]) {
         return (HBDViewController *)vc;
     }
@@ -72,7 +72,7 @@
     if (moduleName) {
         NSDictionary *props = [extras objectForKey:@"props"];
         NSDictionary *options = [extras objectForKey:@"options"];
-        viewController =[[HBDReactBridgeManager sharedInstance] controllerWithModuleName:moduleName props:props options:options];
+        viewController =[[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
     }
     
     if ([action isEqualToString:@"present"]) {
@@ -117,7 +117,7 @@
         }
         
         NSDictionary *layout = [extras objectForKey:@"layout"];
-        UIViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
+        UIViewController *target = [[HBDReactBridgeManager get] controllerWithLayout:layout];
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
         [target setRequestCode:requestCode];
@@ -134,7 +134,7 @@
         }
         
         NSDictionary *layout = [extras objectForKey:@"layout"];
-        UIViewController *target = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:layout];
+        UIViewController *target = [[HBDReactBridgeManager get] controllerWithLayout:layout];
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         [target setRequestCode:requestCode];
         [target hbd_showViewController:target animated:YES completion:^(BOOL finished) {

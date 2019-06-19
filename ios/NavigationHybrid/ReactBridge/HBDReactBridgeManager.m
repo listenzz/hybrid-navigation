@@ -36,7 +36,7 @@ const NSInteger ResultCancel = 0;
 
 @implementation HBDReactBridgeManager
 
-+ (instancetype)sharedInstance {
++ (instancetype)get {
     static dispatch_once_t onceToken;
     static HBDReactBridgeManager *manager;
     dispatch_once(&onceToken, ^{
@@ -47,6 +47,10 @@ const NSInteger ResultCancel = 0;
         [manager registerNavigator:[HBDDrawerNavigator new]];
     });
     return manager;
+}
+
++ (instancetype)sharedInstance {
+    return [self get];
 }
 
 - (instancetype)init {
@@ -170,7 +174,7 @@ const NSInteger ResultCancel = 0;
     }
     
     if ([self hasReactModuleForName:moduleName]) {
-        NSDictionary *staticOptions = [[HBDReactBridgeManager sharedInstance] reactModuleOptionsForKey:moduleName];
+        NSDictionary *staticOptions = [[HBDReactBridgeManager get] reactModuleOptionsForKey:moduleName];
         options = [HBDUtils mergeItem:options withTarget:staticOptions];
         vc = [[HBDReactViewController alloc] initWithModuleName:moduleName props:props options:options];
     } else {

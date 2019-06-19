@@ -38,11 +38,11 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     static final String TAG = "ReactNative";
     static final Handler sHandler = new Handler(Looper.getMainLooper());
 
-    private final ReactBridgeManager reactBridgeManager;
+    private final ReactBridgeManager bridgeManager;
 
-    NavigationModule(ReactApplicationContext reactContext, ReactBridgeManager reactBridgeManager) {
+    NavigationModule(ReactApplicationContext reactContext, ReactBridgeManager bridgeManager) {
         super(reactContext);
-        this.reactBridgeManager = reactBridgeManager;
+        this.bridgeManager = bridgeManager;
     }
 
     @NonNull
@@ -57,8 +57,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         Log.i(TAG, "NavigationModule#onCatalystInstanceDestroy");
         sHandler.removeCallbacksAndMessages(null);
         sHandler.post(() -> {
-            reactBridgeManager.setReactModuleRegisterCompleted(false);
-            reactBridgeManager.setViewHierarchyReady(false);
+            bridgeManager.setReactModuleRegisterCompleted(false);
+            bridgeManager.setViewHierarchyReady(false);
             Activity activity = getCurrentActivity();
             if (activity instanceof AwesomeActivity) {
                 LocalBroadcastManager.getInstance(activity).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
@@ -78,17 +78,17 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startRegisterReactComponent() {
-        sHandler.post(reactBridgeManager::startRegisterReactModule);
+        sHandler.post(bridgeManager::startRegisterReactModule);
     }
 
     @ReactMethod
     public void endRegisterReactComponent() {
-        sHandler.post(reactBridgeManager::endRegisterReactModule);
+        sHandler.post(bridgeManager::endRegisterReactModule);
     }
 
     @ReactMethod
     public void registerReactComponent(final String appKey, final ReadableMap options) {
-        sHandler.post(() -> reactBridgeManager.registerReactModule(appKey, options));
+        sHandler.post(() -> bridgeManager.registerReactModule(appKey, options));
     }
 
     @ReactMethod
@@ -105,23 +105,23 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setRoot(final ReadableMap layout, final boolean sticky) {
         sHandler.post(() -> {
-            if (reactBridgeManager.getCurrentReactContext() == null) {
+            if (bridgeManager.getCurrentReactContext() == null) {
                 Log.w(TAG, "current react context is null, skip action `setRoot`");
                 return;
             }
-            reactBridgeManager.setViewHierarchyReady(false);
-            reactBridgeManager.setRootLayout(layout, sticky);
+            bridgeManager.setViewHierarchyReady(false);
+            bridgeManager.setRootLayout(layout, sticky);
             Activity activity = getCurrentActivity();
-            if (activity instanceof ReactAppCompatActivity && reactBridgeManager.isReactModuleRegisterCompleted()) {
+            if (activity instanceof ReactAppCompatActivity && bridgeManager.isReactModuleRegisterCompleted()) {
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                AwesomeFragment fragment = reactBridgeManager.createFragment(layout);
+                AwesomeFragment fragment = bridgeManager.createFragment(layout);
                 if (fragment != null) {
                     Log.i(TAG, "have active activity and react module was registered, set root directly");
                     reactAppCompatActivity.setActivityRootFragment(fragment);
                 }
             } else {
                 Log.w(TAG, "have no active activity or react module was not registered, schedule pending root");
-                reactBridgeManager.setPendingLayout(layout);
+                bridgeManager.setPendingLayout(layout);
             }
         });
     }
@@ -135,7 +135,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             }
 
             if (target != null && target.isAdded()) {
-                reactBridgeManager.handleNavigation(target, action, extras);
+                bridgeManager.handleNavigation(target, action, extras);
             } else {
                 Log.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
             }
@@ -168,13 +168,13 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                if (reactBridgeManager.getCurrentReactContext() == null) {
+                if (bridgeManager.getCurrentReactContext() == null) {
                     Log.w(TAG, "current react context is null, skip action `currentRoute`");
                     return;
                 }
 
                 Activity activity = getCurrentActivity();
-                if (!reactBridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
+                if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
                     sHandler.postDelayed(this, 16);
                     return;
                 }
@@ -204,7 +204,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @Nullable
     private HybridFragment getPrimaryFragment(@Nullable Fragment fragment) {
         if (fragment instanceof AwesomeFragment) {
-            return reactBridgeManager.primaryFragment((AwesomeFragment) fragment);
+            return bridgeManager.primaryFragment((AwesomeFragment) fragment);
         }
         return null;
     }
@@ -214,13 +214,13 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                if (reactBridgeManager.getCurrentReactContext() == null) {
+                if (bridgeManager.getCurrentReactContext() == null) {
                     Log.w(TAG, "current react context is null, skip action `routeGraph`");
                     return;
                 }
 
                 Activity activity = getCurrentActivity();
-                if (!reactBridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity) ) {
+                if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity) ) {
                     sHandler.postDelayed(this, 16);
                     return;
                 }
@@ -250,11 +250,11 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     private void buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
-        reactBridgeManager.buildRouteGraph(fragment, root, modal);
+        bridgeManager.buildRouteGraph(fragment, root, modal);
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
-        if (!reactBridgeManager.isViewHierarchyReady() || reactBridgeManager.getCurrentReactContext() == null) {
+        if (!bridgeManager.isViewHierarchyReady() || bridgeManager.getCurrentReactContext() == null) {
             Log.w(TAG, "View hierarchy is not ready now.");
             return null;
         }

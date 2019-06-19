@@ -27,11 +27,11 @@
     [HUDConfig sharedConfig].hostViewProvider = self;
     
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
-    [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+    [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
     
     // register native modules
-    [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
-    [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"NativeModal" forController:[NativeModalViewController class]];
+    [[HBDReactBridgeManager get] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
+    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModal" forController:[NativeModalViewController class]];
 
     // splash
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];

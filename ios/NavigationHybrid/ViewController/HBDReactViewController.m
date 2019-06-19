@@ -42,7 +42,7 @@
 }
 
 - (void)loadView {
-    RCTRootView *rootView = [[HBDRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
+    RCTRootView *rootView = [[HBDRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
     BOOL passThroughTouches = [self.options[@"passThroughTouches"] boolValue];
     rootView.passThroughTouches = passThroughTouches;
     self.view = rootView;
@@ -65,7 +65,7 @@
             } else {
                 size = UILayoutFittingCompressedSize;
             }
-            RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:moduleName initialProperties:[self propsWithSceneId]];
+            RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:moduleName initialProperties:[self propsWithSceneId]];
             HBDTitleView *titleView = [[HBDTitleView alloc] initWithRootView:rootView layoutFittingSize:size navigationBarBounds:self.navigationController.navigationBar.bounds];
             self.navigationItem.titleView = titleView;
         }
@@ -85,7 +85,7 @@
 
 - (void)setAppProperties:(NSDictionary *)props {
     [super setAppProperties:props];
-    if ([HBDReactBridgeManager sharedInstance].isReactModuleRegisterCompleted) {
+    if ([HBDReactBridgeManager get].isReactModuleRegisterCompleted) {
         self.rootView.appProperties = [self propsWithSceneId];
     }
 }

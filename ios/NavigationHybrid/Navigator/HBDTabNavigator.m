@@ -34,7 +34,7 @@
         
         NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:4];
         for (NSDictionary *tab in children) {
-            UIViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:tab];
+            UIViewController *vc = [[HBDReactBridgeManager get] controllerWithLayout:tab];
             if (vc) {
                 [controllers addObject:vc];
             }
@@ -111,7 +111,7 @@
         NSMutableArray *children = [[NSMutableArray alloc] init];
         for (NSInteger i = 0; i < tabBarController.childViewControllers.count; i++) {
             UIViewController *child = tabBarController.childViewControllers[i];
-            [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:child root:children];
+            [[HBDReactBridgeManager get] buildRouteGraphWithController:child root:children];
         }
         [root addObject:@{
                           @"layout": self.name,
@@ -128,7 +128,7 @@
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[UITabBarController class]]) {
         UITabBarController *tabBarVc = (UITabBarController *)vc;
-        return [[HBDReactBridgeManager sharedInstance] primaryViewControllerWithViewController:tabBarVc.selectedViewController];
+        return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:tabBarVc.selectedViewController];
     }
     return nil;
 }

@@ -31,7 +31,7 @@ RCT_EXPORT_MODULE(GardenHybrid)
 
 - (instancetype)init {
     if (self = [super init]) {
-        _bridgeManager = [HBDReactBridgeManager sharedInstance];
+        _bridgeManager = [HBDReactBridgeManager get];
     }
     return self;
 }

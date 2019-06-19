@@ -26,8 +26,8 @@
         NSDictionary *content = [children objectAtIndex:0];
         NSDictionary *menu = [children objectAtIndex:1];
         
-        UIViewController *contentController = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:content];
-        UIViewController *menuController = [[HBDReactBridgeManager sharedInstance] controllerWithLayout:menu];
+        UIViewController *contentController = [[HBDReactBridgeManager get] controllerWithLayout:content];
+        UIViewController *menuController = [[HBDReactBridgeManager get] controllerWithLayout:menu];
         
         if (contentController && menuController) {
             HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:contentController menuViewController:menuController];
@@ -56,10 +56,10 @@
 
 - (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
     if ([vc isKindOfClass:[HBDDrawerController class]]) {
-        HBDDrawerController *drawerController = (HBDDrawerController *)vc;
+        HBDDrawerController *drawer = (HBDDrawerController *)vc;
         NSMutableArray *children = [[NSMutableArray alloc] init];
-        [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:drawerController.contentController root:children];
-        [[HBDReactBridgeManager sharedInstance] buildRouteGraphWithController:drawerController.menuController root:children];
+        [[HBDReactBridgeManager get] buildRouteGraphWithController:drawer.contentController root:children];
+        [[HBDReactBridgeManager get] buildRouteGraphWithController:drawer.menuController root:children];
         [root addObject:@{
                           @"layout": @"drawer",
                           @"sceneId": vc.sceneId,
@@ -75,9 +75,9 @@
     if ([vc isKindOfClass:[HBDDrawerController class]]) {
         HBDDrawerController *drawer = (HBDDrawerController *)vc;
         if (drawer.isMenuOpened) {
-            return [[HBDReactBridgeManager sharedInstance] primaryViewControllerWithViewController:drawer.menuController];
+            return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:drawer.menuController];
         } else {
-            return [[HBDReactBridgeManager sharedInstance] primaryViewControllerWithViewController:drawer.contentController];
+            return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:drawer.contentController];
         }
     }
     return nil;

@@ -61,7 +61,7 @@
     NSString *moduleName = self.tabBarOptions[@"tabBarModuleName"];
     NSMutableDictionary *props = [[self props] mutableCopy];
     props[@"selectedIndex"] = self.tabBarOptions[@"selectedIndex"];
-    RCTRootView *rootView = [[HBDRootView alloc] initWithBridge:[HBDReactBridgeManager sharedInstance].bridge moduleName:moduleName initialProperties:props];
+    RCTRootView *rootView = [[HBDRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:moduleName initialProperties:props];
     rootView.backgroundColor = UIColor.clearColor;
     
     BOOL sizeIndeterminate = [self.tabBarOptions[@"sizeIndeterminate"] boolValue];

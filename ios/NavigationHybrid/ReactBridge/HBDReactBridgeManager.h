@@ -24,6 +24,8 @@ extern const NSInteger ResultCancel;
 
 @interface HBDReactBridgeManager : NSObject
 
++ (instancetype)get;
+
 + (instancetype)sharedInstance;
 
 @property(nonatomic, strong, readonly) RCTBridge *bridge;

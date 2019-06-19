@@ -47,7 +47,7 @@ RCT_EXPORT_MODULE(NavigationHybrid)
 
 - (instancetype)init {
     if (self = [super init]) {
-        _bridgeManager = [HBDReactBridgeManager sharedInstance];
+        _bridgeManager = [HBDReactBridgeManager get];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReload) name:RCTBridgeWillReloadNotification object:nil];
     }
     return self;

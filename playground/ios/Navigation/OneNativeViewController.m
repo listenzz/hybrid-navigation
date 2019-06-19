@@ -36,7 +36,7 @@
         else {
             passedProps = @{@"popToId": self.sceneId};
         }
-        HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"Navigation" props:passedProps options:nil];
+        HBDViewController *vc = [[HBDReactBridgeManager get] controllerWithModuleName:@"Navigation" props:passedProps options:nil];
         [self.navigationController pushViewController:vc animated:YES];
     }
 }
