@@ -151,6 +151,10 @@ export class Navigator {
     intercept = interceptor;
   }
 
+  static reload() {
+    NavigationModule.reload();
+  }
+
   constructor(public sceneId: string, public moduleName?: string) {
     this.sceneId = sceneId;
     this.moduleName = moduleName;

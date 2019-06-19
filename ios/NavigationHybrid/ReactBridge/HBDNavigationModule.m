@@ -39,6 +39,8 @@
 
 @implementation HBDNavigationModule
 
+@synthesize bridge = _bridge;
+
 + (BOOL)requiresMainQueueSetup {
     return YES;
 }
@@ -107,6 +109,10 @@ RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:
     } else {
         RCTLogWarn(@"Can't find target scene for action:%@, maybe the scene is gone. \nextras: %@", action, extras);
     }
+}
+
+RCT_EXPORT_METHOD(reload) {
+    [self.bridge reload];
 }
 
 RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {

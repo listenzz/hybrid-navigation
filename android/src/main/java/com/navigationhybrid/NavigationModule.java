@@ -143,6 +143,13 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void reload() {
+        sHandler.post(() ->
+            bridgeManager.getReactInstanceManager().recreateReactContextInBackground()
+        );
+    }
+
+    @ReactMethod
     public void isNavigationRoot(final String sceneId, final Promise promise) {
         sHandler.post(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
