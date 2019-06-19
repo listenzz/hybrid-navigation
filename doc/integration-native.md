@@ -384,7 +384,7 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
     HBDNavigationController *navigation = [[HBDNavigationController alloc] initWithRootViewController:[manager controllerWithModuleName:@"Navigation" props:nil options:nil]];
     HBDNavigationController *options = [[HBDNavigationController alloc] initWithRootViewController:[manager controllerWithModuleName:@"Options" props:nil options:nil]];
 
-    [tabs setViewControllers:@[ navigation, options]];
+    [tabs setViewControllers:@[ navigation, options ]];
     [manager setRootViewController:tabs];
     [self.window makeKeyAndVisible];
 }

@@ -139,6 +139,17 @@ dependencies {
 }
 ```
 
+请确保 android/app/build.gradle 中有如下配置：
+
+```diff
+android {
++    compileOptions {
++        sourceCompatibility JavaVersion.VERSION_1_8
++        targetCompatibility JavaVersion.VERSION_1_8
++    }
+}
+```
+
 修改 MainActivity.java 文件
 
 ```diff

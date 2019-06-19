@@ -6,7 +6,7 @@
 
 Navigator 是一个主管导航的类，它有一些静态（类）方法：
 
-- setRoot(layout: Layout, sticky = false)
+- **setRoot(layout: Layout, sticky = false)**
 
 设置应用的 UI 层级
 
@@ -105,11 +105,11 @@ Navigator.setRoot({
 
 > Navigator.setRoot 还接受第二个参数，是个 boolean，用来决定 Android 按返回键退出 app 后，再次打开时，是否恢复到首次将该参数设置为 true 时的那个 layout。通常用来决定按返回键退出 app 后重新打开时，要不要走闪屏逻辑。请参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目对 Navigator.setRoot 的使用
 
-- setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {})
+- **setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {})**
 
 通过这个方法可以监听 `setRoot` 的调用情况
 
-- dispatch(sceneId: string, action: string, params: Params = {})
+- **dispatch(sceneId: string, action: string, params: Params = {})**
 
 大多数导航操作都是转发给该方法完成，也可以直接使用，尤其是自定义了容器和导航之后
 
@@ -119,7 +119,7 @@ Navigator.dispatch(this.props.sceneId, 'push', { moduleName: 'Profile' });
 this.props.navigator.push('Profile');
 ```
 
-- setInterceptor(interceptor: NavigationInterceptor)
+- **setInterceptor(interceptor: NavigationInterceptor)**
 
 通过这个方法可以拦截 `dispatch` 的操作
 
@@ -134,7 +134,7 @@ Navigator.setInterceptor((action, from, to, extras) => {
 
 `extras` 中有我们需要的额外信息。譬如 `sceneId`，它表示动作发出的页面， 通过 `Navigator.get(sceneId)` 可以获取该页面的 `navigator`。如果 action 是 switchTab，我们还可以从 `extras` 中获取 `index` 这个属性，它表示将要切换到的 tab 的位置，从 0 开始。
 
-- get(sceneId: string): Navigator
+- **get(sceneId: string): Navigator**
 
 接受 sceneId 作为参数，返回一个已经存在的 navigator 实例
 
@@ -143,7 +143,7 @@ this.props.navigator === Navigator.get(this.props.sceneId);
 // true
 ```
 
-- current(): Promise&lt;Navigator&gt;
+- **current(): Promise&lt;Navigator&gt;**
 
 返回当前有效的 navigator，通常是用户当前可见的那个页面的 navigator
 
@@ -153,7 +153,7 @@ this.props.navigator === navigator;
 // true
 ```
 
-- currentRoute(): Promise&lt;Route&gt;
+- **currentRoute(): Promise&lt;Route&gt;**
 
 获取当前路由信息
 
@@ -177,7 +177,7 @@ const navigator = Navigator.get(route.sceneId);
 const navigator = await Navigator.current();
 ```
 
-- routeGraph(): Promise&lt;RouteGraph[]&gt;
+- **routeGraph(): Promise&lt;RouteGraph[]&gt;**
 
 有时，我们不光需要知道当前正处于哪个页面，还需要知道当前整个 UI 层级或者说路由图
 
@@ -235,7 +235,7 @@ const navigator = Navigator.get(sceneId);
 
 screen 是最基本的页面，它用来表示通过 `ReactRegistry.registerComponent` 注册的组件。它有一些基本的导航能力，所有容器均继承了这些能力。
 
-- showModal(moduleName: string, requestCode = 0, props: { [x: string]: any } = {}, options: NavigationItem = {})
+- **showModal(moduleName: string, requestCode = 0, props: { [x: string]: any } = {}, options: NavigationItem = {})**
 
 将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件，比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
 
@@ -266,17 +266,17 @@ onComponentResult(requestCode, resultCode, data) {
 }
 ```
 
-- hideModal()
+- **hideModal()**
 
 隐藏作为 Modal 显示的页面，如果 Modal 是一个容器，可以在该容器的任何子页面调用此方法。
 
 **在调用 `this.props.navigator.hideModal` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
-- showModalLayout(layout: Layout, requestCode = 0)
+- **showModalLayout(layout: Layout, requestCode = 0)**
 
 showModal 的加强版，可以将布局对象作为 Modal 显示，同样使用 hideModal 来关闭
 
-- present(moduleName: string, requestCode = 0, props: { [x: string]: any } = {}, options: NavigationItem = {}, animated = true)
+- **present(moduleName: string, requestCode = 0, props: { [x: string]: any } = {}, options: NavigationItem = {}, animated = true)**
 
 present 是一种模态交互方式，类似于 Android 的 `startActivityForResult`，要求被 present 的页面返回结果给发起 present 的页面。在 iOS 中，present 表现为从底往上弹出界面。
 
@@ -349,13 +349,13 @@ this.props.navigator.dismiss();
 
 A 页面通过实现 `onComponentResult` 方法来接收结果（略）。
 
-- dismiss()
+- **dismiss()**
 
 关闭 `present` 出来的页面，如果该页面是容器，可以在容器的任何子页面调用此方法。
 
 **在调用 `this.props.navigator.dismiss` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
-- presentLayout(layout: Layout, requestCode = 0, animated = true)
+- **presentLayout(layout: Layout, requestCode = 0, animated = true)**
 
 present 的加强版，通过传递一个布局对象，用来 present UI 层级比较复杂的页面，同样使用 dismiss 来关闭。
 
@@ -384,7 +384,7 @@ this.props.navigator.present('B', 1);
 
 stack 以栈的方式管理它的子页面，它支持以下导航操作：
 
-- push(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {}, animated = true)
+- **push(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {}, animated = true)**
 
 由 A 页面跳转到 B 页面。
 
@@ -404,11 +404,11 @@ this.props.navigator.push('B', {...});
 
 B 页面通过 `this.props` 来访问传递过来的值
 
-- pushLayout(layout: Layout, animated = true)
+- **pushLayout(layout: Layout, animated = true)**
 
 push 加强版，通过传递一个布局对象，展示 UI 层级比较复杂的页面。
 
-- pop(animated = true)
+- **pop(animated = true)**
 
 返回到前一个页面。比如你由 A 页面 `push` 到 B 页面，现在想返回到 A 页面。
 
@@ -417,7 +417,7 @@ push 加强版，通过传递一个布局对象，展示 UI 层级比较复杂�
 this.props.navigator.pop();
 ```
 
-- popTo(sceneId: string, animated = true)
+- **popTo(sceneId: string, animated = true)**
 
 返回到之前的指定页面。比如你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回 B 页面。你可以把 B 页面的 `sceneId` 一直传递到 D 页面，然后调用 `popTo('bId')` 返回到 B 页面。
 
@@ -442,7 +442,7 @@ this.props.navigator.push('D', { bId: this.props.bId });
 this.props.navigator.popTo(this.props.bId);
 ```
 
-- popToRoot(animated = true)
+- **popToRoot(animated = true)**
 
 返回到 stack 根页面。比如 A 页面是根页面，由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回到根部，也就是 A 页面：
 
@@ -453,7 +453,7 @@ this.props.navigator.popToRoot();
 
 pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `onComponentResult(requestCode, resultCode, data)` 来接受结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
 
-- replace(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {})
+- **replace(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {})**
 
 用指定页面取代当前页面，比如当前页面是 A，想要替换成 B
 
@@ -464,7 +464,7 @@ this.props.navigator.replace('B');
 
 现在 Stack 里没有 A 页面了，被替换成了 B。
 
-- replaceToRoot(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {})
+- **replaceToRoot(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {})**
 
 移除所有页面，然后把目标页面设置为 Stack 的根页面。
 
@@ -477,7 +477,7 @@ this.props.navigator.replaceToRoot('E');
 
 A、B、C、D 页面被移除，E 页面被设置为 stack 的根页面。
 
-- isStackRoot(): Promise&lt;boolean&gt;
+- **isStackRoot(): Promise&lt;boolean&gt;**
 
 判断一个页面是否所在 stack 的根页面，返回值是一个 Promise.
 
@@ -492,11 +492,15 @@ componentWillMount() {
 }
 ```
 
+- **setParams(params: { [x: string]: any })**
+
+存放和该 navigator 相关的属性或状态，可以通过 `navigator.state.params` 取出，具体应用参考 [playground/TopBarTitleView](https://github.com/listenzz/react-native-navigation-hybrid/blob/master/playground/src/TopBarTitleView.js) 这个例子。
+
 ## tabs
 
 tabs 支持以下导航操作
 
-- switchTab(index: number, popToRoot: boolean = false)
+- **switchTab(index: number, popToRoot: boolean = false)**
 
 切换到指定 tab
 
@@ -515,7 +519,7 @@ this.props.navigator.switchTab(1, true);
 
 drawer 支持以下导航操作
 
-- toggleMenu()
+- **toggleMenu()**
 
 切换抽屉的开关状态
 
@@ -523,7 +527,7 @@ drawer 支持以下导航操作
 this.props.navigator.toggleMenu();
 ```
 
-- openMenu()
+- **openMenu()**
 
 打开抽屉
 
@@ -533,7 +537,7 @@ this.props.navigator.openMenu();
 
 <a name="navigation-caveat"></a>
 
-- closeMenu()
+- **closeMenu()**
 
 关闭抽屉
 

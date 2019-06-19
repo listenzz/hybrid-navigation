@@ -41,7 +41,7 @@ public class MainApplication extends Application implements ReactApplication{
         super.onCreate();
         SoLoader.init(this, false);
 
-        ReactBridgeManager bridgeManager = ReactBridgeManager.instance;
+        ReactBridgeManager bridgeManager = ReactBridgeManager.get();
         bridgeManager.install(getReactNativeHost());
 
         // 注册原生模块
@@ -57,10 +57,10 @@ iOS 注册方式如下
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
-    [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+    [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
 
     // 注册原生模块
-    [[HBDReactBridgeManager sharedInstance] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
+    [[HBDReactBridgeManager get] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
 
     return YES;
 }
@@ -81,7 +81,7 @@ AwesomeFragment fragment = getReactBridgeManager().createFragment("moduleName");
 
 ```objc
 // ios
-HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"moduleName" props:nil options:nil];
+HBDViewController *vc = [[HBDReactBridgeManager get] controllerWithModuleName:@"moduleName" props:nil options:nil];
 ```
 
 就这样实例化目标页面，不管这个页面是 RN 的还是原生的。
@@ -145,7 +145,7 @@ public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
 
 ```objc
 NSDictionary *props = @{@"user_id": @1};
-HBDViewController *vc = [[HBDReactBridgeManager sharedInstance] controllerWithModuleName:@"moduleName" props:props options:nil];
+HBDViewController *vc = [[HBDReactBridgeManager get] controllerWithModuleName:@"moduleName" props:props options:nil];
 ```
 
 通过 `self.props` 获取其它页面传递过来的值，不管这个页面是原生的还是 RN 的
