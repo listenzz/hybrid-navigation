@@ -22,7 +22,7 @@
     });
 }
 
-- (void)hbd_dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+- (void)hbd_dismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion {
     UIViewController *presented = self.presentedViewController;
     UIViewController *presenting = presented.presentingViewController;
     if (!presented) {
@@ -30,7 +30,7 @@
         presented = presenting.presentedViewController;
     }
     
-    [self hbd_dismissViewControllerAnimated:flag completion:^{
+    [self hbd_dismissViewControllerAnimated:animated completion:^{
         if (completion) {
             completion();
         }
