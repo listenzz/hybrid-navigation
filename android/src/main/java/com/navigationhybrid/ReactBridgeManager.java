@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import com.facebook.react.ReactInstanceManager;
@@ -229,10 +228,6 @@ public class ReactBridgeManager {
         if (fragment == null) {
             return;
         }
-        FragmentManager childFragmentManager = fragment.getChildFragmentManager();
-        if (!childFragmentManager.isDestroyed()) {
-            FragmentHelper.executePendingTransactionsSafe(childFragmentManager);
-        }
 
         List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
 
@@ -260,10 +255,6 @@ public class ReactBridgeManager {
     public HybridFragment primaryFragment(@Nullable AwesomeFragment fragment) {
         if (fragment == null) {
             return null;
-        }
-        FragmentManager childFragmentManager = fragment.getChildFragmentManager();
-        if (!childFragmentManager.isDestroyed()) {
-            FragmentHelper.executePendingTransactionsSafe(childFragmentManager);
         }
 
         List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();

@@ -18,7 +18,6 @@ import com.facebook.react.modules.core.PermissionListener;
 
 import me.listenzz.navigation.AwesomeActivity;
 import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.Style;
 
 /**
@@ -43,7 +42,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityDelegate.onCreate(savedInstanceState);
-
         setStatusBarTranslucent(true);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         getReactBridgeManager().addReactModuleRegisterListener(this);
@@ -51,11 +49,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         if (savedInstanceState == null) {
             if (isReactModuleRegisterCompleted()) {
                 createMainComponent();
-            }
-        } else {
-            if (!isReactModuleRegisterCompleted()) {
-                clearFragments();
-                FragmentHelper.executePendingTransactionsSafe(getSupportFragmentManager());
             }
         }
     }
@@ -71,7 +64,9 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     }
 
     public void inflateStyle() {
-        onCustomStyle(getStyle());
+        if (getStyle() != null) {
+            onCustomStyle(getStyle());
+        }
     }
 
     @Override
@@ -83,7 +78,9 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     public void onReactModuleRegisterCompleted() {
-        onCustomStyle(getStyle());
+        if (getStyle() != null) {
+            onCustomStyle(getStyle());
+        }
         createMainComponent();
     }
 

@@ -46,7 +46,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     private ReactRootViewHolder reactRootViewHolder;
     private ReactView reactRootView;
     private ReactView reactTitleView;
-    private boolean isAppeared;
     private BroadcastReceiver jsBundleReloadBroadcastReceiver;
 
     @Nullable
@@ -88,7 +87,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden && isResumed() && reactRootView == null) {
+        if (isViewAppear() && reactRootView == null) {
             initReactNative();
             initTitleViewIfNeeded();
         }
@@ -147,8 +146,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     private void sendViewAppearEvent(boolean appear) {
         // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
-        if (isReactModuleRegisterCompleted() && (isResumed() || isRemoving()) && this.isAppeared != appear) {
-            this.isAppeared = appear;
+        if (isReactModuleRegisterCompleted() && (isResumed() || isRemoving())) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_SCENE_ID, getSceneId());
             bundle.putString(KEY_ON, appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR);
@@ -245,7 +243,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     public void signalFirstRenderComplete() {
         Log.i(TAG, getModuleName() + " signalFirstRenderComplete");
         startPostponedEnterTransition();
-        if (reactRootView != null && isAppeared) {
+        if (reactRootView != null && isViewAppear()) {
             reactRootView.removeOnGlobalLayoutListener();
             reactRootView.addOnGlobalLayoutListener();
         }

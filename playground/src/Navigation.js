@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TouchableOpacity, Text, View, ScrollView, PixelRatio, Platform } from 'react-native';
 
 import styles from './Styles';
-import { RESULT_OK } from 'react-native-navigation-hybrid';
+import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid';
 import fontUri from './FontUtil';
 
 const REQUEST_CODE = 1;
@@ -108,17 +108,14 @@ export default class Navigation extends Component {
   }
 
   pop() {
-    // this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
     this.props.navigator.pop();
   }
 
   popTo() {
-    this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
     this.props.navigator.popTo(this.props.popToId);
   }
 
   popToRoot() {
-    this.props.navigator.setResult(RESULT_OK, { backId: this.props.sceneId });
     this.props.navigator.popToRoot();
   }
 

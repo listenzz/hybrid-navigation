@@ -62,7 +62,6 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             Activity activity = getCurrentActivity();
             if (activity instanceof AwesomeActivity) {
                 LocalBroadcastManager.getInstance(activity).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
-                ((AwesomeActivity) activity).clearFragments();
             }
         });
     }
@@ -130,10 +129,6 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     public void dispatch(final String sceneId, final String action, final ReadableMap extras) {
         sHandler.post(() -> {
             AwesomeFragment target = findFragmentBySceneId(sceneId);
-            if (target != null) {
-                FragmentHelper.executePendingTransactionsSafe(target.requireFragmentManager());
-            }
-
             if (target != null && target.isAdded()) {
                 bridgeManager.handleNavigation(target, action, extras);
             } else {
@@ -145,8 +140,37 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void reload() {
         sHandler.post(() ->
-            bridgeManager.getReactInstanceManager().recreateReactContextInBackground()
+                bridgeManager.getReactInstanceManager().recreateReactContextInBackground()
         );
+    }
+
+    @ReactMethod
+    public void delay(int ms, final Promise promise) {
+        sHandler.postDelayed(() -> promise.resolve(Arguments.createMap()), ms);
+    }
+
+    @ReactMethod
+    public void foreground(final Promise promise) {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                if (bridgeManager.getCurrentReactContext() == null) {
+                    Log.w(TAG, "current react context is null, skip action `currentRoute`");
+                    return;
+                }
+
+                Activity activity = getCurrentActivity();
+                if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
+                    sHandler.postDelayed(this, 16);
+                    return;
+                }
+
+                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                reactAppCompatActivity.scheduleTaskAtStarted(() -> promise.resolve(Arguments.createMap()));
+            }
+        };
+
+        sHandler.post(task);
     }
 
     @ReactMethod
@@ -188,8 +212,6 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-                FragmentHelper.executePendingTransactionsSafe(fragmentManager);
-
                 Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
                 HybridFragment current = getPrimaryFragment(fragment);
 
@@ -227,14 +249,13 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 }
 
                 Activity activity = getCurrentActivity();
-                if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity) ) {
+                if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
                     sHandler.postDelayed(this, 16);
                     return;
                 }
 
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-                FragmentHelper.executePendingTransactionsSafe(fragmentManager);
 
                 ArrayList<Bundle> root = new ArrayList<>();
                 ArrayList<Bundle> modal = new ArrayList<>();

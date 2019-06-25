@@ -115,6 +115,12 @@ RCT_EXPORT_METHOD(reload) {
     [self.bridge reload];
 }
 
+RCT_EXPORT_METHOD(delay:(nonnull NSNumber *)ms resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(([ms floatValue] / 1000) * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        resolve(@{});
+    });
+}
+
 RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UINavigationController *nav = vc.navigationController;

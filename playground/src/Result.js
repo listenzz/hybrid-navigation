@@ -73,10 +73,7 @@ export default class Result extends Component {
     this.props.navigator.push('Result');
   }
 
-  async sendResult() {
-    const graph = await Navigator.routeGraph();
-    console.info(graph);
-
+  sendResult() {
     this.props.navigator.setResult(RESULT_OK, {
       text: this.state.text,
       backId: this.props.sceneId,

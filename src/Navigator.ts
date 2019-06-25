@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import {
   EventEmitter,
   NavigationModule,
@@ -115,10 +116,12 @@ export class Navigator {
   }
 
   static async currentRoute(): Promise<Route> {
+    await Navigator.foreground();
     return await NavigationModule.currentRoute();
   }
 
   static async routeGraph(): Promise<RouteGraph[]> {
+    await Navigator.foreground();
     return await NavigationModule.routeGraph();
   }
 
@@ -137,11 +140,15 @@ export class Navigator {
     didSetRootCallback = didSetRoot;
   }
 
-  static dispatch(sceneId: string, action: string, params: Params = {}): void {
+  static async dispatch(sceneId: string, action: string, params: Params = {}): Promise<void> {
+    await Navigator.foreground();
     const navigator = Navigator.get(sceneId);
     if (
       !intercept ||
-      !intercept(action, navigator.moduleName, params.moduleName, { sceneId, index: params.index })
+      !intercept(action, navigator.moduleName, params.moduleName, {
+        sceneId,
+        index: params.index,
+      })
     ) {
       NavigationModule.dispatch(sceneId, action, params);
     }
@@ -153,6 +160,18 @@ export class Navigator {
 
   static reload() {
     NavigationModule.reload();
+  }
+
+  static delay(ms: number): Promise<{}> {
+    return NavigationModule.delay(ms);
+  }
+
+  static foreground(): Promise<void> {
+    if (Platform.OS === 'android') {
+      return NavigationModule.foreground();
+    } else {
+      return Promise.resolve();
+    }
   }
 
   constructor(public sceneId: string, public moduleName?: string) {

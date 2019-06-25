@@ -65,13 +65,7 @@ export default class ReactModal extends React.Component {
     this.hideModal();
   };
 
-  async hideModal(gender) {
-    const graph = await Navigator.routeGraph();
-    console.info(graph);
-    console.info('------------------------------------------');
-    const route = await Navigator.currentRoute();
-    console.info(route);
-
+  hideModal(gender) {
     Animated.timing(this.state.anim, {
       toValue: this.height,
       duration: 200,
