@@ -132,19 +132,21 @@ public class TabNavigator implements Navigator {
         switch (action) {
             case "switchTab":
                 TabBarFragment tabBarFragment = target.getTabBarFragment();
+                int index = extras.getInt("index");
+
                 if (tabBarFragment != null) {
-                    AwesomeFragment presented = tabBarFragment.getPresentedFragment();
-                    if (presented != null) {
-                        presented.dismissFragment();
-                    }
-                    int index = extras.getInt("index");
-
                     boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
+                    if (popToRoot) {
+                        AwesomeFragment presented = tabBarFragment.getPresentedFragment();
+                        if (presented != null) {
+                            presented.dismissFragment();
+                        }
 
-                    if (popToRoot && index != tabBarFragment.getSelectedIndex()) {
-                        NavigationFragment nav = target.getNavigationFragment();
-                        if (nav != null) {
-                            nav.popToRootFragment(false);
+                        if (index != tabBarFragment.getSelectedIndex()) {
+                            NavigationFragment nav = target.getNavigationFragment();
+                            if (nav != null) {
+                                nav.popToRootFragment(false);
+                            }
                         }
                     }
 

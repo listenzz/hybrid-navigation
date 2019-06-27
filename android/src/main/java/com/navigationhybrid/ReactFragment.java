@@ -112,7 +112,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
 
         if (jsBundleReloadBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
+            LocalBroadcastManager.getInstance(requireContext().getApplicationContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
             jsBundleReloadBroadcastReceiver = null;
         }
 
@@ -195,7 +195,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         jsBundleReloadBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
+                LocalBroadcastManager.getInstance(context.getApplicationContext()).unregisterReceiver(this);
                 jsBundleReloadBroadcastReceiver = null;
 
                 if (reactRootView != null) {
@@ -210,7 +210,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             }
         };
 
-        LocalBroadcastManager.getInstance(requireActivity())
+        LocalBroadcastManager.getInstance(context.getApplicationContext())
                 .registerReceiver(jsBundleReloadBroadcastReceiver, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
     }
 

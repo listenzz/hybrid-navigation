@@ -59,10 +59,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         sHandler.post(() -> {
             bridgeManager.setReactModuleRegisterCompleted(false);
             bridgeManager.setViewHierarchyReady(false);
-            Activity activity = getCurrentActivity();
-            if (activity instanceof AwesomeActivity) {
-                LocalBroadcastManager.getInstance(activity).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
-            }
+            LocalBroadcastManager.getInstance(getReactApplicationContext().getApplicationContext()).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
         });
     }
 

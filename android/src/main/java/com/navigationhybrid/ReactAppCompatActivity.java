@@ -46,9 +46,13 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         getReactBridgeManager().addReactModuleRegisterListener(this);
 
-        if (savedInstanceState == null) {
-            if (isReactModuleRegisterCompleted()) {
+        if (isReactModuleRegisterCompleted()) {
+            if (savedInstanceState == null) {
                 createMainComponent();
+            } else {
+                if (getSupportFragmentManager().getFragments().size() > 0) {
+                    getReactBridgeManager().setViewHierarchyReady(true);
+                }
             }
         }
     }
