@@ -239,7 +239,7 @@ public class ReactEntryActivity extends ReactAppCompatActivity {
 @Override
 protected void onCreateMainComponent() {
     // 注意不要调用下面这行代码
-    // super.onCreateMainComponent
+    // super.onCreateMainComponent();
     ReactBridgeManager bridgeManager = getReactBridgeManager();
 
     ReactNavigationFragment navigation = new ReactNavigationFragment();
