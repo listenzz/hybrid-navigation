@@ -66,7 +66,6 @@ public class ReactView extends ReactRootView {
         removeOnGlobalLayoutListener();
     }
 
-
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
     private ViewTreeObserver.OnGlobalLayoutListener getGlobalLayoutListener() {
         if (mGlobalLayoutListener == null) {
@@ -86,6 +85,7 @@ public class ReactView extends ReactRootView {
     }
 
     void addOnGlobalLayoutListener() {
+        removeOnGlobalLayoutListener();
         getViewTreeObserver().addOnGlobalLayoutListener(getGlobalLayoutListener());
     }
 

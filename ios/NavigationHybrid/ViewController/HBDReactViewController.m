@@ -17,7 +17,7 @@
 
 @interface HBDReactViewController ()
 
-@property(nonatomic, assign) BOOL firstRenderComplete;
+@property(nonatomic, assign) BOOL firstRenderCompleted;
 @property(nonatomic, assign) BOOL viewAppeared;
 @property(nonatomic, strong, readwrite) RCTRootView *rootView;
 
@@ -38,7 +38,7 @@
 }
 
 - (void)handleReload {
-    self.firstRenderComplete = NO;
+    self.firstRenderCompleted = NO;
 }
 
 - (void)loadView {
@@ -99,7 +99,7 @@
     [super viewDidAppear:animated];
     if (!self.viewAppeared) {
         self.viewAppeared = YES;
-        if (self.firstRenderComplete) {
+        if (self.firstRenderCompleted) {
             [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
                                                                KEY_SCENE_ID: self.sceneId,
                                                                KEY_ON: ON_COMPONENT_APPEAR
@@ -117,7 +117,7 @@
     [super viewDidDisappear:animated];
     if (self.viewAppeared) {
         self.viewAppeared = NO;
-        if (self.firstRenderComplete) {
+        if (self.firstRenderCompleted) {
             [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
                                                                KEY_SCENE_ID: self.sceneId,
                                                                KEY_ON: ON_COMPONENT_DISAPPEAR
@@ -127,10 +127,10 @@
 }
 
 - (void)signalFirstRenderComplete {
-    if (self.firstRenderComplete) {
+    if (self.firstRenderCompleted) {
         return;
     }
-    self.firstRenderComplete = YES;
+    self.firstRenderCompleted = YES;
     if (self.viewAppeared) {
         [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
                                                            KEY_SCENE_ID: self.sceneId,

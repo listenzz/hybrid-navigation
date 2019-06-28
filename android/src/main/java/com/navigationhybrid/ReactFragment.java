@@ -38,7 +38,6 @@ import static com.navigationhybrid.HBDEventEmitter.ON_DIALOG_BACK_PRESSED;
 /**
  * Created by Listen on 2018/1/15.
  */
-
 public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver {
 
     protected static final String TAG = "ReactNative";
@@ -47,6 +46,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     private ReactView reactRootView;
     private ReactView reactTitleView;
     private BroadcastReceiver jsBundleReloadBroadcastReceiver;
+    private boolean firstRenderCompleted;
+
 
     @Nullable
     @Override
@@ -129,18 +130,33 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Override
     protected void onViewAppear() {
         super.onViewAppear();
-        sendViewAppearEvent(true);
-        if (reactRootView != null) {
+        if (reactRootView != null && firstRenderCompleted) {
             reactRootView.addOnGlobalLayoutListener();
+            sendViewAppearEvent(true);
         }
     }
 
     @Override
     protected void onViewDisappear() {
         super.onViewDisappear();
-        sendViewAppearEvent(false);
-        if (reactRootView != null) {
+        if (reactRootView != null && firstRenderCompleted) {
+            sendViewAppearEvent(false);
             reactRootView.removeOnGlobalLayoutListener();
+        }
+    }
+
+    public void signalFirstRenderComplete() {
+        Log.i(TAG, getModuleName() + " signalFirstRenderComplete");
+        if (firstRenderCompleted) {
+            return;
+        }
+
+        firstRenderCompleted = true;
+        startPostponedEnterTransition();
+
+        if (reactRootView != null && isViewAppear()) {
+            sendViewAppearEvent(true);
+            reactRootView.addOnGlobalLayoutListener();
         }
     }
 
@@ -237,15 +253,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                 getAwesomeToolbar().addView(reactTitleView, layoutParams);
                 reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
             }
-        }
-    }
-
-    public void signalFirstRenderComplete() {
-        Log.i(TAG, getModuleName() + " signalFirstRenderComplete");
-        startPostponedEnterTransition();
-        if (reactRootView != null && isViewAppear()) {
-            reactRootView.removeOnGlobalLayoutListener();
-            reactRootView.addOnGlobalLayoutListener();
         }
     }
 
