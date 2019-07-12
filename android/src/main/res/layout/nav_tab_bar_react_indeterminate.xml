@@ -7,7 +7,7 @@
     <FrameLayout
         android:id="@+id/bottom_navigation_bar_background"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_navigation_height"
+        android:layout_height="@dimen/nav_tab_bar_height"
         android:layout_gravity="bottom">
 
         <View

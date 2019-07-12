@@ -20,7 +20,6 @@ import me.listenzz.navigation.NavigationFragment;
 import me.listenzz.navigation.Style;
 import me.listenzz.navigation.TabBar;
 import me.listenzz.navigation.TabBarFragment;
-import me.listenzz.navigation.TabBarItem;
 import me.listenzz.navigation.TabBarProvider;
 
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_BADGE;
@@ -121,6 +120,7 @@ public class ReactTabBarFragment extends TabBarFragment {
                     updateTabBarAppearance(options.getBundle(ARG_OPTIONS));
                     break;
             }
+
         }
     }
 
@@ -133,12 +133,13 @@ public class ReactTabBarFragment extends TabBarFragment {
         for (Bundle option : options) {
             int index = (int) option.getDouble("index");
             boolean hidden = option.getBoolean("hidden", true);
-
             String text = !hidden ? option.getString("text", "") : "";
             boolean dot = !hidden && option.getBoolean("dot", false);
-
-            tabBar.setBadgeText(index, text);
-            tabBar.showDotBadge(index, !dot);
+            tabBar.hideBadgeAtIndex(index);
+            tabBar.showTextBadgeAtIndex(index, text);
+            if (dot) {
+                tabBar.showDotBadgeAtIndex(index);
+            }
         }
     }
 
@@ -146,37 +147,22 @@ public class ReactTabBarFragment extends TabBarFragment {
         if (options == null) {
             return;
         }
-
         TabBar tabBar = getTabBar();
 
         for (Bundle option : options) {
             int index = (int) option.getDouble("index");
-
             Bundle icon = option.getBundle("icon");
             Bundle unselectedIcon = option.getBundle("unselectedIcon");
-            Drawable drawable = drawableFromReadableMap(requireContext(), icon);
-            Drawable unselectedDrawable = drawableFromReadableMap(requireContext(), unselectedIcon);
-
-            AwesomeFragment fragment = getChildFragments().get(index);
-
             if (icon != null) {
                 if (unselectedIcon != null) {
-                    fragment.setTabBarItem(newTabBarItem(fragment, icon.getString("uri"), unselectedIcon.getString("uri")));
+                    tabBar.updateTabIcon(index, icon.getString("uri"), unselectedIcon.getString("uri"));
                 } else {
-                    fragment.setTabBarItem(newTabBarItem(fragment, icon.getString("uri"), null));
+                    tabBar.updateTabIcon(index, icon.getString("uri"), null);
                 }
             }
-
-            tabBar.setTabIcon(index, drawable, unselectedDrawable);
         }
-    }
 
-    private TabBarItem newTabBarItem(@NonNull AwesomeFragment fragment, @Nullable String icon, @Nullable String unselectedIcon) {
-        TabBarItem tabBarItem = fragment.getTabBarItem();
-        if (tabBarItem == null) {
-            throw new IllegalArgumentException("the fragment must have a tabBarItem");
-        }
-        return new TabBarItem(icon, unselectedIcon, tabBarItem.title);
+        tabBar.initialise(tabBar.getCurrentSelectedPosition());
     }
 
     private void updateTabBarAppearance(@Nullable Bundle options) {
@@ -184,26 +170,34 @@ public class ReactTabBarFragment extends TabBarFragment {
             return;
         }
 
-        TabBar tabBar = getTabBar();
         String tabBarColor = options.getString("tabBarColor");
+        Bundle shadowImage = options.getBundle("tabBarShadowImage");
+        String tabBarItemColor = options.getString("tabBarItemColor");
+        String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
+
+        setOptions(Garden.mergeOptions(getOptions(), options));
+
+        TabBar tabBar = getTabBar();
+
         if (tabBarColor != null) {
             style.setTabBarBackgroundColor(tabBarColor);
-            tabBar.setTabBarBackgroundColor(tabBarColor);
+            tabBar.setBarBackgroundColor(tabBarColor);
             setNeedsNavigationBarAppearanceUpdate();
         }
 
-        String tabBarItemColor = options.getString("tabBarItemColor");
-        String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
-        if (tabBarItemColor != null) {
-            tabBar.setTabItemColor(tabBarItemColor, tabBarUnselectedItemColor);
-        }
-
-        Bundle shadowImage = options.getBundle("tabBarShadowImage");
         if (shadowImage != null) {
-            tabBar.setShadow(Utils.createTabBarShadow(requireContext(), shadowImage));
+            tabBar.setShadowDrawable(Utils.createTabBarShadow(requireContext(), shadowImage));
         }
 
-        setOptions(Garden.mergeOptions(getOptions(), options));
+        if (tabBarItemColor != null) {
+            tabBar.setSelectedItemColor(tabBarItemColor);
+        }
+
+        if (tabBarUnselectedItemColor != null) {
+            tabBar.setUnselectedItemColor(tabBarUnselectedItemColor);
+        }
+
+        tabBar.initialise(tabBar.getCurrentSelectedPosition());
     }
 
     @Nullable
