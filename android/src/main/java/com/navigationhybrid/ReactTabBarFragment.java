@@ -1,11 +1,8 @@
 package com.navigationhybrid;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.DrawableCompat;
 
 import com.facebook.react.bridge.Arguments;
 
@@ -14,7 +11,6 @@ import java.util.List;
 
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.DefaultTabBarProvider;
-import me.listenzz.navigation.DrawableUtils;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.NavigationFragment;
 import me.listenzz.navigation.PresentAnimation;
@@ -210,20 +206,6 @@ public class ReactTabBarFragment extends TabBarFragment {
         }
 
         tabBar.initialise(tabBar.getCurrentSelectedPosition());
-    }
-
-    @Nullable
-    private Drawable drawableFromReadableMap(@NonNull Context context, @Nullable Bundle icon) {
-        if (icon != null) {
-            String uri = icon.getString("uri");
-            if (uri != null) {
-                Drawable drawable = DrawableUtils.fromUri(context, uri);
-                if (drawable != null) {
-                    return DrawableCompat.wrap(drawable);
-                }
-            }
-        }
-        return null;
     }
 
     private Bundle options;
