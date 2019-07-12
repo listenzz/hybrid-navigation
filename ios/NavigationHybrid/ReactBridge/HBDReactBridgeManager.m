@@ -69,6 +69,16 @@ const NSInteger ResultCancel = 0;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillReloadNotification object:nil];
 }
 
+- (UIWindow *)mainWindow {
+    UIWindow *mainWindow = RCTSharedApplication().delegate.window;
+    if (!mainWindow) {
+        mainWindow = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+        mainWindow.backgroundColor = UIColor.whiteColor;
+        RCTSharedApplication().delegate.window = mainWindow;
+    }
+    return mainWindow;
+}
+
 - (void)handleReload {
     self.viewHierarchyReady = NO;
     self.reactModuleRegisterCompleted = NO;
@@ -79,12 +89,14 @@ const NSInteger ResultCancel = 0;
             UIWindow *window = application.windows[i-1];
             UIViewController *controller = window.rootViewController;
             if ([controller isKindOfClass:[HBDModalViewController class]]) {
-                window.hidden = YES;
+                HBDModalViewController *modal = (HBDModalViewController *)controller;
+                [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
             }
         }
-        UIWindow *keyWindow = RCTKeyWindow();
-        if (keyWindow.rootViewController.presentedViewController && !keyWindow.rootViewController.presentedViewController.isBeingDismissed) {
-            [keyWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
+        
+        UIWindow *mainWindow = [self mainWindow];
+        if (mainWindow.rootViewController.presentedViewController && !mainWindow.rootViewController.presentedViewController.isBeingDismissed) {
+            [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
                 [self setLoadingViewController];
             }];
         } else {
@@ -94,10 +106,10 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)setLoadingViewController {
-    UIWindow *keyWindow = RCTKeyWindow();
+    UIWindow *mainWindow = [self mainWindow];
     UIViewController *vc = [UIViewController new];
     vc.view.backgroundColor = UIColor.whiteColor;
-    keyWindow.rootViewController = vc;
+    mainWindow.rootViewController = vc;
 }
 
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
@@ -269,9 +281,9 @@ const NSInteger ResultCancel = 0;
             [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
         }
     }
-    UIWindow *keyWindow = RCTKeyWindow();
-    if (keyWindow.rootViewController.presentedViewController && !keyWindow.rootViewController.presentedViewController.isBeingDismissed) {
-        [keyWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
+    UIWindow *mainWindow = [self mainWindow];
+    if (mainWindow.rootViewController.presentedViewController && !mainWindow.rootViewController.presentedViewController.isBeingDismissed) {
+        [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
             [self performSelector:@selector(performSetRootViewController:) withObject:rootViewController afterDelay:0];
         }];
     } else {
@@ -280,15 +292,28 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)performSetRootViewController:(UIViewController *)rootViewController {
-    UIWindow *keyWindow = RCTKeyWindow();
-    keyWindow.rootViewController = rootViewController;
+    UIWindow *mainWindow = [self mainWindow];
+    mainWindow.rootViewController = rootViewController;
+    mainWindow.windowLevel = UIWindowLevelNormal;
+    [mainWindow makeKeyAndVisible];
     self.viewHierarchyReady = YES;
     [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
 }
 
 - (HBDViewController *)primaryViewController {
-    UIViewController *controller = RCTKeyWindow().rootViewController;
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    for (NSUInteger i = application.windows.count; i > 0; i--) {
+        UIWindow *window = application.windows[i-1];
+        if ([window isKindOfClass:[HBDModalWindow class]]) {
+            HBDModalViewController *modal = (HBDModalViewController *)window.rootViewController;
+            if (!modal.isBeingHidden) {
+                return [self primaryViewControllerWithViewController:modal.contentViewController];
+            }
+        }
+    }
     
+    UIWindow *mainWindow = [self mainWindow];
+    UIViewController *controller = mainWindow.rootViewController;
     while (controller != nil) {
         UIViewController *presentedController = controller.presentedViewController;
         if (presentedController && ![presentedController isBeingDismissed]) {
@@ -297,7 +322,6 @@ const NSInteger ResultCancel = 0;
             break;
         }
     }
-    
     return [self primaryViewControllerWithViewController:controller];
 }
 

@@ -1,7 +1,7 @@
 //
 //  HBDModalViewController.m
 //  NavigationHybrid
-//
+//  fork from https://github.com/Tencent/QMUI_iOS/blob/master/QMUIKit/QMUIComponents/QMUIModalPresentationViewController.m
 //  Created by Listen on 2018/6/4.
 //  Copyright © 2018年 Listen. All rights reserved.
 //

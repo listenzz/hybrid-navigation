@@ -234,9 +234,9 @@ $(SRCROOT)/../node_modules/react-native-navigation-hybrid/ios
     jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
     [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
 
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.backgroundColor = UIColor.whiteColor;
-    UIViewController *rootViewController = [UIViewController new];
+    UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+    UIViewController *rootViewController = [storyboard instantiateInitialViewController];
+    self.window.windowLevel = UIWindowLevelStatusBar + 1;
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
     return YES;

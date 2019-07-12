@@ -376,6 +376,12 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
     jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
     [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
     [HBDReactBridgeManager sharedInstance].delegate = self;
+
+    UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+    UIViewController *rootViewController = [storyboard instantiateInitialViewController];
+    self.window.windowLevel = UIWindowLevelStatusBar + 1;
+    self.window.rootViewController = rootViewController;
+    [self.window makeKeyAndVisible];
     return YES;
 }
 
@@ -386,7 +392,6 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
 
     [tabs setViewControllers:@[ navigation, options ]];
     [manager setRootViewController:tabs];
-    [self.window makeKeyAndVisible];
 }
 
 @end

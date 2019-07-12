@@ -70,12 +70,16 @@ export default class ReactModal extends React.Component {
       toValue: this.height,
       duration: 200,
       easing: Easing.linear,
-    }).start(state => {
+    }).start(async state => {
+      let current = await Navigator.currentRoute();
+      console.log(current);
       this.props.navigator.setResult(RESULT_OK, {
         text: gender || 'Are you male or female?',
         backId: this.props.sceneId,
       });
       this.props.navigator.hideModal();
+      current = await Navigator.currentRoute();
+      console.log(current);
     });
   }
 

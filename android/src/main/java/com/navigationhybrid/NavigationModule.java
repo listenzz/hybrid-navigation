@@ -218,7 +218,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     bundle.putString("mode", Navigator.Util.getMode(current));
                     promise.resolve(Arguments.fromBundle(bundle));
                 } else {
-                    promise.reject("404", "No current route", new IllegalStateException("No current route."));
+                    sHandler.postDelayed(this, 16);
                 }
             }
         };
@@ -265,7 +265,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 if (root.size() > 0) {
                     promise.resolve(Arguments.fromList(root));
                 } else {
-                    promise.reject("404", "No route graph", new IllegalStateException("No route graph."));
+                    sHandler.postDelayed(this, 16);
                 }
             }
         };

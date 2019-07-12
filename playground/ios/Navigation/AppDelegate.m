@@ -33,9 +33,9 @@
     [[HBDReactBridgeManager get] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
     [[HBDReactBridgeManager get] registerNativeModule:@"NativeModal" forController:[NativeModalViewController class]];
 
-    // splash
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
+    self.window.windowLevel = UIWindowLevelStatusBar + 1;
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
     return YES;

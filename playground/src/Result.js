@@ -73,12 +73,16 @@ export default class Result extends Component {
     this.props.navigator.push('Result');
   }
 
-  sendResult() {
+  async sendResult() {
+    let current = await Navigator.currentRoute();
+    console.log(current);
     this.props.navigator.setResult(RESULT_OK, {
       text: this.state.text,
       backId: this.props.sceneId,
     });
     this.props.navigator.dismiss();
+    current = await Navigator.currentRoute();
+    console.log(current);
   }
 
   onInputTextChanged(text) {

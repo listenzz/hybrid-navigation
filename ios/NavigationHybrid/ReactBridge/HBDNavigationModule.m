@@ -149,7 +149,7 @@ RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
 
 - (void)currentRouteWithPromiss:(Promiss *)promiss {
     if (!self.bridgeManager.isViewHierarchyReady) {
-        [self performSelector:@selector(currentRouteWithPromiss:) withObject:promiss afterDelay:2];
+        [self performSelector:@selector(currentRouteWithPromiss:) withObject:promiss afterDelay:0.016];
         return;
     }
     
@@ -157,8 +157,7 @@ RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
     if (current) {
         promiss.resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId, @"mode": [current hbd_mode] });
     } else {
-        promiss.reject(@"404", @"No current route",
-                       [NSError errorWithDomain:RCTErrorDomain code:404 userInfo:@{ NSLocalizedDescriptionKey: @"No current route." }]);
+        [self performSelector:@selector(currentRouteWithPromiss:) withObject:promiss afterDelay:0.016];
     }
 }
 
@@ -169,7 +168,7 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
 
 - (void)routeGraphWithPromiss:(Promiss*)promiss {
     if (!self.bridgeManager.isViewHierarchyReady) {
-        [self performSelector:@selector(routeGraphWithPromiss:) withObject:promiss afterDelay:2];
+        [self performSelector:@selector(routeGraphWithPromiss:) withObject:promiss afterDelay:0.016];
         return;
     }
     
@@ -177,8 +176,7 @@ RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromis
     if (root.count > 0) {
         promiss.resolve(root);
     } else {
-        promiss.reject(@"404", @"No route graph",
-                       [NSError errorWithDomain:RCTErrorDomain code:404 userInfo:@{ NSLocalizedDescriptionKey: @"No route graph." }]);
+        [self performSelector:@selector(routeGraphWithPromiss:) withObject:promiss afterDelay:0.016];
     }
 }
 
