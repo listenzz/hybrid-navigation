@@ -17,6 +17,7 @@ import me.listenzz.navigation.DefaultTabBarProvider;
 import me.listenzz.navigation.DrawableUtils;
 import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.NavigationFragment;
+import me.listenzz.navigation.PresentAnimation;
 import me.listenzz.navigation.Style;
 import me.listenzz.navigation.TabBar;
 import me.listenzz.navigation.TabBarFragment;
@@ -71,6 +72,17 @@ public class ReactTabBarFragment extends TabBarFragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBundle(SAVED_OPTIONS, options);
+    }
+
+    @Override
+    protected void setPresentAnimation(AwesomeFragment current, AwesomeFragment previous) {
+        ReactFragment reactFragment = Utils.findReactFragment(current);
+        if (reactFragment != null && !reactFragment.isFirstRenderCompleted()) {
+            current.setAnimation(PresentAnimation.Fade);
+            previous.setAnimation(PresentAnimation.Delay);
+            return;
+        }
+        super.setPresentAnimation(current, previous);
     }
 
     @Override

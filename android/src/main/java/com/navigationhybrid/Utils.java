@@ -9,10 +9,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
+
+import java.util.List;
 
 import me.listenzz.navigation.DrawableUtils;
 
@@ -76,5 +80,28 @@ public class Utils {
             throw new NullPointerException("merge fail.");
         }
         return result;
+    }
+
+    @Nullable
+    static ReactFragment findReactFragment(@NonNull Fragment fragment) {
+        if (fragment instanceof ReactFragment) {
+            return (ReactFragment) fragment;
+        }
+
+        if (fragment.isAdded()) {
+            FragmentManager fragmentManager = fragment.getChildFragmentManager();
+            Fragment primaryFragment = fragmentManager.getPrimaryNavigationFragment();
+            if (primaryFragment != null) {
+                return findReactFragment(primaryFragment);
+            }
+
+            List<Fragment> fragments = fragmentManager.getFragments();
+            int count = fragments.size();
+            if (count > 0) {
+                Fragment topFragment = fragments.get(count -1);
+                return findReactFragment(topFragment);
+            }
+        }
+        return null;
     }
 }

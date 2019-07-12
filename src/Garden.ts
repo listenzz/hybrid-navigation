@@ -38,7 +38,6 @@ export interface Style {
   titleAlignmentAndroid?: TitleAlignment; // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
   barButtonItemTextSize?: number; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
   swipeBackEnabledAndroid?: boolean; // Android 是否开启右滑返回，默认是 false
-  optimizationEnabledAndroid?: boolean; // Android 是否需要开启优化，默认是 true，可在指定页面关闭。
 
   tabBarColor?: Color; // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
   tabBarShadowImage?: ShadowImage; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
@@ -67,7 +66,6 @@ export interface NavigationItem extends NavigationOption {
   screenBackgroundColor?: Color; // 当前页面背景
   topBarHidden?: boolean; // 是否隐藏当前页面的顶部导航栏
   extendedLayoutIncludesTopBar?: boolean; // 当前页面的内容是否延伸到 topBar 底下，通常用于需要动态改变 `topBarAlpha` 的场合
-  optimizationEnabledAndroid?: boolean; // 当前页面是否需要优化，默认是 true
   swipeBackEnabled?: boolean; // 当前页面是否可以通过右滑返回。如果 `backInteractive` 设置为 false, 那么该值无效。Android 下，只有开启了侧滑返回功能，该值才会生效。
   titleItem?: TitleItem;
   leftBarButtonItem?: BarButtonItem;

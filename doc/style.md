@@ -59,7 +59,6 @@ export interface Style {
   titleAlignmentAndroid?: TitleAlignment; // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
   barButtonItemTextSize?: number; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
   swipeBackEnabledAndroid?: boolean; // Android 是否开启右滑返回，默认是 false
-  optimizationEnabledAndroid?: boolean; // Android 是否需要开启优化，默认是 true，可在指定页面关闭。
 
   tabBarColor?: Color; // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
   tabBarShadowImage?: ShadowImage; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
@@ -197,10 +196,6 @@ UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只�
 
   一旦全局设置了 navigationBarColorAndroid，默认规则就会失效。
 
-- **optimizationEnabledAndroid**
-
-  目前只有这个作用：Android 的 tab 页面是否开启懒加载，默认是 true。
-
 <a name="static-options"></a>
 
 ## 静态配置页面
@@ -229,7 +224,6 @@ class Screen extends Component {
     backButtonHidden: true, // 当前页面是否隐藏返回按钮
     backInteractive: true, // 当前页面是否可以通过右滑或返回键返回
     swipeBackEnabled: true, // 当前页面是否可以通过右滑返回。如果 `backInteractive` 设置为 false, 那么该值无效。Android 下，只有开启了侧滑返回功能，该值才会生效。
-    optimizationEnabledAndroid: boolean; // 当前页面是否需要优化。
 
     titleItem: {
       // 导航栏标题

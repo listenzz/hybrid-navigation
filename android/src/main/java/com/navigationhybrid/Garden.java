@@ -35,11 +35,9 @@ public class Garden {
 
     private static GlobalStyle globalStyle;
 
-    private static boolean globalOptimizationEnabled;
-
     static void createGlobalStyle(Bundle options) {
         globalStyle = new GlobalStyle(options);
-        globalOptimizationEnabled = options.getBoolean("optimizationEnabledAndroid", true);
+
     }
 
     static GlobalStyle getGlobalStyle() {
@@ -79,8 +77,6 @@ public class Garden {
 
     boolean extendedLayoutIncludesTopBar;
 
-    boolean optimizationEnabled;
-
     BarStyle statusBarStyle;
 
     Garden(@NonNull HybridFragment fragment, Style style) {
@@ -99,7 +95,6 @@ public class Garden {
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush");
         this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
-        this.optimizationEnabled = options.get("optimizationEnabledAndroid") != null ? options.getBoolean("optimizationEnabledAndroid") : globalOptimizationEnabled;
 
         String screenColor = options.getString("screenBackgroundColor");
         if (!TextUtils.isEmpty(screenColor)) {
