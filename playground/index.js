@@ -73,9 +73,9 @@ Garden.setStyle({
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
 
-  // tabBarItemColor: '#CCCCCC',
-  // tabBarSelectedItemColor: '#00ff00',
-  // badgeColor: '#00FFFF',
+  // tabBarItemColor: '#00ff00',
+  // tabBarUnselectedItemColor: '#CCCCCC',
+  // tabBarBadgeColor: '#0000FF',
 });
 
 function withRedux(WrappedComponent) {

@@ -148,7 +148,7 @@
             }
         }
         
-        NSString *badgeColor = self.options[@"badgeColor"];
+        NSString *badgeColor = self.options[@"tabBarBadgeColor"];
         self.badgeColorHexString = @"#FF3B30";
         if (@available(iOS 10.0, *)) {
             if (badgeColor) {

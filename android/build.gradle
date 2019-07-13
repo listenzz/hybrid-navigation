@@ -28,5 +28,5 @@ dependencies {
     implementation 'com.facebook.react:react-native:+'
 
     // api project(':navigation')
-    api 'me.listenzz:navigation:2.6.0'
+    api 'me.listenzz:navigation:2.6.1'
 }
