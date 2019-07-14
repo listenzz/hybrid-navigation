@@ -183,7 +183,7 @@ public class ReactTabBarFragment extends TabBarFragment {
         String tabBarItemColor = options.getString("tabBarItemColor");
         String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
 
-        setOptions(Garden.mergeOptions(getOptions(), options));
+        setOptions(Utils.mergeOptions(getOptions(), options));
 
         TabBar tabBar = getTabBar();
 

@@ -61,9 +61,7 @@ public class Utils {
         writableMap.merge(Arguments.fromBundle(bundle));
         writableMap.merge(readableMap);
         Bundle result = Arguments.toBundle(writableMap);
-        if (result == null) {
-            throw new NullPointerException("merge fail.");
-        }
+        assert result != null;
         return result;
     }
 
@@ -76,9 +74,20 @@ public class Utils {
         writableMap.merge(Arguments.fromBundle(options));
         writableMap.merge(readableMap);
         Bundle result = Arguments.toBundle(writableMap);
-        if (result == null) {
-            throw new NullPointerException("merge fail.");
+        assert result != null;
+        return result;
+    }
+
+    @NonNull
+    static Bundle mergeOptions(@NonNull Bundle options, @Nullable Bundle bundle) {
+        if (bundle == null) {
+            return options;
         }
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(Arguments.fromBundle(options));
+        writableMap.merge(Arguments.fromBundle(bundle));
+        Bundle result = Arguments.toBundle(writableMap);
+        assert result != null;
         return result;
     }
 

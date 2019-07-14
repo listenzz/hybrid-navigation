@@ -44,21 +44,6 @@ public class Garden {
         return globalStyle;
     }
 
-    @NonNull
-    static Bundle mergeOptions(@NonNull Bundle options, @Nullable Bundle bundle) {
-        if (bundle == null) {
-            return options;
-        }
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.merge(Arguments.fromBundle(options));
-        writableMap.merge(Arguments.fromBundle(bundle));
-        Bundle result = Arguments.toBundle(writableMap);
-        if (result == null) {
-            throw new NullPointerException("merge fail.");
-        }
-        return result;
-    }
-
     private final HybridFragment fragment;
 
     private final Style style;
