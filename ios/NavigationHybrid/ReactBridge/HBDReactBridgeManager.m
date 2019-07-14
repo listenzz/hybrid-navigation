@@ -106,6 +106,7 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)setLoadingViewController {
+    // TODO: 拍个照？
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *vc = [UIViewController new];
     vc.view.backgroundColor = UIColor.whiteColor;
@@ -293,11 +294,18 @@ const NSInteger ResultCancel = 0;
 
 - (void)performSetRootViewController:(UIViewController *)rootViewController {
     UIWindow *mainWindow = [self mainWindow];
-    mainWindow.rootViewController = rootViewController;
-    mainWindow.windowLevel = UIWindowLevelNormal;
-    [mainWindow makeKeyAndVisible];
-    self.viewHierarchyReady = YES;
-    [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
+    [UIView transitionWithView:mainWindow duration:0.15f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+        BOOL oldState = [UIView areAnimationsEnabled];
+        [UIView setAnimationsEnabled:NO];
+        mainWindow.rootViewController = rootViewController;
+        mainWindow.windowLevel = UIWindowLevelNormal;
+        [mainWindow makeKeyAndVisible];
+        [UIView setAnimationsEnabled:oldState];
+        self.viewHierarchyReady = YES;
+        [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
+    } completion:^(BOOL finished) {
+       
+    }];
 }
 
 - (HBDViewController *)primaryViewController {
