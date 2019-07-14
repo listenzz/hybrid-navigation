@@ -1,6 +1,8 @@
 package com.navigationhybrid;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
@@ -11,6 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
@@ -112,5 +116,29 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static Bitmap createBitmapFromView(View view) {
+        if (view instanceof ImageView) {
+            Drawable drawable = ((ImageView) view).getDrawable();
+            if (drawable instanceof BitmapDrawable) {
+                return ((BitmapDrawable) drawable).getBitmap();
+            }
+        }
+        view.clearFocus();
+
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
+        if (bitmap != null) {
+                Canvas canvas = new Canvas();
+                canvas.setBitmap(bitmap);
+                canvas.save();
+                canvas.drawColor(Color.WHITE); // 防止 View 上面有些区域空白导致最终 Bitmap 上有些区域变黑
+                canvas.scale(1, 1);
+                view.draw(canvas);
+                canvas.restore();
+                canvas.setBitmap(null);
+
+        }
+        return bitmap;
     }
 }

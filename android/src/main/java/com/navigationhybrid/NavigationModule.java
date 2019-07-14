@@ -1,7 +1,6 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -58,7 +56,6 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         sHandler.post(() -> {
             bridgeManager.setReactModuleRegisterCompleted(false);
             bridgeManager.setViewHierarchyReady(false);
-            LocalBroadcastManager.getInstance(getReactApplicationContext().getApplicationContext()).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
         });
     }
 

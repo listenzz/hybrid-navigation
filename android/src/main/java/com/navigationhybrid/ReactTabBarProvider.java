@@ -1,15 +1,11 @@
 package com.navigationhybrid;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
@@ -94,28 +90,13 @@ public class ReactTabBarProvider implements TabBarProvider {
         props.putInt("selectedIndex", options.getInt("selectedIndex"));
         ReactInstanceManager reactInstanceManager = getReactBridgeManager().getReactInstanceManager();
         reactView.startReactApplication(reactInstanceManager, tabBarModuleName, props);
-
-        jsBundleReloadBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
-                jsBundleReloadBroadcastReceiver = null;
-
-                if (reactView != null) {
-                    reactView.unmountReactApplication();
-                    reactView = null;
-                }
-            }
-        };
-        LocalBroadcastManager.getInstance(tabBarFragment.requireContext()).registerReceiver(jsBundleReloadBroadcastReceiver, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
-
         configureTabBar(tabBar, reactTabBarFragment.getStyle());
         this.tabBarFragment = reactTabBarFragment;
         this.tabBar = tabBar;
         return tabBar;
     }
 
-    BroadcastReceiver jsBundleReloadBroadcastReceiver = null;
+
 
     private Pair<String, String> extractSceneIdAndModuleName(AwesomeFragment awesomeFragment) {
         if (awesomeFragment instanceof NavigationFragment) {
@@ -158,10 +139,6 @@ public class ReactTabBarProvider implements TabBarProvider {
 
     @Override
     public void onDestroyTabBar() {
-        if (jsBundleReloadBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(tabBarFragment.requireContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
-            jsBundleReloadBroadcastReceiver = null;
-        }
         if (reactView != null) {
             reactView.unmountReactApplication();
             reactView = null;

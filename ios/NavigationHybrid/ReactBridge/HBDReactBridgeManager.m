@@ -95,21 +95,24 @@ const NSInteger ResultCancel = 0;
         }
         
         UIWindow *mainWindow = [self mainWindow];
+        UIImage *image = [HBDUtils snapshotFromView:mainWindow];
         if (mainWindow.rootViewController.presentedViewController && !mainWindow.rootViewController.presentedViewController.isBeingDismissed) {
             [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
-                [self setLoadingViewController];
+                [self showSnapshot:image];
             }];
         } else {
-            [self setLoadingViewController];
+            [self showSnapshot:image];
         }
     }
 }
 
-- (void)setLoadingViewController {
-    // TODO: 拍个照？
+- (void)showSnapshot:(UIImage *)snapshot {
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *vc = [UIViewController new];
     vc.view.backgroundColor = UIColor.whiteColor;
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:mainWindow.bounds];
+    imageView.image = snapshot;
+    [vc.view addSubview:imageView];
     mainWindow.rootViewController = vc;
 }
 
@@ -294,17 +297,18 @@ const NSInteger ResultCancel = 0;
 
 - (void)performSetRootViewController:(UIViewController *)rootViewController {
     UIWindow *mainWindow = [self mainWindow];
-    [UIView transitionWithView:mainWindow duration:0.15f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [UIView transitionWithView:mainWindow duration:0.3f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         BOOL oldState = [UIView areAnimationsEnabled];
         [UIView setAnimationsEnabled:NO];
         mainWindow.rootViewController = rootViewController;
         mainWindow.windowLevel = UIWindowLevelNormal;
-        [mainWindow makeKeyAndVisible];
+        if (!mainWindow.isKeyWindow) {
+            [mainWindow makeKeyAndVisible];
+        }
         [UIView setAnimationsEnabled:oldState];
         self.viewHierarchyReady = YES;
-        [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
     } completion:^(BOOL finished) {
-       
+       [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
     }];
 }
 

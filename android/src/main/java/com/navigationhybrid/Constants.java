@@ -19,5 +19,4 @@ public class Constants {
     public static final String ACTION_SET_TAB_BADGE = "SET_TAB_BADGE";
     public static final String ACTION_UPDATE_TAB_BAR = "UPDATE_TAB_BAR";
 
-    public static final String INTENT_RELOAD_JS_BUNDLE = "reload-js-bundle";
 }
