@@ -246,7 +246,8 @@ export class Navigator {
     this.dispatch('replaceToRoot', { moduleName, props, options, animated: true });
   }
 
-  isStackRoot(): Promise<boolean> {
+  async isStackRoot(): Promise<boolean> {
+    await Navigator.foreground();
     return NavigationModule.isNavigationRoot(this.sceneId);
   }
 
