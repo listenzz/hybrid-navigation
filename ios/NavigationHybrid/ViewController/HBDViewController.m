@@ -180,7 +180,7 @@
     
     NSNumber *statusBarHidden = options[@"statusBarHidden"];
     if (statusBarHidden) {
-        self.hbd_statusBarHidden = [statusBarHidden boolValue] && ![HBDUtils isIphoneX];
+        self.hbd_statusBarHidden = [statusBarHidden boolValue];
     }
     
     NSNumber *backInteractive = options[@"backInteractive"];
