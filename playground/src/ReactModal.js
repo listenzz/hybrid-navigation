@@ -20,6 +20,7 @@ export default class ReactModal extends React.Component {
   constructor(props) {
     super(props);
     this.hideModal = this.hideModal.bind(this);
+    this.reload = this.reload.bind(this);
   }
 
   state = {
@@ -34,6 +35,12 @@ export default class ReactModal extends React.Component {
         text: 'Female',
         onPress: () => {
           this.hideModal('Female');
+        },
+      },
+      {
+        text: 'reload',
+        onPress: () => {
+          this.reload();
         },
       },
     ],
@@ -60,6 +67,10 @@ export default class ReactModal extends React.Component {
   onBackPressed = () => {
     this.hideModal();
   };
+
+  reload() {
+    Navigator.reload();
+  }
 
   handleCancel = () => {
     this.hideModal();

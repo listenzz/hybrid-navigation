@@ -13,11 +13,14 @@
 #import "HBDNavigationController.h"
 #import "HBDTabBarController.h"
 #import "HBDDrawerController.h"
+#import "HBDModalViewController.h"
+#import "HBDViewController.h"
+
 #import "HBDScreenNavigator.h"
 #import "HBDStackNavigator.h"
 #import "HBDTabNavigator.h"
 #import "HBDDrawerNavigator.h"
-#import "HBDModalViewController.h"
+
 #import "HBDEventEmitter.h"
 
 NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
@@ -96,20 +99,21 @@ const NSInteger ResultCancel = 0;
         
         UIWindow *mainWindow = [self mainWindow];
         UIImage *image = [HBDUtils snapshotFromView:mainWindow];
+        HBDViewController *primary = [self primaryViewController];
+        UIBarStyle barStyle = primary.hbd_barStyle;
         if (mainWindow.rootViewController.presentedViewController && !mainWindow.rootViewController.presentedViewController.isBeingDismissed) {
             [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
-                [self showSnapshot:image];
+                [self showSnapshot:image barStyle:barStyle];
             }];
         } else {
-            [self showSnapshot:image];
+            [self showSnapshot:image barStyle:barStyle];
         }
     }
 }
 
-- (void)showSnapshot:(UIImage *)snapshot {
+- (void)showSnapshot:(UIImage *)snapshot barStyle:(UIBarStyle)barStyle {
     UIWindow *mainWindow = [self mainWindow];
-    UIViewController *vc = [UIViewController new];
-    vc.view.backgroundColor = UIColor.whiteColor;
+    HBDViewController *vc = [[HBDViewController alloc] initWithModuleName:nil props:nil options:@{ @"topBarStyle": barStyle == UIBarStyleDefault ? @"dark-content" : @"light-content" }];
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:mainWindow.bounds];
     imageView.image = snapshot;
     [vc.view addSubview:imageView];
@@ -288,7 +292,8 @@ const NSInteger ResultCancel = 0;
     UIWindow *mainWindow = [self mainWindow];
     if (mainWindow.rootViewController.presentedViewController && !mainWindow.rootViewController.presentedViewController.isBeingDismissed) {
         [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
-            [self performSelector:@selector(performSetRootViewController:) withObject:rootViewController afterDelay:0];
+            // [self performSelector:@selector(performSetRootViewController:) withObject:rootViewController afterDelay:0];
+            [self performSetRootViewController:rootViewController];
         }];
     } else {
         [self performSetRootViewController:rootViewController];
