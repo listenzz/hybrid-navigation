@@ -38,7 +38,6 @@ export default class Menu extends Component {
     this.push = this.push.bind(this);
     this.pushToRedux = this.pushToRedux.bind(this);
     this.hudTest = this.hudTest.bind(this);
-    this.reload = this.reload.bind(this);
   }
 
   componentDidAppear() {
@@ -68,10 +67,6 @@ export default class Menu extends Component {
     this.props.navigator.push('HUDTest');
   }
 
-  reload() {
-    Navigator.reload();
-  }
-
   render() {
     return (
       <View style={[styles.container, paddingTop]}>
@@ -87,10 +82,6 @@ export default class Menu extends Component {
 
         <TouchableOpacity onPress={this.hudTest} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>HUD</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.reload} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>reload</Text>
         </TouchableOpacity>
       </View>
     );
