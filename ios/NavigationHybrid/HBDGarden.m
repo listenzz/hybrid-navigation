@@ -43,7 +43,7 @@ static GlobalStyle *globalStyle;
     return self;
 }
 
-- (void)setLeftBarButtonItem:(NSDictionary *)item {
+- (void)setLeftBarButtonItem:(NSDictionary * __nullable)item {
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
@@ -62,10 +62,12 @@ static GlobalStyle *globalStyle;
         [array addObject:buttonItem];
         
         self.viewController.navigationItem.leftBarButtonItems = array;
+    } else {
+        self.viewController.navigationItem.leftBarButtonItems = nil;
     }
 }
 
-- (void)setRightBarButtonItem:(NSDictionary *)item {
+- (void)setRightBarButtonItem:(NSDictionary * __nullable)item {
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
@@ -84,6 +86,8 @@ static GlobalStyle *globalStyle;
         [array addObject:buttonItem];
         
         self.viewController.navigationItem.rightBarButtonItems = array;
+    } else {
+        self.viewController.navigationItem.rightBarButtonItems = nil;
     }
 }
 

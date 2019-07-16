@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -149,12 +150,20 @@ public class Garden {
         return buttonItems.toArray(new ToolbarButtonItem[0]);
     }
 
-    void setLeftBarButtonItem(@NonNull Bundle item) {
-        fragment.setLeftBarButtonItem(barButtonItemFromBundle(item));
+    void setLeftBarButtonItem(@Nullable Bundle item) {
+        if (item != null) {
+            fragment.setLeftBarButtonItem(barButtonItemFromBundle(item));
+        } else {
+            fragment.setLeftBarButtonItem(null);
+        }
     }
 
-    void setRightBarButtonItem(@NonNull Bundle item) {
-        fragment.setRightBarButtonItem(barButtonItemFromBundle(item));
+    void setRightBarButtonItem(@Nullable Bundle item) {
+        if (item != null) {
+            fragment.setRightBarButtonItem(barButtonItemFromBundle(item));
+        } else {
+            fragment.setRightBarButtonItem(null);
+        }
     }
 
     private ToolbarButtonItem barButtonItemFromBundle(@NonNull Bundle item) {

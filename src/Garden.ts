@@ -163,12 +163,12 @@ export class Garden {
 
   // --------------- instance method --------------
 
-  setLeftBarButtonItem(buttonItem: BarButtonItem) {
+  setLeftBarButtonItem(buttonItem: BarButtonItem | null) {
     const options = bindBarButtonItemClickEvent(buttonItem, { sceneId: this.sceneId });
     GardenModule.setLeftBarButtonItem(this.sceneId, options);
   }
 
-  setRightBarButtonItem(buttonItem: BarButtonItem) {
+  setRightBarButtonItem(buttonItem: BarButtonItem | null) {
     const options = bindBarButtonItemClickEvent(buttonItem, { sceneId: this.sceneId });
     GardenModule.setRightBarButtonItem(this.sceneId, options);
   }

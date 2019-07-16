@@ -17,9 +17,15 @@ export interface BindOptions {
   navigatorFactory?: (sceneId: string) => Navigator;
 }
 
-function bindBarButtonItemClickEvent(item = {}, options: BindOptions = { inLayout: false }): void {
+function bindBarButtonItemClickEvent(
+  item: object | null,
+  options: BindOptions = { inLayout: false }
+): JSON | null {
   if (options.inLayout) {
     removeBarButtonItemClickEventInLayout();
+  }
+  if (item === null) {
+    return null;
   }
   return JSON.parse(
     JSON.stringify(item, (key, value) => {

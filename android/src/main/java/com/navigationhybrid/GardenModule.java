@@ -86,29 +86,41 @@ public class GardenModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setLeftBarButtonItem(final String sceneId, final ReadableMap readableMap) {
+    public void setLeftBarButtonItem(final String sceneId, @Nullable final ReadableMap readableMap) {
         sHandler.post(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
-                Bundle buttonItem = Utils.mergeOptions(options, "leftBarButtonItem", readableMap);
-                options.putBundle("leftBarButtonItem", buttonItem);
-                fragment.setOptions(options);
-                fragment.getGarden().setLeftBarButtonItem(buttonItem);
+                if (readableMap != null) {
+                    Bundle buttonItem = Utils.mergeOptions(options, "leftBarButtonItem", readableMap);
+                    options.putBundle("leftBarButtonItem", buttonItem);
+                    fragment.setOptions(options);
+                    fragment.getGarden().setLeftBarButtonItem(buttonItem);
+                } else {
+                    options.putBundle("leftBarButtonItem", null);
+                    fragment.setOptions(options);
+                    fragment.getGarden().setLeftBarButtonItem(null);
+                }
             }
         });
     }
 
     @ReactMethod
-    public void setRightBarButtonItem(final String sceneId, final ReadableMap readableMap) {
+    public void setRightBarButtonItem(final String sceneId, @Nullable final ReadableMap readableMap) {
         sHandler.post(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
-                Bundle buttonItem = Utils.mergeOptions(options, "rightBarButtonItem", readableMap);
-                options.putBundle("rightBarButtonItem", buttonItem);
-                fragment.setOptions(options);
-                fragment.getGarden().setRightBarButtonItem(buttonItem);
+                if (readableMap != null) {
+                    Bundle buttonItem = Utils.mergeOptions(options, "rightBarButtonItem", readableMap);
+                    options.putBundle("rightBarButtonItem", buttonItem);
+                    fragment.setOptions(options);
+                    fragment.getGarden().setRightBarButtonItem(buttonItem);
+                } else {
+                    options.putBundle("rightBarButtonItem", null);
+                    fragment.setOptions(options);
+                    fragment.getGarden().setRightBarButtonItem(null);
+                }
             }
         });
     }

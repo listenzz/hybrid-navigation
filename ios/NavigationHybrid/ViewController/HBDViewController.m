@@ -213,14 +213,14 @@
         }
     }
     
-    NSDictionary *rightBarButtonItem = options[@"rightBarButtonItem"];
+    id rightBarButtonItem = options[@"rightBarButtonItem"];
     if (rightBarButtonItem) {
-        [self.garden setRightBarButtonItem:rightBarButtonItem];
+        [self.garden setRightBarButtonItem:NSNull.null == rightBarButtonItem ? nil : rightBarButtonItem];
     }
     
-    NSDictionary *leftBarButtonItem = options[@"leftBarButtonItem"];
+    id leftBarButtonItem = options[@"leftBarButtonItem"];
     if (leftBarButtonItem) {
-        [self.garden setLeftBarButtonItem:leftBarButtonItem];
+        [self.garden setLeftBarButtonItem:NSNull.null == leftBarButtonItem ? nil : leftBarButtonItem];
     }
     
     NSArray *rightBarButtonItems = options[@"rightBarButtonItems"];
