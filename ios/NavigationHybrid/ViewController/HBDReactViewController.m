@@ -11,6 +11,7 @@
 #import "HBDTitleView.h"
 #import "HBDRootView.h"
 #import "HBDEventEmitter.h"
+#import "HBDUtils.h"
 
 #import <React/RCTConvert.h>
 #import <React/RCTLog.h>
@@ -33,6 +34,21 @@
     if (self = [super initWithModuleName:moduleName props:props options:options]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReload)
                                                      name:RCTBridgeWillReloadNotification object:nil];
+        if (options) {
+            NSDictionary *tabItem = options[@"tabItem"];
+            if (tabItem) {
+                UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
+                tabBarItem.title = tabItem[@"title"];
+                NSDictionary *unselectedIcon = tabItem[@"unselectedIcon"];
+                if (unselectedIcon) {
+                    tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                    tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+                } else {
+                    tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
+                }
+                self.tabBarItem = tabBarItem;
+            }
+        }
     }
     return self;
 }

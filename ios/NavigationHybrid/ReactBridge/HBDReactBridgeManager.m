@@ -202,23 +202,6 @@ const NSInteger ResultCancel = 0;
         NSCAssert([self hasNativeModule:moduleName], @"can't find module named with %@ , do you forget to register？", moduleName);
         vc = [[clazz alloc] initWithModuleName:moduleName props:props options:options];
     }
-    
-    NSDictionary *tabItem = options[@"tabItem"];
-    if (tabItem) {
-        UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
-        tabBarItem.title = tabItem[@"title"];
-        
-        NSDictionary *selectedIcon = tabItem[@"selectedIcon"];
-        if (selectedIcon) {
-            tabBarItem.selectedImage = [[HBDUtils UIImage:selectedIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            tabBarItem.image = [[HBDUtils UIImage:tabItem[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        } else {
-            tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
-        }
-        
-        vc.tabBarItem = tabBarItem;
-    }
-    
     return vc;
 }
 
