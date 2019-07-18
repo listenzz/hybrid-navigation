@@ -76,11 +76,11 @@ public class ReactTabBarFragment extends TabBarFragment {
         if (reactFragment != null && !reactFragment.isFirstRenderCompleted()) {
             List<AwesomeFragment> children = getChildFragments();
             if (children.indexOf(current) > children.indexOf(previous)) {
-                current.setAnimation(PresentAnimation.Fade);
-                previous.setAnimation(PresentAnimation.Delay);
+                current.setAnimation(PresentAnimation.FadeShort);
+                previous.setAnimation(PresentAnimation.DelayShort);
             } else {
                 current.setAnimation(PresentAnimation.None);
-                previous.setAnimation(PresentAnimation.Fade);
+                previous.setAnimation(PresentAnimation.FadeShort);
             }
             return;
         }
