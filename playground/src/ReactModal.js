@@ -37,6 +37,12 @@ export default class ReactModal extends React.Component {
           this.hideModal('Female');
         },
       },
+      {
+        text: 'reload',
+        onPress: () => {
+          Navigator.reload()
+        },
+      },
     ],
 
     anim: new Animated.Value(Dimensions.get('screen').height),

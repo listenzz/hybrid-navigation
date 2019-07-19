@@ -86,38 +86,22 @@ const NSInteger ResultCancel = 0;
     self.viewHierarchyReady = NO;
     self.reactModuleRegisterCompleted = NO;
     
-    if (self.hasRootLayout) {
-        UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-        for (NSUInteger i = application.windows.count; i > 0; i--) {
-            UIWindow *window = application.windows[i-1];
-            UIViewController *controller = window.rootViewController;
-            if ([controller isKindOfClass:[HBDModalViewController class]]) {
-                HBDModalViewController *modal = (HBDModalViewController *)controller;
-                [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
-            }
-        }
-        
-        UIWindow *mainWindow = [self mainWindow];
-        UIImage *image = [HBDUtils snapshotFromView:mainWindow];
-        HBDViewController *primary = [self primaryViewController];
-        UIBarStyle barStyle = primary.hbd_barStyle;
-        if (mainWindow.rootViewController.presentedViewController && !mainWindow.rootViewController.presentedViewController.isBeingDismissed) {
-            [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
-                [self showSnapshot:image barStyle:barStyle];
-            }];
-        } else {
-            [self showSnapshot:image barStyle:barStyle];
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    for (NSUInteger i = application.windows.count; i > 0; i--) {
+        UIWindow *window = application.windows[i-1];
+        UIViewController *controller = window.rootViewController;
+        if ([controller isKindOfClass:[HBDModalViewController class]]) {
+            HBDModalViewController *modal = (HBDModalViewController *)controller;
+            [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
         }
     }
-}
-
-- (void)showSnapshot:(UIImage *)snapshot barStyle:(UIBarStyle)barStyle {
+    
     UIWindow *mainWindow = [self mainWindow];
-    HBDViewController *vc = [[HBDViewController alloc] initWithModuleName:nil props:nil options:@{ @"topBarStyle": barStyle == UIBarStyleDefault ? @"dark-content" : @"light-content" }];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:mainWindow.bounds];
-    imageView.image = snapshot;
-    [vc.view addSubview:imageView];
-    mainWindow.rootViewController = vc;
+    UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
+    if (presentedViewController && !presentedViewController.isBeingDismissed) {
+        [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
+        }];
+    }
 }
 
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
@@ -272,10 +256,11 @@ const NSInteger ResultCancel = 0;
             [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
         }
     }
+
     UIWindow *mainWindow = [self mainWindow];
-    if (mainWindow.rootViewController.presentedViewController && !mainWindow.rootViewController.presentedViewController.isBeingDismissed) {
+    UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
+    if (presentedViewController && !presentedViewController.isBeingDismissed) {
         [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
-            // [self performSelector:@selector(performSetRootViewController:) withObject:rootViewController afterDelay:0];
             [self performSetRootViewController:rootViewController];
         }];
     } else {
@@ -285,7 +270,7 @@ const NSInteger ResultCancel = 0;
 
 - (void)performSetRootViewController:(UIViewController *)rootViewController {
     UIWindow *mainWindow = [self mainWindow];
-    [UIView transitionWithView:mainWindow duration:0.3f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+    [UIView transitionWithView:mainWindow duration:0.15f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         BOOL oldState = [UIView areAnimationsEnabled];
         [UIView setAnimationsEnabled:NO];
         mainWindow.rootViewController = rootViewController;

@@ -38,6 +38,7 @@ export default class Navigation extends Component {
     this.switchTab = this.switchTab.bind(this);
     this.showModal = this.showModal.bind(this);
     this.showNativeModal = this.showNativeModal.bind(this);
+    this.reload = this.reload.bind(this)
     this.state = {
       text: undefined,
       backId: undefined,
@@ -149,6 +150,10 @@ export default class Navigation extends Component {
     this.props.navigator.showModal('NativeModal', REQUEST_CODE);
   }
 
+  reload() {
+    Navigator.reload();
+  }
+
   render() {
     return (
       <ScrollView
@@ -224,6 +229,10 @@ export default class Navigation extends Component {
             style={styles.button}
           >
             <Text style={styles.buttonText}>show native modal</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.reload} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>reload</Text>
           </TouchableOpacity>
 
           {this.state.text !== undefined && (

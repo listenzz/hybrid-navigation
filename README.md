@@ -1,6 +1,6 @@
 # react-native-navigation-hybrid
 
-Native navigation library for ReactNative, supporting navigating between native and ReactNative seamlessly.
+Native navigation library for ReactNative, support navigating between native and ReactNative seamlessly.
 
 ![navigation-android](./screenshot/android.png)
 

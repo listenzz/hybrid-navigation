@@ -56,6 +56,11 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         sHandler.post(() -> {
             bridgeManager.setReactModuleRegisterCompleted(false);
             bridgeManager.setViewHierarchyReady(false);
+            Activity activity = getCurrentActivity();
+            if (activity instanceof ReactAppCompatActivity) {
+                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                reactAppCompatActivity.clearFragments();
+            }
         });
     }
 

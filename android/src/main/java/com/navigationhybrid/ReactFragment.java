@@ -35,7 +35,7 @@ import static com.navigationhybrid.HBDEventEmitter.ON_DIALOG_BACK_PRESSED;
 /**
  * Created by Listen on 2018/1/15.
  */
-public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver, ReactView.ViewWillRemovedListener {
+public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver {
 
     protected static final String TAG = "ReactNative";
     private ViewGroup containerLayout;
@@ -105,7 +105,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
 
         if (reactRootView != null) {
-            reactRootView.setViewWillRemovedListener(null);
             reactRootView.unmountReactApplication();
         }
 
@@ -155,23 +154,10 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     private void sendViewAppearEvent(boolean appear) {
         // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
         if (isReactModuleRegisterCompleted() && (isResumed() || isRemoving())) {
-            reactRootView.setViewWillRemovedListener(appear ? this : null);
             Bundle bundle = new Bundle();
             bundle.putString(KEY_SCENE_ID, getSceneId());
             bundle.putString(KEY_ON, appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR);
             HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
-        }
-    }
-
-    @Override
-    public void reactViewWillRemoved() {
-        reactRootView.setViewWillRemovedListener(null);
-        if (isResumed()) {
-            Log.w(TAG,  getDebugTag() + " reactViewWillRemoved");
-            Activity activity = getActivity();
-            if (activity instanceof ReactAppCompatActivity) {
-                ((ReactAppCompatActivity) activity).showSnapshot();
-            }
         }
     }
 

@@ -92,22 +92,4 @@ public class ReactView extends ReactRootView {
     void removeOnGlobalLayoutListener() {
         getViewTreeObserver().removeOnGlobalLayoutListener(getGlobalLayoutListener());
     }
-
-    @Override
-    public void removeAllViews() {
-        if (mViewWillRemovedListener != null && getChildCount() > 0) {
-            mViewWillRemovedListener.reactViewWillRemoved();
-        }
-        super.removeAllViews();
-    }
-
-    private ViewWillRemovedListener mViewWillRemovedListener;
-
-    public void setViewWillRemovedListener(ViewWillRemovedListener listener) {
-        mViewWillRemovedListener = listener;
-    }
-
-    public interface ViewWillRemovedListener {
-        void reactViewWillRemoved();
-    }
 }
