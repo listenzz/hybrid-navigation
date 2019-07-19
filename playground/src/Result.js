@@ -28,7 +28,6 @@ export default class Result extends Component {
     this.pushToReact = this.pushToReact.bind(this);
     this.sendResult = this.sendResult.bind(this);
     this.onInputTextChanged = this.onInputTextChanged.bind(this);
-    this.reload = this.reload.bind(this);
     this.state = {
       text: '',
       isRoot: false,
@@ -90,10 +89,6 @@ export default class Result extends Component {
     this.setState({ text: text });
   }
 
-  reload() {
-    Navigator.reload();
-  }
-
   render() {
     return (
       <KeyboardAwareScrollView
@@ -130,10 +125,6 @@ export default class Result extends Component {
 
           <TouchableOpacity onPress={this.sendResult} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>send data back</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.reload} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>reload</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAwareScrollView>

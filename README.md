@@ -76,35 +76,29 @@ npm run run:ios
 
 ## 最近更新日志
 
-最新版本: `0.14.4` - 2019/07/16
+最新版本: `0.14.6` - 2019/07/19
 
-### 0.14.4 - 2019/07/16
+### 0.14.x
 
-- 优化了 `switchTab`、`setRoot`、 `reload` 的过渡效果
+- 修复 `unselectedIcon` 不生效的问题
 
-### 0.14.3 - 2019/06/28
+- 现在可以通过 `Garden.setRightBarButtonItem(null)` 移除 topBar 上的按钮
+
+- 优化了 `switchTab`、`setRoot` 的过渡效果
 
 - 修复额外生命周期 `componentDidAppear` 派发不准确的问题
 
-### 0.14.2 - 2019/06/27
-
-- 修复 Android Activity 冷重启的问题
-
-### 0.14.1 - 2019/06/25
+- [Android] 修复 Activity 冷重启的问题
 
 - [Android] 优化当应用从后台进入前台时的事务执行顺序
-
-### 0.14.0 - 2019/06/20
 
 - 自定义 TabBar 传递的数据发生变化，详见 [自定义 TabBar 文档](./doc/custom-tabbar.md)
 
 - 优化和 `Garden` 相关的若干 api，详见 [style 文档](./doc/style.md)
 
-### 0.13.6 - 2019/06/18
+### 0.13.x - 2019/06/18
 
 - 修复和 react-native-code-push 协作偶尔导致的崩溃
-
-### 0.13.0 - 2019/05/11
 
 - Android 迁移到 Java 8
 
