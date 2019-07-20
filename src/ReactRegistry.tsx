@@ -35,9 +35,14 @@ export interface Navigation {
   onBackPressed?(): void;
 }
 
-export interface Props {
+export interface InjectedProps {
   navigator: Navigator;
   garden: Garden;
+  sceneId: string;
+}
+
+interface NativeProps {
+  sceneId: string;
 }
 
 function getDisplayName(WrappedComponent: React.ComponentType) {
@@ -45,108 +50,95 @@ function getDisplayName(WrappedComponent: React.ComponentType) {
 }
 
 function withNavigator(moduleName: string) {
-  return function(
-    WrappedComponent: React.ComponentType<{
-      ref?: React.RefObject<React.Component>;
-      navigator?: Navigator;
-      garden?: Garden;
-    }>
-  ) {
-    return class extends React.Component<{ sceneId?: string }> {
+  return function(WrappedComponent: React.ComponentType) {
+    return class extends React.Component<NativeProps> {
       static displayName = `WithNavigator(${getDisplayName(WrappedComponent)})`;
 
-      private subscription?: EmitterSubscription;
-      private navigator?: Navigator;
-      private garden?: Garden;
-      private navigationRef?: React.RefObject<React.Component>;
+      private subscription: EmitterSubscription | null = null;
+      private navigator: Navigator;
+      private garden: Garden;
+      private navigationRef: React.RefObject<React.Component>;
 
-      constructor(props: { sceneId?: string }) {
+      constructor(props: NativeProps) {
         super(props);
-        if (props.sceneId) {
-          this.navigationRef = React.createRef();
-          this.navigator =
-            store.getNavigator(props.sceneId) || new Navigator(props.sceneId, moduleName);
-          store.addNavigator(props.sceneId, this.navigator);
-          this.garden = new Garden(props.sceneId);
-        }
+        this.navigationRef = React.createRef();
+        this.navigator =
+          store.getNavigator(props.sceneId) || new Navigator(props.sceneId, moduleName);
+        store.addNavigator(props.sceneId, this.navigator);
+        this.garden = new Garden(props.sceneId);
       }
 
       componentDidMount() {
-        if (this.props.sceneId) {
-          this.navigator!.signalFirstRenderComplete();
-          this.subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-            if (this.props.sceneId !== data[KEY_SCENE_ID]) {
-              return;
-            }
-            const navigation = this.navigationRef!.current as Navigation;
-            if (!navigation) {
-              return;
-            }
-            switch (data[KEY_ON]) {
-              case ON_BAR_BUTTON_ITEM_CLICK:
-                if (navigation.onBarButtonItemClick) {
-                  navigation.onBarButtonItemClick(data[KEY_ACTION]);
-                }
-                break;
-              case ON_COMPONENT_RESULT:
-                if (navigation.onComponentResult) {
-                  navigation.onComponentResult(
-                    data[KEY_REQUEST_CODE],
-                    data[KEY_RESULT_CODE],
-                    data[KEY_RESULT_DATA]
-                  );
-                }
-                break;
-              case ON_COMPONENT_APPEAR:
-                if (navigation.componentDidAppear) {
-                  navigation.componentDidAppear();
-                }
-                break;
-              case ON_COMPONENT_DISAPPEAR:
-                if (navigation.componentDidDisappear) {
-                  navigation.componentDidDisappear();
-                }
-                break;
-              case ON_COMPONENT_MOUNT:
-                if (this.navigator) {
-                  this.navigator.signalFirstRenderComplete();
-                }
-                break;
-              case ON_DIALOG_BACK_PRESSED:
-                if (navigation.onBackPressed) {
-                  navigation.onBackPressed();
-                }
-                break;
-              default:
-                throw new Error(`event ${data[KEY_ON]} has not been processed yet.`);
-            }
-          });
-        }
+        this.navigator.signalFirstRenderComplete();
+        this.subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+          if (this.props.sceneId !== data[KEY_SCENE_ID]) {
+            return;
+          }
+
+          if (data[KEY_ON] === ON_COMPONENT_MOUNT) {
+            this.navigator.signalFirstRenderComplete();
+          }
+
+          const navigation = this.navigationRef.current as Navigation;
+          if (!navigation) {
+            return;
+          }
+          switch (data[KEY_ON]) {
+            case ON_BAR_BUTTON_ITEM_CLICK:
+              navigation.onBarButtonItemClick && navigation.onBarButtonItemClick(data[KEY_ACTION]);
+              break;
+            case ON_COMPONENT_RESULT:
+              navigation.onComponentResult &&
+                navigation.onComponentResult(
+                  data[KEY_REQUEST_CODE],
+                  data[KEY_RESULT_CODE],
+                  data[KEY_RESULT_DATA]
+                );
+              break;
+            case ON_COMPONENT_APPEAR:
+              navigation.componentDidAppear && navigation.componentDidAppear();
+              break;
+            case ON_COMPONENT_DISAPPEAR:
+              navigation.componentDidDisappear && navigation.componentDidDisappear();
+              break;
+            case ON_DIALOG_BACK_PRESSED:
+              navigation.onBackPressed && navigation.onBackPressed();
+              break;
+            default:
+              throw new Error(`event ${data[KEY_ON]} has not been processed yet.`);
+          }
+        });
       }
 
       componentWillUnmount() {
-        if (this.props.sceneId) {
-          removeBarButtonItemClickEvent(this.props.sceneId);
-          store.removeNavigator(this.props.sceneId);
-          this.subscription!.remove();
-        }
+        removeBarButtonItemClickEvent(this.props.sceneId);
+        store.removeNavigator(this.props.sceneId);
+        this.subscription!.remove();
       }
 
       render() {
-        return (
-          <WrappedComponent
-            {...this.props}
-            ref={this.navigationRef}
-            garden={this.garden}
-            navigator={this.navigator}
-          />
-        );
+        const injected = {
+          garden: this.garden,
+          navigator: this.navigator,
+        };
+
+        const refs = {
+          ref: this.navigationRef,
+        };
+
+        if (!WrappedComponent.prototype || WrappedComponent.prototype.isReactComponent) {
+          return <WrappedComponent {...this.props} {...injected} {...refs} />;
+        } else {
+          return <WrappedComponent {...this.props} {...injected} />;
+        }
       }
     };
   };
 }
 
-export type HigherOrderComponent = (WrappedComponent: React.ComponentType) => React.ComponentType;
+export type HigherOrderComponent = (
+  WrappedComponent: React.ComponentClass<NativeProps>
+) => React.ComponentType<NativeProps>;
 let wrap: HigherOrderComponent | undefined;
 
 export class ReactRegistry {
@@ -194,7 +186,7 @@ export class ReactRegistry {
 
     NavigationModule.registerReactComponent(appKey, options);
 
-    let RootComponent: React.ComponentType;
+    let RootComponent: React.ComponentType<NativeProps>;
     if (wrap) {
       RootComponent = wrap(withNavigator(appKey)(WrappedComponent));
     } else {

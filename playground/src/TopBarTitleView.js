@@ -4,27 +4,25 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { LayoutFittingExpanded } from 'react-native-navigation-hybrid';
 import styles from './Styles';
 
-class CustomTitleView extends Component {
-  render() {
-    let { params } = this.props.navigator.state;
-    return (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Text style={styles.welcome}>--Custom Title--</Text>
-        <Icon.Button
-          name="facebook"
-          backgroundColor="#3b5998"
-          onPress={params.onFackbookButtonClick}
-        />
-      </View>
-    );
-  }
+function CustomTitleView(props) {
+  let { params } = props.navigator.state;
+  return (
+    <View
+      style={{
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Text style={styles.welcome}>--Custom Title--</Text>
+      <Icon.Button
+        name="facebook"
+        backgroundColor="#3b5998"
+        onPress={params.onFackbookButtonClick}
+      />
+    </View>
+  );
 }
 
 export { CustomTitleView };
