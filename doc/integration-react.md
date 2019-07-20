@@ -1,5 +1,7 @@
 # 集成到以 RN 为主的项目
 
+如果 RN 版本 >= 0.60，请切换到 [androidx 分支](https://github.com/listenzz/react-native-navigation-hybrid/blob/androidx/doc/integration-react.md)
+
 你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
 
 可以参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目。
