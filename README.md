@@ -78,8 +78,14 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| < 0.60                  | 0.14.6                           | 2019/07/19 |
-| >= 0.60                 | 0.15.0                           |
+| < 0.60                  | 0.16.0                           | 2019/07/21 |
+| >= 0.60                 | 0.16.0-x                         | 2019/07/21 |
+
+### 0.16.x
+
+- 支持 React Hooks，在函数组件中，使用 `useVisibleEffect` 代替 `componentDidAppear` 和 `componentDidDisappear`
+
+- `present` 和 `showModal` 现在返回一个 Promise
 
 ### 0.14.x
 

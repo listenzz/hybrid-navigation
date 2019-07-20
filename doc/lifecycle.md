@@ -1,6 +1,6 @@
 # 额外的生命周期回调函数
 
-为注册组件提供了额外的生命周期回调函数
+为类组件提供了额外的生命周期回调函数
 
 - componentDidAppear
 
@@ -21,6 +21,22 @@
 - onBackPressed
 
 仅对 Android 平台生效。用于处理通过 showModal 弹出的注册组件的物理或虚拟返回键。
+
+## 为函数组件提供了 Reack Hooks
+
+```javascript
+function Lifecycle(props) {
+  useVisibleEffect(props.sceneId, () => {
+    // 等同于 componentDidAppear
+    return () => {
+      // 等同于 componentDidDisappear
+    };
+  });
+```
+
+`useBackInterceptor` 等同于 `onBackPressed`
+
+`useResultData` 等同于 `onComponentResult`
 
 ## 注意
 
