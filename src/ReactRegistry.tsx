@@ -1,4 +1,4 @@
-import { AppRegistry, EmitterSubscription, ComponentProvider } from 'react-native';
+import { AppRegistry, ComponentProvider } from 'react-native';
 import React from 'react';
 import { Navigator } from './Navigator';
 import {
@@ -54,7 +54,6 @@ function withNavigator(moduleName: string) {
     return class extends React.Component<NativeProps> {
       static displayName = `WithNavigator(${getDisplayName(WrappedComponent)})`;
 
-      private subscription: EmitterSubscription | null = null;
       private navigator: Navigator;
       private garden: Garden;
       private navigationRef: React.RefObject<React.Component>;
@@ -64,13 +63,16 @@ function withNavigator(moduleName: string) {
         this.navigationRef = React.createRef();
         this.navigator =
           store.getNavigator(props.sceneId) || new Navigator(props.sceneId, moduleName);
+        if (this.navigator.moduleName === undefined) {
+          this.navigator.moduleName = moduleName;
+        }
         store.addNavigator(props.sceneId, this.navigator);
         this.garden = new Garden(props.sceneId);
       }
 
       componentDidMount() {
         this.navigator.signalFirstRenderComplete();
-        this.subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
           if (this.props.sceneId !== data[KEY_SCENE_ID]) {
             return;
           }
@@ -108,12 +110,13 @@ function withNavigator(moduleName: string) {
               throw new Error(`event ${data[KEY_ON]} has not been processed yet.`);
           }
         });
+        this.navigator.addSubscription(subscription);
       }
 
       componentWillUnmount() {
         removeBarButtonItemClickEvent(this.props.sceneId);
         store.removeNavigator(this.props.sceneId);
-        this.subscription!.remove();
+        this.navigator.clearSubscriptions();
       }
 
       render() {

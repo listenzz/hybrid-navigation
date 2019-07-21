@@ -235,7 +235,7 @@ const navigator = Navigator.get(sceneId);
 
 screen 是最基本的页面，它用来表示通过 `ReactRegistry.registerComponent` 注册的组件。它有一些基本的导航能力，所有容器均继承了这些能力。
 
-- **showModal(moduleName: string, requestCode = 0, props: { [x: string]: any } = {}, options: NavigationItem = {})**
+- **showModal(moduleName: string, requestCode = 0, props: { [x: string]: any } = {}, options: NavigationItem = {}): Promise&lt;Result&gt;**
 
 将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件，比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
 
@@ -258,7 +258,7 @@ this.props.navigator.setResult(resultCode, data);
 this.props.navigator.hideModal();
 ```
 
-目标页面（即将 modal 显示出来的页面）通过部署 `onComponentResult` 方法来接收结果：
+目标页面（即将 modal 显示出来的页面）可以通过实例方法 `onComponentResult` 或者 React Hook `useResultData` 来接收结果：
 
 ```javascript
 onComponentResult(requestCode, resultCode, data) {
@@ -266,17 +266,39 @@ onComponentResult(requestCode, resultCode, data) {
 }
 ```
 
+```javascript
+import { useResultData } from 'react-native-navigation-hybrid'
+
+function FunctionComponent() {
+
+  useResultData(requestCode, resultCode, data) {
+    // ...
+  }
+}
+```
+
+也可以使用 async-await 的方式接收结果：
+
+```javascript
+async function show() {
+  const [resultCode, data] = await this.props.navigator.showModal('ReactModal', REQUEST_CODE);
+  // handle the result
+}
+```
+
+> ⚠️ 这种方式把请求和结果放在一起处理，逻辑比较紧凑，似乎是最好的处理方式。但是在 Android 上会遇到生命周期的噩梦，如果因为屏幕旋转等原因导致导致原生底层的控制器（Activity）重建，此时 React Component 也会重建，是重建，不是重新渲染，那么结果将会丢失，虽然这种情况很罕见，但不代表不存在，使用时请注意。
+
 - **hideModal()**
 
 隐藏作为 Modal 显示的页面，如果 Modal 是一个容器，可以在该容器的任何子页面调用此方法。
 
 **在调用 `this.props.navigator.hideModal` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
-- **showModalLayout(layout: Layout, requestCode = 0)**
+- **showModalLayout(layout: Layout, requestCode = 0): Promise&lt;Result&gt;**
 
 showModal 的加强版，可以将布局对象作为 Modal 显示，同样使用 hideModal 来关闭
 
-- **present(moduleName: string, requestCode = 0, props: { [x: string]: any } = {}, options: NavigationItem = {}, animated = true)**
+- **present(moduleName: string, requestCode = 0, props: { [x: string]: any } = {}, options: NavigationItem = {}, animated = true): Promise&lt;Result&gt;**
 
 present 是一种模态交互方式，类似于 Android 的 `startActivityForResult`，要求被 present 的页面返回结果给发起 present 的页面。在 iOS 中，present 表现为从底往上弹出界面。
 
@@ -355,7 +377,7 @@ A 页面通过实现 `onComponentResult` 方法来接收结果（略）。
 
 **在调用 `this.props.navigator.dismiss` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
-- **presentLayout(layout: Layout, requestCode = 0, animated = true)**
+- **presentLayout(layout: Layout, requestCode = 0, animated = true): Promise&lt;Result&gt;**
 
 present 的加强版，通过传递一个布局对象，用来 present UI 层级比较复杂的页面，同样使用 dismiss 来关闭。
 
@@ -451,7 +473,7 @@ this.props.navigator.popTo(this.props.bId);
 this.props.navigator.popToRoot();
 ```
 
-pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `onComponentResult(requestCode, resultCode, data)` 来接受结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
+pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `onComponentResult(requestCode, resultCode, data)` 或 `useResultData` 来接受结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
 
 - **replace(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {})**
 

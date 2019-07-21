@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Platform, EmitterSubscription } from 'react-native';
 import {
   EventEmitter,
   NavigationModule,
@@ -8,6 +8,12 @@ import {
   KEY_SCENE_ID,
   KEY_INDEX,
   KEY_MODULE_NAME,
+  KEY_ON,
+  EVENT_NAVIGATION,
+  ON_COMPONENT_RESULT,
+  KEY_REQUEST_CODE,
+  KEY_RESULT_CODE,
+  KEY_RESULT_DATA,
 } from './NavigationModule';
 import { bindBarButtonItemClickEvent } from './utils';
 import store from './store';
@@ -33,6 +39,17 @@ interface Params {
   requestCode?: number;
   props?: { [x: string]: any };
   options?: NavigationItem;
+}
+
+interface ResultData {
+  [x: string]: any;
+}
+
+type Result = [number, ResultData];
+
+interface NavigationState {
+  params: { readonly [x: string]: any };
+  subscriptions: EmitterSubscription[];
 }
 
 export type NavigationInterceptor = (
@@ -98,6 +115,22 @@ EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
   });
 });
 
+function result(navigator: Navigator, requestCode: number) {
+  return new Promise<Result>(resolve => {
+    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+      if (
+        navigator.sceneId === data[KEY_SCENE_ID] &&
+        data[KEY_ON] === ON_COMPONENT_RESULT &&
+        data[KEY_REQUEST_CODE] === requestCode
+      ) {
+        navigator.removeSubscription(subscription);
+        resolve([data[KEY_RESULT_CODE], data[KEY_RESULT_DATA]]);
+      }
+    });
+    navigator.addSubscription(subscription);
+  });
+}
+
 export class Navigator {
   static RESULT_OK: -1 = NavigationModule.RESULT_OK;
   static RESULT_CANCEL: 0 = NavigationModule.RESULT_CANCEL;
@@ -125,7 +158,7 @@ export class Navigator {
     const pureLayout = bindBarButtonItemClickEvent(layout, {
       inLayout: true,
       navigatorFactory: (sceneId: string) => {
-        return new Navigator(sceneId);
+        return Navigator.get(sceneId);
       },
     });
     NavigationModule.setRoot(pureLayout, sticky);
@@ -195,7 +228,28 @@ export class Navigator {
     this.closeMenu = this.closeMenu.bind(this);
   }
 
-  state: { params: { readonly [x: string]: any } } = { params: {} };
+  state: NavigationState = {
+    params: {},
+    subscriptions: [],
+  };
+
+  addSubscription(subscription: EmitterSubscription) {
+    this.state.subscriptions.push(subscription);
+  }
+
+  removeSubscription(subscription: EmitterSubscription) {
+    const index = this.state.subscriptions.indexOf(subscription);
+    if (index !== -1) {
+      subscription.remove();
+      this.state.subscriptions.splice(index, 1);
+    }
+  }
+
+  clearSubscriptions() {
+    this.state.subscriptions.splice(0).forEach(item => {
+      item.remove();
+    });
+  }
 
   setParams(params: { [x: string]: any }) {
     this.state.params = { ...this.state.params, ...params };
@@ -253,7 +307,7 @@ export class Navigator {
     props: { [x: string]: any } = {},
     options: NavigationItem = {},
     animated = true
-  ) {
+  ): Promise<Result> {
     this.dispatch('present', {
       moduleName,
       props,
@@ -261,10 +315,12 @@ export class Navigator {
       requestCode,
       animated,
     });
+    return result(this, requestCode);
   }
 
-  presentLayout(layout: Layout, requestCode = 0, animated = true) {
+  presentLayout(layout: Layout, requestCode = 0, animated = true): Promise<Result> {
     this.dispatch('presentLayout', { layout, requestCode, animated });
+    return result(this, requestCode);
   }
 
   dismiss(animated = true) {
@@ -276,17 +332,19 @@ export class Navigator {
     requestCode = 0,
     props: { [x: string]: any } = {},
     options: NavigationItem = {}
-  ) {
+  ): Promise<Result> {
     this.dispatch('showModal', {
       moduleName,
       props,
       options,
       requestCode,
     });
+    return result(this, requestCode);
   }
 
-  showModalLayout(layout: Layout, requestCode = 0) {
+  showModalLayout(layout: Layout, requestCode = 0): Promise<Result> {
     this.dispatch('showModalLayout', { layout, requestCode });
+    return result(this, requestCode);
   }
 
   hideModal() {

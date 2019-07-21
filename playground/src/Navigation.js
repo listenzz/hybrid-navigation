@@ -74,20 +74,8 @@ export default class Navigation extends Component {
 
   onComponentResult(requestCode, resultCode, data) {
     console.info('navigation onComponentResult');
-    if (requestCode === REQUEST_CODE) {
-      if (resultCode === RESULT_OK) {
-        this.setState({
-          text: data.text || '',
-          error: undefined,
-          backId: data.backId || undefined,
-        });
-      } else {
-        this.setState({ text: undefined, error: 'ACTION CANCEL' });
-      }
-    } else if (requestCode === 0) {
-      if (resultCode === RESULT_OK) {
-        this.setState({ text: data.backId || undefined });
-      }
+    if (requestCode === 0 && data) {
+      this.setState({ text: data.backId || undefined });
     }
   }
 
@@ -133,20 +121,34 @@ export default class Navigation extends Component {
     this.props.navigator.replaceToRoot('Navigation');
   }
 
-  present() {
-    this.props.navigator.present('Result', REQUEST_CODE);
-  }
-
   switchTab() {
     this.props.navigator.switchTab(1);
   }
 
-  showModal() {
-    this.props.navigator.showModal('ReactModal', REQUEST_CODE);
+  handleResult(resultCode, data) {
+    if (resultCode === RESULT_OK) {
+      this.setState({
+        text: data.text,
+        error: undefined,
+      });
+    } else {
+      this.setState({ text: undefined, error: 'ACTION CANCEL' });
+    }
   }
 
-  showNativeModal() {
-    this.props.navigator.showModal('NativeModal', REQUEST_CODE);
+  async present() {
+    const [resultCode, data] = await this.props.navigator.present('Result', REQUEST_CODE);
+    this.handleResult(resultCode, data);
+  }
+
+  async showModal() {
+    const [resultCode, data] = await this.props.navigator.showModal('ReactModal', REQUEST_CODE);
+    this.handleResult(resultCode, data);
+  }
+
+  async showNativeModal() {
+    const [resultCode, data] = await this.props.navigator.showModal('NativeModal', REQUEST_CODE);
+    this.handleResult(resultCode, data);
   }
 
   render() {

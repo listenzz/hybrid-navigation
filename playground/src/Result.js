@@ -77,8 +77,7 @@ export default class Result extends Component {
     let current = await Navigator.currentRoute();
     console.log(current);
     this.props.navigator.setResult(RESULT_OK, {
-      text: this.state.text,
-      backId: this.props.sceneId,
+      text: this.state.text || '',
     });
     this.props.navigator.dismiss();
     current = await Navigator.currentRoute();
