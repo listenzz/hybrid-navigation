@@ -81,8 +81,8 @@
             } else {
                 size = UILayoutFittingCompressedSize;
             }
-            RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:moduleName initialProperties:[self propsWithSceneId]];
-            HBDTitleView *titleView = [[HBDTitleView alloc] initWithRootView:rootView layoutFittingSize:size navigationBarBounds:self.navigationController.navigationBar.bounds];
+            RCTRootView *titleRootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:moduleName initialProperties:[self propsWithSceneId]];
+            HBDTitleView *titleView = [[HBDTitleView alloc] initWithRootView:titleRootView layoutFittingSize:size navigationBarBounds:self.navigationController.navigationBar.bounds];
             self.navigationItem.titleView = titleView;
         }
     }
@@ -120,14 +120,9 @@
                                                                KEY_SCENE_ID: self.sceneId,
                                                                KEY_ON: ON_COMPONENT_APPEAR
                                                                }];
-        } else {
-            [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                                                               KEY_SCENE_ID: self.sceneId,
-                                                               KEY_ON: ON_COMPONENT_MOUNT
-                                                               }];
         }
     }
-}                                                        
+}
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
@@ -139,6 +134,15 @@
                                                                KEY_ON: ON_COMPONENT_DISAPPEAR
                                                                }];
         }
+    }
+}
+
+- (void)willMoveToParentViewController:(UIViewController *)parent {
+    if (parent && self.isViewLoaded && !self.firstRenderCompleted) {
+        [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+                                                           KEY_SCENE_ID: self.sceneId,
+                                                           KEY_ON: ON_COMPONENT_MOUNT
+                                                           }];
     }
 }
 
