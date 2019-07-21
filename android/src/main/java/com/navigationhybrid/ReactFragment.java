@@ -91,6 +91,15 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isViewAppear() && reactRootView == null) {
+            initReactNative();
+            initTitleViewIfNeeded();
+        }
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (!isFragmentHidden()) {
