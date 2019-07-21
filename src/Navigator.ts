@@ -84,15 +84,11 @@ export interface Drawer extends Layout {
 }
 
 EventEmitter.addListener(EVENT_DID_SET_ROOT, _ => {
-  if (didSetRootCallback) {
-    didSetRootCallback();
-  }
+  didSetRootCallback && didSetRootCallback();
 });
 
 EventEmitter.addListener(EVENT_WILL_SET_ROOT, _ => {
-  if (willSetRootCallback) {
-    willSetRootCallback();
-  }
+  willSetRootCallback && willSetRootCallback();
 });
 
 EventEmitter.addListener(EVENT_SWITCH_TAB, event => {

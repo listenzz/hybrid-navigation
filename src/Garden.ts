@@ -88,13 +88,11 @@ export interface TitleItem {
   layoutFitting?: LayoutFitting;
 }
 
-export type Action = (navigator: Navigator) => void;
-
 export interface BarButtonItem {
   title?: string;
   icon?: Image;
   insetsIOS?: Insets;
-  action?: string | Action;
+  action?: string | ((navigator: Navigator) => void);
   enabled?: boolean;
   tintColor?: Color;
   renderOriginal?: boolean;
