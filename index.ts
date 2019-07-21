@@ -2,6 +2,7 @@ export * from './src/Navigator';
 export * from './src/Garden';
 export * from './src/ReactRegistry';
 export * from './src/router';
+export * from './src/hooks';
 
 import { Navigator } from './src/Navigator';
 import { Garden } from './src/Garden';
