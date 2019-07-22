@@ -61,8 +61,7 @@ function withNavigator(moduleName: string) {
       constructor(props: NativeProps) {
         super(props);
         this.navigationRef = React.createRef();
-        this.navigator =
-          store.getNavigator(props.sceneId) || new Navigator(props.sceneId, moduleName);
+        this.navigator = store.getNavigator(props.sceneId) || new Navigator(props.sceneId, moduleName);
         if (this.navigator.moduleName === undefined) {
           this.navigator.moduleName = moduleName;
         }
@@ -76,35 +75,27 @@ function withNavigator(moduleName: string) {
           if (this.props.sceneId !== data[KEY_SCENE_ID]) {
             return;
           }
-
-          if (data[KEY_ON] === ON_COMPONENT_MOUNT) {
-            this.navigator.signalFirstRenderComplete();
-          }
-
           const navigation = this.navigationRef.current as Navigation;
-          if (!navigation) {
-            return;
-          }
           switch (data[KEY_ON]) {
             case ON_BAR_BUTTON_ITEM_CLICK:
-              navigation.onBarButtonItemClick && navigation.onBarButtonItemClick(data[KEY_ACTION]);
+              navigation && navigation.onBarButtonItemClick && navigation.onBarButtonItemClick(data[KEY_ACTION]);
               break;
             case ON_COMPONENT_RESULT:
-              navigation.onComponentResult &&
-                navigation.onComponentResult(
-                  data[KEY_REQUEST_CODE],
-                  data[KEY_RESULT_CODE],
-                  data[KEY_RESULT_DATA]
-                );
+              navigation &&
+                navigation.onComponentResult &&
+                navigation.onComponentResult(data[KEY_REQUEST_CODE], data[KEY_RESULT_CODE], data[KEY_RESULT_DATA]);
               break;
             case ON_COMPONENT_APPEAR:
-              navigation.componentDidAppear && navigation.componentDidAppear();
+              navigation && navigation.componentDidAppear && navigation.componentDidAppear();
               break;
             case ON_COMPONENT_DISAPPEAR:
-              navigation.componentDidDisappear && navigation.componentDidDisappear();
+              navigation && navigation.componentDidDisappear && navigation.componentDidDisappear();
               break;
             case ON_DIALOG_BACK_PRESSED:
-              navigation.onBackPressed && navigation.onBackPressed();
+              navigation && navigation.onBackPressed && navigation.onBackPressed();
+              break;
+            case ON_COMPONENT_MOUNT:
+              this.navigator.signalFirstRenderComplete();
               break;
             default:
               throw new Error(`event ${data[KEY_ON]} has not been processed yet.`);
@@ -165,11 +156,7 @@ export class ReactRegistry {
     console.info('end register react component');
   }
 
-  static registerComponent(
-    appKey: string,
-    getComponentFunc: ComponentProvider,
-    routeConfig?: RouteConfig
-  ) {
+  static registerComponent(appKey: string, getComponentFunc: ComponentProvider, routeConfig?: RouteConfig) {
     if (routeConfig) {
       router.addRouteConfig(appKey, routeConfig);
     }
@@ -178,9 +165,7 @@ export class ReactRegistry {
     const navigation = WrappedComponent as NavigationType;
 
     // build static options
-    let options: any = navigation.navigationItem
-      ? bindBarButtonItemClickEvent(navigation.navigationItem)
-      : {};
+    let options: any = navigation.navigationItem ? bindBarButtonItemClickEvent(navigation.navigationItem) : {};
 
     if (options['tabItem'] && options['tabItem']['selectedIcon']) {
       options['tabItem']['unselectedIcon'] = options['tabItem']['icon'];
