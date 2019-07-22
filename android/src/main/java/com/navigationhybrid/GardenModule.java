@@ -21,8 +21,6 @@ import com.facebook.react.bridge.ReadableMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
 import me.listenzz.navigation.AwesomeFragment;
 import me.listenzz.navigation.DrawerFragment;
 import me.listenzz.navigation.FragmentHelper;
@@ -168,7 +166,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setTabIcon(@Nonnull final String sceneId, @NonNull final ReadableArray options) {
+    public void setTabIcon(@NonNull final String sceneId, @NonNull final ReadableArray options) {
         sHandler.post(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {

@@ -2,6 +2,7 @@ package com.navigationhybrid;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
@@ -12,7 +13,6 @@ import com.facebook.react.ReactRootView;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.annotation.Nullable;
 
 public class ReactView extends ReactRootView {
 
