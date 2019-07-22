@@ -31,7 +31,7 @@ export function useVisibleEffect(sceneId: string, fn: React.EffectCallback) {
     return () => {
       subscription.remove();
     };
-  });
+  }, [sceneId]);
 }
 
 export function useBackInterceptor(sceneId: string, fn: () => void) {
@@ -45,7 +45,7 @@ export function useBackInterceptor(sceneId: string, fn: () => void) {
     return () => {
       subscription.remove();
     };
-  });
+  }, [sceneId]);
 }
 
 export function useResultData(
@@ -62,5 +62,5 @@ export function useResultData(
     return () => {
       subscription.remove();
     };
-  });
+  }, [sceneId]);
 }
