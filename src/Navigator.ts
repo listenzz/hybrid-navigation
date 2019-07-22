@@ -20,10 +20,6 @@ import store from './store';
 import { NavigationItem } from './Garden';
 import { Route, RouteGraph } from './router';
 
-let intercept: NavigationInterceptor;
-let willSetRootCallback: () => void;
-let didSetRootCallback: () => void;
-
 interface Extras {
   sceneId: string;
   index?: number;
@@ -52,12 +48,7 @@ interface NavigationState {
   subscriptions: EmitterSubscription[];
 }
 
-export type NavigationInterceptor = (
-  action: string,
-  from?: string,
-  to?: string,
-  extras?: Extras
-) => boolean;
+export type NavigationInterceptor = (action: string, from?: string, to?: string, extras?: Extras) => boolean;
 
 export interface Layout {
   [x: string]: {};
@@ -100,12 +91,20 @@ export interface Drawer extends Layout {
   };
 }
 
+let intercept: NavigationInterceptor;
+let shouldCallWillSetRootCallback = 0;
+let willSetRootCallback: () => void;
+let didSetRootCallback: () => void;
+
 EventEmitter.addListener(EVENT_DID_SET_ROOT, _ => {
   didSetRootCallback && didSetRootCallback();
+  shouldCallWillSetRootCallback = 0;
 });
 
 EventEmitter.addListener(EVENT_WILL_SET_ROOT, _ => {
-  willSetRootCallback && willSetRootCallback();
+  if (shouldCallWillSetRootCallback === 0 && willSetRootCallback) {
+    willSetRootCallback();
+  }
 });
 
 EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
@@ -161,6 +160,10 @@ export class Navigator {
         return Navigator.get(sceneId);
       },
     });
+    if (willSetRootCallback) {
+      shouldCallWillSetRootCallback++;
+      willSetRootCallback();
+    }
     NavigationModule.setRoot(pureLayout, sticky);
   }
 
@@ -259,12 +262,7 @@ export class Navigator {
     Navigator.dispatch(this.sceneId, action, params);
   }
 
-  push(
-    moduleName: string,
-    props: { [x: string]: any } = {},
-    options: NavigationItem = {},
-    animated = true
-  ) {
+  push(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {}, animated = true) {
     this.dispatch('push', { moduleName, props, options, animated });
   }
 
@@ -288,11 +286,7 @@ export class Navigator {
     this.dispatch('replace', { moduleName, props, options, animated: true });
   }
 
-  replaceToRoot(
-    moduleName: string,
-    props: { [x: string]: any } = {},
-    options: NavigationItem = {}
-  ) {
+  replaceToRoot(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {}) {
     this.dispatch('replaceToRoot', { moduleName, props, options, animated: true });
   }
 

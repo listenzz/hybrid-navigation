@@ -17,10 +17,7 @@ export interface BindOptions {
   navigatorFactory?: (sceneId: string) => Navigator;
 }
 
-function bindBarButtonItemClickEvent(
-  item: object | null,
-  options: BindOptions = { inLayout: false }
-): JSON | null {
+function bindBarButtonItemClickEvent(item: object | null, options: BindOptions = { inLayout: false }): JSON | null {
   if (options.inLayout) {
     removeBarButtonItemClickEventInLayout();
   }
@@ -70,9 +67,7 @@ function removeBarButtonItemClickEventInLayout(): void {
 
 function removeBarButtonItemClickEvent(sceneId: string): void {
   store
-    .filterBarButtonItemClickEvent(
-      event => event.context.sceneId && event.context.sceneId === sceneId
-    )
+    .filterBarButtonItemClickEvent(event => event.context.sceneId && event.context.sceneId === sceneId)
     .forEach(event => {
       store.removeBarButtonItemClickEvent(event);
     });
