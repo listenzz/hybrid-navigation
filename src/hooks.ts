@@ -34,7 +34,7 @@ export function useVisibleEffect(sceneId: string, fn: React.EffectCallback) {
   }, [sceneId]);
 }
 
-export function useBackInterceptor(sceneId: string, fn: () => void) {
+export function useBackEffect(sceneId: string, fn: () => void) {
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_DIALOG_BACK_PRESSED) {
@@ -48,7 +48,7 @@ export function useBackInterceptor(sceneId: string, fn: () => void) {
   }, [sceneId]);
 }
 
-export function useResultData(
+export function useResult(
   sceneId: string,
   fn: (requestCode: number, resultCode: number, data: { [x: string]: any }) => void
 ) {
