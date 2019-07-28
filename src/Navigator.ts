@@ -340,7 +340,7 @@ export class Navigator {
     return result<T>(this, requestCode);
   }
 
-  showModalLayout<T>(layout: Layout, requestCode = 0) {
+  showModalLayout<T = any>(layout: Layout, requestCode = 0) {
     this.dispatch('showModalLayout', { layout, requestCode });
     return result<T>(this, requestCode);
   }
