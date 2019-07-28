@@ -20,8 +20,6 @@ export default class Navigation extends Component {
     tabItem: {
       title: 'Navigation',
       icon: { uri: fontUri('FontAwesome', 'location-arrow', 24) },
-      //icon: { uri: 'blue_solid', scale: PixelRatio.get() },
-      //selectedIcon: { uri: 'red_ring', scale: PixelRatio.get() },
       hideTabBarWhenPush: true,
     },
   };
@@ -73,25 +71,21 @@ export default class Navigation extends Component {
   }
 
   onComponentResult(requestCode, resultCode, data) {
-    console.info('navigation onComponentResult');
-    if (requestCode === 0 && data) {
-      this.setState({ text: data.backId || undefined });
-    }
+    console.info('navigation onComponentResult', data);
   }
 
-  push() {
+  async push() {
+    let props = {};
     if (!this.state.isRoot) {
       if (this.props.popToId !== undefined) {
-        this.props.navigator.push('Navigation', {
-          popToId: this.props.popToId,
-        });
+        props.popToId = this.props.popToId;
       } else {
-        this.props.navigator.push('Navigation', {
-          popToId: this.props.sceneId,
-        });
+        props.popToId = this.props.sceneId;
       }
-    } else {
-      this.props.navigator.push('Navigation');
+    }
+    const [resultCode, data] = await this.props.navigator.push('Navigation', props);
+    if (data) {
+      this.setState({ text: data.backId || undefined });
     }
   }
 
@@ -165,15 +159,8 @@ export default class Navigation extends Component {
             <Text style={styles.buttonText}>push</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.pop}
-            activeOpacity={0.2}
-            style={styles.button}
-            disabled={this.state.isRoot}
-          >
-            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
-              pop
-            </Text>
+          <TouchableOpacity onPress={this.pop} activeOpacity={0.2} style={styles.button} disabled={this.state.isRoot}>
+            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>pop</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -182,9 +169,7 @@ export default class Navigation extends Component {
             style={styles.button}
             disabled={this.props.popToId == undefined}
           >
-            <Text
-              style={this.props.popToId == undefined ? styles.buttonTextDisable : styles.buttonText}
-            >
+            <Text style={this.props.popToId == undefined ? styles.buttonTextDisable : styles.buttonText}>
               popTo last but one
             </Text>
           </TouchableOpacity>
@@ -195,9 +180,7 @@ export default class Navigation extends Component {
             style={styles.button}
             disabled={this.state.isRoot}
           >
-            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
-              popToRoot
-            </Text>
+            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>popToRoot</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.replace} activeOpacity={0.2} style={styles.button}>
@@ -220,11 +203,7 @@ export default class Navigation extends Component {
             <Text style={styles.buttonText}>show react modal</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={this.showNativeModal}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.showNativeModal} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>show native modal</Text>
           </TouchableOpacity>
 
