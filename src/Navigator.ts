@@ -33,31 +33,28 @@ interface Params {
   popToRoot?: boolean;
   targetId?: string;
   requestCode?: number;
-  props?: { [x: string]: any };
+  props?: { [index: string]: any };
   options?: NavigationItem;
+  [index: string]: any;
 }
 
-interface ResultData {
-  [x: string]: any;
-}
-
-type Result = [number, ResultData];
+type Result<T> = [number, T];
 
 interface NavigationState {
-  params: { readonly [x: string]: any };
+  params: { readonly [index: string]: any };
   subscriptions: EmitterSubscription[];
 }
 
 export type NavigationInterceptor = (action: string, from?: string, to?: string, extras?: Extras) => boolean;
 
 export interface Layout {
-  [x: string]: {};
+  [index: string]: {};
 }
 
 export interface Screen extends Layout {
   screen: {
     moduleName: string;
-    props?: { [x: string]: any };
+    props?: { [index: string]: any };
     options?: NavigationItem;
   };
 }
@@ -114,9 +111,9 @@ EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
   });
 });
 
-function result(navigator: Navigator, requestCode: number) {
-  return new Promise<Result>(resolve => {
-    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+function result<T>(navigator: Navigator, requestCode: number) {
+  return new Promise<Result<T>>(resolve => {
+    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data: { [index: string]: any }) => {
       if (
         navigator.sceneId === data[KEY_SCENE_ID] &&
         data[KEY_ON] === ON_COMPONENT_RESULT &&
@@ -254,7 +251,7 @@ export class Navigator {
     });
   }
 
-  setParams(params: { [x: string]: any }) {
+  setParams(params: { [index: string]: any }) {
     this.state.params = { ...this.state.params, ...params };
   }
 
@@ -262,12 +259,19 @@ export class Navigator {
     Navigator.dispatch(this.sceneId, action, params);
   }
 
-  push(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {}, animated = true) {
+  push<T = any, P extends object = {}>(
+    moduleName: string,
+    props: P = {} as P,
+    options: NavigationItem = {},
+    animated = true
+  ) {
     this.dispatch('push', { moduleName, props, options, animated });
+    return result<T>(this, 0);
   }
 
-  pushLayout(layout: Layout, animated = true) {
+  pushLayout<T = any>(layout: Layout, animated = true) {
     this.dispatch('pushLayout', { layout, animated });
+    return result<T>(this, 0);
   }
 
   pop(animated = true) {
@@ -282,11 +286,11 @@ export class Navigator {
     this.dispatch('popToRoot', { animated });
   }
 
-  replace(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {}) {
+  replace<P extends object = {}>(moduleName: string, props: P = {} as P, options: NavigationItem = {}) {
     this.dispatch('replace', { moduleName, props, options, animated: true });
   }
 
-  replaceToRoot(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {}) {
+  replaceToRoot<P extends object = {}>(moduleName: string, props: P = {} as P, options: NavigationItem = {}) {
     this.dispatch('replaceToRoot', { moduleName, props, options, animated: true });
   }
 
@@ -295,13 +299,13 @@ export class Navigator {
     return NavigationModule.isNavigationRoot(this.sceneId);
   }
 
-  present(
+  present<T = any, P extends object = {}>(
     moduleName: string,
     requestCode = 0,
-    props: { [x: string]: any } = {},
+    props: P = {} as P,
     options: NavigationItem = {},
     animated = true
-  ): Promise<Result> {
+  ) {
     this.dispatch('present', {
       moduleName,
       props,
@@ -309,43 +313,43 @@ export class Navigator {
       requestCode,
       animated,
     });
-    return result(this, requestCode);
+    return result<T>(this, requestCode);
   }
 
-  presentLayout(layout: Layout, requestCode = 0, animated = true): Promise<Result> {
+  presentLayout<T = any>(layout: Layout, requestCode = 0, animated = true) {
     this.dispatch('presentLayout', { layout, requestCode, animated });
-    return result(this, requestCode);
+    return result<T>(this, requestCode);
   }
 
   dismiss(animated = true) {
     this.dispatch('dismiss', { animated });
   }
 
-  showModal(
+  showModal<T = any, P extends object = {}>(
     moduleName: string,
     requestCode = 0,
-    props: { [x: string]: any } = {},
+    props: P = {} as P,
     options: NavigationItem = {}
-  ): Promise<Result> {
+  ) {
     this.dispatch('showModal', {
       moduleName,
       props,
       options,
       requestCode,
     });
-    return result(this, requestCode);
+    return result<T>(this, requestCode);
   }
 
-  showModalLayout(layout: Layout, requestCode = 0): Promise<Result> {
+  showModalLayout<T>(layout: Layout, requestCode = 0) {
     this.dispatch('showModalLayout', { layout, requestCode });
-    return result(this, requestCode);
+    return result<T>(this, requestCode);
   }
 
   hideModal() {
     this.dispatch('hideModal');
   }
 
-  setResult(resultCode: number, data: { [x: string]: any } = {}): void {
+  setResult<T = any>(resultCode: number, data: T = {} as T): void {
     NavigationModule.setResult(this.sceneId, resultCode, data);
   }
 
