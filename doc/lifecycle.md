@@ -22,7 +22,7 @@
 
 仅对 Android 平台生效。用于处理通过 showModal 弹出的注册组件的物理或虚拟返回键。
 
-## 为函数组件提供了 Reack Hooks
+## 为函数组件提供了 React Hooks
 
 ```javascript
 function Lifecycle(props) {
@@ -34,9 +34,9 @@ function Lifecycle(props) {
   });
 ```
 
-`useBackInterceptor` 等同于 `onBackPressed`
+`useBackEffect` 等同于 `onBackPressed`
 
-`useResultData` 等同于 `onComponentResult`
+`useResult` 等同于 `onComponentResult`
 
 ## 注意
 

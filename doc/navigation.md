@@ -258,7 +258,7 @@ this.props.navigator.setResult(resultCode, data);
 this.props.navigator.hideModal();
 ```
 
-目标页面（即将 modal 显示出来的页面）可以通过实例方法 `onComponentResult` 或者 React Hook `useResultData` 来接收结果：
+目标页面（即将 modal 显示出来的页面）可以通过实例方法 `onComponentResult` 或者 React Hook `useResult` 来接收结果：
 
 ```javascript
 onComponentResult(requestCode, resultCode, data) {
@@ -267,11 +267,11 @@ onComponentResult(requestCode, resultCode, data) {
 ```
 
 ```javascript
-import { useResultData } from 'react-native-navigation-hybrid'
+import { useResult } from 'react-native-navigation-hybrid'
 
 function FunctionComponent() {
 
-  useResultData(requestCode, resultCode, data) {
+  useResult(requestCode, resultCode, data) {
     // ...
   }
 }
@@ -406,7 +406,7 @@ this.props.navigator.present('B', 1);
 
 stack 以栈的方式管理它的子页面，它支持以下导航操作：
 
-- **push(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {}, animated = true)**
+- **push(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {}, animated = true): Promise&lt;Result&gt;\*\***
 
 由 A 页面跳转到 B 页面。
 
@@ -473,7 +473,7 @@ this.props.navigator.popTo(this.props.bId);
 this.props.navigator.popToRoot();
 ```
 
-pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `onComponentResult(requestCode, resultCode, data)` 或 `useResultData` 来接受结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
+pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `onComponentResult(requestCode, resultCode, data)` 或 `useResult` 来接收结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
 
 - **replace(moduleName: string, props: { [x: string]: any } = {}, options: NavigationItem = {})**
 
@@ -514,7 +514,7 @@ A、B、C、D 页面被移除，E 页面被设置为 stack 的根页面。
 判断一个页面是否所在 stack 的根页面，返回值是一个 Promise.
 
 ```javascript
-componentWillMount() {
+componentDidMount() {
   this.props.navigator.isStackRoot().then((isRoot) => {
     if(isRoot) {
       this.props.garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
