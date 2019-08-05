@@ -34,7 +34,10 @@
         if (completion) {
             completion();
         }
-        [presenting didReceiveResultCode:presented.resultCode resultData:presented.resultData requestCode:presented.requestCode];
+        
+        if (![presented isKindOfClass:[UIAlertController class]]) {
+            [presenting didReceiveResultCode:presented.resultCode resultData:presented.resultData requestCode:presented.requestCode];
+        }
     }];
 }
 
