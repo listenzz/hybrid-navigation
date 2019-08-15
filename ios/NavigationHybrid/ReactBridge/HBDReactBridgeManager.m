@@ -256,6 +256,10 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)setRootViewController:(UIViewController *)rootViewController {
+    [self setRootViewController:rootViewController withTag:@(0)];
+}
+
+- (void)setRootViewController:(UIViewController *)rootViewController withTag:(NSNumber *)tag {
     [HBDEventEmitter sendEvent:EVENT_WILL_SET_ROOT data:@{}];
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     for (NSUInteger i = application.windows.count; i > 0; i--) {
@@ -271,14 +275,14 @@ const NSInteger ResultCancel = 0;
     UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
     if (presentedViewController && !presentedViewController.isBeingDismissed) {
         [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
-            [self performSetRootViewController:rootViewController];
+            [self performSetRootViewController:rootViewController withTag:tag];
         }];
     } else {
-        [self performSetRootViewController:rootViewController];
+        [self performSetRootViewController:rootViewController withTag:tag];
     }
 }
 
-- (void)performSetRootViewController:(UIViewController *)rootViewController {
+- (void)performSetRootViewController:(UIViewController *)rootViewController withTag:(NSNumber *)tag {
     UIWindow *mainWindow = [self mainWindow];
     [UIView transitionWithView:mainWindow duration:0.15f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
         BOOL oldState = [UIView areAnimationsEnabled];
@@ -291,7 +295,7 @@ const NSInteger ResultCancel = 0;
         [UIView setAnimationsEnabled:oldState];
         self.viewHierarchyReady = YES;
     } completion:^(BOOL finished) {
-       [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
+        [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{ @"tag": tag }];
     }];
 }
 

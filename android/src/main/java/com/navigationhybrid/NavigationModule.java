@@ -100,14 +100,15 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setRoot(final ReadableMap layout, final boolean sticky) {
+    public void setRoot(final ReadableMap layout, final boolean sticky, final int tag) {
         sHandler.post(() -> {
             if (bridgeManager.getCurrentReactContext() == null) {
                 Log.w(TAG, "current react context is null, skip action `setRoot`");
                 return;
             }
+
             bridgeManager.setViewHierarchyReady(false);
-            bridgeManager.setRootLayout(layout, sticky);
+            bridgeManager.setRootLayout(layout, sticky, tag);
             Activity activity = getCurrentActivity();
             if (activity instanceof ReactAppCompatActivity && bridgeManager.isReactModuleRegisterCompleted()) {
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;

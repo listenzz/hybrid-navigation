@@ -93,12 +93,12 @@ RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
     }
 }
 
-RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky) {
+RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky tag:(NSNumber * __nonnull)tag) {
     self.bridgeManager.viewHierarchyReady = NO;
     UIViewController *vc = [self.bridgeManager controllerWithLayout:layout];
     if (vc) {
         self.bridgeManager.hasRootLayout = YES;
-        [self.bridgeManager setRootViewController:vc];
+        [self.bridgeManager setRootViewController:vc withTag:tag];
     }
 }
 

@@ -56,6 +56,7 @@ public class ReactBridgeManager {
     private final CopyOnWriteArrayList<ReactModuleRegisterListener> reactModuleRegisterListeners = new CopyOnWriteArrayList<>();
 
     private ReadableMap rootLayout;
+    private int rootLayoutTag;
     private ReadableMap stickyLayout;
     private ReadableMap pendingLayout;
     private boolean viewHierarchyReady;
@@ -72,6 +73,7 @@ public class ReactBridgeManager {
         reactInstanceManager.addReactInstanceEventListener(context -> {
             Log.i(TAG, "react instance context initialized.");
             rootLayout = null;
+            rootLayoutTag = 0;
             stickyLayout = null;
             pendingLayout = null;
             setViewHierarchyReady(false);
@@ -163,11 +165,12 @@ public class ReactBridgeManager {
         reactModuleRegisterListeners.remove(listener);
     }
 
-    public void setRootLayout(@NonNull ReadableMap root, boolean sticky) {
+    public void setRootLayout(@NonNull ReadableMap root, boolean sticky, int tag) {
         if (sticky && !hasStickyLayout()) {
             this.stickyLayout = root;
         }
         this.rootLayout = root;
+        this.rootLayoutTag = tag;
     }
 
     @Nullable
@@ -177,6 +180,14 @@ public class ReactBridgeManager {
 
     public boolean hasRootLayout() {
         return rootLayout != null;
+    }
+
+    public int getRootLayoutTag() {
+        return rootLayoutTag;
+    }
+
+    public void resetRootLayoutTag() {
+        rootLayoutTag = 0;
     }
 
     @Nullable

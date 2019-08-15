@@ -60,6 +60,8 @@ extern const NSInteger ResultCancel;
 
 - (void)setRootViewController:(UIViewController *)rootViewController;
 
+- (void)setRootViewController:(UIViewController *)rootViewController withTag:(NSNumber *)tag;
+
 - (NSArray *)routeGraph;
 
 - (void)buildRouteGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root;

@@ -177,8 +177,9 @@ export default class Options extends Component {
     }
   }
 
-  changeTabBar() {
-    Navigator.setRoot(getLayout());
+  async changeTabBar() {
+    await Navigator.setRoot(getLayout());
+    console.log('finish setRoot!!');
   }
 
   render() {

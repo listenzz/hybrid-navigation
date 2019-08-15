@@ -92,6 +92,7 @@ let intercept: NavigationInterceptor;
 let shouldCallWillSetRootCallback = 0;
 let willSetRootCallback: () => void;
 let didSetRootCallback: () => void;
+let tag = 0;
 
 EventEmitter.addListener(EVENT_DID_SET_ROOT, _ => {
   didSetRootCallback && didSetRootCallback();
@@ -161,7 +162,18 @@ export class Navigator {
       shouldCallWillSetRootCallback++;
       willSetRootCallback();
     }
-    NavigationModule.setRoot(pureLayout, sticky);
+
+    const flag = ++tag;
+    NavigationModule.setRoot(pureLayout, sticky, flag);
+
+    return new Promise<void>(resolve => {
+      const subscription = EventEmitter.addListener(EVENT_DID_SET_ROOT, (data: { tag: number }) => {
+        if (data.tag === flag) {
+          subscription.remove();
+          resolve();
+        }
+      });
+    });
   }
 
   static setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {}) {

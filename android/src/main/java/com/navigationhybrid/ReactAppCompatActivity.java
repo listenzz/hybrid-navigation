@@ -12,6 +12,7 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
@@ -95,7 +96,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         scheduleTaskAtStarted(() -> {
             ReactBridgeManager bridgeManager = getReactBridgeManager();
             bridgeManager.setViewHierarchyReady(true);
-            HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, Arguments.createMap());
+            int tag = bridgeManager.getRootLayoutTag();
+            bridgeManager.resetRootLayoutTag();
+            WritableMap map = Arguments.createMap();
+            map.putInt("tag", tag);
+            HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, map);
         });
     }
 
