@@ -100,8 +100,18 @@ const NSInteger ResultCancel = 0;
     UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
     if (presentedViewController && !presentedViewController.isBeingDismissed) {
         [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
+            [self setLoadingViewController];
         }];
+    } else {
+        [self setLoadingViewController];
     }
+}
+
+- (void)setLoadingViewController {
+    UIWindow *mainWindow = [self mainWindow];
+    UIViewController *vc = [UIViewController new];
+    vc.view.backgroundColor = UIColor.whiteColor;
+    mainWindow.rootViewController = vc;
 }
 
 - (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
