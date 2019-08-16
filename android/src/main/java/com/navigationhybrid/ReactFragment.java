@@ -160,9 +160,15 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         return firstRenderCompleted;
     }
 
+    private boolean reactViewAppeared = false;
     private void sendViewAppearEvent(boolean appear) {
         // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
         if (isReactModuleRegisterCompleted() && (isResumed() || isRemoving())) {
+            if (reactViewAppeared == appear) {
+                return;
+            }
+            reactViewAppeared = appear;
+
             Bundle bundle = new Bundle();
             bundle.putString(KEY_SCENE_ID, getSceneId());
             bundle.putString(KEY_ON, appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR);
