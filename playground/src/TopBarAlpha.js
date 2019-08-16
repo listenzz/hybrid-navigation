@@ -1,15 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Slider,
-  Image,
-  Alert,
-  StatusBar,
-  Platform,
-} from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView, Slider, Image, Alert, StatusBar, Platform } from 'react-native';
 import { ifIphoneX } from 'react-native-iphone-x-helper';
 import styles from './Styles';
 
@@ -61,7 +51,7 @@ export default class TopBarAlpha extends Component {
     let topBarColor = props.color || '#FFFFFF';
     this.state = { alpha };
     if (alpha !== 0.5 || topBarColor !== '#FFFFFF') {
-      this.props.garden.updateTopBar({
+      this.props.garden.updateOptions({
         topBarAlpha: alpha,
         topBarColor: topBarColor,
       });
