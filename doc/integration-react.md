@@ -47,12 +47,7 @@ AppRegistry.registerComponent(appName, () => App);
 现在，你需要像下面那样
 
 ```javascript
-import {
-  ReactRegistry,
-  Garden,
-  Navigator,
-  BarStyleDarkContent,
-} from 'react-native-navigation-hybrid';
+import { ReactRegistry, Garden, Navigator, BarStyleDarkContent } from 'react-native-navigation-hybrid';
 import App from './App';
 
 // 配置全局样式
@@ -238,6 +233,7 @@ $(SRCROOT)/../node_modules/react-native-navigation-hybrid/ios
 
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
+    self.window = [[UIWindow alloc] init];
     self.window.windowLevel = UIWindowLevelStatusBar + 1;
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
