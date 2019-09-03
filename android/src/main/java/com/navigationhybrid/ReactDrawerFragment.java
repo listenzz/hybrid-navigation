@@ -12,7 +12,8 @@ public class ReactDrawerFragment extends DrawerFragment {
 
     private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 
-    public @NonNull ReactBridgeManager getReactBridgeManager() {
+    public @NonNull
+    ReactBridgeManager getReactBridgeManager() {
         return bridgeManager;
     }
 

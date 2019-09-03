@@ -83,7 +83,7 @@ public class DrawerNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull  ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
+    public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
         if (fragment instanceof DrawerFragment && fragment.isAdded()) {
             DrawerFragment drawer = (DrawerFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
@@ -120,7 +120,7 @@ public class DrawerNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action,  @NonNull ReadableMap extras) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
         DrawerFragment drawerFragment = target.getDrawerFragment();
         if (drawerFragment == null) {
             return;

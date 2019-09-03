@@ -67,6 +67,7 @@ public class ReactView extends ReactRootView {
     }
 
     private ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener;
+
     private ViewTreeObserver.OnGlobalLayoutListener getGlobalLayoutListener() {
         if (mGlobalLayoutListener == null) {
             try {

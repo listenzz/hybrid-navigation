@@ -94,7 +94,7 @@ public class GlobalStyle {
             // elevation
             double elevation = options.getDouble("elevationAndroid", -1);
             if (elevation != -1) {
-                style.setElevation((int)elevation);
+                style.setElevation((int) elevation);
             }
         } else {
             // shadow
@@ -134,7 +134,7 @@ public class GlobalStyle {
         // titleTextSize
         double titleTextSize = options.getDouble("titleTextSize", -1);
         if (titleTextSize != -1) {
-            style.setTitleTextSize((int)titleTextSize);
+            style.setTitleTextSize((int) titleTextSize);
         }
 
         // titleAlignment

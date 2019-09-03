@@ -94,7 +94,7 @@ public class StackNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action,  @NonNull ReadableMap extras) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
         NavigationFragment navigationFragment = getNavigationFragment(target);
         if (navigationFragment == null) {
             return;
@@ -116,43 +116,43 @@ public class StackNavigator implements Navigator {
             }
         }
 
-            switch (action) {
-                case "push":
-                    if (fragment != null) {
-                        navigationFragment.pushFragment(fragment);
-                    }
-                    break;
-                case "pop":
-                    navigationFragment.popFragment();
-                    break;
-                case "popTo":
-                    String targetId = extras.getString("targetId");
-                    fragment = (AwesomeFragment) navigationFragment.getChildFragmentManager().findFragmentByTag(targetId);
-                    if (fragment != null) {
-                        navigationFragment.popToFragment(fragment);
-                    }
-                    break;
-                case "popToRoot":
-                    navigationFragment.popToRootFragment();
-                    break;
-                case "replace":
-                    if (fragment != null) {
-                        navigationFragment.replaceFragment(fragment, target);
-                    }
-                    break;
-                case "replaceToRoot":
-                    if (fragment != null) {
-                        navigationFragment.replaceToRootFragment(fragment);
-                    }
-                    break;
-                case "pushLayout":
-                    ReadableMap layout = extras.getMap("layout");
-                    fragment = getReactBridgeManager().createFragment(layout);
-                    if (fragment != null) {
-                        navigationFragment.pushFragment(fragment);
-                    }
-                    break;
-            }
+        switch (action) {
+            case "push":
+                if (fragment != null) {
+                    navigationFragment.pushFragment(fragment);
+                }
+                break;
+            case "pop":
+                navigationFragment.popFragment();
+                break;
+            case "popTo":
+                String targetId = extras.getString("targetId");
+                fragment = (AwesomeFragment) navigationFragment.getChildFragmentManager().findFragmentByTag(targetId);
+                if (fragment != null) {
+                    navigationFragment.popToFragment(fragment);
+                }
+                break;
+            case "popToRoot":
+                navigationFragment.popToRootFragment();
+                break;
+            case "replace":
+                if (fragment != null) {
+                    navigationFragment.replaceFragment(fragment, target);
+                }
+                break;
+            case "replaceToRoot":
+                if (fragment != null) {
+                    navigationFragment.replaceToRootFragment(fragment);
+                }
+                break;
+            case "pushLayout":
+                ReadableMap layout = extras.getMap("layout");
+                fragment = getReactBridgeManager().createFragment(layout);
+                if (fragment != null) {
+                    navigationFragment.pushFragment(fragment);
+                }
+                break;
+        }
 
     }
 

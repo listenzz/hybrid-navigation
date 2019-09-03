@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 project.ext.react = [
-        root     : "../../../",
-        entryFile: "playground/index.js",
-        bundleInRelease       : true,
-        bundleInDebug       : true,
+        root           : "../../../",
+        entryFile      : "playground/index.js",
+        bundleInRelease: true,
+        bundleInDebug  : true,
 ]
 
 // Android studio bug hack
 if (System.properties['os.name'].contains("Mac")) {
-   //  project.ext.react.nodeExecutableAndArgs = ["/usr/local/bin/node"]
+    //  project.ext.react.nodeExecutableAndArgs = ["/usr/local/bin/node"]
 }
 
 apply from: "../../../node_modules/react-native/react.gradle"

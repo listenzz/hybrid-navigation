@@ -17,7 +17,7 @@ public class ReactNavigationFragment extends NavigationFragment {
     public ReactBridgeManager getReactBridgeManager() {
         return bridgeManager;
     }
-    
+
     @Override
     public void setRootFragment(@NonNull AwesomeFragment fragment) {
         super.setRootFragment(fragment);

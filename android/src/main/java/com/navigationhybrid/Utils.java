@@ -48,7 +48,7 @@ public class Utils {
         if (uri != null && uri.startsWith("font://")) {
             iconUri = DrawableUtils.filepathFromFont(context, uri);
         }
-        return  iconUri;
+        return iconUri;
     }
 
     @NonNull
@@ -107,7 +107,7 @@ public class Utils {
             List<Fragment> fragments = fragmentManager.getFragments();
             int count = fragments.size();
             if (count > 0) {
-                Fragment topFragment = fragments.get(count -1);
+                Fragment topFragment = fragments.get(count - 1);
                 return findReactFragment(topFragment);
             }
         }

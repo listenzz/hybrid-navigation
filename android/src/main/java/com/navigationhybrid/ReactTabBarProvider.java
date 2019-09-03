@@ -97,7 +97,6 @@ public class ReactTabBarProvider implements TabBarProvider {
     }
 
 
-
     private Pair<String, String> extractSceneIdAndModuleName(AwesomeFragment awesomeFragment) {
         if (awesomeFragment instanceof NavigationFragment) {
             NavigationFragment navigationFragment = (NavigationFragment) awesomeFragment;

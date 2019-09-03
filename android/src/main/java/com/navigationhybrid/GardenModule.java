@@ -43,7 +43,6 @@ public class GardenModule extends ReactContextBaseJavaModule {
     private static final String TAG = "ReactNative";
 
 
-
     static final Handler sHandler = NavigationModule.sHandler;
 
     private final ReactBridgeManager bridgeManager;
