@@ -144,6 +144,9 @@ public class ReactTabBarFragment extends TabBarFragment {
         }
 
         TabBar tabBar = getTabBar();
+        if (tabBar == null) {
+            return;
+        }
         for (Bundle option : options) {
             int index = (int) option.getDouble("index");
             boolean hidden = option.getBoolean("hidden", true);
