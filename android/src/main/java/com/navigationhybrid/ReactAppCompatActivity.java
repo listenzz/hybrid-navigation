@@ -96,8 +96,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         scheduleTaskAtStarted(() -> {
             ReactBridgeManager bridgeManager = getReactBridgeManager();
             bridgeManager.setViewHierarchyReady(true);
-            int tag = bridgeManager.getRootLayoutTag();
-            bridgeManager.resetRootLayoutTag();
+            int tag = bridgeManager.getAndResetRootLayoutTag();
             WritableMap map = Arguments.createMap();
             map.putInt("tag", tag);
             HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, map);

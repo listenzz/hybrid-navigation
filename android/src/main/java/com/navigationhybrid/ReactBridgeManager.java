@@ -140,7 +140,7 @@ public class ReactBridgeManager {
         return reactModuleRegisterCompleted;
     }
 
-    public void setReactModuleRegisterCompleted(boolean reactModuleRegisterCompleted) {
+    public void  setReactModuleRegisterCompleted(boolean reactModuleRegisterCompleted) {
         this.reactModuleRegisterCompleted = reactModuleRegisterCompleted;
     }
 
@@ -182,12 +182,16 @@ public class ReactBridgeManager {
         return rootLayout != null;
     }
 
-    public int getRootLayoutTag() {
-        return rootLayoutTag;
-    }
-
-    public void resetRootLayoutTag() {
-        rootLayoutTag = 0;
+    public int getAndResetRootLayoutTag() {
+        if (hasRootLayout()) {
+            int tag = rootLayoutTag;
+            if (tag == 0) {
+                throw new IllegalStateException("unbalance call `getAndResetRootLayoutTag` and `setRoot`");
+            }
+            rootLayoutTag = 0;
+            return tag;
+        }
+        return 0;
     }
 
     @Nullable
