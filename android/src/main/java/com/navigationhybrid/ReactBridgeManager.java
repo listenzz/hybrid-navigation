@@ -140,7 +140,7 @@ public class ReactBridgeManager {
         return reactModuleRegisterCompleted;
     }
 
-    public void  setReactModuleRegisterCompleted(boolean reactModuleRegisterCompleted) {
+    public void setReactModuleRegisterCompleted(boolean reactModuleRegisterCompleted) {
         this.reactModuleRegisterCompleted = reactModuleRegisterCompleted;
     }
 

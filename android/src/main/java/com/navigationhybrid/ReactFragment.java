@@ -18,6 +18,8 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 
+import me.listenzz.navigation.AwesomeFragment;
+import me.listenzz.navigation.FragmentHelper;
 import me.listenzz.navigation.PresentAnimation;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -161,9 +163,15 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     private boolean reactViewAppeared = false;
+
     private void sendViewAppearEvent(boolean appear) {
         // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
-        if (isReactModuleRegisterCompleted() && (isResumed() || isRemoving())) {
+        AwesomeFragment parent = getParentAwesomeFragment();
+        boolean isRemoving = isRemoving();
+        if (parent != null) {
+            isRemoving = isRemoving || FragmentHelper.isRemovingAlongWithParent(parent);
+        }
+        if (isReactModuleRegisterCompleted() && (isResumed() || isRemoving)) {
             if (reactViewAppeared == appear) {
                 return;
             }

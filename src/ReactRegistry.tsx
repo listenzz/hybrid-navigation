@@ -58,6 +58,7 @@ function withNavigator(moduleName: string) {
       private garden: Garden;
       private navigationRef: React.RefObject<React.Component>;
 
+      private viewAppeared = false;
       constructor(props: NativeProps) {
         super(props);
         this.navigationRef = React.createRef();
@@ -86,10 +87,16 @@ function withNavigator(moduleName: string) {
                 navigation.onComponentResult(data[KEY_REQUEST_CODE], data[KEY_RESULT_CODE], data[KEY_RESULT_DATA]);
               break;
             case ON_COMPONENT_APPEAR:
-              navigation && navigation.componentDidAppear && navigation.componentDidAppear();
+              if (!this.viewAppeared) {
+                this.viewAppeared = true;
+                navigation && navigation.componentDidAppear && navigation.componentDidAppear();
+              }
               break;
             case ON_COMPONENT_DISAPPEAR:
-              navigation && navigation.componentDidDisappear && navigation.componentDidDisappear();
+              if (this.viewAppeared) {
+                this.viewAppeared = false;
+                navigation && navigation.componentDidDisappear && navigation.componentDidDisappear();
+              }
               break;
             case ON_DIALOG_BACK_PRESSED:
               navigation && navigation.onBackPressed && navigation.onBackPressed();
@@ -105,6 +112,11 @@ function withNavigator(moduleName: string) {
       }
 
       componentWillUnmount() {
+        if (this.viewAppeared) {
+          this.viewAppeared = false;
+          const navigation = this.navigationRef.current as Navigation;
+          navigation && navigation.componentDidDisappear && navigation.componentDidDisappear();
+        }
         removeBarButtonItemClickEvent(this.props.sceneId);
         store.removeNavigator(this.props.sceneId);
         this.navigator.clearSubscriptions();
