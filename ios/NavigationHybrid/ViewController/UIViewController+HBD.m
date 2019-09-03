@@ -287,7 +287,7 @@
 }
 
 - (NSString *)hbd_mode {
-    if ([self.view.window isKindOfClass:[HBDModalWindow class]]) {
+    if (self.hbd_targetViewController != nil) {
         return @"modal";
     } else if (self.presentingViewController != nil) {
         return @"present";
