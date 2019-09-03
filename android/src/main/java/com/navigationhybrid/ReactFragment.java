@@ -1,11 +1,15 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -45,7 +49,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     private ReactView reactRootView;
     private ReactView reactTitleView;
     private boolean firstRenderCompleted;
-
+    private BroadcastReceiver jsBundleReloadBroadcastReceiver;
 
     @Nullable
     @Override
@@ -111,16 +115,23 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     @Override
     public void onDestroy() {
+        if (jsBundleReloadBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(requireContext().getApplicationContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
+            jsBundleReloadBroadcastReceiver = null;
+        }
+
         if (reactRootViewHolder != null) {
             reactRootViewHolder.setVisibilityObserver(null);
         }
 
         if (reactRootView != null) {
             reactRootView.unmountReactApplication();
+            reactRootView = null;
         }
 
         if (reactTitleView != null) {
             reactTitleView.unmountReactApplication();
+            reactTitleView = null;
         }
         super.onDestroy();
     }
@@ -221,6 +232,26 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         String moduleName = getModuleName();
 
         reactView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+
+        jsBundleReloadBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                LocalBroadcastManager.getInstance(context.getApplicationContext()).unregisterReceiver(this);
+                jsBundleReloadBroadcastReceiver = null;
+
+                if (reactRootView != null) {
+                    reactRootView.unmountReactApplication();
+                    reactRootView = null;
+                }
+
+                if (reactTitleView != null) {
+                    reactTitleView.unmountReactApplication();
+                    reactTitleView = null;
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(context.getApplicationContext())
+                .registerReceiver(jsBundleReloadBroadcastReceiver, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
     }
 
     private void initTitleViewIfNeeded() {
