@@ -57,6 +57,7 @@ Garden.setStyle({
 
   swipeBackEnabledAndroid: true,
   topBarTintColor: '#000000',
+  // badgeColor: '#00FFFF',
   // titleTextColor: '#00ff00',
   titleAlignmentAndroid: TitleAlignmentCenter,
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
@@ -73,9 +74,8 @@ Garden.setStyle({
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
 
-  // tabBarItemColor: '#00ff00',
-  // tabBarUnselectedItemColor: '#CCCCCC',
-  // tabBarBadgeColor: '#0000FF',
+  //tabBarItemColor: '#CCCCCC',
+  //tabBarSelectedItemColor: '#00ff00',
 });
 
 function withRedux(WrappedComponent) {
@@ -177,12 +177,12 @@ const drawer = {
 Navigator.setRootLayoutUpdateListener(
   () => {
     router.inactivate();
-    console.log('inactive router');
+    console.log('------------------------inactive router');
   },
   () => {
     const prefix = Platform.OS == 'android' ? 'hbd://hbd/' : 'hbd://';
     router.activate(prefix);
-    console.log('active router');
+    console.log('------------------------active router');
   }
 );
 
