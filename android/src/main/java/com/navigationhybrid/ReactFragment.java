@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -114,14 +113,18 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     @Override
-    public void onDestroy() {
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (reactRootViewHolder != null) {
+            reactRootViewHolder.setVisibilityObserver(null);
+        }
+        unmountReactView();
+    }
+
+    private void unmountReactView() {
         if (jsBundleReloadBroadcastReceiver != null) {
             LocalBroadcastManager.getInstance(requireContext().getApplicationContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
             jsBundleReloadBroadcastReceiver = null;
-        }
-
-        if (reactRootViewHolder != null) {
-            reactRootViewHolder.setVisibilityObserver(null);
         }
 
         if (reactRootView != null) {
@@ -133,7 +136,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             reactTitleView.unmountReactApplication();
             reactTitleView = null;
         }
-        super.onDestroy();
     }
 
     @Override
@@ -155,7 +157,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     public void signalFirstRenderComplete() {
-        Log.i(TAG, getModuleName() + " signalFirstRenderComplete");
         if (firstRenderCompleted) {
             return;
         }
@@ -236,18 +237,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         jsBundleReloadBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                LocalBroadcastManager.getInstance(context.getApplicationContext()).unregisterReceiver(this);
-                jsBundleReloadBroadcastReceiver = null;
-
-                if (reactRootView != null) {
-                    reactRootView.unmountReactApplication();
-                    reactRootView = null;
-                }
-
-                if (reactTitleView != null) {
-                    reactTitleView.unmountReactApplication();
-                    reactTitleView = null;
-                }
+                unmountReactView();
             }
         };
         LocalBroadcastManager.getInstance(context.getApplicationContext())
@@ -287,7 +277,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Override
     public void postponeEnterTransition() {
         super.postponeEnterTransition();
-        Log.d(TAG, getModuleName() + " postponeEnterTransition");
         if (getActivity() != null) {
             getActivity().supportPostponeEnterTransition();
         }
@@ -296,7 +285,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Override
     public void startPostponedEnterTransition() {
         super.startPostponedEnterTransition();
-        Log.d(TAG, getModuleName() + " startPostponeEnterTransition");
         if (getActivity() != null) {
             getActivity().supportStartPostponedEnterTransition();
         }

@@ -112,11 +112,6 @@ function withNavigator(moduleName: string) {
       }
 
       componentWillUnmount() {
-        if (this.viewAppeared) {
-          this.viewAppeared = false;
-          const navigation = this.navigationRef.current as Navigation;
-          navigation && navigation.componentDidDisappear && navigation.componentDidDisappear();
-        }
         removeBarButtonItemClickEvent(this.props.sceneId);
         store.removeNavigator(this.props.sceneId);
         this.navigator.clearSubscriptions();

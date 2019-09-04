@@ -104,17 +104,24 @@ public class ReactTabBarProvider implements TabBarProvider {
         jsBundleReloadBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                LocalBroadcastManager.getInstance(context).unregisterReceiver(this);
-                jsBundleReloadBroadcastReceiver = null;
-                if (reactView != null) {
-                    reactView.unmountReactApplication();
-                    reactView = null;
-                }
+                unmountReactView();
             }
         };
         LocalBroadcastManager.getInstance(tabBarFragment.requireContext()).registerReceiver(jsBundleReloadBroadcastReceiver, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
 
         return tabBar;
+    }
+
+    private void unmountReactView() {
+        if (jsBundleReloadBroadcastReceiver != null) {
+            LocalBroadcastManager.getInstance(tabBarFragment.requireContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
+            jsBundleReloadBroadcastReceiver = null;
+        }
+
+        if (reactView != null) {
+            reactView.unmountReactApplication();
+            reactView = null;
+        }
     }
 
     private Pair<String, String> extractSceneIdAndModuleName(AwesomeFragment awesomeFragment) {
@@ -158,15 +165,7 @@ public class ReactTabBarProvider implements TabBarProvider {
 
     @Override
     public void onDestroyTabBar() {
-        if (jsBundleReloadBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(tabBarFragment.requireContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
-            jsBundleReloadBroadcastReceiver = null;
-        }
-
-        if (reactView != null) {
-            reactView.unmountReactApplication();
-            reactView = null;
-        }
+        unmountReactView();
         tabBarFragment = null;
     }
 
