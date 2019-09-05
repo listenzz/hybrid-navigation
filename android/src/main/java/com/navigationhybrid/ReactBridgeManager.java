@@ -167,15 +167,25 @@ public class ReactBridgeManager {
 
     public void setRootLayout(@NonNull ReadableMap root, boolean sticky, int tag) {
         if (sticky && !hasStickyLayout()) {
-            this.stickyLayout = root;
+            stickyLayout = root;
         }
-        this.rootLayout = root;
-        this.rootLayoutTag = tag;
+
+        rootLayout = root;
+
+        if (pendingLayout == null && rootLayoutTag != 0) {
+            throw new IllegalStateException("unbalance call `getAndResetRootLayoutTag` and `setRoot`");
+        }
+
+        if (pendingLayout != null) {
+            pendingLayout = null;
+        }
+
+        rootLayoutTag = tag;
     }
 
     @Nullable
     public ReadableMap getRootLayout() {
-        return this.rootLayout;
+        return rootLayout;
     }
 
     public boolean hasRootLayout() {
@@ -185,9 +195,6 @@ public class ReactBridgeManager {
     public int getAndResetRootLayoutTag() {
         if (hasRootLayout()) {
             int tag = rootLayoutTag;
-            if (tag == 0) {
-                throw new IllegalStateException("unbalance call `getAndResetRootLayoutTag` and `setRoot`");
-            }
             rootLayoutTag = 0;
             return tag;
         }

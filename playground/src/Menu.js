@@ -52,6 +52,10 @@ export default class Menu extends Component {
     console.info('menu componentDidMount');
   }
 
+  componentWillUnmount() {
+    console.info('menu componentWillUnmount');
+  }
+
   push() {
     this.props.navigator.closeMenu();
     this.props.navigator.push('OneNative');
