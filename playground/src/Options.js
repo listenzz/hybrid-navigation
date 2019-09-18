@@ -3,7 +3,6 @@ import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'rea
 import { Navigator } from 'react-native-navigation-hybrid';
 
 import styles from './Styles';
-import fontUri from './FontUtil';
 import getLayout from './layout';
 
 export default class Options extends Component {
@@ -13,7 +12,7 @@ export default class Options extends Component {
     },
 
     leftBarButtonItem: {
-      icon: { uri: fontUri('FontAwesome', 'navicon', 24) },
+      icon: Image.resolveAssetSource(require('./images/menu.png')),
       title: 'Menu',
       action: navigator => {
         navigator.toggleMenu();
@@ -21,7 +20,7 @@ export default class Options extends Component {
     },
 
     rightBarButtonItem: {
-      icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+      icon: Image.resolveAssetSource(require('./images/nav.png')),
       title: 'SETTING',
       action: navigator => {
         navigator.push('TopBarMisc');
@@ -31,7 +30,7 @@ export default class Options extends Component {
 
     tabItem: {
       title: 'Options',
-      icon: { uri: fontUri('FontAwesome', 'leaf', 24) },
+      icon: Image.resolveAssetSource(require('./images/flower_1.png')),
       hideTabBarWhenPush: true,
     },
   };
@@ -79,7 +78,7 @@ export default class Options extends Component {
       this.props.garden.setLeftBarButtonItem({ icon: null });
     } else {
       this.props.garden.setLeftBarButtonItem({
-        icon: { uri: fontUri('FontAwesome', 'navicon', 24) },
+        icon: Image.resolveAssetSource(require('./images/menu.png')),
       });
     }
     this.setState({ leftButtonShowText: !this.state.leftButtonShowText });
@@ -130,7 +129,7 @@ export default class Options extends Component {
       this.icon = '';
       this.props.garden.setTabIcon({
         index: 1,
-        icon: { uri: fontUri('FontAwesome', 'leaf', 24) },
+        icon: Image.resolveAssetSource(require('./images/flower_1.png')),
       });
     } else {
       this.icon = 'flower';

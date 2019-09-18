@@ -7,23 +7,24 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 
-import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.FragmentHelper;
-import me.listenzz.navigation.PresentAnimation;
+import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.FragmentHelper;
+import com.navigation.androidx.PresentAnimation;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;

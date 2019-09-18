@@ -1,16 +1,16 @@
 package com.navigationhybrid.navigator;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReadableMap;
+import com.navigation.androidx.AwesomeFragment;
 import com.navigationhybrid.HybridFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.listenzz.navigation.AwesomeFragment;
 
 public interface Navigator {
 

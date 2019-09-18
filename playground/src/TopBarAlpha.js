@@ -35,7 +35,7 @@ export default class TopBarAlpha extends Component {
     topBarAlpha: 0.5,
     extendedLayoutIncludesTopBar: true,
     rightBarButtonItem: {
-      icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+      icon: Image.resolveAssetSource(require('./images/settings.png')),
       title: 'SETTING',
       action: navigator => {
         navigator.push('TopBarMisc');

@@ -11,21 +11,17 @@
 #import <React/RCTLinkingManager.h>
 #import <React/RCTBridgeModule.h>
 #import <NavigationHybrid/NavigationHybrid.h>
-#import <HudHybrid/HudHybrid.h>
 
 #import "OneNativeViewController.h"
 #import "NativeModalViewController.h"
 
-@interface AppDelegate () <HostViewProvider>
+@interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
-    [HUDConfig sharedConfig].hostViewProvider = self;
-    
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
     [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
     

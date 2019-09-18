@@ -2,10 +2,11 @@ package com.navigationhybrid;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
+
+import androidx.annotation.Nullable;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;

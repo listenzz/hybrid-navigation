@@ -2,20 +2,20 @@ package com.navigationhybrid;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
+
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.ReactContext;
-
-import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.AwesomeToolbar;
-import me.listenzz.navigation.BarStyle;
-import me.listenzz.navigation.FragmentHelper;
-import me.listenzz.navigation.Style;
+import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.AwesomeToolbar;
+import com.navigation.androidx.BarStyle;
+import com.navigation.androidx.FragmentHelper;
+import com.navigation.androidx.Style;
 
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;

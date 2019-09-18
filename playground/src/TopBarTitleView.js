@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { LayoutFittingExpanded } from 'react-native-navigation-hybrid';
 import styles from './Styles';
 
@@ -16,11 +15,12 @@ function CustomTitleView(props) {
       }}
     >
       <Text style={styles.welcome}>--Custom Title--</Text>
-      <Icon.Button
-        name="facebook"
-        backgroundColor="#3b5998"
-        onPress={params.onFackbookButtonClick}
-      />
+      <TouchableOpacity onPress={params.onFackbookButtonClick}>
+        <Image
+          style={{ width: 24, height: 24 }}
+          source={{ uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png' }}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -45,12 +45,9 @@ export default class TopBarTitleView extends Component {
   }
 
   onFackbookButtonClick() {
-    Alert.alert(
-      'Hello!',
-      'Fackbook button is clicked.',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      { cancelable: false }
-    );
+    Alert.alert('Hello!', 'React button is clicked.', [{ text: 'OK', onPress: () => console.log('OK Pressed') }], {
+      cancelable: false,
+    });
   }
 
   topBarTitleView() {
@@ -67,11 +64,7 @@ export default class TopBarTitleView extends Component {
         <View style={styles.container}>
           <Text style={styles.welcome}> Custom title bar </Text>
 
-          <TouchableOpacity
-            onPress={this.topBarTitleView}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.topBarTitleView} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>TopBarTitleView</Text>
           </TouchableOpacity>
         </View>

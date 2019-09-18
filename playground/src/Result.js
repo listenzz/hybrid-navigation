@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { TouchableOpacity, Text, View, TextInput, Platform } from 'react-native';
+import { TouchableOpacity, Text, View, TextInput, Platform, Image } from 'react-native';
 import styles from './Styles';
 
 import { RESULT_OK, Navigator, BarStyleLightContent } from 'react-native-navigation-hybrid';
@@ -36,6 +36,19 @@ export default class Result extends Component {
 
   componentDidMount() {
     console.info('result componentDidMount');
+    this.props.navigator.isStackRoot().then(isRoot => {
+      if (isRoot) {
+        this.props.garden.setLeftBarButtonItem({
+          title: 'Cancel',
+          icon: Image.resolveAssetSource(require('./images/cancel.png')),
+          insets: { top: -1, left: -8, bottom: 0, right: 8 },
+          action: navigator => {
+            navigator.dismiss();
+          },
+        });
+        this.setState({ isRoot: isRoot });
+      }
+    });
   }
 
   componentDidAppear() {
@@ -48,21 +61,6 @@ export default class Result extends Component {
 
   componentWillUnmount() {
     console.info('result componentWillUnmount');
-  }
-
-  componentWillMount() {
-    this.props.navigator.isStackRoot().then(isRoot => {
-      if (isRoot) {
-        this.props.garden.setLeftBarButtonItem({
-          title: 'Cancel',
-          insets: { top: -1, left: -8, bottom: 0, right: 8 },
-          action: navigator => {
-            navigator.dismiss();
-          },
-        });
-        this.setState({ isRoot: isRoot });
-      }
-    });
   }
 
   popToRoot() {

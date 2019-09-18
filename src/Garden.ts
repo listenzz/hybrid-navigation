@@ -1,4 +1,4 @@
-import { NativeModules, Platform, Insets } from 'react-native';
+import { NativeModules, Insets } from 'react-native';
 import { bindBarButtonItemClickEvent } from './utils';
 import { Navigator } from './Navigator';
 
@@ -130,29 +130,7 @@ export class Garden {
   static LIGHT_CONTENT: BarStyleLightContent = GardenModule.LIGHT_CONTENT;
 
   static setStyle(style: Style = {}) {
-    const opt = style as any;
-    if (opt['badgeColor']) {
-      opt['tabBarBadgeColor'] = opt['badgeColor'];
-    }
-
-    if (opt['tabBarSelectedItemColor']) {
-      opt['tabBarUnselectedItemColor'] = opt['tabBarItemColor'];
-      opt['tabBarItemColor'] = opt['tabBarSelectedItemColor'];
-    }
-
-    if (opt['statusBarColor']) {
-      opt['statusBarColorAndroid'] = opt['statusBarColor'];
-    }
-
-    if (opt['elevation']) {
-      opt['elevationAndroid'] = opt['elevation'];
-    }
-
-    if (opt['titleAlignment']) {
-      opt['titleAlignmentAndroid'] = opt['titleAlignment'];
-    }
-
-    GardenModule.setStyle(opt);
+    GardenModule.setStyle(style);
   }
 
   constructor(public sceneId: string) {
@@ -176,34 +154,7 @@ export class Garden {
   }
 
   updateOptions(options: NavigationOption) {
-    const opt = options as any;
-    if (opt['statusBarColor']) {
-      console.warn('`statusBarColor` is deprecated, use `statusBarColorAndroid` instead.');
-      opt['statusBarColorAndroid'] = opt['statusBarColor'];
-    }
-    GardenModule.updateOptions(this.sceneId, opt);
-  }
-
-  updateTopBar(item: NavigationOption) {
-    console.warn('`updateTopBar` is deprecated, use `updateOptions` instead.');
-    this.updateOptions(item);
-  }
-
-  setStatusBarColorAndroid(options: Pick<NavigationOption, 'statusBarColorAndroid'>) {
-    console.warn('`setStatusBarColorAndroid` is deprecated, use `updateOptions` instead.');
-    if (Platform.OS === 'android') {
-      this.updateOptions(options);
-    }
-  }
-
-  setStatusBarHidden(hidden = true) {
-    console.warn('`setStatusBarHidden` is deprecated, use `updateOptions` instead.');
-    this.updateOptions({ statusBarHidden: hidden });
-  }
-
-  setPassThroughTouches(options: Pick<NavigationOption, 'passThroughTouches'>) {
-    console.warn('`setPassThroughTouches` is deprecated, use `updateOptions` instead.');
-    this.updateOptions(options);
+    GardenModule.updateOptions(this.sceneId, options);
   }
 
   updateTabBar(
@@ -219,39 +170,11 @@ export class Garden {
     GardenModule.setTabIcon(this.sceneId, icon);
   }
 
-  replaceTabIcon(index: number, icon: Image, inactiveIcon?: Image) {
-    console.warn('`replaceTabIcon` is deprecated, use `setTabIcon` instead.');
-    this.setTabIcon({
-      index,
-      icon,
-      unselectedIcon: inactiveIcon,
-    });
-  }
-
   setTabBadge(badge: TabBadge | TabBadge[]) {
     if (!Array.isArray(badge)) {
       badge = [badge];
     }
     GardenModule.setTabBadge(this.sceneId, badge);
-  }
-
-  setTabBadgeText(index: number, text?: string) {
-    console.warn('`setTabBadgeText` is deprecated, use `setTabBadge` instead.');
-    this.setTabBadge({
-      index,
-      hidden: !text || text.length === 0,
-      text,
-    });
-  }
-
-  showRedPointAtIndex(index: number) {
-    console.warn('`showRedPointAtIndex` is deprecated, use `setTabBadge` instead.');
-    this.setTabBadge({ index, hidden: false, dot: true });
-  }
-
-  hideRedPointAtIndex(index: number) {
-    console.warn('`hideRedPointAtIndex` is deprecated, use `setTabBadge` instead.');
-    this.setTabBadge({ index, hidden: true, dot: true });
   }
 
   setMenuInteractive(enabled: boolean) {

@@ -2,17 +2,17 @@ package com.navigationhybrid.playground;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.navigationhybrid.HybridFragment;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.NavigationFragment;
-import me.listenzz.navigation.Style;
+import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.NavigationFragment;
+import com.navigation.androidx.Style;
+import com.navigationhybrid.HybridFragment;
 
 /**
  * Created by Listen on 2018/1/30.

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView, PixelRatio, Platform } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native';
 
 import styles from './Styles';
 import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid';
-import fontUri from './FontUtil';
 
 const REQUEST_CODE = 1;
 
@@ -19,7 +18,7 @@ export default class Navigation extends Component {
 
     tabItem: {
       title: 'Navigation',
-      icon: { uri: fontUri('FontAwesome', 'location-arrow', 24) },
+      icon: Image.resolveAssetSource(require('./images/navigation.png')),
       hideTabBarWhenPush: true,
     },
   };

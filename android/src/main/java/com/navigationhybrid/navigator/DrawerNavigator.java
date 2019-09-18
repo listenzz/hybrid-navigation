@@ -1,11 +1,14 @@
 package com.navigationhybrid.navigator;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.DrawerFragment;
 import com.navigationhybrid.HybridFragment;
 import com.navigationhybrid.ReactBridgeManager;
 import com.navigationhybrid.ReactDrawerFragment;
@@ -14,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.DrawerFragment;
 
 public class DrawerNavigator implements Navigator {
 

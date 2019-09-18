@@ -2,11 +2,12 @@ package com.navigationhybrid;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
@@ -16,10 +17,10 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
+import com.navigation.androidx.AwesomeActivity;
+import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.Style;
 
-import me.listenzz.navigation.AwesomeActivity;
-import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.Style;
 
 /**
  * Created by Listen on 2017/11/17.

@@ -12,11 +12,9 @@ import android.util.Log;
 import android.view.Gravity;
 
 import com.facebook.react.uimanager.PixelUtil;
-
-import me.listenzz.navigation.BarStyle;
-import me.listenzz.navigation.DrawableUtils;
-import me.listenzz.navigation.Style;
-
+import com.navigation.androidx.BarStyle;
+import com.navigation.androidx.DrawableUtils;
+import com.navigation.androidx.Style;
 
 /**
  * Created by Listen on 2018/1/9.

@@ -7,25 +7,26 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
+
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.facebook.react.ReactInstanceManager;
+import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.NavigationFragment;
+import com.navigation.androidx.Style;
+import com.navigation.androidx.TabBarFragment;
+import com.navigation.androidx.TabBarItem;
+import com.navigation.androidx.TabBarProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.NavigationFragment;
-import me.listenzz.navigation.Style;
-import me.listenzz.navigation.TabBarFragment;
-import me.listenzz.navigation.TabBarItem;
-import me.listenzz.navigation.TabBarProvider;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;

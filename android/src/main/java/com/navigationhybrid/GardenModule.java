@@ -5,11 +5,12 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -17,14 +18,13 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.DrawerFragment;
+import com.navigation.androidx.FragmentHelper;
+import com.navigation.androidx.TabBarFragment;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.DrawerFragment;
-import me.listenzz.navigation.FragmentHelper;
-import me.listenzz.navigation.TabBarFragment;
 
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_BADGE;
 import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;

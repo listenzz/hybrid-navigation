@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
   },
-  "version": "0.16.9",
+  "version": "0.17.6",
   "nativePackage": true,
   "description": "Native navigation library for ReactNative, support navigating between native and ReactNative seamlessly.",
   "author": "listen <listenzz@163.com>",
@@ -23,16 +23,15 @@
     "prestart": "npm run build",
     "prepare": "npm run build",
     "tsc": "tsc",
-    "start": "npm run syncbv && node node_modules/react-native/local-cli/cli.js start",
+    "start": "react-native start",
     "run:ios": "react-native run-ios --project-path ./playground/ios",
     "start:android": "adb shell am start -n com.navigationhybrid.playground/.SplashActivity",
     "run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
-    "test": "jest",
-    "syncbv": "node scripts/sync-build-version.js"
+    "test": "jest"
   },
   "peerDependencies": {
-    "react": ">=16.5.0",
-    "react-native": ">=0.57.1"
+    "react": ">=16.8.0",
+    "react-native": ">=0.60.4"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
@@ -43,15 +42,13 @@
     "@types/react-test-renderer": "^16.8.1",
     "babel-jest": "^24.5.0",
     "jest": "^24.5.0",
-    "metro-react-native-babel-preset": "^0.53.0",
-    "react-test-renderer": "16.8.3",
+    "metro-react-native-babel-preset": "^0.55.0",
+    "react-test-renderer": "16.8.6",
     "typescript": "^3.5.1",
-    "react": "16.8.3",
-    "react-native": "0.59.8",
-    "react-native-hud-hybrid": "0.42.0",
+    "react": "16.8.6",
+    "react-native": "0.60.4",
     "react-native-iphone-x-helper": "^1.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.8.0",
-    "react-native-vector-icons": "^6.4.1",
     "react-redux": "^6.0.0",
     "redux": "^3.7.2"
   },

@@ -5,21 +5,13 @@ project.ext.react = [
         entryFile      : "playground/index.js",
         bundleInRelease: true,
         bundleInDebug  : true,
+        enableHermes   : false,
+        hermesCommand  : "../../../node_modules/hermesvm/%OS-BIN%/hermes",
 ]
-
-// Android studio bug hack
-if (System.properties['os.name'].contains("Mac")) {
-    //  project.ext.react.nodeExecutableAndArgs = ["/usr/local/bin/node"]
-}
 
 apply from: "../../../node_modules/react-native/react.gradle"
 
-project.ext.vectoricons = [
-        iconFontsDir : "../../../node_modules/react-native-vector-icons/Fonts",
-        iconFontNames: ['FontAwesome.ttf'] // Name of the font files you want to copy
-]
-
-apply from: "../../../node_modules/react-native-vector-icons/fonts.gradle"
+def enableHermes = project.ext.react.get("enableHermes", false)
 
 android {
 
@@ -39,22 +31,24 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+
     defaultConfig {
         applicationId "com.navigationhybrid.playground"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
+    }
 
-        ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
-
-        packagingOptions {
-            exclude "lib/arm64-v8a/libgnustl_shared.so"
+    splits {
+        abi {
+            reset()
+            enable true
+            universalApk false  // If true, also generate a universal APK
+            include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -66,20 +60,28 @@ android {
             signingConfig signingConfigs.config
         }
     }
+
+    packagingOptions {
+        pickFirst '**/armeabi-v7a/libc++_shared.so'
+        pickFirst '**/x86/libc++_shared.so'
+        pickFirst '**/arm64-v8a/libc++_shared.so'
+        pickFirst '**/x86_64/libc++_shared.so'
+        pickFirst '**/x86/libjsc.so'
+        pickFirst '**/armeabi-v7a/libjsc.so'
+    }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:multidex:1.0.3'
-    implementation "com.android.support:appcompat-v7:$rootProject.supportLibVersion"
-    implementation "com.android.support:support-v4:$rootProject.supportLibVersion"
-    implementation "com.android.support:design:$rootProject.supportLibVersion"
     implementation 'com.facebook.react:react-native:+'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
-    // Optional, if you use support library fragments:
-    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
+    if (enableHermes) {
+        def hermesPath = "../../../node_modules/hermesvm/android/"
+        debugImplementation files(hermesPath + "hermes-debug.aar")
+        releaseImplementation files(hermesPath + "hermes-release.aar")
+    } else {
+        implementation 'org.webkit:android-jsc:+'
+    }
     implementation project(':navigation-hybrid')
-    implementation project(':react-native-vector-icons')
-    implementation project(':hud-hybrid')
 }
+
+apply from: file("../../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle");
+applyNativeModulesAppBuildGradle(project, "../..")

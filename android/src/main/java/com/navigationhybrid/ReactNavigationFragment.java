@@ -1,9 +1,9 @@
 package com.navigationhybrid;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
-import me.listenzz.navigation.AwesomeFragment;
-import me.listenzz.navigation.NavigationFragment;
+import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.NavigationFragment;
 
 /**
  * Created by Listen on 2018/1/15.

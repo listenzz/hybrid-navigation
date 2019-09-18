@@ -172,13 +172,7 @@ export class ReactRegistry {
     const navigation = WrappedComponent as NavigationType;
 
     // build static options
-    let options: any = navigation.navigationItem ? bindBarButtonItemClickEvent(navigation.navigationItem) : {};
-
-    if (options['tabItem'] && options['tabItem']['selectedIcon']) {
-      options['tabItem']['unselectedIcon'] = options['tabItem']['icon'];
-      options['tabItem']['icon'] = options['tabItem']['selectedIcon'];
-    }
-
+    let options: object = bindBarButtonItemClickEvent(navigation.navigationItem) || {};
     NavigationModule.registerReactComponent(appKey, options);
 
     let RootComponent: React.ComponentType<NativeProps>;

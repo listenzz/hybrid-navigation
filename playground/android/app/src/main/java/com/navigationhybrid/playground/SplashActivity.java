@@ -3,7 +3,8 @@ package com.navigationhybrid.playground;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.navigationhybrid.ReactBridgeManager;
 
@@ -18,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         if (ReactBridgeManager.get().isReactModuleRegisterCompleted()) {
-            new Handler().postDelayed(() -> startMainActivity(), 1500);
+            new Handler().postDelayed(this::startMainActivity, 1500);
         } else {
             ReactBridgeManager.get().addReactModuleRegisterListener(new ReactBridgeManager.ReactModuleRegisterListener() {
                 @Override

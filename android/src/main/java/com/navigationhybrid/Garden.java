@@ -4,20 +4,20 @@ package com.navigationhybrid;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
+import com.navigation.androidx.AwesomeToolbar;
+import com.navigation.androidx.BarStyle;
+import com.navigation.androidx.Style;
+import com.navigation.androidx.ToolbarButtonItem;
 
 import java.util.ArrayList;
-
-import me.listenzz.navigation.AwesomeToolbar;
-import me.listenzz.navigation.BarStyle;
-import me.listenzz.navigation.Style;
-import me.listenzz.navigation.ToolbarButtonItem;
 
 import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
 import static com.navigationhybrid.HBDEventEmitter.KEY_ACTION;

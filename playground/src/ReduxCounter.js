@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView, Platform } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native';
 import { BarStyleLightContent } from 'react-native-navigation-hybrid';
 import { createStore } from 'redux';
 import { connect } from 'react-redux';
-
 import styles, { paddingTop } from './Styles';
-import fontUri from './FontUtil';
 
 // React component
 class ReduxCounter extends Component {
@@ -27,13 +25,19 @@ class ReduxCounter extends Component {
     },
 
     rightBarButtonItem: {
-      icon: { uri: fontUri('FontAwesome', 'minus', 24) },
       title: 'MINUS',
+      icon: Image.resolveAssetSource(require('./images/minus.png')),
       action: navigator => {
         navigator.state.params.onDecreaseClick();
       },
     },
   };
+
+  constructor(props) {
+    super(props);
+    const { navigator, onDecreaseClick } = props;
+    navigator.setParams({ onDecreaseClick });
+  }
 
   componentDidAppear() {
     console.info('ReduxCounter componentDidAppear');
@@ -41,11 +45,6 @@ class ReduxCounter extends Component {
 
   componentDidDisappear() {
     console.info('ReduxCounter componentDidDisappear');
-  }
-
-  componentWillMount() {
-    const { navigator, onDecreaseClick } = this.props;
-    navigator.setParams({ onDecreaseClick });
   }
 
   render() {

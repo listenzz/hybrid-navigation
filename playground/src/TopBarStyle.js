@@ -23,7 +23,7 @@ export default class TopBarStyle extends Component {
     },
 
     rightBarButtonItem: {
-      icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
+      icon: Image.resolveAssetSource(require('./images/settings.png')),
       action: navigator => {
         navigator.push('TopBarMisc');
       },

@@ -1,10 +1,6 @@
 # 集成到以 RN 为主的项目
 
-如果 RN 版本 >= 0.60，请切换到 [androidx 分支](https://github.com/listenzz/react-native-navigation-hybrid/blob/androidx/doc/integration-react.md)
-
 你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
-
-可以参考 [iReading Fork](https://github.com/listenzz/reading) 这个项目。
 
 假设你是通过 `react-native init MyApp` 创建的项目，目录结构是这样的：
 
@@ -22,12 +18,6 @@ MyApp/
 npm install react-native-navigation-hybrid --save
 # or
 yarn add react-native-navigation-hybrid
-```
-
-## Link
-
-```
-$ react-native link react-native-navigation-hybrid
 ```
 
 ## RN 项目配置
@@ -103,50 +93,6 @@ ReactRegistry.startRegisterComponent(withRedux);
 
 假设你已经配置好了 React 项目
 
-修改 android/build.gradle 文件
-
-```diff
-buildscript {
-    ext {
-        // 为了支持凹凸屏、刘海屏，compileSdkVersion 必须 >= 28
--        buildToolsVersion = "27.0.3"
-+        buildToolsVersion = "28.0.3"
-         minSdkVersion = 16
--        compileSdkVersion = 27
-+        compileSdkVersion = 28
--        targetSdkVersion = 26
-+        targetSdkVersion = 28
--        supportLibVersion = "27.1.1"
-+        supportLibVersion = "28.0.0"
-    }
-
-    dependencies {
--        classpath 'com.android.tools.build:gradle:3.1.1'
-+        classpath 'com.android.tools.build:gradle:3.3.2'
-    }
-}
-```
-
-修改 android/app/build.gradle 文件
-
-```diff
-dependencies {
--   compile project(':react-native-navigation-hybrid')
-+   implementation project(':react-native-navigation-hybrid')
-}
-```
-
-请确保 android/app/build.gradle 中有如下配置：
-
-```diff
-android {
-+    compileOptions {
-+        sourceCompatibility JavaVersion.VERSION_1_8
-+        targetCompatibility JavaVersion.VERSION_1_8
-+    }
-}
-```
-
 修改 MainActivity.java 文件
 
 ```diff
@@ -167,18 +113,6 @@ android {
 ```diff
   import com.facebook.react.ReactNativeHost;
 + import com.navigationhybrid.ReactBridgeManager;
-+ import com.navigationhybrid.NavigationHybridPackage;
-
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-      @Override
-      protected List<ReactPackage> getPackages() {
-          return Arrays.<ReactPackage>asList(
--             new MainReactPackage()
-+             new MainReactPackage(),
-+             new NavigationHybridPackage()
-          );
-      }
-}
 
 public void onCreate() {
     super.onCreate();
@@ -189,28 +123,16 @@ public void onCreate() {
 }
 ```
 
-### 同步构建版本
-
-查看 [这里](./sync-build-version.md)
-
 ## iOS 项目配置
-
-修改 Header Search Paths
-
-![header-search-paths](../screenshot/header-search-paths.jpg)
-
-如图，删掉后面的 /NavigationHybrid, 配置成如下的样子：
-
-```bash
-$(SRCROOT)/../node_modules/react-native-navigation-hybrid/ios
-```
 
 修改 AppDelegate.h 文件
 
-```objc
+```diff
+- #import <React/RCTBridgeDelegate.h>
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+- @interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate>
++ @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (nonatomic, strong) UIWindow *window;
 
@@ -219,27 +141,46 @@ $(SRCROOT)/../node_modules/react-native-navigation-hybrid/ios
 
 修改 AppDelegate.m 文件
 
-```objc
-#import "AppDelegate.h"
-#import <React/RCTBundleURLProvider.h>
-#import <NavigationHybrid/NavigationHybrid.h>
+```diff
+  #import <React/RCTBridge.h>
+  #import <React/RCTBundleURLProvider.h>
+- #import <React/RCTRootView.h>
++ #import <NavigationHybrid/NavigationHybrid.h>
 
-@implementation AppDelegate
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-    NSURL *jsCodeLocation;
-    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-    [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+  @implementation AppDelegate
 
-    UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
-    UIViewController *rootViewController = [storyboard instantiateInitialViewController];
-    self.window = [[UIWindow alloc] init];
-    self.window.windowLevel = UIWindowLevelStatusBar + 1;
-    self.window.rootViewController = rootViewController;
-    [self.window makeKeyAndVisible];
-    return YES;
-}
-@end
+  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+  {
+-  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+-  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+-                                                   moduleName:@"RN60"
+-                                            initialProperties:nil];
+-
+-  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+-
++  NSURL *jsCodeLocation;
++  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
++  [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
++
+   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
++  self.window.windowLevel = UIWindowLevelStatusBar + 1;
+   UIViewController *rootViewController = [UIViewController new];
+-  rootViewController.view = rootView;
++  rootViewController.view.backgroundColor = UIColor.whiteColor;
+   self.window.rootViewController = rootViewController;
+   [self.window makeKeyAndVisible];
+   return YES;
+ }
+
+- -(NSURL *)sourceURLForBridge:(RCTBridge *)bridge
+- {
+- #if DEBUG
+-   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+- #else
+-   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+- #endif
+- }
+ @end
 ```
 
 修改 Info.plist 文件
@@ -250,4 +191,4 @@ $(SRCROOT)/../node_modules/react-native-navigation-hybrid/ios
 
 <a name="migrate-native"></a>
 
-可以像 playgroud 这个 demo 那样设置闪屏，也可以使用 react-native-splash-screen 设置闪屏
+如果懂原生开发，建议像 playground 这个项目那样配置闪屏。
