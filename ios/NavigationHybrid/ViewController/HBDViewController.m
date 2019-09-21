@@ -54,6 +54,17 @@
     return [UIApplication sharedApplication].statusBarStyle;
 }
 
+- (BOOL)prefersStatusBarHidden {
+    if (@available(iOS 13.0, *)) {
+        return [self hbd_statusBarHidden] && !self.hbd_inCall;
+    }
+    return [super prefersStatusBarHidden];
+}
+
+- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
+    return UIStatusBarAnimationSlide;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -232,10 +243,6 @@
     if (leftBarButtonItems) {
         [self.garden setLeftBarButtonItems:leftBarButtonItems];
     }
-}
-
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-    return UIStatusBarAnimationSlide;
 }
 
 @end
