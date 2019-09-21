@@ -117,7 +117,14 @@
 
 - (void)hbd_setStatusBarHidden:(BOOL)hidden forViewController:(UIViewController *)vc {
     hidden = hidden && !self.hbd_inCall;
-    UIWindow *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
+    
+    UIView *statusBar = nil;
+    if (@available(iOS 13.0, *)) {
+       // FIXME: statusBarWindow is gone
+    } else {
+        statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
+    }
+    
     if (!statusBar) {
         return;
     }
