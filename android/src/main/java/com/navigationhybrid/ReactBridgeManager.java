@@ -365,7 +365,7 @@ public class ReactBridgeManager {
             Bundle tabItem = options.getBundle("tabItem");
             if (tabItem != null) {
                 String title = tabItem.getString("title", "Tab");
-                TabBarItem tabBarItem = null;
+                TabBarItem tabBarItem = new TabBarItem(-1, title);
 
                 Bundle icon = tabItem.getBundle("icon");
                 if (icon != null) {
