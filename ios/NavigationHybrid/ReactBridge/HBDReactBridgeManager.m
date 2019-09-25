@@ -209,7 +209,7 @@ const NSInteger ResultCancel = 0;
     for (UIWindow *window in application.windows) {
         if ([window isKindOfClass:[HBDModalWindow class]]) {
             HBDModalViewController *modal = (HBDModalViewController *)window.rootViewController;
-            if (modal && modal.isBeingHidden) {
+            if (!modal || modal.isBeingHidden) {
                 continue;
             }
         }
@@ -345,7 +345,7 @@ const NSInteger ResultCancel = 0;
         
         if ([controller isKindOfClass:[HBDModalViewController class]]) {
             HBDModalViewController *modal = (HBDModalViewController *)controller;
-            if (modal && modal.isBeingHidden) {
+            if (!modal || modal.isBeingHidden) {
                 continue;
             }
         }
