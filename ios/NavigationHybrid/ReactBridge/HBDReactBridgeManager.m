@@ -209,7 +209,7 @@ const NSInteger ResultCancel = 0;
     for (UIWindow *window in application.windows) {
         if ([window isKindOfClass:[HBDModalWindow class]]) {
             HBDModalViewController *modal = (HBDModalViewController *)window.rootViewController;
-            if (modal.isBeingHidden) {
+            if (modal && modal.isBeingHidden) {
                 continue;
             }
         }
@@ -305,7 +305,7 @@ const NSInteger ResultCancel = 0;
         UIWindow *window = application.windows[i-1];
         if ([window isKindOfClass:[HBDModalWindow class]]) {
             HBDModalViewController *modal = (HBDModalViewController *)window.rootViewController;
-            if (!modal.isBeingHidden) {
+            if (modal && !modal.isBeingHidden) {
                 return [self primaryViewControllerWithViewController:modal.contentViewController];
             }
         }
@@ -345,7 +345,7 @@ const NSInteger ResultCancel = 0;
         
         if ([controller isKindOfClass:[HBDModalViewController class]]) {
             HBDModalViewController *modal = (HBDModalViewController *)controller;
-            if (modal.isBeingHidden) {
+            if (modal && modal.isBeingHidden) {
                 continue;
             }
         }
