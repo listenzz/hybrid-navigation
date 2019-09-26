@@ -176,27 +176,6 @@
     }
 }
 
--(void)hbd_setNeedsUpdateNavigationBarAlpha {
-    if (self.navigationController && [self.navigationController isKindOfClass:[HBDNavigationController class]]) {
-        HBDNavigationController *nav = (HBDNavigationController *)self.navigationController;
-        [nav updateNavigationBarAlphaForViewController:self];
-    }
-}
-
-- (void)hbd_setNeedsUpdateNavigationBarColor {
-    if (self.navigationController && [self.navigationController isKindOfClass:[HBDNavigationController class]]) {
-        HBDNavigationController *nav = (HBDNavigationController *)self.navigationController;
-        [nav updateNavigationBarColorForViewController:self];
-    }
-}
-
-- (void)hbd_setNeedsUpdateNavigationBarShadowImageAlpha {
-    if (self.navigationController && [self.navigationController isKindOfClass:[HBDNavigationController class]]) {
-        HBDNavigationController *nav = (HBDNavigationController *)self.navigationController;
-        [nav updateNavigationBarShadowImageAlphaForViewController:self];
-    }
-}
-
 - (void)setResultCode:(NSInteger)resultCode {
     UIViewController *presenting = self.presentingViewController;
     if (presenting) {

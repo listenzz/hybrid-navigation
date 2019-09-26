@@ -11,9 +11,6 @@
 @interface HBDNavigationController : UINavigationController
 
 - (void)updateNavigationBarForViewController:(UIViewController *)vc;
-- (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc;
-- (void)updateNavigationBarColorForViewController:(UIViewController *)vc;
-- (void)updateNavigationBarShadowImageAlphaForViewController:(UIViewController *)vc;
 
 @end
 

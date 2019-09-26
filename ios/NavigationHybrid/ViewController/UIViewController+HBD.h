@@ -11,8 +11,6 @@
 
 @interface UIViewController (HBD)
 
-@property(nonatomic, copy, readonly) NSString *sceneId;
-
 @property (nonatomic, assign) UIBarStyle hbd_barStyle;
 @property (nonatomic, strong) UIColor *hbd_barTintColor;
 @property (nonatomic, strong) UIColor *hbd_tintColor;
@@ -27,10 +25,8 @@
 @property (nonatomic, assign, readonly) float hbd_barShadowAlpha;
 
 - (void)hbd_setNeedsUpdateNavigationBar;
-- (void)hbd_setNeedsUpdateNavigationBarAlpha;
-- (void)hbd_setNeedsUpdateNavigationBarColor;
-- (void)hbd_setNeedsUpdateNavigationBarShadowImageAlpha;
 
+@property(nonatomic, copy, readonly) NSString *sceneId;
 @property (nonatomic, assign) NSInteger resultCode;
 @property (nonatomic, assign) NSInteger requestCode;
 @property (nonatomic, copy) NSDictionary *resultData;
