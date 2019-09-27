@@ -14,6 +14,8 @@
 #import "HBDUtils.h"
 #import "HBDReactViewController.h"
 #import "HBDRootView.h"
+#import "HBDPushAnimation.h"
+#import "HBDPopAnimation.h"
 
 UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     CGFloat fromRed = 0;
@@ -35,19 +37,12 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     return [UIColor colorWithRed:newRed green:newGreen blue:newBlue alpha:newAlpha];
 }
 
-@interface HBDGestureRecognizerDelegate : NSObject <UIGestureRecognizerDelegate>
 
-@property (nonatomic, weak, readonly) HBDNavigationController *navigationController;
-
-- (instancetype)initWithNavigationController:(HBDNavigationController *)navigationController;
-
-@end
-
-
-@interface HBDNavigationControllerDelegate : NSObject <UINavigationControllerDelegate>
+@interface HBDNavigationControllerDelegate : UIScreenEdgePanGestureRecognizer <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak) id<UINavigationControllerDelegate> proxiedDelegate;
 @property (nonatomic, weak, readonly) HBDNavigationController *nav;
+@property (nonatomic, strong) UIPercentDrivenInteractiveTransition *interactiveTransition;
 
 - (instancetype)initWithNavigationController:(HBDNavigationController *)navigationController;
 
@@ -62,7 +57,6 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
 @property (nonatomic, strong) UIImageView *toFakeShadow;
 @property (nonatomic, weak) UIViewController *poppingViewController;
 @property (nonatomic, assign) BOOL transitional;
-@property (nonatomic, strong) HBDGestureRecognizerDelegate *gestureRecognizerDelegate;
 @property (nonatomic, strong) HBDNavigationControllerDelegate *navigationDelegate;
 
 - (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc;
@@ -76,19 +70,32 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
 
 - (void)resetSubviewsInNavBar:(UINavigationBar *)navBar;
 
+- (UIGestureRecognizer *)superInteractivePopGestureRecognizer;
+
 @end
 
-@implementation HBDGestureRecognizerDelegate
+@protocol HBDNavigationTransitionProtocol <NSObject>
 
-- (instancetype)initWithNavigationController:(HBDNavigationController *)navigationController {
+- (void)handleNavigationTransition:(UIScreenEdgePanGestureRecognizer *)pan;
+
+@end
+
+@implementation HBDNavigationControllerDelegate
+
+- (instancetype)initWithNavigationController:(HBDNavigationController *)nav {
     if (self = [super init]) {
-        _navigationController = navigationController;
+        _nav = nav;
+        self.edges = UIRectEdgeLeft;
+        self.delegate = self;
+        [self addTarget:self action:@selector(handleNavigationTransition:)];
+        [nav.view addGestureRecognizer:self];
+        [nav superInteractivePopGestureRecognizer].enabled = NO;
     }
     return self;
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    HBDNavigationController *nav = self.navigationController;
+    HBDNavigationController *nav = self.nav;
     if (nav.viewControllers.count > 1) {
         UIViewController *topVC = nav.topViewController;
         if ([topVC isKindOfClass:[HBDReactViewController class]]) {
@@ -100,15 +107,44 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     return NO;
 }
 
-@end
-
-@implementation HBDNavigationControllerDelegate
-
-- (instancetype)initWithNavigationController:(HBDNavigationController *)navigationController {
-    if (self = [super init]) {
-        _nav = navigationController;
+- (void)handleNavigationTransition:(UIScreenEdgePanGestureRecognizer *)pan {
+    HBDNavigationController *nav = self.nav;
+    
+    id<UIViewControllerTransitionCoordinator> coordinator = nav.transitionCoordinator;
+    if (self.interactiveTransition || (!coordinator && [self shouldBetterTransitionWithViewController:nav.topViewController])) {
+        CGFloat process = [pan translationInView:nav.view].x / nav.view.bounds.size.width;
+        process = MIN(1.0,(MAX(0.0, process)));
+        if (pan.state == UIGestureRecognizerStateBegan) {
+            self.interactiveTransition = [UIPercentDrivenInteractiveTransition new];
+            //触发pop转场动画
+            [nav popViewControllerAnimated:YES];
+        }else if (pan.state == UIGestureRecognizerStateChanged){
+            UIPercentDrivenInteractiveTransition *transition = self.interactiveTransition;
+            [transition updateInteractiveTransition:process];
+        }else if (pan.state == UIGestureRecognizerStateEnded
+                  || pan.state == UIGestureRecognizerStateCancelled){
+            if (process > 0.33) {
+                [ self.interactiveTransition finishInteractiveTransition];
+            }else{
+                [ self.interactiveTransition cancelInteractiveTransition];
+            }
+            self.interactiveTransition = nil;
+        }
+    } else {
+        id<HBDNavigationTransitionProtocol> target = (id<HBDNavigationTransitionProtocol>)[nav superInteractivePopGestureRecognizer].delegate;
+        if ([target respondsToSelector:@selector(handleNavigationTransition:)]) {
+            [target handleNavigationTransition:pan];
+        }
     }
-    return self;
+    
+    // ----
+    if (coordinator) {
+        UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
+        UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
+        if (pan.state == UIGestureRecognizerStateBegan || pan.state == UIGestureRecognizerStateChanged) {
+            nav.navigationBar.tintColor = blendColor(from.hbd_tintColor, to.hbd_tintColor, coordinator.percentComplete);
+        }
+    }
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
@@ -153,7 +189,7 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     if (poppingVC && [poppingVC isKindOfClass:[HBDViewController class]]) {
         [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
     }
-    
+
     nav.poppingViewController = nil;
 }
 
@@ -168,7 +204,7 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     if (self.proxiedDelegate && [self.proxiedDelegate respondsToSelector:@selector(navigationControllerPreferredInterfaceOrientationForPresentation:)]) {
         return [self.proxiedDelegate navigationControllerPreferredInterfaceOrientationForPresentation:navigationController];
     }
-    return UIInterfaceOrientationPortrait;
+    return UIInterfaceOrientationUnknown;
 }
 
 - (nullable id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
@@ -176,6 +212,11 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     if (self.proxiedDelegate && [self.proxiedDelegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)]) {
         return [self.proxiedDelegate navigationController:navigationController interactionControllerForAnimationController:animationController];
     }
+
+    if ([animationController isKindOfClass:[HBDPopAnimation class]]) {
+       return self.interactiveTransition;
+    }
+
     return nil;
 }
 
@@ -185,8 +226,28 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
                                                            toViewController:(UIViewController *)toVC  {
     if (self.proxiedDelegate && [self.proxiedDelegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)]) {
         return [self.proxiedDelegate navigationController:navigationController animationControllerForOperation:operation fromViewController:fromVC toViewController:toVC];
+    } else {
+        if (operation == UINavigationControllerOperationPush) {
+            if ([self shouldBetterTransitionWithViewController:toVC]) {
+                return [HBDPushAnimation new];
+            }
+        } else if (operation == UINavigationControllerOperationPop) {
+            if ([self shouldBetterTransitionWithViewController:fromVC]) {
+                return [HBDPopAnimation new];
+            }
+        }
     }
+
     return nil;
+}
+
+- (BOOL)shouldBetterTransitionWithViewController:(UIViewController *)vc {
+    BOOL shouldBetter = NO;
+    if ([vc isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hbd = (HBDViewController *)vc;
+        shouldBetter = [hbd.options[@"passThroughTouches"] boolValue];
+    }
+    return shouldBetter;
 }
 
 - (void)showViewController:(UIViewController * _Nonnull)viewController withCoordinator: (id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -315,8 +376,26 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
             }
         }
         self.viewControllers = @[ rootViewController ];
+        self.navigationDelegate = [[HBDNavigationControllerDelegate alloc] initWithNavigationController:self];
+        self.delegate = self.navigationDelegate;
     }
     return self;
+}
+
+- (void)setDelegate:(id<UINavigationControllerDelegate>)delegate {
+    if ([delegate isKindOfClass:[HBDNavigationControllerDelegate class]] || !self.navigationDelegate) {
+        [super setDelegate:delegate];
+    } else {
+        self.navigationDelegate.proxiedDelegate = delegate;
+    }
+}
+
+- (UIGestureRecognizer *)interactivePopGestureRecognizer {
+    return self.navigationDelegate;
+}
+
+- (UIGestureRecognizer *)superInteractivePopGestureRecognizer {
+    return [super interactivePopGestureRecognizer];
 }
 
 - (UIViewController *)childViewControllerForStatusBarHidden {
@@ -328,31 +407,6 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     self.definesPresentationContext = NO;
     [self.navigationBar setTranslucent:YES];
     [self.navigationBar setShadowImage:[UINavigationBar appearance].shadowImage];
-    
-    self.gestureRecognizerDelegate = [[HBDGestureRecognizerDelegate alloc] initWithNavigationController:self];
-    self.interactivePopGestureRecognizer.delegate = self.gestureRecognizerDelegate;
-    [self.interactivePopGestureRecognizer addTarget:self action:@selector(handlePopGesture:)];
-    
-    self.navigationDelegate = [[HBDNavigationControllerDelegate alloc] initWithNavigationController:self];
-    self.navigationDelegate.proxiedDelegate = self.delegate;
-    self.delegate = self.navigationDelegate;
-}
-
-- (void)handlePopGesture:(UIScreenEdgePanGestureRecognizer *)recognizer {
-    id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
-    UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
-    UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
-    if (recognizer.state == UIGestureRecognizerStateBegan || recognizer.state == UIGestureRecognizerStateChanged) {
-        self.navigationBar.tintColor = blendColor(from.hbd_tintColor, to.hbd_tintColor, coordinator.percentComplete);
-    }
-}
-
-- (void)setDelegate:(id<UINavigationControllerDelegate>)delegate {
-    if ([delegate isKindOfClass:[HBDNavigationControllerDelegate class]] || !self.navigationDelegate) {
-        [super setDelegate:delegate];
-    } else {
-        self.navigationDelegate.proxiedDelegate = delegate;
-    }
 }
 
 - (void)viewWillLayoutSubviews {
@@ -382,83 +436,27 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     return [super navigationBar:navigationBar shouldPopItem:item];
 }
 
-- (void)pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    if ([self shouldBetterTransitionWithViewController:viewController]) {
-        CATransition *transition = [CATransition animation];
-        transition.duration = 0.25f;
-        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-        transition.type = kCATransitionPush;
-        transition.subtype = kCATransitionFromRight;
-        [self.view.layer addAnimation:transition forKey:nil];
-        [super pushViewController:viewController animated:NO];
-    } else {
-        [super pushViewController:viewController animated:animated];
-    }
-}
-
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
-    UIViewController *vc;
     self.poppingViewController = self.topViewController;
-    if ([self shouldBetterTransitionWithViewController:self.topViewController]) {
-        [self prepareForPopTransitionAnimated:animated];
-        vc = [super popViewControllerAnimated:NO];
-    } else {
-        vc = [super popViewControllerAnimated:animated];
-    }
     // vc != self.topViewController
     // fix：ios 11 and above，当前后两个页面的 barStyle 不一样时，点击返回按钮返回，前一个页面的标题颜色响应迟缓或不响应
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
-    return vc;
+    return [super popViewControllerAnimated:animated];
 }
 
 - (NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
     self.poppingViewController = self.topViewController;
-    NSArray *array;
-    if ([self shouldBetterTransitionWithViewController:self.topViewController]) {
-        [self prepareForPopTransitionAnimated:animated];
-        array = [super popToViewController:viewController animated:NO];
-    } else {
-        array = [super popToViewController:viewController animated:animated];
-    }
-    
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
-    return array;
+    return [super popToViewController:viewController animated:animated];
 }
 
 - (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated {
     self.poppingViewController = self.topViewController;
-    NSArray *array;
-    if ([self shouldBetterTransitionWithViewController:self.topViewController]) {
-        [self prepareForPopTransitionAnimated:animated];
-        array = [super popToRootViewControllerAnimated:NO];
-    } else {
-        array = [super popToRootViewControllerAnimated:animated];
-    }
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
-    return array;
-}
-
-- (BOOL)shouldBetterTransitionWithViewController:(UIViewController *)vc {
-    BOOL shouldBetter = NO;
-    if ([vc isKindOfClass:[HBDViewController class]]) {
-        HBDViewController *hbd = (HBDViewController *)vc;
-        shouldBetter = [hbd.options[@"passThroughTouches"] boolValue];
-    }
-    return shouldBetter;
-}
-
-- (void)prepareForPopTransitionAnimated:(BOOL)animated {
-    if (animated) {
-        CATransition *transition = [CATransition animation];
-        transition.duration = 0.25f;
-        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseIn];
-        transition.type = kCATransitionPush;
-        transition.subtype = kCATransitionFromLeft;
-        [self.view.layer addAnimation:transition forKey:nil];
-    }
+    return [super popToRootViewControllerAnimated:animated];
 }
 
 - (void)resetSubviewsInNavBar:(UINavigationBar *)navBar {

@@ -11,7 +11,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - NavigationHybrid (0.17.6):
+  - NavigationHybrid (0.17.13):
     - React
   - React (0.60.4):
     - React-Core (= 0.60.4)
@@ -167,7 +167,7 @@ SPEC CHECKSUMS:
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
-  NavigationHybrid: 9c5627fc71e505fa4ed0ba5967ae7c6f987db701
+  NavigationHybrid: a7e90047d87d3276f39cd34702be0a92d5ec91d3
   React: ff7ee2ae5ee1c1d9ae2183b4111045b25294bb01
   React-Core: 8e0ea421cae5609d2562850f98421b15030476fa
   React-cxxreact: 326880209990151a7182a813311054e9772ba510
