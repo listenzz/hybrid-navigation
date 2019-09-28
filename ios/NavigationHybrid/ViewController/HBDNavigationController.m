@@ -111,29 +111,32 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     HBDNavigationController *nav = self.nav;
     
     id<UIViewControllerTransitionCoordinator> coordinator = nav.transitionCoordinator;
-    if (self.interactiveTransition || (!coordinator && [self shouldBetterTransitionWithViewController:nav.topViewController])) {
-        CGFloat process = [pan translationInView:nav.view].x / nav.view.bounds.size.width;
-        process = MIN(1.0,(MAX(0.0, process)));
-        if (pan.state == UIGestureRecognizerStateBegan) {
-            self.interactiveTransition = [UIPercentDrivenInteractiveTransition new];
-            //触发pop转场动画
-            [nav popViewControllerAnimated:YES];
-        }else if (pan.state == UIGestureRecognizerStateChanged){
-            UIPercentDrivenInteractiveTransition *transition = self.interactiveTransition;
-            [transition updateInteractiveTransition:process];
-        }else if (pan.state == UIGestureRecognizerStateEnded
-                  || pan.state == UIGestureRecognizerStateCancelled){
-            if (process > 0.33) {
-                [ self.interactiveTransition finishInteractiveTransition];
-            }else{
-                [ self.interactiveTransition cancelInteractiveTransition];
+    
+    if (![self.proxiedDelegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)]) {
+        if (self.interactiveTransition || (!coordinator && [self shouldBetterTransitionWithViewController:nav.topViewController])) {
+            CGFloat process = [pan translationInView:nav.view].x / nav.view.bounds.size.width;
+            process = MIN(1.0,(MAX(0.0, process)));
+            if (pan.state == UIGestureRecognizerStateBegan) {
+                self.interactiveTransition = [UIPercentDrivenInteractiveTransition new];
+                //触发pop转场动画
+                [nav popViewControllerAnimated:YES];
+            }else if (pan.state == UIGestureRecognizerStateChanged){
+                UIPercentDrivenInteractiveTransition *transition = self.interactiveTransition;
+                [transition updateInteractiveTransition:process];
+            }else if (pan.state == UIGestureRecognizerStateEnded
+                      || pan.state == UIGestureRecognizerStateCancelled){
+                if (process > 0.33) {
+                    [ self.interactiveTransition finishInteractiveTransition];
+                }else{
+                    [ self.interactiveTransition cancelInteractiveTransition];
+                }
+                self.interactiveTransition = nil;
             }
-            self.interactiveTransition = nil;
-        }
-    } else {
-        id<HBDNavigationTransitionProtocol> target = (id<HBDNavigationTransitionProtocol>)[nav superInteractivePopGestureRecognizer].delegate;
-        if ([target respondsToSelector:@selector(handleNavigationTransition:)]) {
-            [target handleNavigationTransition:pan];
+        } else {
+            id<HBDNavigationTransitionProtocol> target = (id<HBDNavigationTransitionProtocol>)[nav superInteractivePopGestureRecognizer].delegate;
+            if ([target respondsToSelector:@selector(handleNavigationTransition:)]) {
+                [target handleNavigationTransition:pan];
+            }
         }
     }
     
@@ -376,18 +379,8 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
             }
         }
         self.viewControllers = @[ rootViewController ];
-        self.navigationDelegate = [[HBDNavigationControllerDelegate alloc] initWithNavigationController:self];
-        self.delegate = self.navigationDelegate;
     }
     return self;
-}
-
-- (void)setDelegate:(id<UINavigationControllerDelegate>)delegate {
-    if ([delegate isKindOfClass:[HBDNavigationControllerDelegate class]] || !self.navigationDelegate) {
-        [super setDelegate:delegate];
-    } else {
-        self.navigationDelegate.proxiedDelegate = delegate;
-    }
 }
 
 - (UIGestureRecognizer *)interactivePopGestureRecognizer {
@@ -407,6 +400,18 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     self.definesPresentationContext = NO;
     [self.navigationBar setTranslucent:YES];
     [self.navigationBar setShadowImage:[UINavigationBar appearance].shadowImage];
+    
+    self.navigationDelegate = [[HBDNavigationControllerDelegate alloc] initWithNavigationController:self];
+    self.navigationDelegate.proxiedDelegate = self.delegate;
+    self.delegate = self.navigationDelegate;
+}
+
+- (void)setDelegate:(id<UINavigationControllerDelegate>)delegate {
+    if ([delegate isKindOfClass:[HBDNavigationControllerDelegate class]] || !self.navigationDelegate) {
+        [super setDelegate:delegate];
+    } else {
+        self.navigationDelegate.proxiedDelegate = delegate;
+    }
 }
 
 - (void)viewWillLayoutSubviews {
@@ -438,25 +443,28 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
     self.poppingViewController = self.topViewController;
+    UIViewController *vc = [super popViewControllerAnimated:animated];
     // vc != self.topViewController
     // fix：ios 11 and above，当前后两个页面的 barStyle 不一样时，点击返回按钮返回，前一个页面的标题颜色响应迟缓或不响应
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
-    return [super popViewControllerAnimated:animated];
+    return vc;
 }
 
 - (NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
     self.poppingViewController = self.topViewController;
+    NSArray *array = [super popToViewController:viewController animated:animated];
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
-    return [super popToViewController:viewController animated:animated];
+    return array;
 }
 
 - (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated {
     self.poppingViewController = self.topViewController;
+    NSArray *array = [super popToRootViewControllerAnimated:animated];
     self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
     self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
-    return [super popToRootViewControllerAnimated:animated];
+    return array;
 }
 
 - (void)resetSubviewsInNavBar:(UINavigationBar *)navBar {
