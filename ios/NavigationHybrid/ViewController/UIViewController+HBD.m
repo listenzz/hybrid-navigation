@@ -169,6 +169,14 @@
      objc_setAssociatedObject(self, @selector(hbd_extendedLayoutIncludesTopBar), @(includesTopBar), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
+- (UIBarButtonItem *)hbd_backBarButtonItem {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setHbd_backBarButtonItem:(UIBarButtonItem *)backBarButtonItem {
+    objc_setAssociatedObject(self, @selector(hbd_backBarButtonItem), backBarButtonItem, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (void)hbd_setNeedsUpdateNavigationBar {
     if (self.navigationController && [self.navigationController isKindOfClass:[HBDNavigationController class]]) {
         HBDNavigationController *nav = (HBDNavigationController *)self.navigationController;
