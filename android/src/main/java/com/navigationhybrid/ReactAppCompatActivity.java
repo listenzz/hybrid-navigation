@@ -92,14 +92,15 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     protected void setRootFragmentInternal(AwesomeFragment fragment) {
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        int tag = bridgeManager.getAndResetRootLayoutTag();
+
         if (getCurrentReactContext() != null && getCurrentReactContext().hasActiveCatalystInstance()) {
             HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());
 
             super.setRootFragmentInternal(fragment);
 
-            ReactBridgeManager bridgeManager = getReactBridgeManager();
             bridgeManager.setViewHierarchyReady(true);
-            int tag = bridgeManager.getAndResetRootLayoutTag();
             WritableMap map = Arguments.createMap();
             map.putInt("tag", tag);
             HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, map);
