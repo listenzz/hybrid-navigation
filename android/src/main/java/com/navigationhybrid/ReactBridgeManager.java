@@ -172,15 +172,11 @@ public class ReactBridgeManager {
 
         rootLayout = root;
 
-        if (pendingLayout == null && rootLayoutTag != 0) {
+        if (pendingLayout != null || rootLayoutTag == 0) {
+            rootLayoutTag = tag;
+        } else {
             throw new IllegalStateException("unbalance call `getAndResetRootLayoutTag` and `setRoot`");
         }
-
-        if (pendingLayout != null) {
-            pendingLayout = null;
-        }
-
-        rootLayoutTag = tag;
     }
 
     @Nullable
