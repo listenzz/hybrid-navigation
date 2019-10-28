@@ -3,6 +3,7 @@ package com.navigationhybrid.playground;
 
 import android.app.Application;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.drawee.view.DraweeView;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
@@ -60,6 +61,7 @@ public class MainApplication extends Application implements ReactApplication {
         bridgeManager.registerNativeModule("NativeModal", NativeModalFragment.class);
 
         DraweeView.setGlobalLegacyVisibilityHandlingEnabled(true);
+        FLog.setMinimumLoggingLevel(FLog.INFO);
     }
 
 }

@@ -5,13 +5,13 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -138,7 +138,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void updateOptions(final String sceneId, final ReadableMap readableMap) {
-        Log.i(TAG, "update options:" + readableMap);
+        FLog.i(TAG, "update options:" + readableMap);
         sHandler.post(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
@@ -149,7 +149,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void updateTabBar(final String sceneId, final ReadableMap readableMap) {
-        Log.i(TAG, "updateTabBar:" + readableMap);
+        FLog.i(TAG, "updateTabBar:" + readableMap);
         sHandler.post(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
@@ -211,7 +211,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
         if (!bridgeManager.isViewHierarchyReady() || bridgeManager.getCurrentReactContext() == null) {
-            Log.w(TAG, "View hierarchy is not ready now.");
+            FLog.w(TAG, "View hierarchy is not ready now.");
             return null;
         }
 

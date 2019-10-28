@@ -8,9 +8,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.uimanager.PixelUtil;
 import com.navigation.androidx.BarStyle;
 import com.navigation.androidx.DrawableUtils;
@@ -36,11 +36,11 @@ public class GlobalStyle {
 
     public void inflateStyle(Context context, Style style) {
         if (options == null) {
-            Log.w(TAG, "style options is null");
+            FLog.w(TAG, "style options is null");
             return;
         }
 
-        Log.i(TAG, "custom global style");
+        FLog.i(TAG, "custom global style");
 
         // screenBackgroundColor
         String screenBackgroundColor = options.getString("screenBackgroundColor");

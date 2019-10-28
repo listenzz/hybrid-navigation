@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
@@ -58,10 +57,10 @@ public class ReactAppCompatActivityDelegate {
 
     private void askPermission() {
         if (getReactNativeHost().getUseDeveloperSupport() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.i(TAG, "check overlay permission");
+            FLog.i(TAG, "check overlay permission");
             // Get permission to show redbox in dev builds.
             if (!Settings.canDrawOverlays(getContext())) {
-                Log.i(TAG, "request overlay permission");
+                FLog.i(TAG, "request overlay permission");
                 Intent serviceIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
                 FLog.w(ReactConstants.TAG, REDBOX_PERMISSION_MESSAGE);
                 Toast.makeText(getContext(), REDBOX_PERMISSION_MESSAGE, Toast.LENGTH_LONG).show();

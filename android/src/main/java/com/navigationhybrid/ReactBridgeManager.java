@@ -1,12 +1,12 @@
 package com.navigationhybrid;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
@@ -71,7 +71,7 @@ public class ReactBridgeManager {
     private void setup() {
         final ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         reactInstanceManager.addReactInstanceEventListener(context -> {
-            Log.i(TAG, "react instance context initialized.");
+            FLog.i(TAG, "react instance context initialized.");
             rootLayout = null;
             rootLayoutTag = 0;
             stickyLayout = null;
@@ -80,7 +80,7 @@ public class ReactBridgeManager {
         });
 
         if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
-            Log.i(TAG, "create react context");
+            FLog.i(TAG, "create react context");
             reactInstanceManager.createReactContextInBackground();
         }
     }
@@ -151,7 +151,7 @@ public class ReactBridgeManager {
 
     public void endRegisterReactModule() {
         setReactModuleRegisterCompleted(true);
-        Log.i(TAG, "react module registry completed");
+        FLog.i(TAG, "react module registry completed");
         for (ReactModuleRegisterListener listener : reactModuleRegisterListeners) {
             listener.onReactModuleRegisterCompleted();
         }
