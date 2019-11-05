@@ -92,7 +92,7 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     }
     return self;
 }
-
+/*rm rn>61 RCTRootView cancelTouches]` is deprecated and will be deleted soon.
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     HBDNavigationController *nav = self.nav;
     if (nav.viewControllers.count > 1) {
@@ -105,7 +105,7 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     }
     return NO;
 }
-
+*/
 - (void)handleNavigationTransition:(UIScreenEdgePanGestureRecognizer *)pan {
     HBDNavigationController *nav = self.nav;
     
