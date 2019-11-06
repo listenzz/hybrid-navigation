@@ -13,7 +13,6 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDUtils.h"
 #import "HBDReactViewController.h"
-#import "HBDRootView.h"
 #import "HBDPushAnimation.h"
 #import "HBDPopAnimation.h"
 
@@ -92,20 +91,16 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     }
     return self;
 }
-/*rm rn>61 RCTRootView cancelTouches]` is deprecated and will be deleted soon.
+
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     HBDNavigationController *nav = self.nav;
     if (nav.viewControllers.count > 1) {
         UIViewController *topVC = nav.topViewController;
-        if ([topVC isKindOfClass:[HBDReactViewController class]]) {
-            HBDReactViewController *vc = (HBDReactViewController *)topVC;
-            [vc.rootView cancelTouches];
-        }
         return topVC.hbd_backInteractive && topVC.hbd_swipeBackEnabled;
     }
     return NO;
 }
-*/
+
 - (void)handleNavigationTransition:(UIScreenEdgePanGestureRecognizer *)pan {
     HBDNavigationController *nav = self.nav;
     
