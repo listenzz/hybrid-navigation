@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native';
-import { BarStyleLightContent, BarStyleDarkContent } from 'react-native-navigation-hybrid';
-import styles, { paddingTop } from './Styles';
+import React, { Component } from 'react'
+import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native'
+import { BarStyleLightContent, BarStyleDarkContent } from 'react-native-navigation-hybrid'
+import styles, { paddingTop } from './Styles'
 
 export default class TopBarStyle extends Component {
   static navigationItem = {
@@ -25,20 +25,20 @@ export default class TopBarStyle extends Component {
     rightBarButtonItem: {
       icon: Image.resolveAssetSource(require('./images/settings.png')),
       action: navigator => {
-        navigator.push('TopBarMisc');
+        navigator.push('TopBarMisc')
       },
     },
-  };
+  }
 
   constructor(props) {
-    super(props);
-    this.switchTopBarStyle = this.switchTopBarStyle.bind(this);
-    this.topBarStyle = this.topBarStyle.bind(this);
+    super(props)
+    this.switchTopBarStyle = this.switchTopBarStyle.bind(this)
+    this.topBarStyle = this.topBarStyle.bind(this)
     this.state = {
       topBarStyle: BarStyleDarkContent,
       topBarTintColor: '#000000',
-    };
-    this.showModal = this.showModal.bind(this);
+    }
+    this.showModal = this.showModal.bind(this)
   }
 
   switchTopBarStyle() {
@@ -46,20 +46,20 @@ export default class TopBarStyle extends Component {
       topBarStyle: this.state.topBarStyle,
       topBarTintColor: this.state.topBarTintColor,
       titleTextColor: this.state.topBarTintColor,
-    });
+    })
     if (this.state.topBarStyle === BarStyleDarkContent) {
-      this.setState({ topBarStyle: BarStyleLightContent, topBarTintColor: '#FFFFFF' });
+      this.setState({ topBarStyle: BarStyleLightContent, topBarTintColor: '#FFFFFF' })
     } else {
-      this.setState({ topBarStyle: BarStyleDarkContent, topBarTintColor: '#000000' });
+      this.setState({ topBarStyle: BarStyleDarkContent, topBarTintColor: '#000000' })
     }
   }
 
   topBarStyle() {
-    this.props.navigator.push('TopBarStyle');
+    this.props.navigator.push('TopBarStyle')
   }
 
   async showModal() {
-    const [resultCode, data] = await this.props.navigator.showModal('ReactModal', 1);
+    await this.props.navigator.showModal('ReactModal', 1)
   }
 
   render() {
@@ -67,8 +67,7 @@ export default class TopBarStyle extends Component {
       <ScrollView
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
-        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
-      >
+        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
         <View style={[styles.container, paddingTop]}>
           <Text style={styles.text}>1. Status bar text can only be white on Android below 6.0</Text>
 
@@ -89,6 +88,6 @@ export default class TopBarStyle extends Component {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    );
+    )
   }
 }

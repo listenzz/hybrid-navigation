@@ -1,36 +1,36 @@
-import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
+import React, { Component } from 'react'
+import { Text, View, TouchableOpacity, ScrollView } from 'react-native'
 
-import styles, { paddingTop } from './Styles';
+import styles, { paddingTop } from './Styles'
 
 export default class TopBarColor extends Component {
   static navigationItem = {
     extendedLayoutIncludesTopBar: true,
     topBarColor: '#FF0000',
-  };
+  }
 
   constructor(props) {
-    super(props);
-    this.topBarColor = this.topBarColor.bind(this);
-    this.red = this.red.bind(this);
-    this.blue = this.blue.bind(this);
-    this.green = this.green.bind(this);
+    super(props)
+    this.topBarColor = this.topBarColor.bind(this)
+    this.red = this.red.bind(this)
+    this.blue = this.blue.bind(this)
+    this.green = this.green.bind(this)
   }
 
   red() {
-    this.props.garden.updateOptions({ topBarColor: '#FF0000' });
+    this.props.garden.updateOptions({ topBarColor: '#FF0000' })
   }
 
   green() {
-    this.props.garden.updateOptions({ topBarColor: '#00FF00' });
+    this.props.garden.updateOptions({ topBarColor: '#00FF00' })
   }
 
   blue() {
-    this.props.garden.updateOptions({ topBarColor: '#0000FF' });
+    this.props.garden.updateOptions({ topBarColor: '#0000FF' })
   }
 
   topBarColor() {
-    this.props.navigator.push('TopBarColor');
+    this.props.navigator.push('TopBarColor')
   }
 
   render() {
@@ -38,8 +38,7 @@ export default class TopBarColor extends Component {
       <ScrollView
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
-        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
-      >
+        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
         <View style={[styles.container, paddingTop]}>
           <Text style={styles.welcome}>Bright colors</Text>
 
@@ -60,6 +59,6 @@ export default class TopBarColor extends Component {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    );
+    )
   }
 }

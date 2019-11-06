@@ -1,9 +1,9 @@
-import { StyleSheet, Platform, StatusBar } from 'react-native';
-import { ifIphoneX } from 'react-native-iphone-x-helper';
-import { Garden } from 'react-native-navigation-hybrid';
+import { StyleSheet, Platform, StatusBar } from 'react-native'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
+import { Garden } from 'react-native-navigation-hybrid'
 
 function ifKitKat(obj1 = {}, obj2 = {}) {
-  return Platform.Version > 18 ? obj1 : obj2;
+  return Platform.Version > 18 ? obj1 : obj2
 }
 
 export const paddingTop = Platform.select({
@@ -14,7 +14,7 @@ export const paddingTop = Platform.select({
       },
       {
         paddingTop: 16 + 64,
-      }
+      },
     ),
   },
   android: {
@@ -24,10 +24,10 @@ export const paddingTop = Platform.select({
       },
       {
         paddingTop: 16,
-      }
+      },
     ),
   },
-});
+})
 
 export default StyleSheet.create({
   container: {
@@ -97,4 +97,4 @@ export default StyleSheet.create({
     textAlign: 'left',
     margin: 8,
   },
-});
+})

@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView, StatusBar, Platform } from 'react-native';
-import { ifIphoneX } from 'react-native-iphone-x-helper';
+import React, { Component } from 'react'
+import { TouchableOpacity, Text, View, ScrollView, StatusBar, Platform } from 'react-native'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 
-import styles from './Styles';
+import styles from './Styles'
 
 function ifKitKat(obj1 = {}, obj2 = {}) {
-  return Platform.Version > 18 ? obj1 : obj2;
+  return Platform.Version > 18 ? obj1 : obj2
 }
 
 const paddingTop = Platform.select({
@@ -16,7 +16,7 @@ const paddingTop = Platform.select({
       },
       {
         paddingTop: 16 + 20,
-      }
+      },
     ),
   },
   android: {
@@ -26,10 +26,10 @@ const paddingTop = Platform.select({
       },
       {
         paddingTop: 16,
-      }
+      },
     ),
   },
-});
+})
 
 export default class StatusBarHidden extends Component {
   static navigationItem = {
@@ -39,25 +39,25 @@ export default class StatusBarHidden extends Component {
     titleItem: {
       title: 'StatusBar Hidden',
     },
-  };
+  }
 
   constructor(props) {
-    super(props);
-    this.showStatusBar = this.showStatusBar.bind(this);
-    this.hideStatusBar = this.hideStatusBar.bind(this);
-    this.statusBarHidden = this.statusBarHidden.bind(this);
+    super(props)
+    this.showStatusBar = this.showStatusBar.bind(this)
+    this.hideStatusBar = this.hideStatusBar.bind(this)
+    this.statusBarHidden = this.statusBarHidden.bind(this)
   }
 
   statusBarHidden() {
-    this.props.navigator.push('StatusBarHidden');
+    this.props.navigator.push('StatusBarHidden')
   }
 
   showStatusBar() {
-    this.props.garden.updateOptions({ statusBarHidden: false });
+    this.props.garden.updateOptions({ statusBarHidden: false })
   }
 
   hideStatusBar() {
-    this.props.garden.updateOptions({ statusBarHidden: true });
+    this.props.garden.updateOptions({ statusBarHidden: true })
   }
 
   render() {
@@ -65,8 +65,7 @@ export default class StatusBarHidden extends Component {
       <ScrollView
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
-        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
-      >
+        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
         <Text style={[styles.welcome, paddingTop]}> StatusBar Hidden</Text>
         <TouchableOpacity onPress={this.showStatusBar} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>show status bar</Text>
@@ -80,6 +79,6 @@ export default class StatusBarHidden extends Component {
           <Text style={styles.buttonText}>StatusBarHidden</Text>
         </TouchableOpacity>
       </ScrollView>
-    );
+    )
   }
 }

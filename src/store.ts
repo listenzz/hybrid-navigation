@@ -1,41 +1,41 @@
-import { Navigator } from './Navigator';
-import { EmitterSubscription } from 'react-native';
+import { Navigator } from './Navigator'
+import { EmitterSubscription } from 'react-native'
 
-const navigators = new Map<string, Navigator>();
-let events: EmitterSubscription[] = [];
+const navigators = new Map<string, Navigator>()
+let events: EmitterSubscription[] = []
 
 function addNavigator(sceneId: string, navigator: Navigator) {
-  navigators.set(sceneId, navigator);
+  navigators.set(sceneId, navigator)
 }
 
 function removeNavigator(sceneId: string) {
-  navigators.delete(sceneId);
+  navigators.delete(sceneId)
 }
 
 function getNavigator(sceneId: string) {
-  return navigators.get(sceneId);
+  return navigators.get(sceneId)
 }
 
 function addBarButtonItemClickEvent(event: EmitterSubscription) {
-  events.push(event);
+  events.push(event)
 }
 
 function removeBarButtonItemClickEvent(event: EmitterSubscription) {
-  event.remove();
-  events = events.filter(e => e !== event);
+  event.remove()
+  events = events.filter(e => e !== event)
 }
 
 function filterBarButtonItemClickEvent(callback: (event: EmitterSubscription) => boolean) {
-  return events.filter(callback);
+  return events.filter(callback)
 }
 
 function clear() {
-  navigators.clear();
+  navigators.clear()
 
   events.forEach(event => {
-    event.remove();
-  });
-  events = [];
+    event.remove()
+  })
+  events = []
 }
 
 export default {
@@ -46,4 +46,4 @@ export default {
   removeBarButtonItemClickEvent,
   filterBarButtonItemClickEvent,
   clear,
-};
+}

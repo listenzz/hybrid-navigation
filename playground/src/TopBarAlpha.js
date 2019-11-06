@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { Text, View, TouchableOpacity, ScrollView, Slider, Image, Alert, StatusBar, Platform } from 'react-native';
-import { ifIphoneX } from 'react-native-iphone-x-helper';
-import styles from './Styles';
+import React, { Component } from 'react'
+import { Text, View, TouchableOpacity, ScrollView, Slider, Image, Alert, StatusBar, Platform } from 'react-native'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
+import styles from './Styles'
 
 function ifKitKat(obj1 = {}, obj2 = {}) {
-  return Platform.Version > 18 ? obj1 : obj2;
+  return Platform.Version > 18 ? obj1 : obj2
 }
 
 const paddingTop = Platform.select({
@@ -15,7 +15,7 @@ const paddingTop = Platform.select({
       },
       {
         paddingTop: 8 + 20,
-      }
+      },
     ),
   },
   android: {
@@ -25,10 +25,10 @@ const paddingTop = Platform.select({
       },
       {
         paddingTop: 12,
-      }
+      },
     ),
   },
-});
+})
 
 export default class TopBarAlpha extends Component {
   static navigationItem = {
@@ -38,35 +38,35 @@ export default class TopBarAlpha extends Component {
       icon: Image.resolveAssetSource(require('./images/settings.png')),
       title: 'SETTING',
       action: navigator => {
-        navigator.push('TopBarMisc');
+        navigator.push('TopBarMisc')
       },
     },
-  };
+  }
 
   constructor(props) {
-    super(props);
-    this.topBarAlpha = this.topBarAlpha.bind(this);
-    this.onAlphaChange = this.onAlphaChange.bind(this);
-    let alpha = props.alpha ? Number(props.alpha) : 0.5;
-    let topBarColor = props.color || '#FFFFFF';
-    this.state = { alpha };
+    super(props)
+    this.topBarAlpha = this.topBarAlpha.bind(this)
+    this.onAlphaChange = this.onAlphaChange.bind(this)
+    let alpha = props.alpha ? Number(props.alpha) : 0.5
+    let topBarColor = props.color || '#FFFFFF'
+    this.state = { alpha }
     if (alpha !== 0.5 || topBarColor !== '#FFFFFF') {
       this.props.garden.updateOptions({
         topBarAlpha: alpha,
         topBarColor: topBarColor,
-      });
+      })
     }
   }
 
   topBarAlpha() {
-    this.props.navigator.push('TopBarAlpha');
+    this.props.navigator.push('TopBarAlpha')
   }
 
   onAlphaChange(value) {
     this.props.garden.updateOptions({
       topBarAlpha: value,
-    });
-    this.setState({ alpha: value });
+    })
+    this.setState({ alpha: value })
   }
 
   render() {
@@ -74,8 +74,7 @@ export default class TopBarAlpha extends Component {
       <ScrollView
         contentInsetAdjustmentBehavior="never"
         automaticallyAdjustContentInsets={false}
-        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
-      >
+        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
         <View style={[styles.container, paddingTop]}>
           <Text style={styles.welcome}>Try to slide</Text>
 
@@ -93,6 +92,6 @@ export default class TopBarAlpha extends Component {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    );
+    )
   }
 }

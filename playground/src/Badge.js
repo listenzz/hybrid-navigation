@@ -1,26 +1,26 @@
-import React from 'react';
-import { StyleSheet, Text } from 'react-native';
+import React from 'react'
+import { StyleSheet, Text } from 'react-native'
 
 export default class Badge extends React.Component {
-  static propTypes = Text.propTypes;
+  static propTypes = Text.propTypes
 
   constructor(props, context) {
-    super(props, context);
+    super(props, context)
 
-    this._handleLayout = this._handleLayout.bind(this);
+    this._handleLayout = this._handleLayout.bind(this)
   }
 
   state = {
     computedSize: null,
-  };
+  }
 
   render() {
-    let { computedSize } = this.state;
-    let style = {};
+    let { computedSize } = this.state
+    let style = {}
     if (!computedSize) {
-      style.opacity = 0;
+      style.opacity = 0
     } else {
-      style.width = Math.max(computedSize.height, computedSize.width);
+      style.width = Math.max(computedSize.height, computedSize.width)
     }
 
     return (
@@ -28,26 +28,25 @@ export default class Badge extends React.Component {
         {...this.props}
         numberOfLines={1}
         onLayout={this._handleLayout}
-        style={[styles.container, this.props.style, style]}
-      >
+        style={[styles.container, this.props.style, style]}>
         {this.props.children}
       </Text>
-    );
+    )
   }
 
   _handleLayout(event) {
-    let { width, height } = event.nativeEvent.layout;
-    let { computedSize } = this.state;
+    let { width, height } = event.nativeEvent.layout
+    let { computedSize } = this.state
     if (computedSize && computedSize.height === height && computedSize.width === width) {
-      return;
+      return
     }
 
     this.setState({
       computedSize: { width, height },
-    });
+    })
 
     if (this.props.onLayout) {
-      this.props.onLayout(event);
+      this.props.onLayout(event)
     }
   }
 }
@@ -66,4 +65,4 @@ let styles = StyleSheet.create({
     borderRadius: 17 / 2,
     overflow: 'hidden',
   },
-});
+})

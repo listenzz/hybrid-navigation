@@ -1,101 +1,67 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  Animated,
-  Easing,
-  Dimensions,
-  SafeAreaView,
-} from 'react-native';
-import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid';
+import React from 'react'
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
+import withBottomModal from './withBottomModal'
+import { RESULT_OK } from 'react-native-navigation-hybrid'
 
-export default class ReactModal extends React.Component {
+class ReactModal extends React.Component {
   static navigationItem = {
     navigationBarColorAndroid: '#FFFFFF',
-  };
-
-  constructor(props) {
-    super(props);
-    this.hideModal = this.hideModal.bind(this);
   }
 
-  state = {
-    actionSheets: [
-      {
-        text: 'Male',
-        onPress: () => {
-          this.hideModal('Male');
-        },
-      },
-      {
-        text: 'Female',
-        onPress: () => {
-          this.hideModal('Female');
-        },
-      },
-    ],
+  constructor(props) {
+    super(props)
+    this.handleCancel = this.handleCancel.bind(this)
+    this.hideModal = this.hideModal.bind(this)
+  }
 
-    anim: new Animated.Value(Dimensions.get('screen').height),
-  };
+  actionSheets = [
+    {
+      text: 'Male',
+      onPress: () => {
+        this.hideModal('Male')
+      },
+    },
+    {
+      text: 'Female',
+      onPress: () => {
+        this.hideModal('Female')
+      },
+    },
+  ]
 
   componentDidMount() {
-    console.info('modal componentDidMount');
+    this.props.navigator.setResult(RESULT_OK, {
+      text: 'Are you male or female?',
+      backId: this.props.sceneId,
+    })
+    console.info('modal componentDidMount')
   }
 
   componentDidAppear() {
-    console.info('modal componentDidAppear');
+    console.info('modal componentDidAppear')
   }
 
   componentDidDisappear() {
-    console.info('modal componentDidDisappear');
+    console.info('modal componentDidDisappear')
   }
 
   componentWillUnmount() {
-    console.info('modal componentWillUnmount');
+    console.info('modal componentWillUnmount')
   }
-
-  onBackPressed = () => {
-    this.hideModal();
-  };
-
-  reload() {
-    Navigator.reload();
-  }
-
-  handleCancel = () => {
-    this.hideModal();
-  };
 
   hideModal(gender) {
-    Animated.timing(this.state.anim, {
-      toValue: this.height,
-      duration: 200,
-      easing: Easing.linear,
-    }).start(async state => {
-      let current = await Navigator.currentRoute();
-      console.log(current);
+    if (gender) {
       this.props.navigator.setResult(RESULT_OK, {
-        text: gender || 'Are you male or female?',
+        text: gender,
         backId: this.props.sceneId,
-      });
-      this.props.navigator.hideModal();
-      current = await Navigator.currentRoute();
-      console.log(current);
-    });
+      })
+    }
+    this.props.navigator.hideModal()
   }
 
-  handleLayout = e => {
-    this.height = e.nativeEvent.layout.height;
-    this.state.anim.setValue(this.height);
-    Animated.timing(this.state.anim, { toValue: 0, duration: 200, easing: Easing.linear }).start();
-  };
-
-  handleRef = ref => {
-    this.view = ref;
-  };
+  handleCancel() {
+    this.hideModal()
+  }
 
   renderItem = (text, onPress) => {
     return (
@@ -104,41 +70,31 @@ export default class ReactModal extends React.Component {
           <Text style={styles.itemText}>{text}</Text>
         </View>
       </TouchableHighlight>
-    );
-  };
+    )
+  }
 
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.handleCancel}>
-        <Animated.View
-          ref={this.handleRef}
-          useNativeDriver
-          style={[styles.bottomModal, { opacity: 1, transform: [{ translateY: this.state.anim }] }]}
-        >
-          <SafeAreaView style={{ backgroundColor: '#F3F3F3' }}>
-            <View onLayout={this.handleLayout}>
-              {this.state.actionSheets.map(({ text, onPress }, index) => {
-                const isLast = index === this.state.actionSheets.length - 1;
-                return (
-                  <View key={text} style={!isLast && styles.divider}>
-                    {this.renderItem(text, onPress)}
-                  </View>
-                );
-              })}
-              <View style={styles.itemCancel}>{this.renderItem('Cancel', this.handleCancel)}</View>
+      <View style={styles.container}>
+        {this.actionSheets.map(({ text, onPress }, index) => {
+          const isLast = index === this.actionSheets.length - 1
+          return (
+            <View key={text} style={!isLast && styles.divider}>
+              {this.renderItem(text, onPress)}
             </View>
-          </SafeAreaView>
-        </Animated.View>
-      </TouchableWithoutFeedback>
-    );
+          )
+        })}
+        <View style={styles.itemCancel}>{this.renderItem('Cancel', this.handleCancel)}</View>
+      </View>
+    )
   }
 }
 
+export default withBottomModal(true, '#F3F3F3')(ReactModal)
+
 const styles = StyleSheet.create({
-  bottomModal: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    margin: 0,
+  container: {
+    backgroundColor: '#F3F3F3',
   },
   item: {
     height: 50,
@@ -157,4 +113,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#212121',
   },
-});
+})

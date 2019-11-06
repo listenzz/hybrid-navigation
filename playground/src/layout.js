@@ -1,38 +1,38 @@
-let tabLayoutStyle = 'custom';
+let tabLayoutStyle = 'custom'
 
 export default function getLayout() {
   const navigationStack = {
     stack: {
       children: [{ screen: { moduleName: 'Navigation' } }],
     },
-  };
+  }
 
   const optionsStack = {
     stack: {
       children: [{ screen: { moduleName: 'Options' } }],
     },
-  };
+  }
 
-  let options = { selectedIndex: 1 };
+  let options = { selectedIndex: 1 }
   if (tabLayoutStyle === 'bulge') {
-    tabLayoutStyle = 'normal';
+    tabLayoutStyle = 'normal'
     options = {
       tabBarModuleName: 'BulgeTabBar',
       sizeIndeterminate: true,
       selectedIndex: 1,
-    };
+    }
   } else if (tabLayoutStyle === 'custom') {
-    tabLayoutStyle = 'bulge';
+    tabLayoutStyle = 'bulge'
     options = {
       tabBarModuleName: 'CustomTabBar',
       sizeIndeterminate: false,
       selectedIndex: 1,
-    };
+    }
   } else {
-    tabLayoutStyle = 'custom';
+    tabLayoutStyle = 'custom'
     options = {
       selectedIndex: 1,
-    };
+    }
   }
 
   const tabs = {
@@ -40,9 +40,9 @@ export default function getLayout() {
       children: [navigationStack, optionsStack],
       options: options,
     },
-  };
+  }
 
-  const menu = { screen: { moduleName: 'Menu' } };
+  const menu = { screen: { moduleName: 'Menu' } }
 
   const drawer = {
     drawer: {
@@ -52,6 +52,6 @@ export default function getLayout() {
         minDrawerMargin: 64,
       },
     },
-  };
-  return drawer;
+  }
+  return drawer
 }

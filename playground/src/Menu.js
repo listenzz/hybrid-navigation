@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, StatusBar, Platform } from 'react-native';
-import { ifIphoneX } from 'react-native-iphone-x-helper';
-import { Garden, Navigator } from 'react-native-navigation-hybrid';
+import React, { Component } from 'react'
+import { TouchableOpacity, Text, View, StatusBar, Platform } from 'react-native'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
+import { Garden, Navigator } from 'react-native-navigation-hybrid'
 
-import styles from './Styles';
+import styles from './Styles'
 
 function ifKitKat(obj1 = {}, obj2 = {}) {
-  return Platform.Version > 18 ? obj1 : obj2;
+  return Platform.Version > 18 ? obj1 : obj2
 }
 
 const paddingTop = Platform.select({
@@ -17,7 +17,7 @@ const paddingTop = Platform.select({
       },
       {
         paddingTop: 16 + 64,
-      }
+      },
     ),
   },
   android: {
@@ -27,45 +27,43 @@ const paddingTop = Platform.select({
       },
       {
         paddingTop: 16 + Garden.toolbarHeight,
-      }
+      },
     ),
   },
-});
+})
 
 export default class Menu extends Component {
   constructor(props) {
-    super(props);
-    this.push = this.push.bind(this);
-    this.pushToRedux = this.pushToRedux.bind(this);
+    super(props)
+    this.push = this.push.bind(this)
+    this.pushToRedux = this.pushToRedux.bind(this)
   }
 
   componentDidAppear() {
-    console.info('menu componentDidAppear');
+    console.info('menu componentDidAppear')
   }
 
   componentDidDisappear() {
-    console.info('menu componentDidDisappear');
+    console.info('menu componentDidDisappear')
   }
 
   componentDidMount() {
-    console.info('menu componentDidMount');
+    console.info('menu componentDidMount')
   }
 
   componentWillUnmount() {
-    console.info('menu componentWillUnmount');
+    console.info('menu componentWillUnmount')
   }
 
   push() {
-    this.props.navigator.closeMenu();
-    this.props.navigator.push('OneNative');
+    this.props.navigator.closeMenu()
+    this.props.navigator.push('OneNative')
   }
 
   pushToRedux() {
-    this.props.navigator.closeMenu();
-    this.props.navigator.push('ReduxCounter');
+    this.props.navigator.closeMenu()
+    this.props.navigator.push('ReduxCounter')
   }
-
-
 
   render() {
     return (
@@ -79,9 +77,7 @@ export default class Menu extends Component {
         <TouchableOpacity onPress={this.pushToRedux} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>Redux Counter</Text>
         </TouchableOpacity>
-
- 
       </View>
-    );
+    )
   }
 }

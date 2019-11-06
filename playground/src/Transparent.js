@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native';
+import React, { Component } from 'react'
+import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native'
 
-import styles from './Styles';
+import styles from './Styles'
 
 export default class Transparent extends Component {
   static navigationItem = {
     screenBackgroundColor: '#00000000',
     passThroughTouches: true,
-  };
+  }
 
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   log() {
-    console.info('Transparent !!');
+    console.info('Transparent !!')
   }
 
   render() {
@@ -28,6 +28,6 @@ export default class Transparent extends Component {
           </View>
         </View>
       </View>
-    );
+    )
   }
 }

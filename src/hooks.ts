@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react'
 
 import {
   EventEmitter,
@@ -12,55 +12,54 @@ import {
   KEY_REQUEST_CODE,
   KEY_RESULT_CODE,
   KEY_RESULT_DATA,
-} from './NavigationModule';
+} from './NavigationModule'
 
 export function useVisibleEffect(sceneId: string, fn: React.EffectCallback) {
-  let onHidden: void | (() => void | undefined) = undefined;
-
+  let onHidden = useRef<void | (() => void | undefined)>()
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID]) {
         if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
-          onHidden = fn();
-        } else if (onHidden && data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
-          onHidden();
+          onHidden.current = fn()
+        } else if (onHidden.current && data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
+          onHidden.current && onHidden.current()
         }
       }
-    });
+    })
 
     return () => {
-      subscription.remove();
-    };
-  }, [sceneId]);
+      subscription.remove()
+    }
+  }, [fn, sceneId])
 }
 
 export function useBackEffect(sceneId: string, fn: () => void) {
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_DIALOG_BACK_PRESSED) {
-        fn();
+        fn()
       }
-    });
+    })
 
     return () => {
-      subscription.remove();
-    };
-  }, [sceneId]);
+      subscription.remove()
+    }
+  }, [fn, sceneId])
 }
 
 export function useResult(
   sceneId: string,
-  fn: (requestCode: number, resultCode: number, data: { [x: string]: any }) => void
+  fn: (requestCode: number, resultCode: number, data: { [x: string]: any }) => void,
 ) {
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_COMPONENT_RESULT) {
-        fn(data[KEY_REQUEST_CODE], data[KEY_RESULT_CODE], data[KEY_RESULT_DATA]);
+        fn(data[KEY_REQUEST_CODE], data[KEY_RESULT_CODE], data[KEY_RESULT_DATA])
       }
-    });
+    })
 
     return () => {
-      subscription.remove();
-    };
-  }, [sceneId]);
+      subscription.remove()
+    }
+  }, [fn, sceneId])
 }
