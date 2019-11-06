@@ -38,6 +38,7 @@ export default class TopBarStyle extends Component {
       topBarStyle: BarStyleDarkContent,
       topBarTintColor: '#000000',
     };
+    this.showModal = this.showModal.bind(this);
   }
 
   switchTopBarStyle() {
@@ -57,6 +58,10 @@ export default class TopBarStyle extends Component {
     this.props.navigator.push('TopBarStyle');
   }
 
+  async showModal() {
+    const [resultCode, data] = await this.props.navigator.showModal('ReactModal', 1);
+  }
+
   render() {
     return (
       <ScrollView
@@ -71,16 +76,16 @@ export default class TopBarStyle extends Component {
             2. Status bar color may be adjusted if topBarStyle is dark-content on Android below 6.0
           </Text>
 
-          <TouchableOpacity
-            onPress={this.switchTopBarStyle}
-            activeOpacity={0.2}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this.switchTopBarStyle} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>switch to {this.state.topBarStyle}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.topBarStyle} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>TopBarStyle</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={this.showModal} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>show react modal</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

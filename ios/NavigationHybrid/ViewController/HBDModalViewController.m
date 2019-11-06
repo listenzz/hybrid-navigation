@@ -426,6 +426,7 @@
     HBDModalViewController *modalViewController = [[HBDModalViewController alloc] init];
     modalViewController.contentViewController = vc;
     self.hbd_popupViewController = vc;
+    vc.hbd_barStyle = self.hbd_barStyle;
     vc.hbd_targetViewController = self;
     vc.requestCode = requestCode;
     [modalViewController showWithAnimated:animated completion:completion];
