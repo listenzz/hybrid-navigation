@@ -33,6 +33,10 @@ npm run run:android
 
 [**Download demo apk**](https://raw.githubusercontent.com/listenzz/react-native-navigation-hybrid/master/screenshot/app-release.apk)
 
+或通过扫描二维码安装 demo
+
+![demo-qrcode](./screenshot/demo-qrcode.png)
+
 ### run on iOS
 
 First,
