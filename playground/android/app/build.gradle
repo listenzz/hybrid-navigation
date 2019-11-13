@@ -5,7 +5,7 @@ project.ext.react = [
         entryFile      : "playground/index.js",
         bundleInRelease: true,
         bundleInDebug  : true,
-        enableHermes   : false,
+        enableHermes   : true,
         hermesCommand  : "../../../node_modules/hermes-engine/%OS-BIN%/hermes",
 ]
 
