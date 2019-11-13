@@ -15,7 +15,7 @@ import {
 } from './NavigationModule'
 
 export function useVisibleEffect(sceneId: string, fn: React.EffectCallback) {
-  let onHidden = useRef<void | (() => void | undefined)>()
+  let onHidden = useRef<ReturnType<React.EffectCallback>>()
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID]) {
@@ -26,7 +26,6 @@ export function useVisibleEffect(sceneId: string, fn: React.EffectCallback) {
         }
       }
     })
-
     return () => {
       subscription.remove()
     }
