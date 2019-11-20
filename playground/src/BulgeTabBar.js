@@ -1,5 +1,14 @@
 import React, { Component } from 'react'
-import { Text, View, Image, TouchableOpacity, StyleSheet, PixelRatio, Platform, Dimensions } from 'react-native'
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  PixelRatio,
+  Platform,
+  Dimensions,
+} from 'react-native'
 import TextBadge from './Badge'
 
 export default class BulgeTabBar extends Component {
@@ -54,7 +63,10 @@ export default class BulgeTabBar extends Component {
             {...style}
           />
         </View>
-        <TouchableOpacity onPress={() => this.handleTabClick(-1)} activeOpacity={0.8} style={styles.bulge}>
+        <TouchableOpacity
+          onPress={() => this.handleTabClick(-1)}
+          activeOpacity={0.8}
+          style={styles.bulge}>
           <Image source={require('./images/tabbar_add_yellow.png')} fadeDuration={0} />
         </TouchableOpacity>
       </View>

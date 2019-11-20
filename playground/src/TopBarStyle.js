@@ -75,7 +75,10 @@ export default class TopBarStyle extends Component {
             2. Status bar color may be adjusted if topBarStyle is dark-content on Android below 6.0
           </Text>
 
-          <TouchableOpacity onPress={this.switchTopBarStyle} activeOpacity={0.2} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.switchTopBarStyle}
+            activeOpacity={0.2}
+            style={styles.button}>
             <Text style={styles.buttonText}>switch to {this.state.topBarStyle}</Text>
           </TouchableOpacity>
 

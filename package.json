@@ -6,7 +6,7 @@
   },
   "version": "0.17.20",
   "nativePackage": true,
-  "description": "Native navigation library for ReactNative, support navigating between native and ReactNative seamlessly.",
+  "description": "React Native Navigation that supports seamless navigation between Native and React.",
   "author": "listen <listenzz@163.com>",
   "license": "MIT",
   "homepage": "https://github.com/listenzz/react-native-navigation-hybrid",

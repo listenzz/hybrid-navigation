@@ -45,7 +45,12 @@ interface NavigationState {
   subscriptions: EmitterSubscription[]
 }
 
-export type NavigationInterceptor = (action: string, from?: string, to?: string, extras?: Extras) => boolean
+export type NavigationInterceptor = (
+  action: string,
+  from?: string,
+  to?: string,
+  extras?: Extras,
+) => boolean
 
 export interface Layout {
   [index: string]: {}
@@ -114,16 +119,19 @@ EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
 
 function result<T>(navigator: Navigator, requestCode: number) {
   return new Promise<Result<T>>(resolve => {
-    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data: { [index: string]: any }) => {
-      if (
-        navigator.sceneId === data[KEY_SCENE_ID] &&
-        data[KEY_ON] === ON_COMPONENT_RESULT &&
-        data[KEY_REQUEST_CODE] === requestCode
-      ) {
-        navigator.removeSubscription(subscription)
-        resolve([data[KEY_RESULT_CODE], data[KEY_RESULT_DATA]])
-      }
-    })
+    const subscription = EventEmitter.addListener(
+      EVENT_NAVIGATION,
+      (data: { [index: string]: any }) => {
+        if (
+          navigator.sceneId === data[KEY_SCENE_ID] &&
+          data[KEY_ON] === ON_COMPONENT_RESULT &&
+          data[KEY_REQUEST_CODE] === requestCode
+        ) {
+          navigator.removeSubscription(subscription)
+          resolve([data[KEY_RESULT_CODE], data[KEY_RESULT_DATA]])
+        }
+      },
+    )
     navigator.addSubscription(subscription)
   })
 }
@@ -298,11 +306,19 @@ export class Navigator {
     this.dispatch('popToRoot', { animated })
   }
 
-  replace<P extends object = {}>(moduleName: string, props: P = {} as P, options: NavigationItem = {}) {
+  replace<P extends object = {}>(
+    moduleName: string,
+    props: P = {} as P,
+    options: NavigationItem = {},
+  ) {
     this.dispatch('replace', { moduleName, props, options, animated: true })
   }
 
-  replaceToRoot<P extends object = {}>(moduleName: string, props: P = {} as P, options: NavigationItem = {}) {
+  replaceToRoot<P extends object = {}>(
+    moduleName: string,
+    props: P = {} as P,
+    options: NavigationItem = {},
+  ) {
     this.dispatch('replaceToRoot', { moduleName, props, options, animated: true })
   }
 

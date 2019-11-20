@@ -1,5 +1,15 @@
 import React, { Component } from 'react'
-import { Text, View, TouchableOpacity, ScrollView, Slider, Image, Alert, StatusBar, Platform } from 'react-native'
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Slider,
+  Image,
+  Alert,
+  StatusBar,
+  Platform,
+} from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import styles from './Styles'
 

@@ -158,7 +158,10 @@ export class Garden {
   }
 
   updateTabBar(
-    options: Pick<Style, 'tabBarColor' | 'tabBarShadowImage' | 'tabBarItemColor' | 'tabBarUnselectedItemColor'>,
+    options: Pick<
+      Style,
+      'tabBarColor' | 'tabBarShadowImage' | 'tabBarItemColor' | 'tabBarUnselectedItemColor'
+    >,
   ) {
     GardenModule.updateTabBar(this.sceneId, options)
   }

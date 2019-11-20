@@ -157,16 +157,25 @@ export default class Navigation extends Component {
             <Text style={styles.buttonText}>push</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.pop} activeOpacity={0.2} style={styles.button} disabled={this.state.isRoot}>
-            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>pop</Text>
+          <TouchableOpacity
+            onPress={this.pop}
+            activeOpacity={0.2}
+            style={styles.button}
+            disabled={this.state.isRoot}>
+            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
+              pop
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={this.popTo}
             activeOpacity={0.2}
             style={styles.button}
-            disabled={this.props.popToId == undefined}>
-            <Text style={this.props.popToId == undefined ? styles.buttonTextDisable : styles.buttonText}>
+            disabled={this.props.popToId === undefined}>
+            <Text
+              style={
+                this.props.popToId === undefined ? styles.buttonTextDisable : styles.buttonText
+              }>
               popTo last but one
             </Text>
           </TouchableOpacity>
@@ -176,7 +185,9 @@ export default class Navigation extends Component {
             activeOpacity={0.2}
             style={styles.button}
             disabled={this.state.isRoot}>
-            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>popToRoot</Text>
+            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
+              popToRoot
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.replace} activeOpacity={0.2} style={styles.button}>
@@ -199,7 +210,10 @@ export default class Navigation extends Component {
             <Text style={styles.buttonText}>show react modal</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.showNativeModal} activeOpacity={0.2} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.showNativeModal}
+            activeOpacity={0.2}
+            style={styles.button}>
             <Text style={styles.buttonText}>show native modal</Text>
           </TouchableOpacity>
 

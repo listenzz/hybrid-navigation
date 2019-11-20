@@ -67,7 +67,10 @@ export default class TopBarMisc extends Component {
         contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
         <View style={styles.container}>
           <Text style={styles.welcome}>About TopBar</Text>
-          <TouchableOpacity onPress={this.topBarShadowHidden} activeOpacity={0.2} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.topBarShadowHidden}
+            activeOpacity={0.2}
+            style={styles.button}>
             <Text style={styles.buttonText}>TopBarShadowHidden</Text>
           </TouchableOpacity>
 
@@ -83,7 +86,10 @@ export default class TopBarMisc extends Component {
             <Text style={styles.buttonText}>TopBarAlpha</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.topBarTitleView} activeOpacity={0.2} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.topBarTitleView}
+            activeOpacity={0.2}
+            style={styles.button}>
             <Text style={styles.buttonText}>TopBarTitleView</Text>
           </TouchableOpacity>
 
@@ -95,7 +101,10 @@ export default class TopBarMisc extends Component {
             <Text style={styles.buttonText}>StatusBarColor</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.statusBarHidden} activeOpacity={0.2} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.statusBarHidden}
+            activeOpacity={0.2}
+            style={styles.button}>
             <Text style={styles.buttonText}>StatusBarHidden</Text>
           </TouchableOpacity>
 

@@ -5,9 +5,14 @@ import { useVisibleEffect } from 'react-native-navigation-hybrid'
 
 function Lifecycle(props) {
   useVisibleEffect(props.sceneId, () => {
-    Alert.alert('Lifecycle Alert!', 'componentDidAppear.', [{ text: 'OK', onPress: () => console.log('OK Pressed') }], {
-      cancelable: false,
-    })
+    Alert.alert(
+      'Lifecycle Alert!',
+      'componentDidAppear.',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      {
+        cancelable: false,
+      },
+    )
     return () => {
       Alert.alert(
         'Lifecycle Alert!',

@@ -70,7 +70,9 @@ function removeBarButtonItemClickEventInLayout(): void {
 
 function removeBarButtonItemClickEvent(sceneId: string): void {
   store
-    .filterBarButtonItemClickEvent(event => event.context.sceneId && event.context.sceneId === sceneId)
+    .filterBarButtonItemClickEvent(
+      event => event.context.sceneId && event.context.sceneId === sceneId,
+    )
     .forEach(event => {
       store.removeBarButtonItemClickEvent(event)
     })

@@ -1,5 +1,13 @@
 import React, { Component } from 'react'
-import { StyleSheet, Animated, Easing, Dimensions, View, TouchableWithoutFeedback, SafeAreaView } from 'react-native'
+import {
+  StyleSheet,
+  Animated,
+  Easing,
+  Dimensions,
+  View,
+  TouchableWithoutFeedback,
+  SafeAreaView,
+} from 'react-native'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { useBackEffect } from 'react-native-navigation-hybrid'
 
@@ -63,7 +71,10 @@ export default function withBottomModal(cancelable = true, safeAreaColor = '#000
               },
             ]}
             useNativeDriver>
-            <BackHandler sceneId={this.props.sceneId} handleHardwareBackPress={this.handleHardwareBackPress} />
+            <BackHandler
+              sceneId={this.props.sceneId}
+              handleHardwareBackPress={this.handleHardwareBackPress}
+            />
             <TouchableWithoutFeedback onPress={this.handleHardwareBackPress} style={styles.flex1}>
               <View style={styles.flex1} />
             </TouchableWithoutFeedback>

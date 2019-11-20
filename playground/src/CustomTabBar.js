@@ -1,5 +1,14 @@
 import React, { Component } from 'react'
-import { Text, View, Image, TouchableOpacity, StyleSheet, PixelRatio, Dimensions, Platform } from 'react-native'
+import {
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  PixelRatio,
+  Dimensions,
+  Platform,
+} from 'react-native'
 import TextBadge from './Badge'
 
 export default class CustomTabBar extends Component {
@@ -42,14 +51,14 @@ export default class CustomTabBar extends Component {
         <Tab
           onTabClick={() => this.handleTabClick(0)}
           {...this.props.tabs[0]}
-          selected={selectedIndex == 0}
+          selected={selectedIndex === 0}
           {...style}
         />
         <Add onTabClick={() => this.handleTabClick(-1)} />
         <Tab
           onTabClick={() => this.handleTabClick(1)}
           {...this.props.tabs[1]}
-          selected={selectedIndex == 1}
+          selected={selectedIndex === 1}
           {...style}
         />
       </View>

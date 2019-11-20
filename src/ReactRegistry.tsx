@@ -62,7 +62,8 @@ function withNavigator(moduleName: string) {
       constructor(props: NativeProps) {
         super(props)
         this.navigationRef = React.createRef()
-        this.navigator = store.getNavigator(props.sceneId) || new Navigator(props.sceneId, moduleName)
+        this.navigator =
+          store.getNavigator(props.sceneId) || new Navigator(props.sceneId, moduleName)
         if (this.navigator.moduleName === undefined) {
           this.navigator.moduleName = moduleName
         }
@@ -79,12 +80,18 @@ function withNavigator(moduleName: string) {
           const navigation = this.navigationRef.current as Navigation
           switch (data[KEY_ON]) {
             case ON_BAR_BUTTON_ITEM_CLICK:
-              navigation && navigation.onBarButtonItemClick && navigation.onBarButtonItemClick(data[KEY_ACTION])
+              navigation &&
+                navigation.onBarButtonItemClick &&
+                navigation.onBarButtonItemClick(data[KEY_ACTION])
               break
             case ON_COMPONENT_RESULT:
               navigation &&
                 navigation.onComponentResult &&
-                navigation.onComponentResult(data[KEY_REQUEST_CODE], data[KEY_RESULT_CODE], data[KEY_RESULT_DATA])
+                navigation.onComponentResult(
+                  data[KEY_REQUEST_CODE],
+                  data[KEY_RESULT_CODE],
+                  data[KEY_RESULT_DATA],
+                )
               break
             case ON_COMPONENT_APPEAR:
               if (!this.viewAppeared) {
@@ -163,7 +170,11 @@ export class ReactRegistry {
     console.info('end register react component')
   }
 
-  static registerComponent(appKey: string, getComponentFunc: ComponentProvider, routeConfig?: RouteConfig) {
+  static registerComponent(
+    appKey: string,
+    getComponentFunc: ComponentProvider,
+    routeConfig?: RouteConfig,
+  ) {
     if (routeConfig) {
       router.addRouteConfig(appKey, routeConfig)
     }

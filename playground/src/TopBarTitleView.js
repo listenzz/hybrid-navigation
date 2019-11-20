@@ -44,9 +44,14 @@ export default class TopBarTitleView extends Component {
   }
 
   onFackbookButtonClick() {
-    Alert.alert('Hello!', 'React button is clicked.', [{ text: 'OK', onPress: () => console.log('OK Pressed') }], {
-      cancelable: false,
-    })
+    Alert.alert(
+      'Hello!',
+      'React button is clicked.',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      {
+        cancelable: false,
+      },
+    )
   }
 
   topBarTitleView() {
@@ -62,7 +67,10 @@ export default class TopBarTitleView extends Component {
         <View style={styles.container}>
           <Text style={styles.welcome}> Custom title bar </Text>
 
-          <TouchableOpacity onPress={this.topBarTitleView} activeOpacity={0.2} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.topBarTitleView}
+            activeOpacity={0.2}
+            style={styles.button}>
             <Text style={styles.buttonText}>TopBarTitleView</Text>
           </TouchableOpacity>
         </View>

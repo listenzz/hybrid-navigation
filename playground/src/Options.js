@@ -112,7 +112,10 @@ export default class Options extends Component {
       this.props.garden.setTabBadge([{ index: 0, hidden: true }, { index: 1, hidden: true }])
     } else {
       this.setState({ badge: '5' })
-      this.props.garden.setTabBadge([{ index: 0, hidden: false, dot: true }, { index: 1, hidden: false, text: '99' }])
+      this.props.garden.setTabBadge([
+        { index: 0, hidden: false, dot: true },
+        { index: 1, hidden: false, text: '99' },
+      ])
     }
   }
 
@@ -202,13 +205,21 @@ export default class Options extends Component {
             <Text style={styles.buttonText}>pass options to another scene</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.changeLeftButton} activeOpacity={0.2} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.changeLeftButton}
+            activeOpacity={0.2}
+            style={styles.button}>
             <Text style={styles.buttonText}>
-              {this.state.leftButtonShowText ? 'change left button to text' : 'change left button to icon'}
+              {this.state.leftButtonShowText
+                ? 'change left button to text'
+                : 'change left button to icon'}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.changeRightButton} activeOpacity={0.2} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.changeRightButton}
+            activeOpacity={0.2}
+            style={styles.button}>
             <Text style={styles.buttonText}>
               {this.state.rightButtonEnabled ? 'disable right button' : 'enable right button'}
             </Text>
@@ -219,7 +230,9 @@ export default class Options extends Component {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.toggleTabBadge} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>{this.state.badge ? 'hide tab badge' : 'show tab badge'}</Text>
+            <Text style={styles.buttonText}>
+              {this.state.badge ? 'hide tab badge' : 'show tab badge'}
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.switchTab} activeOpacity={0.2} style={styles.button}>
@@ -230,7 +243,10 @@ export default class Options extends Component {
             <Text style={styles.buttonText}>replalce tab icon</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.replaceTabItemColor} activeOpacity={0.2} style={styles.button}>
+          <TouchableOpacity
+            onPress={this.replaceTabItemColor}
+            activeOpacity={0.2}
+            style={styles.button}>
             <Text style={styles.buttonText}>replalce tab item color</Text>
           </TouchableOpacity>
 

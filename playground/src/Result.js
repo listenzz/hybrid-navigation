@@ -104,7 +104,9 @@ export default class Result extends Component {
             activeOpacity={0.2}
             style={styles.button}
             disabled={this.state.isRoot}>
-            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>pop to home</Text>
+            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
+              pop to home
+            </Text>
           </TouchableOpacity>
 
           <TextInput
