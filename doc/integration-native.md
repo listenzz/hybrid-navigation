@@ -2,6 +2,8 @@
 
 你的大部分业务已经用原生代码实现，你想添加一些 RN 业务模块。
 
+> RN 和原生混合，可以参考 [hud-hybrid](https://github.com/listenzz/react-native-hud-hybrid)，该项目中的 example 示范了 RN 模块和原生模块的混合布局。
+
 添加 RN 业务模块的原生项目，和通过 `react-native init` 命令创建的项目，它们的目录结构往往是不同的。
 
 通过 `react-native init ReactNativeProject` 创建的项目，目录结构是这样的：
@@ -71,28 +73,28 @@ npm install react-native-navigation-hybrid --save
 以前，你是这么注册的
 
 ```javascript
-AppRegistry.registerComponent('ReactNativeProject', () => App);
+AppRegistry.registerComponent('ReactNativeProject', () => App)
 ```
 
 现在，你需要作出改变
 
 ```javascript
-import { ReactRegistry, Garden, BarStyleDarkContent } from 'react-native-navigation-hybrid';
-import Home from './HomeComponent';
-import Profile from './ProfileComponent';
+import { ReactRegistry, Garden, BarStyleDarkContent } from 'react-native-navigation-hybrid'
+import Home from './HomeComponent'
+import Profile from './ProfileComponent'
 
 // 配置全局样式
 Garden.setStyle({
   topBarStyle: BarStyleDarkContent,
-});
+})
 
-ReactRegistry.startRegisterComponent();
+ReactRegistry.startRegisterComponent()
 
 // 注意，你的每一个页面都需要注册
-ReactRegistry.registerComponent('Home', () => Home);
-ReactRegistry.registerComponent('Profile', () => Profile);
+ReactRegistry.registerComponent('Home', () => Home)
+ReactRegistry.registerComponent('Profile', () => Profile)
 
-ReactRegistry.endRegisterComponent();
+ReactRegistry.endRegisterComponent()
 ```
 
 ## Android 项目配置
@@ -284,10 +286,6 @@ protected void onCreateMainComponent() {
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 ```
-
-### 同步构建版本
-
-查看 [这里](./sync-build-version.md)
 
 ## iOS 项目配置
 

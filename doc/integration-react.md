@@ -2,6 +2,8 @@
 
 你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
 
+> 可以使用 [react-native-create-app](https://github.com/listenzz/react-native-create-app) 一键创建，省去大多数配置的麻烦。
+
 假设你是通过 `react-native init MyApp` 创建的项目，目录结构是这样的：
 
 ```
@@ -27,32 +29,37 @@ yarn add react-native-navigation-hybrid
 以前，你是这么注册 React 组件
 
 ```javascript
-import { AppRegistry } from 'react-native';
-import App from './App';
-import { name as appName } from './app.json';
+import { AppRegistry } from 'react-native'
+import App from './App'
+import { name as appName } from './app.json'
 
-AppRegistry.registerComponent(appName, () => App);
+AppRegistry.registerComponent(appName, () => App)
 ```
 
 现在，你需要像下面那样
 
 ```javascript
-import { ReactRegistry, Garden, Navigator, BarStyleDarkContent } from 'react-native-navigation-hybrid';
-import App from './App';
+import {
+  ReactRegistry,
+  Garden,
+  Navigator,
+  BarStyleDarkContent,
+} from 'react-native-navigation-hybrid'
+import App from './App'
 
 // 配置全局样式
 Garden.setStyle({
   topBarStyle: BarStyleDarkContent,
-});
+})
 
 // 重要必须
-ReactRegistry.startRegisterComponent();
+ReactRegistry.startRegisterComponent()
 
 // 注意，你的每一个页面都需要注册
-ReactRegistry.registerComponent('App', () => App);
+ReactRegistry.registerComponent('App', () => App)
 
 // 重要必须
-ReactRegistry.endRegisterComponent();
+ReactRegistry.endRegisterComponent()
 ```
 
 通过 `Navigator#setRoot` 来设置 UI 层级
@@ -62,7 +69,7 @@ Navigator.setRoot({
   stack: {
     children: [{ screen: { moduleName: 'App' } }],
   },
-});
+})
 ```
 
 具体应用请查看 [Navigator#setRoot](./navigation.md)
@@ -81,10 +88,10 @@ function withRedux(WrappedComponent) {
     <Provider store={store}>
       <WrappedComponent {...props} />
     </Provider>
-  );
+  )
 }
 
-ReactRegistry.startRegisterComponent(withRedux);
+ReactRegistry.startRegisterComponent(withRedux)
 ```
 
 其中 `withRedux` 就是一个 [HOC](https://reactjs.org/docs/higher-order-components.html)
