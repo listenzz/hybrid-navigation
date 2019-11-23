@@ -624,6 +624,7 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     // fix issue for pushed to UIViewController whose root view is UIScrollView.
     if ([vc.view isKindOfClass:[UIScrollView class]]) {
         UIScrollView *scrollview = (UIScrollView *)vc.view;
+        scrollview.clipsToBounds = NO;
         if (scrollview.contentOffset.y == 0) {
             frame.origin.y = -frame.size.height;
         }
