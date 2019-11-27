@@ -275,28 +275,38 @@ const NSInteger ResultCancel = 0;
     UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
     if (presentedViewController && !presentedViewController.isBeingDismissed) {
         [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
-            [self performSetRootViewController:rootViewController withTag:tag];
+            [self performSetRootViewController:rootViewController withTag:tag animated:NO];
         }];
     } else {
-        [self performSetRootViewController:rootViewController withTag:tag];
+        [self performSetRootViewController:rootViewController withTag:tag animated:YES];
     }
 }
 
-- (void)performSetRootViewController:(UIViewController *)rootViewController withTag:(NSNumber *)tag {
+- (void)performSetRootViewController:(UIViewController *)rootViewController withTag:(NSNumber *)tag animated:(BOOL)animated {
     UIWindow *mainWindow = [self mainWindow];
-    [UIView transitionWithView:mainWindow duration:0.15f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-        BOOL oldState = [UIView areAnimationsEnabled];
-        [UIView setAnimationsEnabled:NO];
+    if (animated) {
+        [UIView transitionWithView:mainWindow duration:0.15f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+            BOOL oldState = [UIView areAnimationsEnabled];
+            [UIView setAnimationsEnabled:NO];
+            mainWindow.rootViewController = rootViewController;
+            mainWindow.windowLevel = UIWindowLevelNormal;
+            if (!mainWindow.isKeyWindow) {
+                [mainWindow makeKeyAndVisible];
+            }
+            [UIView setAnimationsEnabled:oldState];
+            self.viewHierarchyReady = YES;
+        } completion:^(BOOL finished) {
+            [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{ @"tag": tag }];
+        }];
+    } else {
         mainWindow.rootViewController = rootViewController;
         mainWindow.windowLevel = UIWindowLevelNormal;
         if (!mainWindow.isKeyWindow) {
             [mainWindow makeKeyAndVisible];
         }
-        [UIView setAnimationsEnabled:oldState];
         self.viewHierarchyReady = YES;
-    } completion:^(BOOL finished) {
         [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{ @"tag": tag }];
-    }];
+    }
 }
 
 - (HBDViewController *)primaryViewController {
