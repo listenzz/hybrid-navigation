@@ -332,7 +332,9 @@ void adjustLayout(UIViewController *vc) {
         self.nav.transitional = NO;
         self.nav.poppingViewController = nil;
         if (context.isCancelled) {
-            [self.nav updateNavigationBarForViewController:from];
+            if (to == viewController) {
+                [self.nav updateNavigationBarForViewController:from];
+            }
         } else {
             // `to` != `viewController` when present
             [self.nav updateNavigationBarForViewController:viewController];
