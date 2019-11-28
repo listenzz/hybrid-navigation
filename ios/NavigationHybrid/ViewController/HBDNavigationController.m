@@ -43,6 +43,13 @@ void adjustLayout(UIViewController *vc) {
     } else {
         vc.edgesForExtendedLayout &= ~UIRectEdgeTop;
     }
+    
+    if (vc.hbd_barHidden) {
+        if (@available(iOS 11.0, *)) {
+            UIEdgeInsets insets = vc.additionalSafeAreaInsets;
+            vc.additionalSafeAreaInsets = UIEdgeInsetsMake(-44 + insets.top, insets.left, insets.bottom, insets.right);
+        }
+    }
 }
 
 @interface HBDNavigationControllerDelegate : UIScreenEdgePanGestureRecognizer <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
