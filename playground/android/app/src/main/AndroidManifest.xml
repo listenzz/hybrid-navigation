@@ -45,9 +45,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="hbd"
-                    android:scheme="hbd" />
+                <data android:scheme="hbd" />
             </intent-filter>
         </activity>
     </application>

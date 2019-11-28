@@ -178,7 +178,7 @@ Navigator.setRootLayoutUpdateListener(
     console.log('------------------------inactive router')
   },
   () => {
-    const prefix = Platform.OS === 'android' ? 'hbd://hbd/' : 'hbd://'
+    const prefix = 'hbd://'
     router.activate(prefix)
     console.log('------------------------active router')
   },

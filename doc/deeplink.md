@@ -11,7 +11,7 @@ ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha, {
   path: 'topBarAlpha/:alpha/:color',
   dependency: 'TopBarMisc',
   mode: 'modal',
-});
+})
 ```
 
 这个参数是个对象，一共有三个可选项
@@ -21,12 +21,12 @@ path 表示路径，其中冒号开头的片段表示参数，这些参数将会
 dependency 表示前置页面，譬如一个详情页可能会依赖一个列表页，当点击返回按钮时，会回到列表页。这个选项可以确定依赖链。看 playground 中的例子：
 
 ```javascript
-ReactRegistry.registerComponent('Options', () => Options);
-ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc, { dependency: 'Options' });
+ReactRegistry.registerComponent('Options', () => Options)
+ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc, { dependency: 'Options' })
 ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha, {
   path: 'topBarAlpha/:alpha/:color',
   dependency: 'TopBarMisc',
-});
+})
 ```
 
 TopBarAlpha 依赖 TopBarMisc, TopBarMisc 依赖 Options, 当我们通过 `hbd://topBarAlpha/0.7/#FFFFFF` 这样的 url 打开 TopBarAlpha 这个页面时，会检查 app 当前的路由图，以决定是否切换到 tab Options, 在打开 TopBarAlpha 之前是否需要创建 TopBarMisc。
@@ -43,8 +43,7 @@ mode 表示跳转模式，present 表示使用 `navigator.present` 打开目标�
 import { router } from 'react-native-navigation-hybrid';
 
 componentDidMount() {
-  // on Android, the URI prefix typically contains a host in addition to scheme
-  const prefix = Platform.OS == 'android' ? 'hbd://hbd/' : 'hbd://';
+  const prefix = 'hbd://';
   router.activate(prefix);
 }
 
@@ -59,16 +58,16 @@ componentWillUnmount() {
 // 激活 DeepLink，在 Navigator.setRoot 之前
 Navigator.setRootLayoutUpdateListener(
   () => {
-    router.inactivate();
+    router.inactivate()
   },
   () => {
-    const prefix = Platform.OS == 'android' ? 'hbd://hbd/' : 'hbd://';
-    router.activate(prefix);
-  }
-);
+    const prefix = 'hbd://'
+    router.activate(prefix)
+  },
+)
 
 // 设置 UI 层级
-Navigator.setRoot(drawer, true);
+Navigator.setRoot(drawer, true)
 ```
 
 ## 拦截
@@ -78,8 +77,8 @@ Navigator.setRoot(drawer, true);
 router 对象为我们提供了注册和移除拦截器的一对方法
 
 ```javascript
-registerInterceptor(func);
-unregisterInterceptor(func);
+registerInterceptor(func)
+unregisterInterceptor(func)
 ```
 
 func 是一个接收 path 为参数，返回 boolen 的函数，返回 true 表示拦截。
@@ -120,7 +119,7 @@ In SimpleApp/android/app/src/main/AndroidManifest.xml, add the new intent-filter
     <action android:name="android.intent.action.VIEW" />
     <category android:name="android.intent.category.DEFAULT" />
     <category android:name="android.intent.category.BROWSABLE" />
-    <data android:scheme="mychat" android:host="mychat" />
+    <data android:scheme="mychat" />
 </intent-filter>
 ```
 
@@ -139,5 +138,5 @@ xcrun simctl openurl booted hbd://topBarAlpha/1/#FF344C
 Android:
 
 ```
-adb shell am start -W -a android.intent.action.VIEW -d "hbd://hbd/topBarAlpha/0.5/#FFFFFF" com.navigationhybrid.playground
+adb shell am start -W -a android.intent.action.VIEW -d "hbd://topBarAlpha/0.5/#FFFFFF" com.navigationhybrid.playground
 ```
