@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 
-UIKIT_STATIC_INLINE BOOL hasAlpha(UIColor *color) {
+UIKIT_STATIC_INLINE BOOL colorHasAlphaComponent(UIColor *color) {
     if (!color) {
         return YES;
     }
@@ -19,6 +19,14 @@ UIKIT_STATIC_INLINE BOOL hasAlpha(UIColor *color) {
     CGFloat alpha = 0;
     [color getRed:&red green:&green blue:&blue alpha:&alpha];
     return alpha < 1.0;
+}
+
+UIKIT_STATIC_INLINE BOOL imageHasAlphaChannel(UIImage *image) {
+    CGImageAlphaInfo alpha = CGImageGetAlphaInfo(image.CGImage);
+    return (alpha == kCGImageAlphaFirst ||
+            alpha == kCGImageAlphaLast ||
+            alpha == kCGImageAlphaPremultipliedFirst ||
+            alpha == kCGImageAlphaPremultipliedLast);
 }
 
 UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class class, SEL originalSelector, SEL swizzledSelector) {

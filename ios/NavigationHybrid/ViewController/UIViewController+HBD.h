@@ -20,7 +20,6 @@
 @property (nonatomic, assign) BOOL hbd_barShadowHidden;
 @property (nonatomic, assign) BOOL hbd_backInteractive;
 @property (nonatomic, assign) BOOL hbd_swipeBackEnabled;
-@property (nonatomic, assign) BOOL hbd_extendedLayoutIncludesTopBar;
 @property (nonatomic, strong) UIBarButtonItem *hbd_backBarButtonItem;
 @property (nonatomic, assign, readonly) float hbd_barShadowAlpha;
 

@@ -101,11 +101,7 @@
     
     NSNumber *extendedLayoutIncludesTopBar = self.options[@"extendedLayoutIncludesTopBar"];
     if (extendedLayoutIncludesTopBar) {
-        self.hbd_extendedLayoutIncludesTopBar = [extendedLayoutIncludesTopBar boolValue];
-    }
-    
-    if (!(self.hbd_extendedLayoutIncludesTopBar || hasAlpha(self.hbd_barTintColor))) {
-        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.extendedLayoutIncludesOpaqueBars = [extendedLayoutIncludesTopBar boolValue];
     }
 }
 

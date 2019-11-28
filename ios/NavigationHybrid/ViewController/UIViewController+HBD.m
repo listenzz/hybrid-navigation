@@ -183,15 +183,6 @@
      objc_setAssociatedObject(self, @selector(hbd_swipeBackEnabled), @(enabled), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (BOOL)hbd_extendedLayoutIncludesTopBar {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    return obj ? [obj boolValue] : NO;
-}
-
-- (void)setHbd_extendedLayoutIncludesTopBar:(BOOL)includesTopBar {
-     objc_setAssociatedObject(self, @selector(hbd_extendedLayoutIncludesTopBar), @(includesTopBar), OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
 - (UIBarButtonItem *)hbd_backBarButtonItem {
     return objc_getAssociatedObject(self, _cmd);
 }

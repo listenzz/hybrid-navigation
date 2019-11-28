@@ -36,6 +36,15 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     return [UIColor colorWithRed:newRed green:newGreen blue:newBlue alpha:newAlpha];
 }
 
+void adjustLayout(UIViewController *vc) {
+    BOOL isTranslucent = vc.hbd_barHidden || vc.hbd_barAlpha < 1.0 || colorHasAlphaComponent(vc.hbd_barTintColor);
+    if (isTranslucent || vc.extendedLayoutIncludesOpaqueBars) {
+        vc.edgesForExtendedLayout |= UIRectEdgeTop;
+    } else {
+        vc.edgesForExtendedLayout &= ~UIRectEdgeTop;
+    }
+}
+
 @interface HBDNavigationControllerDelegate : UIScreenEdgePanGestureRecognizer <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak) id<UINavigationControllerDelegate> proxiedDelegate;
@@ -155,7 +164,9 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     
     HBDNavigationController *nav = self.nav;
     nav.transitional = YES;
-
+    
+    adjustLayout(viewController);
+    
     id<UIViewControllerTransitionCoordinator> coordinator = nav.transitionCoordinator;
     if (coordinator) {
         if (@available(iOS 11.0, *)) {
