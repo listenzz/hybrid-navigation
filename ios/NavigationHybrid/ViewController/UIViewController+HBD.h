@@ -21,6 +21,7 @@
 @property (nonatomic, assign) BOOL hbd_backInteractive;
 @property (nonatomic, assign) BOOL hbd_swipeBackEnabled;
 @property (nonatomic, strong) UIBarButtonItem *hbd_backBarButtonItem;
+@property (nonatomic, assign) BOOL hbd_extendedLayoutDidSet;
 @property (nonatomic, assign, readonly) float hbd_barShadowAlpha;
 
 - (void)hbd_setNeedsUpdateNavigationBar;
