@@ -123,6 +123,8 @@ In SimpleApp/android/app/src/main/AndroidManifest.xml, add the new intent-filter
 </intent-filter>
 ```
 
+> MainActivity 的 launchMode 需要设置为 singleTask
+
 ## 测试
 
 具体可以参考 playground 这个项目中相关配置
