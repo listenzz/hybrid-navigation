@@ -37,7 +37,11 @@ export interface StackGraph extends RouteGraph {
   layout: 'stack'
   sceneId: string
   mode: LayoutMode
-  children: ScreenGraph[]
+  children: RouteGraph[]
+}
+
+export function isStackGraph(graph: RouteGraph): graph is StackGraph {
+  return graph.layout === 'stack'
 }
 
 export interface TabsGraph extends RouteGraph {
@@ -48,6 +52,10 @@ export interface TabsGraph extends RouteGraph {
   children: RouteGraph[]
 }
 
+export function isTabsGraph(graph: RouteGraph): graph is TabsGraph {
+  return graph.layout === 'tabs'
+}
+
 export interface DrawerGraph extends RouteGraph {
   layout: 'drawer'
   sceneId: string
@@ -55,11 +63,19 @@ export interface DrawerGraph extends RouteGraph {
   children: [RouteGraph, ScreenGraph]
 }
 
+export function isDrawerGraph(graph: RouteGraph): graph is DrawerGraph {
+  return graph.layout === 'drawer'
+}
+
 export interface ScreenGraph extends RouteGraph {
   layout: 'screen'
   sceneId: string
   mode: LayoutMode
   moduleName: string
+}
+
+export function isScreenGraph(graph: RouteGraph): graph is ScreenGraph {
+  return graph.layout === 'screen'
 }
 
 export type RouteInterceptor = (path: string) => boolean
@@ -79,17 +95,22 @@ function routeDependencies(routeConfig: RouteConfig) {
 }
 
 const stackParser: RouteParser = {
-  navigateTo(_: Router, graph: StackGraph, route: RouteInfo) {
-    const { layout, children } = graph
+  navigateTo(_: Router, graph: RouteGraph, route: RouteInfo) {
+    if (!isStackGraph(graph)) {
+      return false
+    }
+
+    const { children } = graph
     const { mode, moduleName, dependencies, props } = route
 
-    if (layout === 'stack' && mode === 'push') {
+    if (mode === 'push') {
       let moduleNames = [...dependencies, moduleName]
       let index = -1
+
       for (let i = children.length - 1; i > -1; i--) {
-        const { layout, moduleName } = children[i]
-        if (layout === 'screen') {
-          index = moduleNames.indexOf(moduleName)
+        const child = children[i]
+        if (isScreenGraph(child)) {
+          index = moduleNames.indexOf(child.moduleName)
           if (index !== -1) {
             break
           }
@@ -119,40 +140,47 @@ const stackParser: RouteParser = {
 }
 
 const tabsParser: RouteParser = {
-  navigateTo(router: Router, graph: TabsGraph, route: RouteInfo) {
-    const { layout, children, selectedIndex } = graph
-    if (layout === 'tabs') {
-      for (let i = 0; i < children.length; i++) {
-        if (router.navigateTo(children[i], route)) {
-          if (i !== selectedIndex) {
-            const navigator = new Navigator(children[i].sceneId)
-            navigator.switchTab(i)
-          }
-          return true
+  navigateTo(router: Router, graph: RouteGraph, route: RouteInfo) {
+    if (!isTabsGraph(graph)) {
+      return false
+    }
+
+    const { children, selectedIndex } = graph
+    for (let i = 0; i < children.length; i++) {
+      if (router.navigateTo(children[i], route)) {
+        if (i !== selectedIndex) {
+          const navigator = new Navigator(children[i].sceneId)
+          navigator.switchTab(i)
         }
+        return true
       }
     }
+
     return false
   },
 }
 
 const drawerParser: RouteParser = {
-  navigateTo(router: Router, graph: DrawerGraph, route: RouteInfo) {
-    const { layout, children } = graph
-    if (layout === 'drawer') {
-      if (router.navigateTo(children[0], route) || router.navigateTo(children[1], route)) {
-        const navigator = new Navigator(children[0].sceneId)
-        navigator.closeMenu()
-        return true
-      }
-
-      const { moduleName } = children[1]
-      if (moduleName === route.moduleName) {
-        const navigator = new Navigator(children[1].sceneId)
-        navigator.openMenu()
-        return true
-      }
+  navigateTo(router: Router, graph: RouteGraph, route: RouteInfo) {
+    if (!isDrawerGraph(graph)) {
+      return false
     }
+
+    const { children } = graph
+
+    if (router.navigateTo(children[0], route) || router.navigateTo(children[1], route)) {
+      const navigator = new Navigator(children[0].sceneId)
+      navigator.closeMenu()
+      return true
+    }
+
+    const { moduleName } = children[1]
+    if (moduleName === route.moduleName) {
+      const navigator = new Navigator(children[1].sceneId)
+      navigator.openMenu()
+      return true
+    }
+
     return false
   },
 }
