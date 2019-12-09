@@ -56,7 +56,7 @@ public class ReactBridgeManager {
     private final CopyOnWriteArrayList<ReactModuleRegisterListener> reactModuleRegisterListeners = new CopyOnWriteArrayList<>();
 
     private ReadableMap rootLayout;
-    private int rootLayoutTag;
+    private int pendingTag;
     private ReadableMap stickyLayout;
     private ReadableMap pendingLayout;
     private boolean viewHierarchyReady;
@@ -73,7 +73,7 @@ public class ReactBridgeManager {
         reactInstanceManager.addReactInstanceEventListener(context -> {
             FLog.i(TAG, "react instance context initialized.");
             rootLayout = null;
-            rootLayoutTag = 0;
+            pendingTag = 0;
             stickyLayout = null;
             pendingLayout = null;
             setViewHierarchyReady(false);
@@ -165,18 +165,12 @@ public class ReactBridgeManager {
         reactModuleRegisterListeners.remove(listener);
     }
 
-    public void setRootLayout(@NonNull ReadableMap root, boolean sticky, int tag) {
+    public void setRootLayout(@NonNull ReadableMap root, boolean sticky) {
         if (sticky && !hasStickyLayout()) {
             stickyLayout = root;
         }
 
         rootLayout = root;
-
-        if (pendingLayout != null || rootLayoutTag == 0) {
-            rootLayoutTag = tag;
-        } else {
-            throw new IllegalStateException("unbalance call `getAndResetRootLayoutTag` and `setRoot`");
-        }
     }
 
     @Nullable
@@ -188,15 +182,6 @@ public class ReactBridgeManager {
         return rootLayout != null;
     }
 
-    public int getAndResetRootLayoutTag() {
-        if (hasRootLayout()) {
-            int tag = rootLayoutTag;
-            rootLayoutTag = 0;
-            return tag;
-        }
-        return 0;
-    }
-
     @Nullable
     public ReadableMap getStickyLayout() {
         return stickyLayout;
@@ -206,13 +191,18 @@ public class ReactBridgeManager {
         return stickyLayout != null;
     }
 
-    public void setPendingLayout(@Nullable ReadableMap pendingLayout) {
+    public void setPendingLayout(@Nullable ReadableMap pendingLayout, int tag) {
         this.pendingLayout = pendingLayout;
+        this.pendingTag = tag;
     }
 
     @Nullable
     public ReadableMap getPendingLayout() {
         return pendingLayout;
+    }
+
+    public int getPendingTag() {
+        return pendingTag;
     }
 
     public boolean hasPendingLayout() {
