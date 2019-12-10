@@ -110,11 +110,14 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 return;
             }
 
+            if (bridgeManager.getPendingTag() != 0) {
+                throw new IllegalStateException("The previous `setRoot` has not been processed yet, you should `await Navigator.setRoot()` to complete.");
+            }
+
             bridgeManager.setViewHierarchyReady(false);
             bridgeManager.setRootLayout(layout, sticky);
             Activity activity = getCurrentActivity();
             if (activity instanceof ReactAppCompatActivity && bridgeManager.isReactModuleRegisterCompleted()) {
-                bridgeManager.setPendingLayout(null, 0);
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 AwesomeFragment fragment = bridgeManager.createFragment(layout);
                 if (fragment != null) {

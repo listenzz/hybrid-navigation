@@ -134,14 +134,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             setActivityRootFragment(reactNavigationFragment);
         } else if (bridgeManager.hasPendingLayout()) {
             FLog.i(TAG, "set root from pending layout when create main component");
-            int pendingTag = bridgeManager.getPendingTag();
-            ReadableMap pendingLayout = bridgeManager.getPendingLayout();
-            AwesomeFragment fragment = bridgeManager.createFragment(pendingLayout);
-            bridgeManager.setPendingLayout(null, 0);
-            if (fragment != null) {
-                setActivityRootFragment(fragment, pendingTag);
-
-            }
+            setActivityRootFragment(bridgeManager);
         } else if (bridgeManager.hasStickyLayout()) {
             FLog.i(TAG, "set root from sticky layout when create main component");
             AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getStickyLayout());
@@ -173,16 +166,20 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     protected void onResume() {
         super.onResume();
         activityDelegate.onResume();
-        if (getReactBridgeManager().hasPendingLayout()) {
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        if (bridgeManager.hasPendingLayout()) {
             FLog.i(TAG, "set root from pending layout when resume");
-            ReactBridgeManager bridgeManager = getReactBridgeManager();
-            int pendingTag = bridgeManager.getPendingTag();
-            ReadableMap pendingLayout = bridgeManager.getPendingLayout();
-            AwesomeFragment fragment = bridgeManager.createFragment(pendingLayout);
-            bridgeManager.setPendingLayout(null, 0);
-            if (fragment != null) {
-                setActivityRootFragment(fragment, pendingTag);
-            }
+            setActivityRootFragment(bridgeManager);
+        }
+    }
+
+    private void setActivityRootFragment(ReactBridgeManager bridgeManager) {
+        int pendingTag = bridgeManager.getPendingTag();
+        ReadableMap pendingLayout = bridgeManager.getPendingLayout();
+        AwesomeFragment fragment = bridgeManager.createFragment(pendingLayout);
+        bridgeManager.setPendingLayout(null, 0);
+        if (fragment != null) {
+            setActivityRootFragment(fragment, pendingTag);
         }
     }
 
