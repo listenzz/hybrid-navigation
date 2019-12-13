@@ -2,7 +2,7 @@
 
 你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
 
-> 可以使用 [react-native-create-app](https://github.com/listenzz/react-native-create-app) 一键创建，省去大多数配置的麻烦。
+> 可以通过使用 [react-native-create-app](https://github.com/listenzz/react-native-create-app) 一行命令创建，省去大多数配置的麻烦。
 
 假设你是通过 `react-native init MyApp` 创建的项目，目录结构是这样的：
 

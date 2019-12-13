@@ -140,5 +140,5 @@ xcrun simctl openurl booted hbd://topBarAlpha/1/#FF344C
 Android:
 
 ```
-adb shell am start -W -a android.intent.action.VIEW -d "hbd://topBarAlpha/0.5/#FFFFFF" com.navigationhybrid.playground
+adb shell am start -W -a android.intent.action.VIEW -d "hbd://topBarAlpha/0.5/#FFFFFF"
 ```

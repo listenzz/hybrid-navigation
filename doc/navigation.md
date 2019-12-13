@@ -21,7 +21,7 @@ Navigator.setRoot({
     props: {},
     options: {},
   },
-});
+})
 ```
 
 screen 布局对象有三个属性，分别是 moduleName, props, options，其中 moduleName 是必须的，它就是我们上面注册的那些模块名，props 是我们要传递给该页面的初始属性，options 是 navigationItem，参看[静态配置页面](./style.md#static-options)。
@@ -36,7 +36,7 @@ Navigator.setRoot({
     children: [{ screen: { moduleName: 'Navigation' } }], // required
     options: {},
   },
-});
+})
 ```
 
 **注意：stack 中 不可嵌套 stack**
@@ -66,7 +66,7 @@ Navigator.setRoot({
       sizeIndeterminate: true, // 如果希望自定义 TabBar 实现中间凸起效果，必须指定这个字段。
     },
   },
-});
+})
 ```
 
 tabs 有一个默认的 TabBar， 支持未读消息数，小红点提示等功能。你也可以通过在 options 中传递 tabBarModuleName 来实现自定义 TabBar，但此时未读消息数，小红点提示等功能均需要你自己实现。如何自定义 TabBar, 请参考[自定义 TabBar](./custom-tabbar.md)。
@@ -99,7 +99,7 @@ Navigator.setRoot({
 });
 ```
 
-至此，四种内置布局就已经介绍完成了，我们也可以自定义布局（容器）和导航，不过这是比较高级的话题了。
+至此，四种内置布局就已经介绍完成了，我们也可以自定义布局（容器）和导航，[deck](https://github.com/listenzz/react-native-navigation-deck) 就是一个自定义容器，不过这是比较高级的话题了。
 
 > 可以先通过 `Navigator.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigator.setRoot` 决定要进入哪个页面。
 
@@ -115,8 +115,8 @@ Navigator.setRoot({
 
 ```javascript
 // 以下两行代码的效果是等同的
-Navigator.dispatch(this.props.sceneId, 'push', { moduleName: 'Profile' });
-this.props.navigator.push('Profile');
+Navigator.dispatch(this.props.sceneId, 'push', { moduleName: 'Profile' })
+this.props.navigator.push('Profile')
 ```
 
 - **setInterceptor(interceptor: NavigationInterceptor)**
@@ -125,11 +125,11 @@ this.props.navigator.push('Profile');
 
 ```javascript
 Navigator.setInterceptor((action, from, to, extras) => {
-  console.info(`action:${action} from:${from} to:${to}`);
+  console.info(`action:${action} from:${from} to:${to}`)
   // 当返回 true 时，表示你要拦截该操作
   // 譬如用户想要跳到的页面需要登录，你可以在这里验证用户是否已经登录，否则就重定向到登录页面
-  return false;
-});
+  return false
+})
 ```
 
 `extras` 中有我们需要的额外信息。譬如 `sceneId`，它表示动作发出的页面， 通过 `Navigator.get(sceneId)` 可以获取该页面的 `navigator`。如果 action 是 switchTab，我们还可以从 `extras` 中获取 `index` 这个属性，它表示将要切换到的 tab 的位置，从 0 开始。
@@ -139,7 +139,7 @@ Navigator.setInterceptor((action, from, to, extras) => {
 接受 sceneId 作为参数，返回一个已经存在的 navigator 实例
 
 ```javascript
-this.props.navigator === Navigator.get(this.props.sceneId);
+this.props.navigator === Navigator.get(this.props.sceneId)
 // true
 ```
 
@@ -148,8 +148,8 @@ this.props.navigator === Navigator.get(this.props.sceneId);
 返回当前有效的 navigator，通常是用户当前可见的那个页面的 navigator
 
 ```javascript
-const navigator = await Navigator.current();
-this.props.navigator === navigator;
+const navigator = await Navigator.current()
+this.props.navigator === navigator
 // true
 ```
 
@@ -158,9 +158,9 @@ this.props.navigator === navigator;
 获取当前路由信息
 
 ```javascript
-import { Navigator } from 'react-native-navigation-hybrid';
+import { Navigator } from 'react-native-navigation-hybrid'
 
-const route = await Navigator.currentRoute();
+const route = await Navigator.currentRoute()
 
 // {
 //   sceneId: 'xxxxxxxx',
@@ -168,13 +168,13 @@ const route = await Navigator.currentRoute();
 //   mode: 'modal'
 // }
 
-const navigator = Navigator.get(route.sceneId);
+const navigator = Navigator.get(route.sceneId)
 ```
 
 以上操作等同于
 
 ```javascript
-const navigator = await Navigator.current();
+const navigator = await Navigator.current()
 ```
 
 - **routeGraph(): Promise&lt;RouteGraph[]&gt;**
@@ -195,7 +195,7 @@ const navigator = Navigator.get(sceneId);
 `graph` 是一个数组，它长下面这个样子
 
 ```javascript
-[
+;[
   {
     layout: 'drawer',
     sceneId: '',
@@ -224,7 +224,7 @@ const navigator = Navigator.get(sceneId);
     moduleName: 'Navigation',
     mode: '', // modal, present, normal
   },
-];
+]
 ```
 
 `Navigator.routeGraph` 帮助我们获得整张路由图，它是实现 DeepLink 的基础。本库已经提供了 DeepLink 的默认实现。
@@ -240,13 +240,13 @@ screen 是最基本的页面，它用来表示通过 `ReactRegistry.registerComp
 将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件，比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
 
 ```javascript
-this.props.navigator.showModal('ReactModal', REQUEST_CODE);
+this.props.navigator.showModal('ReactModal', REQUEST_CODE)
 ```
 
 可以通过第三个参数来给 modal 传递属性：
 
 ```javascript
-this.props.navigator.showModal('ReactModal', REQUEST_CODE, { x: '123' });
+this.props.navigator.showModal('ReactModal', REQUEST_CODE, { x: '123' })
 ```
 
 modal 通过 `this.props` 来获取传递过来的属性
@@ -254,8 +254,8 @@ modal 通过 `this.props` 来获取传递过来的属性
 modal 在关闭前通过以下方式设置返回值：
 
 ```javascript
-this.props.navigator.setResult(resultCode, data);
-this.props.navigator.hideModal();
+this.props.navigator.setResult(resultCode, data)
+this.props.navigator.hideModal()
 ```
 
 目标页面（即将 modal 显示出来的页面）可以通过实例方法 `onComponentResult` 或者 React Hook `useResult` 来接收结果：
@@ -281,7 +281,7 @@ function FunctionComponent() {
 
 ```javascript
 async function show() {
-  const [resultCode, data] = await this.props.navigator.showModal('ReactModal', REQUEST_CODE);
+  const [resultCode, data] = await this.props.navigator.showModal('ReactModal', REQUEST_CODE)
   // handle the result
 }
 ```
@@ -306,15 +306,15 @@ present 是一种模态交互方式，类似于 Android 的 `startActivityForRes
 
 ```javascript
 // A.js
-this.props.navigator.present('B', 1);
+this.props.navigator.present('B', 1)
 ```
 
 B 页面通过 `setResult`返回结果给 A 页面
 
 ```javascript
 // B.js
-this.props.navigator.setResult(RESULT_OK, { text: 'greeting' });
-this.props.navigator.dismiss();
+this.props.navigator.setResult(RESULT_OK, { text: 'greeting' })
+this.props.navigator.dismiss()
 ```
 
 **注意：仅支持返回可以序列化为 json 的对象，不支持函数**
@@ -338,7 +338,7 @@ A 在 present B 时，可以通过第三个参数传值给 B
 
 ```javascript
 // A.js
-this.props.navigator.present('B', 1, {});
+this.props.navigator.present('B', 1, {})
 ```
 
 B 页面可以通过 `this.props` 来获取传递的值
@@ -351,22 +351,22 @@ A 页面 `present` 出相册列表页面
 
 ```javascript
 //A.js
-this.props.navigator.present('AlbumList', 1);
+this.props.navigator.present('AlbumList', 1)
 ```
 
 相册列表页面 `push` 到某个相册
 
 ```javascript
 // AlbumList.js
-this.props.navigator.push('Album');
+this.props.navigator.push('Album')
 ```
 
 在相册页面选好相片后返回结果给 A 页面
 
 ```javascript
 // Album.js
-this.props.navigator.setResult(RESULT_OK, { uri: 'file://...' });
-this.props.navigator.dismiss();
+this.props.navigator.setResult(RESULT_OK, { uri: 'file://...' })
+this.props.navigator.dismiss()
 ```
 
 A 页面通过实现 `onComponentResult` 方法来接收结果（略）。
@@ -389,15 +389,15 @@ this.props.navigator.presentLayout(
       children: { screen: { moduleName: 'B' } },
     },
   },
-  REQUEST_CODE
-);
+  REQUEST_CODE,
+)
 ```
 
 以上效果实际等同于：
 
 ```javascript
 // A.js
-this.props.navigator.present('B', 1);
+this.props.navigator.present('B', 1)
 ```
 
 也就是说，present 出来的组件，默认会嵌套在 stack 里面，因为当使用 present 时，把目标页面嵌套在 stack 里面是比较常见的操作。
@@ -412,7 +412,7 @@ stack 以栈的方式管理它的子页面，它支持以下导航操作：
 
 ```javascript
 // A.js
-this.props.navigator.push('B');
+this.props.navigator.push('B')
 ```
 
 可以通过第二个参数来传值给 B 页面
@@ -436,7 +436,7 @@ push 加强版，通过传递一个布局对象，展示 UI 层级比较复杂�
 
 ```javascript
 // B.js
-this.props.navigator.pop();
+this.props.navigator.pop()
 ```
 
 - **popTo(sceneId: string, animated = true)**
@@ -447,21 +447,21 @@ this.props.navigator.pop();
 
 ```javascript
 // B.js
-this.props.navigator.push('C', { bId: this.props.sceneId });
+this.props.navigator.push('C', { bId: this.props.sceneId })
 ```
 
 从 C 页面跳到 D 页面时
 
 ```javascript
 // C.js
-this.props.navigator.push('D', { bId: this.props.bId });
+this.props.navigator.push('D', { bId: this.props.bId })
 ```
 
 现在想从 D 页面 返回到 B 页面
 
 ```javascript
 // D.js
-this.props.navigator.popTo(this.props.bId);
+this.props.navigator.popTo(this.props.bId)
 ```
 
 - **popToRoot(animated = true)**
@@ -470,7 +470,7 @@ this.props.navigator.popTo(this.props.bId);
 
 ```javascript
 // D.js
-this.props.navigator.popToRoot();
+this.props.navigator.popToRoot()
 ```
 
 pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `onComponentResult(requestCode, resultCode, data)` 或 `useResult` 来接收结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
@@ -481,7 +481,7 @@ pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`�
 
 ```javascript
 // A.js
-this.props.navigator.replace('B');
+this.props.navigator.replace('B')
 ```
 
 现在 stack 里没有 A 页面了，被替换成了 B。
@@ -504,7 +504,7 @@ this.props.navigator.replace('B');
 
 ```javascript
 // D.js
-this.props.navigator.replaceToRoot('E');
+this.props.navigator.replaceToRoot('E')
 ```
 
 A、B、C、D 页面被移除，E 页面被设置为 stack 的根页面。
@@ -537,14 +537,14 @@ tabs 支持以下导航操作
 切换到指定 tab
 
 ```javascript
-this.props.navigator.switchTab(1);
+this.props.navigator.switchTab(1)
 ```
 
 该方法还接受第二个参数，是个布尔值，用来控制在切换到其它 tab 时，当前 tab (该 tab 是个 stack) 要不要重置到根页面，默认是 false.
 
 ```javascript
 // 当前 tab 会调用 popToRoot
-this.props.navigator.switchTab(1, true);
+this.props.navigator.switchTab(1, true)
 ```
 
 ## drawer
@@ -556,7 +556,7 @@ drawer 支持以下导航操作
 切换抽屉的开关状态
 
 ```javascript
-this.props.navigator.toggleMenu();
+this.props.navigator.toggleMenu()
 ```
 
 - **openMenu()**
@@ -564,7 +564,7 @@ this.props.navigator.toggleMenu();
 打开抽屉
 
 ```javascript
-this.props.navigator.openMenu();
+this.props.navigator.openMenu()
 ```
 
 <a name="navigation-caveat"></a>
@@ -574,7 +574,7 @@ this.props.navigator.openMenu();
 关闭抽屉
 
 ```javascript
-this.props.navigator.closeMenu();
+this.props.navigator.closeMenu()
 ```
 
 ## 注意事项
@@ -596,18 +596,18 @@ this.props.navigator.closeMenu();
 - **在调用 `dismiss` 、`hideModal`、`pop`、`popTo`、`popToRoot`、`replace` 或者 `replaceToRoot` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
   ```javascript
-  this.props.navigator.hideModal();
+  this.props.navigator.hideModal()
   // 下面这行代码不会生效
-  this.props.navigator.present('XXX', 1);
+  this.props.navigator.present('XXX', 1)
   ```
 
   一个变通的办法是使用 `Navigator.current`
 
   ```javascript
-  this.props.navigator.hideModal();
+  this.props.navigator.hideModal()
   // 使用 modal 隐藏后出现的页面的 navigator
-  const currrent = await Navigator.currrent();
-  currrent.present('XXX', 1);
+  const currrent = await Navigator.currrent()
+  currrent.present('XXX', 1)
   ```
 
 - 如果由于某些原因，需要**异步地**或者**在页面之外**执行路由操作，那么请合理使用 `Navigator.current`、`Navigator.currentRoute`、`Navigator.routeGraph`、`Navigator.get` 等静态方法。
@@ -616,19 +616,19 @@ this.props.navigator.closeMenu();
 
   ```javascript
   // 通过 currentRoute 获取当前的路由信息
-  let route = await Navigator.currentRoute();
+  let route = await Navigator.currentRoute()
   while (route.mode === 'modal') {
     // 通过路由信息中的 sceneId 来获取当前页面的 navigator
-    const current = Navigator.get(route.sceneId);
+    const current = Navigator.get(route.sceneId)
     // 因为我们不能 present 一个页面在 modal 之上，所以先要隐藏 modal
-    current.hideModal();
+    current.hideModal()
     // 再次获取**当前**的路由信息
-    route = await Navigator.currentRoute();
+    route = await Navigator.currentRoute()
   }
   // 关闭 modal 后，再次获取**当前页面**的 navigator
-  const current = Navigator.get(route.sceneId);
+  const current = Navigator.get(route.sceneId)
   // 最后，终于到这一步了
-  current.present('Foo');
+  current.present('Foo')
   ```
 
   如果收到服务器推送后，需要通过特定页面执行路由操作，那么可以通过 `Navigator.routeGraph` 获取整张路由图来解析，获得相应的 navigator 来关闭所有不需要的页面，最后通过特定页面的 navigator 来执行目标动作。
