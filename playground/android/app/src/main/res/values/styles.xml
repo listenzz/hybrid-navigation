@@ -1,20 +1,10 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <!--toolbar color-->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-
-        <!-- status bar color -->
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-
         <item name="colorAccent">@color/colorAccent</item>
-
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-
-        <!--在无需多点触控的页面上，建议关闭多点触控-->
-        <item name="android:splitMotionEvents">false</item>
+        <item name="android:editTextBackground">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme" parent="AppBaseTheme">

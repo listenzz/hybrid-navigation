@@ -114,7 +114,6 @@ export default class Result extends Component {
             onChangeText={this.onInputTextChanged}
             value={this.state.text}
             placeholder={'enter your text'}
-            underlineColorAndroid="#00000000"
             textAlignVertical="center"
           />
 
