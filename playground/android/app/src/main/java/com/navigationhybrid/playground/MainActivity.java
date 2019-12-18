@@ -16,9 +16,22 @@ public class MainActivity extends ReactAppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState == null || !isReactModuleRegisterCompleted()) {
-            splashFragment = new SplashFragment();
-            showDialogInternal(splashFragment, 0);
+        if (savedInstanceState != null) {
+            String tag = savedInstanceState.getString("splash_tag");
+            if (tag != null) {
+                splashFragment = (SplashFragment) getSupportFragmentManager().findFragmentByTag(tag);
+            }
+        }
+
+        if (splashFragment == null) {
+            if (!isReactModuleRegisterCompleted()) {
+                splashFragment = new SplashFragment();
+                showDialogInternal(splashFragment, 0);
+            }
+        } else {
+            if (isReactModuleRegisterCompleted()) {
+                splashFragment.dismissDialog();
+            }
         }
     }
 
@@ -31,6 +44,14 @@ public class MainActivity extends ReactAppCompatActivity {
                 splashFragment.dismissDialog();
                 splashFragment = null;
             }, 200);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (splashFragment != null) {
+            outState.putString("splash_tag", splashFragment.getSceneId());
         }
     }
 
