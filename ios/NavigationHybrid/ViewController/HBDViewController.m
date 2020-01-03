@@ -52,7 +52,11 @@
 
 - (BOOL)prefersStatusBarHidden {
     if (@available(iOS 13.0, *)) {
-        return [self hbd_statusBarHidden] && !self.hbd_inCall;
+        if ([HBDUtils isIphoneX]) {
+            return [self hbd_statusBarHidden] && !self.hbd_inCall;
+        } else {
+            return NO;
+        }
     }
     return [super prefersStatusBarHidden];
 }
