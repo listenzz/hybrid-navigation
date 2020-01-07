@@ -133,7 +133,7 @@ public class ScreenNavigator implements Navigator {
                 }
                 break;
             case "hideModal":
-                target.dismissDialog();
+                target.hideDialog();
                 break;
             case "presentLayout":
                 ReadableMap layout = extras.getMap("layout");

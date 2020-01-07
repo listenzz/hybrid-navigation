@@ -351,18 +351,17 @@ public class ReactBridgeManager {
             Bundle tabItem = options.getBundle("tabItem");
             if (tabItem != null) {
                 String title = tabItem.getString("title", "Tab");
-                TabBarItem tabBarItem = new TabBarItem(-1, title);
-
+                TabBarItem tabBarItem = new TabBarItem(title);
                 Bundle icon = tabItem.getBundle("icon");
                 if (icon != null) {
                     String uri = icon.getString("uri");
                     if (uri != null) {
-                        tabBarItem = new TabBarItem(uri, title);
+                        tabBarItem = new TabBarItem(title, uri);
                         Bundle unselectedIcon = tabItem.getBundle("unselectedIcon");
                         if (unselectedIcon != null) {
                             String unselectedUri = unselectedIcon.getString("uri");
                             if (unselectedUri != null) {
-                                tabBarItem = new TabBarItem(uri, unselectedUri, title);
+                                tabBarItem = new TabBarItem(title, uri, unselectedUri);
                             }
                         }
                     }

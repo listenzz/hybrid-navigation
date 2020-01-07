@@ -105,7 +105,7 @@ export interface BackItem {
 
 export interface TabItem {
   title: string
-  icon: Image
+  icon?: Image
   unselectedIcon?: Image
   hideTabBarWhenPush?: boolean
 }

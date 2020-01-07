@@ -135,6 +135,14 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     @Override
+    protected int preferredNavigationBarColor() {
+        if (garden.shouldInterceptNavigationBarColor) {
+            return style.getNavigationBarColor();
+        }
+        return super.preferredNavigationBarColor();
+    }
+
+    @Override
     protected AwesomeToolbar onCreateAwesomeToolbar(View parent) {
         if (garden.toolbarHidden) {
             return null;

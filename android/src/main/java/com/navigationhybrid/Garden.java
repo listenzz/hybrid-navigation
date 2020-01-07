@@ -61,6 +61,8 @@ public class Garden {
 
     boolean extendedLayoutIncludesTopBar;
 
+    boolean shouldInterceptNavigationBarColor;
+
     BarStyle statusBarStyle;
 
     Garden(@NonNull HybridFragment fragment, Style style) {
@@ -83,11 +85,6 @@ public class Garden {
         String screenColor = options.getString("screenBackgroundColor");
         if (!TextUtils.isEmpty(screenColor)) {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));
-        }
-
-        String navigationBarColor = options.getString("navigationBarColorAndroid");
-        if (!TextUtils.isEmpty(navigationBarColor)) {
-            style.setNavigationBarColor(Color.parseColor(navigationBarColor));
         }
 
         applyToolbarOptions(options);
@@ -207,6 +204,12 @@ public class Garden {
         String statusBarColor = options.getString("statusBarColorAndroid");
         if (!TextUtils.isEmpty(statusBarColor)) {
             style.setStatusBarColor(Color.parseColor(statusBarColor));
+        }
+
+        String navigationBarColor = options.getString("navigationBarColorAndroid");
+        if (!TextUtils.isEmpty(navigationBarColor)) {
+            shouldInterceptNavigationBarColor = true;
+            style.setNavigationBarColor(Color.parseColor(navigationBarColor));
         }
 
         boolean statusBarHidden = options.getBoolean("statusBarHidden");

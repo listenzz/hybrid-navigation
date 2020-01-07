@@ -24,7 +24,7 @@ icon: { uri: 'flower', scale: PixelRatio.get() },
 
 ```javascript
 icon: {
-  uri: 'http://xxx.xx/?width=24&height=24&scale=3';
+  uri: 'http://xxx.xx/?width=24&height=24&scale=3'
 }
 ```
 
@@ -44,43 +44,43 @@ icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
 
 ```ts
 export interface Style {
-  screenBackgroundColor?: Color; // 页面背景，默认是白色
-  topBarStyle?: BarStyle; // 顶部导航栏样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
-  topBarColor?: Color; // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
-  statusBarColorAndroid?: Color; // 状态栏背景颜色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
-  navigationBarColorAndroid?: Color; // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
-  hideBackTitleIOS?: boolean; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-  elevationAndroid?: number; // 顶部导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
-  shadowImage?: ShadowImage; // 顶部导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
-  backIcon?: Image; // 返回按钮图片
-  topBarTintColor?: Color; // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
-  titleTextColor?: Color; // 顶部导航栏标题颜色，默认根据 topBarStyle 来计算
-  titleTextSize?: number; // 顶部导航栏标题字体大小，默认是 17 dp(pt)
-  titleAlignmentAndroid?: TitleAlignment; // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
-  barButtonItemTextSize?: number; // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
-  swipeBackEnabledAndroid?: boolean; // Android 是否开启右滑返回，默认是 false
+  screenBackgroundColor?: Color // 页面背景，默认是白色
+  topBarStyle?: BarStyle // 顶部导航栏样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
+  topBarColor?: Color // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
+  statusBarColorAndroid?: Color // 状态栏背景颜色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
+  navigationBarColorAndroid?: Color // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
+  hideBackTitleIOS?: boolean // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
+  elevationAndroid?: number // 顶部导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
+  shadowImage?: ShadowImage // 顶部导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
+  backIcon?: Image // 返回按钮图片
+  topBarTintColor?: Color // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
+  titleTextColor?: Color // 顶部导航栏标题颜色，默认根据 topBarStyle 来计算
+  titleTextSize?: number // 顶部导航栏标题字体大小，默认是 17 dp(pt)
+  titleAlignmentAndroid?: TitleAlignment // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
+  barButtonItemTextSize?: number // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
+  swipeBackEnabledAndroid?: boolean // Android 是否开启右滑返回，默认是 false
 
-  tabBarColor?: Color; // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
-  tabBarShadowImage?: ShadowImage; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
-  tabBarItemColor?: Color; // 底部 TabBarItem icon 选中颜色
-  tabBarUnselectedItemColor?: Color; // 底部 TabBarItem icon 未选中颜色，默认为 #BDBDBD
-  tabBarBadgeColor?: Color; //  Tab badge 颜色
+  tabBarColor?: Color // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
+  tabBarShadowImage?: ShadowImage // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
+  tabBarItemColor?: Color // 底部 TabBarItem icon 选中颜色
+  tabBarUnselectedItemColor?: Color // 底部 TabBarItem icon 未选中颜色，默认为 #BDBDBD
+  tabBarBadgeColor?: Color //  Tab badge 颜色
 }
 
-export type Color = string;
-export type Image = { uri: string; scale?: number; height?: number; width?: number };
+export type Color = string
+export type Image = { uri: string; scale?: number; height?: number; width?: number }
 export interface ShadowImage {
-  image?: Image;
-  color?: Color;
+  image?: Image
+  color?: Color
 }
 
-export const BarStyleLightContent = 'light-content';
-export const BarStyleDarkContent = 'dark-content';
-export type BarStyle = BarStyleLightContent | BarStyleDarkContent;
+export const BarStyleLightContent = 'light-content'
+export const BarStyleDarkContent = 'dark-content'
+export type BarStyle = BarStyleLightContent | BarStyleDarkContent
 
-export const TitleAlignmentLeft = 'left';
-export const TitleAlignmentCenter = 'center';
-export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft;
+export const TitleAlignmentLeft = 'left'
+export const TitleAlignmentCenter = 'center'
+export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft
 ```
 
 > 全局设置主题，有些样式需要重新运行原生应用才能看到效果。
@@ -118,11 +118,11 @@ export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft;
 3.双击打开 values-v21 目录中的 styles.xml 文件，把 App 主题样式 `andriod:statusBarColor` 的值设置成和你用 Garden 设置的一样。
 
 ```javascript
-import { Garden } from 'react-native-navigation-hybrid';
+import { Garden } from 'react-native-navigation-hybrid'
 
 Garden.setStyle({
   statusBarColor: '#ffffff',
-});
+})
 ```
 
 ```xml
@@ -143,8 +143,8 @@ Garden.setStyle({
 ```javascript
 // index.js
 
-import { Image } from 'react-native';
-import { Garden } from 'react-native-navigation-hybrid';
+import { Image } from 'react-native'
+import { Garden } from 'react-native-navigation-hybrid'
 
 Garden.setStyle({
   shadowImage: {
@@ -152,7 +152,7 @@ Garden.setStyle({
     color: '#cccccc',
     // image: Image.resolveAssetSource(require('./divider.png'))
   },
-});
+})
 ```
 
 shadowImage 会有一个默认值，如果你想去掉，可以这样设置
@@ -160,7 +160,7 @@ shadowImage 会有一个默认值，如果你想去掉，可以这样设置
 ```javascript
 Garden.setStyle({
   shadowImage: {},
-});
+})
 ```
 
 - **backIcon**
@@ -170,12 +170,12 @@ Garden.setStyle({
 ```javascript
 // index.js
 
-import { Image } from 'react-native';
-import { Garden } from 'react-native-navigation-hybrid';
+import { Image } from 'react-native'
+import { Garden } from 'react-native-navigation-hybrid'
 
 Garden.setStyle({
   backIcon: Image.resolveAssetSource(require('./ic_back.png')),
-});
+})
 ```
 
 - **tabBarShadowImage**
@@ -244,7 +244,7 @@ class Screen extends Component {
       insetsIOS: { top: -1, left: -8, bottom: 0, right: 0 },
       // 按钮点击事件处理
       action: navigator => {
-        navigator.toggleMenu();
+        navigator.toggleMenu()
       },
       // 按钮是否可以点击
       enabled: true,
@@ -286,14 +286,14 @@ class Screen extends Component {
     tabItem: {
       // tab 标题文字
       title: 'Style',
-      // tab 图片
+      // tab 图片，可选
       icon: { uri: fontUri('FontAwesome', 'leaf', 20) },
-      // tab 未选中时的图片，可选
+      // tab 未选中时的图片，可选，只有设置了 icon，unselectedIcon 才会生效
       unselectedIcon: { uri: fontUri('FontAwesome', 'leaf', 20) },
       // push 时是否隐藏 tabBar
       hideTabBarWhenPush: true,
     },
-  };
+  }
 }
 ```
 
@@ -312,7 +312,7 @@ layoutFitting 配合 moduleName 使用，自定义标题栏的布局模式，有
 标题栏和所属页面共享同一个 navigator 对象，你可以在所属页面通过以下方式传递参数给标题栏使用
 
 ```javascript
-this.props.navigator.setParams({});
+this.props.navigator.setParams({})
 ```
 
 详情请参考 playground 中 TopBarTitleView.js 这个文件。
@@ -356,7 +356,7 @@ class B extends Component {
       title: 'B 的按钮',
       action: navigator => {},
     },
-  };
+  }
 }
 ```
 
@@ -378,8 +378,8 @@ this.props.navigator.push(
     rightBarButtonItem: {
       title: '来自 A 的按钮',
     },
-  }
-);
+  },
+)
 ```
 
 那么，如果 B 页面是从 A 跳过来的，那么 B 的导航栏标题就会变成 _来自 A 的标题_ ，导航栏右侧按钮的标题就会变成 _来自 A 的按钮_。
@@ -394,19 +394,19 @@ Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
 
 ```ts
 export interface NavigationOption {
-  passThroughTouches?: boolean; // 触摸事件是否可以穿透到下一层页面，很少用。
-  statusBarHidden?: boolean; // 是否隐藏状态栏
-  statusBarColorAndroid?: Color; // 状态栏背景颜色
-  topBarStyle?: BarStyle; // 顶部导航栏样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
-  topBarColor?: Color; // 当前页面顶部导航栏背景颜色
-  topBarShadowHidden?: boolean; // 是否隐藏当前页面导航栏的阴影
-  topBarAlpha?: number; // 当前页面顶部导航栏背景透明度
-  topBarTintColor?: Color; // 当前页面按钮颜色
-  titleTextColor?: Color; // 当前页面顶部导航栏标题字体颜色
-  titleTextSize?: number; // 当前页面顶部导航栏标题字体大小
-  navigationBarColorAndroid?: Color; // Android 底部虚拟按钮背景颜色
-  backButtonHidden?: boolean; // 是否显示返回按钮
-  backInteractive?: boolean; // 是否允许侧滑返回或通过返回键返回
+  passThroughTouches?: boolean // 触摸事件是否可以穿透到下一层页面，很少用。
+  statusBarHidden?: boolean // 是否隐藏状态栏
+  statusBarColorAndroid?: Color // 状态栏背景颜色
+  topBarStyle?: BarStyle // 顶部导航栏样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
+  topBarColor?: Color // 当前页面顶部导航栏背景颜色
+  topBarShadowHidden?: boolean // 是否隐藏当前页面导航栏的阴影
+  topBarAlpha?: number // 当前页面顶部导航栏背景透明度
+  topBarTintColor?: Color // 当前页面按钮颜色
+  titleTextColor?: Color // 当前页面顶部导航栏标题字体颜色
+  titleTextSize?: number // 当前页面顶部导航栏标题字体大小
+  navigationBarColorAndroid?: Color // Android 底部虚拟按钮背景颜色
+  backButtonHidden?: boolean // 是否显示返回按钮
+  backInteractive?: boolean // 是否允许侧滑返回或通过返回键返回
 }
 ```
 
@@ -416,14 +416,14 @@ export interface NavigationOption {
 
 ```ts
 export interface TitleItem {
-  title?: string;
+  title?: string
 }
 ```
 
 ```ts
 this.props.garden.setTitleItem({
   title: '新的标题',
-});
+})
 ```
 
 - **setLeftBarButtonItem(buttonItem: BarButtonItem)**
@@ -432,13 +432,13 @@ this.props.garden.setTitleItem({
 
 ```ts
 export interface BarButtonItem {
-  title?: string;
-  icon?: Image;
-  insetsIOS?: Insets;
-  action?: string | Action;
-  enabled?: boolean;
-  tintColor?: Color;
-  renderOriginal?: boolean;
+  title?: string
+  icon?: Image
+  insetsIOS?: Insets
+  action?: string | Action
+  enabled?: boolean
+  tintColor?: Color
+  renderOriginal?: boolean
 }
 ```
 
@@ -447,9 +447,9 @@ this.props.garden.setLeftBarButtonItem({
   title: 'Cancel',
   insetsIOS: { top: -1, left: -8, bottom: 0, right: 8 },
   action: navigator => {
-    navigator.dismiss();
+    navigator.dismiss()
   },
-});
+})
 ```
 
 - **setRightBarButtonItem(buttonItem: BarButtonItem)**
@@ -459,7 +459,7 @@ this.props.garden.setLeftBarButtonItem({
 ```javascript
 this.props.garden.setRightBarButtonItem({
   enabled: false,
-});
+})
 ```
 
 - **updateTabBar**
@@ -475,7 +475,7 @@ this.props.garden.updateTabBar({
   },
   tabBarItemColor: '#8BC34A',
   tabBarUnselectedItemColor: '#BDBDBD',
-});
+})
 ```
 
 - **setTabIcon(icon: TabIcon | TabIcon[])**
@@ -484,9 +484,9 @@ this.props.garden.updateTabBar({
 
 ```ts
 export interface TabIcon {
-  index: number;
-  icon: Image;
-  unselectedIcon?: Image;
+  index: number
+  icon: Image
+  unselectedIcon?: Image
 }
 ```
 
@@ -494,7 +494,7 @@ export interface TabIcon {
 this.props.garden.setTabIcon({
   index: 1,
   icon: { uri: fontUri('FontAwesome', 'leaf', 24) },
-});
+})
 ```
 
 - **setTabBadge(badge: TabBadge | TabBadge[])**
@@ -503,21 +503,24 @@ this.props.garden.setTabIcon({
 
 ```ts
 export interface TabBadge {
-  index: number;
-  text?: string;
-  hidden: boolean;
-  dot?: boolean; // 是否作为红点显示
+  index: number
+  text?: string
+  hidden: boolean
+  dot?: boolean // 是否作为红点显示
 }
 ```
 
 ```javascript
 if (hideBadge) {
-  this.props.garden.setTabBadge([{ index: 0, hidden: true }, { index: 1, hidden: true }]);
+  this.props.garden.setTabBadge([
+    { index: 0, hidden: true },
+    { index: 1, hidden: true },
+  ])
 } else {
   this.props.garden.setTabBadge([
     { index: 0, hidden: false, dot: true },
     { index: 1, hidden: false, text: '99' },
-  ]);
+  ])
 }
 ```
 

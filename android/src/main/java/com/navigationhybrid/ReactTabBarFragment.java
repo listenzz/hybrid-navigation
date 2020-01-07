@@ -161,20 +161,23 @@ public class ReactTabBarFragment extends TabBarFragment {
     }
 
     private void setTabIcon(@Nullable ArrayList<Bundle> options) {
-        if (options == null) {
+        TabBar tabBar = getTabBar();
+        if (options == null || tabBar == null) {
             return;
         }
-        TabBar tabBar = getTabBar();
 
         for (Bundle option : options) {
             int index = (int) option.getDouble("index");
             Bundle icon = option.getBundle("icon");
             Bundle unselectedIcon = option.getBundle("unselectedIcon");
-            if (icon != null) {
-                if (unselectedIcon != null) {
-                    tabBar.updateTabIcon(index, icon.getString("uri"), unselectedIcon.getString("uri"));
-                } else {
-                    tabBar.updateTabIcon(index, icon.getString("uri"), null);
+            if (icon != null && icon.getString("uri") != null) {
+                String iconUri = icon.getString("uri");
+                if (iconUri != null) {
+                    if (unselectedIcon != null) {
+                        tabBar.updateTabIcon(index, iconUri, unselectedIcon.getString("uri"));
+                    } else {
+                        tabBar.updateTabIcon(index, iconUri, null);
+                    }
                 }
             }
         }
@@ -183,7 +186,8 @@ public class ReactTabBarFragment extends TabBarFragment {
     }
 
     private void updateTabBarAppearance(@Nullable Bundle options) {
-        if (options == null) {
+        TabBar tabBar = getTabBar();
+        if (options == null || tabBar == null) {
             return;
         }
 
@@ -193,8 +197,6 @@ public class ReactTabBarFragment extends TabBarFragment {
         String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
 
         setOptions(Utils.mergeOptions(getOptions(), options));
-
-        TabBar tabBar = getTabBar();
 
         if (tabBarColor != null) {
             style.setTabBarBackgroundColor(tabBarColor);

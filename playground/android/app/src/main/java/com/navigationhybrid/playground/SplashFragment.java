@@ -22,7 +22,7 @@ public class SplashFragment extends AwesomeFragment {
 
     @Nullable
     @Override
-    protected Integer preferredNavigationBarColor() {
+    protected int preferredNavigationBarColor() {
         return Color.TRANSPARENT;
     }
 

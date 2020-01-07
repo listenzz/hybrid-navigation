@@ -84,8 +84,6 @@ public class GlobalStyle {
         String navigationBarColor = options.getString("navigationBarColorAndroid");
         if (navigationBarColor != null) {
             style.setNavigationBarColor(Color.parseColor(navigationBarColor));
-        } else {
-            style.setNavigationBarColor(null);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
