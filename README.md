@@ -82,8 +82,12 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| >= 0.60                 | 0.17.29                          | 2020/01/03 |
+| >= 0.60                 | 0.18.0                           | 2020/01/07 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
+
+### 0.18.x
+
+破坏性更新：`TabBar` 和 `navigationBarColorAndroid` 的 API 略有变更。
 
 ### 0.16.x or 0.17.x
 
