@@ -2,7 +2,7 @@
 
 你的大部分业务已经用原生代码实现，你想添加一些 RN 业务模块。
 
-> RN 和原生混合，可以参考 [hud-hybrid](https://github.com/listenzz/react-native-hud-hybrid)，该项目中的 example 示范了 RN 模块和原生模块的混合布局。
+> RN 和原生混合，可以参考 [toast-hybrid](https://github.com/listenzz/react-native-toast-hybrid)，该项目中的 example 示范了 RN 模块和原生模块的混合布局。
 
 添加 RN 业务模块的原生项目，和通过 `react-native init` 命令创建的项目，它们的目录结构往往是不同的。
 

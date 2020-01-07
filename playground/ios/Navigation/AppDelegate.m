@@ -11,17 +11,23 @@
 #import <React/RCTLinkingManager.h>
 #import <React/RCTBridgeModule.h>
 #import <NavigationHybrid/NavigationHybrid.h>
+#import <ToastHybrid/ToastHybrid.h>
 
 #import "OneNativeViewController.h"
 #import "NativeModalViewController.h"
 
-@interface AppDelegate ()
+@interface AppDelegate () <HBDReactBridgeManagerDelegate, HostViewProvider>
+
 
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    // 设置 toast 的 hostView, 可以不设置
+    [ToastConfig sharedConfig].hostViewProvider = self;
+    
     NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"playground/index" fallbackResource:nil];
     [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
     
@@ -35,6 +41,10 @@
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+- (void)reactModuleRegisterDidCompleted:(HBDReactBridgeManager *)manager {
+    
 }
 
 //// iOS 8.x or older

@@ -1,0 +1,33 @@
+{
+  "name": "ToastHybrid",
+  "version": "1.1.0",
+  "summary": "TODO",
+  "homepage": "https://github.com/listenzz/react-native-toast-hybrid",
+  "license": "MIT",
+  "authors": {
+    "listen": "listenzz@163.com"
+  },
+  "platforms": {
+    "ios": "9.0",
+    "tvos": "10.0"
+  },
+  "source": {
+    "git": "https://github.com/listenzz/react-native-toast-hybrid.git",
+    "tag": "1.1.0"
+  },
+  "source_files": "ios/ToastHybrid/**/*.{h,m,swift}",
+  "resource_bundles": {
+    "ToastHybrid": [
+      "ios/*.{storyboard,xib,xcassets,json,imageset,png}"
+    ]
+  },
+  "dependencies": {
+    "React": [
+
+    ]
+  },
+  "frameworks": [
+    "CoreGraphics",
+    "QuartzCore"
+  ]
+}

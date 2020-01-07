@@ -37,6 +37,7 @@ export default class Menu extends Component {
     super(props)
     this.push = this.push.bind(this)
     this.pushToRedux = this.pushToRedux.bind(this)
+    this.pushToToast = this.pushToToast.bind(this)
   }
 
   componentDidAppear() {
@@ -65,6 +66,11 @@ export default class Menu extends Component {
     this.props.navigator.push('ReduxCounter')
   }
 
+  pushToToast() {
+    this.props.navigator.closeMenu()
+    this.props.navigator.push('Toast')
+  }
+
   render() {
     return (
       <View style={[styles.container, paddingTop]}>
@@ -76,6 +82,10 @@ export default class Menu extends Component {
 
         <TouchableOpacity onPress={this.pushToRedux} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>Redux Counter</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={this.pushToToast} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>Toast</Text>
         </TouchableOpacity>
       </View>
     )
