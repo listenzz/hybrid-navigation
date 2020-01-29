@@ -4,10 +4,6 @@ import withBottomModal from './withBottomModal'
 import { RESULT_OK } from 'react-native-navigation-hybrid'
 
 class ReactModal extends React.Component {
-  static navigationItem = {
-    navigationBarColorAndroid: '#FFFFFF',
-  }
-
   constructor(props) {
     super(props)
     this.handleCancel = this.handleCancel.bind(this)
@@ -90,7 +86,7 @@ class ReactModal extends React.Component {
   }
 }
 
-export default withBottomModal(true, '#F3F3F3')(ReactModal)
+export default withBottomModal()(ReactModal)
 
 const styles = StyleSheet.create({
   container: {

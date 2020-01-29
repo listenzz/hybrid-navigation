@@ -16,7 +16,11 @@ function BackHandler({ sceneId, handleHardwareBackPress }) {
   return null
 }
 
-export default function withBottomModal(cancelable = true, safeAreaColor = '#00000000') {
+export default function withBottomModal({
+  cancelable = true,
+  safeAreaColor = '#F3F3F3',
+  navigationBarColor = '#FFFFFF',
+} = {}) {
   return function(WrappedComponent) {
     class BottomModal extends Component {
       height = 0
@@ -92,7 +96,11 @@ export default function withBottomModal(cancelable = true, safeAreaColor = '#000
       return <BottomModal {...props} forwardedRef={ref} />
     })
     const name = WrappedComponent.displayName || WrappedComponent.name
-    C.navigationItem = WrappedComponent.navigationItem
+    const navigationItem = WrappedComponent.navigationItem || {}
+    if (!navigationItem.navigationBarColorAndroid) {
+      navigationItem.navigationBarColorAndroid = navigationBarColor
+    }
+    C.navigationItem = navigationItem
     C.displayName = `withBottomModal(${name})`
     return C
   }
