@@ -4,7 +4,8 @@ import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
 import styles from './Styles'
 import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid'
 
-const REQUEST_CODE = 1
+const REQUEST_CODE_1 = 1
+const REQUEST_CODE_2 = 2
 
 export default class Navigation extends Component {
   static navigationItem = {
@@ -130,17 +131,17 @@ export default class Navigation extends Component {
   }
 
   async present() {
-    const [resultCode, data] = await this.props.navigator.present('Result', REQUEST_CODE)
+    const [resultCode, data] = await this.props.navigator.present('Result', REQUEST_CODE_1)
     this.handleResult(resultCode, data)
   }
 
   async showModal() {
-    const [resultCode, data] = await this.props.navigator.showModal('ReactModal', REQUEST_CODE)
+    const [resultCode, data] = await this.props.navigator.showModal('ReactModal', REQUEST_CODE_2)
     this.handleResult(resultCode, data)
   }
 
   async showNativeModal() {
-    const [resultCode, data] = await this.props.navigator.showModal('NativeModal', REQUEST_CODE)
+    const [resultCode, data] = await this.props.navigator.showModal('NativeModal', REQUEST_CODE_2)
     this.handleResult(resultCode, data)
   }
 
