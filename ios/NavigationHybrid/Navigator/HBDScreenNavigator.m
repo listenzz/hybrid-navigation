@@ -12,6 +12,7 @@
 #import "HBDModalViewController.h"
 #import <React/RCTAssert.h>
 #import <React/RCTLog.h>
+#import "HBDEventEmitter.h"
 
 @implementation HBDScreenNavigator
 
@@ -76,11 +77,12 @@
     }
     
     if ([action isEqualToString:@"present"]) {
+        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         if (![self canPresentFromViewController:target]) {
+            [self cancelActionForTarget:target requestCode:requestCode];
             return;
         }
         
-        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
         HBDNavigationController *navVC = [[HBDNavigationController alloc] initWithRootViewController:viewController];
         navVC.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -102,23 +104,25 @@
             [target dismissViewControllerAnimated:animated completion:NULL];
         }
     } else if ([action isEqualToString:@"showModal"]) {
+        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         if (![self canShowModalFromViewController:target]) {
+            [self cancelActionForTarget:target requestCode:requestCode];
             return;
         }
 
-        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         [viewController setRequestCode:requestCode];
         [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:nil];
     } else if ([action isEqualToString:@"hideModal"]) {
         [target hbd_hideViewControllerAnimated:YES completion:nil];
     } else if ([action isEqualToString:@"presentLayout"]) {
+        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         if (![self canPresentFromViewController:target]) {
+            [self cancelActionForTarget:target requestCode:requestCode];
             return;
         }
         
         NSDictionary *layout = [extras objectForKey:@"layout"];
         UIViewController *target = [[HBDReactBridgeManager get] controllerWithLayout:layout];
-        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
         [target setRequestCode:requestCode];
         target.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -129,18 +133,29 @@
             
         }];
     } else if ([action isEqualToString:@"showModalLayout"]) {
+        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         if (![self canShowModalFromViewController:target]) {
+            [self cancelActionForTarget:target requestCode:requestCode];
             return;
         }
         
         NSDictionary *layout = [extras objectForKey:@"layout"];
         UIViewController *target = [[HBDReactBridgeManager get] controllerWithLayout:layout];
-        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
+        
         [target setRequestCode:requestCode];
         [target hbd_showViewController:target animated:YES completion:^(BOOL finished) {
             
         }];
     }
+}
+
+- (void)cancelActionForTarget:(UIViewController *)target requestCode:(NSInteger)requestCode {
+    [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+        KEY_ON: ON_COMPONENT_RESULT,
+        KEY_REQUEST_CODE: @(requestCode),
+        KEY_RESULT_CODE: @(0),
+        KEY_SCENE_ID: target.sceneId,
+    }];
 }
 
 - (BOOL)canPresentFromViewController:(UIViewController *)target {
