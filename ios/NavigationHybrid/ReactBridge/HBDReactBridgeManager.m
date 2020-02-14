@@ -325,11 +325,18 @@ const NSInteger ResultCancel = 0;
     UIViewController *controller = mainWindow.rootViewController;
     while (controller != nil) {
         UIViewController *presentedController = controller.presentedViewController;
-        if (presentedController && ![presentedController isBeingDismissed]) {
-            controller = presentedController;
-        } else {
+        if (!presentedController) {
             break;
         }
+        
+        if ([presentedController isBeingDismissed]) {
+            break;
+        }
+        
+        if ([presentedController isKindOfClass:[UIAlertController class]]) {
+            break;
+        }
+        controller = presentedController;
     }
     return [self primaryViewControllerWithViewController:controller];
 }
@@ -363,11 +370,18 @@ const NSInteger ResultCancel = 0;
         while (controller != nil) {
             [self buildRouteGraphWithController:controller root:root];
             UIViewController *presentedController = controller.presentedViewController;
-            if (presentedController && !presentedController.isBeingDismissed) {
-                controller = presentedController;
-            } else {
-                controller = nil;
+            if (!presentedController) {
+                break;
             }
+
+            if ([presentedController isBeingDismissed]) {
+                break;
+            }
+            
+            if ([presentedController isKindOfClass:[UIAlertController class]]) {
+                break;
+            }
+            controller = presentedController;
         }
     }
     
