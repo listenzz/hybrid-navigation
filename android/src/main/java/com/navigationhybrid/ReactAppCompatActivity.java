@@ -60,19 +60,22 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         }
     }
 
+    private boolean styleInflated;
+
     @Override
     protected void onCustomStyle(@NonNull Style style) {
-        if (isReactModuleRegisterCompleted()) {
-            GlobalStyle globalStyle = Garden.getGlobalStyle();
-            if (globalStyle != null) {
-                globalStyle.inflateStyle(this, style);
-            }
-        }
+        inflateStyle();
     }
 
     public void inflateStyle() {
-        if (getStyle() != null) {
-            onCustomStyle(getStyle());
+        Style style = getStyle();
+        GlobalStyle globalStyle = Garden.getGlobalStyle();
+        if (style != null && globalStyle != null && !isFinishing()) {
+            if (styleInflated) {
+                FLog.i(TAG, "Inflate style again.");
+            }
+            styleInflated = true;
+            globalStyle.inflateStyle(this, style);
         }
     }
 
@@ -85,9 +88,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     public void onReactModuleRegisterCompleted() {
-        if (getStyle() != null) {
-            onCustomStyle(getStyle());
-        }
         createMainComponent();
     }
 
@@ -108,6 +108,12 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     }
 
     protected void setRootFragmentInternal(AwesomeFragment fragment, int tag) {
+        if (!styleInflated) {
+            inflateStyle();
+            if (!styleInflated) {
+                throw new IllegalStateException("Style has not inflated yet. Did you forgot to call `Garden.setStyle` before `Navigator.setRoot` ?");
+            }
+        }
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         if (getCurrentReactContext() != null && getCurrentReactContext().hasActiveCatalystInstance()) {
             HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());

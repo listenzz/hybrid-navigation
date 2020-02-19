@@ -75,7 +75,8 @@ public class GardenModule extends ReactContextBaseJavaModule {
             if (context != null) {
                 Garden.createGlobalStyle(Arguments.toBundle(style));
                 ReactAppCompatActivity activity = (ReactAppCompatActivity) getCurrentActivity();
-                if (activity != null && !activity.isFinishing() && ReactBridgeManager.get().isReactModuleRegisterCompleted()) {
+                // 即使 Activity 真的存在，`getCurrentActivity` 依然可能返回 null，尤其是启动时应用被切换到后台
+                if (activity != null) {
                     activity.inflateStyle();
                 }
             }
