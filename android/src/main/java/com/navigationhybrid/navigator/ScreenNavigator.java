@@ -1,6 +1,5 @@
 package com.navigationhybrid.navigator;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,7 +9,6 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
-import com.navigationhybrid.HBDEventEmitter;
 import com.navigationhybrid.HybridFragment;
 import com.navigationhybrid.ReactBridgeManager;
 import com.navigationhybrid.ReactNavigationFragment;
@@ -18,13 +16,6 @@ import com.navigationhybrid.ReactNavigationFragment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
-import static com.navigationhybrid.HBDEventEmitter.KEY_ON;
-import static com.navigationhybrid.HBDEventEmitter.KEY_REQUEST_CODE;
-import static com.navigationhybrid.HBDEventEmitter.KEY_RESULT_CODE;
-import static com.navigationhybrid.HBDEventEmitter.KEY_SCENE_ID;
-import static com.navigationhybrid.HBDEventEmitter.ON_COMPONENT_RESULT;
 
 
 public class ScreenNavigator implements Navigator {
@@ -124,11 +115,7 @@ public class ScreenNavigator implements Navigator {
                     int requestCode = extras.getInt("requestCode");
                     ReactNavigationFragment navFragment = new ReactNavigationFragment();
                     navFragment.setRootFragment(fragment);
-                    if (FragmentHelper.canPresentFragment(target, target.requireActivity())) {
-                        target.presentFragment(navFragment, requestCode);
-                    } else {
-                        cancelAction(target, requestCode);
-                    }
+                    target.presentFragment(navFragment, requestCode);
                 }
                 break;
             case "dismiss":
@@ -142,11 +129,7 @@ public class ScreenNavigator implements Navigator {
             case "showModal":
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
-                    if (FragmentHelper.canShowDialog(target, target.requireActivity())) {
-                        target.showDialog(fragment, requestCode);
-                    } else {
-                        cancelAction(target, requestCode);
-                    }
+                    target.showDialog(fragment, requestCode);
                 }
                 break;
             case "hideModal":
@@ -157,11 +140,7 @@ public class ScreenNavigator implements Navigator {
                 fragment = getReactBridgeManager().createFragment(layout);
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
-                    if (FragmentHelper.canPresentFragment(target, target.requireActivity())) {
-                        target.presentFragment(fragment, requestCode);
-                    } else {
-                        cancelAction(target, requestCode);
-                    }
+                    target.presentFragment(fragment, requestCode);
                 }
                 break;
             case "showModalLayout":
@@ -169,25 +148,11 @@ public class ScreenNavigator implements Navigator {
                 fragment = getReactBridgeManager().createFragment(modalLayout);
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
-                    if (FragmentHelper.canShowDialog(target, target.requireActivity())) {
-                        target.showDialog(fragment, requestCode);
-                    } else {
-                        cancelAction(target, requestCode);
-                    }
+                    target.showDialog(fragment, requestCode);
                 }
                 break;
         }
     }
-
-    private void cancelAction(AwesomeFragment target, int requestCode) {
-        Bundle result = new Bundle();
-        result.putInt(KEY_REQUEST_CODE, requestCode);
-        result.putInt(KEY_RESULT_CODE, Activity.RESULT_CANCELED);
-        result.putString(KEY_SCENE_ID, target.getSceneId());
-        result.putString(KEY_ON, ON_COMPONENT_RESULT);
-        HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(result));
-    }
-
 
     private ReactBridgeManager getReactBridgeManager() {
         return ReactBridgeManager.get();

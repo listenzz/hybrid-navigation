@@ -423,6 +423,11 @@
 }
 
 - (void)hbd_showViewController:(UIViewController *)vc requestCode:(NSInteger)requestCode animated:(BOOL)animated completion:(void (^)(BOOL))completion {
+    if (![self canShowModal]) {
+        [self didReceiveResultCode:0 resultData:nil requestCode:requestCode];
+        return;
+    }
+    
     HBDModalViewController *modalViewController = [[HBDModalViewController alloc] init];
     modalViewController.contentViewController = vc;
     self.hbd_popupViewController = vc;
@@ -430,6 +435,29 @@
     vc.hbd_targetViewController = self;
     vc.requestCode = requestCode;
     [modalViewController showWithAnimated:animated completion:completion];
+}
+
+- (BOOL)canShowModal {
+    UIViewController *presented = self.presentedViewController;
+    if (presented && !presented.isBeingDismissed) {
+        RCTLogWarn(@"can not show modal since the scene had present another scene already.");
+        return NO;
+    }
+    
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    for (NSUInteger i = application.windows.count; i > 0; i--) {
+        UIWindow *window = application.windows[i-1];
+        UIViewController *viewController = window.rootViewController;
+        if ([viewController isKindOfClass:[HBDModalViewController class]]) {
+            HBDModalViewController *modal = (HBDModalViewController *)viewController;
+            if (!modal.beingHidden && window != self.view.window) {
+                RCTLogWarn(@"can not show modal since the scene had show another modal already.");
+                return NO;
+            }
+        }
+    }
+    
+    return YES;
 }
 
 - (void)hbd_hideViewControllerAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {

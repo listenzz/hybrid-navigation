@@ -68,7 +68,7 @@
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras {
-    HBDViewController *viewController = nil;
+    UIViewController *viewController = nil;
     NSString *moduleName = [extras objectForKey:@"moduleName"];
     if (moduleName) {
         NSDictionary *props = [extras objectForKey:@"props"];
@@ -77,21 +77,14 @@
     }
     
     if ([action isEqualToString:@"present"]) {
-        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
-        if (![self canPresentFromViewController:target]) {
-            [self cancelActionForTarget:target requestCode:requestCode];
-            return;
-        }
-        
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
+        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         HBDNavigationController *navVC = [[HBDNavigationController alloc] initWithRootViewController:viewController];
         navVC.modalPresentationStyle = UIModalPresentationCurrentContext;
         [navVC setRequestCode:requestCode];
         [target beginAppearanceTransition:NO animated:animated];
         [target endAppearanceTransition];
-        [target presentViewController:navVC animated:animated completion:^{
-            
-        }];
+        [target presentViewController:navVC animated:animated completion:NULL];
     } else if ([action isEqualToString:@"dismiss"]) {
         UIViewController *presenting = target.presentingViewController;
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
@@ -105,25 +98,15 @@
         }
     } else if ([action isEqualToString:@"showModal"]) {
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
-        if (![self canShowModalFromViewController:target]) {
-            [self cancelActionForTarget:target requestCode:requestCode];
-            return;
-        }
-
         [viewController setRequestCode:requestCode];
-        [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:nil];
+        [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:NULL];
     } else if ([action isEqualToString:@"hideModal"]) {
         [target hbd_hideViewControllerAnimated:YES completion:nil];
     } else if ([action isEqualToString:@"presentLayout"]) {
-        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
-        if (![self canPresentFromViewController:target]) {
-            [self cancelActionForTarget:target requestCode:requestCode];
-            return;
-        }
-        
         NSDictionary *layout = [extras objectForKey:@"layout"];
-        UIViewController *target = [[HBDReactBridgeManager get] controllerWithLayout:layout];
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
+        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
+        UIViewController *target = [[HBDReactBridgeManager get] controllerWithLayout:layout];
         [target setRequestCode:requestCode];
         target.modalPresentationStyle = UIModalPresentationCurrentContext;
         // make sure extra lifecycle excuting order
@@ -134,74 +117,10 @@
         }];
     } else if ([action isEqualToString:@"showModalLayout"]) {
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
-        if (![self canShowModalFromViewController:target]) {
-            [self cancelActionForTarget:target requestCode:requestCode];
-            return;
-        }
-        
         NSDictionary *layout = [extras objectForKey:@"layout"];
-        UIViewController *target = [[HBDReactBridgeManager get] controllerWithLayout:layout];
-        
-        [target setRequestCode:requestCode];
-        [target hbd_showViewController:target animated:YES completion:^(BOOL finished) {
-            
-        }];
+        viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
+        [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:NULL];
     }
-}
-
-- (void)cancelActionForTarget:(UIViewController *)target requestCode:(NSInteger)requestCode {
-    [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-        KEY_ON: ON_COMPONENT_RESULT,
-        KEY_REQUEST_CODE: @(requestCode),
-        KEY_RESULT_CODE: @(0),
-        KEY_SCENE_ID: target.sceneId,
-    }];
-}
-
-- (BOOL)canPresentFromViewController:(UIViewController *)target {
-    UIViewController *presented = target.presentedViewController;
-    if (presented && !presented.isBeingDismissed) {
-        RCTLogWarn(@"can not present since the scene had present another scene already.");
-        return NO;
-    }
-    
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i-1];
-        UIViewController *viewController = window.rootViewController;
-        if ([viewController isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)viewController;
-            if (!modal.beingHidden) {
-                RCTLogWarn(@"can not present a scene over a modal.");
-                return NO;
-            }
-        }
-    }
-    
-    return YES;
-}
-
-- (BOOL)canShowModalFromViewController:(UIViewController *)target {
-    UIViewController *presented = target.presentedViewController;
-    if (presented && !presented.isBeingDismissed) {
-        RCTLogWarn(@"can not show modal since the scene had present another scene already.");
-        return NO;
-    }
-    
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i-1];
-        UIViewController *viewController = window.rootViewController;
-        if ([viewController isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)viewController;
-            if (!modal.beingHidden && window != target.view.window) {
-                RCTLogWarn(@"can not show modal since the scene had show another modal already.");
-                return NO;
-            }
-        }
-    }
-    
-    return YES;
 }
 
 @end

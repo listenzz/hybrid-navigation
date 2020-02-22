@@ -11,6 +11,7 @@
 #import "HBDNavigationController.h"
 #import "HBDUtils.h"
 #import "HBDModalViewController.h"
+#import <React/RCTLog.h>
 
 @implementation UIViewController (HBD)
 
@@ -18,8 +19,40 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         Class class = [self class];
+        hbd_exchangeImplementations(class, @selector(presentViewController:animated:completion:), @selector(hbd_presentViewController:animated:completion:));
         hbd_exchangeImplementations(class, @selector(dismissViewControllerAnimated:completion:), @selector(hbd_dismissViewControllerAnimated:completion:));
     });
+}
+
+- (void)hbd_presentViewController:(UIViewController *)viewController animated:(BOOL)flag completion:(void (^)(void))completion {
+    if (![self canPresentViewController]) {
+        [self didReceiveResultCode:0 resultData:nil requestCode:viewController.requestCode];
+        return;
+    }
+    [self hbd_presentViewController:viewController animated:flag completion:completion];
+}
+
+- (BOOL)canPresentViewController {
+    UIViewController *presented = self.presentedViewController;
+    if (presented && !presented.isBeingDismissed) {
+        RCTLogWarn(@"can not present since the scene had present another scene already.");
+        return NO;
+    }
+    
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    for (NSUInteger i = application.windows.count; i > 0; i--) {
+        UIWindow *window = application.windows[i-1];
+        UIViewController *viewController = window.rootViewController;
+        if ([viewController isKindOfClass:[HBDModalViewController class]]) {
+            HBDModalViewController *modal = (HBDModalViewController *)viewController;
+            if (!modal.beingHidden) {
+                RCTLogWarn(@"can not present a scene over a modal.");
+                return NO;
+            }
+        }
+    }
+    
+    return YES;
 }
 
 - (void)hbd_dismissViewControllerAnimated:(BOOL)animated completion:(void (^)(void))completion {
