@@ -131,12 +131,28 @@ export default class Navigation extends Component {
   }
 
   async present() {
-    const [resultCode, data] = await this.props.navigator.present('Result', REQUEST_CODE_1)
+    // const [resultCode, data] = await this.props.navigator.present('Result', REQUEST_CODE_1)
+    const [resultCode, data] = await this.props.navigator.presentLayout(
+      {
+        stack: {
+          children: [{ screen: { moduleName: 'Result' } }],
+        },
+      },
+      REQUEST_CODE_1,
+    )
     this.handleResult(resultCode, data)
   }
 
   async showModal() {
-    const [resultCode, data] = await this.props.navigator.showModal('ReactModal', REQUEST_CODE_2)
+    // const [resultCode, data] = await this.props.navigator.showModal('ReactModal', REQUEST_CODE_2)
+    const [resultCode, data] = await this.props.navigator.showModalLayout(
+      {
+        screen: {
+          moduleName: 'ReactModal',
+        },
+      },
+      REQUEST_CODE_2,
+    )
     this.handleResult(resultCode, data)
   }
 

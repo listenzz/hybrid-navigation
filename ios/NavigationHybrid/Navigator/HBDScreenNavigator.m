@@ -98,7 +98,6 @@
         }
     } else if ([action isEqualToString:@"showModal"]) {
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
-        [viewController setRequestCode:requestCode];
         [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:NULL];
     } else if ([action isEqualToString:@"hideModal"]) {
         [target hbd_hideViewControllerAnimated:YES completion:nil];
@@ -106,15 +105,12 @@
         NSDictionary *layout = [extras objectForKey:@"layout"];
         BOOL animated = [[extras objectForKey:@"animated"] boolValue];
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
-        UIViewController *target = [[HBDReactBridgeManager get] controllerWithLayout:layout];
-        [target setRequestCode:requestCode];
-        target.modalPresentationStyle = UIModalPresentationCurrentContext;
-        // make sure extra lifecycle excuting order
+        viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
+        [viewController setRequestCode:requestCode];
+        viewController.modalPresentationStyle = UIModalPresentationCurrentContext;
         [target beginAppearanceTransition:NO animated:animated];
         [target endAppearanceTransition];
-        [target presentViewController:target animated:animated completion:^{
-            
-        }];
+        [target presentViewController:viewController animated:animated completion:NULL];
     } else if ([action isEqualToString:@"showModalLayout"]) {
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         NSDictionary *layout = [extras objectForKey:@"layout"];
