@@ -133,7 +133,6 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)registerReactModule:(NSString *)moduleName options:(NSDictionary *)options {
-    NSCAssert(!self.reactModuleRegisterCompleted, @"非法操作，你应该先调用 `startRegisterReactModule`");
     [_reactModules setObject:options forKey:moduleName];
 }
 
