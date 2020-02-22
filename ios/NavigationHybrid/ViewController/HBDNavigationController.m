@@ -207,12 +207,6 @@ void adjustLayout(UIViewController *vc) {
                     backItem.tintColor = toVC.hbd_tintColor;
                 }
             }
-            
-            if (coordinator.interactive) {
-               // fix：ios 11，12 当前后两个页面的 barStyle 不一样时，侧滑返回，导航栏左右两眉样式过渡不一致的问题
-                nav.navigationBar.barStyle = viewController.hbd_barStyle;
-                nav.navigationBar.titleTextAttributes = viewController.hbd_titleTextAttributes;
-            }
         }
         [self showViewController:viewController withCoordinator:coordinator];
     } else {
@@ -319,6 +313,8 @@ void adjustLayout(UIViewController *vc) {
         [self resetButtonLabelInNavBar:self.nav.navigationBar];
     }
     
+    [self.nav updateNavigationBarAnimatedForViewController:viewController];
+
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         BOOL shouldFake = [self shouldShowFakeBarFrom:from to:to viewController:viewController];
         if (shouldFake) {
