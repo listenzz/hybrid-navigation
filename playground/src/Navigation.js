@@ -89,34 +89,46 @@ export default class Navigation extends Component {
     }
   }
 
-  pop() {
-    this.props.navigator.pop()
+  async pop() {
+    await this.props.navigator.pop()
+    await this.printRouteGraph()
   }
 
-  popTo() {
-    this.props.navigator.popTo(this.props.popToId)
+  async popTo() {
+    await this.props.navigator.popTo(this.props.popToId)
+    await this.printRouteGraph()
   }
 
-  popToRoot() {
-    this.props.navigator.popToRoot()
+  async popToRoot() {
+    await this.props.navigator.popToRoot()
+    await this.printRouteGraph()
   }
 
-  replace() {
+  async replace() {
     if (this.props.popToId !== undefined) {
-      this.props.navigator.replace('Navigation', {
+      await this.props.navigator.replace('Navigation', {
         popToId: this.props.popToId,
       })
     } else {
-      this.props.navigator.replace('Navigation')
+      await this.props.navigator.replace('Navigation')
     }
+    await this.printRouteGraph()
   }
 
-  replaceToRoot() {
-    this.props.navigator.replaceToRoot('Navigation')
+  async replaceToRoot() {
+    await this.props.navigator.replaceToRoot('Navigation')
+    await this.printRouteGraph()
   }
 
-  switchTab() {
-    this.props.navigator.switchTab(1)
+  async printRouteGraph() {
+    const graph = await Navigator.routeGraph()
+    console.info(graph)
+  }
+
+  async switchTab() {
+    await this.props.navigator.switchTab(1)
+    // const current = await Navigator.current()
+    // await current.push('Navigation')
   }
 
   handleResult(resultCode, data) {

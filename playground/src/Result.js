@@ -42,8 +42,10 @@ export default class Result extends Component {
           title: 'Cancel',
           icon: Image.resolveAssetSource(require('./images/cancel.png')),
           insets: { top: -1, left: -8, bottom: 0, right: 8 },
-          action: navigator => {
-            navigator.dismiss()
+          action: async navigator => {
+            await navigator.dismiss()
+            const current = await Navigator.currentRoute()
+            console.log(current)
           },
         })
         this.setState({ isRoot: isRoot })
@@ -72,13 +74,11 @@ export default class Result extends Component {
   }
 
   async sendResult() {
-    let current = await Navigator.currentRoute()
-    console.log(current)
     this.props.navigator.setResult(RESULT_OK, {
       text: this.state.text || '',
     })
-    this.props.navigator.dismiss()
-    current = await Navigator.currentRoute()
+    await this.props.navigator.dismiss()
+    const current = await Navigator.currentRoute()
     console.log(current)
   }
 

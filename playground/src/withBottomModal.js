@@ -56,11 +56,16 @@ export default function withBottomModal({
       }
 
       hideModal() {
-        Animated.timing(this.state.anim, {
-          toValue: this.height,
-          duration: 200,
-          easing: Easing.linear,
-        }).start(() => this.realHideModal())
+        return new Promise(resolve => {
+          Animated.timing(this.state.anim, {
+            toValue: this.height,
+            duration: 200,
+            easing: Easing.linear,
+          }).start(async () => {
+            await this.realHideModal()
+            resolve()
+          })
+        })
       }
 
       render() {

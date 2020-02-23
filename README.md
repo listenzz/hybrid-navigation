@@ -85,9 +85,13 @@ npm run run:ios
 | >= 0.60                 | 0.18.7                           | 2020/02/22 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
 
+### 0.19.x
+
+- `pop` `popTo` `popToRoot` `dismiss` `hideModal` `switchTab` 现在返回一个 Promise
+
 ### 0.18.x
 
-破坏性更新：`TabBar` 和 `navigationBarColorAndroid` 的 API 略有变更。
+- 破坏性更新：`TabBar` 和 `navigationBarColorAndroid` 的 API 略有变更。
 
 ### 0.16.x or 0.17.x
 

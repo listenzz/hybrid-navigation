@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import withBottomModal from './withBottomModal'
-import { RESULT_OK } from 'react-native-navigation-hybrid'
+import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid'
 
 class ReactModal extends React.Component {
   constructor(props) {
@@ -45,14 +45,16 @@ class ReactModal extends React.Component {
     console.info('modal componentWillUnmount')
   }
 
-  hideModal(gender) {
+  async hideModal(gender) {
     if (gender) {
       this.props.navigator.setResult(RESULT_OK, {
         text: gender,
         backId: this.props.sceneId,
       })
     }
-    this.props.navigator.hideModal()
+    await this.props.navigator.hideModal()
+    const current = await Navigator.currentRoute()
+    console.log(current)
   }
 
   handleCancel() {

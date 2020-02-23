@@ -300,9 +300,9 @@ class Router {
         }
 
         if (layoutMode === 'present') {
-          navigator.dismiss()
+          await navigator.dismiss()
         } else if (layoutMode === 'modal') {
-          navigator.hideModal()
+          await navigator.hideModal()
         } else {
           console.warn('尚未处理的 layout mode:' + layoutMode)
         }

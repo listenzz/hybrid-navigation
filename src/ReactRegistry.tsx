@@ -1,4 +1,4 @@
-import { AppRegistry, ComponentProvider } from 'react-native'
+import { AppRegistry, ComponentProvider, EmitterSubscription } from 'react-native'
 import React from 'react'
 import { Navigator } from './Navigator'
 import {
@@ -29,7 +29,7 @@ export interface NavigationType {
 
 export interface Navigation {
   onBarButtonItemClick?(action: string): void
-  onComponentResult?(requestCode: number, resultCode: number, data: { [x: string]: any }): void
+  onComponentResult?(requestCode: number, resultCode: number, data: any): void
   componentDidAppear?(): void
   componentDidDisappear?(): void
   onBackPressed?(): void
@@ -57,7 +57,7 @@ function withNavigator(moduleName: string) {
       private navigator: Navigator
       private garden: Garden
       private navigationRef: React.RefObject<React.Component>
-
+      private subscription?: EmitterSubscription
       private viewAppeared = false
       constructor(props: NativeProps) {
         super(props)
@@ -73,20 +73,23 @@ function withNavigator(moduleName: string) {
 
       componentDidMount() {
         this.navigator.signalFirstRenderComplete()
-        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+        this.subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
           if (this.props.sceneId !== data[KEY_SCENE_ID]) {
             return
           }
           const navigation = this.navigationRef.current as Navigation
           switch (data[KEY_ON]) {
             case ON_BAR_BUTTON_ITEM_CLICK:
-              navigation &&
-                navigation.onBarButtonItemClick &&
-                navigation.onBarButtonItemClick(data[KEY_ACTION])
+              navigation.onBarButtonItemClick && navigation.onBarButtonItemClick(data[KEY_ACTION])
               break
             case ON_COMPONENT_RESULT:
-              navigation &&
-                navigation.onComponentResult &&
+              this.navigator.result(
+                data[KEY_REQUEST_CODE],
+                data[KEY_RESULT_CODE],
+                data[KEY_RESULT_DATA],
+              )
+
+              navigation.onComponentResult &&
                 navigation.onComponentResult(
                   data[KEY_REQUEST_CODE],
                   data[KEY_RESULT_CODE],
@@ -96,17 +99,17 @@ function withNavigator(moduleName: string) {
             case ON_COMPONENT_APPEAR:
               if (!this.viewAppeared) {
                 this.viewAppeared = true
-                navigation && navigation.componentDidAppear && navigation.componentDidAppear()
+                navigation.componentDidAppear && navigation.componentDidAppear()
               }
               break
             case ON_COMPONENT_DISAPPEAR:
               if (this.viewAppeared) {
                 this.viewAppeared = false
-                navigation && navigation.componentDidDisappear && navigation.componentDidDisappear()
+                navigation.componentDidDisappear && navigation.componentDidDisappear()
               }
               break
             case ON_DIALOG_BACK_PRESSED:
-              navigation && navigation.onBackPressed && navigation.onBackPressed()
+              navigation.onBackPressed && navigation.onBackPressed()
               break
             case ON_COMPONENT_MOUNT:
               this.navigator.signalFirstRenderComplete()
@@ -115,13 +118,13 @@ function withNavigator(moduleName: string) {
               throw new Error(`event ${data[KEY_ON]} has not been processed yet.`)
           }
         })
-        this.navigator.addSubscription(subscription)
       }
 
       componentWillUnmount() {
         removeBarButtonItemClickEvent(this.props.sceneId)
         store.removeNavigator(this.props.sceneId)
-        this.navigator.clearSubscriptions()
+        this.subscription?.remove()
+        this.navigator.unmount()
       }
 
       render() {

@@ -109,7 +109,7 @@ Navigator.setRoot({
 
 通过这个方法可以监听 `setRoot` 的调用情况
 
-- **dispatch(sceneId: string, action: string, params: Params = {})**
+- **dispatch(sceneId: string, action: string, params: Params = {}): Promise&lt;boolean&gt;**
 
 大多数导航操作都是转发给该方法完成，也可以直接使用，尤其是自定义了容器和导航之后
 
