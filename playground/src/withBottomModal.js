@@ -61,9 +61,8 @@ export default function withBottomModal({
             toValue: this.height,
             duration: 200,
             easing: Easing.linear,
-          }).start(async () => {
-            await this.realHideModal()
-            resolve()
+          }).start(() => {
+            resolve(this.realHideModal())
           })
         })
       }

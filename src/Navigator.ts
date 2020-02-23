@@ -46,7 +46,7 @@ interface ResultListener {
   (requestCode: number, resultCode: number, data: any): void
 }
 
-type Result<T> = [number, T | null]
+type Result<T> = [number, T]
 
 interface UnmountListener {
   (): void
@@ -253,7 +253,7 @@ export class Navigator {
 
   private waitResult<T>(requestCode: number, successful: boolean): Promise<Result<T>> {
     if (!successful) {
-      return Promise.resolve([0, null])
+      return Promise.resolve([0, {} as T])
     }
     return new Promise<Result<T>>(resolve => {
       const listener = (reqCode: number, resultCode: number, data: any) => {
@@ -396,7 +396,7 @@ export class Navigator {
     return await this.waitUnmount(success)
   }
 
-  setResult<T = any>(resultCode: number, data: T): void {
+  setResult<T = any>(resultCode: number, data?: T): void {
     NavigationModule.setResult(this.sceneId, resultCode, data)
   }
 
