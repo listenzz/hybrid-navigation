@@ -276,13 +276,13 @@ export class Navigator {
     this.state.unmountListeners.length = 0
   }
 
-  private waitUnmount(successful: boolean): Promise<boolean> {
+  private waitUnmount(successful: boolean): Promise<void> {
     if (!successful) {
-      return Promise.resolve(false)
+      return Promise.resolve()
     }
-    return new Promise<boolean>(resolve => {
+    return new Promise<void>(resolve => {
       this.state.unmountListeners.push(() => {
-        resolve(true)
+        resolve()
       })
     })
   }
@@ -396,24 +396,24 @@ export class Navigator {
     return await this.waitUnmount(success)
   }
 
-  setResult<T = any>(resultCode: number, data?: T): void {
+  setResult<T = any>(resultCode: number, data: T = {} as T): void {
     NavigationModule.setResult(this.sceneId, resultCode, data)
   }
 
   async switchTab(index: number, popToRoot: boolean = false) {
-    return await this.dispatch('switchTab', { index, popToRoot })
+    await this.dispatch('switchTab', { index, popToRoot })
   }
 
   async toggleMenu() {
-    return await this.dispatch('toggleMenu')
+    await this.dispatch('toggleMenu')
   }
 
   async openMenu() {
-    return await this.dispatch('openMenu')
+    await this.dispatch('openMenu')
   }
 
   async closeMenu() {
-    return await this.dispatch('closeMenu')
+    await this.dispatch('closeMenu')
   }
 
   signalFirstRenderComplete(): void {
