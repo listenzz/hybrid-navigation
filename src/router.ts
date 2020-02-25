@@ -31,6 +31,7 @@ export interface RouteGraph {
   layout: string
   sceneId: string
   mode: LayoutMode
+  children?: RouteGraph[]
 }
 
 export interface StackGraph extends RouteGraph {
@@ -119,7 +120,7 @@ const stackParser: RouteParser = {
 
       if (index !== -1) {
         let peddingModuleNames = moduleNames.slice(index + 1)
-        const navigator = new Navigator(children[children.length - 1].sceneId)
+        const navigator = Navigator.get(children[children.length - 1].sceneId)
         if (peddingModuleNames.length === 0) {
           navigator.replace(moduleName, props)
         } else {
@@ -146,18 +147,35 @@ const tabsParser: RouteParser = {
     }
 
     const { children, selectedIndex } = graph
+    const { dependencies, moduleName } = route
+
     for (let i = 0; i < children.length; i++) {
-      if (router.navigateTo(children[i], route)) {
-        if (i !== selectedIndex) {
-          const navigator = new Navigator(children[i].sceneId)
+      const moduleNames: string[] = []
+      extractModuleNames(children[i], moduleNames)
+      if (
+        moduleNames.indexOf(moduleName) !== -1 ||
+        dependencies.some(value => moduleNames.indexOf(value) !== -1)
+      ) {
+        if (selectedIndex !== i) {
+          const navigator = Navigator.get(children[i].sceneId)
           navigator.switchTab(i)
         }
-        return true
+        return router.navigateTo(children[i], route)
       }
     }
-
     return false
   },
+}
+
+function extractModuleNames(graph: RouteGraph, set: string[]) {
+  if (isScreenGraph(graph)) {
+    set.push(graph.moduleName)
+  } else {
+    const children = graph.children!
+    for (let i = 0; i < children.length; i++) {
+      extractModuleNames(children[i], set)
+    }
+  }
 }
 
 const drawerParser: RouteParser = {
@@ -166,22 +184,19 @@ const drawerParser: RouteParser = {
       return false
     }
 
-    const { children } = graph
-
-    if (router.navigateTo(children[0], route) || router.navigateTo(children[1], route)) {
-      const navigator = new Navigator(children[0].sceneId)
-      navigator.closeMenu()
-      return true
-    }
-
-    const { moduleName } = children[1]
+    const { moduleName, sceneId } = graph.children[1]
     if (moduleName === route.moduleName) {
-      const navigator = new Navigator(children[1].sceneId)
+      const navigator = Navigator.get(sceneId)
       navigator.openMenu()
       return true
+    } else {
+      let result = router.navigateTo(graph.children[0], route)
+      if (result) {
+        const navigator = Navigator.get(sceneId)
+        navigator.closeMenu()
+      }
+      return result
     }
-
-    return false
   },
 }
 
@@ -295,10 +310,6 @@ class Router {
       for (let index = graphArray.length - 1; index > 0; index--) {
         const { mode: layoutMode } = graphArray[index]
         const navigator = await Navigator.current()
-        if (!navigator) {
-          return
-        }
-
         if (layoutMode === 'present') {
           await navigator.dismiss()
         } else if (layoutMode === 'modal') {
@@ -311,9 +322,6 @@ class Router {
 
     if (!this.navigateTo(graphArray[0], route)) {
       const navigator = await Navigator.current()
-      if (!navigator) {
-        return
-      }
       navigator.closeMenu()
       const { moduleName, mode: routeMode, props } = route
       if (routeMode === 'present') {
