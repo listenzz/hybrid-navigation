@@ -82,7 +82,7 @@ export function isScreenGraph(graph: RouteGraph): graph is ScreenGraph {
 export type RouteInterceptor = (path: string) => boolean
 
 export interface RouteParser {
-  navigateTo(router: Router, graph: RouteGraph, route: RouteInfo): boolean
+  navigateTo(router: RouterT, graph: RouteGraph, route: RouteInfo): boolean
 }
 
 function routeDependencies(routeConfig: RouteConfig) {
@@ -96,7 +96,7 @@ function routeDependencies(routeConfig: RouteConfig) {
 }
 
 const stackParser: RouteParser = {
-  navigateTo(_: Router, graph: RouteGraph, route: RouteInfo) {
+  navigateTo(_: RouterT, graph: RouteGraph, route: RouteInfo) {
     if (!isStackGraph(graph)) {
       return false
     }
@@ -141,7 +141,7 @@ const stackParser: RouteParser = {
 }
 
 const tabsParser: RouteParser = {
-  navigateTo(router: Router, graph: RouteGraph, route: RouteInfo) {
+  navigateTo(router: RouterT, graph: RouteGraph, route: RouteInfo) {
     if (!isTabsGraph(graph)) {
       return false
     }
@@ -179,7 +179,7 @@ function extractModuleNames(graph: RouteGraph, set: string[]) {
 }
 
 const drawerParser: RouteParser = {
-  navigateTo(router: Router, graph: RouteGraph, route: RouteInfo) {
+  navigateTo(router: RouterT, graph: RouteGraph, route: RouteInfo) {
     if (!isDrawerGraph(graph)) {
       return false
     }
@@ -205,7 +205,11 @@ let interceptors = new Set<RouteInterceptor>()
 let active = 0
 let parsers = new Set<RouteParser>([drawerParser, tabsParser, stackParser])
 
-class Router {
+export interface RouterT {
+  navigateTo(graph: RouteGraph, route: RouteInfo): boolean
+}
+
+class Router implements RouterT {
   private hasHandleInitialURL: boolean
   private uriPrefix?: string
   constructor() {
