@@ -80,7 +80,9 @@ function withNavigator(moduleName: string) {
           const navigation = this.navigationRef.current as Navigation
           switch (data[KEY_ON]) {
             case ON_BAR_BUTTON_ITEM_CLICK:
-              navigation.onBarButtonItemClick && navigation.onBarButtonItemClick(data[KEY_ACTION])
+              navigation &&
+                navigation.onBarButtonItemClick &&
+                navigation.onBarButtonItemClick(data[KEY_ACTION])
               break
             case ON_COMPONENT_RESULT:
               this.navigator.result(
@@ -89,7 +91,8 @@ function withNavigator(moduleName: string) {
                 data[KEY_RESULT_DATA],
               )
 
-              navigation.onComponentResult &&
+              navigation &&
+                navigation.onComponentResult &&
                 navigation.onComponentResult(
                   data[KEY_REQUEST_CODE],
                   data[KEY_RESULT_CODE],
@@ -99,17 +102,17 @@ function withNavigator(moduleName: string) {
             case ON_COMPONENT_APPEAR:
               if (!this.viewAppeared) {
                 this.viewAppeared = true
-                navigation.componentDidAppear && navigation.componentDidAppear()
+                navigation && navigation.componentDidAppear && navigation.componentDidAppear()
               }
               break
             case ON_COMPONENT_DISAPPEAR:
               if (this.viewAppeared) {
                 this.viewAppeared = false
-                navigation.componentDidDisappear && navigation.componentDidDisappear()
+                navigation && navigation.componentDidDisappear && navigation.componentDidDisappear()
               }
               break
             case ON_DIALOG_BACK_PRESSED:
-              navigation.onBackPressed && navigation.onBackPressed()
+              navigation && navigation.onBackPressed && navigation.onBackPressed()
               break
             case ON_COMPONENT_MOUNT:
               this.navigator.signalFirstRenderComplete()
