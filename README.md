@@ -82,8 +82,14 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| >= 0.60                 | 0.19.5                           | 2020/02/26 |
+| >= 0.60                 | 0.20.0                           | 2020/03/08 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
+
+### 0.20.x
+
+- 移除了 `replace` `replaceToRoot`
+
+- 添加 `redirectTo` 以取代 `replace`
 
 ### 0.19.x
 

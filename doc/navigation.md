@@ -475,39 +475,24 @@ this.props.navigator.popToRoot()
 
 pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `onComponentResult(requestCode, resultCode, data)` 或 `useResult` 来接收结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
 
-- **replace&lt;P extends object = {}&gt;(moduleName: string, props?: P, options?: NavigationItem): void**
+- **redirectTo&lt;P extends object = {}&gt;(moduleName: string, props?: P, options?: NavigationItem): void**
 
 用指定页面取代当前页面，比如当前页面是 A，想要替换成 B
 
 ```javascript
 // A.js
-this.props.navigator.replace('B')
+this.props.navigator.redirectTo('B')
 ```
 
 现在 stack 里没有 A 页面了，被替换成了 B。
 
-如果 stack 里有 A, B, C 三个页面，现在想要让 B, C 出栈，并且让 D 入栈，可以有两种实现方式。
+又比如 stack 里有 A, B, C 三个页面，现在想要让 B, C 出栈，并且让 D 入栈
 
-其一，找到 A 页面的 navigator，调用 `navigator.popTo(navigator.sceneId)` 方法，然后调用 `navigator.push('D')` 方法。用户会先看到一个 pop 动画，然后看到一个 push 动画。
-
-其二，找到 B 页面的 navigator，调用 `navigator.replace('D')` 方法。用户只会看到一个 replace 动画。
+找到 B 页面的 navigator，调用 `navigator.redirectTo('D')` 方法即可
 
 现在 stack 里有 A, D 两个页面。
 
 > 如何在页面之外获取到该页面的 navigator? 这需要用到 `Navigator.routeGraph`、`Navigator.get` 等方法。
-
-- **replaceToRoot&lt;P extends object = {}&gt;(moduleName: string, props?: P, options?: NavigationItem): void**
-
-移除所有页面，然后把目标页面设置为 stack 的根页面。
-
-譬如 A 页面是根页面，然后 `push` 到 B、C、D 页面，此时 Stack 里有 A、B、C、D 四个页面，当执行如下操作：
-
-```javascript
-// D.js
-this.props.navigator.replaceToRoot('E')
-```
-
-A、B、C、D 页面被移除，E 页面被设置为 stack 的根页面。
 
 - **isStackRoot(): Promise&lt;boolean&gt;**
 
