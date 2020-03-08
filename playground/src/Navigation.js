@@ -30,8 +30,7 @@ export default class Navigation extends Component {
     this.pop = this.pop.bind(this)
     this.popTo = this.popTo.bind(this)
     this.popToRoot = this.popToRoot.bind(this)
-    this.replace = this.replace.bind(this)
-    this.replaceToRoot = this.replaceToRoot.bind(this)
+    this.redirectTo = this.redirectTo.bind(this)
     this.present = this.present.bind(this)
     this.switchTab = this.switchTab.bind(this)
     this.showModal = this.showModal.bind(this)
@@ -104,19 +103,14 @@ export default class Navigation extends Component {
     await this.printRouteGraph()
   }
 
-  async replace() {
+  async redirectTo() {
     if (this.props.popToId !== undefined) {
-      await this.props.navigator.replace('Navigation', {
+      await this.props.navigator.redirectTo('Navigation', {
         popToId: this.props.popToId,
       })
     } else {
-      await this.props.navigator.replace('Navigation')
+      await this.props.navigator.redirectTo('Navigation')
     }
-    await this.printRouteGraph()
-  }
-
-  async replaceToRoot() {
-    await this.props.navigator.replaceToRoot('Navigation')
     await this.printRouteGraph()
   }
 
@@ -219,12 +213,8 @@ export default class Navigation extends Component {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={this.replace} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>replace</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.replaceToRoot} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>replaceToRoot</Text>
+          <TouchableOpacity onPress={this.redirectTo} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>redirectTo</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.present} activeOpacity={0.2} style={styles.button}>

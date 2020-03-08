@@ -122,7 +122,7 @@ const stackParser: RouteParser = {
         let peddingModuleNames = moduleNames.slice(index + 1)
         const navigator = Navigator.get(children[children.length - 1].sceneId)
         if (peddingModuleNames.length === 0) {
-          navigator.replace(moduleName, props)
+          navigator.redirectTo(moduleName, props)
         } else {
           for (let i = 0; i < peddingModuleNames.length; i++) {
             if (i === peddingModuleNames.length - 1) {

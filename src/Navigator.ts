@@ -216,8 +216,7 @@ export class Navigator {
     this.pop = this.pop.bind(this)
     this.popTo = this.popTo.bind(this)
     this.popToRoot = this.popToRoot.bind(this)
-    this.replace = this.replace.bind(this)
-    this.replaceToRoot = this.replaceToRoot.bind(this)
+    this.redirectTo = this.redirectTo.bind(this)
     this.isStackRoot = this.isStackRoot.bind(this)
 
     this.present = this.present.bind(this)
@@ -317,21 +316,12 @@ export class Navigator {
     return await this.waitUnmount(success)
   }
 
-  async replace<P extends object = {}>(
+  async redirectTo<P extends object = {}>(
     moduleName: string,
     props: P = {} as P,
     options: NavigationItem = {},
   ) {
-    const success = await this.dispatch('replace', { moduleName, props, options, animated: true })
-    return await this.waitUnmount(success)
-  }
-
-  async replaceToRoot<P extends object = {}>(
-    moduleName: string,
-    props: P = {} as P,
-    options: NavigationItem = {},
-  ) {
-    const success = await this.dispatch('replaceToRoot', {
+    const success = await this.dispatch('redirectTo', {
       moduleName,
       props,
       options,

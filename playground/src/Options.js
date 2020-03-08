@@ -109,7 +109,10 @@ export default class Options extends Component {
   toggleTabBadge() {
     if (this.state.badge) {
       this.setState({ badge: null })
-      this.props.garden.setTabBadge([{ index: 0, hidden: true }, { index: 1, hidden: true }])
+      this.props.garden.setTabBadge([
+        { index: 0, hidden: true },
+        { index: 1, hidden: true },
+      ])
     } else {
       this.setState({ badge: '5' })
       this.props.garden.setTabBadge([
@@ -229,14 +232,14 @@ export default class Options extends Component {
             <Text style={styles.buttonText}>{`change title to '${this.state.title}'`}</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity onPress={this.switchTab} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity onPress={this.toggleTabBadge} activeOpacity={0.2} style={styles.button}>
             <Text style={styles.buttonText}>
               {this.state.badge ? 'hide tab badge' : 'show tab badge'}
             </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={this.switchTab} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={this.replaceTabIcon} activeOpacity={0.2} style={styles.button}>

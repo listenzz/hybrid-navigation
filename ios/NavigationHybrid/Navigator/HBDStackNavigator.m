@@ -18,7 +18,7 @@
 }
 
 - (NSArray<NSString *> *)supportActions {
-    return @[@"push", @"pushLayout", @"pop", @"popTo", @"popToRoot", @"replace", @"replaceToRoot"];
+    return @[@"push", @"pushLayout", @"pop", @"popTo", @"popToRoot", @"redirectTo"];
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
@@ -100,10 +100,8 @@
         }
     } else if ([action isEqualToString:@"popToRoot"]) {
         [nav popToRootViewControllerAnimated:animated];
-    } else if ([action isEqualToString:@"replace"]) {
-        [nav replaceViewController:viewController target:target animated:YES];
-    } else if ([action isEqualToString:@"replaceToRoot"]) {
-        [nav replaceToRootViewController:viewController animated:YES];
+    } else if ([action isEqualToString:@"redirectTo"]) {
+        [nav redirectToViewController:viewController target:target animated:YES];
     } else if ([action isEqualToString:@"pushLayout"]) {
         NSDictionary *layout = [extras objectForKey:@"layout"];
         UIViewController *vc = [[HBDReactBridgeManager get] controllerWithLayout:layout];

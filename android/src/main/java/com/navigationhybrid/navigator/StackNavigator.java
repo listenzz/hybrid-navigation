@@ -23,7 +23,7 @@ import java.util.List;
 
 public class StackNavigator implements Navigator {
 
-    private List<String> supportActions = Arrays.asList("push", "pushLayout", "pop", "popTo", "popToRoot", "replace", "replaceToRoot");
+    private List<String> supportActions = Arrays.asList("push", "pushLayout", "pop", "popTo", "popToRoot", "redirectTo");
 
     @Override
     @NonNull
@@ -136,14 +136,9 @@ public class StackNavigator implements Navigator {
             case "popToRoot":
                 navigationFragment.popToRootFragment();
                 break;
-            case "replace":
+            case "redirectTo":
                 if (fragment != null) {
-                    navigationFragment.replaceFragment(fragment, target);
-                }
-                break;
-            case "replaceToRoot":
-                if (fragment != null) {
-                    navigationFragment.replaceToRootFragment(fragment);
+                    navigationFragment.redirectToFragment(fragment, target, true);
                 }
                 break;
             case "pushLayout":

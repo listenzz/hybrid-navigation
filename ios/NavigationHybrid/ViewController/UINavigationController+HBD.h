@@ -10,10 +10,8 @@
 
 @interface UINavigationController (HBD)
 
-- (void)replaceViewController:(UIViewController *)controller animated:(BOOL)animated;
+- (void)redirectToViewController:(UIViewController *)controller animated:(BOOL)animated;
 
-- (void)replaceViewController:(UIViewController *)controller target:(UIViewController *)target animated:(BOOL)animated;
-
-- (void)replaceToRootViewController:(UIViewController *)controller animated:(BOOL)animated;
+- (void)redirectToViewController:(UIViewController *)controller target:(UIViewController *)target animated:(BOOL)animated;
 
 @end
