@@ -578,7 +578,7 @@ this.props.navigator.closeMenu()
 
   譬如 A (可以是 modal)，它通过 `this.props.navigator.showModal` 显示 B，那么在 B 被关闭前，A 不能通过 `this.props.navigator.showModal` 显示 C。
 
-- **在调用 `dismiss` 、`hideModal`、`pop`、`popTo`、`popToRoot`、`replace` 或者 `replaceToRoot` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
+- **在调用 `dismiss` 、`hideModal`、`pop`、`popTo`、`popToRoot` 或者 `redirectTo` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
   ```javascript
   this.props.navigator.hideModal()
