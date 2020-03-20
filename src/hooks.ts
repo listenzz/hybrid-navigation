@@ -19,14 +19,14 @@ export type Visibility = 'visible' | 'gone' | 'pending'
 
 export function useVisibility(sceneId: string) {
   const navigator = Navigator.get(sceneId)
-  const [visible, setVisible] = useState<Visibility>(navigator.visibility)
+  const [visibility, setVisibility] = useState<Visibility>(navigator.visibility)
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID]) {
         if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
-          setVisible('visible')
+          setVisibility('visible')
         } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
-          setVisible('gone')
+          setVisibility('gone')
         }
       }
     })
@@ -34,7 +34,7 @@ export function useVisibility(sceneId: string) {
       subscription.remove()
     }
   }, [sceneId])
-  return visible
+  return visibility
 }
 
 export function useBackEffect(sceneId: string, fn: () => void) {
