@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 
 import {
   EventEmitter,
@@ -14,22 +14,23 @@ import {
   KEY_RESULT_DATA,
 } from './NavigationModule'
 
-export function useVisibleEffect(sceneId: string, fn: React.EffectCallback) {
-  let onHidden = useRef<ReturnType<React.EffectCallback>>()
+export function useVisibleState(sceneId: string) {
+  const [visible, setVisible] = useState(false)
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID]) {
         if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
-          onHidden.current = fn()
-        } else if (onHidden.current && data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
-          onHidden.current && onHidden.current()
+          setVisible(true)
+        } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
+          setVisible(false)
         }
       }
     })
     return () => {
       subscription.remove()
     }
-  }, [fn, sceneId])
+  }, [sceneId])
+  return visible
 }
 
 export function useBackEffect(sceneId: string, fn: () => void) {
