@@ -1,39 +1,19 @@
-import { AppRegistry, ComponentProvider, EmitterSubscription } from 'react-native'
-import React from 'react'
+import { AppRegistry, ComponentProvider } from 'react-native'
+import React, { useEffect } from 'react'
 import { Navigator } from './Navigator'
 import {
-  EventEmitter,
   NavigationModule,
+  EventEmitter,
   EVENT_NAVIGATION,
   KEY_SCENE_ID,
   KEY_ON,
-  ON_BAR_BUTTON_ITEM_CLICK,
-  ON_COMPONENT_RESULT,
-  ON_COMPONENT_DISAPPEAR,
-  ON_COMPONENT_APPEAR,
-  ON_DIALOG_BACK_PRESSED,
   ON_COMPONENT_MOUNT,
-  KEY_REQUEST_CODE,
-  KEY_RESULT_CODE,
-  KEY_RESULT_DATA,
-  KEY_ACTION,
 } from './NavigationModule'
-import { Garden, NavigationItem } from './Garden'
+import { Garden } from './Garden'
 import { router, RouteConfig } from './router'
 import store from './store'
 import { bindBarButtonItemClickEvent, removeBarButtonItemClickEvent } from './utils'
-
-export interface NavigationType {
-  navigationItem?: NavigationItem
-}
-
-export interface Navigation {
-  onBarButtonItemClick?(action: string): void
-  onComponentResult?(requestCode: number, resultCode: number, data: any): void
-  componentDidAppear?(): void
-  componentDidDisappear?(): void
-  onBackPressed?(): void
-}
+import { useResult } from './hooks'
 
 export interface InjectedProps {
   navigator: Navigator
@@ -45,119 +25,69 @@ interface NativeProps {
   sceneId: string
 }
 
+interface InternalProps extends NativeProps {
+  forwardedRef: React.Ref<React.ComponentType<any>>
+}
+
 function getDisplayName(WrappedComponent: React.ComponentType) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component'
 }
 
 function withNavigator(moduleName: string) {
-  return function(WrappedComponent: React.ComponentType) {
-    return class extends React.Component<NativeProps> {
-      static displayName = `WithNavigator(${getDisplayName(WrappedComponent)})`
-
-      private navigator: Navigator
-      private garden: Garden
-      private navigationRef: React.RefObject<React.Component>
-      private subscription?: EmitterSubscription
-      private viewAppeared = false
-      constructor(props: NativeProps) {
-        super(props)
-        this.navigationRef = React.createRef()
-        this.navigator =
-          store.getNavigator(props.sceneId) || new Navigator(props.sceneId, moduleName)
-        if (this.navigator.moduleName === undefined) {
-          this.navigator.moduleName = moduleName
-        }
-        store.addNavigator(props.sceneId, this.navigator)
-        this.garden = new Garden(props.sceneId)
+  return function(WrappedComponent: React.ComponentType<any>) {
+    const FC: React.FC<InternalProps> = (props: InternalProps) => {
+      const { sceneId } = props
+      const navigator = store.getNavigator(sceneId) || new Navigator(sceneId, moduleName)
+      if (navigator.moduleName === undefined) {
+        navigator.moduleName = moduleName
       }
+      store.addNavigator(sceneId, navigator)
+      const garden = new Garden(sceneId)
 
-      componentDidMount() {
-        this.navigator.signalFirstRenderComplete()
-        this.subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-          if (this.props.sceneId !== data[KEY_SCENE_ID]) {
-            return
-          }
-          const navigation = this.navigationRef.current as Navigation
-          switch (data[KEY_ON]) {
-            case ON_BAR_BUTTON_ITEM_CLICK:
-              navigation &&
-                navigation.onBarButtonItemClick &&
-                navigation.onBarButtonItemClick(data[KEY_ACTION])
-              break
-            case ON_COMPONENT_RESULT:
-              this.navigator.result(
-                data[KEY_REQUEST_CODE],
-                data[KEY_RESULT_CODE],
-                data[KEY_RESULT_DATA],
-              )
-
-              navigation &&
-                navigation.onComponentResult &&
-                navigation.onComponentResult(
-                  data[KEY_REQUEST_CODE],
-                  data[KEY_RESULT_CODE],
-                  data[KEY_RESULT_DATA],
-                )
-              break
-            case ON_COMPONENT_APPEAR:
-              if (!this.viewAppeared) {
-                this.viewAppeared = true
-                navigation && navigation.componentDidAppear && navigation.componentDidAppear()
-              }
-              break
-            case ON_COMPONENT_DISAPPEAR:
-              if (this.viewAppeared) {
-                this.viewAppeared = false
-                navigation && navigation.componentDidDisappear && navigation.componentDidDisappear()
-              }
-              break
-            case ON_DIALOG_BACK_PRESSED:
-              navigation && navigation.onBackPressed && navigation.onBackPressed()
-              break
-            case ON_COMPONENT_MOUNT:
-              this.navigator.signalFirstRenderComplete()
-              break
-            default:
-              throw new Error(`event ${data[KEY_ON]} has not been processed yet.`)
+      useEffect(() => {
+        navigator.signalFirstRenderComplete()
+        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+          if (navigator.sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_COMPONENT_MOUNT) {
+            navigator.signalFirstRenderComplete()
           }
         })
+        return () => {
+          removeBarButtonItemClickEvent(navigator.sceneId)
+          store.removeNavigator(navigator.sceneId)
+          navigator.unmount()
+          subscription.remove()
+        }
+      }, [navigator])
+
+      useResult(sceneId, (requestcode, resultCode, data) => {
+        navigator.result(requestcode, resultCode, data)
+      })
+
+      const injected = {
+        garden,
+        navigator,
       }
 
-      componentWillUnmount() {
-        removeBarButtonItemClickEvent(this.props.sceneId)
-        store.removeNavigator(this.props.sceneId)
-        this.subscription?.remove()
-        this.navigator.unmount()
-      }
+      const { forwardedRef, ...rest } = props
 
-      render() {
-        const injected = {
-          garden: this.garden,
-          navigator: this.navigator,
-        }
-
-        const refs = {
-          ref: this.navigationRef,
-        }
-
-        if (!WrappedComponent.prototype || WrappedComponent.prototype.isReactComponent) {
-          return <WrappedComponent {...this.props} {...injected} {...refs} />
-        } else {
-          return <WrappedComponent {...this.props} {...injected} />
-        }
-      }
+      return <WrappedComponent ref={forwardedRef} {...rest} {...injected} />
     }
+
+    const FD = React.forwardRef<React.ComponentType<any>, NativeProps>((props, ref) => {
+      return <FC {...props} forwardedRef={ref} />
+    })
+
+    FD.displayName = `withNavigator(${getDisplayName(WrappedComponent)})`
+    return FD
   }
 }
 
-export type HigherOrderComponent = (
-  WrappedComponent: React.ComponentClass<NativeProps>,
-) => React.ComponentType<NativeProps>
-let wrap: HigherOrderComponent | undefined
+export type HOC = (WrappedComponent: React.ComponentType<any>) => React.ComponentType<any>
+let wrap: HOC | undefined
 
 export class ReactRegistry {
   static registerEnded: boolean
-  static startRegisterComponent(hoc?: HigherOrderComponent) {
+  static startRegisterComponent(hoc?: HOC) {
     console.info('begin register react component')
     router.clear()
     store.clear()
@@ -186,13 +116,13 @@ export class ReactRegistry {
     }
 
     const WrappedComponent = getComponentFunc()
-    const navigation = WrappedComponent as NavigationType
 
     // build static options
-    let options: object = bindBarButtonItemClickEvent(navigation.navigationItem) || {}
+    let options: object =
+      bindBarButtonItemClickEvent((WrappedComponent as any).navigationItem) || {}
     NavigationModule.registerReactComponent(appKey, options)
 
-    let RootComponent: React.ComponentType<NativeProps>
+    let RootComponent: React.ComponentType<any>
     if (wrap) {
       RootComponent = wrap(withNavigator(appKey)(WrappedComponent))
     } else {

@@ -92,7 +92,7 @@ export interface BarButtonItem {
   title?: string
   icon?: Image
   insetsIOS?: Insets
-  action?: string | ((navigator: Navigator) => void)
+  action?: (navigator: Navigator) => void
   enabled?: boolean
   tintColor?: Color
   renderOriginal?: boolean

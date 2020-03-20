@@ -94,7 +94,7 @@ function withRedux(WrappedComponent) {
       )
     }
   }
-  ReduxProvider.displayName = `WithRedux(${WrappedComponent.displayName})`
+  ReduxProvider.displayName = `withRedux(${WrappedComponent.displayName})`
   return ReduxProvider
 }
 
