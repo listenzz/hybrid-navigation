@@ -1,127 +1,100 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { TouchableOpacity, Text, View, TextInput, Platform, Image } from 'react-native'
 import styles from './Styles'
 
-import { RESULT_OK, Navigator, BarStyleLightContent } from 'react-native-navigation-hybrid'
+import { RESULT_OK, BarStyleLightContent, withNavigationItem } from 'react-native-navigation-hybrid'
 
-export default class Result extends Component {
-  static navigationItem = {
-    titleItem: {
-      title: 'RN result',
+export default withNavigationItem({
+  titleItem: {
+    title: 'RN result',
+  },
+  topBarStyle: BarStyleLightContent,
+  topBarTintColor: '#FFFFFF',
+  ...Platform.select({
+    ios: {
+      topBarColor: '#FF344C',
     },
-    topBarStyle: BarStyleLightContent,
-    topBarTintColor: '#FFFFFF',
-    ...Platform.select({
-      ios: {
-        topBarColor: '#FF344C',
-      },
-      android: {
-        topBarColor: '#F94D53',
-      },
-    }),
-  }
+    android: {
+      topBarColor: '#F94D53',
+    },
+  }),
+})(Result)
 
-  constructor(props) {
-    super(props)
-    this.popToRoot = this.popToRoot.bind(this)
-    this.pushToReact = this.pushToReact.bind(this)
-    this.sendResult = this.sendResult.bind(this)
-    this.onInputTextChanged = this.onInputTextChanged.bind(this)
-    this.state = {
-      text: '',
-      isRoot: false,
+function Result({ navigator, garden }) {
+  const [text, setText] = useState('')
+  const [isRoot, setIsRoot] = useState(false)
+
+  useEffect(() => {
+    navigator.isStackRoot().then(root => {
+      setIsRoot(root)
+    })
+  }, [navigator])
+
+  useEffect(() => {
+    if (isRoot) {
+      garden.setLeftBarButtonItem({
+        title: 'Cancel',
+        icon: Image.resolveAssetSource(require('./images/cancel.png')),
+        insets: { top: -1, left: -8, bottom: 0, right: 8 },
+        action: navigator => {
+          navigator.dismiss()
+        },
+      })
     }
+  }, [isRoot, garden])
+
+  function popToRoot() {
+    navigator.popToRoot()
   }
 
-  componentDidMount() {
-    console.info('result componentDidMount')
-    this.props.navigator.isStackRoot().then(isRoot => {
-      if (isRoot) {
-        this.props.garden.setLeftBarButtonItem({
-          title: 'Cancel',
-          icon: Image.resolveAssetSource(require('./images/cancel.png')),
-          insets: { top: -1, left: -8, bottom: 0, right: 8 },
-          action: async navigator => {
-            await navigator.dismiss()
-            const current = await Navigator.currentRoute()
-            console.log(current)
-          },
-        })
-        this.setState({ isRoot: isRoot })
-      }
+  function pushToReact() {
+    navigator.push('Result')
+  }
+
+  async function sendResult() {
+    navigator.setResult(RESULT_OK, {
+      text: text || '',
     })
+    await navigator.dismiss()
   }
 
-  componentDidAppear() {
-    console.info('result componentDidAppear')
+  function handleTextChanged(text) {
+    setText(text)
   }
 
-  componentDidDisappear() {
-    console.info('result componentDidDisappear')
-  }
+  return (
+    <KeyboardAwareScrollView
+      style={{ flex: 1 }}
+      showsHorizontalScrollIndicator={false}
+      contentInsetAdjustmentBehavior="automatic">
+      <View style={styles.container}>
+        <Text style={styles.welcome}>This's a React Native scene.</Text>
 
-  componentWillUnmount() {
-    console.info('result componentWillUnmount')
-  }
+        <TouchableOpacity onPress={pushToReact} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>push to another scene</Text>
+        </TouchableOpacity>
 
-  popToRoot() {
-    this.props.navigator.popToRoot()
-  }
+        <TouchableOpacity
+          onPress={popToRoot}
+          activeOpacity={0.2}
+          style={styles.button}
+          disabled={isRoot}>
+          <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop to home</Text>
+        </TouchableOpacity>
 
-  pushToReact() {
-    this.props.navigator.push('Result')
-  }
+        <TextInput
+          style={styles.input}
+          onChangeText={handleTextChanged}
+          value={text}
+          placeholder={'enter your text'}
+          textAlignVertical="center"
+        />
 
-  async sendResult() {
-    this.props.navigator.setResult(RESULT_OK, {
-      text: this.state.text || '',
-    })
-    await this.props.navigator.dismiss()
-    const current = await Navigator.currentRoute()
-    console.log(current)
-  }
-
-  onInputTextChanged(text) {
-    this.setState({ text: text })
-  }
-
-  render() {
-    return (
-      <KeyboardAwareScrollView
-        style={{ flex: 1 }}
-        showsHorizontalScrollIndicator={false}
-        contentInsetAdjustmentBehavior="automatic">
-        <View style={styles.container}>
-          <Text style={styles.welcome}>This's a React Native scene.</Text>
-
-          <TouchableOpacity onPress={this.pushToReact} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>push to another scene</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={this.popToRoot}
-            activeOpacity={0.2}
-            style={styles.button}
-            disabled={this.state.isRoot}>
-            <Text style={this.state.isRoot ? styles.buttonTextDisable : styles.buttonText}>
-              pop to home
-            </Text>
-          </TouchableOpacity>
-
-          <TextInput
-            style={styles.input}
-            onChangeText={this.onInputTextChanged}
-            value={this.state.text}
-            placeholder={'enter your text'}
-            textAlignVertical="center"
-          />
-
-          <TouchableOpacity onPress={this.sendResult} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>send data back</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAwareScrollView>
-    )
-  }
+        <TouchableOpacity onPress={sendResult} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>send data back</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAwareScrollView>
+  )
 }

@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { TouchableOpacity, Text, View, StatusBar, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
-import { Garden, Navigator } from 'react-native-navigation-hybrid'
+import { Garden, useVisibility } from 'react-native-navigation-hybrid'
 
 import styles from './Styles'
 
@@ -32,62 +32,46 @@ const paddingTop = Platform.select({
   },
 })
 
-export default class Menu extends Component {
-  constructor(props) {
-    super(props)
-    this.push = this.push.bind(this)
-    this.pushToRedux = this.pushToRedux.bind(this)
-    this.pushToToast = this.pushToToast.bind(this)
+export default function Menu({ navigator, sceneId }) {
+  const push = useCallback(() => {
+    navigator.closeMenu()
+    navigator.push('OneNative')
+  }, [navigator])
+
+  function pushToRedux() {
+    navigator.closeMenu()
+    navigator.push('ReduxCounter')
   }
 
-  componentDidAppear() {
-    console.info('menu componentDidAppear')
+  function pushToToast() {
+    navigator.closeMenu()
+    navigator.push('Toast')
   }
 
-  componentDidDisappear() {
-    console.info('menu componentDidDisappear')
-  }
+  const visibility = useVisibility(sceneId)
+  useEffect(() => {
+    if (visibility === 'visible') {
+      console.log(`Menu is visible`)
+    } else if (visibility === 'gone') {
+      console.log(`Menu is gone`)
+    }
+  }, [visibility])
 
-  componentDidMount() {
-    console.info('menu componentDidMount')
-  }
+  return (
+    <View style={[styles.container, paddingTop]}>
+      <Text style={styles.welcome}>This's a React Native Menu.</Text>
 
-  componentWillUnmount() {
-    console.info('menu componentWillUnmount')
-  }
+      <TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>push to native</Text>
+      </TouchableOpacity>
 
-  push() {
-    this.props.navigator.closeMenu()
-    this.props.navigator.push('OneNative')
-  }
+      <TouchableOpacity onPress={pushToRedux} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>Redux Counter</Text>
+      </TouchableOpacity>
 
-  pushToRedux() {
-    this.props.navigator.closeMenu()
-    this.props.navigator.push('ReduxCounter')
-  }
-
-  pushToToast() {
-    this.props.navigator.closeMenu()
-    this.props.navigator.push('Toast')
-  }
-
-  render() {
-    return (
-      <View style={[styles.container, paddingTop]}>
-        <Text style={styles.welcome}>This's a React Native Menu.</Text>
-
-        <TouchableOpacity onPress={this.push} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>push to native</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.pushToRedux} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>Redux Counter</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.pushToToast} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>Toast</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
+      <TouchableOpacity onPress={pushToToast} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>Toast</Text>
+      </TouchableOpacity>
+    </View>
+  )
 }

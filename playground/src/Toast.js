@@ -1,20 +1,17 @@
-import React, { Component } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import Toast from 'react-native-toast-hybrid'
+import { withNavigationItem } from 'react-native-navigation-hybrid'
 
-export default class ToastComponent extends Component {
-  static navigationItem = {
-    titleItem: {
-      title: 'Toast',
-    },
-  }
+export default withNavigationItem({
+  titleItem: {
+    title: 'Toast',
+  },
+})(ToastComponent)
 
-  constructor(props) {
-    super(props)
-    this.timer = undefined
-  }
-
-  componentDidMount() {
+function ToastComponent({ navigator, toast }) {
+  const timer = useRef(undefined)
+  useEffect(() => {
     Toast.config({
       // backgroundColor: '#BB000000',
       // tintColor: '#FFFFFF',
@@ -25,71 +22,68 @@ export default class ToastComponent extends Component {
       // dimAmount: 0.0, // only for andriod
       loadingText: 'Loading...',
     })
-  }
-
-  componentWillUnmount() {
-    if (this.timer) {
-      clearTimeout(this.timer)
+    return () => {
+      if (timer.current) {
+        clearTimeout(timer.current)
+      }
     }
-  }
+  }, [])
 
-  loading = () => {
-    this.props.toast.loading()
-    this.timer = setTimeout(() => {
-      this.props.toast.done('Work is done!')
-      this.timer = setTimeout(() => {
-        this.props.toast.loading('New task in progress...')
-        this.timer = setTimeout(() => {
-          this.timer = undefined
-          this.props.toast.hide()
+  function loading() {
+    toast.loading()
+    timer.current = setTimeout(() => {
+      toast.done('Work is done!')
+      timer.current = setTimeout(() => {
+        toast.loading('New task in progress...')
+        timer.current = setTimeout(() => {
+          timer.current = undefined
+          toast.hide()
         }, 2000)
       }, 1500)
     }, 2000)
   }
 
-  text = () => {
-    this.props.toast.text('Hello World!!')
+  function text() {
+    toast.text('Hello World!!')
   }
 
-  info = () => {
-    this.props.toast.info(
+  function info() {
+    toast.info(
       'A long long message to tell you, A long long message to tell you, A long long message to tell you',
     )
   }
 
-  done = () => {
-    this.props.toast.done('Work is Done！')
+  function done() {
+    toast.done('Work is Done！')
   }
 
-  error = () => {
-    this.props.toast.error('Maybe somthing is wrong！')
+  function error() {
+    toast.error('Maybe somthing is wrong！')
   }
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity onPress={this.loading} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}> loading </Text>
-        </TouchableOpacity>
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity onPress={loading} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}> loading </Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.text} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}> text </Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={text} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}> text </Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.info} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}> info </Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={info} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}> info </Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.done} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}> done </Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={done} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}> done </Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.error} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}> error </Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
+      <TouchableOpacity onPress={error} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}> error </Text>
+      </TouchableOpacity>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({

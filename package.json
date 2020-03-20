@@ -58,6 +58,7 @@
     "preset": "react-native"
   },
   "dependencies": {
+    "@react-native-community/hooks": "^2.4.7",
     "path-to-regexp": "^3.0.0"
   }
 }

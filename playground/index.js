@@ -28,7 +28,6 @@ import TopBarAlpha from './src/TopBarAlpha'
 import TopBarTitleView, { CustomTitleView } from './src/TopBarTitleView'
 import TopBarStyle from './src/TopBarStyle'
 import StatusBarColor from './src/StatusBarColor'
-import Transparent from './src/Transparent'
 import ReactModal from './src/ReactModal'
 import StatusBarHidden from './src/StatusBarHidden'
 import CustomTabBar from './src/CustomTabBar'
@@ -131,7 +130,6 @@ ReactRegistry.registerComponent('StatusBarColor', () => StatusBarColor)
 ReactRegistry.registerComponent('StatusBarHidden', () => StatusBarHidden)
 ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle)
 
-ReactRegistry.registerComponent('Transparent', () => Transparent)
 ReactRegistry.registerComponent('ReactModal', () => ReactModal, { path: 'modal', mode: 'modal' })
 
 ReactRegistry.registerComponent('CustomTabBar', () => CustomTabBar)

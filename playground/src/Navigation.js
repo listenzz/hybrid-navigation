@@ -34,30 +34,40 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   const [error, setError] = useState(undefined)
   const [isRoot, setIsRoot] = useState(false)
 
+  useEffect(() => {
+    navigator.isStackRoot().then(root => {
+      setIsRoot(root)
+    })
+  }, [navigator])
+
   const visibility = useVisibility(sceneId)
+  useEffect(() => {
+    if (visibility === 'visible') {
+      console.info(`Page Navigation is visible [${sceneId}]`)
+    } else if (visibility === 'gone') {
+      console.info(`Page Navigation is gone [${sceneId}]`)
+    }
+  }, [visibility, sceneId])
 
   useEffect(() => {
     if (visibility === 'visible') {
       garden.setMenuInteractive(isRoot)
-      console.info('navigation componentDidAppear')
-    } else if (visibility === 'gone') {
-      console.info('navigation componentDidDisappear')
     }
   }, [visibility, isRoot, garden])
 
   useEffect(() => {
-    console.info('navigation componentDidMount')
-    navigator.isStackRoot().then(root => {
-      setIsRoot(root)
-    })
-    navigator.setResult(RESULT_OK, { backId: sceneId })
+    console.info('Page Navigation componentDidMount')
     return () => {
-      console.info('navigation componentWillUnmount')
+      console.info('Page Navigation componentWillUnmount')
     }
+  }, [])
+
+  useEffect(() => {
+    navigator.setResult(RESULT_OK, { backId: sceneId })
   }, [navigator, sceneId])
 
   useResult(sceneId, (requestCode, resultCode, data) => {
-    console.info('navigation onComponentResult', data)
+    console.info(`requestCode: ${requestCode}`, `resultCode: ${resultCode}`, data)
   })
 
   async function push() {

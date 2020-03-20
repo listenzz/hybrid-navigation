@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {
   Text,
   View,
@@ -11,82 +11,65 @@ import {
 } from 'react-native'
 import TextBadge from './Badge'
 
-export default class BulgeTabBar extends Component {
-  constructor(props) {
-    super(props)
-  }
-
-  handleTabClick(index) {
-    if (index == -1) {
-      this.props.navigator.present('Result', 1)
+export default function BulgeTabBar({
+  navigator,
+  itemColor,
+  unselectedItemColor,
+  badgeColor,
+  tabs,
+  selectedIndex,
+}) {
+  function handleTabClick(index) {
+    if (index === -1) {
+      navigator.present('Result', 1)
     } else {
-      this.props.navigator.switchTab(index)
+      navigator.switchTab(index)
     }
   }
 
-  shouldComponentUpdate(next) {
-    console.info(next)
-    return true
-  }
-
-  componentDidMount() {
-    console.info('BulgeTabBar componentDidMount')
-  }
-
-  onComponentResult(requestCode, resultCode, data) {
-    console.info('BulgeTabBar onComponentResult')
-  }
-
-  render() {
-    const { itemColor, unselectedItemColor, selectedIndex, badgeColor } = this.props
-    const style = {
-      textBadgeStyle: { backgroundColor: badgeColor },
-      dotBadgeStyle: { backgroundColor: badgeColor },
-      unselectedItemColor,
-      itemColor,
-    }
-
-    return (
-      <View style={styles.container}>
-        <View style={styles.tabBar}>
-          <Tab
-            onTabClick={() => this.handleTabClick(0)}
-            {...this.props.tabs[0]}
-            selected={selectedIndex == 0}
-            {...style}
-          />
-          <Tab unselectedItemColor="rgb(255,197,99)" title="发布" />
-          <Tab
-            onTabClick={() => this.handleTabClick(1)}
-            {...this.props.tabs[1]}
-            selected={selectedIndex == 1}
-            {...style}
-          />
-        </View>
-        <TouchableOpacity
-          onPress={() => this.handleTabClick(-1)}
-          activeOpacity={0.8}
-          style={styles.bulge}>
-          <Image source={require('./images/tabbar_add_yellow.png')} fadeDuration={0} />
-        </TouchableOpacity>
-      </View>
-    )
-  }
-}
-
-function Tab(props) {
-  const {
-    onTabClick,
-    icon,
-    title,
-    selected,
+  const style = {
+    textBadgeStyle: { backgroundColor: badgeColor },
+    dotBadgeStyle: { backgroundColor: badgeColor },
     unselectedItemColor,
     itemColor,
-    badgeText,
-    textBadgeStyle,
-    dot,
-    dotBadgeStyle,
-  } = props
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.tabBar}>
+        <Tab
+          onTabClick={() => handleTabClick(0)}
+          {...tabs[0]}
+          selected={selectedIndex === 0}
+          {...style}
+        />
+        <Tab unselectedItemColor="rgb(255,197,99)" title="发布" />
+        <Tab
+          onTabClick={() => handleTabClick(1)}
+          {...tabs[1]}
+          selected={selectedIndex === 1}
+          {...style}
+        />
+      </View>
+      <TouchableOpacity onPress={() => handleTabClick(-1)} activeOpacity={0.8} style={styles.bulge}>
+        <Image source={require('./images/tabbar_add_yellow.png')} fadeDuration={0} />
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+function Tab({
+  onTabClick,
+  icon,
+  title,
+  selected,
+  unselectedItemColor,
+  itemColor,
+  badgeText,
+  textBadgeStyle,
+  dot,
+  dotBadgeStyle,
+}) {
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       {icon ? (

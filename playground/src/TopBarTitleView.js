@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native'
 import { LayoutFittingExpanded } from 'react-native-navigation-hybrid'
 import styles from './Styles'
+import { withNavigationItem } from 'react-native-navigation-hybrid'
 
 function CustomTitleView(props) {
   let { params } = props.navigator.state

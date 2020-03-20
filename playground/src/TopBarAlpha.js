@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Text,
   View,
@@ -6,12 +6,12 @@ import {
   ScrollView,
   Slider,
   Image,
-  Alert,
   StatusBar,
   Platform,
 } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import styles from './Styles'
+import { withNavigationItem } from 'react-native-navigation-hybrid'
 
 function ifKitKat(obj1 = {}, obj2 = {}) {
   return Platform.Version > 18 ? obj1 : obj2
@@ -40,68 +40,58 @@ const paddingTop = Platform.select({
   },
 })
 
-export default class TopBarAlpha extends Component {
-  static navigationItem = {
-    topBarAlpha: 0.5,
-    extendedLayoutIncludesTopBar: true,
-    rightBarButtonItem: {
-      icon: Image.resolveAssetSource(require('./images/settings.png')),
-      title: 'SETTING',
-      action: navigator => {
-        navigator.push('TopBarMisc')
-      },
+export default withNavigationItem({
+  topBarAlpha: 0.5,
+  extendedLayoutIncludesTopBar: true,
+  rightBarButtonItem: {
+    icon: Image.resolveAssetSource(require('./images/settings.png')),
+    title: 'SETTING',
+    action: navigator => {
+      navigator.push('TopBarMisc')
     },
-  }
+  },
+})(TopBarAlpha)
 
-  constructor(props) {
-    super(props)
-    this.topBarAlpha = this.topBarAlpha.bind(this)
-    this.onAlphaChange = this.onAlphaChange.bind(this)
-    let alpha = props.alpha ? Number(props.alpha) : 0.5
-    let topBarColor = props.color || '#FFFFFF'
-    this.state = { alpha }
-    if (alpha !== 0.5 || topBarColor !== '#FFFFFF') {
-      this.props.garden.updateOptions({
-        topBarAlpha: alpha,
-        topBarColor: topBarColor,
-      })
-    }
-  }
+function TopBarAlpha({ garden, navigator, color, alpha }) {
+  const [topBarAlpha, setTopBarAlpha] = useState(alpha ? Number(alpha) : 0.5)
+  let topBarColor = color || '#FFFFFF'
 
-  topBarAlpha() {
-    this.props.navigator.push('TopBarAlpha')
-  }
-
-  onAlphaChange(value) {
-    this.props.garden.updateOptions({
-      topBarAlpha: value,
+  useEffect(() => {
+    garden.updateOptions({
+      topBarAlpha: topBarAlpha,
+      topBarColor: topBarColor,
     })
-    this.setState({ alpha: value })
+  }, [garden, topBarColor, topBarAlpha])
+
+  function pushToTopBarAlpha() {
+    navigator.push('TopBarAlpha')
   }
 
-  render() {
-    return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="never"
-        automaticallyAdjustContentInsets={false}
-        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
-        <View style={[styles.container, paddingTop]}>
-          <Text style={styles.welcome}>Try to slide</Text>
-
-          <Slider
-            style={{ marginLeft: 32, marginRight: 32, marginTop: 40 }}
-            onValueChange={this.onAlphaChange}
-            step={0.01}
-            value={this.state.alpha}
-          />
-
-          <Text style={styles.result}>alpha: {this.state.alpha}</Text>
-
-          <TouchableOpacity onPress={this.topBarAlpha} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>TopBarAlpha</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    )
+  function handleAlphaChange(value) {
+    setTopBarAlpha(value)
   }
+
+  return (
+    <ScrollView
+      contentInsetAdjustmentBehavior="never"
+      automaticallyAdjustContentInsets={false}
+      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
+      <View style={[styles.container, paddingTop]}>
+        <Text style={styles.welcome}>Try to slide</Text>
+
+        <Slider
+          style={{ marginLeft: 32, marginRight: 32, marginTop: 40 }}
+          onValueChange={handleAlphaChange}
+          step={0.01}
+          value={topBarAlpha}
+        />
+
+        <Text style={styles.result}>alpha: {topBarAlpha}</Text>
+
+        <TouchableOpacity onPress={pushToTopBarAlpha} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>TopBarAlpha</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  )
 }

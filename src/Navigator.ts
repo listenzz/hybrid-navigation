@@ -282,11 +282,16 @@ export class Navigator {
     if (!successful) {
       return Promise.resolve()
     }
-    return new Promise<void>(resolve => {
-      this.state.unmountListeners.push(() => {
-        resolve()
+
+    if (this.moduleName) {
+      return new Promise<void>(resolve => {
+        this.state.unmountListeners.push(() => {
+          resolve()
+        })
       })
-    })
+    } else {
+      return Promise.resolve()
+    }
   }
 
   async push<T = any, P extends object = {}>(

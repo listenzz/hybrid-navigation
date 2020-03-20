@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, StatusBar, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
+import { withNavigationItem } from 'react-native-navigation-hybrid'
 
 import styles from './Styles'
 
@@ -31,54 +32,45 @@ const paddingTop = Platform.select({
   },
 })
 
-export default class StatusBarHidden extends Component {
-  static navigationItem = {
-    statusBarColorAndroid: '#00FF00',
-    statusBarHidden: true,
-    topBarHidden: true,
-    titleItem: {
-      title: 'StatusBar Hidden',
-    },
+export default withNavigationItem({
+  statusBarColorAndroid: '#00FF00',
+  statusBarHidden: true,
+  topBarHidden: true,
+  titleItem: {
+    title: 'StatusBar Hidden',
+  },
+})(StatusBarHidden)
+
+function StatusBarHidden({ navigator, garden }) {
+  function statusBarHidden() {
+    navigator.push('StatusBarHidden')
   }
 
-  constructor(props) {
-    super(props)
-    this.showStatusBar = this.showStatusBar.bind(this)
-    this.hideStatusBar = this.hideStatusBar.bind(this)
-    this.statusBarHidden = this.statusBarHidden.bind(this)
+  function showStatusBar() {
+    garden.updateOptions({ statusBarHidden: false })
   }
 
-  statusBarHidden() {
-    this.props.navigator.push('StatusBarHidden')
+  function hideStatusBar() {
+    garden.updateOptions({ statusBarHidden: true })
   }
 
-  showStatusBar() {
-    this.props.garden.updateOptions({ statusBarHidden: false })
-  }
+  return (
+    <ScrollView
+      contentInsetAdjustmentBehavior="never"
+      automaticallyAdjustContentInsets={false}
+      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
+      <Text style={[styles.welcome, paddingTop]}> StatusBar Hidden</Text>
+      <TouchableOpacity onPress={showStatusBar} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>show status bar</Text>
+      </TouchableOpacity>
 
-  hideStatusBar() {
-    this.props.garden.updateOptions({ statusBarHidden: true })
-  }
+      <TouchableOpacity onPress={hideStatusBar} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>hide status bar</Text>
+      </TouchableOpacity>
 
-  render() {
-    return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="never"
-        automaticallyAdjustContentInsets={false}
-        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
-        <Text style={[styles.welcome, paddingTop]}> StatusBar Hidden</Text>
-        <TouchableOpacity onPress={this.showStatusBar} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>show status bar</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.hideStatusBar} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>hide status bar</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.statusBarHidden} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>StatusBarHidden</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    )
-  }
+      <TouchableOpacity onPress={statusBarHidden} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>StatusBarHidden</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  )
 }

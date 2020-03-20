@@ -1,92 +1,74 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { TouchableOpacity, Text, View, ScrollView } from 'react-native'
-
+import { withNavigationItem } from 'react-native-navigation-hybrid'
 import styles from './Styles'
 
-export default class Noninteractive extends Component {
-  static navigationItem = {
-    backButtonHidden: true,
-    // swipeBackEnabled: false,
-    backInteractive: false,
-    titleItem: {
-      title: 'Noninteractive',
-    },
+export default withNavigationItem({
+  backButtonHidden: true,
+  // swipeBackEnabled: false,
+  backInteractive: false,
+  titleItem: {
+    title: 'Noninteractive',
+  },
+})(Noninteractive)
+
+function Noninteractive({ navigator, garden }) {
+  const [backInteractive, setBackInteractive] = useState(false)
+
+  function handleBackClick() {
+    navigator.pop()
   }
 
-  constructor(props) {
-    super(props)
-    this.onBackButtonClick = this.onBackButtonClick.bind(this)
-    this.enableBackInteractive = this.enableBackInteractive.bind(this)
-    this.disableBackInteractive = this.disableBackInteractive.bind(this)
-    this.state = { backInteractive: false }
-  }
-
-  onBackButtonClick() {
-    this.props.navigator.pop()
-  }
-
-  enableBackInteractive() {
-    this.props.garden.updateOptions({
+  function enableBackInteractive() {
+    garden.updateOptions({
       backButtonHidden: false,
       backInteractive: true,
     })
-    this.setState({
-      backInteractive: true,
-    })
+    setBackInteractive(true)
   }
 
-  disableBackInteractive() {
-    this.props.garden.updateOptions({
+  function disableBackInteractive() {
+    garden.updateOptions({
       backButtonHidden: true,
       backInteractive: false,
     })
-    this.setState({
-      backInteractive: false,
-    })
+    setBackInteractive(false)
   }
 
-  render() {
-    let component = null
+  let component = null
 
-    if (this.state.backInteractive) {
-      component = (
-        <React.Fragment>
-          <Text style={styles.welcome}>Now you can back via any way</Text>
-          <TouchableOpacity
-            onPress={this.disableBackInteractive}
-            activeOpacity={0.2}
-            style={styles.button}>
-            <Text style={styles.buttonText}>disable back interactive</Text>
-          </TouchableOpacity>
-        </React.Fragment>
-      )
-    } else {
-      component = (
-        <React.Fragment>
-          <Text style={styles.welcome}>Now you can only back via the button below</Text>
-          <TouchableOpacity
-            onPress={this.onBackButtonClick}
-            activeOpacity={0.2}
-            style={styles.button}>
-            <Text style={styles.buttonText}>back</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={this.enableBackInteractive}
-            activeOpacity={0.2}
-            style={styles.button}>
-            <Text style={styles.buttonText}>enable back interactive</Text>
-          </TouchableOpacity>
-        </React.Fragment>
-      )
-    }
-
-    return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="never"
-        automaticallyAdjustContentInsets={false}
-        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
-        <View style={styles.container}>{component}</View>
-      </ScrollView>
+  if (backInteractive) {
+    component = (
+      <>
+        <Text style={styles.welcome}>Now you can back via any way</Text>
+        <TouchableOpacity
+          onPress={disableBackInteractive}
+          activeOpacity={0.2}
+          style={styles.button}>
+          <Text style={styles.buttonText}>disable back interactive</Text>
+        </TouchableOpacity>
+      </>
+    )
+  } else {
+    component = (
+      <>
+        <Text style={styles.welcome}>Now you can only back via the button below</Text>
+        <TouchableOpacity onPress={handleBackClick} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>back</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={enableBackInteractive} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>enable back interactive</Text>
+        </TouchableOpacity>
+      </>
     )
   }
+
+  return (
+    <ScrollView
+      contentInsetAdjustmentBehavior="never"
+      automaticallyAdjustContentInsets={false}
+      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
+      <View style={styles.container}>{component}</View>
+    </ScrollView>
+  )
 }

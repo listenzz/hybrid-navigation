@@ -1,19 +1,22 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
 import { Text, View, ScrollView, Alert } from 'react-native'
 import styles from './Styles'
-import { useVisibleEffect } from 'react-native-navigation-hybrid'
+import { useVisibility, withNavigationItem } from 'react-native-navigation-hybrid'
 
-function Lifecycle(props) {
-  useVisibleEffect(props.sceneId, () => {
-    Alert.alert(
-      'Lifecycle Alert!',
-      'componentDidAppear.',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      {
-        cancelable: false,
-      },
-    )
-    return () => {
+function Lifecycle({ sceneId }) {
+  const visibility = useVisibility(sceneId)
+
+  useEffect(() => {
+    if (visibility === 'visible') {
+      Alert.alert(
+        'Lifecycle Alert!',
+        'componentDidAppear.',
+        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+        {
+          cancelable: false,
+        },
+      )
+    } else if (visibility === 'gone') {
       Alert.alert(
         'Lifecycle Alert!',
         'componentDidDisappear.',
@@ -35,10 +38,8 @@ function Lifecycle(props) {
   )
 }
 
-Lifecycle.navigationItem = {
+export default withNavigationItem({
   titleItem: {
     title: 'Lifecycle Alert',
   },
-}
-
-export default Lifecycle
+})(Lifecycle)

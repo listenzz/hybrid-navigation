@@ -1,67 +1,58 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import withBottomModal from './withBottomModal'
-import { RESULT_OK, Navigator } from 'react-native-navigation-hybrid'
+import { RESULT_OK, Navigator, useVisibility } from 'react-native-navigation-hybrid'
 
-class ReactModal extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleCancel = this.handleCancel.bind(this)
-    this.hideModal = this.hideModal.bind(this)
+function ReactModal({ navigator, sceneId }) {
+  useEffect(() => {
+    navigator.setResult(RESULT_OK, {
+      text: 'Are you male or female?',
+      backId: sceneId,
+    })
+  }, [navigator, sceneId])
+
+  const visibility = useVisibility(sceneId)
+
+  useEffect(() => {
+    if (visibility === 'visible') {
+      console.info(`Page ReactModal is visible [${sceneId}]`)
+    } else if (visibility === 'gone') {
+      console.info(`Page ReactModal is gone [${sceneId}]`)
+    }
+  }, [visibility, sceneId])
+
+  async function hideModal(gender) {
+    if (gender) {
+      navigator.setResult(RESULT_OK, {
+        text: gender,
+        backId: sceneId,
+      })
+    }
+    await navigator.hideModal()
+    const current = await Navigator.currentRoute()
+    console.log(current)
   }
 
-  actionSheets = [
+  function handleCancel() {
+    hideModal()
+  }
+
+  const actionSheets = [
     {
       text: 'Male',
       onPress: () => {
-        this.hideModal('Male')
+        hideModal('Male')
       },
     },
     {
       text: 'Female',
       onPress: () => {
-        this.hideModal('Female')
+        hideModal('Female')
       },
     },
   ]
 
-  componentDidMount() {
-    this.props.navigator.setResult(RESULT_OK, {
-      text: 'Are you male or female?',
-      backId: this.props.sceneId,
-    })
-    console.info('modal componentDidMount')
-  }
-
-  componentDidAppear() {
-    console.info('modal componentDidAppear')
-  }
-
-  componentDidDisappear() {
-    console.info('modal componentDidDisappear')
-  }
-
-  componentWillUnmount() {
-    console.info('modal componentWillUnmount')
-  }
-
-  async hideModal(gender) {
-    if (gender) {
-      this.props.navigator.setResult(RESULT_OK, {
-        text: gender,
-        backId: this.props.sceneId,
-      })
-    }
-    await this.props.navigator.hideModal()
-    const current = await Navigator.currentRoute()
-    console.log(current)
-  }
-
-  handleCancel() {
-    this.hideModal()
-  }
-
-  renderItem = (text, onPress) => {
+  const renderItem = (text, onPress) => {
     return (
       <TouchableHighlight onPress={onPress} underlayColor={'#212121'}>
         <View style={styles.item}>
@@ -71,21 +62,19 @@ class ReactModal extends React.Component {
     )
   }
 
-  render() {
-    return (
-      <View style={styles.container}>
-        {this.actionSheets.map(({ text, onPress }, index) => {
-          const isLast = index === this.actionSheets.length - 1
-          return (
-            <View key={text} style={!isLast && styles.divider}>
-              {this.renderItem(text, onPress)}
-            </View>
-          )
-        })}
-        <View style={styles.itemCancel}>{this.renderItem('Cancel', this.handleCancel)}</View>
-      </View>
-    )
-  }
+  return (
+    <View style={styles.container}>
+      {actionSheets.map(({ text, onPress }, index) => {
+        const isLast = index === actionSheets.length - 1
+        return (
+          <View key={text} style={!isLast && styles.divider}>
+            {renderItem(text, onPress)}
+          </View>
+        )
+      })}
+      <View style={styles.itemCancel}>{renderItem('Cancel', handleCancel)}</View>
+    </View>
+  )
 }
 
 export default withBottomModal()(ReactModal)

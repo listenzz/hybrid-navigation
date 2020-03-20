@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
 import {
   Text,
   View,
@@ -11,82 +11,74 @@ import {
 } from 'react-native'
 import TextBadge from './Badge'
 
-export default class CustomTabBar extends Component {
-  constructor(props) {
-    super(props)
-  }
-
-  handleTabClick(index) {
-    if (index == -1) {
-      this.props.navigator.present('Result', 1)
+export default function CustomTabBar({
+  sceneId,
+  navigator,
+  itemColor,
+  unselectedItemColor,
+  badgeColor,
+  tabs,
+  selectedIndex,
+}) {
+  async function handleTabClick(index) {
+    if (index === -1) {
+      const [resultCode, data] = await navigator.present('Result', 1)
+      console.log(`CustomTabBar resultCode: ${resultCode} data:`, data)
     } else {
-      this.props.navigator.switchTab(index)
+      navigator.switchTab(index)
     }
   }
 
-  shouldComponentUpdate(next) {
-    console.info(next)
-    return true
+  const style = {
+    textBadgeStyle: { backgroundColor: badgeColor },
+    dotBadgeStyle: { backgroundColor: badgeColor },
+    unselectedItemColor,
+    itemColor,
   }
 
-  componentDidMount() {
-    console.info('CustomTabBar componentDidMount')
-  }
+  useEffect(() => {
+    console.log(`CustomTabBar sceneId:${sceneId}`)
+  }, [sceneId])
 
-  onComponentResult(requestCode, resultCode, data) {
-    console.info('CustomTabBar onComponentResult')
-  }
-
-  render() {
-    const { itemColor, unselectedItemColor, selectedIndex, badgeColor } = this.props
-    const style = {
-      textBadgeStyle: { backgroundColor: badgeColor },
-      dotBadgeStyle: { backgroundColor: badgeColor },
-      unselectedItemColor,
-      itemColor,
-    }
-
-    return (
-      <View style={styles.tabBar}>
-        <Tab
-          onTabClick={() => this.handleTabClick(0)}
-          {...this.props.tabs[0]}
-          selected={selectedIndex === 0}
-          {...style}
-        />
-        <Add onTabClick={() => this.handleTabClick(-1)} />
-        <Tab
-          onTabClick={() => this.handleTabClick(1)}
-          {...this.props.tabs[1]}
-          selected={selectedIndex === 1}
-          {...style}
-        />
-      </View>
-    )
-  }
+  return (
+    <View style={styles.tabBar}>
+      <Tab
+        onTabClick={() => handleTabClick(0)}
+        {...tabs[0]}
+        selected={selectedIndex === 0}
+        {...style}
+      />
+      <Add onTabClick={() => handleTabClick(-1)} />
+      <Tab
+        onTabClick={() => handleTabClick(1)}
+        {...tabs[1]}
+        selected={selectedIndex === 1}
+        {...style}
+      />
+    </View>
+  )
 }
 
-function Add(props) {
+function Add({ onTabClick }) {
   return (
-    <TouchableOpacity onPress={props.onTabClick} activeOpacity={0.8} style={styles.tab}>
+    <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       <Image source={require('./images/tabbar_add_blue.png')} fadeDuration={0} />
     </TouchableOpacity>
   )
 }
 
-function Tab(props) {
-  const {
-    onTabClick,
-    icon,
-    title,
-    selected,
-    itemColor,
-    unselectedItemColor,
-    badgeText,
-    textBadgeStyle,
-    dot,
-    dotBadgeStyle,
-  } = props
+function Tab({
+  onTabClick,
+  icon,
+  title,
+  selected,
+  itemColor,
+  unselectedItemColor,
+  badgeText,
+  textBadgeStyle,
+  dot,
+  dotBadgeStyle,
+}) {
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       {icon ? (
@@ -118,8 +110,8 @@ function Tab(props) {
   )
 }
 
-function DotBadge(props) {
-  return <View style={[styles.dotBadge, props.style]} />
+function DotBadge({ style }) {
+  return <View style={[styles.dotBadge, style]} />
 }
 
 const styles = StyleSheet.create({

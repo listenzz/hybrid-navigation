@@ -10,6 +10,7 @@ import {
   BackHandler,
 } from 'react-native'
 import { isIphoneX } from 'react-native-iphone-x-helper'
+import { useLayout } from '@react-native-community/hooks'
 
 function HardwareBack({ handleHardwareBackPress }) {
   useEffect(() => {

@@ -1,66 +1,57 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { TouchableOpacity, Text, View, ScrollView } from 'react-native'
+import { withNavigationItem } from 'react-native-navigation-hybrid'
 
 import styles from './Styles'
 
-export default class StatusBarColor extends Component {
-  static navigationItem = {
-    statusBarColorAndroid: '#0000FF',
-    titleItem: {
-      title: 'StatusBar Color',
-    },
+export default withNavigationItem({
+  statusBarColorAndroid: '#0000FF',
+  titleItem: {
+    title: 'StatusBar Color',
+  },
+})(StatusBarColor)
+
+function StatusBarColor({ garden, navigator }) {
+  function red() {
+    garden.updateOptions({ statusBarColorAndroid: '#FF0000' })
   }
 
-  constructor(props) {
-    super(props)
-    this.red = this.red.bind(this)
-    this.blue = this.blue.bind(this)
-    this.green = this.green.bind(this)
-    this.statusBarColor = this.statusBarColor.bind(this)
+  function green() {
+    garden.updateOptions({ statusBarColorAndroid: '#00FF00' })
   }
 
-  red() {
-    this.props.garden.updateOptions({ statusBarColorAndroid: '#FF0000' })
+  function blue() {
+    garden.updateOptions({ statusBarColorAndroid: '#0000FF' })
   }
 
-  green() {
-    this.props.garden.updateOptions({ statusBarColorAndroid: '#00FF00' })
+  function statusBarColor() {
+    navigator.push('StatusBarColor')
   }
 
-  blue() {
-    this.props.garden.updateOptions({ statusBarColorAndroid: '#0000FF' })
-  }
+  return (
+    <ScrollView
+      contentInsetAdjustmentBehavior="never"
+      automaticallyAdjustContentInsets={false}
+      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
+      <View style={styles.container}>
+        <Text style={styles.welcome}>For Android only</Text>
+      </View>
 
-  statusBarColor() {
-    this.props.navigator.push('StatusBarColor')
-  }
+      <TouchableOpacity onPress={red} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>Red</Text>
+      </TouchableOpacity>
 
-  render() {
-    return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="never"
-        automaticallyAdjustContentInsets={false}
-        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
-        <View style={styles.container}>
-          <Text style={styles.welcome}>For Android only</Text>
-        </View>
+      <TouchableOpacity onPress={blue} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>Blue</Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.red} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>Red</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={green} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>Green</Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={this.blue} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>Blue</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.green} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>Green</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.statusBarColor} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>StatucsBarColor</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    )
-  }
+      <TouchableOpacity onPress={statusBarColor} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>StatucsBarColor</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  )
 }
