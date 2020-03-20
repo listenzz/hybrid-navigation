@@ -1,6 +1,5 @@
 package com.navigationhybrid;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +18,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReactContext;
-
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.PresentAnimation;
@@ -36,7 +32,6 @@ import static com.navigationhybrid.HBDEventEmitter.KEY_SCENE_ID;
 import static com.navigationhybrid.HBDEventEmitter.ON_COMPONENT_APPEAR;
 import static com.navigationhybrid.HBDEventEmitter.ON_COMPONENT_DISAPPEAR;
 import static com.navigationhybrid.HBDEventEmitter.ON_COMPONENT_RESULT;
-import static com.navigationhybrid.HBDEventEmitter.ON_DIALOG_BACK_PRESSED;
 
 /**
  * Created by Listen on 2018/1/15.
@@ -162,6 +157,15 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             sendViewAppearEvent(false);
             reactRootView.removeOnGlobalLayoutListener();
         }
+    }
+
+    @Override
+    protected boolean onBackPressed() {
+        if (getShowsDialog() && getReactNativeHost().hasInstance()) {
+            getReactNativeHost().getReactInstanceManager().onBackPressed();
+            return true;
+        }
+        return super.onBackPressed();
     }
 
     public void signalFirstRenderComplete() {
@@ -296,33 +300,5 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         if (getActivity() != null) {
             getActivity().supportStartPostponedEnterTransition();
         }
-    }
-
-    @Override
-    protected void setupDialog() {
-        super.setupDialog();
-        getDialog().setOnKeyListener(
-                (dialog, keyCode, event) -> {
-                    if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(KEY_SCENE_ID, getSceneId());
-                        bundle.putString(KEY_ON, ON_DIALOG_BACK_PRESSED);
-                        HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
-                        return true;
-                    }
-
-                    ReactContext reactContext = getCurrentReactContext();
-                    if (reactContext != null && isReactModuleRegisterCompleted()) {
-                        Activity activity = reactContext.getCurrentActivity();
-                        if (activity != null) {
-                            if (KeyEvent.ACTION_UP == event.getAction()) {
-                                activity.onKeyUp(keyCode, event);
-                            } else if (KeyEvent.ACTION_DOWN == event.getAction()) {
-                                activity.onKeyDown(keyCode, event);
-                            }
-                        }
-                    }
-                    return false;
-                });
     }
 }

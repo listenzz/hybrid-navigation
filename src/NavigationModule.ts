@@ -9,7 +9,6 @@ export const ON_COMPONENT_RESULT: string = HBDEventEmitter.ON_COMPONENT_RESULT
 export const ON_BAR_BUTTON_ITEM_CLICK: string = HBDEventEmitter.ON_BAR_BUTTON_ITEM_CLICK
 export const ON_COMPONENT_APPEAR: string = HBDEventEmitter.ON_COMPONENT_APPEAR
 export const ON_COMPONENT_DISAPPEAR: string = HBDEventEmitter.ON_COMPONENT_DISAPPEAR
-export const ON_DIALOG_BACK_PRESSED: string = HBDEventEmitter.ON_DIALOG_BACK_PRESSED
 export const ON_COMPONENT_MOUNT: string = HBDEventEmitter.ON_COMPONENT_MOUNT
 export const EVENT_SWITCH_TAB: string = HBDEventEmitter.EVENT_SWITCH_TAB
 export const EVENT_NAVIGATION: string = HBDEventEmitter.EVENT_NAVIGATION

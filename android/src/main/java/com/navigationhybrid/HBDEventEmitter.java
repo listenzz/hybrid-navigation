@@ -28,7 +28,6 @@ public class HBDEventEmitter extends ReactContextBaseJavaModule {
     public static final String ON_BAR_BUTTON_ITEM_CLICK = "ON_BAR_BUTTON_ITEM_CLICK";
     public static final String ON_COMPONENT_APPEAR = "ON_COMPONENT_APPEAR";
     public static final String ON_COMPONENT_DISAPPEAR = "ON_COMPONENT_DISAPPEAR";
-    public static final String ON_DIALOG_BACK_PRESSED = "ON_DIALOG_BACK_PRESSED";
 
     public static final String EVENT_SWITCH_TAB = "EVENT_SWITCH_TAB";
     public static final String EVENT_DID_SET_ROOT = "EVENT_DID_SET_ROOT";
@@ -52,7 +51,6 @@ public class HBDEventEmitter extends ReactContextBaseJavaModule {
         constants.put("ON_BAR_BUTTON_ITEM_CLICK", ON_BAR_BUTTON_ITEM_CLICK);
         constants.put("ON_COMPONENT_APPEAR", ON_COMPONENT_APPEAR);
         constants.put("ON_COMPONENT_DISAPPEAR", ON_COMPONENT_DISAPPEAR);
-        constants.put("ON_DIALOG_BACK_PRESSED", ON_DIALOG_BACK_PRESSED);
         constants.put("KEY_REQUEST_CODE", KEY_REQUEST_CODE);
         constants.put("KEY_RESULT_CODE", KEY_RESULT_CODE);
         constants.put("KEY_RESULT_DATA", KEY_RESULT_DATA);

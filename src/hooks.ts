@@ -8,7 +8,6 @@ import {
   ON_COMPONENT_RESULT,
   ON_COMPONENT_DISAPPEAR,
   ON_COMPONENT_APPEAR,
-  ON_DIALOG_BACK_PRESSED,
   KEY_REQUEST_CODE,
   KEY_RESULT_CODE,
   KEY_RESULT_DATA,
@@ -35,20 +34,6 @@ export function useVisibility(sceneId: string) {
     }
   }, [sceneId])
   return visibility
-}
-
-export function useBackEffect(sceneId: string, fn: () => void) {
-  useEffect(() => {
-    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-      if (sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_DIALOG_BACK_PRESSED) {
-        fn()
-      }
-    })
-
-    return () => {
-      subscription.remove()
-    }
-  }, [fn, sceneId])
 }
 
 export function useResult(

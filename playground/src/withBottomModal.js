@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect } from 'react'
 import {
   StyleSheet,
   Animated,
@@ -7,12 +7,17 @@ import {
   View,
   TouchableWithoutFeedback,
   SafeAreaView,
+  BackHandler,
 } from 'react-native'
 import { isIphoneX } from 'react-native-iphone-x-helper'
-import { useBackEffect } from 'react-native-navigation-hybrid'
 
-function BackHandler({ sceneId, handleHardwareBackPress }) {
-  useBackEffect(sceneId, handleHardwareBackPress)
+function HardwareBack({ handleHardwareBackPress }) {
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleHardwareBackPress)
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', handleHardwareBackPress)
+    }
+  }, [handleHardwareBackPress])
   return null
 }
 
@@ -53,6 +58,7 @@ export default function withBottomModal({
 
       handleHardwareBackPress() {
         cancelable && this.hideModal()
+        return true
       }
 
       hideModal() {
@@ -79,10 +85,7 @@ export default function withBottomModal({
               },
             ]}
             useNativeDriver>
-            <BackHandler
-              sceneId={this.props.sceneId}
-              handleHardwareBackPress={this.handleHardwareBackPress}
-            />
+            <HardwareBack handleHardwareBackPress={this.handleHardwareBackPress} />
             <TouchableWithoutFeedback onPress={this.handleHardwareBackPress} style={styles.flex1}>
               <View style={styles.flex1} />
             </TouchableWithoutFeedback>

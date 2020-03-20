@@ -41,6 +41,10 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         return new ReactAppCompatActivityDelegate(this, ReactBridgeManager.get());
     }
 
+    public ReactAppCompatActivityDelegate getActivityDelegate() {
+        return activityDelegate;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
