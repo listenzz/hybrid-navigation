@@ -5,7 +5,7 @@ export * from './src/router'
 export * from './src/hooks'
 
 import { Navigator } from './src/Navigator'
-import { Garden, NavigationItem } from './src/Garden'
+import { Garden } from './src/Garden'
 
 const RESULT_OK = Navigator.RESULT_OK
 const RESULT_CANCEL = Navigator.RESULT_CANCEL
@@ -13,8 +13,3 @@ const DARK_CONTENT = Garden.DARK_CONTENT
 const LIGHT_CONTENT = Garden.LIGHT_CONTENT
 
 export { RESULT_OK, RESULT_CANCEL, DARK_CONTENT, LIGHT_CONTENT }
-
-export function withNavigationItem(Component: Function, item: NavigationItem) {
-  ;(Component as any).navigationItem = item
-  return Component
-}

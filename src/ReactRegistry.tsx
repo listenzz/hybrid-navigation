@@ -11,7 +11,7 @@ import {
   ON_COMPONENT_APPEAR,
   ON_COMPONENT_DISAPPEAR,
 } from './NavigationModule'
-import { Garden } from './Garden'
+import { Garden, NavigationItem } from './Garden'
 import { router, RouteConfig } from './router'
 import store from './store'
 import { bindBarButtonItemClickEvent, removeBarButtonItemClickEvent } from './utils'
@@ -151,5 +151,12 @@ export class ReactRegistry {
       RootComponent = withNavigator(appKey)(WrappedComponent)
     }
     AppRegistry.registerComponent(appKey, () => RootComponent)
+  }
+}
+
+export function withNavigationItem(item: NavigationItem) {
+  return function(Func: Function) {
+    ;(Func as any).navigationItem = item
+    return Func
   }
 }

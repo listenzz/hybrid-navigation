@@ -13,7 +13,7 @@ import {
 const REQUEST_CODE_1 = 1
 const REQUEST_CODE_2 = 2
 
-export default withNavigationItem(Navigation, {
+export default withNavigationItem({
   //topBarStyle: 'light-content',
   //topBarColor: '#666666',
   //topBarTintColor: '#ffffff',
@@ -27,7 +27,7 @@ export default withNavigationItem(Navigation, {
     icon: Image.resolveAssetSource(require('./images/navigation.png')),
     hideTabBarWhenPush: true,
   },
-})
+})(Navigation)
 
 function Navigation({ navigator, garden, sceneId, popToId }) {
   const [text, setText] = useState(undefined)
