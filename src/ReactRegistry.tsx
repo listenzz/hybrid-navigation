@@ -8,6 +8,8 @@ import {
   KEY_SCENE_ID,
   KEY_ON,
   ON_COMPONENT_MOUNT,
+  ON_COMPONENT_APPEAR,
+  ON_COMPONENT_DISAPPEAR,
 } from './NavigationModule'
 import { Garden } from './Garden'
 import { router, RouteConfig } from './router'
@@ -46,15 +48,35 @@ function withNavigator(moduleName: string) {
 
       useEffect(() => {
         navigator.signalFirstRenderComplete()
+        return () => {
+          removeBarButtonItemClickEvent(navigator.sceneId)
+          store.removeNavigator(navigator.sceneId)
+          navigator.unmount()
+        }
+      }, [navigator])
+
+      useEffect(() => {
         const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
           if (navigator.sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_COMPONENT_MOUNT) {
             navigator.signalFirstRenderComplete()
           }
         })
         return () => {
-          removeBarButtonItemClickEvent(navigator.sceneId)
-          store.removeNavigator(navigator.sceneId)
-          navigator.unmount()
+          subscription.remove()
+        }
+      }, [navigator])
+
+      useEffect(() => {
+        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+          if (navigator.sceneId === data[KEY_SCENE_ID]) {
+            if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
+              navigator.visibility = 'visible'
+            } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
+              navigator.visibility = 'gone'
+            }
+          }
+        })
+        return () => {
           subscription.remove()
         }
       }, [navigator])

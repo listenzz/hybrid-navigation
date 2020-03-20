@@ -13,16 +13,20 @@ import {
   KEY_RESULT_CODE,
   KEY_RESULT_DATA,
 } from './NavigationModule'
+import { Navigator } from './Navigator'
 
-export function useVisibleState(sceneId: string) {
-  const [visible, setVisible] = useState(false)
+export type Visibility = 'visible' | 'gone' | 'pending'
+
+export function useVisibility(sceneId: string) {
+  const navigator = Navigator.get(sceneId)
+  const [visible, setVisible] = useState<Visibility>(navigator.visibility)
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID]) {
         if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
-          setVisible(true)
+          setVisible('visible')
         } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
-          setVisible(false)
+          setVisible('gone')
         }
       }
     })

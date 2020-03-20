@@ -13,6 +13,7 @@ import { bindBarButtonItemClickEvent } from './utils'
 import store from './store'
 import { NavigationItem } from './Garden'
 import { Route, RouteGraph } from './router'
+import { Visibility } from './hooks'
 
 interface Extras {
   sceneId: string
@@ -235,6 +236,8 @@ export class Navigator {
     unmountListeners: [],
     resultListeners: [],
   }
+
+  visibility: Visibility = 'pending'
 
   setParams(params: { [index: string]: any }) {
     this.state.params = { ...this.state.params, ...params }
