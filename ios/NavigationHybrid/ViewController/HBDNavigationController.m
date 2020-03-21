@@ -468,6 +468,9 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (void)fixClickBackIssue {
+    if (@available(iOS 13.0, *)) {
+        return;
+    }
     if (@available(iOS 11.0, *)){
         // fix：ios 11，12，当前后两个页面的 barStyle 不一样时，点击返回按钮返回，前一个页面的标题颜色响应迟缓或不响应
         id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
