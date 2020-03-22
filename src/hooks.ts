@@ -13,6 +13,7 @@ import {
   KEY_RESULT_DATA,
 } from './NavigationModule'
 import { Navigator } from './Navigator'
+import { AppStateStatus, AppState } from 'react-native'
 
 export type Visibility = 'visible' | 'gone' | 'pending'
 
@@ -36,6 +37,33 @@ export function useVisibility(sceneId: string) {
   return visibility
 }
 
+export function useVisibilityChange(sceneId: string, onChange: (visible: boolean) => void) {
+  useEffect(() => {
+    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+      if (sceneId === data[KEY_SCENE_ID]) {
+        if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
+          onChange(true)
+        } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
+          onChange(false)
+        }
+      }
+    })
+    return () => {
+      subscription.remove()
+    }
+  }, [sceneId, onChange])
+}
+
+export function useAppStateChange(onChange: (newState: AppStateStatus) => void) {
+  useEffect(() => {
+    AppState.addEventListener('change', onChange)
+
+    return () => {
+      AppState.removeEventListener('change', onChange)
+    }
+  }, [onChange])
+}
+
 export function useResult(
   sceneId: string,
   fn: (requestCode: number, resultCode: number, data: { [x: string]: any }) => void,
@@ -50,5 +78,5 @@ export function useResult(
     return () => {
       subscription.remove()
     }
-  }, [fn, sceneId])
+  }, [sceneId, fn])
 }
