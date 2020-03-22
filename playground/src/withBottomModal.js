@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react'
+import React, { useEffect, useState, useCallback, useRef } from 'react'
 import {
   StyleSheet,
   Animated,
@@ -7,110 +7,89 @@ import {
   View,
   TouchableWithoutFeedback,
   SafeAreaView,
-  BackHandler,
 } from 'react-native'
 import { isIphoneX } from 'react-native-iphone-x-helper'
-import { useLayout } from '@react-native-community/hooks'
-
-function HardwareBack({ handleHardwareBackPress }) {
-  useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleHardwareBackPress)
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', handleHardwareBackPress)
-    }
-  }, [handleHardwareBackPress])
-  return null
-}
+import { useLayout, useBackHandler } from '@react-native-community/hooks'
 
 export default function withBottomModal({
   cancelable = true,
-  safeAreaColor = '#F3F3F3',
-  navigationBarColor = '#FFFFFF',
+  safeAreaColor = '#ffffff',
+  navigationBarColor = '#ffffff',
 } = {}) {
   return function(WrappedComponent) {
-    class BottomModal extends Component {
-      height = 0
-      constructor(props) {
-        super(props)
-        this.state = {
-          anim: new Animated.Value(Dimensions.get('screen').height),
-        }
-        this.handleLayout = this.handleLayout.bind(this)
-        this.hideModal = this.hideModal.bind(this)
-        this.handleHardwareBackPress = this.handleHardwareBackPress.bind(this)
-        this.realHideModal = this.props.navigator.hideModal
-        this.props.navigator.hideModal = this.hideModal
-      }
+    function BottomModal(props) {
+      const [animatedHeight] = useState(new Animated.Value(Dimensions.get('screen').height))
+      const { onLayout, height } = useLayout()
 
-      handleLayout(e) {
-        if (this.height !== 0) {
-          return
-        }
-        const height = e.nativeEvent.layout.height
-        this.height = height
-        const { anim } = this.state
-        anim.setValue(height)
-        Animated.timing(anim, {
-          toValue: 0,
-          duration: 250,
-          easing: Easing.linear,
-        }).start()
-      }
+      const realHideModal = useRef(props.navigator.hideModal)
 
-      handleHardwareBackPress() {
-        cancelable && this.hideModal()
-        return true
-      }
-
-      hideModal() {
+      const hideModal = useCallback(() => {
         return new Promise(resolve => {
-          Animated.timing(this.state.anim, {
-            toValue: this.height,
+          Animated.timing(animatedHeight, {
+            toValue: height,
             duration: 200,
             easing: Easing.linear,
+            useNativeDriver: true,
           }).start(() => {
-            resolve(this.realHideModal())
+            resolve(realHideModal.current())
           })
         })
-      }
+      }, [height, animatedHeight])
 
-      render() {
-        const { anim } = this.state
-        const { forwardedRef, ...props } = this.props
-        return (
-          <Animated.View
-            style={[
-              styles.container,
-              {
-                transform: [{ translateY: anim }],
-              },
-            ]}
-            useNativeDriver>
-            <HardwareBack handleHardwareBackPress={this.handleHardwareBackPress} />
-            <TouchableWithoutFeedback onPress={this.handleHardwareBackPress} style={styles.flex1}>
-              <View style={styles.flex1} />
-            </TouchableWithoutFeedback>
+      props.navigator.hideModal = hideModal
 
-            <View onLayout={this.handleLayout}>
-              <WrappedComponent {...props} ref={forwardedRef} />
-              {isIphoneX() && <SafeAreaView style={{ backgroundColor: safeAreaColor }} />}
-            </View>
-          </Animated.View>
-        )
-      }
+      useEffect(() => {
+        if (height !== 0) {
+          animatedHeight.setValue(height)
+          Animated.timing(animatedHeight, {
+            toValue: 0,
+            duration: 250,
+            easing: Easing.linear,
+          }).start()
+        }
+      }, [height, animatedHeight])
+
+      const handleHardwareBackPress = useCallback(() => {
+        cancelable && hideModal()
+        return true
+      }, [hideModal])
+
+      useBackHandler(handleHardwareBackPress)
+
+      return (
+        <Animated.View
+          style={[
+            styles.container,
+            {
+              transform: [{ translateY: animatedHeight }],
+            },
+          ]}
+          useNativeDriver>
+          <TouchableWithoutFeedback onPress={handleHardwareBackPress} style={styles.flex1}>
+            <View style={styles.flex1} />
+          </TouchableWithoutFeedback>
+
+          <View onLayout={height === 0 ? onLayout : undefined}>
+            <WrappedComponent {...props} ref={props.forwardedRef} />
+            {isIphoneX() && <SafeAreaView style={{ backgroundColor: safeAreaColor }} />}
+          </View>
+        </Animated.View>
+      )
     }
 
-    const C = React.forwardRef((props, ref) => {
+    const FREC = React.forwardRef((props, ref) => {
       return <BottomModal {...props} forwardedRef={ref} />
     })
     const name = WrappedComponent.displayName || WrappedComponent.name
+    FREC.displayName = `withBottomModal(${name})`
+
     const navigationItem = WrappedComponent.navigationItem || {}
     if (!navigationItem.navigationBarColorAndroid) {
       navigationItem.navigationBarColorAndroid = navigationBarColor
     }
-    C.navigationItem = navigationItem
-    C.displayName = `withBottomModal(${name})`
-    return C
+    FREC.navigationItem = navigationItem
+
+    return FREC
   }
 }
 
