@@ -23,21 +23,18 @@ export interface InjectedProps {
   sceneId: string
 }
 
-interface NativeProps {
+interface Props {
   sceneId: string
-}
-
-interface InternalProps extends NativeProps {
   forwardedRef: React.Ref<React.ComponentType<any>>
 }
 
-function getDisplayName(WrappedComponent: React.ComponentType) {
+function getDisplayName(WrappedComponent: React.ComponentType<any>) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component'
 }
 
 function withNavigator(moduleName: string) {
   return function(WrappedComponent: React.ComponentType<any>) {
-    const FC: React.FC<InternalProps> = (props: InternalProps) => {
+    const FC: React.FC<Props> = props => {
       const { sceneId } = props
       const navigator = store.getNavigator(sceneId) || new Navigator(sceneId, moduleName)
       if (navigator.moduleName === undefined) {
@@ -95,12 +92,12 @@ function withNavigator(moduleName: string) {
       return <WrappedComponent ref={forwardedRef} {...rest} {...injected} />
     }
 
-    const FD = React.forwardRef<React.ComponentType<any>, NativeProps>((props, ref) => {
+    const FREC = React.forwardRef<React.ComponentType<any>, Props>((props, ref) => {
       return <FC {...props} forwardedRef={ref} />
     })
 
-    FD.displayName = `withNavigator(${getDisplayName(WrappedComponent)})`
-    return FD
+    FREC.displayName = `withNavigator(${getDisplayName(WrappedComponent)})`
+    return FREC
   }
 }
 
