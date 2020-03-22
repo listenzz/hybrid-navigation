@@ -1,5 +1,5 @@
 import { AppRegistry, ComponentProvider } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, ComponentType } from 'react'
 import { Navigator } from './Navigator'
 import {
   NavigationModule,
@@ -154,6 +154,6 @@ export class ReactRegistry {
 export function withNavigationItem(item: NavigationItem) {
   return function(Func: Function) {
     ;(Func as any).navigationItem = item
-    return Func
+    return Func as ComponentType<any>
   }
 }
