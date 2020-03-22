@@ -240,30 +240,28 @@ screen 是最基本的页面，它用来表示通过 `ReactRegistry.registerComp
 将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件，比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
 
 ```javascript
-this.props.navigator.showModal('ReactModal', REQUEST_CODE)
+navigator.showModal('ReactModal', REQUEST_CODE)
 ```
 
 可以通过第三个参数来给 modal 传递属性：
 
 ```javascript
-this.props.navigator.showModal('ReactModal', REQUEST_CODE, { x: '123' })
+navigator.showModal('ReactModal', REQUEST_CODE, { x: '123' })
 ```
 
-modal 通过 `this.props` 来获取传递过来的属性
+modal 通过 `props` 来获取传递过来的属性
 
 modal 在关闭前通过以下方式设置返回值：
 
 ```javascript
-this.props.navigator.setResult(resultCode, data)
-this.props.navigator.hideModal()
+navigator.setResult(resultCode, data)
+navigator.hideModal()
 ```
 
-目标页面（即将 modal 显示出来的页面）可以通过实例方法 `onComponentResult` 或者 React Hook `useResult` 来接收结果：
+目标页面（即将 modal 显示出来的页面）可以通过 `async-await` 的方式或者 `useResult` 钩子来接收结果：
 
 ```javascript
-onComponentResult(requestCode, resultCode, data) {
-  // ...
-}
+const [resultCode, data] = await navigator.showModal('ReactModal', REQUEST_CODE) 
 ```
 
 ```javascript
@@ -277,22 +275,13 @@ function FunctionComponent() {
 }
 ```
 
-也可以使用 async-await 的方式接收结果：
-
-```javascript
-async function show() {
-  const [resultCode, data] = await this.props.navigator.showModal('ReactModal', REQUEST_CODE)
-  // handle the result
-}
-```
-
-> ⚠️ 这种方式把请求和结果放在一起处理，逻辑比较紧凑，似乎是最好的处理方式。但是在 Android 上会遇到生命周期的噩梦，如果因为屏幕旋转等原因导致导致原生底层的控制器（Activity）重建，此时 React Component 也会重建，是重建，不是重新渲染，那么结果将会丢失，虽然这种情况很罕见，但不代表不存在，使用时请注意。
+> ⚠️ 如何遭遇到 Android 生命周期噩梦，请使用 `useResult` 而不是 `async-await` 的方式来接收结果。
 
 - **hideModal()**
 
 隐藏作为 Modal 显示的页面，如果 Modal 是一个容器，可以在该容器的任何子页面调用此方法。
 
-**在调用 `this.props.navigator.hideModal` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
+**在调用 `navigator.hideModal` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
 - **showModalLayout&lt;T = any&gt;(layout: Layout, requestCode = 0): Promise&lt;[number, T]&gt;**
 
@@ -306,31 +295,26 @@ present 是一种模态交互方式，类似于 Android 的 `startActivityForRes
 
 ```javascript
 // A.js
-this.props.navigator.present('B', 1)
+navigator.present('B', 1)
 ```
 
 B 页面通过 `setResult`返回结果给 A 页面
 
 ```javascript
 // B.js
-this.props.navigator.setResult(RESULT_OK, { text: 'greeting' })
-this.props.navigator.dismiss()
+navigator.setResult(RESULT_OK, { text: 'greeting' })
+navigator.dismiss()
 ```
 
 **注意：仅支持返回可以序列化为 json 的对象，不支持函数**
 
-A 页面通过实现 `onComponentResult` 方法来接收结果
+A 页面通过实现 `async-await` 或 `useResult` 的方式来接收结果
 
 ```javascript
 // A.js
-onComponentResult(requestCode, resultCode, data) {
-  if(requestCode === 1) {
-    if(resultCode === RESULT_OK) {
-      this.setState({text: data.text || '', error: undefined});
-    }
-  } else {
-    this.setState({text: undefined, error: 'ACTION CANCEL'});
-  }
+const [resultCode, data] = await navigator.present('B', 1)
+if(resultCode === RESULT_OK) {
+    this.setState({text: data.text || '', error: undefined});
 }
 ```
 
@@ -338,10 +322,10 @@ A 在 present B 时，可以通过第三个参数传值给 B
 
 ```javascript
 // A.js
-this.props.navigator.present('B', 1, {})
+navigator.present('B', 1, {})
 ```
 
-B 页面可以通过 `this.props` 来获取传递的值
+B 页面可以通过 `props` 来获取传递的值
 
 **注意：第三个参数仅支持可以序列化为 json 的对象，不支持函数**
 
@@ -351,31 +335,31 @@ A 页面 `present` 出相册列表页面
 
 ```javascript
 //A.js
-this.props.navigator.present('AlbumList', 1)
+navigator.present('AlbumList', 1)
 ```
 
 相册列表页面 `push` 到某个相册
 
 ```javascript
 // AlbumList.js
-this.props.navigator.push('Album')
+navigator.push('Album')
 ```
 
 在相册页面选好相片后返回结果给 A 页面
 
 ```javascript
 // Album.js
-this.props.navigator.setResult(RESULT_OK, { uri: 'file://...' })
-this.props.navigator.dismiss()
+navigator.setResult(RESULT_OK, { uri: 'file://...' })
+navigator.dismiss()
 ```
 
-A 页面通过实现 `onComponentResult` 方法来接收结果（略）。
+A 页面通过实现 `async-await` 或 `useResult` 的方式来接收结果（略）。
 
 - **dismiss()**
 
 关闭 `present` 出来的页面，如果该页面是容器，可以在容器的任何子页面调用此方法。
 
-**在调用 `this.props.navigator.dismiss` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
+**在调用 `navigator.dismiss` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
 - **presentLayout&lt;T = any&gt;(layout: Layout, requestCode?: number, animated?: boolean): Promise&lt;[number, T]&gt;**
 
@@ -383,7 +367,7 @@ present 的加强版，通过传递一个布局对象，用来 present UI 层级
 
 ```javascript
 // A.js
-this.props.navigator.presentLayout(
+navigator.presentLayout(
   {
     stack: {
       children: { screen: { moduleName: 'B' } },
@@ -397,7 +381,7 @@ this.props.navigator.presentLayout(
 
 ```javascript
 // A.js
-this.props.navigator.present('B', 1)
+navigator.present('B', 1)
 ```
 
 也就是说，present 出来的组件，默认会嵌套在 stack 里面，因为当使用 present 时，把目标页面嵌套在 stack 里面是比较常见的操作。
@@ -412,19 +396,19 @@ stack 以栈的方式管理它的子页面，它支持以下导航操作：
 
 ```javascript
 // A.js
-this.props.navigator.push('B')
+navigator.push('B')
 ```
 
 可以通过第二个参数来传值给 B 页面
 
 ```javascript
 // A.js
-this.props.navigator.push('B', {...});
+navigator.push('B', {...});
 ```
 
 > 注意：第二个参数只支持可以序列化为 json 的对象，不支持函数
 
-B 页面通过 `this.props` 来访问传递过来的值
+B 页面通过 `props` 来访问传递过来的值
 
 - **pushLayout&lt;T = any&gt;(layout: Layout, animated?: boolean): Promise&lt;[number, T]&gt;**
 
@@ -436,7 +420,7 @@ push 加强版，通过传递一个布局对象，展示 UI 层级比较复杂�
 
 ```javascript
 // B.js
-this.props.navigator.pop()
+navigator.pop()
 ```
 
 - **popTo(sceneId: string, animated = true)**
@@ -447,21 +431,21 @@ this.props.navigator.pop()
 
 ```javascript
 // B.js
-this.props.navigator.push('C', { bId: this.props.sceneId })
+navigator.push('C', { bId: this.props.sceneId })
 ```
 
 从 C 页面跳到 D 页面时
 
 ```javascript
 // C.js
-this.props.navigator.push('D', { bId: this.props.bId })
+navigator.push('D', { bId: this.props.bId })
 ```
 
 现在想从 D 页面 返回到 B 页面
 
 ```javascript
 // D.js
-this.props.navigator.popTo(this.props.bId)
+navigator.popTo(this.props.bId)
 ```
 
 - **popToRoot(animated = true)**
@@ -470,10 +454,10 @@ this.props.navigator.popTo(this.props.bId)
 
 ```javascript
 // D.js
-this.props.navigator.popToRoot()
+navigator.popToRoot()
 ```
 
-pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `onComponentResult(requestCode, resultCode, data)` 或 `useResult` 来接收结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
+pop, popTo, popToRoot 也可以通过 `navigator.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `async-await` 或 `useResult` 来接收结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
 
 - **redirectTo&lt;P extends object = {}&gt;(moduleName: string, props?: P, options?: NavigationItem): void**
 
@@ -481,7 +465,7 @@ pop, popTo, popToRoot 也可以通过 `this.props.setResult(RESULT_OK, {...})`�
 
 ```javascript
 // A.js
-this.props.navigator.redirectTo('B')
+navigator.redirectTo('B')
 ```
 
 现在 stack 里没有 A 页面了，被替换成了 B。
@@ -500,9 +484,9 @@ this.props.navigator.redirectTo('B')
 
 ```javascript
 componentDidMount() {
-  this.props.navigator.isStackRoot().then((isRoot) => {
+  navigator.isStackRoot().then((isRoot) => {
     if(isRoot) {
-      this.props.garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
+      garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
       this.setState({isRoot});
     }
   })
@@ -522,14 +506,14 @@ tabs 支持以下导航操作
 切换到指定 tab
 
 ```javascript
-this.props.navigator.switchTab(1)
+navigator.switchTab(1)
 ```
 
 该方法还接受第二个参数，是个布尔值，用来控制在切换到其它 tab 时，当前 tab (该 tab 是个 stack) 要不要重置到根页面，默认是 false.
 
 ```javascript
 // 当前 tab 会调用 popToRoot
-this.props.navigator.switchTab(1, true)
+navigator.switchTab(1, true)
 ```
 
 ## drawer
@@ -541,7 +525,7 @@ drawer 支持以下导航操作
 切换抽屉的开关状态
 
 ```javascript
-this.props.navigator.toggleMenu()
+navigator.toggleMenu()
 ```
 
 - **openMenu()**
@@ -549,7 +533,7 @@ this.props.navigator.toggleMenu()
 打开抽屉
 
 ```javascript
-this.props.navigator.openMenu()
+navigator.openMenu()
 ```
 
 <a name="navigation-caveat"></a>
@@ -559,37 +543,37 @@ this.props.navigator.openMenu()
 关闭抽屉
 
 ```javascript
-this.props.navigator.closeMenu()
+navigator.closeMenu()
 ```
 
 ## 注意事项
 
 - **永远不可能 pesent 一个页面在 modal 之上**
 
-  譬如 A 是个 modal，那么不可能在它上面执行 `this.props.navigator.present` 操作。
+  譬如 A 是个 modal，那么不可能在它上面执行 `navigator.present` 操作。
 
-  譬如 A 是个普通页面(非 modal)，它通过 `this.props.navigator.showModal` 显示 B，那么在 B 被关闭前，A 不能通过 `this.props.navigator.present` 显示 C。
+  譬如 A 是个普通页面(非 modal)，它通过 `navigator.showModal` 显示 B，那么在 B 被关闭前，A 不能通过 `navigator.present` 显示 C。
 
 - **如果一个页面已经 present 出一个页面，那么在该页面未关闭之前，它不能再 present 出另一个页面。**
 
-  譬如 A 是个普通页面(非 modal)，它通过 `this.props.navigator.present` 显示 B，那么在 B 被关闭前，A 不能通过 `this.props.navigator.present` 显示 C。
+  譬如 A 是个普通页面(非 modal)，它通过 `navigator.present` 显示 B，那么在 B 被关闭前，A 不能通过 `navigator.present` 显示 C。
 
 - **如果一个页面已经 show 出一个 modal，那么在该 modal 未关闭之前，它不能再 show 出另一个 modal。**
 
-  譬如 A (可以是 modal)，它通过 `this.props.navigator.showModal` 显示 B，那么在 B 被关闭前，A 不能通过 `this.props.navigator.showModal` 显示 C。
+  譬如 A (可以是 modal)，它通过 `navigator.showModal` 显示 B，那么在 B 被关闭前，A 不能通过 `navigator.showModal` 显示 C。
 
 - **在调用 `dismiss` 、`hideModal`、`pop`、`popTo`、`popToRoot` 或者 `redirectTo` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
   ```javascript
-  this.props.navigator.hideModal()
+  navigator.hideModal()
   // 下面这行代码不会生效
-  this.props.navigator.present('XXX', 1)
+  navigator.present('XXX', 1)
   ```
 
   一个变通的办法是使用 `Navigator.current`
 
   ```javascript
-  this.props.navigator.hideModal()
+  navigator.hideModal()
   // 使用 modal 隐藏后出现的页面的 navigator
   const currrent = await Navigator.currrent()
   currrent.present('XXX', 1)

@@ -72,7 +72,7 @@ npm run run:ios
 
 #### [RN 页面与原生页面相互跳转和传值](./doc/pass-and-return-value.md)
 
-#### [额外的生命周期函数](./doc/lifecycle.md)
+#### [Hooks](./doc/lifecycle.md)
 
 #### [设置样式](./doc/style.md)
 
@@ -84,6 +84,43 @@ npm run run:ios
 | ----------------------- | -------------------------------- | ---------- |
 | >= 0.60                 | 0.20.1                           | 2020/03/10 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
+
+### 0.21.x
+
+- 移除了额外的 `componentDidAppear` 和 `componentDidDisappear` 生命周期函数，移除了 `useVisibleEffect` 钩子函数
+
+    现在使用 `useVisibility` 钩子和 `useEffect` 来达到同样的目的
+
+    ```js
+    import React, { useState, useEffect } from 'react'
+    import {useVisibility} from 'react-native-navigation-hybrid'
+    function FC({sceneId}) {
+        const visibility = useVisibility(sceneId)
+        useEffect(() => {
+            if (visibility === 'visible') {
+            console.info(`Page is visible [${sceneId}]`)
+            } else if (visibility === 'gone') {
+            console.info(`Page is gone [${sceneId}]`)
+            }
+        }, [visibility, sceneId])
+    }
+    ```
+
+- 移除了额外的 `onBackPressed` 生命周期函数和 `useBackEffect` 钩子函数
+
+    现在使用 `BackHandler` 或 `[useBackHandler](https://github.com/react-native-community/hooks/blob/master/src/useBackHandler.ts)` 来处理 Android 平台的 modal 的返回事件
+
+    ```js
+    import {BackHandler} from 'react-native'
+    // or
+    import { useBackHandler } from '@react-native-community/hooks'
+    ```
+- 移除了额外的 `onComponentResult` 生命周期函数
+
+    现在使用 `useResult` 这个钩子函数来实现同样的功能
+
+- 移除了额外的 `onBarButtonItemClick` 生命周期函数
+
 
 ### 0.20.x
 
