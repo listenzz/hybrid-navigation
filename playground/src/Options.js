@@ -45,18 +45,13 @@ function Options({ sceneId, navigator, garden }) {
     }
   }, [visibility])
 
-  const [isRoot, setIsRoot] = useState(false)
   useEffect(() => {
     if (visibility === 'visible') {
-      garden.setMenuInteractive(isRoot)
+      garden.setMenuInteractive(true)
+    } else if (visibility === 'gone') {
+      garden.setMenuInteractive(false)
     }
-  }, [visibility, isRoot, garden])
-
-  useEffect(() => {
-    navigator.isStackRoot().then(root => {
-      setIsRoot(root)
-    })
-  }, [navigator])
+  }, [visibility, garden])
 
   useEffect(() => {
     console.info('Page Options componentDidMount')
