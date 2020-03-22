@@ -275,7 +275,7 @@ function FunctionComponent() {
 }
 ```
 
-> ⚠️ 如何遭遇到 Android 生命周期噩梦，请使用 `useResult` 而不是 `async-await` 的方式来接收结果。
+> ⚠️ 如果遭遇到 Android 生命周期噩梦，请使用 `useResult` 而不是 `async-await` 的方式来接收结果。
 
 - **hideModal()**
 

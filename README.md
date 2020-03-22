@@ -82,7 +82,7 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| >= 0.60                 | 0.20.1                           | 2020/03/10 |
+| >= 0.60                 | 0.21.0                          | 2020/03/22 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
 
 ### 0.21.x
@@ -108,7 +108,7 @@ npm run run:ios
 
 - 移除了额外的 `onBackPressed` 生命周期函数和 `useBackEffect` 钩子函数
 
-    现在使用 `BackHandler` 或 `[useBackHandler](https://github.com/react-native-community/hooks/blob/master/src/useBackHandler.ts)` 来处理 Android 平台的 modal 的返回事件
+    现在使用 `BackHandler` 或 `useBackHandler` 来处理 Android 平台的 modal 的返回事件
 
     ```js
     import {BackHandler} from 'react-native'
