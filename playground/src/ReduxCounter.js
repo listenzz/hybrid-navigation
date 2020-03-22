@@ -11,9 +11,11 @@ import styles, { paddingTop } from './Styles'
 
 // React component
 function ReduxCounter({ sceneId, navigator, value, onDecreaseClick, onIncreaseClick }) {
-  navigator.setParams({ onDecreaseClick })
-
   const visibility = useVisibility(sceneId)
+
+  useEffect(() => {
+    navigator.setParams({ onDecreaseClick })
+  })
 
   useEffect(() => {
     if (visibility === 'visible') {
