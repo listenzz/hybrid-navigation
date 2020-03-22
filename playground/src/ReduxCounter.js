@@ -1,69 +1,42 @@
-import React, { Component } from 'react'
+import React, { useEffect } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native'
-import { BarStyleLightContent } from 'react-native-navigation-hybrid'
+import {
+  BarStyleLightContent,
+  withNavigationItem,
+  useVisibility,
+} from 'react-native-navigation-hybrid'
 import { createStore } from 'redux'
 import { connect } from 'react-redux'
 import styles, { paddingTop } from './Styles'
 
 // React component
-class ReduxCounter extends Component {
-  static navigationItem = {
-    extendedLayoutIncludesTopBar: true,
-    topBarStyle: BarStyleLightContent,
-    topBarTintColor: '#FFFFFF',
-    titleTextColor: '#FFFF00',
-    ...Platform.select({
-      ios: {
-        topBarColor: '#FF344C',
-      },
-      android: {
-        topBarColor: '#F94D53',
-      },
-    }),
-    titleItem: {
-      title: 'Redux Counter',
-    },
+function ReduxCounter({ sceneId, navigator, value, onDecreaseClick, onIncreaseClick }) {
+  navigator.setParams({ onDecreaseClick })
 
-    rightBarButtonItem: {
-      title: 'MINUS',
-      icon: Image.resolveAssetSource(require('./images/minus.png')),
-      action: navigator => {
-        navigator.state.params.onDecreaseClick()
-      },
-    },
-  }
+  const visibility = useVisibility(sceneId)
 
-  constructor(props) {
-    super(props)
-    const { navigator, onDecreaseClick } = props
-    navigator.setParams({ onDecreaseClick })
-  }
+  useEffect(() => {
+    if (visibility === 'visible') {
+      console.info(`Page ReduxCounter is visible`)
+    } else if (visibility === 'gone') {
+      console.info(`Page ReduxCounter is gone`)
+    }
+  }, [visibility])
 
-  componentDidAppear() {
-    console.info('ReduxCounter componentDidAppear')
-  }
+  return (
+    <ScrollView
+      contentInsetAdjustmentBehavior="never"
+      automaticallyAdjustContentInsets={false}
+      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
+      <View style={[styles.container, paddingTop]}>
+        <Text style={styles.welcome}>{value}</Text>
 
-  componentDidDisappear() {
-    console.info('ReduxCounter componentDidDisappear')
-  }
-
-  render() {
-    const { value, onIncreaseClick } = this.props
-    return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="never"
-        automaticallyAdjustContentInsets={false}
-        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
-        <View style={[styles.container, paddingTop]}>
-          <Text style={styles.welcome}>{value}</Text>
-
-          <TouchableOpacity onPress={onIncreaseClick} activeOpacity={0.2} style={styles.button}>
-            <Text style={styles.buttonText}>Increase</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    )
-  }
+        <TouchableOpacity onPress={onIncreaseClick} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>Increase</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  )
 }
 
 // Action
@@ -101,12 +74,40 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
+const navigationItem = {
+  extendedLayoutIncludesTopBar: true,
+  topBarStyle: BarStyleLightContent,
+  topBarTintColor: '#FFFFFF',
+  titleTextColor: '#FFFF00',
+  ...Platform.select({
+    ios: {
+      topBarColor: '#FF344C',
+    },
+    android: {
+      topBarColor: '#F94D53',
+    },
+  }),
+  titleItem: {
+    title: 'Redux Counter',
+  },
+
+  rightBarButtonItem: {
+    title: 'MINUS',
+    icon: Image.resolveAssetSource(require('./images/minus.png')),
+    action: navigator => {
+      navigator.state.params.onDecreaseClick()
+    },
+  },
+}
+
 // Connected Component
+// export default withNavigationItem(navigationItem)(
+//   connect(mapStateToProps, mapDispatchToProps)(ReduxCounter),
+// )
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-  undefined,
-  { forwardRef: true }, // 注意这行代码，开启引用转发功能
-)(ReduxCounter)
+)(withNavigationItem(navigationItem)(ReduxCounter))
 
 export { store }

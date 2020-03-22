@@ -39,11 +39,11 @@ function Options({ sceneId, navigator, garden }) {
 
   useEffect(() => {
     if (visibility === 'visible') {
-      console.info(`Page Options is visible [${sceneId}]`)
+      console.info(`Page Options is visible`)
     } else if (visibility === 'gone') {
-      console.info(`Page Options is gone [${sceneId}]`)
+      console.info(`Page Options is gone`)
     }
-  }, [visibility, sceneId])
+  }, [visibility])
 
   const [isRoot, setIsRoot] = useState(false)
   useEffect(() => {

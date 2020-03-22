@@ -24,7 +24,7 @@ function Lifecycle({ sceneId }) {
         { cancelable: false },
       )
     }
-  })
+  }, [visibility])
 
   return (
     <ScrollView
