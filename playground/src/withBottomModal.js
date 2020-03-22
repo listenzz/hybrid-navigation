@@ -17,15 +17,16 @@ export default function withBottomModal({
   navigationBarColor = '#ffffff',
 } = {}) {
   return function(WrappedComponent) {
-    function BottomModal(props) {
-      const [animatedHeight] = useState(new Animated.Value(Dimensions.get('screen').height))
+    function BottomModal(props, ref) {
+      const animatedHeight = useRef(new Animated.Value(Dimensions.get('screen').height))
+
       const { onLayout, height } = useLayout()
 
       const realHideModal = useRef(props.navigator.hideModal)
 
       const hideModal = useCallback(() => {
         return new Promise(resolve => {
-          Animated.timing(animatedHeight, {
+          Animated.timing(animatedHeight.current, {
             toValue: height,
             duration: 200,
             easing: Easing.linear,
@@ -34,20 +35,20 @@ export default function withBottomModal({
             resolve(realHideModal.current())
           })
         })
-      }, [height, animatedHeight])
+      }, [height])
 
       props.navigator.hideModal = hideModal
 
       useEffect(() => {
         if (height !== 0) {
-          animatedHeight.setValue(height)
-          Animated.timing(animatedHeight, {
+          animatedHeight.current.setValue(height)
+          Animated.timing(animatedHeight.current, {
             toValue: 0,
             duration: 250,
             easing: Easing.linear,
           }).start()
         }
-      }, [height, animatedHeight])
+      }, [height])
 
       const handleHardwareBackPress = useCallback(() => {
         cancelable && hideModal()
@@ -61,7 +62,7 @@ export default function withBottomModal({
           style={[
             styles.container,
             {
-              transform: [{ translateY: animatedHeight }],
+              transform: [{ translateY: animatedHeight.current }],
             },
           ]}
           useNativeDriver>
@@ -70,16 +71,14 @@ export default function withBottomModal({
           </TouchableWithoutFeedback>
 
           <View onLayout={height === 0 ? onLayout : undefined}>
-            <WrappedComponent {...props} ref={props.forwardedRef} />
+            <WrappedComponent {...props} ref={ref} />
             {isIphoneX() && <SafeAreaView style={{ backgroundColor: safeAreaColor }} />}
           </View>
         </Animated.View>
       )
     }
 
-    const FREC = React.forwardRef((props, ref) => {
-      return <BottomModal {...props} forwardedRef={ref} />
-    })
+    const FREC = React.forwardRef(BottomModal)
     const name = WrappedComponent.displayName || WrappedComponent.name
     FREC.displayName = `withBottomModal(${name})`
 

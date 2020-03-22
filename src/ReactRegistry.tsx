@@ -25,7 +25,6 @@ export interface InjectedProps {
 
 interface Props {
   sceneId: string
-  forwardedRef: React.Ref<React.ComponentType<any>>
 }
 
 function getDisplayName(WrappedComponent: React.ComponentType<any>) {
@@ -34,7 +33,7 @@ function getDisplayName(WrappedComponent: React.ComponentType<any>) {
 
 function withNavigator(moduleName: string) {
   return function(WrappedComponent: React.ComponentType<any>) {
-    const FC: React.FC<Props> = props => {
+    function FC(props: Props, ref: React.Ref<React.ComponentType<any>>) {
       const { sceneId } = props
       const navigator = store.getNavigator(sceneId) || new Navigator(sceneId, moduleName)
       if (navigator.moduleName === undefined) {
@@ -86,16 +85,10 @@ function withNavigator(moduleName: string) {
         garden,
         navigator,
       }
-
-      const { forwardedRef, ...rest } = props
-
-      return <WrappedComponent ref={forwardedRef} {...rest} {...injected} />
+      return <WrappedComponent ref={ref} {...props} {...injected} />
     }
 
-    const FREC = React.forwardRef<React.ComponentType<any>, Props>((props, ref) => {
-      return <FC {...props} forwardedRef={ref} />
-    })
-
+    const FREC = React.forwardRef(FC)
     FREC.displayName = `withNavigator(${getDisplayName(WrappedComponent)})`
     return FREC
   }
@@ -107,7 +100,6 @@ let wrap: HOC | undefined
 export class ReactRegistry {
   static registerEnded: boolean
   static startRegisterComponent(hoc?: HOC) {
-    console.info('begin register react component')
     router.clear()
     store.clear()
     wrap = hoc
@@ -122,7 +114,6 @@ export class ReactRegistry {
     }
     ReactRegistry.registerEnded = true
     NavigationModule.endRegisterReactComponent()
-    console.info('end register react component')
   }
 
   static registerComponent(
@@ -152,8 +143,8 @@ export class ReactRegistry {
 }
 
 export function withNavigationItem(item: NavigationItem) {
-  return function(Func: Function) {
+  return function(Func: ComponentType<any>) {
     ;(Func as any).navigationItem = item
-    return Func as ComponentType<any>
+    return Func
   }
 }
