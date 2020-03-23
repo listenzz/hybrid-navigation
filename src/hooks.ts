@@ -37,7 +37,7 @@ export function useVisibility(sceneId: string) {
   return visibility
 }
 
-export function useVisibilityChange(sceneId: string, onChange: (visible: boolean) => void) {
+export function useVisibleChange(sceneId: string, onChange: (visible: boolean) => void) {
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID]) {

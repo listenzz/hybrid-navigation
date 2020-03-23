@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react'
+import React, { useEffect, useCallback, useRef } from 'react'
 import {
   StyleSheet,
   Animated,
