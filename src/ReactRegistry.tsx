@@ -62,21 +62,6 @@ function withNavigator(moduleName: string) {
         }
       }, [navigator])
 
-      useEffect(() => {
-        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-          if (navigator.sceneId === data[KEY_SCENE_ID]) {
-            if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
-              navigator.visibility = 'visible'
-            } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
-              navigator.visibility = 'gone'
-            }
-          }
-        })
-        return () => {
-          subscription.remove()
-        }
-      }, [navigator])
-
       useResult(sceneId, (requestcode, resultCode, data) => {
         navigator.result(requestcode, resultCode, data)
       })

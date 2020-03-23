@@ -82,45 +82,45 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| >= 0.60                 | 0.21.3                          | 2020/03/23 |
+| >= 0.60                 | 0.21.3                           | 2020/03/23 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
 
 ### 0.21.x
 
 - 移除了额外的 `componentDidAppear` 和 `componentDidDisappear` 生命周期函数，移除了 `useVisibleEffect` 钩子函数
 
-    现在使用 `useVisibility` 钩子和 `useEffect` 来达到同样的目的
+  现在使用 `useVisibility` 钩子来达到同样的目的
 
-    ```js
-    import React, { useState, useEffect } from 'react'
-    import {useVisibility} from 'react-native-navigation-hybrid'
-    function FC({sceneId}) {
-        const visibility = useVisibility(sceneId)
-        useEffect(() => {
-            if (visibility === 'visible') {
-            console.info(`Page is visible [${sceneId}]`)
-            } else if (visibility === 'gone') {
-            console.info(`Page is gone [${sceneId}]`)
-            }
-        }, [visibility, sceneId])
-    }
-    ```
+  ```js
+  import React, { useState, useEffect } from 'react'
+  import { useVisibility } from 'react-native-navigation-hybrid'
+
+  function Lifecycle({ sceneId }) {
+    useVisibility(sceneId, visible => {
+      if (visible) {
+        console.info(`Page is visible [${sceneId}]`)
+      } else {
+        console.info(`Page is gone [${sceneId}]`)
+      }
+    })
+  }
+  ```
 
 - 移除了额外的 `onBackPressed` 生命周期函数和 `useBackEffect` 钩子函数
 
-    现在使用 `BackHandler` 或 `useBackHandler` 来处理 Android 平台的 modal 的返回事件
+  现在使用 `BackHandler` 或 `useBackHandler` 来处理 Android 平台的 modal 的返回事件
 
-    ```js
-    import {BackHandler} from 'react-native'
-    // or
-    import { useBackHandler } from '@react-native-community/hooks'
-    ```
+  ```js
+  import { BackHandler } from 'react-native'
+  // or
+  import { useBackHandler } from '@react-native-community/hooks'
+  ```
+
 - 移除了额外的 `onComponentResult` 生命周期函数
 
-    现在使用 `useResult` 这个钩子函数来实现同样的功能
+  现在使用 `useResult` 这个钩子函数来实现同样的功能
 
 - 移除了额外的 `onBarButtonItemClick` 生命周期函数
-
 
 ### 0.20.x
 

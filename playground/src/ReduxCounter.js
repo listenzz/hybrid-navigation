@@ -11,19 +11,17 @@ import styles, { paddingTop } from './Styles'
 
 // React component
 function ReduxCounter({ sceneId, navigator, value, onDecreaseClick, onIncreaseClick }) {
-  const visibility = useVisibility(sceneId)
+  useVisibility(sceneId, visible => {
+    if (visible) {
+      console.info(`Page ReduxCounter is visible`)
+    } else {
+      console.info(`Page ReduxCounter is gone`)
+    }
+  })
 
   useEffect(() => {
     navigator.setParams({ onDecreaseClick })
   })
-
-  useEffect(() => {
-    if (visibility === 'visible') {
-      console.info(`Page ReduxCounter is visible`)
-    } else if (visibility === 'gone') {
-      console.info(`Page ReduxCounter is gone`)
-    }
-  }, [visibility])
 
   return (
     <ScrollView

@@ -1,13 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Text, View, ScrollView, Alert } from 'react-native'
 import styles from './Styles'
 import { useVisibility, withNavigationItem } from 'react-native-navigation-hybrid'
 
 function Lifecycle({ sceneId }) {
-  const visibility = useVisibility(sceneId)
-
-  useEffect(() => {
-    if (visibility === 'visible') {
+  useVisibility(sceneId, visible => {
+    if (visible) {
       Alert.alert(
         'Lifecycle Alert!',
         'componentDidAppear.',
@@ -16,7 +14,7 @@ function Lifecycle({ sceneId }) {
           cancelable: false,
         },
       )
-    } else if (visibility === 'gone') {
+    } else {
       Alert.alert(
         'Lifecycle Alert!',
         'componentDidDisappear.',
@@ -24,7 +22,7 @@ function Lifecycle({ sceneId }) {
         { cancelable: false },
       )
     }
-  }, [visibility])
+  })
 
   return (
     <ScrollView

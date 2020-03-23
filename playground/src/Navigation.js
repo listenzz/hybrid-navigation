@@ -40,20 +40,14 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
     })
   }, [navigator])
 
-  const visibility = useVisibility(sceneId)
-  useEffect(() => {
-    if (visibility === 'visible') {
+  useVisibility(sceneId, visible => {
+    if (visible) {
       console.info(`Page Navigation is visible [${sceneId}]`)
-    } else if (visibility === 'gone') {
+      garden.setMenuInteractive(isRoot)
+    } else {
       console.info(`Page Navigation is gone [${sceneId}]`)
     }
-  }, [visibility, sceneId])
-
-  useEffect(() => {
-    if (visibility === 'visible') {
-      garden.setMenuInteractive(isRoot)
-    }
-  }, [visibility, isRoot, garden])
+  })
 
   useEffect(() => {
     console.info('Page Navigation componentDidMount')

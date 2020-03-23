@@ -87,7 +87,6 @@ export default function withBottomModal({
       navigationItem.navigationBarColorAndroid = navigationBarColor
     }
     FREC.navigationItem = navigationItem
-
     return FREC
   }
 }

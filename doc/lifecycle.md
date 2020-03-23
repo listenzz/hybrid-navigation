@@ -7,15 +7,14 @@ import React, { useEffect } from 'react'
 import { useVisibility } from 'react-native-navigation-hybrid'
 
 function Lifecycle(props) {
-  const visibility = useVisibility(sceneId)
-
-  useEffect(() => {
-    if (visibility === 'visible') {
+  useVisibility(sceneId, visible => {
+    if (visible) {
       console.info(`Page is visible`)
-    } else if (visibility === 'gone') {
+    } else {
       console.info(`Page is gone`)
     }
-  },[visibility])
+  })
+}
 ```
 
 ### 如何统一处理页面返回的结果

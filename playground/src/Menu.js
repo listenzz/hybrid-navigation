@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { TouchableOpacity, Text, View, StatusBar, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { Garden, useVisibility } from 'react-native-navigation-hybrid'
@@ -48,14 +48,13 @@ export default function Menu({ navigator, sceneId }) {
     navigator.push('Toast')
   }
 
-  const visibility = useVisibility(sceneId)
-  useEffect(() => {
-    if (visibility === 'visible') {
+  useVisibility(sceneId, visible => {
+    if (visible) {
       console.log(`Menu is visible`)
-    } else if (visibility === 'gone') {
+    } else {
       console.log(`Menu is gone`)
     }
-  }, [visibility])
+  })
 
   return (
     <View style={[styles.container, paddingTop]}>

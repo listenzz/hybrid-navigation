@@ -11,15 +11,13 @@ function ReactModal({ navigator, sceneId }) {
     })
   }, [navigator, sceneId])
 
-  const visibility = useVisibility(sceneId)
-
-  useEffect(() => {
-    if (visibility === 'visible') {
+  useVisibility(sceneId, visible => {
+    if (visible) {
       console.info(`Page ReactModal is visible [${sceneId}]`)
-    } else if (visibility === 'gone') {
+    } else {
       console.info(`Page ReactModal is gone [${sceneId}]`)
     }
-  }, [visibility, sceneId])
+  })
 
   async function hideModal(gender) {
     if (gender) {
@@ -77,7 +75,7 @@ function ReactModal({ navigator, sceneId }) {
   )
 }
 
-export default withBottomModal()(ReactModal)
+export default withBottomModal({ safeAreaColor: '#F3F3F3' })(ReactModal)
 
 const styles = StyleSheet.create({
   container: {

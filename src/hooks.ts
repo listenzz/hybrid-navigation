@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import {
   EventEmitter,
@@ -12,32 +12,8 @@ import {
   KEY_RESULT_CODE,
   KEY_RESULT_DATA,
 } from './NavigationModule'
-import { Navigator } from './Navigator'
-import { AppStateStatus, AppState } from 'react-native'
 
-export type Visibility = 'visible' | 'gone' | 'pending'
-
-export function useVisibility(sceneId: string) {
-  const navigator = Navigator.get(sceneId)
-  const [visibility, setVisibility] = useState<Visibility>(navigator.visibility)
-  useEffect(() => {
-    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-      if (sceneId === data[KEY_SCENE_ID]) {
-        if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
-          setVisibility('visible')
-        } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
-          setVisibility('gone')
-        }
-      }
-    })
-    return () => {
-      subscription.remove()
-    }
-  }, [sceneId])
-  return visibility
-}
-
-export function useVisibleChange(sceneId: string, onChange: (visible: boolean) => void) {
+export function useVisibility(sceneId: string, onChange: (visible: boolean) => void) {
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID]) {
@@ -52,16 +28,6 @@ export function useVisibleChange(sceneId: string, onChange: (visible: boolean) =
       subscription.remove()
     }
   }, [sceneId, onChange])
-}
-
-export function useAppStateChange(onChange: (newState: AppStateStatus) => void) {
-  useEffect(() => {
-    AppState.addEventListener('change', onChange)
-
-    return () => {
-      AppState.removeEventListener('change', onChange)
-    }
-  }, [onChange])
 }
 
 export function useResult(

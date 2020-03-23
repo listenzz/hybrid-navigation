@@ -35,23 +35,15 @@ export default withNavigationItem({
 })(Options)
 
 function Options({ sceneId, navigator, garden }) {
-  const visibility = useVisibility(sceneId)
-
-  useEffect(() => {
-    if (visibility === 'visible') {
+  useVisibility(sceneId, visible => {
+    if (visible) {
       console.info(`Page Options is visible`)
-    } else if (visibility === 'gone') {
-      console.info(`Page Options is gone`)
-    }
-  }, [visibility])
-
-  useEffect(() => {
-    if (visibility === 'visible') {
       garden.setMenuInteractive(true)
-    } else if (visibility === 'gone') {
+    } else {
+      console.info(`Page Options is gone`)
       garden.setMenuInteractive(false)
     }
-  }, [visibility, garden])
+  })
 
   useEffect(() => {
     console.info('Page Options componentDidMount')
