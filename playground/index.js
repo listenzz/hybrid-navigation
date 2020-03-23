@@ -33,7 +33,6 @@ import StatusBarHidden from './src/StatusBarHidden'
 import CustomTabBar from './src/CustomTabBar'
 import BulgeTabBar from './src/BulgeTabBar'
 import Toast from './src/Toast'
-import { withToast } from 'react-native-toast-hybrid'
 
 // import MessageQueue from 'react-native/Libraries/BatchedBridge/MessageQueue.js';
 // const spyFunction = msg => {
@@ -97,12 +96,8 @@ function withRedux(WrappedComponent) {
   return ReduxProvider
 }
 
-function wrap(WrappedComponent) {
-  return withRedux(withToast(WrappedComponent))
-}
-
 // 开始注册组件，即基本页面单元
-ReactRegistry.startRegisterComponent(wrap)
+ReactRegistry.startRegisterComponent(withRedux)
 
 ReactRegistry.registerComponent('Navigation', () => Navigation)
 ReactRegistry.registerComponent('Result', () => Result, { path: 'result', mode: 'present' })

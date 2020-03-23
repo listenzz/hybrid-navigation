@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import Toast from 'react-native-toast-hybrid'
+import Toast, { useToast } from 'react-native-toast-hybrid'
 import { withNavigationItem } from 'react-native-navigation-hybrid'
 
 export default withNavigationItem({
@@ -9,7 +9,7 @@ export default withNavigationItem({
   },
 })(ToastComponent)
 
-function ToastComponent({ navigator, toast }) {
+function ToastComponent({ navigator }) {
   const timer = useRef(undefined)
   useEffect(() => {
     Toast.config({
@@ -28,6 +28,8 @@ function ToastComponent({ navigator, toast }) {
       }
     }
   }, [])
+
+  const toast = useToast()
 
   function loading() {
     toast.loading()

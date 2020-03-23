@@ -49,7 +49,7 @@
     "react-native": "^0.61.3",
     "react-native-iphone-x-helper": "^1.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
-    "react-native-toast-hybrid": "^1.1.0",
+    "react-native-toast-hybrid": "^2.0.0",
     "react-redux": "^6.0.0",
     "react-test-renderer": "16.9.0",
     "redux": "^3.7.2",
