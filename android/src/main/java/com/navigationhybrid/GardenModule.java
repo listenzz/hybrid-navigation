@@ -62,8 +62,6 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
-        constants.put("DARK_CONTENT", TOP_BAR_STYLE_DARK_CONTENT);
-        constants.put("LIGHT_CONTENT", TOP_BAR_STYLE_LIGHT_CONTENT);
         constants.put("TOOLBAR_HEIGHT", Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? 56 : 48);
         return constants;
     }

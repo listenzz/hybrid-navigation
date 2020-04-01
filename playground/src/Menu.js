@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { TouchableOpacity, Text, View, StatusBar, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
-import { Garden, useVisibility } from 'react-native-navigation-hybrid'
+import { toolbarHeight, useVisibility } from 'react-native-navigation-hybrid'
 
 import styles from './Styles'
 
@@ -23,10 +23,10 @@ const paddingTop = Platform.select({
   android: {
     ...ifKitKat(
       {
-        paddingTop: 16 + StatusBar.currentHeight + Garden.toolbarHeight,
+        paddingTop: 16 + StatusBar.currentHeight + toolbarHeight,
       },
       {
-        paddingTop: 16 + Garden.toolbarHeight,
+        paddingTop: 16 + toolbarHeight,
       },
     ),
   },

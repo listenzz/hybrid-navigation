@@ -1,6 +1,6 @@
 import pathToRegexp from 'path-to-regexp'
 import { Linking } from 'react-native'
-import { Navigator } from './Navigator'
+import { Navigator, IndexType } from './Navigator'
 
 export interface Route {
   moduleName: string
@@ -12,7 +12,7 @@ export interface RouteInfo {
   mode: RouteMode
   moduleName: string
   dependencies: string[]
-  props: object
+  props: IndexType
 }
 
 export interface RouteConfig {

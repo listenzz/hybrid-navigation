@@ -125,10 +125,6 @@ export interface TabIcon {
 
 const GardenModule = NativeModules.GardenHybrid
 export class Garden {
-  static toolbarHeight: number = GardenModule.TOOLBAR_HEIGHT
-  static DARK_CONTENT: BarStyleDarkContent = GardenModule.DARK_CONTENT
-  static LIGHT_CONTENT: BarStyleLightContent = GardenModule.LIGHT_CONTENT
-
   static setStyle(style: Style = {}) {
     GardenModule.setStyle(style)
   }

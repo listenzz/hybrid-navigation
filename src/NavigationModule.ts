@@ -1,6 +1,7 @@
 import { NativeModules, NativeEventEmitter } from 'react-native'
 
 const NavigationModule = NativeModules.NavigationHybrid
+const GardenModule = NativeModules.GardenHybrid
 const HBDEventEmitter = NativeModules.HBDEventEmitter
 
 const EventEmitter: NativeEventEmitter = new NativeEventEmitter(HBDEventEmitter)
@@ -23,5 +24,10 @@ export const KEY_SCENE_ID: string = HBDEventEmitter.KEY_SCENE_ID
 export const KEY_MODULE_NAME: string = HBDEventEmitter.KEY_MODULE_NAME
 export const KEY_INDEX: string = HBDEventEmitter.KEY_INDEX
 export const KEY_ACTION: string = HBDEventEmitter.KEY_ACTION
+
+export const RESULT_OK: number = NavigationModule.RESULT_OK
+export const RESULT_CANCEL: number = NavigationModule.RESULT_CANCEL
+
+export const toolbarHeight: number = GardenModule.TOOLBAR_HEIGHT
 
 export { EventEmitter, NavigationModule }

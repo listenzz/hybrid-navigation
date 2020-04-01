@@ -8,11 +8,16 @@ import {
   KEY_SCENE_ID,
   KEY_INDEX,
   KEY_MODULE_NAME,
+  RESULT_CANCEL,
 } from './NavigationModule'
 import { bindBarButtonItemClickEvent } from './utils'
 import store from './store'
 import { NavigationItem } from './Garden'
 import { Route, RouteGraph } from './router'
+
+export interface IndexType {
+  [index: string]: string | number | boolean | undefined | null | IndexType
+}
 
 interface Extras {
   sceneId: string
@@ -27,7 +32,7 @@ interface Params {
   popToRoot?: boolean
   targetId?: string
   requestCode?: number
-  props?: { [index: string]: any }
+  props?: IndexType
   options?: NavigationItem
   [index: string]: any
 }
@@ -42,8 +47,10 @@ export interface NavigationInterceptor {
   (action: string, from?: string, to?: string, extras?: Extras): boolean
 }
 
+type ResultType = IndexType | null
+
 interface ResultListener {
-  (requestCode: number, resultCode: number, data: any): void
+  (requestCode: number, resultCode: number, data: ResultType): void
   cancel: () => void
 }
 
@@ -60,7 +67,7 @@ export interface Layout {
 export interface Screen extends Layout {
   screen: {
     moduleName: string
-    props?: { [index: string]: any }
+    props?: IndexType
     options?: NavigationItem
   }
 }
@@ -135,9 +142,6 @@ export function foreground(): Promise<void> {
 }
 
 export class Navigator {
-  static RESULT_OK: -1 = NavigationModule.RESULT_OK
-  static RESULT_CANCEL: 0 = NavigationModule.RESULT_CANCEL
-
   static get(sceneId: string): Navigator {
     return store.getNavigator(sceneId) || new Navigator(sceneId)
   }
@@ -251,6 +255,18 @@ export class Navigator {
     })
   }
 
+  unmount() {
+    this.state.resultListeners.forEach(listener => {
+      listener.cancel()
+    })
+    this.state.resultListeners.length = 0
+
+    this.state.unmountListeners.forEach(listener => {
+      listener()
+    })
+    this.state.unmountListeners.length = 0
+  }
+
   private waitResult<T>(requestCode: number, successful: boolean): Promise<Result<T>> {
     if (!successful) {
       return Promise.resolve([0, {} as T])
@@ -267,22 +283,10 @@ export class Navigator {
       }
 
       listener.cancel = () => {
-        resolve([Navigator.RESULT_CANCEL, null as any])
+        resolve([RESULT_CANCEL, null as any])
       }
       this.state.resultListeners.push(listener)
     })
-  }
-
-  unmount() {
-    this.state.resultListeners.forEach(listener => {
-      listener.cancel()
-    })
-    this.state.resultListeners.length = 0
-
-    this.state.unmountListeners.forEach(listener => {
-      listener()
-    })
-    this.state.unmountListeners.length = 0
   }
 
   private waitUnmount(successful: boolean): Promise<void> {
@@ -301,9 +305,9 @@ export class Navigator {
     }
   }
 
-  async push<T = any, P extends object = {}>(
+  async push<T extends ResultType = any, P extends IndexType = {}>(
     moduleName: string,
-    props: P = {} as P,
+    props: P = {} as any,
     options: NavigationItem = {},
     animated = true,
   ) {
@@ -311,7 +315,7 @@ export class Navigator {
     return await this.waitResult<T>(0, success)
   }
 
-  async pushLayout<T = any>(layout: Layout, animated = true) {
+  async pushLayout<T extends ResultType = any>(layout: Layout, animated = true) {
     const success = await this.dispatch('pushLayout', { layout, animated })
     return await this.waitResult<T>(0, success)
   }
@@ -331,9 +335,9 @@ export class Navigator {
     return await this.waitUnmount(success)
   }
 
-  async redirectTo<P extends object = {}>(
+  async redirectTo<P extends IndexType = {}>(
     moduleName: string,
-    props: P = {} as P,
+    props: P = {} as any,
     options: NavigationItem = {},
   ) {
     const success = await this.dispatch('redirectTo', {
@@ -349,10 +353,10 @@ export class Navigator {
     return NavigationModule.isNavigationRoot(this.sceneId)
   }
 
-  async present<T = any, P extends object = {}>(
+  async present<T extends ResultType = any, P extends IndexType = {}>(
     moduleName: string,
     requestCode = 0,
-    props: P = {} as P,
+    props: P = {} as any,
     options: NavigationItem = {},
     animated = true,
   ) {
@@ -366,7 +370,11 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async presentLayout<T = any>(layout: Layout, requestCode = 0, animated = true) {
+  async presentLayout<T extends ResultType = any>(
+    layout: Layout,
+    requestCode = 0,
+    animated = true,
+  ) {
     const success = await this.dispatch('presentLayout', { layout, requestCode, animated })
     return await this.waitResult<T>(requestCode, success)
   }
@@ -376,10 +384,10 @@ export class Navigator {
     return await this.waitUnmount(success)
   }
 
-  async showModal<T = any, P extends object = {}>(
+  async showModal<T extends ResultType = any, P extends IndexType = {}>(
     moduleName: string,
     requestCode = 0,
-    props: P = {} as P,
+    props: P = {} as any,
     options: NavigationItem = {},
   ) {
     const success = await this.dispatch('showModal', {
@@ -391,7 +399,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async showModalLayout<T = any>(layout: Layout, requestCode = 0) {
+  async showModalLayout<T extends ResultType = any>(layout: Layout, requestCode = 0) {
     const success = await this.dispatch('showModalLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
   }
@@ -401,7 +409,7 @@ export class Navigator {
     return await this.waitUnmount(success)
   }
 
-  setResult<T = any>(resultCode: number, data: T = {} as T): void {
+  setResult<T extends ResultType = any>(resultCode: number, data: T = null as any): void {
     NavigationModule.setResult(this.sceneId, resultCode, data)
   }
 

@@ -1,6 +1,6 @@
 import { StyleSheet, Platform, StatusBar } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
-import { Garden } from 'react-native-navigation-hybrid'
+import { toolbarHeight } from 'react-native-navigation-hybrid'
 
 function ifKitKat(obj1 = {}, obj2 = {}) {
   return Platform.Version > 18 ? obj1 : obj2
@@ -20,7 +20,7 @@ export const paddingTop = Platform.select({
   android: {
     ...ifKitKat(
       {
-        paddingTop: 16 + StatusBar.currentHeight + Garden.toolbarHeight,
+        paddingTop: 16 + StatusBar.currentHeight + toolbarHeight,
       },
       {
         paddingTop: 16,

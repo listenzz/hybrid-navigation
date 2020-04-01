@@ -37,13 +37,6 @@ RCT_EXPORT_MODULE(GardenHybrid)
     return dispatch_get_main_queue();
 }
 
-- (NSDictionary *)constantsToExport {
-    return @{
-             @"DARK_CONTENT": @"dark-content",
-             @"LIGHT_CONTENT": @"light-content",
-             };
-}
-
 RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
     [HBDGarden createGlobalStyleWithOptions:style];
 }
