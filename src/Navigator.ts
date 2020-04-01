@@ -16,7 +16,7 @@ import { NavigationItem } from './Garden'
 import { Route, RouteGraph } from './router'
 
 export interface IndexType {
-  [index: string]: string | number | boolean | undefined | null | IndexType
+  [index: string]: any
 }
 
 interface Extras {
