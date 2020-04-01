@@ -10,9 +10,6 @@ import {
   useResult,
 } from 'react-native-navigation-hybrid'
 
-const REQUEST_CODE_1 = 1
-const REQUEST_CODE_2 = 2
-
 export default withNavigationItem({
   //topBarStyle: 'light-content',
   //topBarColor: '#666666',
@@ -126,31 +123,25 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   }
 
   async function present() {
-    const [resultCode, data] = await navigator.presentLayout(
-      {
-        stack: {
-          children: [{ screen: { moduleName: 'Result' } }],
-        },
+    const [resultCode, data] = await navigator.presentLayout({
+      stack: {
+        children: [{ screen: { moduleName: 'Result' } }],
       },
-      REQUEST_CODE_1,
-    )
+    })
     handleResult(resultCode, data)
   }
 
   async function showModal() {
-    const [resultCode, data] = await navigator.showModalLayout(
-      {
-        screen: {
-          moduleName: 'ReactModal',
-        },
+    const [resultCode, data] = await navigator.showModalLayout({
+      screen: {
+        moduleName: 'ReactModal',
       },
-      REQUEST_CODE_2,
-    )
+    })
     handleResult(resultCode, data)
   }
 
   async function showNativeModal() {
-    const [resultCode, data] = await navigator.showModal('NativeModal', REQUEST_CODE_2)
+    const [resultCode, data] = await navigator.showModal('NativeModal')
     handleResult(resultCode, data)
   }
 

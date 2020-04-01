@@ -40,7 +40,7 @@ interface Params {
 interface NavigationState {
   params: { readonly [index: string]: any }
   unmountListeners: UnmountListener[]
-  resultListeners: ResultListener[]
+  resultListeners: ResultListener<any>[]
 }
 
 export interface NavigationInterceptor {
@@ -49,8 +49,8 @@ export interface NavigationInterceptor {
 
 type ResultType = IndexType | null
 
-interface ResultListener {
-  (requestCode: number, resultCode: number, data: ResultType): void
+interface ResultListener<T extends ResultType> {
+  (requestCode: number, resultCode: number, data: T): void
   cancel: () => void
 }
 
@@ -249,7 +249,7 @@ export class Navigator {
     return Navigator.dispatch(this.sceneId, action, params)
   }
 
-  result(requestCode: number, resultCode: number, data: any) {
+  result(requestCode: number, resultCode: number, data: ResultType) {
     this.state.resultListeners.forEach(listener => {
       listener(requestCode, resultCode, data)
     })
@@ -267,12 +267,15 @@ export class Navigator {
     this.state.unmountListeners.length = 0
   }
 
-  private waitResult<T>(requestCode: number, successful: boolean): Promise<Result<T>> {
+  private waitResult<T extends ResultType>(
+    requestCode: number,
+    successful: boolean,
+  ): Promise<Result<T>> {
     if (!successful) {
-      return Promise.resolve([0, {} as T])
+      return Promise.resolve([0, null as any])
     }
     return new Promise<Result<T>>(resolve => {
-      const listener = (reqCode: number, resultCode: number, data: any) => {
+      const listener = (reqCode: number, resultCode: number, data: T) => {
         if (requestCode === reqCode) {
           resolve([resultCode, data])
           const index = this.state.resultListeners.indexOf(listener)
@@ -355,7 +358,7 @@ export class Navigator {
 
   async present<T extends ResultType = any, P extends IndexType = {}>(
     moduleName: string,
-    requestCode = 0,
+    requestCode = ++tag,
     props: P = {} as any,
     options: NavigationItem = {},
     animated = true,
@@ -372,7 +375,7 @@ export class Navigator {
 
   async presentLayout<T extends ResultType = any>(
     layout: Layout,
-    requestCode = 0,
+    requestCode = ++tag,
     animated = true,
   ) {
     const success = await this.dispatch('presentLayout', { layout, requestCode, animated })
@@ -386,7 +389,7 @@ export class Navigator {
 
   async showModal<T extends ResultType = any, P extends IndexType = {}>(
     moduleName: string,
-    requestCode = 0,
+    requestCode = ++tag,
     props: P = {} as any,
     options: NavigationItem = {},
   ) {
@@ -399,7 +402,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async showModalLayout<T extends ResultType = any>(layout: Layout, requestCode = 0) {
+  async showModalLayout<T extends ResultType = any>(layout: Layout, requestCode = ++tag) {
     const success = await this.dispatch('showModalLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
   }
