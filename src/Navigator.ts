@@ -44,6 +44,7 @@ export interface NavigationInterceptor {
 
 interface ResultListener {
   (requestCode: number, resultCode: number, data: any): void
+  cancel: () => void
 }
 
 type Result<T> = [number, T]
@@ -264,11 +265,20 @@ export class Navigator {
           }
         }
       }
+
+      listener.cancel = () => {
+        resolve([Navigator.RESULT_CANCEL, null as any])
+      }
       this.state.resultListeners.push(listener)
     })
   }
 
   unmount() {
+    this.state.resultListeners.forEach(listener => {
+      listener.cancel()
+    })
+    this.state.resultListeners.length = 0
+
     this.state.unmountListeners.forEach(listener => {
       listener()
     })

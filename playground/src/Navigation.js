@@ -50,11 +50,11 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   })
 
   useEffect(() => {
-    console.info('Page Navigation componentDidMount')
+    console.info(`Page Navigation componentDidMount [${sceneId}]`)
     return () => {
-      console.info('Page Navigation componentWillUnmount')
+      console.info(`Page Navigation componentWillUnmount [${sceneId}]`)
     }
-  }, [])
+  }, [sceneId])
 
   useEffect(() => {
     navigator.setResult(RESULT_OK, { backId: sceneId })
@@ -74,6 +74,7 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
       }
     }
     const [_, data] = await navigator.push('Navigation', props)
+    console.log('===================>>>>>>>>>', sceneId, data)
     if (data) {
       setText(data.backId || undefined)
     }
@@ -102,7 +103,7 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
     } else {
       await navigator.redirectTo('Navigation')
     }
-    await printRouteGraph()
+    // await printRouteGraph()
   }
 
   async function printRouteGraph() {

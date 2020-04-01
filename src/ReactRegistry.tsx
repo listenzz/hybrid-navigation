@@ -8,8 +8,6 @@ import {
   KEY_SCENE_ID,
   KEY_ON,
   ON_COMPONENT_MOUNT,
-  ON_COMPONENT_APPEAR,
-  ON_COMPONENT_DISAPPEAR,
 } from './NavigationModule'
 import { Garden, NavigationItem } from './Garden'
 import { router, RouteConfig } from './router'
