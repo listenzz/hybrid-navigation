@@ -19,9 +19,10 @@ export default function BulgeTabBar({
   tabs,
   selectedIndex,
 }) {
-  function handleTabClick(index) {
+  async function handleTabClick(index) {
     if (index === -1) {
-      navigator.present('Result', 1)
+      const [resultCode, data] = await navigator.present('Result', 1)
+      console.log(resultCode, data)
     } else {
       navigator.switchTab(index)
     }

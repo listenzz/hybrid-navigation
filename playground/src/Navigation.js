@@ -123,20 +123,12 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   }
 
   async function present() {
-    const [resultCode, data] = await navigator.presentLayout({
-      stack: {
-        children: [{ screen: { moduleName: 'Result' } }],
-      },
-    })
+    const [resultCode, data] = await navigator.present('Result')
     handleResult(resultCode, data)
   }
 
   async function showModal() {
-    const [resultCode, data] = await navigator.showModalLayout({
-      screen: {
-        moduleName: 'ReactModal',
-      },
-    })
+    const [resultCode, data] = await navigator.showModal('ReactModal')
     handleResult(resultCode, data)
   }
 

@@ -141,6 +141,18 @@ export function foreground(): Promise<void> {
   }
 }
 
+function checkRequestCode(reqCode?: number) {
+  if (reqCode === undefined) {
+    return --tag
+  }
+
+  if (reqCode < 0) {
+    throw new Error('`requestCode` must be positive.')
+  }
+
+  return reqCode
+}
+
 export class Navigator {
   static get(sceneId: string): Navigator {
     return store.getNavigator(sceneId) || new Navigator(sceneId)
@@ -173,7 +185,7 @@ export class Navigator {
       willSetRootCallback()
     }
 
-    const flag = ++tag
+    const flag = --tag
     NavigationModule.setRoot(pureLayout, sticky, flag)
 
     return new Promise<void>(resolve => {
@@ -358,11 +370,12 @@ export class Navigator {
 
   async present<T extends ResultType = any, P extends IndexType = {}>(
     moduleName: string,
-    requestCode = ++tag,
+    requestCode?: number,
     props: P = {} as any,
     options: NavigationItem = {},
     animated = true,
   ) {
+    requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('present', {
       moduleName,
       props,
@@ -375,9 +388,10 @@ export class Navigator {
 
   async presentLayout<T extends ResultType = any>(
     layout: Layout,
-    requestCode = ++tag,
+    requestCode?: number,
     animated = true,
   ) {
+    requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('presentLayout', { layout, requestCode, animated })
     return await this.waitResult<T>(requestCode, success)
   }
@@ -389,10 +403,11 @@ export class Navigator {
 
   async showModal<T extends ResultType = any, P extends IndexType = {}>(
     moduleName: string,
-    requestCode = ++tag,
+    requestCode?: number,
     props: P = {} as any,
     options: NavigationItem = {},
   ) {
+    requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('showModal', {
       moduleName,
       props,
@@ -402,7 +417,8 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async showModalLayout<T extends ResultType = any>(layout: Layout, requestCode = ++tag) {
+  async showModalLayout<T extends ResultType = any>(layout: Layout, requestCode?: number) {
+    requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('showModalLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
   }
