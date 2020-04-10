@@ -24,5 +24,5 @@ android {
 dependencies {
     implementation 'com.facebook.react:react-native:+'
     // api project(':navigation')
-    api 'com.navigation.androidx:androidx:3.7.1'
+    api 'com.navigation.androidx:androidx:4.4.0'
 }
