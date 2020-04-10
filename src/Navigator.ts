@@ -324,29 +324,28 @@ export class Navigator {
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
-    animated = true,
   ) {
-    const success = await this.dispatch('push', { moduleName, props, options, animated })
+    const success = await this.dispatch('push', { moduleName, props, options })
     return await this.waitResult<T>(0, success)
   }
 
-  async pushLayout<T extends ResultType = any>(layout: Layout, animated = true) {
-    const success = await this.dispatch('pushLayout', { layout, animated })
+  async pushLayout<T extends ResultType = any>(layout: Layout) {
+    const success = await this.dispatch('pushLayout', { layout })
     return await this.waitResult<T>(0, success)
   }
 
-  async pop(animated = true) {
-    const success = await this.dispatch('pop', { animated })
+  async pop() {
+    const success = await this.dispatch('pop')
     return await this.waitUnmount(success)
   }
 
-  async popTo(sceneId: string, animated = true) {
-    const success = await this.dispatch('popTo', { animated, targetId: sceneId })
+  async popTo(sceneId: string) {
+    const success = await this.dispatch('popTo', {  targetId: sceneId })
     return await this.waitUnmount(success)
   }
 
-  async popToRoot(animated = true) {
-    const success = await this.dispatch('popToRoot', { animated })
+  async popToRoot() {
+    const success = await this.dispatch('popToRoot')
     return await this.waitUnmount(success)
   }
 
@@ -370,10 +369,9 @@ export class Navigator {
 
   async present<T extends ResultType = any, P extends IndexType = {}>(
     moduleName: string,
-    requestCode?: number,
     props: P = {} as any,
     options: NavigationItem = {},
-    animated = true,
+    requestCode?: number,
   ) {
     requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('present', {
@@ -381,31 +379,29 @@ export class Navigator {
       props,
       options,
       requestCode,
-      animated,
     })
     return await this.waitResult<T>(requestCode, success)
   }
 
   async presentLayout<T extends ResultType = any>(
     layout: Layout,
-    requestCode?: number,
-    animated = true,
+    requestCode?: number
   ) {
     requestCode = checkRequestCode(requestCode)
-    const success = await this.dispatch('presentLayout', { layout, requestCode, animated })
+    const success = await this.dispatch('presentLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async dismiss(animated = true) {
-    const success = await this.dispatch('dismiss', { animated })
+  async dismiss() {
+    const success = await this.dispatch('dismiss')
     return await this.waitUnmount(success)
   }
 
   async showModal<T extends ResultType = any, P extends IndexType = {}>(
     moduleName: string,
-    requestCode?: number,
     props: P = {} as any,
     options: NavigationItem = {},
+    requestCode?: number,
   ) {
     requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('showModal', {

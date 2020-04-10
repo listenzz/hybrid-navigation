@@ -128,7 +128,7 @@ const stackParser: RouteParser = {
             if (i === peddingModuleNames.length - 1) {
               navigator.push(moduleName, props)
             } else {
-              navigator.push(peddingModuleNames[i], {}, {}, false)
+              navigator.push(peddingModuleNames[i], {}, {})
             }
           }
         }
@@ -329,9 +329,9 @@ class Router implements RouterT {
       navigator.closeMenu()
       const { moduleName, mode: routeMode, props } = route
       if (routeMode === 'present') {
-        navigator.present(moduleName, 0, props)
+        navigator.present(moduleName, props)
       } else if (routeMode === 'modal') {
-        navigator.showModal(moduleName, 0, props)
+        navigator.showModal(moduleName, props)
       } else {
         // default push
         navigator.push(moduleName, props)

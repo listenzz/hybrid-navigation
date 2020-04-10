@@ -73,15 +73,14 @@
         NSDictionary *options = [extras objectForKey:@"options"];
         viewController =[[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
     }
-    BOOL animated = [[extras objectForKey:@"animated"] boolValue];
-    
+
     if ([action isEqualToString:@"push"]) {
         if (viewController) {
             viewController.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
-            [nav pushViewController:viewController animated:animated];
+            [nav pushViewController:viewController animated:YES];
         }
     } else if ([action isEqualToString:@"pop"]) {
-        [nav popViewControllerAnimated:animated];
+        [nav popViewControllerAnimated:YES];
     } else if ([action isEqualToString:@"popTo"]) {
         NSArray *children = nav.childViewControllers;
         HBDViewController *target;
@@ -96,10 +95,10 @@
         }
         
         if (target) {
-            [nav popToViewController:target animated:animated];
+            [nav popToViewController:target animated:YES];
         }
     } else if ([action isEqualToString:@"popToRoot"]) {
-        [nav popToRootViewControllerAnimated:animated];
+        [nav popToRootViewControllerAnimated:YES];
     } else if ([action isEqualToString:@"redirectTo"]) {
         [nav redirectToViewController:viewController target:target animated:YES];
     } else if ([action isEqualToString:@"pushLayout"]) {
@@ -107,7 +106,7 @@
         UIViewController *vc = [[HBDReactBridgeManager get] controllerWithLayout:layout];
         if (vc) {
             vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
-            [nav pushViewController:vc animated:animated];
+            [nav pushViewController:vc animated:YES];
         }
     }
 }
