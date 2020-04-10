@@ -1,13 +1,9 @@
 package com.navigationhybrid;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
@@ -15,9 +11,9 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.bridge.ReactContext;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.NavigationFragment;
 import com.navigation.androidx.Style;
@@ -36,16 +32,13 @@ import static com.navigationhybrid.Constants.ACTION_UPDATE_TAB_BAR;
 import static com.navigationhybrid.Constants.ARG_ACTION;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
 
-public class ReactTabBarProvider implements TabBarProvider {
+public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.ReactBridgeReloadListener {
 
     private static final String TAG = "ReactNative";
 
     private ReactView reactView;
     private ReactTabBarFragment tabBarFragment;
     private ReactTabBar tabBar;
-
-    private BroadcastReceiver jsBundleReloadBroadcastReceiver = null;
-
 
     @Override
     public View onCreateTabBar(@NonNull List<TabBarItem> tabBarItems, @NonNull TabBarFragment tabBarFragment, @Nullable Bundle savedInstanceState) {
@@ -102,26 +95,17 @@ public class ReactTabBarProvider implements TabBarProvider {
         this.tabBarFragment = reactTabBarFragment;
         this.tabBar = tabBar;
 
-        jsBundleReloadBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                unmountReactView();
-            }
-        };
-        LocalBroadcastManager.getInstance(tabBarFragment.requireContext()).registerReceiver(jsBundleReloadBroadcastReceiver, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
-
+        getReactBridgeManager().addReactBridgeReloadListener(this);
         return tabBar;
     }
 
     private void unmountReactView() {
-        if (jsBundleReloadBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(tabBarFragment.requireContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
-            jsBundleReloadBroadcastReceiver = null;
-        }
-
-        if (reactView != null) {
-            reactView.unmountReactApplication();
-            reactView = null;
+        ReactContext reactContext = getReactBridgeManager().getCurrentReactContext();
+        if (reactContext != null && reactContext.hasCatalystInstance()) {
+            if (reactView != null) {
+                reactView.unmountReactApplication();
+                reactView = null;
+            }
         }
     }
 
@@ -168,6 +152,14 @@ public class ReactTabBarProvider implements TabBarProvider {
     public void onDestroyTabBar() {
         unmountReactView();
         tabBarFragment = null;
+
+
+        getReactBridgeManager().removeReactBridgeReloadListener(this);
+    }
+
+    @Override
+    public void onReload() {
+        unmountReactView();
     }
 
     @Override
@@ -305,4 +297,5 @@ public class ReactTabBarProvider implements TabBarProvider {
     public ReactBridgeManager getReactBridgeManager() {
         return bridgeManager;
     }
+
 }

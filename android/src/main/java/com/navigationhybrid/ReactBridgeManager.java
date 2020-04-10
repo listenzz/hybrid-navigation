@@ -37,6 +37,10 @@ public class ReactBridgeManager {
         void onReactModuleRegisterCompleted();
     }
 
+    public interface ReactBridgeReloadListener {
+        void onReload();
+    }
+
     private static final String TAG = "ReactNative";
     private final static ReactBridgeManager instance = new ReactBridgeManager();
 
@@ -54,6 +58,7 @@ public class ReactBridgeManager {
     private final HashMap<String, Class<? extends HybridFragment>> nativeModules = new HashMap<>();
     private final HashMap<String, ReadableMap> reactModules = new HashMap<>();
     private final CopyOnWriteArrayList<ReactModuleRegisterListener> reactModuleRegisterListeners = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<ReactBridgeReloadListener> reactBridgeReloadListeners = new CopyOnWriteArrayList<>();
 
     private ReadableMap rootLayout;
     private int pendingTag;
@@ -163,6 +168,18 @@ public class ReactBridgeManager {
 
     public void removeReactModuleRegisterListener(@NonNull ReactModuleRegisterListener listener) {
         reactModuleRegisterListeners.remove(listener);
+    }
+
+    public void addReactBridgeReloadListener(@NonNull ReactBridgeReloadListener listener) {
+        reactBridgeReloadListeners.add(listener);
+    }
+
+    public void removeReactBridgeReloadListener(@NonNull ReactBridgeReloadListener listener) {
+        reactBridgeReloadListeners.remove(listener);
+    }
+
+    public List<ReactBridgeReloadListener> getReactBridgeReloadListeners() {
+        return reactBridgeReloadListeners;
     }
 
     public void setRootLayout(@NonNull ReadableMap root, boolean sticky) {

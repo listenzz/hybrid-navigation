@@ -46,6 +46,7 @@ export default function withBottomModal({
             toValue: 0,
             duration: 250,
             easing: Easing.linear,
+            useNativeDriver: true,
           }).start()
         }
       }, [height])

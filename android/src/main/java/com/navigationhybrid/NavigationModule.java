@@ -1,7 +1,6 @@
 package com.navigationhybrid;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
@@ -54,9 +52,13 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
         FLog.i(TAG, "NavigationModule#onCatalystInstanceDestroy");
-        LocalBroadcastManager.getInstance(getReactApplicationContext().getApplicationContext()).sendBroadcast(new Intent(Constants.INTENT_RELOAD_JS_BUNDLE));
         sHandler.removeCallbacksAndMessages(null);
         sHandler.post(() -> {
+            List<ReactBridgeManager.ReactBridgeReloadListener> listeners = bridgeManager.getReactBridgeReloadListeners();
+            for (ReactBridgeManager.ReactBridgeReloadListener listener : listeners) {
+                listener.onReload();
+            }
+            listeners.clear();
             bridgeManager.setReactModuleRegisterCompleted(false);
             bridgeManager.setViewHierarchyReady(false);
             Activity activity = getCurrentActivity();

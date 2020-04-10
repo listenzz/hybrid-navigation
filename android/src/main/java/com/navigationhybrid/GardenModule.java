@@ -31,8 +31,6 @@ import static com.navigationhybrid.Constants.ACTION_SET_TAB_ICON;
 import static com.navigationhybrid.Constants.ACTION_UPDATE_TAB_BAR;
 import static com.navigationhybrid.Constants.ARG_ACTION;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
-import static com.navigationhybrid.Constants.TOP_BAR_STYLE_DARK_CONTENT;
-import static com.navigationhybrid.Constants.TOP_BAR_STYLE_LIGHT_CONTENT;
 
 /**
  * Created by Listen on 2017/11/22.

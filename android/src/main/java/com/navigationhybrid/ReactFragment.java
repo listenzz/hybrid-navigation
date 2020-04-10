@@ -1,9 +1,6 @@
 package com.navigationhybrid;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -14,10 +11,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.PresentAnimation;
@@ -36,7 +33,7 @@ import static com.navigationhybrid.HBDEventEmitter.ON_COMPONENT_RESULT;
 /**
  * Created by Listen on 2018/1/15.
  */
-public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver {
+public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver, ReactBridgeManager.ReactBridgeReloadListener {
 
     protected static final String TAG = "ReactNative";
     private ViewGroup containerLayout;
@@ -44,7 +41,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     private ReactView reactRootView;
     private ReactView reactTitleView;
     private boolean firstRenderCompleted;
-    private BroadcastReceiver jsBundleReloadBroadcastReceiver;
 
     @Nullable
     @Override
@@ -106,6 +102,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         if (!isFragmentHidden()) {
             initTitleViewIfNeeded();
         }
+        getReactBridgeManager().addReactBridgeReloadListener(this);
     }
 
     @Override
@@ -115,6 +112,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             reactRootViewHolder.setVisibilityObserver(null);
         }
         // unmountReactView();
+        getReactBridgeManager().removeReactBridgeReloadListener(this);
     }
 
     @Override
@@ -122,22 +120,26 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         super.onDestroy();
         // unmount react view delay for better transition
         unmountReactView();
+        getReactBridgeManager().removeReactBridgeReloadListener(this);
+    }
+
+    @Override
+    public void onReload() {
+        unmountReactView();
     }
 
     private void unmountReactView() {
-        if (jsBundleReloadBroadcastReceiver != null) {
-            LocalBroadcastManager.getInstance(requireContext().getApplicationContext()).unregisterReceiver(jsBundleReloadBroadcastReceiver);
-            jsBundleReloadBroadcastReceiver = null;
-        }
+        ReactContext reactContext = getReactBridgeManager().getCurrentReactContext();
+        if (reactContext != null && reactContext.hasCatalystInstance()) {
+            if (reactRootView != null) {
+                reactRootView.unmountReactApplication();
+                reactRootView = null;
+            }
 
-        if (reactRootView != null) {
-            reactRootView.unmountReactApplication();
-            reactRootView = null;
-        }
-
-        if (reactTitleView != null) {
-            reactTitleView.unmountReactApplication();
-            reactTitleView = null;
+            if (reactTitleView != null) {
+                reactTitleView.unmountReactApplication();
+                reactTitleView = null;
+            }
         }
     }
 
@@ -245,15 +247,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         String moduleName = getModuleName();
 
         reactView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
-
-        jsBundleReloadBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                unmountReactView();
-            }
-        };
-        LocalBroadcastManager.getInstance(context.getApplicationContext())
-                .registerReceiver(jsBundleReloadBroadcastReceiver, new IntentFilter(Constants.INTENT_RELOAD_JS_BUNDLE));
     }
 
     private void initTitleViewIfNeeded() {
@@ -301,4 +294,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             getActivity().supportStartPostponedEnterTransition();
         }
     }
+
+
 }
