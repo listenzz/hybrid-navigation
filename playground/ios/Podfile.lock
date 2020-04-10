@@ -19,7 +19,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - NavigationHybrid (0.21.9):
+  - NavigationHybrid (0.21.10):
     - React
   - RCTRequired (0.62.2)
   - RCTTypeSafety (0.62.2):
@@ -277,11 +277,11 @@ DEPENDENCIES:
   - ReactCommon/callinvoker (from `../../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../../node_modules/react-native/ReactCommon`)
   - ToastHybrid (from `../../node_modules/react-native-toast-hybrid`)
+  - Yoga (from `../../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
   trunk:
     - boost-for-react-native
-    - Yoga
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -336,6 +336,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/react-native/ReactCommon"
   ToastHybrid:
     :path: "../../node_modules/react-native-toast-hybrid"
+  Yoga:
+    :path: "../../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
@@ -344,7 +346,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 5465d51ccfeecb7faa12f9ae0024f2044ce4044e
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
-  NavigationHybrid: 64d4b6b9c8eb58456f0d9b68444a0acfbdd16f6f
+  NavigationHybrid: 0b5b9cc314baef7c501283f72a1bc8d64896a48d
   RCTRequired: cec6a34b3ac8a9915c37e7e4ad3aa74726ce4035
   RCTTypeSafety: 93006131180074cffa227a1075802c89a49dd4ce
   React: 29a8b1a02bd764fb7644ef04019270849b9a7ac3
@@ -365,8 +367,8 @@ SPEC CHECKSUMS:
   React-RCTVibration: 4356114dbcba4ce66991096e51a66e61eda51256
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
   ToastHybrid: 1a54b09f601f71b5bc78747e61b5869f926aad51
-  Yoga: cff67a400f6b74dc38eb0bad4f156673d9aa980c
+  Yoga: 3ebccbdd559724312790e7742142d062476b698e
 
-PODFILE CHECKSUM: ca2e7c30617a98b573ba69941968a45511130272
+PODFILE CHECKSUM: 625b0e748528109b6fe5ba7141949bcef2f417ea
 
 COCOAPODS: 1.8.4

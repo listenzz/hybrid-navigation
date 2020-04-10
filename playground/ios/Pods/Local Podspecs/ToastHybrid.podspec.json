@@ -1,6 +1,6 @@
 {
   "name": "ToastHybrid",
-  "version": "1.2.0",
+  "version": "2.0.1",
   "summary": "A toast that can be used for react-native, while available for native android, ios.",
   "homepage": "https://github.com/listenzz/react-native-toast-hybrid",
   "license": "MIT",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/listenzz/react-native-toast-hybrid.git",
-    "tag": "1.2.0"
+    "tag": "2.0.1"
   },
   "source_files": "ios/ToastHybrid/**/*.{h,m,swift}",
   "resource_bundles": {
