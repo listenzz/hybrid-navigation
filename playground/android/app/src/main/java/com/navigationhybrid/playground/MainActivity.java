@@ -2,6 +2,8 @@ package com.navigationhybrid.playground;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
 import com.facebook.react.bridge.UiThreadUtil;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigationhybrid.ReactAppCompatActivity;
@@ -30,7 +32,10 @@ public class MainActivity extends ReactAppCompatActivity {
             }
         } else {
             if (isReactModuleRegisterCompleted()) {
-                splashFragment.dismissDialog();
+                if (splashFragment != null) {
+                    splashFragment.hideDialog();
+                    splashFragment = null;
+                }
             }
         }
     }
@@ -41,14 +46,16 @@ public class MainActivity extends ReactAppCompatActivity {
         if (splashFragment != null) {
             // 如果发现有白屏，请调整 delayInMs 参数
             UiThreadUtil.runOnUiThread(() -> {
-                splashFragment.dismissDialog();
-                splashFragment = null;
+                if (splashFragment != null) {
+                    splashFragment.hideDialog();
+                    splashFragment = null;
+                }
             }, 200);
         }
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (splashFragment != null) {
             outState.putString("splash_tag", splashFragment.getSceneId());

@@ -15,8 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
-import com.navigation.androidx.AwesomeFragment;
-import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.PresentAnimation;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -79,20 +77,42 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (isViewAppear() && reactRootView == null) {
+    public void onResume() {
+        super.onResume();
+        if (reactRootView == null) {
             initReactNative();
             initTitleViewIfNeeded();
+        }
+
+        if (reactRootView != null && firstRenderCompleted) {
+            reactRootView.addOnGlobalLayoutListener();
+            sendViewAppearEvent(true);
         }
     }
 
     @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isViewAppear() && reactRootView == null) {
-            initReactNative();
-            initTitleViewIfNeeded();
+    public void onPause() {
+        super.onPause();
+        if (reactRootView != null && firstRenderCompleted) {
+            sendViewAppearEvent(false);
+            reactRootView.removeOnGlobalLayoutListener();
+        }
+    }
+
+    private boolean reactViewAppeared = false;
+
+    private void sendViewAppearEvent(boolean appear) {
+        // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
+        if (isReactModuleRegisterCompleted()) {
+            if (reactViewAppeared == appear) {
+                return;
+            }
+            reactViewAppeared = appear;
+
+            Bundle bundle = new Bundle();
+            bundle.putString(KEY_SCENE_ID, getSceneId());
+            bundle.putString(KEY_ON, appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR);
+            HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
         }
     }
 
@@ -112,7 +132,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             reactRootViewHolder.setVisibilityObserver(null);
         }
         // unmountReactView();
-        getReactBridgeManager().removeReactBridgeReloadListener(this);
     }
 
     @Override
@@ -120,7 +139,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         super.onDestroy();
         // unmount react view delay for better transition
         unmountReactView();
-        getReactBridgeManager().removeReactBridgeReloadListener(this);
     }
 
     @Override
@@ -129,6 +147,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     private void unmountReactView() {
+        getReactBridgeManager().removeReactBridgeReloadListener(this);
+
         ReactContext reactContext = getReactBridgeManager().getCurrentReactContext();
         if (reactContext != null && reactContext.hasCatalystInstance()) {
             if (reactRootView != null) {
@@ -140,24 +160,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                 reactTitleView.unmountReactApplication();
                 reactTitleView = null;
             }
-        }
-    }
-
-    @Override
-    protected void onViewAppear() {
-        super.onViewAppear();
-        if (reactRootView != null && firstRenderCompleted) {
-            reactRootView.addOnGlobalLayoutListener();
-            sendViewAppearEvent(true);
-        }
-    }
-
-    @Override
-    protected void onViewDisappear() {
-        super.onViewDisappear();
-        if (reactRootView != null && firstRenderCompleted) {
-            sendViewAppearEvent(false);
-            reactRootView.removeOnGlobalLayoutListener();
         }
     }
 
@@ -178,7 +180,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         firstRenderCompleted = true;
         startPostponedEnterTransition();
 
-        if (reactRootView != null && isViewAppear()) {
+        if (reactRootView != null && isResumed()) {
             sendViewAppearEvent(true);
             reactRootView.addOnGlobalLayoutListener();
         }
@@ -186,28 +188,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     public boolean isFirstRenderCompleted() {
         return firstRenderCompleted;
-    }
-
-    private boolean reactViewAppeared = false;
-
-    private void sendViewAppearEvent(boolean appear) {
-        // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
-        AwesomeFragment parent = getParentAwesomeFragment();
-        boolean isRemoving = isRemoving();
-        if (parent != null) {
-            isRemoving = isRemoving || FragmentHelper.isRemovingAlongWithParent(parent);
-        }
-        if (isReactModuleRegisterCompleted() && (isResumed() || isRemoving)) {
-            if (reactViewAppeared == appear) {
-                return;
-            }
-            reactViewAppeared = appear;
-
-            Bundle bundle = new Bundle();
-            bundle.putString(KEY_SCENE_ID, getSceneId());
-            bundle.putString(KEY_ON, appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR);
-            HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
-        }
     }
 
     @Override
