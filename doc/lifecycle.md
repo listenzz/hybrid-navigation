@@ -3,17 +3,19 @@ Hooks
 ### 如何监听页面显示或隐藏
 
 ```javascript
-import React, { useEffect } from 'react'
-import { useVisibility } from 'react-native-navigation-hybrid'
+import React, { useCallback } from 'react'
+import { useVisibleEffect } from 'react-native-navigation-hybrid'
 
 function Lifecycle(props) {
-  useVisibility(sceneId, visible => {
-    if (visible) {
-      console.info(`Page is visible`)
-    } else {
-      console.info(`Page is gone`)
-    }
-  })
+
+  const visibleCallback = useCallback(() => {
+    console.info(`Page is visible`)
+      return () => {
+        console.info(`Page is gone`)
+      }
+  }, [])
+
+  useVisibleEffect(sceneId, visibleCallback)
 }
 ```
 

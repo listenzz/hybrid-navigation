@@ -82,8 +82,32 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| >= 0.60                 | 0.21.10                           | 2020/04/08 |
+| >= 0.60                 | 0.22.0                           | 2020/04/12 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
+
+### 0.22.x
+
+- 适配 RN 0.62
+
+- 改变了 `present`, `showModal` 的方法签名
+
+- 重新添加 `useVisibleEffect` 钩子，移除了 `useVisibility`
+
+  ```js
+  import React, { useCallback } from 'react'
+  import { useVisibleEffect } from 'react-native-navigation-hybrid'
+
+  function Lifecycle({ sceneId }) {
+    const visibleCallback = useCallback(() => {
+      console.info(`Page is visible [${sceneId}]`)
+      return () => {
+        console.info(`Page is gone [${sceneId}]`)
+      }
+    }, [sceneId])
+
+    useVisibleEffect(sceneId, visibleCallback)
+  }
+  ```
 
 ### 0.21.x
 
