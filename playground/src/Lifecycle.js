@@ -1,20 +1,19 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Text, View, ScrollView, Alert } from 'react-native'
 import styles from './Styles'
-import { useVisibility, withNavigationItem } from 'react-native-navigation-hybrid'
+import { useVisibleEffect, withNavigationItem } from 'react-native-navigation-hybrid'
 
 function Lifecycle({ sceneId }) {
-  useVisibility(sceneId, visible => {
-    if (visible) {
-      Alert.alert(
-        'Lifecycle Alert!',
-        'componentDidAppear.',
-        [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-        {
-          cancelable: false,
-        },
-      )
-    } else {
+  const visibleCallback = useCallback(() => {
+    Alert.alert(
+      'Lifecycle Alert!',
+      'componentDidAppear.',
+      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+      {
+        cancelable: false,
+      },
+    )
+    return () => {
       Alert.alert(
         'Lifecycle Alert!',
         'componentDidDisappear.',
@@ -22,7 +21,9 @@ function Lifecycle({ sceneId }) {
         { cancelable: false },
       )
     }
-  })
+  }, [])
+
+  useVisibleEffect(sceneId, visibleCallback)
 
   return (
     <ScrollView

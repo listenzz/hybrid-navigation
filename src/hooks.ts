@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import {
   EventEmitter,
@@ -12,22 +12,40 @@ import {
   KEY_RESULT_CODE,
   KEY_RESULT_DATA,
 } from './NavigationModule'
+import { Navigator } from './Navigator'
 
-export function useVisibility(sceneId: string, onChange: (visible: boolean) => void) {
+export type Visibility = 'visible' | 'gone' | 'pending'
+
+export function useVisibleEffect(sceneId: string, effect: React.EffectCallback) {
+  const navigator = Navigator.get(sceneId)
+
+  const callback = useRef<(() => void) | void>()
+
   useEffect(() => {
+    if (navigator.visibility === 'visible') {
+      if (callback.current) {
+        callback.current()
+      }
+      callback.current = effect()
+    }
+
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID]) {
         if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
-          onChange(true)
+          callback.current = effect()
         } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
-          onChange(false)
+          if (callback.current) {
+            callback.current()
+            callback.current = undefined
+          }
         }
       }
     })
+
     return () => {
       subscription.remove()
     }
-  }, [sceneId, onChange])
+  }, [effect, sceneId, navigator])
 }
 
 export function useResult(

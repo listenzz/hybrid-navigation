@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native'
-import { Navigator, withNavigationItem, useVisibility } from 'react-native-navigation-hybrid'
+import { Navigator, withNavigationItem, useVisibleEffect } from 'react-native-navigation-hybrid'
 
 import styles from './Styles'
 import getLayout from './layout'
@@ -35,15 +35,17 @@ export default withNavigationItem({
 })(Options)
 
 function Options({ sceneId, navigator, garden }) {
-  useVisibility(sceneId, visible => {
-    if (visible) {
-      console.info(`Page Options is visible`)
-      garden.setMenuInteractive(true)
-    } else {
+  const visibleCallback = useCallback(() => {
+    console.info(`Page Options is visible`)
+    garden.setMenuInteractive(true)
+
+    return () => {
       console.info(`Page Options is gone`)
       garden.setMenuInteractive(false)
     }
-  })
+  }, [garden])
+
+  useVisibleEffect(sceneId, visibleCallback)
 
   useEffect(() => {
     console.info('Page Options componentDidMount')

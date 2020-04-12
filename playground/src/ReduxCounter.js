@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native'
 import {
   BarStyleLightContent,
   withNavigationItem,
-  useVisibility,
+  useVisibleEffect,
 } from 'react-native-navigation-hybrid'
 import { createStore } from 'redux'
 import { connect } from 'react-redux'
@@ -11,13 +11,14 @@ import styles, { paddingTop } from './Styles'
 
 // React component
 function ReduxCounter({ sceneId, navigator, value, onDecreaseClick, onIncreaseClick }) {
-  useVisibility(sceneId, visible => {
-    if (visible) {
-      console.info(`Page ReduxCounter is visible`)
-    } else {
+  const visibleCallback = useCallback(() => {
+    console.info(`Page ReduxCounter is visible`)
+    return () => {
       console.info(`Page ReduxCounter is gone`)
     }
-  })
+  }, [])
+
+  useVisibleEffect(sceneId, visibleCallback)
 
   useEffect(() => {
     navigator.setParams({ onDecreaseClick })

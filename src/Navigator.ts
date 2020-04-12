@@ -14,6 +14,7 @@ import { bindBarButtonItemClickEvent } from './utils'
 import store from './store'
 import { NavigationItem } from './Garden'
 import { Route, RouteGraph } from './router'
+import { Visibility } from './hooks'
 
 export interface IndexType {
   [index: string]: any
@@ -223,6 +224,8 @@ export class Navigator {
     intercept = interceptor
   }
 
+  visibility: Visibility = 'pending'
+
   constructor(public sceneId: string, public moduleName?: string) {
     this.sceneId = sceneId
     this.moduleName = moduleName
@@ -340,7 +343,7 @@ export class Navigator {
   }
 
   async popTo(sceneId: string) {
-    const success = await this.dispatch('popTo', {  targetId: sceneId })
+    const success = await this.dispatch('popTo', { targetId: sceneId })
     return await this.waitUnmount(success)
   }
 
@@ -383,10 +386,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async presentLayout<T extends ResultType = any>(
-    layout: Layout,
-    requestCode?: number
-  ) {
+  async presentLayout<T extends ResultType = any>(layout: Layout, requestCode?: number) {
     requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('presentLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)

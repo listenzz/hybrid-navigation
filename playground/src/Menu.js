@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { TouchableOpacity, Text, View, StatusBar, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
-import { toolbarHeight, useVisibility } from 'react-native-navigation-hybrid'
+import { toolbarHeight, useVisibleEffect } from 'react-native-navigation-hybrid'
 
 import styles from './Styles'
 
@@ -48,13 +48,14 @@ export default function Menu({ navigator, sceneId }) {
     navigator.push('Toast')
   }
 
-  useVisibility(sceneId, visible => {
-    if (visible) {
-      console.log(`Menu is visible`)
-    } else {
+  const visibleCallback = useCallback(() => {
+    console.log(`Menu is visible`)
+    return () => {
       console.log(`Menu is gone`)
     }
-  })
+  }, [])
+
+  useVisibleEffect(sceneId, visibleCallback)
 
   return (
     <View style={[styles.container, paddingTop]}>

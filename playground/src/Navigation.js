@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
 
 import styles from './Styles'
@@ -6,7 +6,7 @@ import {
   RESULT_OK,
   Navigator,
   withNavigationItem,
-  useVisibility,
+  useVisibleEffect,
   useResult,
 } from 'react-native-navigation-hybrid'
 
@@ -37,14 +37,15 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
     })
   }, [navigator])
 
-  useVisibility(sceneId, visible => {
-    if (visible) {
-      console.info(`Page Navigation is visible [${sceneId}]`)
-      garden.setMenuInteractive(isRoot)
-    } else {
+  const visibleCallback = useCallback(() => {
+    console.info(`Page Navigation is visible [${sceneId}]`)
+    garden.setMenuInteractive(isRoot)
+    return () => {
       console.info(`Page Navigation is gone [${sceneId}]`)
     }
-  })
+  }, [isRoot, sceneId, garden])
+
+  useVisibleEffect(sceneId, visibleCallback)
 
   useEffect(() => {
     console.info(`Page Navigation componentDidMount [${sceneId}]`)

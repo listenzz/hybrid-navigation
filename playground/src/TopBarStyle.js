@@ -60,7 +60,7 @@ function TopBarStyle({ navigator, garden }) {
   }
 
   async function showModal() {
-    await navigator.showModal('ReactModal', 1)
+    await navigator.showModal('ReactModal')
   }
 
   return (

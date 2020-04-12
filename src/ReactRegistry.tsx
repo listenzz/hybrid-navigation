@@ -8,6 +8,8 @@ import {
   KEY_SCENE_ID,
   KEY_ON,
   ON_COMPONENT_MOUNT,
+  ON_COMPONENT_APPEAR,
+  ON_COMPONENT_DISAPPEAR,
 } from './NavigationModule'
 import { Garden, NavigationItem } from './Garden'
 import { router, RouteConfig } from './router'
@@ -59,6 +61,21 @@ function withNavigator(moduleName: string) {
           subscription.remove()
         }
       }, [navigator])
+
+      useEffect(() => {
+        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+          if (navigator.sceneId === data[KEY_SCENE_ID]) {
+            if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
+              navigator.visibility = 'visible'
+            } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
+              navigator.visibility = 'gone'
+            }
+          }
+        })
+        return () => {
+          subscription.remove()
+        }
+      })
 
       useResult(sceneId, (requestcode, resultCode, data) => {
         navigator.result(requestcode, resultCode, data)
