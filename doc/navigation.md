@@ -235,18 +235,18 @@ const navigator = Navigator.get(sceneId);
 
 screen 是最基本的页面，它用来表示通过 `ReactRegistry.registerComponent` 注册的组件。它有一些基本的导航能力，所有容器均继承了这些能力。
 
-- **showModal&lt;T = any, P extends object = {}&gt;(moduleName: string, requestCode?: number, props?: P, options?: NavigationItem): Promise&lt;[number, T]&gt;**
+- **showModal&lt;T, P&gt;(moduleName: string, props?: P, options?: NavigationItem, requestCode?: number): Promise&lt;[number, T]&gt;**
 
 将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件，比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
 
 ```javascript
-navigator.showModal('ReactModal', REQUEST_CODE)
+navigator.showModal('ReactModal')
 ```
 
-可以通过第三个参数来给 modal 传递属性：
+可以通过第二个参数来给 modal 传递属性：
 
 ```javascript
-navigator.showModal('ReactModal', REQUEST_CODE, { x: '123' })
+navigator.showModal('ReactModal', { x: '123' })
 ```
 
 modal 通过 `props` 来获取传递过来的属性
@@ -261,7 +261,7 @@ navigator.hideModal()
 目标页面（即将 modal 显示出来的页面）可以通过 `async-await` 的方式或者 `useResult` 钩子来接收结果：
 
 ```javascript
-const [resultCode, data] = await navigator.showModal('ReactModal', REQUEST_CODE) 
+const [resultCode, data] = await navigator.showModal('ReactModal') 
 ```
 
 ```javascript
@@ -275,7 +275,7 @@ function FunctionComponent() {
 }
 ```
 
-> ⚠️ 如果遭遇到 Android 生命周期噩梦，请使用 `useResult` 而不是 `async-await` 的方式来接收结果。
+> ⚠️ 如果遭遇到 Android 生命周期噩梦，请使用 `useResult` 而不是 `async-await` 的方式来接收结果，此时，需要传入 `requestCode` 给 `showModal` 作为参数。
 
 - **hideModal()**
 
@@ -283,11 +283,11 @@ function FunctionComponent() {
 
 **在调用 `navigator.hideModal` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
-- **showModalLayout&lt;T = any&gt;(layout: Layout, requestCode = 0): Promise&lt;[number, T]&gt;**
+- **showModalLayout&lt;T&gt;(layout: Layout, requestCode?: number): Promise&lt;[number, T]&gt;**
 
 showModal 的加强版，可以将布局对象作为 Modal 显示，同样使用 hideModal 来关闭
 
-- **present&lt;T = any, P extends object = {}&gt;(moduleName: string, requestCode?: number, props?: P, options?: NavigationItem, animated?: boolean): Promise&lt;[number, T]&gt;**
+- **present&lt;T, P&gt;(moduleName: string, props?: P, options?: NavigationItem, requestCode?: number): Promise&lt;[number, T]&gt;**
 
 present 是一种模态交互方式，类似于 Android 的 `startActivityForResult`，要求被 present 的页面返回结果给发起 present 的页面。在 iOS 中，present 表现为从底往上弹出界面。
 
@@ -295,7 +295,7 @@ present 是一种模态交互方式，类似于 Android 的 `startActivityForRes
 
 ```javascript
 // A.js
-navigator.present('B', 1)
+navigator.present('B')
 ```
 
 B 页面通过 `setResult`返回结果给 A 页面
@@ -312,22 +312,22 @@ A 页面通过实现 `async-await` 或 `useResult` 的方式来接收结果
 
 ```javascript
 // A.js
-const [resultCode, data] = await navigator.present('B', 1)
+const [resultCode, data] = await navigator.present('B')
 if(resultCode === RESULT_OK) {
     this.setState({text: data.text || '', error: undefined});
 }
 ```
 
-A 在 present B 时，可以通过第三个参数传值给 B
+A 在 present B 时，可以通过第二个参数传值给 B
 
 ```javascript
 // A.js
-navigator.present('B', 1, {})
+navigator.present('B', {})
 ```
 
 B 页面可以通过 `props` 来获取传递的值
 
-**注意：第三个参数仅支持可以序列化为 json 的对象，不支持函数**
+**注意：第二个参数仅支持可以序列化为 json 的对象，不支持函数**
 
 有些时候，比如选择一张照片，我们先要跳到相册列表页面，然后进入某个相册选择相片返回。这也是没有问题的。
 
@@ -335,7 +335,7 @@ A 页面 `present` 出相册列表页面
 
 ```javascript
 //A.js
-navigator.present('AlbumList', 1)
+navigator.present('AlbumList')
 ```
 
 相册列表页面 `push` 到某个相册
@@ -361,7 +361,7 @@ A 页面通过实现 `async-await` 或 `useResult` 的方式来接收结果（�
 
 **在调用 `navigator.dismiss` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
-- **presentLayout&lt;T = any&gt;(layout: Layout, requestCode?: number, animated?: boolean): Promise&lt;[number, T]&gt;**
+- **presentLayout&lt;T&gt;(layout: Layout, requestCode?: number): Promise&lt;[number, T]&gt;**
 
 present 的加强版，通过传递一个布局对象，用来 present UI 层级比较复杂的页面，同样使用 dismiss 来关闭。
 
@@ -381,7 +381,7 @@ navigator.presentLayout(
 
 ```javascript
 // A.js
-navigator.present('B', 1)
+navigator.present('B')
 ```
 
 也就是说，present 出来的组件，默认会嵌套在 stack 里面，因为当使用 present 时，把目标页面嵌套在 stack 里面是比较常见的操作。
@@ -390,7 +390,7 @@ navigator.present('B', 1)
 
 stack 以栈的方式管理它的子页面，它支持以下导航操作：
 
-- **push&lt;T = any, P extends object = {}&gt;(moduleName: string, props?: P, options?: NavigationItem, animated?: boolean): Promise&lt;[number, T]&gt;**
+- **push&lt;T, P&gt;(moduleName: string, props?: P, options?: NavigationItem): Promise&lt;[number, T]&gt;**
 
 由 A 页面跳转到 B 页面。
 
@@ -410,11 +410,11 @@ navigator.push('B', {...});
 
 B 页面通过 `props` 来访问传递过来的值
 
-- **pushLayout&lt;T = any&gt;(layout: Layout, animated?: boolean): Promise&lt;[number, T]&gt;**
+- **pushLayout&lt;T&gt;(layout: Layout): Promise&lt;[number, T]&gt;**
 
 push 加强版，通过传递一个布局对象，展示 UI 层级比较复杂的页面。
 
-- **pop(animated = true)**
+- **pop()**
 
 返回到前一个页面。比如你由 A 页面 `push` 到 B 页面，现在想返回到 A 页面。
 
@@ -423,7 +423,7 @@ push 加强版，通过传递一个布局对象，展示 UI 层级比较复杂�
 navigator.pop()
 ```
 
-- **popTo(sceneId: string, animated = true)**
+- **popTo(sceneId: string)**
 
 返回到之前的指定页面。比如你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回 B 页面。你可以把 B 页面的 `sceneId` 一直传递到 D 页面，然后调用 `popTo('bId')` 返回到 B 页面。
 
@@ -448,7 +448,7 @@ navigator.push('D', { bId: this.props.bId })
 navigator.popTo(this.props.bId)
 ```
 
-- **popToRoot(animated = true)**
+- **popToRoot()**
 
 返回到 Stack 根页面。比如 A 页面是根页面，由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回到根部，也就是 A 页面：
 
@@ -459,7 +459,7 @@ navigator.popToRoot()
 
 pop, popTo, popToRoot 也可以通过 `navigator.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `async-await` 或 `useResult` 来接收结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
 
-- **redirectTo&lt;P extends object = {}&gt;(moduleName: string, props?: P, options?: NavigationItem): void**
+- **redirectTo&lt;P&gt;(moduleName: string, props?: P, options?: NavigationItem): void**
 
 用指定页面取代当前页面，比如当前页面是 A，想要替换成 B
 
@@ -567,7 +567,7 @@ navigator.closeMenu()
   ```javascript
   navigator.hideModal()
   // 下面这行代码不会生效
-  navigator.present('XXX', 1)
+  navigator.present('XXX')
   ```
 
   一个变通的办法是使用 `Navigator.current`
@@ -576,7 +576,7 @@ navigator.closeMenu()
   navigator.hideModal()
   // 使用 modal 隐藏后出现的页面的 navigator
   const currrent = await Navigator.currrent()
-  currrent.present('XXX', 1)
+  currrent.present('XXX')
   ```
 
 - 如果由于某些原因，需要**异步地**或者**在页面之外**执行路由操作，那么请合理使用 `Navigator.current`、`Navigator.currentRoute`、`Navigator.routeGraph`、`Navigator.get` 等静态方法。
