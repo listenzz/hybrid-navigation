@@ -38,9 +38,11 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   }, [navigator])
 
   const visibleCallback = useCallback(() => {
-    console.info(`Page Navigation is visible [${sceneId}]`)
     garden.setMenuInteractive(isRoot)
+    console.info(`Page Navigation is visible [${sceneId}]`)
+
     return () => {
+      garden.setMenuInteractive(false)
       console.info(`Page Navigation is gone [${sceneId}]`)
     }
   }, [isRoot, sceneId, garden])

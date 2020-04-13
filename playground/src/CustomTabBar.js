@@ -22,7 +22,7 @@ export default function CustomTabBar({
 }) {
   async function handleTabClick(index) {
     if (index === -1) {
-      const [resultCode, data] = await navigator.present('Result', 1)
+      const [resultCode, data] = await navigator.present('Result')
       console.log(`CustomTabBar resultCode: ${resultCode} data:`, data)
     } else {
       navigator.switchTab(index)
