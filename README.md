@@ -82,7 +82,7 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| >= 0.60                 | 0.22.0                           | 2020/04/12 |
+| >= 0.60                 | 0.22.1                           | 2020/04/14 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
 
 ### 0.22.x
@@ -106,6 +106,26 @@ npm run run:ios
     }, [sceneId])
 
     useVisibleEffect(sceneId, visibleCallback)
+  }
+  ```
+
+- 添加 `useVisible` 钩子 (0.22.1)
+
+  ```js
+  import React, { useEffect } from 'react'
+  import { useVisible } from 'react-native-navigation-hybrid'
+
+  function Lifecycle({ sceneId }) {
+    const visible = useVisible(sceneId)
+
+    useEffect(()=> {
+      if (visible) {
+        console.info(`Page is visible [${sceneId}]`)
+      } else {
+        console.info(`Page is invisible [${sceneId}]`)
+      }
+    }, [visible, sceneId])
+
   }
   ```
 
