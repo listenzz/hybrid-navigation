@@ -82,7 +82,7 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| >= 0.60                 | 0.22.1                           | 2020/04/14 |
+| >= 0.60                 | 0.22.2                           | 2020/04/29 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
 
 ### 0.22.x
@@ -118,14 +118,13 @@ npm run run:ios
   function Lifecycle({ sceneId }) {
     const visible = useVisible(sceneId)
 
-    useEffect(()=> {
+    useEffect(() => {
       if (visible) {
         console.info(`Page is visible [${sceneId}]`)
       } else {
         console.info(`Page is invisible [${sceneId}]`)
       }
     }, [visible, sceneId])
-
   }
   ```
 
