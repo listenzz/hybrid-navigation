@@ -48,11 +48,12 @@
     "metro-react-native-babel-preset": "^0.58.0",
     "react": "16.11.0",
     "react-native": "^0.62.2",
+    "react-native-fast-image": "^8.1.5",
     "react-native-iphone-x-helper": "^1.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",
+    "react-native-toast-hybrid": "^2.3.0",
     "react-redux": "^6.0.0",
     "react-test-renderer": "16.11.0",
-    "react-native-toast-hybrid": "^2.0.1",
     "redux": "^3.7.2",
     "typescript": "^3.8.2"
   },

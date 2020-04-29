@@ -7,6 +7,7 @@ import {
   Navigator,
   withNavigationItem,
   useVisibleEffect,
+  useVisible,
   useResult,
 } from 'react-native-navigation-hybrid'
 
@@ -38,16 +39,19 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   }, [navigator])
 
   const visibleCallback = useCallback(() => {
-    garden.setMenuInteractive(isRoot)
     console.info(`Page Navigation is visible [${sceneId}]`)
-
     return () => {
-      garden.setMenuInteractive(false)
       console.info(`Page Navigation is gone [${sceneId}]`)
     }
-  }, [isRoot, sceneId, garden])
+  }, [sceneId])
 
   useVisibleEffect(sceneId, visibleCallback)
+
+  const visible = useVisible(sceneId)
+
+  useEffect(() => {
+    garden.setMenuInteractive(isRoot && visible)
+  }, [visible, isRoot, garden])
 
   useEffect(() => {
     console.info(`Page Navigation componentDidMount [${sceneId}]`)

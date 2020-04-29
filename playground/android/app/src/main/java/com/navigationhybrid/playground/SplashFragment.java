@@ -20,7 +20,6 @@ public class SplashFragment extends AwesomeFragment {
         return super.onCreateDialog(savedInstanceState);
     }
 
-    @Nullable
     @Override
     protected int preferredNavigationBarColor() {
         return Color.TRANSPARENT;

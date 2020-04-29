@@ -1,15 +1,7 @@
 import React, { useEffect } from 'react'
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  PixelRatio,
-  Dimensions,
-  Platform,
-} from 'react-native'
+import { Text, View, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native'
 import TextBadge from './Badge'
+import FastImage from 'react-native-fast-image'
 
 export default function CustomTabBar({
   sceneId,
@@ -62,7 +54,7 @@ export default function CustomTabBar({
 function Add({ onTabClick }) {
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
-      <Image source={require('./images/tabbar_add_blue.png')} fadeDuration={0} />
+      <FastImage source={require('./images/tabbar_add_blue.png')} style={styles.centerIcon} />
     </TouchableOpacity>
   )
 }
@@ -82,19 +74,16 @@ function Tab({
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       {icon ? (
-        <Image
+        <FastImage
           source={{
             uri: icon,
-            width: 24,
-            height: 24,
-            scale: PixelRatio.get(),
           }}
-          style={{ tintColor: selected ? itemColor : unselectedItemColor }}
-          resizeMode="center"
-          fadeDuration={0}
+          style={styles.icon}
+          resizeMode="contain"
+          tintColor={selected ? itemColor : unselectedItemColor}
         />
       ) : (
-        <View style={{ width: 24, height: 24 }} />
+        <View style={styles.icon} />
       )}
       <Text
         style={
@@ -126,6 +115,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  icon: {
+    width: 24,
+    height: 24,
+  },
+  centerIcon: {
+    width: 40,
+    height: 40,
   },
   buttonText: {
     backgroundColor: 'transparent',

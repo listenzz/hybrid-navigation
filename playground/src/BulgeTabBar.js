@@ -1,15 +1,7 @@
 import React from 'react'
-import {
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  PixelRatio,
-  Platform,
-  Dimensions,
-} from 'react-native'
+import { Text, View, TouchableOpacity, StyleSheet, Platform, Dimensions } from 'react-native'
 import TextBadge from './Badge'
+import FastImage from 'react-native-fast-image'
 
 export default function BulgeTabBar({
   navigator,
@@ -53,7 +45,7 @@ export default function BulgeTabBar({
         />
       </View>
       <TouchableOpacity onPress={() => handleTabClick(-1)} activeOpacity={0.8} style={styles.bulge}>
-        <Image source={require('./images/tabbar_add_yellow.png')} fadeDuration={0} />
+        <FastImage source={require('./images/tabbar_add_yellow.png')} style={styles.bulgeImage} />
       </TouchableOpacity>
     </View>
   )
@@ -74,19 +66,16 @@ function Tab({
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       {icon ? (
-        <Image
+        <FastImage
           source={{
             uri: icon,
-            width: 24,
-            height: 24,
-            scale: PixelRatio.get(),
           }}
-          style={{ tintColor: selected ? itemColor : unselectedItemColor }}
-          resizeMode="center"
-          fadeDuration={0}
+          style={styles.icon}
+          resizeMode="contain"
+          tintColor={selected ? itemColor : unselectedItemColor}
         />
       ) : (
-        <View style={{ width: 24, height: 24 }} />
+        <View style={styles.icon} />
       )}
       <Text
         style={
@@ -117,6 +106,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  bulgeImage: {
+    width: 52,
+    height: 52,
+  },
   tabBar: {
     height: Platform.OS === 'android' ? 56 : 48,
     position: 'absolute',
@@ -131,6 +124,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  icon: {
+    width: 24,
+    height: 24,
   },
   buttonText: {
     backgroundColor: 'transparent',
