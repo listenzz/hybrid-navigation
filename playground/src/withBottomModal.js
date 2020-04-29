@@ -14,7 +14,7 @@ import { useLayout, useBackHandler } from '@react-native-community/hooks'
 export default function withBottomModal({
   cancelable = true,
   safeAreaColor = '#ffffff',
-  navigationBarColor = '#ffffff',
+  navigationBarColor,
 } = {}) {
   return function(WrappedComponent) {
     function BottomModal(props, ref) {

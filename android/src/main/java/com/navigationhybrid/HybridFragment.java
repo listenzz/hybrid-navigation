@@ -1,6 +1,5 @@
 package com.navigationhybrid;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,7 +12,6 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.ReactContext;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.AwesomeToolbar;
-import com.navigation.androidx.BarStyle;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.Style;
 
@@ -115,31 +113,6 @@ public class HybridFragment extends AwesomeFragment {
     @Override
     protected boolean hidesBottomBarWhenPushed() {
         return garden.hidesBottomBarWhenPushed;
-    }
-
-    @NonNull
-    @Override
-    protected BarStyle preferredStatusBarStyle() {
-        if (garden.statusBarStyle != null) {
-            return garden.statusBarStyle;
-        }
-        return super.preferredStatusBarStyle();
-    }
-
-    @Override
-    protected int preferredStatusBarColor() {
-        if (garden.toolbarHidden && super.preferredStatusBarColor() == preferredToolbarColor()) {
-            return Color.TRANSPARENT;
-        }
-        return super.preferredStatusBarColor();
-    }
-
-    @Override
-    protected int preferredNavigationBarColor() {
-        if (garden.shouldInterceptNavigationBarColor) {
-            return style.getNavigationBarColor();
-        }
-        return super.preferredNavigationBarColor();
     }
 
     @Override

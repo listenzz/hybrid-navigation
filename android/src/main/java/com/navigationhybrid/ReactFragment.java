@@ -16,6 +16,7 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.navigation.androidx.PresentAnimation;
+import com.navigation.androidx.Style;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static com.navigationhybrid.HBDEventEmitter.EVENT_NAVIGATION;
@@ -70,7 +71,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     @Override
     public void inspectVisibility(int visibility) {
-        if (visibility == View.VISIBLE && isResumed() && reactRootView == null) {
+        if (visibility == View.VISIBLE && reactRootView == null) {
             initReactNative();
             initTitleViewIfNeeded();
         }
@@ -275,5 +276,12 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
     }
 
-
+    @Override
+    protected int preferredNavigationBarColor() {
+        if (style.getNavigationBarColor() != Style.INVALID_COLOR) {
+            return style.getNavigationBarColor();
+        } else {
+            return style.getScreenBackgroundColor();
+        }
+    }
 }

@@ -68,11 +68,11 @@ Garden.setStyle({
   elevationAndroid: 1,
 
   tabBarColor: '#FFFFFF',
+  navigationBarColorAndroid: '#FFFFFF',
   tabBarShadowImage: {
     color: '#F0F0F0',
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
   },
-
   //tabBarItemColor: '#CCCCCC',
   //tabBarSelectedItemColor: '#00ff00',
 })

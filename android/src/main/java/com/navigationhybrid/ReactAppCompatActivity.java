@@ -46,7 +46,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         super.onCreate(savedInstanceState);
         activityDelegate.onCreate(savedInstanceState);
         setStatusBarTranslucent(true);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         getReactBridgeManager().addReactModuleRegisterListener(this);
 
         if (isReactModuleRegisterCompleted()) {
