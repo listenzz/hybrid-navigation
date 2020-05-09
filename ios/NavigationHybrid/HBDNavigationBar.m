@@ -44,7 +44,7 @@
         }
     }
     
-    NSArray *array = @[ @"UINavigationBarContentView", @"HBDNavigationBar" ];
+    NSArray *array = @[ @"UINavigationBarContentView", @"UIButtonBarStackView", @"HBDNavigationBar" ];
     if ([array containsObject:viewName]) {
         if (self.fakeView.alpha < 0.01) {
             return nil;
