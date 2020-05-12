@@ -31,6 +31,8 @@ build/
 .gradle
 local.properties
 *.iml
+.settings/
+.project
 
 # node.js
 #
@@ -56,7 +58,4 @@ buck-out/
 
 .vscode
 
-# Only apps should have lockfiles
-yarn.lock
-npm-shrinkwrap.json
-package-lock.json
+
