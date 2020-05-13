@@ -22,7 +22,7 @@ function addBarButtonItemClickEvent(event: EmitterSubscription) {
 
 function removeBarButtonItemClickEvent(event: EmitterSubscription) {
   event.remove()
-  events = events.filter(e => e !== event)
+  events = events.filter((e) => e !== event)
 }
 
 function filterBarButtonItemClickEvent(callback: (event: EmitterSubscription) => boolean) {
@@ -32,7 +32,7 @@ function filterBarButtonItemClickEvent(callback: (event: EmitterSubscription) =>
 function clear() {
   navigators.clear()
 
-  events.forEach(event => {
+  events.forEach((event) => {
     event.remove()
   })
   events = []

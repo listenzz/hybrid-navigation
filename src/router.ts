@@ -154,7 +154,7 @@ const tabsParser: RouteParser = {
       extractModuleNames(children[i], moduleNames)
       if (
         moduleNames.indexOf(moduleName) !== -1 ||
-        dependencies.some(value => moduleNames.indexOf(value) !== -1)
+        dependencies.some((value) => moduleNames.indexOf(value) !== -1)
       ) {
         if (selectedIndex !== i) {
           const navigator = Navigator.get(children[i].sceneId)
@@ -348,13 +348,13 @@ class Router implements RouterT {
       if (!this.hasHandleInitialURL) {
         this.hasHandleInitialURL = true
         Linking.getInitialURL()
-          .then(url => {
+          .then((url) => {
             if (url) {
               const path = url.replace(this.uriPrefix!, '')
               this.open(path)
             }
           })
-          .catch(err => console.error('An error occurred', err))
+          .catch((err) => console.error('An error occurred', err))
       }
       Linking.addEventListener('url', this.routeEventHandler)
     }

@@ -34,7 +34,7 @@ function bindBarButtonItemClickEvent(
 
         let event = EventEmitter.addListener(
           EVENT_NAVIGATION,
-          data => {
+          (data) => {
             if (data[KEY_ON] === ON_BAR_BUTTON_ITEM_CLICK && data[KEY_ACTION] === action) {
               let navigator = store.getNavigator(data[KEY_SCENE_ID])
               if (!navigator && options.inLayout && options.navigatorFactory) {
@@ -62,8 +62,8 @@ function bindBarButtonItemClickEvent(
 
 function removeBarButtonItemClickEventInLayout(): void {
   store
-    .filterBarButtonItemClickEvent(event => !!event.context.inLayout)
-    .forEach(event => {
+    .filterBarButtonItemClickEvent((event) => !!event.context.inLayout)
+    .forEach((event) => {
       store.removeBarButtonItemClickEvent(event)
     })
 }
@@ -71,9 +71,9 @@ function removeBarButtonItemClickEventInLayout(): void {
 function removeBarButtonItemClickEvent(sceneId: string): void {
   store
     .filterBarButtonItemClickEvent(
-      event => event.context.sceneId && event.context.sceneId === sceneId,
+      (event) => event.context.sceneId && event.context.sceneId === sceneId,
     )
-    .forEach(event => {
+    .forEach((event) => {
       store.removeBarButtonItemClickEvent(event)
     })
 }

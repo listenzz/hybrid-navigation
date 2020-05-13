@@ -32,7 +32,7 @@ function getDisplayName(WrappedComponent: React.ComponentType<any>) {
 }
 
 function withNavigator(moduleName: string) {
-  return function(WrappedComponent: React.ComponentType<any>) {
+  return function (WrappedComponent: React.ComponentType<any>) {
     function FC(props: Props, ref: React.Ref<React.ComponentType<any>>) {
       const { sceneId } = props
       const navigator = store.getNavigator(sceneId) || new Navigator(sceneId, moduleName)
@@ -52,7 +52,7 @@ function withNavigator(moduleName: string) {
       }, [navigator])
 
       useEffect(() => {
-        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data) => {
           if (navigator.sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_COMPONENT_MOUNT) {
             navigator.signalFirstRenderComplete()
           }
@@ -63,7 +63,7 @@ function withNavigator(moduleName: string) {
       }, [navigator])
 
       useEffect(() => {
-        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data) => {
           if (navigator.sceneId === data[KEY_SCENE_ID]) {
             if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
               navigator.visibility = 'visible'
@@ -143,7 +143,7 @@ export class ReactRegistry {
 }
 
 export function withNavigationItem(item: NavigationItem) {
-  return function(Func: ComponentType<any>) {
+  return function (Func: ComponentType<any>) {
     ;(Func as any).navigationItem = item
     return Func
   }

@@ -108,18 +108,18 @@ let willSetRootCallback: () => void
 let didSetRootCallback: () => void
 let tag = 0
 
-EventEmitter.addListener(EVENT_DID_SET_ROOT, _ => {
+EventEmitter.addListener(EVENT_DID_SET_ROOT, (_) => {
   didSetRootCallback && didSetRootCallback()
   shouldCallWillSetRootCallback = 0
 })
 
-EventEmitter.addListener(EVENT_WILL_SET_ROOT, _ => {
+EventEmitter.addListener(EVENT_WILL_SET_ROOT, (_) => {
   if (shouldCallWillSetRootCallback === 0 && willSetRootCallback) {
     willSetRootCallback()
   }
 })
 
-EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
+EventEmitter.addListener(EVENT_SWITCH_TAB, (event) => {
   Navigator.dispatch(event[KEY_SCENE_ID], 'switchTab', {
     index: event[KEY_INDEX],
     moduleName: event[KEY_MODULE_NAME],
@@ -189,7 +189,7 @@ export class Navigator {
     const flag = --tag
     NavigationModule.setRoot(pureLayout, sticky, flag)
 
-    return new Promise<void>(resolve => {
+    return new Promise<void>((resolve) => {
       const subscription = EventEmitter.addListener(EVENT_DID_SET_ROOT, (data: { tag: number }) => {
         if (data.tag === flag) {
           subscription.remove()
@@ -265,18 +265,18 @@ export class Navigator {
   }
 
   result(requestCode: number, resultCode: number, data: ResultType) {
-    this.state.resultListeners.forEach(listener => {
+    this.state.resultListeners.forEach((listener) => {
       listener(requestCode, resultCode, data)
     })
   }
 
   unmount() {
-    this.state.resultListeners.forEach(listener => {
+    this.state.resultListeners.forEach((listener) => {
       listener.cancel()
     })
     this.state.resultListeners.length = 0
 
-    this.state.unmountListeners.forEach(listener => {
+    this.state.unmountListeners.forEach((listener) => {
       listener()
     })
     this.state.unmountListeners.length = 0
@@ -289,7 +289,7 @@ export class Navigator {
     if (!successful) {
       return Promise.resolve([0, null as any])
     }
-    return new Promise<Result<T>>(resolve => {
+    return new Promise<Result<T>>((resolve) => {
       const listener = (reqCode: number, resultCode: number, data: T) => {
         if (requestCode === reqCode) {
           resolve([resultCode, data])
@@ -313,7 +313,7 @@ export class Navigator {
     }
 
     if (this.moduleName) {
-      return new Promise<void>(resolve => {
+      return new Promise<void>((resolve) => {
         this.state.unmountListeners.push(() => {
           resolve()
         })
