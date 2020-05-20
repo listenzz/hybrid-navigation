@@ -191,6 +191,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         activityDelegate.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
