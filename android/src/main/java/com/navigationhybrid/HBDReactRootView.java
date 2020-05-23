@@ -2,7 +2,9 @@ package com.navigationhybrid;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.AttributeSet;
+import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 
@@ -15,19 +17,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
-public class ReactView extends ReactRootView {
+public class HBDReactRootView extends ReactRootView {
 
     protected static final String TAG = "ReactNative";
 
-    public ReactView(Context context) {
+    public HBDReactRootView(Context context) {
         super(context);
     }
 
-    public ReactView(Context context, AttributeSet attrs) {
+    public HBDReactRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ReactView(Context context, AttributeSet attrs, int defStyle) {
+    public HBDReactRootView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
@@ -39,7 +41,17 @@ public class ReactView extends ReactRootView {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        super.onTouchEvent(ev);
+        int action = ev.getAction() & MotionEvent.ACTION_MASK;
+        if (!shouldConsumeTouchEvent && action == MotionEvent.ACTION_DOWN) {
+            final long now = SystemClock.uptimeMillis();
+            MotionEvent event = MotionEvent.obtain(ev.getDownTime(), now,
+                    MotionEvent.ACTION_CANCEL, ev.getX(), ev.getY(), 0);
+            event.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+            super.onTouchEvent(event);
+            event.recycle();
+        } else {
+            super.onTouchEvent(ev);
+        }
         return shouldConsumeTouchEvent;
     }
 

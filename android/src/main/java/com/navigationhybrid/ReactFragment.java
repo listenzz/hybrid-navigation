@@ -37,8 +37,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     protected static final String TAG = "ReactNative";
     private ViewGroup containerLayout;
     private ReactRootViewHolder reactRootViewHolder;
-    private ReactView reactRootView;
-    private ReactView reactTitleView;
+    private HBDReactRootView reactRootView;
+    private HBDReactRootView reactTitleView;
     private boolean firstRenderCompleted;
 
     @Nullable
@@ -218,16 +218,16 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             return;
         }
 
-        final ReactView reactView = new ReactView(context);
+        final HBDReactRootView reactRootView = new HBDReactRootView(context);
         boolean passThroughTouches = getOptions().getBoolean("passThroughTouches", false);
-        reactView.setShouldConsumeTouchEvent(!passThroughTouches);
-        reactRootView = reactView;
+        reactRootView.setShouldConsumeTouchEvent(!passThroughTouches);
+        this.reactRootView = reactRootView;
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        containerLayout.addView(reactView, layoutParams);
+        containerLayout.addView(reactRootView, layoutParams);
         String moduleName = getModuleName();
 
-        reactView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+        reactRootView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
     }
 
     private void initTitleViewIfNeeded() {
@@ -243,7 +243,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             if (moduleName != null) {
                 String fitting = titleItem.getString("layoutFitting");
                 boolean expanded = "expanded".equals(fitting);
-                reactTitleView = new ReactView(context);
+                reactTitleView = new HBDReactRootView(context);
                 Toolbar.LayoutParams layoutParams;
                 if (expanded) {
                     layoutParams = new Toolbar.LayoutParams(-1, -1, Gravity.CENTER);

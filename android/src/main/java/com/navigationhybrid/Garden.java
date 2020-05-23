@@ -308,8 +308,8 @@ public class Garden {
 
     void setPassThroughTouches(boolean passThroughTouches) {
         View view = fragment.getView();
-        if (view instanceof ReactView) {
-            ((ReactView) view).setShouldConsumeTouchEvent(!passThroughTouches);
+        if (view instanceof HBDReactRootView) {
+            ((HBDReactRootView) view).setShouldConsumeTouchEvent(!passThroughTouches);
         }
     }
 

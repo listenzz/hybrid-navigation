@@ -36,7 +36,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
 
     private static final String TAG = "ReactNative";
 
-    private ReactView reactView;
+    private HBDReactRootView reactRootView;
     private ReactTabBarFragment tabBarFragment;
     private ReactTabBar tabBar;
 
@@ -75,22 +75,22 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
             throw new IllegalStateException("tabBarModuleName 不能为 null");
         }
 
-        reactView = new ReactView(tabBarFragment.requireContext());
+        reactRootView = new HBDReactRootView(tabBarFragment.requireContext());
         boolean sizeIndeterminate = options.getBoolean("sizeIndeterminate");
         if (sizeIndeterminate) {
-            reactView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.BOTTOM));
-            reactView.setShouldConsumeTouchEvent(false);
+            reactRootView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT, Gravity.BOTTOM));
+            reactRootView.setShouldConsumeTouchEvent(false);
         } else {
-            reactView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT, Gravity.BOTTOM));
+            reactRootView.setLayoutParams(new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT, Gravity.BOTTOM));
         }
 
         ReactTabBar tabBar = new ReactTabBar(tabBarFragment.requireContext(), sizeIndeterminate);
-        tabBar.setRootView(reactView);
+        tabBar.setRootView(reactRootView);
 
         Bundle props = getProps(reactTabBarFragment);
         props.putInt("selectedIndex", options.getInt("selectedIndex"));
         ReactInstanceManager reactInstanceManager = getReactBridgeManager().getReactInstanceManager();
-        reactView.startReactApplication(reactInstanceManager, tabBarModuleName, props);
+        reactRootView.startReactApplication(reactInstanceManager, tabBarModuleName, props);
         configureTabBar(tabBar, reactTabBarFragment.getStyle());
         this.tabBarFragment = reactTabBarFragment;
         this.tabBar = tabBar;
@@ -102,9 +102,9 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
     private void unmountReactView() {
         ReactContext reactContext = getReactBridgeManager().getCurrentReactContext();
         if (reactContext != null && reactContext.hasCatalystInstance()) {
-            if (reactView != null) {
-                reactView.unmountReactApplication();
-                reactView = null;
+            if (reactRootView != null) {
+                reactRootView.unmountReactApplication();
+                reactRootView = null;
             }
         }
     }
@@ -172,7 +172,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
         if (tabBarFragment != null) {
             Bundle bundle = getProps(tabBarFragment);
             bundle.putInt("selectedIndex", index);
-            reactView.setAppProperties(bundle);
+            reactRootView.setAppProperties(bundle);
         }
     }
 
@@ -221,7 +221,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
             tab.putBoolean("dot", dot);
         }
 
-        reactView.setAppProperties(getProps(tabBarFragment));
+        reactRootView.setAppProperties(getProps(tabBarFragment));
     }
 
     private void setTabIcon(@Nullable ArrayList<Bundle> options) {
@@ -254,7 +254,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
             }
         }
 
-        reactView.setAppProperties(getProps(tabBarFragment));
+        reactRootView.setAppProperties(getProps(tabBarFragment));
     }
 
 
@@ -287,7 +287,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
             options.putString("tabBarItemColor", tabBarItemColor);
             options.putString("tabBarUnselectedItemColor", tabBarUnselectedItemColor);
             Bundle props = getProps(tabBarFragment);
-            reactView.setAppProperties(props);
+            reactRootView.setAppProperties(props);
         }
     }
 

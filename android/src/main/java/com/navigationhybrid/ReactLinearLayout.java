@@ -11,7 +11,7 @@ public class ReactLinearLayout extends LinearLayout implements ReactRootViewHold
     protected static final String TAG = "ReactNative";
 
     private VisibilityObserver mVisibilityObserver;
-    private ReactView mReactRootView;
+    private HBDReactRootView mReactRootView;
 
     public ReactLinearLayout(Context context) {
         super(context);
@@ -33,8 +33,8 @@ public class ReactLinearLayout extends LinearLayout implements ReactRootViewHold
     @Override
     public void onViewAdded(View child) {
         super.onViewAdded(child);
-        if (child instanceof ReactView) {
-            mReactRootView = (ReactView) child;
+        if (child instanceof HBDReactRootView) {
+            mReactRootView = (HBDReactRootView) child;
         }
     }
 

@@ -9,7 +9,7 @@ import android.widget.FrameLayout;
 public class ReactFrameLayout extends FrameLayout implements ReactRootViewHolder {
     protected static final String TAG = "ReactNative";
 
-    private ReactView mReactRootView;
+    private HBDReactRootView mReactRootView;
     private VisibilityObserver mVisibilityObserver;
 
     public ReactFrameLayout(Context context) {
@@ -32,8 +32,8 @@ public class ReactFrameLayout extends FrameLayout implements ReactRootViewHolder
     @Override
     public void onViewAdded(View child) {
         super.onViewAdded(child);
-        if (child instanceof ReactView) {
-            mReactRootView = (ReactView) child;
+        if (child instanceof HBDReactRootView) {
+            mReactRootView = (HBDReactRootView) child;
         }
     }
 
