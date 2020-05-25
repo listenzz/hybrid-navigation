@@ -26,7 +26,7 @@ function Result({ navigator, garden }) {
   const [isRoot, setIsRoot] = useState(false)
 
   useEffect(() => {
-    navigator.isStackRoot().then(root => {
+    navigator.isStackRoot().then((root) => {
       setIsRoot(root)
     })
   }, [navigator])
@@ -37,7 +37,7 @@ function Result({ navigator, garden }) {
         title: 'Cancel',
         icon: Image.resolveAssetSource(require('./images/cancel.png')),
         insets: { top: -1, left: -8, bottom: 0, right: 8 },
-        action: navigator => {
+        action: (navigator) => {
           navigator.dismiss()
         },
       })

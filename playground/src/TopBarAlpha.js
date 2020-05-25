@@ -46,7 +46,7 @@ export default withNavigationItem({
   rightBarButtonItem: {
     icon: Image.resolveAssetSource(require('./images/settings.png')),
     title: 'SETTING',
-    action: navigator => {
+    action: (navigator) => {
       navigator.push('TopBarMisc')
     },
   },

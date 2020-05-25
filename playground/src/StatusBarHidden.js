@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { TouchableOpacity, Text, View, ScrollView, StatusBar, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import { withNavigationItem } from 'react-native-navigation-hybrid'

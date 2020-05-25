@@ -13,7 +13,7 @@ export default withNavigationItem({
   leftBarButtonItem: {
     icon: Image.resolveAssetSource(require('./images/menu.png')),
     title: 'Menu',
-    action: navigator => {
+    action: (navigator) => {
       navigator.toggleMenu()
     },
   },
@@ -21,7 +21,7 @@ export default withNavigationItem({
   rightBarButtonItem: {
     icon: Image.resolveAssetSource(require('./images/nav.png')),
     title: 'SETTING',
-    action: navigator => {
+    action: (navigator) => {
       navigator.push('TopBarMisc')
     },
     enabled: false,

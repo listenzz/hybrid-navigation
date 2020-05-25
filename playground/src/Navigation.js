@@ -33,7 +33,7 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   const [isRoot, setIsRoot] = useState(false)
 
   useEffect(() => {
-    navigator.isStackRoot().then(root => {
+    navigator.isStackRoot().then((root) => {
       setIsRoot(root)
     })
   }, [navigator])

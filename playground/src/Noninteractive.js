@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react'
+import React, { useState } from 'react'
 import { TouchableOpacity, Text, View, ScrollView } from 'react-native'
 import { withNavigationItem } from 'react-native-navigation-hybrid'
 import styles from './Styles'

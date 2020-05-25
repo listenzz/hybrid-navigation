@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import { withNavigationItem } from 'react-native-navigation-hybrid'
 import styles, { paddingTop } from './Styles'

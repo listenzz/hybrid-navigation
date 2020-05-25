@@ -16,7 +16,7 @@ export default function withBottomModal({
   safeAreaColor = '#ffffff',
   navigationBarColor,
 } = {}) {
-  return function(WrappedComponent) {
+  return function (WrappedComponent) {
     function BottomModal(props, ref) {
       const animatedHeight = useRef(new Animated.Value(Dimensions.get('screen').height))
 
@@ -25,7 +25,7 @@ export default function withBottomModal({
       const realHideModal = useRef(props.navigator.hideModal)
 
       const hideModal = useCallback(() => {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
           Animated.timing(animatedHeight.current, {
             toValue: height,
             duration: 200,

@@ -95,7 +95,7 @@ const navigationItem = {
   rightBarButtonItem: {
     title: 'MINUS',
     icon: Image.resolveAssetSource(require('./images/minus.png')),
-    action: navigator => {
+    action: (navigator) => {
       navigator.state.params.onDecreaseClick()
     },
   },
