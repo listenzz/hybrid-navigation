@@ -101,6 +101,11 @@ public class StackNavigator implements Navigator {
             return;
         }
 
+        if (!navigationFragment.isResumed()) {
+            navigationFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras), true);
+            return;
+        }
+
         AwesomeFragment fragment = null;
         if (extras.hasKey("moduleName")) {
             String moduleName = extras.getString("moduleName");

@@ -66,6 +66,13 @@
         return;
     }
     
+    if (!nav.hbd_viewAppeared) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.35 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self handleNavigationWithViewController:target action:action extras:extras];
+        });
+        return;
+    }
+    
     HBDViewController *viewController = nil;
     NSString *moduleName = [extras objectForKey:@"moduleName"];
     if (moduleName) {

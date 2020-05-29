@@ -109,6 +109,7 @@ public class ScreenNavigator implements Navigator {
                 fragment = getReactBridgeManager().createFragment(moduleName, props, options);
             }
         }
+
         switch (action) {
             case "present":
                 if (fragment != null) {

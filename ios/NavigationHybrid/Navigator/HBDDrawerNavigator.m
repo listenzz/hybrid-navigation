@@ -89,6 +89,13 @@
         return;
     }
     
+    if (!drawer.hbd_viewAppeared) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.35 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self handleNavigationWithViewController:vc action:action extras:extras];
+        });
+        return;
+    }
+    
     if ([action isEqualToString:@"toggleMenu"]) {
         [drawer toggleMenu];
     } else if ([action isEqualToString:@"openMenu"]) {

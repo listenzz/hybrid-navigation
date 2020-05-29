@@ -132,34 +132,41 @@ public class TabNavigator implements Navigator {
     public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
         if ("switchTab".equals(action)) {
             TabBarFragment tabBarFragment = target.getTabBarFragment();
+            if (tabBarFragment == null) {
+                return;
+            }
+
+            if (!tabBarFragment.isResumed()) {
+                tabBarFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras), true);
+                return;
+            }
+
             int index = extras.getInt("index");
-
-            if (tabBarFragment != null) {
-                boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
-                if (popToRoot) {
-                    AwesomeFragment presented = tabBarFragment.getPresentedFragment();
-                    if (presented != null) {
-                        presented.dismissFragment();
-                    }
-
-                    if (index != tabBarFragment.getSelectedIndex()) {
-                        NavigationFragment nav = target.getNavigationFragment();
-                        if (nav != null) {
-                            nav.popToRootFragment(false);
-                        }
-                    }
+            boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
+            if (popToRoot) {
+                AwesomeFragment presented = tabBarFragment.getPresentedFragment();
+                if (presented != null) {
+                    presented.dismissFragment();
                 }
 
-                if (tabBarFragment instanceof ReactTabBarFragment) {
-                    ReactTabBarFragment reactTabBarFragment = (ReactTabBarFragment) tabBarFragment;
-                    reactTabBarFragment.setIntercepted(false);
-                    tabBarFragment.setSelectedIndex(index);
-                    reactTabBarFragment.setIntercepted(true);
-                } else {
-                    tabBarFragment.setSelectedIndex(index);
+                if (index != tabBarFragment.getSelectedIndex()) {
+                    NavigationFragment nav = target.getNavigationFragment();
+                    if (nav != null) {
+                        nav.popToRootFragment(false);
+                    }
                 }
             }
+
+            if (tabBarFragment instanceof ReactTabBarFragment) {
+                ReactTabBarFragment reactTabBarFragment = (ReactTabBarFragment) tabBarFragment;
+                reactTabBarFragment.setIntercepted(false);
+                tabBarFragment.setSelectedIndex(index);
+                reactTabBarFragment.setIntercepted(true);
+            } else {
+                tabBarFragment.setSelectedIndex(index);
+            }
         }
+
     }
 
     private ReactBridgeManager getReactBridgeManager() {

@@ -3,7 +3,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { TouchableOpacity, Text, View, TextInput, Platform, Image } from 'react-native'
 import styles from './Styles'
 
-import { RESULT_OK, BarStyleLightContent, withNavigationItem } from 'react-native-navigation-hybrid'
+import {
+  RESULT_OK,
+  BarStyleLightContent,
+  withNavigationItem,
+  Navigator,
+} from 'react-native-navigation-hybrid'
 
 export default withNavigationItem({
   titleItem: {
@@ -56,7 +61,17 @@ function Result({ navigator, garden }) {
     navigator.setResult(RESULT_OK, {
       text: text || '',
     })
-    await navigator.dismiss()
+
+    // const graph = await Navigator.routeGraph()
+    // const stack = graph[0].children[0].children[0].children
+    // const n = Navigator.get(stack[stack.length - 1].sceneId)
+    // n.switchTab(1)
+    // n.pop()
+    navigator.dismiss()
+
+    // let current = await Navigator.current()
+    // current.switchTab(1)
+    // current.push('Navigation')
   }
 
   function handleTextChanged(text) {

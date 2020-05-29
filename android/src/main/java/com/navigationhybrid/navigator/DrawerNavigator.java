@@ -126,6 +126,12 @@ public class DrawerNavigator implements Navigator {
         if (drawerFragment == null) {
             return;
         }
+
+        if (!drawerFragment.isResumed()) {
+            drawerFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras), true);
+            return;
+        }
+
         switch (action) {
             case "toggleMenu":
                 drawerFragment.toggleMenu();
@@ -138,7 +144,6 @@ public class DrawerNavigator implements Navigator {
                 break;
         }
     }
-
 
     private ReactBridgeManager getReactBridgeManager() {
         return ReactBridgeManager.get();

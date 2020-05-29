@@ -216,6 +216,15 @@
      objc_setAssociatedObject(self, @selector(hbd_swipeBackEnabled), @(enabled), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
+- (BOOL)hbd_viewAppeared {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj boolValue] : YES;
+}
+
+- (void)setHbd_viewAppeared:(BOOL)viewAppeared {
+    objc_setAssociatedObject(self, @selector(hbd_viewAppeared), @(viewAppeared), OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
 - (UIBarButtonItem *)hbd_backBarButtonItem {
     return objc_getAssociatedObject(self, _cmd);
 }

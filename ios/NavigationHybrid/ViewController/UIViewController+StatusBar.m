@@ -10,6 +10,7 @@
 #import "HBDUtils.h"
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTCall.h>
+#import "UIViewController+HBD.h"
 
 @implementation UIViewController (StatusBar)
 
@@ -56,6 +57,7 @@
 
 -(void)hbd_viewDidAppear:(BOOL)animated {
     [self hbd_viewDidAppear:animated];
+    self.hbd_viewAppeared = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hbd_statusBarFrameWillChange:)name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 }
 
@@ -65,6 +67,7 @@
 
 -(void)hbd_viewDidDisappear:(BOOL)animated {
     [self hbd_viewDidDisappear:animated];
+    self.hbd_viewAppeared = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 }
 
