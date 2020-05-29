@@ -113,7 +113,7 @@ void adjustLayout(UIViewController *vc) {
     HBDNavigationController *nav = self.nav;
     if (nav.viewControllers.count > 1) {
         UIViewController *topVC = nav.topViewController;
-        return topVC.hbd_backInteractive && topVC.hbd_swipeBackEnabled;
+        return topVC.hbd_swipeBackEnabled && topVC.hbd_backInteractive;
     }
     return NO;
 }
