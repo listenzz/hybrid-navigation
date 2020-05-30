@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.common.LifecycleState;
 import com.navigation.androidx.PresentAnimation;
 import com.navigation.androidx.Style;
 
@@ -104,7 +105,9 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     private void sendViewAppearEvent(boolean appear) {
         // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
-        if (isReactModuleRegisterCompleted()) {
+        ReactContext reactContext = getCurrentReactContext();
+        boolean isResumed = reactContext != null && reactContext.getLifecycleState() == LifecycleState.RESUMED;
+        if (isResumed && isReactModuleRegisterCompleted()) {
             if (reactViewAppeared == appear) {
                 return;
             }

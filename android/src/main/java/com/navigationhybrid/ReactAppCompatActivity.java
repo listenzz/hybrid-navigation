@@ -163,8 +163,8 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     protected void onPause() {
-        super.onPause();
         activityDelegate.onPause();
+        super.onPause();
     }
 
     @Override
