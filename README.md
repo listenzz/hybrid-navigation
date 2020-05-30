@@ -82,8 +82,12 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| >= 0.60                 | 0.22.4                           | 2020/05/01 |
+| >= 0.60                 | 0.23.0                           | 2020/05/30 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
+
+### 0.23.x
+
+- support deep link with query string
 
 ### 0.22.x
 
