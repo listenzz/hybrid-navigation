@@ -100,10 +100,10 @@ function withRedux(WrappedComponent) {
 ReactRegistry.startRegisterComponent(withRedux)
 
 ReactRegistry.registerComponent('Navigation', () => Navigation)
-ReactRegistry.registerComponent('Result', () => Result, { path: 'result', mode: 'present' })
-ReactRegistry.registerComponent('Options', () => Options, { path: 'options' })
-ReactRegistry.registerComponent('Menu', () => Menu, { path: 'menu' })
-ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter, { path: 'redux' })
+ReactRegistry.registerComponent('Result', () => Result, { path: '/result', mode: 'present' })
+ReactRegistry.registerComponent('Options', () => Options, { path: '/options' })
+ReactRegistry.registerComponent('Menu', () => Menu, { path: '/menu' })
+ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter, { path: '/redux' })
 ReactRegistry.registerComponent('PassOptions', () => PassOptions)
 ReactRegistry.registerComponent('Lifecycle', () => Lifecycle)
 
@@ -112,11 +112,11 @@ ReactRegistry.registerComponent('Noninteractive', () => Noninteractive)
 ReactRegistry.registerComponent('TopBarShadowHidden', () => TopBarShadowHidden)
 ReactRegistry.registerComponent('TopBarHidden', () => TopBarHidden)
 ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha, {
-  path: 'topBarAlpha/:alpha/:color',
+  path: '/topBarAlpha/:alpha',
   dependency: 'TopBarMisc',
 })
 ReactRegistry.registerComponent('TopBarColor', () => TopBarColor, {
-  path: 'topBarColor/:color',
+  path: '/topBarColor/:color',
   dependency: 'TopBarMisc',
 })
 ReactRegistry.registerComponent('TopBarTitleView', () => TopBarTitleView)
@@ -125,7 +125,7 @@ ReactRegistry.registerComponent('StatusBarColor', () => StatusBarColor)
 ReactRegistry.registerComponent('StatusBarHidden', () => StatusBarHidden)
 ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle)
 
-ReactRegistry.registerComponent('ReactModal', () => ReactModal, { path: 'modal', mode: 'modal' })
+ReactRegistry.registerComponent('ReactModal', () => ReactModal, { path: '/modal', mode: 'modal' })
 
 ReactRegistry.registerComponent('CustomTabBar', () => CustomTabBar)
 ReactRegistry.registerComponent('BulgeTabBar', () => BulgeTabBar)

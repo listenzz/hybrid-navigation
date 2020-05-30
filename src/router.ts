@@ -1,4 +1,4 @@
-import pathToRegexp from 'path-to-regexp'
+import { pathToRegexp, match } from 'path-to-regexp'
 import { Linking } from 'react-native'
 import { Navigator, IndexType } from './Navigator'
 
@@ -18,10 +18,9 @@ export interface RouteInfo {
 export interface RouteConfig {
   dependency?: string
   path?: string
-  pathRegexp?: RegExp
+  regexp?: RegExp
   moduleName?: string
   mode?: RouteMode
-  paramNames?: (string | number)[]
 }
 
 type RouteMode = 'modal' | 'present' | 'push'
@@ -224,13 +223,10 @@ class Router implements RouterT {
 
   addRouteConfig(moduleName: string, routeConfig: RouteConfig) {
     if (routeConfig.path) {
-      routeConfig.pathRegexp = pathToRegexp(routeConfig.path)
-      let params = pathToRegexp.parse(routeConfig.path).slice(1)
-      routeConfig.paramNames = []
-      for (let i = 0; i < params.length; i++) {
-        const key: pathToRegexp.Key = params[i] as pathToRegexp.Key
-        routeConfig.paramNames.push(key.name)
+      if (!routeConfig.path.startsWith('/')) {
+        routeConfig.path = '/' + routeConfig.path
       }
+      routeConfig.regexp = pathToRegexp(routeConfig.path)
     }
     routeConfig.moduleName = moduleName
     routeConfig.mode = routeConfig.mode || 'push'
@@ -249,26 +245,39 @@ class Router implements RouterT {
     parsers.add(parser)
   }
 
-  pathToRoute(path: string): RouteInfo | null {
+  pathToRoute(pathToResolve: string): RouteInfo | null {
     for (const routeConfig of configs.values()) {
-      if (!routeConfig.pathRegexp) {
+      if (!routeConfig.regexp) {
         continue
       }
-      const match = routeConfig.pathRegexp.exec(path)
-      if (match) {
-        const moduleName = routeConfig.moduleName
 
+      const [pathNameToResolve, queryString] = pathToResolve.split('?')
+
+      if (routeConfig.regexp.exec(pathNameToResolve)) {
+        const moduleName = routeConfig.moduleName
         if (!moduleName) {
           return null
         }
 
-        const props: any = {}
-        const names = routeConfig.paramNames
-        if (names) {
-          for (let i = 0; i < names.length; i++) {
-            props[names[i]] = match[i + 1]
-          }
-        }
+        const pathMatch = match<IndexType>(routeConfig.path!, {
+          encode: encodeURI,
+          decode: decodeURIComponent,
+        })(pathNameToResolve)
+
+        const queryParams = (queryString || '')
+          .split('&')
+          .reduce((result: IndexType, item: string) => {
+            if (item !== '') {
+              const nextResult = result || {}
+              const [key, value] = item.split('=')
+              nextResult[key] = value
+              return nextResult
+            }
+            return result
+          }, {})
+
+        const pathParams = pathMatch ? pathMatch.params : {}
+        const props = Object.assign(queryParams, pathParams)
 
         const dependencies = routeDependencies(routeConfig)
         const mode = routeConfig.mode || 'push'
@@ -301,6 +310,7 @@ class Router implements RouterT {
     }
 
     const route = this.pathToRoute(path)
+
     if (!route) {
       return
     }
@@ -374,7 +384,10 @@ class Router implements RouterT {
 
   private routeEventHandler(event: { url: string }): void {
     console.info(`deeplink:${event.url}`)
-    const path = event.url.replace(this.uriPrefix!, '')
+    let path = event.url.replace(this.uriPrefix!, '')
+    if (!path.startsWith('/')) {
+      path = '/' + path
+    }
     this.open(path)
   }
 }

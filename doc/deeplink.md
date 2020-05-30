@@ -8,7 +8,7 @@
 
 ```javascript
 ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha, {
-  path: 'topBarAlpha/:alpha/:color',
+  path: '/topBarAlpha/:alpha',
   dependency: 'TopBarMisc',
   mode: 'modal',
 })
@@ -24,14 +24,16 @@ dependency 表示前置页面，譬如一个详情页可能会依赖一个列表
 ReactRegistry.registerComponent('Options', () => Options)
 ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc, { dependency: 'Options' })
 ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha, {
-  path: 'topBarAlpha/:alpha/:color',
+  path: '/topBarAlpha/:alpha',
   dependency: 'TopBarMisc',
 })
 ```
 
-TopBarAlpha 依赖 TopBarMisc, TopBarMisc 依赖 Options, 当我们通过 `hbd://topBarAlpha/0.7/#FFFFFF` 这样的 url 打开 TopBarAlpha 这个页面时，会检查 app 当前的路由图，以决定是否切换到 tab Options, 在打开 TopBarAlpha 之前是否需要创建 TopBarMisc。
+TopBarAlpha 依赖 TopBarMisc, TopBarMisc 依赖 Options, 当我们通过 `hbd://topBarAlpha/0.7?color=#FFFFFF` 这样的 url 打开 TopBarAlpha 这个页面时，会检查 app 当前的路由图，以决定是否切换到 tab Options, 在打开 TopBarAlpha 之前是否需要创建 TopBarMisc。
 
 mode 表示跳转模式，present 表示使用 `navigator.present` 打开目标页面， `modal` 表示使用 `navigator.showModal` 打开页面，默认是通过 push 的方式打开。
+
+> 0.23.0 开始支持 queryString，queryString 不能注册在 path 中
 
 ## 激活
 
@@ -134,11 +136,11 @@ In SimpleApp/android/app/src/main/AndroidManifest.xml, add the new intent-filter
 iOS:
 
 ```
-xcrun simctl openurl booted hbd://topBarAlpha/1/#FF344C
+xcrun simctl openurl booted "hbd://topBarAlpha/1?color=#FF344C"
 ```
 
 Android:
 
 ```
-adb shell am start -W -a android.intent.action.VIEW -d "hbd://topBarAlpha/0.5/#FFFFFF"
+adb shell am start -W -a android.intent.action.VIEW -d "hbd://topBarAlpha/0.5?color=#F94D53"
 ```
