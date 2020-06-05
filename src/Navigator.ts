@@ -344,11 +344,18 @@ export class Navigator {
 
   async popTo(sceneId: string) {
     const success = await this.dispatch('popTo', { targetId: sceneId })
+    if (sceneId === this.sceneId) {
+      return
+    }
     return await this.waitUnmount(success)
   }
 
   async popToRoot() {
+    const isRoot = await this.isStackRoot()
     const success = await this.dispatch('popToRoot')
+    if (isRoot) {
+      return
+    }
     return await this.waitUnmount(success)
   }
 
