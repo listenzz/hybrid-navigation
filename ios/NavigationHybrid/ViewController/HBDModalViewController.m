@@ -424,6 +424,9 @@
 
 - (void)hbd_showViewController:(UIViewController *)vc requestCode:(NSInteger)requestCode animated:(BOOL)animated completion:(void (^)(BOOL))completion {
     if (![self canShowModal]) {
+        if (completion) {
+            completion(NO);
+        }
         [self didReceiveResultCode:0 resultData:nil requestCode:requestCode];
         return;
     }

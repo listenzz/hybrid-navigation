@@ -56,8 +56,9 @@
 }
 
 -(void)hbd_viewDidAppear:(BOOL)animated {
-    [self hbd_viewDidAppear:animated];
     self.hbd_viewAppeared = YES;
+    [self hbd_viewDidAppear:animated];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hbd_statusBarFrameWillChange:)name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 }
 
@@ -66,8 +67,9 @@
 }
 
 -(void)hbd_viewDidDisappear:(BOOL)animated {
-    [self hbd_viewDidDisappear:animated];
     self.hbd_viewAppeared = NO;
+    [self hbd_viewDidDisappear:animated];
+    
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 }
 

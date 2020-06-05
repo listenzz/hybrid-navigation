@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
@@ -19,7 +20,6 @@ import com.navigationhybrid.ReactNavigationFragment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 
 public class StackNavigator implements Navigator {
 
@@ -95,14 +95,15 @@ public class StackNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
         NavigationFragment navigationFragment = getNavigationFragment(target);
         if (navigationFragment == null) {
+            promise.resolve(false);
             return;
         }
 
         if (!navigationFragment.isResumed()) {
-            navigationFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras), true);
+            navigationFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras, promise), true);
             return;
         }
 
@@ -121,6 +122,8 @@ public class StackNavigator implements Navigator {
                 fragment = getReactBridgeManager().createFragment(moduleName, props, options);
             }
         }
+
+        promise.resolve(true);
 
         switch (action) {
             case "push":
@@ -154,7 +157,6 @@ public class StackNavigator implements Navigator {
                 }
                 break;
         }
-
     }
 
     private NavigationFragment getNavigationFragment(AwesomeFragment fragment) {

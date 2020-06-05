@@ -67,7 +67,7 @@
     return nil;
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras {
+- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
     UIViewController *viewController = nil;
     NSString *moduleName = [extras objectForKey:@"moduleName"];
     if (moduleName) {
@@ -83,22 +83,32 @@
         [navVC setRequestCode:requestCode];
         [target beginAppearanceTransition:NO animated:YES];
         [target endAppearanceTransition];
-        [target presentViewController:navVC animated:YES completion:NULL];
+        [target presentViewController:navVC animated:YES completion:^{
+            resolve(@(YES));
+        }];
     } else if ([action isEqualToString:@"dismiss"]) {
         UIViewController *presenting = target.presentingViewController;
         // make sure extra lifecycle excuting order
         [target beginAppearanceTransition:NO animated:YES];
         [target endAppearanceTransition];
         if (presenting) {
-            [presenting dismissViewControllerAnimated:YES completion:NULL];
+            [presenting dismissViewControllerAnimated:YES completion:^{
+                resolve(@(YES));
+            }];
         } else {
-            [target dismissViewControllerAnimated:YES completion:NULL];
+            [target dismissViewControllerAnimated:YES completion:^{
+                resolve(@(YES));
+            }];
         }
     } else if ([action isEqualToString:@"showModal"]) {
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
-        [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:NULL];
+        [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:^(BOOL finished) {
+            resolve(@(finished));
+        }];
     } else if ([action isEqualToString:@"hideModal"]) {
-        [target hbd_hideViewControllerAnimated:YES completion:nil];
+        [target hbd_hideViewControllerAnimated:YES completion:^(BOOL finished) {
+            resolve(@(finished));
+        }];
     } else if ([action isEqualToString:@"presentLayout"]) {
         NSDictionary *layout = [extras objectForKey:@"layout"];
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
@@ -107,12 +117,16 @@
         viewController.modalPresentationStyle = UIModalPresentationCurrentContext;
         [target beginAppearanceTransition:NO animated:YES];
         [target endAppearanceTransition];
-        [target presentViewController:viewController animated:YES completion:NULL];
+        [target presentViewController:viewController animated:YES completion:^{
+            resolve(@(YES));
+        }];
     } else if ([action isEqualToString:@"showModalLayout"]) {
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         NSDictionary *layout = [extras objectForKey:@"layout"];
         viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
-        [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:NULL];
+        [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:^(BOOL finished) {
+            resolve(@(finished));
+        }];
     }
 }
 

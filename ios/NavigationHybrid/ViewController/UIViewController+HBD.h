@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "HBDDrawerController.h"
 
+typedef void(^HBDDidShowActionBlock)(void);
+typedef void(^HBDDidHideActionBlock)(void);
+
 @interface UIViewController (HBD)
 
 @property (nonatomic, assign) UIBarStyle hbd_barStyle;
@@ -21,7 +24,10 @@
 @property (nonatomic, assign) BOOL hbd_backInteractive;
 @property (nonatomic, assign) BOOL hbd_swipeBackEnabled;
 @property (nonatomic, assign, readonly) float hbd_barShadowAlpha;
+
 @property (nonatomic, assign) BOOL hbd_viewAppeared;
+@property (nonatomic, copy) HBDDidShowActionBlock didShowActionBlock;
+@property (nonatomic, copy) HBDDidHideActionBlock didHideActionBlock;
 
 - (void)hbd_setNeedsUpdateNavigationBar;
 

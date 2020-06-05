@@ -21,7 +21,7 @@
 @implementation HBDViewController
 
 - (void)dealloc {
-    NSLog(@"%s", __FUNCTION__);
+    RCTLogInfo(@"%s", __FUNCTION__);
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {

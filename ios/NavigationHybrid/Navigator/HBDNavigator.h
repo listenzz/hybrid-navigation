@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "HBDViewController.h"
+#import <React/RCTBridge.h>
 
 @protocol HBDNavigator <NSObject>
 
@@ -20,6 +21,6 @@
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc;
 
-- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras;
+- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 @end

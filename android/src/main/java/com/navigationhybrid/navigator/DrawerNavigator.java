@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
@@ -121,16 +122,19 @@ public class DrawerNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
         DrawerFragment drawerFragment = target.getDrawerFragment();
         if (drawerFragment == null) {
+            promise.resolve(false);
             return;
         }
 
         if (!drawerFragment.isResumed()) {
-            drawerFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras), true);
+            drawerFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras, promise), true);
             return;
         }
+
+        promise.resolve(true);
 
         switch (action) {
             case "toggleMenu":

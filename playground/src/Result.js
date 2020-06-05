@@ -65,12 +65,15 @@ function Result({ navigator, garden }) {
     // const graph = await Navigator.routeGraph()
     // const stack = graph[0].children[0].children[0].children
     // const n = Navigator.get(stack[stack.length - 1].sceneId)
-    // n.switchTab(1)
+    // n.switchTab(1, true)
     // n.pop()
-    navigator.dismiss()
+    await navigator.dismiss()
 
     // let current = await Navigator.current()
-    // current.switchTab(1)
+    // await current.popToRoot()
+    // current = await Navigator.current()
+    // await current.switchTab(1, true)
+    // current = await Navigator.current()
     // current.push('Navigation')
   }
 

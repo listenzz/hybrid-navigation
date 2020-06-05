@@ -16,6 +16,10 @@
 #import "OneNativeViewController.h"
 #import "NativeModalViewController.h"
 
+#if RCT_DEV
+#import <React/RCTDevLoadingView.h>
+#endif
+
 @interface AppDelegate () <HBDReactBridgeManagerDelegate, HostViewProvider>
 
 
@@ -34,6 +38,10 @@
     // register native modules
     [[HBDReactBridgeManager get] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
     [[HBDReactBridgeManager get] registerNativeModule:@"NativeModal" forController:[NativeModalViewController class]];
+    
+#if RCT_DEV
+    [[HBDReactBridgeManager get].bridge moduleForClass:[RCTDevLoadingView class]];
+#endif
 
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];

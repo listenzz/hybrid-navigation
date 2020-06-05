@@ -102,11 +102,12 @@ RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky tag:(NSNumb
     }
 }
 
-RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:(NSDictionary *)extras) {
+RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     if (vc) {
-        [self.bridgeManager handleNavigationWithViewController:vc action:action extras:extras];
+        [self.bridgeManager handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
     } else {
+        resolve(@(NO));
         RCTLogWarn(@"Can't find target scene for action:%@, maybe the scene is gone. \nextras: %@", action, extras);
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
@@ -129,18 +130,21 @@ public class TabNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
+        TabBarFragment tabBarFragment = target.getTabBarFragment();
+        if (tabBarFragment == null) {
+            promise.resolve(false);
+            return;
+        }
+
+        if (!tabBarFragment.isResumed()) {
+            tabBarFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras, promise), true);
+            return;
+        }
+
+        promise.resolve(true);
+
         if ("switchTab".equals(action)) {
-            TabBarFragment tabBarFragment = target.getTabBarFragment();
-            if (tabBarFragment == null) {
-                return;
-            }
-
-            if (!tabBarFragment.isResumed()) {
-                tabBarFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras), true);
-                return;
-            }
-
             int index = extras.getInt("index");
             boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
             if (popToRoot) {
@@ -159,7 +163,6 @@ public class TabNavigator implements Navigator {
                 tabBarFragment.setSelectedIndex(index);
             }
         }
-
     }
 
     private ReactBridgeManager getReactBridgeManager() {

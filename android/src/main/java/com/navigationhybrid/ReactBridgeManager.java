@@ -10,6 +10,7 @@ import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
@@ -300,11 +301,11 @@ public class ReactBridgeManager {
         return hybridFragment;
     }
 
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
         for (Navigator navigator : navigators) {
             List<String> supportActions = navigator.supportActions();
             if (supportActions.contains(action)) {
-                navigator.handleNavigation(target, action, extras);
+                navigator.handleNavigation(target, action, extras, promise);
                 break;
             }
         }

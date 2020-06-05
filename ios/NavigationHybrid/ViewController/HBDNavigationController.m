@@ -15,6 +15,7 @@
 #import "HBDReactViewController.h"
 #import "HBDPushAnimation.h"
 #import "HBDPopAnimation.h"
+#import <React/RCTLog.h>
 
 UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
     CGFloat fromRed = 0;
@@ -226,6 +227,25 @@ void adjustLayout(UIViewController *vc) {
         [self.proxiedDelegate navigationController:navigationController didShowViewController:viewController animated:animated];
     }
     
+    UIViewController *poppingVC = self.nav.poppingViewController;
+    if (poppingVC) {
+        if (poppingVC.didHideActionBlock) {
+            poppingVC.didHideActionBlock();
+            poppingVC.didHideActionBlock = nil;
+        }
+        
+        if ([poppingVC isKindOfClass:[HBDViewController class]]) {
+            [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
+        }
+    } else {
+        if (viewController.didShowActionBlock) {
+            viewController.didShowActionBlock();
+            viewController.didShowActionBlock = nil;
+        }
+    }
+    
+    self.nav.poppingViewController = nil;
+    
     HBDNavigationController *nav = self.nav;
     nav.transitional = NO;
     if (!animated) {
@@ -233,18 +253,11 @@ void adjustLayout(UIViewController *vc) {
        [nav clearFake];
     }
     
-    UIViewController *poppingVC = nav.poppingViewController;
-    if (poppingVC && [poppingVC isKindOfClass:[HBDViewController class]]) {
-        [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
-    }
-    
     if (@available(iOS 11.0, *)) {
         if (viewController.hbd_backBarButtonItem) {
              viewController.navigationItem.backBarButtonItem = viewController.hbd_backBarButtonItem;
         }
     }
-
-    nav.poppingViewController = nil;
 }
 
 - (UIInterfaceOrientationMask)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController {
@@ -327,7 +340,6 @@ void adjustLayout(UIViewController *vc) {
         }
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         self.nav.transitional = NO;
-        self.nav.poppingViewController = nil;
         if (context.isCancelled) {
             if (to == viewController) {
                 [self.nav updateNavigationBarForViewController:from];
@@ -335,7 +347,26 @@ void adjustLayout(UIViewController *vc) {
         } else {
             // `to` != `viewController` when present
             [self.nav updateNavigationBarForViewController:viewController];
+            UIViewController *poppingVC = self.nav.poppingViewController;
+            if (poppingVC) {
+                if (poppingVC.didHideActionBlock) {
+                    poppingVC.didHideActionBlock();
+                    poppingVC.didHideActionBlock = nil;
+                }
+                
+                if ([poppingVC isKindOfClass:[HBDViewController class]]) {
+                    [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
+                }
+            } else {
+                if (viewController.didShowActionBlock) {
+                    viewController.didShowActionBlock();
+                    viewController.didShowActionBlock = nil;
+                }
+            }
         }
+    
+        self.nav.poppingViewController = nil;
+        
         if (to == viewController) {
             [self.nav clearFake];
         }
@@ -446,7 +477,14 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
-    self.poppingViewController = self.topViewController;
+    if (self.childViewControllers.count > 1) {
+        self.poppingViewController = self.topViewController;
+    } else {
+        if (self.topViewController.didHideActionBlock) {
+            self.topViewController.didHideActionBlock();
+            self.topViewController.didHideActionBlock = nil;
+        }
+    }
     UIViewController *vc = [super popViewControllerAnimated:animated];
     // vc != self.topViewController
     [self fixClickBackIssue];
@@ -454,6 +492,14 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if (self.childViewControllers.count > 1) {
+        self.poppingViewController = self.topViewController;
+    } else {
+        if (self.topViewController.didHideActionBlock) {
+            self.topViewController.didHideActionBlock();
+            self.topViewController.didHideActionBlock = nil;
+        }
+    }
     self.poppingViewController = self.topViewController;
     NSArray *array = [super popToViewController:viewController animated:animated];
     [self fixClickBackIssue];
@@ -461,7 +507,14 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated {
-    self.poppingViewController = self.topViewController;
+    if (self.childViewControllers.count > 1) {
+        self.poppingViewController = self.topViewController;
+    } else {
+        if (self.topViewController.didHideActionBlock) {
+            self.topViewController.didHideActionBlock();
+            self.topViewController.didHideActionBlock = nil;
+        }
+    }
     NSArray *array = [super popToRootViewControllerAnimated:animated];
     [self fixClickBackIssue];
     return array;

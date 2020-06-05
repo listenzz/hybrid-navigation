@@ -83,15 +83,16 @@
     return nil;
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras {
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
     HBDDrawerController *drawer = [vc drawerController];
     if (!drawer) {
+        resolve(@(NO));
         return;
     }
     
     if (!drawer.hbd_viewAppeared) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.35 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self handleNavigationWithViewController:vc action:action extras:extras];
+            [self handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
         });
         return;
     }
@@ -103,6 +104,8 @@
     } else if ([action isEqualToString:@"closeMenu"]) {
         [drawer closeMenu];
     }
+    
+    resolve(@(YES));
 }
 
 @end

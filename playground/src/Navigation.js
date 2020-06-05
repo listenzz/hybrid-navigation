@@ -65,7 +65,12 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   }, [navigator, sceneId])
 
   useResult(sceneId, (requestCode, resultCode, data) => {
-    console.info(`requestCode: ${requestCode}`, `resultCode: ${resultCode}`, data)
+    console.info(
+      `requestCode: ${requestCode}`,
+      `resultCode: ${resultCode}`,
+      data,
+      `sceneId:${sceneId}`,
+    )
   })
 
   async function push() {
@@ -120,6 +125,7 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   }
 
   function handleResult(resultCode, data) {
+    console.log(resultCode, data)
     if (resultCode === RESULT_OK) {
       setText(data.text)
       setError(undefined)
@@ -127,6 +133,11 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
       setText(undefined)
       setError('ACTION CANCEL')
     }
+  }
+
+  function test() {
+    // showModal()
+    present()
   }
 
   async function present() {
@@ -182,7 +193,7 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
           <Text style={styles.buttonText}>redirectTo</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
+        <TouchableOpacity onPress={test} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>present</Text>
         </TouchableOpacity>
 

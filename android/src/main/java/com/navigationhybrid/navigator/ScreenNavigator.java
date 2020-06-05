@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
@@ -93,7 +94,7 @@ public class ScreenNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
         AwesomeFragment fragment = null;
         if (extras.hasKey("moduleName")) {
             String moduleName = extras.getString("moduleName");
@@ -109,6 +110,8 @@ public class ScreenNavigator implements Navigator {
                 fragment = getReactBridgeManager().createFragment(moduleName, props, options);
             }
         }
+
+        promise.resolve(true);
 
         switch (action) {
             case "present":

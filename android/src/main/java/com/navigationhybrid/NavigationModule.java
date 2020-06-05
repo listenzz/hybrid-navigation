@@ -134,12 +134,13 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void dispatch(final String sceneId, final String action, final ReadableMap extras) {
+    public void dispatch(final String sceneId, final String action, final ReadableMap extras, Promise promise) {
         sHandler.post(() -> {
             AwesomeFragment target = findFragmentBySceneId(sceneId);
             if (target != null && target.isAdded()) {
-                bridgeManager.handleNavigation(target, action, extras);
+                bridgeManager.handleNavigation(target, action, extras, promise);
             } else {
+                promise.resolve(false);
                 FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
             }
         });

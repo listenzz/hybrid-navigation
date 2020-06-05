@@ -26,6 +26,7 @@
 
 - (void)hbd_presentViewController:(UIViewController *)viewController animated:(BOOL)flag completion:(void (^)(void))completion {
     if (![self canPresentViewController]) {
+        completion();
         [self didReceiveResultCode:0 resultData:nil requestCode:viewController.requestCode];
         return;
     }
@@ -223,6 +224,22 @@
 
 - (void)setHbd_viewAppeared:(BOOL)viewAppeared {
     objc_setAssociatedObject(self, @selector(hbd_viewAppeared), @(viewAppeared), OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (HBDDidShowActionBlock)didShowActionBlock {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setDidShowActionBlock:(HBDDidShowActionBlock)actionBlock {
+    objc_setAssociatedObject(self, @selector(didShowActionBlock), actionBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (HBDDidHideActionBlock)didHideActionBlock {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setDidHideActionBlock:(HBDDidHideActionBlock)actionBlock {
+    objc_setAssociatedObject(self, @selector(didHideActionBlock), actionBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (UIBarButtonItem *)hbd_backBarButtonItem {

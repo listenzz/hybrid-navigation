@@ -395,11 +395,11 @@ const NSInteger ResultCancel = 0;
     }
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras {
+- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
     for (id<HBDNavigator> navigator in self.navigators) {
         NSArray<NSString *> *supportActions = navigator.supportActions;
         if ([supportActions containsObject:action]) {
-            [navigator handleNavigationWithViewController:target action:action extras:extras];
+            [navigator handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
             break;
         }
     }

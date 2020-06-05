@@ -133,7 +133,7 @@
     return nil;
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras {
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
     
     UITabBarController *tabBarController = nil;
     if ([vc isKindOfClass:[UITabBarController class]]) {
@@ -143,12 +143,13 @@
     }
     
     if (!tabBarController) {
+        resolve(@(NO));
         return;
     }
     
     if (!tabBarController.hbd_viewAppeared) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.35 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self handleNavigationWithViewController:vc action:action extras:extras];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
         });
         return;
     }
@@ -166,8 +167,12 @@
                 nav = vc.navigationController;
             }
             
-            if (nav) {
+            if (nav && nav.childViewControllers.count > 1) {
                 [nav popToRootViewControllerAnimated:NO];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
+                });
+                return;
             }
         }
         
@@ -180,6 +185,8 @@
             tabBarController.selectedIndex = index;
         }
     }
+    
+    resolve(@(YES));
 }
 
 @end

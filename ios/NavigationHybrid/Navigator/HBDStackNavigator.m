@@ -60,15 +60,16 @@
     return nil;
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras {
+- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
     UINavigationController *nav = [self navigationControllerForController:target];
     if (!nav) {
+        resolve(@(NO));
         return;
     }
     
     if (!nav.hbd_viewAppeared) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.35 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self handleNavigationWithViewController:target action:action extras:extras];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
         });
         return;
     }
@@ -78,15 +79,23 @@
     if (moduleName) {
         NSDictionary *props = [extras objectForKey:@"props"];
         NSDictionary *options = [extras objectForKey:@"options"];
-        viewController =[[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
+        viewController = [[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
+        if (!viewController) {
+            resolve(@(NO));
+            return;
+        }
     }
 
     if ([action isEqualToString:@"push"]) {
-        if (viewController) {
-            viewController.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
-            [nav pushViewController:viewController animated:YES];
-        }
+        viewController.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
+        viewController.didShowActionBlock = ^{
+            resolve(@(YES));
+        };
+        [nav pushViewController:viewController animated:YES];
     } else if ([action isEqualToString:@"pop"]) {
+        nav.topViewController.didHideActionBlock = ^{
+            resolve(@(YES));
+        };
         [nav popViewControllerAnimated:YES];
     } else if ([action isEqualToString:@"popTo"]) {
         NSArray *children = nav.childViewControllers;
@@ -102,18 +111,34 @@
         }
         
         if (target) {
+            nav.topViewController.didHideActionBlock = ^{
+                resolve(@(YES));
+            };
             [nav popToViewController:target animated:YES];
+        } else {
+            resolve(@(NO));
         }
     } else if ([action isEqualToString:@"popToRoot"]) {
+        nav.topViewController.didHideActionBlock = ^{
+            resolve(@(YES));
+        };
         [nav popToRootViewControllerAnimated:YES];
     } else if ([action isEqualToString:@"redirectTo"]) {
+        viewController.didShowActionBlock = ^{
+            resolve(@(YES));
+        };
         [nav redirectToViewController:viewController target:target animated:YES];
     } else if ([action isEqualToString:@"pushLayout"]) {
         NSDictionary *layout = [extras objectForKey:@"layout"];
         UIViewController *vc = [[HBDReactBridgeManager get] controllerWithLayout:layout];
         if (vc) {
             vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
+            vc.didShowActionBlock = ^{
+                resolve(@(YES));
+            };
             [nav pushViewController:vc animated:YES];
+        } else {
+            resolve(@(NO));
         }
     }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigationhybrid.HybridFragment;
@@ -44,6 +45,6 @@ public interface Navigator {
     @Nullable
     HybridFragment primaryFragment(@NonNull AwesomeFragment fragment);
 
-    void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras);
+    void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise);
 
 }

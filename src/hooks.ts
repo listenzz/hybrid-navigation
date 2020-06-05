@@ -65,6 +65,10 @@ export function useVisibleEffect(sceneId: string, effect: React.EffectCallback) 
     })
 
     return () => {
+      if (callback.current) {
+        callback.current()
+        callback.current = undefined
+      }
       subscription.remove()
     }
   }, [effect, sceneId, navigator])
