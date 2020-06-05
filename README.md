@@ -82,7 +82,7 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| >= 0.60                 | 0.23.1                           | 2020/05/30 |
+| >= 0.60                 | 0.23.2                           | 2020/06/05 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
 
 ### 0.23.x
@@ -143,7 +143,7 @@ npm run run:ios
   import { useVisibility } from 'react-native-navigation-hybrid'
 
   function Lifecycle({ sceneId }) {
-    useVisibility(sceneId, visible => {
+    useVisibility(sceneId, (visible) => {
       if (visible) {
         console.info(`Page is visible [${sceneId}]`)
       } else {
