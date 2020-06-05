@@ -157,7 +157,7 @@
         BOOL popToRoot = [[extras objectForKey:@"popToRoot"] boolValue];
         NSInteger index = [[extras objectForKey:@"index"] integerValue];
         
-        if (popToRoot && tabBarController.selectedIndex != index) {
+        if (popToRoot) {
             UIViewController *vc = [tabBarController selectedViewController];
             UINavigationController *nav = nil;
             if ([vc isKindOfClass:[UINavigationController class]]) {
@@ -165,6 +165,7 @@
             } else {
                 nav = vc.navigationController;
             }
+            
             if (nav) {
                 [nav popToRootViewControllerAnimated:NO];
             }

@@ -144,16 +144,9 @@ public class TabNavigator implements Navigator {
             int index = extras.getInt("index");
             boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
             if (popToRoot) {
-                AwesomeFragment presented = tabBarFragment.getPresentedFragment();
-                if (presented != null) {
-                    presented.dismissFragment();
-                }
-
-                if (index != tabBarFragment.getSelectedIndex()) {
-                    NavigationFragment nav = target.getNavigationFragment();
-                    if (nav != null) {
-                        nav.popToRootFragment(false);
-                    }
+                NavigationFragment nav = target.getNavigationFragment();
+                if (nav != null) {
+                    nav.popToRootFragment(false);
                 }
             }
 
