@@ -37,5 +37,6 @@ target 'Navigation' do
 
   pod 'NavigationHybrid', :path => '../../'
   pod 'ToastHybrid', :path => '../../node_modules/react-native-toast-hybrid'
-
+  pod 'RNFastImage', :path => '../../node_modules/react-native-fast-image'
+  
 end
