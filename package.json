@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
   },
-  "version": "0.23.2",
+  "version": "0.23.3",
   "nativePackage": true,
   "react-native": "./index.ts",
   "description": "React Native Navigation that supports seamless navigation between Native and React.",
@@ -28,7 +28,8 @@
     "run:ios": "react-native run-ios --project-path ./playground/ios",
     "start:android": "adb shell am start -n com.navigationhybrid.playground/.SplashActivity",
     "run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
