@@ -40,38 +40,21 @@ export function useVisible(sceneId: string) {
 }
 
 export function useVisibleEffect(sceneId: string, effect: React.EffectCallback) {
-  const navigator = Navigator.get(sceneId)
+  const visible = useVisible(sceneId)
   const callback = useRef<(() => void) | void>()
 
   useEffect(() => {
-    if (navigator.visibility === 'visible') {
-      if (callback.current) {
-        callback.current()
-      }
+    if (visible) {
       callback.current = effect()
     }
-
-    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data) => {
-      if (sceneId === data[KEY_SCENE_ID]) {
-        if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
-          callback.current = effect()
-        } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
-          if (callback.current) {
-            callback.current()
-            callback.current = undefined
-          }
-        }
-      }
-    })
 
     return () => {
       if (callback.current) {
         callback.current()
         callback.current = undefined
       }
-      subscription.remove()
     }
-  }, [effect, sceneId, navigator])
+  }, [effect, visible, sceneId])
 }
 
 export function useResult(
