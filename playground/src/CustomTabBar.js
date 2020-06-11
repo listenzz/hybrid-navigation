@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
-import { Text, View, TouchableOpacity, StyleSheet, Dimensions, Platform } from 'react-native'
+import { Text, View, TouchableOpacity, StyleSheet, Dimensions, Platform, Image } from 'react-native'
 import TextBadge from './Badge'
 import FastImage from 'react-native-fast-image'
+
+const PlatformImage = Platform.OS === 'android' ? FastImage : Image
 
 export default function CustomTabBar({
   sceneId,
@@ -74,11 +76,13 @@ function Tab({
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       {icon ? (
-        <FastImage
+        <PlatformImage
           source={{
             uri: icon,
+            width: 24,
+            height: 24,
           }}
-          style={styles.icon}
+          style={[styles.icon, { tintColor: selected ? itemColor : unselectedItemColor }]}
           resizeMode="contain"
           tintColor={selected ? itemColor : unselectedItemColor}
         />

@@ -44,7 +44,7 @@ First,
 ```shell
 npm install
 # &
-cd ios & pod install
+cd ios && pod install
 # &
 npm start
 ```
