@@ -26,6 +26,11 @@
             }
         }
     }
+    
+    if (!hitView.window) {
+        return nil;
+    }
+    
     return hitView;
 }
 
