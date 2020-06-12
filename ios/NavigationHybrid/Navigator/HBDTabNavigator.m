@@ -65,9 +65,11 @@
         if (options) {
             NSNumber *selectedIndex = [options objectForKey:@"selectedIndex"];
             if (selectedIndex) {
-                tabBarController.intercepted = NO;
-                tabBarController.selectedIndex = [selectedIndex integerValue];
-                tabBarController.intercepted = YES;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    tabBarController.intercepted = NO;
+                    tabBarController.selectedIndex = [selectedIndex integerValue];
+                    tabBarController.intercepted = YES;
+                });
             }
         }
         
