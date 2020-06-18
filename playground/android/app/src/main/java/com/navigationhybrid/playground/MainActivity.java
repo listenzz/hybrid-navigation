@@ -3,7 +3,6 @@ package com.navigationhybrid.playground;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import com.facebook.react.bridge.UiThreadUtil;
 import com.navigation.androidx.AwesomeFragment;
@@ -16,7 +15,6 @@ public class MainActivity extends ReactAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {

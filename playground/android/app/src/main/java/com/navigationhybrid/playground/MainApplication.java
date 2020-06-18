@@ -3,6 +3,8 @@ package com.navigationhybrid.playground;
 
 import android.app.Application;
 
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.facebook.common.logging.FLog;
 import com.facebook.drawee.view.DraweeView;
 import com.facebook.react.PackageList;
@@ -58,6 +60,8 @@ public class MainApplication extends Application implements ReactApplication {
 
         DraweeView.setGlobalLegacyVisibilityHandlingEnabled(true);
         FLog.setMinimumLoggingLevel(FLog.INFO);
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
 }
