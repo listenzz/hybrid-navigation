@@ -1,8 +1,8 @@
 # 集成到以 RN 为主的项目
 
-你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
+> 本文档仅适用于 RN0.60 以上版本
 
-> 可以通过使用 [react-native-create-app](https://github.com/listenzz/react-native-create-app) 一行命令创建，省去大多数配置的麻烦。
+你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
 
 假设你是通过 `react-native init MyApp` 创建的项目，目录结构是这样的：
 
@@ -72,9 +72,9 @@ Navigator.setRoot({
 })
 ```
 
-具体应用请查看 [Navigator#setRoot](./navigation.md)
+`setRoot` 具体用法请查看 [Navigator#setRoot](./navigation.md)
 
-> 注意：如果你需要等待异步数据结果来决定显示什么样的 UI 层级，那么 `ReactRegistry.endRegisterComponent` 也需要放到异步结果的代码中执行，在 `Navigator.setRoot` 之前。注意不要多次调用 `ReactRegistry.endRegisterComponent`。
+> 务必移除 StatusBar 相关组件和 api，交由本库管理状态栏相关状态。
 
 ### 支持 Redux
 
@@ -130,7 +130,20 @@ public void onCreate() {
 }
 ```
 
+如果你的 RN 版本 >=0.60 && < 0.62，修改 android/app/build.gradle 文件，添加依赖
+
+```diff
+  implementation "com.facebook.react:react-native:+"  // From node_modules
++ implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+```
+
 ## iOS 项目配置
+
+更新 pod 依赖
+
+```
+cd ios & pod install
+```
 
 修改 AppDelegate.h 文件
 
@@ -199,3 +212,15 @@ public void onCreate() {
 <a name="migrate-native"></a>
 
 如果懂原生开发，建议像 playground 这个项目那样配置闪屏。
+
+## 参考
+
+[一行命令创建 RN 项目并集成本库](https://github.com/listenzz/react-native-create-app)
+
+[RN 0.62 集成本库示范项目](https://github.com/listenzz/RN062)
+
+[RN 0.61 集成本库示范项目](https://github.com/listenzz/RN061)
+
+[RN 0.60 集成本库示范项目](https://github.com/listenzz/RN060)
+
+
