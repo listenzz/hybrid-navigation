@@ -173,7 +173,6 @@
     [self.menuController beginAppearanceTransition:YES animated:YES];
     
     [UIView animateWithDuration:0.2 delay:0. options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.menuOpened = YES;
         self.menuDimmingView.alpha = 0.5;
         menu.view.frame = CGRectMake(0, 0, menuWidth, CGRectGetHeight(self.view.bounds));
     } completion:^(BOOL finished) {
@@ -196,9 +195,12 @@
     [menuHolderView addSubview:dimmingView];
     [self addGestureRecognizerToMenuHolderView];
     [menuHolderView addSubview:menu.view];
+    self.menuOpened = YES;
 }
 
 - (void)dismissMenuView {
+    self.menuOpened = NO;
+    
     float menuWidth = [self menuWidth];
     CGFloat dx = -menuWidth - CGRectGetMinX(self.menuController.view.frame);
     CGRect rect = CGRectOffset(self.menuController.view.frame, dx, 0);
@@ -215,7 +217,6 @@
         self.menuDimmingView = nil;
         [self.menuHolderView removeFromSuperview];
         self.menuHolderView = nil;
-        self.menuOpened = NO;
         [self.menuController endAppearanceTransition];
     }];
 }
@@ -254,7 +255,6 @@
         [self addMenuView];
         self.menuController.view.frame = CGRectMake(-width + dx, 0, width, CGRectGetHeight(self.view.bounds));
         self.menuDimmingView.alpha = dx * 0.5 / width;
-        self.menuOpened = YES;
     } else if(UIGestureRecognizerStateChanged == recognizer.state) {
         self.menuController.view.frame = CGRectMake(-width + dx, 0, width, CGRectGetHeight(self.view.bounds));
         self.menuDimmingView.alpha = dx * 0.5 / width;

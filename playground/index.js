@@ -188,8 +188,14 @@ Navigator.setRootLayoutUpdateListener(
 Navigator.setRoot(drawer)
 
 // 设置导航拦截器
-Navigator.setInterceptor((action, from, to, extras) => {
+Navigator.setInterceptor(async (action, from, to, extras) => {
   console.info(`action:${action} from:${from} to:${to}`, extras)
+
+  // const current = await Navigator.current()
+  // if (current.moduleName === to) {
+  //   // 拦截跳转
+  //   return true
+  // }
   // 不拦截任何操作
   return false
 })

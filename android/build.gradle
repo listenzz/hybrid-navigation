@@ -10,12 +10,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    compileSdkVersion safeExtGet('compileSdkVersion', 28)
-    buildToolsVersion safeExtGet('buildToolsVersion', '28.0.3')
+    compileSdkVersion safeExtGet('compileSdkVersion', 29)
+    buildToolsVersion safeExtGet('buildToolsVersion', '29.0.2')
 
     defaultConfig {
         minSdkVersion safeExtGet('minSdkVersion', 16)
-        targetSdkVersion safeExtGet('targetSdkVersion', 28)
+        targetSdkVersion safeExtGet('targetSdkVersion', 29)
         versionCode 1
         versionName "1.0.0"
     }
@@ -24,5 +24,5 @@ android {
 dependencies {
     implementation 'com.facebook.react:react-native:+'
     // api project(':navigation')
-    api 'com.navigation.androidx:androidx:5.0.9'
+    api 'com.navigation.androidx:androidx:5.0.10'
 }

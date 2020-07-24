@@ -106,7 +106,7 @@ public class DrawerNavigator implements Navigator {
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof DrawerFragment && fragment.isAdded()) {
             DrawerFragment drawer = (DrawerFragment) fragment;
-            if (drawer.isMenuOpened()) {
+            if (drawer.isMenuPrimary()) {
                 return getReactBridgeManager().primaryFragment(drawer.getMenuFragment());
             } else {
                 return getReactBridgeManager().primaryFragment(drawer.getContentFragment());
