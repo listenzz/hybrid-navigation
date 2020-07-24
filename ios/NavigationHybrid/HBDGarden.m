@@ -167,6 +167,7 @@ static GlobalStyle *globalStyle;
         if (item[@"renderOriginal"] && [item[@"renderOriginal"] boolValue]) {
             iconImage = [iconImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         }
+        
         barButtonItem = [[HBDBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain];
         barButtonItem.imageInsets = insets;
     } else {
@@ -186,6 +187,11 @@ static GlobalStyle *globalStyle;
     NSString *tintColor = item[@"tintColor"];
     if (tintColor) {
         barButtonItem.tintColor = [HBDUtils colorWithHexString:tintColor];
+        UIView *customView = barButtonItem.customView;
+        if ([customView isKindOfClass:[HBDBarButton class]]) {
+            HBDBarButton *button = (HBDBarButton *)customView;
+            button.tintColor = [HBDUtils colorWithHexString:tintColor];
+        }
     }
     
     if (action) {
