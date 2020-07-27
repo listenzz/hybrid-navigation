@@ -31,7 +31,6 @@ interface Params {
   layout?: Layout
   index?: number
   popToRoot?: boolean
-  targetId?: string
   requestCode?: number
   props?: IndexType
   options?: NavigationItem
@@ -323,8 +322,8 @@ export class Navigator {
     return this.dispatch('pop')
   }
 
-  popTo(sceneId: string) {
-    return this.dispatch('popTo', { targetId: sceneId })
+  popTo(moduleName: string) {
+    return this.dispatch('popTo', { moduleName })
   }
 
   popToRoot() {

@@ -1,9 +1,12 @@
 package com.navigationhybrid.navigator;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -107,6 +110,62 @@ public class StackNavigator implements Navigator {
             return;
         }
 
+        promise.resolve(true);
+        AwesomeFragment fragment = null;
+
+        switch (action) {
+            case "push":
+                fragment = createFragmentWithExtras(extras);
+                if (fragment != null) {
+                    navigationFragment.pushFragment(fragment);
+                }
+                break;
+            case "pop":
+                navigationFragment.popFragment();
+                break;
+            case "popTo":
+                String moduleName = extras.getString("moduleName");
+                FragmentManager fragmentManager = navigationFragment.getChildFragmentManager();
+                int count = fragmentManager.getBackStackEntryCount();
+                for (int i = count - 1; i > -1; i--) {
+                    FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
+                    if (!TextUtils.isEmpty(entry.getName())) {
+                        Fragment f = fragmentManager.findFragmentByTag(entry.getName());
+                        if (f instanceof HybridFragment) {
+                            HybridFragment hybridFragment = (HybridFragment) f;
+                            if (moduleName != null
+                                    && (moduleName.equals(hybridFragment.getModuleName()) || moduleName.equals(hybridFragment.getSceneId()))) {
+                                fragment = hybridFragment;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (fragment != null) {
+                    navigationFragment.popToFragment(fragment);
+                }
+                break;
+            case "popToRoot":
+                navigationFragment.popToRootFragment();
+                break;
+            case "redirectTo":
+                fragment = createFragmentWithExtras(extras);
+                if (fragment != null) {
+                    navigationFragment.redirectToFragment(fragment, target, true);
+                }
+                break;
+            case "pushLayout":
+                ReadableMap layout = extras.getMap("layout");
+                fragment = getReactBridgeManager().createFragment(layout);
+                if (fragment != null) {
+                    navigationFragment.pushFragment(fragment);
+                }
+                break;
+        }
+    }
+
+    private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {
         AwesomeFragment fragment = null;
         if (extras.hasKey("moduleName")) {
             String moduleName = extras.getString("moduleName");
@@ -122,41 +181,7 @@ public class StackNavigator implements Navigator {
                 fragment = getReactBridgeManager().createFragment(moduleName, props, options);
             }
         }
-
-        promise.resolve(true);
-
-        switch (action) {
-            case "push":
-                if (fragment != null) {
-                    navigationFragment.pushFragment(fragment);
-                }
-                break;
-            case "pop":
-                navigationFragment.popFragment();
-                break;
-            case "popTo":
-                String targetId = extras.getString("targetId");
-                fragment = (AwesomeFragment) navigationFragment.getChildFragmentManager().findFragmentByTag(targetId);
-                if (fragment != null) {
-                    navigationFragment.popToFragment(fragment);
-                }
-                break;
-            case "popToRoot":
-                navigationFragment.popToRootFragment();
-                break;
-            case "redirectTo":
-                if (fragment != null) {
-                    navigationFragment.redirectToFragment(fragment, target, true);
-                }
-                break;
-            case "pushLayout":
-                ReadableMap layout = extras.getMap("layout");
-                fragment = getReactBridgeManager().createFragment(layout);
-                if (fragment != null) {
-                    navigationFragment.pushFragment(fragment);
-                }
-                break;
-        }
+        return fragment;
     }
 
     private NavigationFragment getNavigationFragment(AwesomeFragment fragment) {

@@ -261,7 +261,7 @@ navigator.hideModal()
 目标页面（即将 modal 显示出来的页面）可以通过 `async-await` 的方式或者 `useResult` 钩子来接收结果：
 
 ```javascript
-const [resultCode, data] = await navigator.showModal('ReactModal') 
+const [resultCode, data] = await navigator.showModal('ReactModal')
 ```
 
 ```javascript
@@ -313,8 +313,8 @@ A 页面通过实现 `async-await` 或 `useResult` 的方式来接收结果
 ```javascript
 // A.js
 const [resultCode, data] = await navigator.present('B')
-if(resultCode === RESULT_OK) {
-    this.setState({text: data.text || '', error: undefined});
+if (resultCode === RESULT_OK) {
+  this.setState({ text: data.text || '', error: undefined })
 }
 ```
 
@@ -425,27 +425,27 @@ navigator.pop()
 
 - **popTo(sceneId: string)**
 
-返回到之前的指定页面。比如你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回 B 页面。你可以把 B 页面的 `sceneId` 一直传递到 D 页面，然后调用 `popTo('bId')` 返回到 B 页面。
+返回到之前的指定页面。比如你由 A 页面 `push` 到 B 页面，由 B 页面 `push` 到 C 页面，由 C 页面 `push` 到 D 页面，现在想返回 B 页面，只需要 `popTo('B')` 即可
 
-从 B 页面跳转到 C 页面时
+从 B 页面跳到 C 页面
 
 ```javascript
 // B.js
-navigator.push('C', { bId: this.props.sceneId })
+navigator.push('C')
 ```
 
-从 C 页面跳到 D 页面时
+从 C 页面跳到 D 页面
 
 ```javascript
 // C.js
-navigator.push('D', { bId: this.props.bId })
+navigator.push('D')
 ```
 
-现在想从 D 页面 返回到 B 页面
+现在想从 D 页面返回到 B 页面
 
 ```javascript
 // D.js
-navigator.popTo(this.props.bId)
+navigator.popTo('B')
 ```
 
 - **popToRoot()**
