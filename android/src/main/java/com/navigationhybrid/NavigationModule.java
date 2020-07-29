@@ -167,6 +167,79 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     }
 
+    private String findSceneIdByModuleName(@NonNull String moduleName, AwesomeFragment fragment) {
+        String sceneId = null;
+        if (fragment instanceof HybridFragment) {
+            HybridFragment hybridFragment = (HybridFragment) fragment;
+            if (moduleName.equals(hybridFragment.getModuleName())) {
+                sceneId = hybridFragment.getSceneId();
+            }
+        }
+
+        if (sceneId == null) {
+            int count = fragment.getChildFragmentCountAtBackStack();
+            if (count > 0) {
+                FragmentManager fragmentManager = fragment.getChildFragmentManager();
+                int index = count - 1;
+                while (index > -1 && sceneId == null) {
+                    FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(index);
+                    AwesomeFragment child = (AwesomeFragment) fragmentManager.findFragmentByTag(entry.getName());
+                    sceneId = findSceneIdByModuleName(moduleName, child);
+                    index--;
+                }
+            }
+        }
+
+        if (sceneId == null) {
+            List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
+            int index = 0;
+            int count = children.size();
+            while (index < count && sceneId == null) {
+                AwesomeFragment child = children.get(index);
+                sceneId = findSceneIdByModuleName(moduleName, child);
+                index++;
+            }
+        }
+
+        return sceneId;
+    }
+
+    @ReactMethod
+    public void findSceneIdByModuleName(@NonNull String moduleName, Promise promise) {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                if (bridgeManager.getCurrentReactContext() == null) {
+                    FLog.w(TAG, "current react context is null, skip action `currentRoute`");
+                    return;
+                }
+
+                Activity activity = getCurrentActivity();
+                if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
+                    sHandler.postDelayed(this, 16);
+                    return;
+                }
+
+                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+                Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
+
+                if (fragment != null) {
+                    if (fragment instanceof AwesomeFragment) {
+                        String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
+                        FLog.i(TAG, "通过 " + moduleName + " 找到的 sceneId:" + sceneId);
+                        promise.resolve(sceneId);
+                    } else {
+                        promise.resolve(null);
+                    }
+                } else {
+                    sHandler.postDelayed(this, 16);
+                }
+            }
+        };
+        sHandler.post(task);
+    }
+
     @ReactMethod
     public void currentRoute(final Promise promise) {
         Runnable task = new Runnable() {

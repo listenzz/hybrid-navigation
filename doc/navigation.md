@@ -143,6 +143,10 @@ this.props.navigator === Navigator.get(this.props.sceneId)
 // true
 ```
 
+- **find(moduleName: string): Promise&lt;Navigator&gt;**
+
+接受 moduleName 作为参数，返回一个已经存在的 navigator 实例
+
 - **current(): Promise&lt;Navigator&gt;**
 
 返回当前有效的 navigator，通常是用户当前可见的那个页面的 navigator
@@ -474,9 +478,13 @@ navigator.redirectTo('B')
 
 找到 B 页面的 navigator，调用 `navigator.redirectTo('D')` 方法即可
 
-现在 stack 里有 A, D 两个页面。
+```js
+// C.js
+const navigator = await Navigator.find('B')
+navigator.redirectTo('D')
+```
 
-> 如何在页面之外获取到该页面的 navigator? 这需要用到 `Navigator.routeGraph`、`Navigator.get` 等方法。
+现在 stack 里有 A, D 两个页面。
 
 - **isStackRoot(): Promise&lt;boolean&gt;**
 

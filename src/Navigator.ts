@@ -136,6 +136,13 @@ export class Navigator {
     return store.getNavigator(sceneId) || new Navigator(sceneId)
   }
 
+  static async find(moduleName: string) {
+    const sceneId = await NavigationModule.findSceneIdByModuleName(moduleName)
+    if (sceneId) {
+      return Navigator.get(sceneId)
+    }
+  }
+
   static async current(): Promise<Navigator> {
     const route = await Navigator.currentRoute()
     return Navigator.get(route.sceneId)

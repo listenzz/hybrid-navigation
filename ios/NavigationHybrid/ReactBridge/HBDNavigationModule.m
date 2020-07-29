@@ -10,6 +10,7 @@
 #import <React/RCTLog.h>
 #import "HBDReactBridgeManager.h"
 #import "HBDReactViewController.h"
+#import "HBDModalViewController.h"
 
 @interface Promiss : NSObject
 
@@ -131,6 +132,53 @@ RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResol
 RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode data:(NSDictionary *)data) {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     [vc setResultCode:resultCode resultData:data];
+}
+
+RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *)moduleName resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    NSString *sceneId = nil;
+    NSInteger index = application.windows.count - 1;
+    
+    while (index > -1 && sceneId == nil) {
+        UIWindow *window = application.windows[index];
+        sceneId = [self findeSceneIdByModuleName:moduleName withViewController:window.rootViewController];
+        index--;
+    }
+    RCTLogInfo(@"通过 %@ 找到的 sceneId:%@", moduleName, sceneId);
+    resolve(RCTNullIfNil(sceneId));
+}
+
+- (NSString *)findeSceneIdByModuleName:(NSString *)moduleName withViewController:(UIViewController *)vc {
+    NSString *sceneId = nil;
+    
+    if ([vc isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hbd = (HBDViewController *)vc;
+        if ([moduleName isEqualToString:hbd.moduleName]) {
+            sceneId = hbd.sceneId;
+        }
+    }
+    
+    if (sceneId == nil) {
+        if (vc.presentedViewController && !vc.presentedViewController.isBeingDismissed) {
+            sceneId = [self findeSceneIdByModuleName:moduleName withViewController:vc.presentedViewController];
+        }
+    }
+    
+    if (sceneId == nil) {
+        NSArray<UIViewController *> *children = vc.childViewControllers;
+        NSInteger count = children.count;
+        if (count > 0) {
+            NSInteger index = count - 1;
+            while (index > -1 && sceneId == nil) {
+                UIViewController *child = children[index];
+                sceneId = [self findeSceneIdByModuleName:moduleName withViewController:child];
+                index--;
+            }
+        }
+    }
+    
+    return sceneId;
 }
 
 RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
