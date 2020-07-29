@@ -1,4 +1,3 @@
-import { Platform } from 'react-native'
 import {
   EventEmitter,
   NavigationModule,
@@ -120,22 +119,6 @@ EventEmitter.addListener(EVENT_SWITCH_TAB, (event) => {
   })
 })
 
-export function reload() {
-  NavigationModule.reload()
-}
-
-export function delay(ms: number): Promise<{}> {
-  return NavigationModule.delay(ms)
-}
-
-export function foreground(): Promise<void> {
-  if (Platform.OS === 'android') {
-    return NavigationModule.foreground()
-  } else {
-    return Promise.resolve()
-  }
-}
-
 function checkRequestCode(reqCode?: number) {
   if (reqCode === undefined) {
     return --tag
@@ -159,12 +142,10 @@ export class Navigator {
   }
 
   static async currentRoute(): Promise<Route> {
-    await foreground()
     return await NavigationModule.currentRoute()
   }
 
   static async routeGraph(): Promise<RouteGraph[]> {
-    await foreground()
     return await NavigationModule.routeGraph()
   }
 
@@ -199,7 +180,6 @@ export class Navigator {
   }
 
   static async dispatch(sceneId: string, action: string, params: Params = {}): Promise<boolean> {
-    await foreground()
     const navigator = Navigator.get(sceneId)
 
     let intercepted = false

@@ -147,42 +147,6 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void reload() {
-        sHandler.post(() ->
-                bridgeManager.getReactInstanceManager().recreateReactContextInBackground()
-        );
-    }
-
-    @ReactMethod
-    public void delay(int ms, final Promise promise) {
-        sHandler.postDelayed(() -> promise.resolve(Arguments.createMap()), ms);
-    }
-
-    @ReactMethod
-    public void foreground(final Promise promise) {
-        Runnable task = new Runnable() {
-            @Override
-            public void run() {
-                if (bridgeManager.getCurrentReactContext() == null) {
-                    FLog.w(TAG, "current react context is null, skip action `currentRoute`");
-                    return;
-                }
-
-                Activity activity = getCurrentActivity();
-                if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
-                    sHandler.postDelayed(this, 16);
-                    return;
-                }
-
-                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                reactAppCompatActivity.scheduleTaskAtStarted(() -> promise.resolve(Arguments.createMap()));
-            }
-        };
-
-        sHandler.post(task);
-    }
-
-    @ReactMethod
     public void isNavigationRoot(final String sceneId, final Promise promise) {
         sHandler.post(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
