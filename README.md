@@ -84,8 +84,19 @@ npm run run:ios
 
 | React Native version(s) | Supporting Navigation version(s) | 发布日期   |
 | ----------------------- | -------------------------------- | ---------- |
-| >= 0.60                 | 0.24.0                           | 2020/07/27 |
+| >= 0.60                 | 0.25.0                           | 2020/07/29 |
 | < 0.60                  | 0.16.14                          | 2019/12/20 |
+
+### 0.25.x
+
+- Navigator 添加静态方法 `find`，通过 moduleName 获取对于的 navigator 实例
+
+  ```js
+  const navigator = await Navigator.find('B')
+  navigator.redirectTo('D')
+  ```
+
+- 移除了 delay, reload, foreground 等隐藏方法
 
 ### 0.24.x
 
