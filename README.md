@@ -89,7 +89,7 @@ npm run run:ios
 
 ### 0.25.x
 
-- Navigator 添加静态方法 `find`，通过 moduleName 获取对于的 navigator 实例
+- Navigator 添加静态方法 `find`，通过 moduleName 获取对应的 navigator 实例
 
   ```js
   const navigator = await Navigator.find('B')
