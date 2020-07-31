@@ -7,6 +7,7 @@ import { withNavigationItem } from 'react-native-navigation-hybrid'
 export default withNavigationItem({
   extendedLayoutIncludesTopBar: true,
   topBarStyle: BarStyleLightContent,
+  statusBarColorAndroid: '#00000000',
   topBarTintColor: '#FFFFFF',
   titleTextColor: '#FFFFFF',
   ...Platform.select({

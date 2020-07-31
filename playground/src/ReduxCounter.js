@@ -78,6 +78,7 @@ function mapDispatchToProps(dispatch) {
 const navigationItem = {
   extendedLayoutIncludesTopBar: true,
   topBarStyle: BarStyleLightContent,
+  statusBarColorAndroid: '#00000000',
   topBarTintColor: '#FFFFFF',
   titleTextColor: '#FFFF00',
   ...Platform.select({

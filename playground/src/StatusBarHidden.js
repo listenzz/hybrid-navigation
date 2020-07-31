@@ -33,7 +33,6 @@ const paddingTop = Platform.select({
 })
 
 export default withNavigationItem({
-  statusBarColorAndroid: '#00FF00',
   statusBarHidden: true,
   topBarHidden: true,
   titleItem: {

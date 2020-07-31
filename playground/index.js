@@ -51,6 +51,7 @@ graph()
 Garden.setStyle({
   screenBackgroundColor: '#F8F8F8',
   topBarStyle: BarStyleDarkContent,
+  statusBarColorAndroid: Platform.OS === 'android' && Platform.Version < 23 ? '#4A4A4A' : undefined,
   titleTextSize: 17,
   topBarColor: '#FFFFFF',
 

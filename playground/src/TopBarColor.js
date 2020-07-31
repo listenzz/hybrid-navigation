@@ -5,6 +5,7 @@ import styles, { paddingTop } from './Styles'
 
 export default withNavigationItem({
   extendedLayoutIncludesTopBar: true,
+  statusBarColorAndroid: '#00000000',
   topBarColor: '#FF0000',
 })(TopBarColor)
 
