@@ -77,7 +77,7 @@ public class GlobalStyle {
         if (statusBarColor != null) {
             style.setStatusBarColor(Color.parseColor(statusBarColor));
         } else {
-            style.setStatusBarColor(style.getToolbarBackgroundColor());
+            style.setStatusBarColor(Color.TRANSPARENT);
         }
 
         // navigationBarColor

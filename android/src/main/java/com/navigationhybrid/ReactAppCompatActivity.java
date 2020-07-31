@@ -45,7 +45,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityDelegate.onCreate(savedInstanceState);
-        setStatusBarTranslucent(true);
         getReactBridgeManager().addReactModuleRegisterListener(this);
 
         if (isReactModuleRegisterCompleted()) {
