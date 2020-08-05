@@ -45,7 +45,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        int color = style.getToolbarBackgroundColor();
+        int color = preferredToolbarColor();
         boolean extendedLayoutIncludesToolbar = Color.alpha(color) < 255 || getGarden().extendedLayoutIncludesTopBar;
         View view;
         if (extendedLayoutIncludesToolbar) {
