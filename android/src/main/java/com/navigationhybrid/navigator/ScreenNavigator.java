@@ -95,26 +95,17 @@ public class ScreenNavigator implements Navigator {
 
     @Override
     public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
-        AwesomeFragment fragment = null;
-        if (extras.hasKey("moduleName")) {
-            String moduleName = extras.getString("moduleName");
-            if (moduleName != null) {
-                Bundle props = null;
-                Bundle options = null;
-                if (extras.hasKey("props")) {
-                    props = Arguments.toBundle(extras.getMap("props"));
-                }
-                if (extras.hasKey("options")) {
-                    options = Arguments.toBundle(extras.getMap("options"));
-                }
-                fragment = getReactBridgeManager().createFragment(moduleName, props, options);
-            }
+        if (!target.isResumed()) {
+            target.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras, promise), true);
+            return;
         }
 
+        AwesomeFragment fragment = null;
         promise.resolve(true);
 
         switch (action) {
             case "present":
+                fragment = createFragmentWithExtras(extras);
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
                     ReactNavigationFragment navFragment = new ReactNavigationFragment();
@@ -131,6 +122,7 @@ public class ScreenNavigator implements Navigator {
                 }
                 break;
             case "showModal":
+                fragment = createFragmentWithExtras(extras);
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
                     target.showDialog(fragment, requestCode);
@@ -156,6 +148,25 @@ public class ScreenNavigator implements Navigator {
                 }
                 break;
         }
+    }
+
+    private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {
+        AwesomeFragment fragment = null;
+        if (extras.hasKey("moduleName")) {
+            String moduleName = extras.getString("moduleName");
+            if (moduleName != null) {
+                Bundle props = null;
+                Bundle options = null;
+                if (extras.hasKey("props")) {
+                    props = Arguments.toBundle(extras.getMap("props"));
+                }
+                if (extras.hasKey("options")) {
+                    options = Arguments.toBundle(extras.getMap("options"));
+                }
+                fragment = getReactBridgeManager().createFragment(moduleName, props, options);
+            }
+        }
+        return fragment;
     }
 
     private ReactBridgeManager getReactBridgeManager() {

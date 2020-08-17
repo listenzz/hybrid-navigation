@@ -286,7 +286,7 @@ public class ReactBridgeManager {
         List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
         if (children.size() > 0) {
             AwesomeFragment last = children.get(children.size() - 1);
-            if (last.getShowsDialog()) {
+            if (last.getShowsDialog() && !last.isDismissed()) {
                 fragment = last;
             }
         }

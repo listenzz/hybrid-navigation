@@ -68,15 +68,18 @@
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-    UIViewController *viewController = nil;
-    NSString *moduleName = [extras objectForKey:@"moduleName"];
-    if (moduleName) {
-        NSDictionary *props = [extras objectForKey:@"props"];
-        NSDictionary *options = [extras objectForKey:@"options"];
-        viewController =[[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
+    
+    if (!target.hbd_viewAppeared) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
+        });
+        return;
     }
     
+    UIViewController *viewController = nil;
+
     if ([action isEqualToString:@"present"]) {
+        viewController = [self createViewControllerWithExtras:extras];
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         HBDNavigationController *navVC = [[HBDNavigationController alloc] initWithRootViewController:viewController];
         navVC.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -101,6 +104,7 @@
             }];
         }
     } else if ([action isEqualToString:@"showModal"]) {
+        viewController = [self createViewControllerWithExtras:extras];
         NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
         [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:^(BOOL finished) {
             resolve(@(finished));
@@ -128,6 +132,17 @@
             resolve(@(finished));
         }];
     }
+}
+
+- (UIViewController *)createViewControllerWithExtras:(NSDictionary *)extras {
+    NSString *moduleName = [extras objectForKey:@"moduleName"];
+    HBDViewController *viewController = nil;
+    if (moduleName) {
+        NSDictionary *props = [extras objectForKey:@"props"];
+        NSDictionary *options = [extras objectForKey:@"options"];
+        viewController = [[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
+    }
+    return viewController;
 }
 
 @end
