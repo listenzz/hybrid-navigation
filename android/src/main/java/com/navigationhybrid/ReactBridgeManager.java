@@ -260,7 +260,7 @@ public class ReactBridgeManager {
         if (children.size() > 0) {
             for (int i = 0; i < children.size(); i++) {
                 AwesomeFragment child = children.get(i);
-                if (child.getShowsDialog()) {
+                if (child.getShowsDialog() && !child.isDismissed()) {
                     for (Navigator navigator : navigators) {
                         if (navigator.buildRouteGraph(child, modal, modal)) {
                             break;
