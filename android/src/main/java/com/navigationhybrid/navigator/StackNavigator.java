@@ -70,7 +70,7 @@ public class StackNavigator implements Navigator {
         if (fragment instanceof NavigationFragment && fragment.isAdded()) {
             NavigationFragment stack = (NavigationFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
-            List<AwesomeFragment> fragments = stack.getChildFragmentsAtAddedList();
+            List<AwesomeFragment> fragments = stack.getChildFragments();
             for (int i = 0; i < fragments.size(); i++) {
                 AwesomeFragment child = fragments.get(i);
                 if (!child.getShowsDialog()) {
@@ -105,23 +105,19 @@ public class StackNavigator implements Navigator {
             return;
         }
 
-        if (!navigationFragment.isResumed()) {
-            navigationFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras, promise), true);
-            return;
-        }
-
-        promise.resolve(true);
         AwesomeFragment fragment = null;
 
         switch (action) {
             case "push":
                 fragment = createFragmentWithExtras(extras);
                 if (fragment != null) {
-                    navigationFragment.pushFragment(fragment);
+                    navigationFragment.pushFragment(fragment, true, () -> promise.resolve(true));
+                } else {
+                    promise.resolve(false);
                 }
                 break;
             case "pop":
-                navigationFragment.popFragment();
+                navigationFragment.popFragment(true, () -> promise.resolve(true));
                 break;
             case "popTo":
                 String moduleName = extras.getString("moduleName");
@@ -143,23 +139,29 @@ public class StackNavigator implements Navigator {
                 }
 
                 if (fragment != null) {
-                    navigationFragment.popToFragment(fragment);
+                    navigationFragment.popToFragment(fragment, true, () -> promise.resolve(true));
+                } else {
+                    promise.resolve(false);
                 }
                 break;
             case "popToRoot":
-                navigationFragment.popToRootFragment();
+                navigationFragment.popToRootFragment(true, () -> promise.resolve(true));
                 break;
             case "redirectTo":
                 fragment = createFragmentWithExtras(extras);
                 if (fragment != null) {
-                    navigationFragment.redirectToFragment(fragment, target, true);
+                    navigationFragment.redirectToFragment(fragment, target, true, () -> promise.resolve(true));
+                } else {
+                    promise.resolve(false);
                 }
                 break;
             case "pushLayout":
                 ReadableMap layout = extras.getMap("layout");
                 fragment = getReactBridgeManager().createFragment(layout);
                 if (fragment != null) {
-                    navigationFragment.pushFragment(fragment);
+                    navigationFragment.pushFragment(fragment, true, () -> promise.resolve(true));
+                } else {
+                    promise.resolve(false);
                 }
                 break;
         }

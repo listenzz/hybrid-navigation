@@ -216,7 +216,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         if (activity instanceof ReactAppCompatActivity) {
             ReactAppCompatActivity reactActivity = (ReactAppCompatActivity) activity;
             FragmentManager fragmentManager = reactActivity.getSupportFragmentManager();
-            return (AwesomeFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
+            return FragmentHelper.findAwesomeFragment(fragmentManager, sceneId);
         }
         return null;
     }

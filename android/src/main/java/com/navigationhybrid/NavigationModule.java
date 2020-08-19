@@ -177,21 +177,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         }
 
         if (sceneId == null) {
-            int count = fragment.getChildFragmentCountAtBackStack();
-            if (count > 0) {
-                FragmentManager fragmentManager = fragment.getChildFragmentManager();
-                int index = count - 1;
-                while (index > -1 && sceneId == null) {
-                    FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(index);
-                    AwesomeFragment child = (AwesomeFragment) fragmentManager.findFragmentByTag(entry.getName());
-                    sceneId = findSceneIdByModuleName(moduleName, child);
-                    index--;
-                }
-            }
-        }
-
-        if (sceneId == null) {
-            List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
+            List<AwesomeFragment> children = fragment.getChildFragments();
             int index = 0;
             int count = children.size();
             while (index < count && sceneId == null) {
@@ -305,7 +291,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
                 ArrayList<Bundle> root = new ArrayList<>();
                 ArrayList<Bundle> modal = new ArrayList<>();
-                List<AwesomeFragment> fragments = FragmentHelper.getFragmentsAtAddedList(fragmentManager);
+                List<AwesomeFragment> fragments = FragmentHelper.getFragments(fragmentManager);
                 for (int i = 0; i < fragments.size(); i++) {
                     AwesomeFragment fragment = fragments.get(i);
                     buildRouteGraph(fragment, root, modal);
@@ -337,7 +323,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         if (activity instanceof ReactAppCompatActivity) {
             ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
             FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-            return (AwesomeFragment) FragmentHelper.findDescendantFragment(fragmentManager, sceneId);
+            return FragmentHelper.findAwesomeFragment(fragmentManager, sceneId);
         }
         return null;
     }

@@ -27,7 +27,7 @@ public class MainActivity extends ReactAppCompatActivity {
         if (splashFragment == null) {
             if (!isReactModuleRegisterCompleted()) {
                 splashFragment = new SplashFragment();
-                showDialogInternal(splashFragment, 0);
+                showDialogInternal(splashFragment, 0, null);
             }
         } else {
             if (isReactModuleRegisterCompleted()) {

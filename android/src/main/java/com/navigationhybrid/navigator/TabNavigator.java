@@ -137,13 +137,6 @@ public class TabNavigator implements Navigator {
             return;
         }
 
-        if (!tabBarFragment.isResumed()) {
-            tabBarFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras, promise), true);
-            return;
-        }
-
-        promise.resolve(true);
-
         if ("switchTab".equals(action)) {
             int index = extras.getInt("index");
             boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
@@ -157,10 +150,10 @@ public class TabNavigator implements Navigator {
             if (tabBarFragment instanceof ReactTabBarFragment) {
                 ReactTabBarFragment reactTabBarFragment = (ReactTabBarFragment) tabBarFragment;
                 reactTabBarFragment.setIntercepted(false);
-                tabBarFragment.setSelectedIndex(index);
+                reactTabBarFragment.setSelectedIndex(index, () -> promise.resolve(true));
                 reactTabBarFragment.setIntercepted(true);
             } else {
-                tabBarFragment.setSelectedIndex(index);
+                tabBarFragment.setSelectedIndex(index, () -> promise.resolve(true));
             }
         }
     }

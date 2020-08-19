@@ -129,22 +129,15 @@ public class DrawerNavigator implements Navigator {
             return;
         }
 
-        if (!drawerFragment.isResumed()) {
-            drawerFragment.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras, promise), true);
-            return;
-        }
-
-        promise.resolve(true);
-
         switch (action) {
             case "toggleMenu":
-                drawerFragment.toggleMenu();
+                drawerFragment.toggleMenu(() -> promise.resolve(true));
                 break;
             case "openMenu":
-                drawerFragment.openMenu();
+                drawerFragment.openMenu(() -> promise.resolve(true));
                 break;
             case "closeMenu":
-                drawerFragment.closeMenu();
+                drawerFragment.closeMenu(() -> promise.resolve(true));
                 break;
         }
     }

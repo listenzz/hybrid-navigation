@@ -255,7 +255,7 @@ public class ReactBridgeManager {
             return;
         }
 
-        List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
+        List<AwesomeFragment> children = fragment.getChildFragments();
 
         if (children.size() > 0) {
             for (int i = 0; i < children.size(); i++) {
@@ -283,7 +283,7 @@ public class ReactBridgeManager {
             return null;
         }
 
-        List<AwesomeFragment> children = fragment.getChildFragmentsAtAddedList();
+        List<AwesomeFragment> children = fragment.getChildFragments();
         if (children.size() > 0) {
             AwesomeFragment last = children.get(children.size() - 1);
             if (last.getShowsDialog() && !last.isDismissed()) {

@@ -244,9 +244,9 @@ public class ReactTabBarFragment extends TabBarFragment {
     private boolean intercepted = true;
 
     @Override
-    public void setSelectedIndex(int index) {
+    public void setSelectedIndex(int index, @Nullable Runnable completion) {
         if (!isAdded()) {
-            super.setSelectedIndex(index);
+            super.setSelectedIndex(index, completion);
             return;
         }
 
@@ -263,7 +263,7 @@ public class ReactTabBarFragment extends TabBarFragment {
 
         // 必须先判断选中的 fragment 是否为 ReactFragment
         if (selectedReactFragment == null || !this.intercepted) {
-            super.setSelectedIndex(index);
+            super.setSelectedIndex(index, completion);
             return;
         }
 

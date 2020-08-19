@@ -16,6 +16,7 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
+import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.PresentAnimation;
 import com.navigation.androidx.Style;
 
@@ -60,7 +61,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             reactRootViewHolder.setVisibilityObserver(this);
         }
 
-        if (!isFragmentHidden() || getShowsDialog()) {
+        if (!FragmentHelper.isHidden(this) || getShowsDialog()) {
             if (getAnimation() != PresentAnimation.None) {
                 postponeEnterTransition();
             }
@@ -123,7 +124,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (!isFragmentHidden()) {
+        if (!FragmentHelper.isHidden(this)) {
             initTitleViewIfNeeded();
         }
         getReactBridgeManager().addReactBridgeReloadListener(this);

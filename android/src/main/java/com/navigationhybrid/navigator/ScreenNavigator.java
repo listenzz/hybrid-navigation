@@ -84,7 +84,7 @@ public class ScreenNavigator implements Navigator {
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof HybridFragment && fragment.isAdded()) {
-            AwesomeFragment presented = FragmentHelper.getLatterFragment(fragment.requireFragmentManager(), fragment);
+            AwesomeFragment presented = FragmentHelper.getFragmentAfter(fragment);
             if (presented != null) {
                 return (HybridFragment) presented;
             }
@@ -95,14 +95,7 @@ public class ScreenNavigator implements Navigator {
 
     @Override
     public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
-        if (!target.isResumed()) {
-            target.scheduleTaskAtStarted(() -> handleNavigation(target, action, extras, promise), true);
-            return;
-        }
-
         AwesomeFragment fragment = null;
-        promise.resolve(true);
-
         switch (action) {
             case "present":
                 fragment = createFragmentWithExtras(extras);
@@ -110,33 +103,39 @@ public class ScreenNavigator implements Navigator {
                     int requestCode = extras.getInt("requestCode");
                     ReactNavigationFragment navFragment = new ReactNavigationFragment();
                     navFragment.setRootFragment(fragment);
-                    target.presentFragment(navFragment, requestCode);
+                    target.presentFragment(navFragment, requestCode, () -> promise.resolve(true));
+                } else {
+                    promise.resolve(false);
                 }
                 break;
             case "dismiss":
                 AwesomeFragment presenting = target.getPresentingFragment();
                 if (presenting != null) {
-                    presenting.dismissFragment();
+                    presenting.dismissFragment(() -> promise.resolve(true));
                 } else {
-                    target.dismissFragment();
+                    target.dismissFragment(() -> promise.resolve(true));
                 }
                 break;
             case "showModal":
                 fragment = createFragmentWithExtras(extras);
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
-                    target.showDialog(fragment, requestCode);
+                    target.showDialog(fragment, requestCode, () -> promise.resolve(true));
+                } else {
+                    promise.resolve(false);
                 }
                 break;
             case "hideModal":
-                target.hideDialog();
+                target.hideDialog(() -> promise.resolve(true));
                 break;
             case "presentLayout":
                 ReadableMap layout = extras.getMap("layout");
                 fragment = getReactBridgeManager().createFragment(layout);
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
-                    target.presentFragment(fragment, requestCode);
+                    target.presentFragment(fragment, requestCode, () -> promise.resolve(true));
+                } else {
+                    promise.resolve(false);
                 }
                 break;
             case "showModalLayout":
@@ -144,7 +143,9 @@ public class ScreenNavigator implements Navigator {
                 fragment = getReactBridgeManager().createFragment(modalLayout);
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
-                    target.showDialog(fragment, requestCode);
+                    target.showDialog(fragment, requestCode, () -> promise.resolve(true));
+                } else {
+                    promise.resolve(false);
                 }
                 break;
         }
