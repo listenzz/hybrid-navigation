@@ -66,7 +66,6 @@ public class OneNativeFragment extends HybridFragment {
         String greeting = props.getString("greeting");
         if (greeting != null) {
             style.setToolbarBackgroundColor(Color.RED);
-            style.setStatusBarColor(Color.RED);
         }
     }
 

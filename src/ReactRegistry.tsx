@@ -85,7 +85,7 @@ function withNavigator(moduleName: string) {
         garden,
         navigator,
       }
-      return <WrappedComponent ref={ref} {...props} {...injected} />
+      return <WrappedComponent ref={ref} {...props} {...navigator.props} {...injected} />
     }
 
     const FREC = React.forwardRef(FC)
@@ -139,6 +139,7 @@ export class ReactRegistry {
       RootComponent = withNavigator(appKey)(WrappedComponent)
     }
     AppRegistry.registerComponent(appKey, () => RootComponent)
+    store.registerReactModule(appKey)
   }
 }
 
