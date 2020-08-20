@@ -1,4 +1,4 @@
-import { IndexType, Navigator } from '../Navigator'
+import { IndexType, Navigator, PropsType } from '../Navigator'
 import { NavigationItem } from '../Garden'
 import {
   RouteConfig,
@@ -55,7 +55,7 @@ function registerRoute(moduleName: string, route: RouteConfig) {
   routeDatas.set(moduleName, { moduleName, mode, path, regexp, dependency })
 }
 
-async function open(path: string, props: IndexType = {}, options: NavigationItem = {}) {
+async function open(path: string, props: PropsType = {}, options: NavigationItem = {}) {
   let intercepted = false
   for (let interceptor of interceptors.values()) {
     const result = interceptor(path)

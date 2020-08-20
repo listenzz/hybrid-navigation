@@ -1,4 +1,4 @@
-import { IndexType } from '../Navigator'
+import { PropsType } from '../Navigator'
 import { NavigationItem } from 'src/Garden'
 
 export type RouteMode = 'modal' | 'present' | 'push'
@@ -27,7 +27,7 @@ export interface RouteInfo {
   moduleName: string
   dependencies: string[]
   mode: RouteMode
-  props: IndexType
+  props: PropsType
   options: NavigationItem
 }
 

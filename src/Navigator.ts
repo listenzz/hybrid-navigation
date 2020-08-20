@@ -19,6 +19,12 @@ export interface IndexType {
   [index: string]: any
 }
 
+export interface PropsType {
+  [index: string]: any
+}
+
+export type ResultType = IndexType | undefined
+
 interface Extras {
   sceneId: string
   index?: number
@@ -45,14 +51,10 @@ export interface NavigationInterceptor {
   (action: string, from?: string, to?: string, extras?: Extras): boolean | Promise<boolean>
 }
 
-type ResultType = IndexType | null
-
 interface ResultListener<T extends ResultType> {
   (requestCode: number, resultCode: number, data: T): void
   cancel: () => void
 }
-
-type Result<T> = [number, T]
 
 export interface Layout {
   [index: string]: {}
@@ -287,11 +289,11 @@ export class Navigator {
   private waitResult<T extends ResultType>(
     requestCode: number,
     successful: boolean,
-  ): Promise<Result<T>> {
+  ): Promise<[number, T]> {
     if (!successful) {
       return Promise.resolve([0, null as any])
     }
-    return new Promise<Result<T>>((resolve) => {
+    return new Promise<[number, T]>((resolve) => {
       const listener = (reqCode: number, resultCode: number, data: T) => {
         if (requestCode === reqCode) {
           resolve([resultCode, data])
@@ -309,7 +311,7 @@ export class Navigator {
     })
   }
 
-  async push<T extends ResultType = any, P extends IndexType = {}>(
+  async push<T extends ResultType, P extends PropsType = PropsType>(
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
@@ -318,7 +320,7 @@ export class Navigator {
     return await this.waitResult<T>(0, success)
   }
 
-  async pushLayout<T extends ResultType = any>(layout: Layout) {
+  async pushLayout<T extends ResultType>(layout: Layout) {
     const success = await this.dispatch('pushLayout', { layout })
     return await this.waitResult<T>(0, success)
   }
@@ -335,7 +337,7 @@ export class Navigator {
     return this.dispatch('popToRoot')
   }
 
-  redirectTo<P extends IndexType = {}>(
+  redirectTo<P extends PropsType = PropsType>(
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
@@ -352,7 +354,7 @@ export class Navigator {
     return NavigationModule.isNavigationRoot(this.sceneId)
   }
 
-  async present<T extends ResultType = any, P extends IndexType = {}>(
+  async present<T extends ResultType, P extends PropsType = PropsType>(
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
@@ -368,7 +370,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async presentLayout<T extends ResultType = any>(layout: Layout, requestCode?: number) {
+  async presentLayout<T extends ResultType>(layout: Layout, requestCode?: number) {
     requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('presentLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
@@ -378,7 +380,7 @@ export class Navigator {
     return this.dispatch('dismiss')
   }
 
-  async showModal<T extends ResultType = any, P extends IndexType = {}>(
+  async showModal<T extends ResultType, P extends PropsType = PropsType>(
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
@@ -394,7 +396,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async showModalLayout<T extends ResultType = any>(layout: Layout, requestCode?: number) {
+  async showModalLayout<T extends ResultType>(layout: Layout, requestCode?: number) {
     requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('showModalLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
@@ -404,7 +406,7 @@ export class Navigator {
     return this.dispatch('hideModal')
   }
 
-  setResult<T extends ResultType = any>(resultCode: number, data: T = null as any): void {
+  setResult<T extends ResultType>(resultCode: number, data: T): void {
     NavigationModule.setResult(this.sceneId, resultCode, data)
   }
 
