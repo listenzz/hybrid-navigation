@@ -42,15 +42,15 @@ mode 表示跳转模式，present 表示使用 `navigator.present` 打开目标�
 譬如 playground 项目，在 Navigation.js 激活了路由功能
 
 ```javascript
-import { router } from 'react-native-navigation-hybrid';
+import { DeepLink } from 'react-native-navigation-hybrid';
 
 componentDidMount() {
   const prefix = 'hbd://';
-  router.activate(prefix);
+  DeepLink.activate(prefix);
 }
 
 componentWillUnmount() {
-  router.inactivate();
+  DeepLink.inactivate();
 }
 ```
 
@@ -60,11 +60,11 @@ componentWillUnmount() {
 // 激活 DeepLink，在 Navigator.setRoot 之前
 Navigator.setRootLayoutUpdateListener(
   () => {
-    router.inactivate()
+    DeepLink.inactivate()
   },
   () => {
     const prefix = 'hbd://'
-    router.activate(prefix)
+    DeepLink.activate(prefix)
   },
 )
 
@@ -79,8 +79,9 @@ Navigator.setRoot(drawer, true)
 router 对象为我们提供了注册和移除拦截器的一对方法
 
 ```javascript
-registerInterceptor(func)
-unregisterInterceptor(func)
+import { router } from 'react-native-navigation-hybrid'
+router.addInterceptor(func)
+router.removeInterceptor(func)
 ```
 
 func 是一个接收 path 为参数，返回 boolen 的函数，返回 true 表示拦截。

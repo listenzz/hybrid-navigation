@@ -2,7 +2,7 @@ import {
   ReactRegistry,
   Garden,
   Navigator,
-  router,
+  DeepLink,
   BarStyleDarkContent,
   TitleAlignmentCenter,
 } from 'react-native-navigation-hybrid'
@@ -175,12 +175,12 @@ const drawer = {
 // 激活 DeepLink，在 Navigator.setRoot 之前
 Navigator.setRootLayoutUpdateListener(
   () => {
-    router.inactivate()
+    DeepLink.inactivate()
     console.log('------------------------inactive router')
   },
   () => {
     const prefix = 'hbd://'
-    router.activate(prefix)
+    DeepLink.activate(prefix)
     console.log('------------------------active router')
   },
 )

@@ -12,7 +12,7 @@ import {
   ON_COMPONENT_DISAPPEAR,
 } from './NavigationModule'
 import { Garden, NavigationItem } from './Garden'
-import { router, RouteConfig } from './router'
+import { RouteConfig, router } from './router'
 import store from './store'
 import { bindBarButtonItemClickEvent, removeBarButtonItemClickEvent } from './utils'
 import { useResult } from './hooks'
@@ -100,7 +100,6 @@ let wrap: HOC | undefined
 export class ReactRegistry {
   static registerEnded: boolean
   static startRegisterComponent(hoc?: HOC) {
-    router.clear()
     store.clear()
     wrap = hoc
     ReactRegistry.registerEnded = false
@@ -122,7 +121,7 @@ export class ReactRegistry {
     routeConfig?: RouteConfig,
   ) {
     if (routeConfig) {
-      router.addRouteConfig(appKey, routeConfig)
+      router.registerRoute(appKey, routeConfig)
     }
 
     const WrappedComponent = getComponentFunc()

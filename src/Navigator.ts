@@ -12,7 +12,7 @@ import {
 import { bindBarButtonItemClickEvent } from './utils'
 import store from './store'
 import { NavigationItem } from './Garden'
-import { Route, RouteGraph } from './router'
+import { RouteGraph, Route } from './router'
 import { Visibility } from './hooks'
 
 export interface IndexType {
