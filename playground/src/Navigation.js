@@ -66,10 +66,10 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
 
   useResult(sceneId, (requestCode, resultCode, data) => {
     console.info(
-      `requestCode: ${requestCode}`,
-      `resultCode: ${resultCode}`,
-      data,
-      `sceneId:${sceneId}`,
+      `requestCode=${requestCode}`,
+      `resultCode=${resultCode}`,
+      `resultData=${data}`,
+      `sceneId=${sceneId}`,
     )
   })
 
@@ -125,9 +125,8 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   }
 
   function handleResult(resultCode, data) {
-    console.log(resultCode, data)
     if (resultCode === RESULT_OK) {
-      setText(data.text)
+      setText(data?.text)
       setError(undefined)
     } else {
       setText(undefined)

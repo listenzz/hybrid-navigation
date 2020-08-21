@@ -23,7 +23,7 @@ export interface PropsType {
   [index: string]: any
 }
 
-export type ResultType = IndexType | undefined
+export type ResultType = IndexType | null
 
 interface Extras {
   sceneId: string
@@ -121,8 +121,8 @@ EventEmitter.addListener(EVENT_SWITCH_TAB, (event) => {
   })
 })
 
-function checkRequestCode(reqCode?: number) {
-  if (reqCode === undefined) {
+function checkRequestCode(reqCode: number) {
+  if (isNaN(reqCode)) {
     return --tag
   }
 
@@ -358,7 +358,7 @@ export class Navigator {
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
-    requestCode?: number,
+    requestCode: number = NaN,
   ) {
     requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('present', {
@@ -370,7 +370,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async presentLayout<T extends ResultType>(layout: Layout, requestCode?: number) {
+  async presentLayout<T extends ResultType>(layout: Layout, requestCode: number = NaN) {
     requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('presentLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
@@ -384,7 +384,7 @@ export class Navigator {
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
-    requestCode?: number,
+    requestCode: number = NaN,
   ) {
     requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('showModal', {
@@ -396,7 +396,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async showModalLayout<T extends ResultType>(layout: Layout, requestCode?: number) {
+  async showModalLayout<T extends ResultType>(layout: Layout, requestCode: number = NaN) {
     requestCode = checkRequestCode(requestCode)
     const success = await this.dispatch('showModalLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
@@ -406,7 +406,7 @@ export class Navigator {
     return this.dispatch('hideModal')
   }
 
-  setResult<T extends ResultType>(resultCode: number, data: T): void {
+  setResult<T extends ResultType>(resultCode: number, data: T = null as any): void {
     NavigationModule.setResult(this.sceneId, resultCode, data)
   }
 

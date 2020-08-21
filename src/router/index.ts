@@ -112,7 +112,7 @@ async function open(path: string, props: PropsType = {}, options: NavigationItem
 
 function pathToRoute(
   path: string,
-  props: IndexType,
+  props: PropsType,
   options: NavigationItem,
 ): RouteInfo | undefined {
   for (const data of routeDatas.values()) {
