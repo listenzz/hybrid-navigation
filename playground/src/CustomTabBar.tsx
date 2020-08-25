@@ -1,9 +1,28 @@
 import React, { useEffect } from 'react'
-import { Text, View, TouchableOpacity, StyleSheet, Dimensions, Platform, Image } from 'react-native'
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Dimensions,
+  Platform,
+  Image,
+  ViewStyle,
+  ViewProps,
+} from 'react-native'
 import TextBadge from './Badge'
 import FastImage from 'react-native-fast-image'
+import { InjectedProps, Color } from 'react-native-navigation-hybrid'
 
 const PlatformImage = Platform.OS === 'android' ? FastImage : Image
+
+interface Props extends InjectedProps {
+  itemColor: Color
+  unselectedItemColor: Color
+  badgeColor: Color
+  tabs: any[]
+  selectedIndex: number
+}
 
 export default function CustomTabBar({
   sceneId,
@@ -13,8 +32,8 @@ export default function CustomTabBar({
   badgeColor,
   tabs,
   selectedIndex,
-}) {
-  async function handleTabClick(index) {
+}: Props) {
+  async function handleTabClick(index: number) {
     if (index === -1) {
       const [resultCode, data] = await navigator.present('Result')
       console.log(`CustomTabBar resultCode: ${resultCode} data:`, data)
@@ -53,12 +72,25 @@ export default function CustomTabBar({
   )
 }
 
-function Add({ onTabClick }) {
+function Add({ onTabClick }: Partial<TabProps>) {
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       <FastImage source={require('./images/tabbar_add_blue.png')} style={styles.centerIcon} />
     </TouchableOpacity>
   )
+}
+
+interface TabProps {
+  onTabClick: () => void
+  icon: string
+  title: string
+  selected: boolean
+  unselectedItemColor: Color
+  itemColor: Color
+  badgeText: string
+  textBadgeStyle: ViewStyle
+  dot: boolean
+  dotBadgeStyle: ViewStyle
 }
 
 function Tab({
@@ -72,7 +104,7 @@ function Tab({
   textBadgeStyle,
   dot,
   dotBadgeStyle,
-}) {
+}: TabProps) {
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       {icon ? (
@@ -103,7 +135,7 @@ function Tab({
   )
 }
 
-function DotBadge({ style }) {
+function DotBadge({ style }: ViewProps) {
   return <View style={[styles.dotBadge, style]} />
 }
 

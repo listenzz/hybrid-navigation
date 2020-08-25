@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native'
-import { LayoutFittingExpanded } from 'react-native-navigation-hybrid'
+import { LayoutFittingExpanded, InjectedProps } from 'react-native-navigation-hybrid'
 import styles from './Styles'
 
-function CustomTitleView(props) {
+function CustomTitleView(props: InjectedProps) {
   let { params } = props.navigator.state
   return (
     <View
@@ -26,7 +26,7 @@ function CustomTitleView(props) {
 
 export { CustomTitleView }
 
-export default class TopBarTitleView extends Component {
+export default class TopBarTitleView extends Component<InjectedProps> {
   static navigationItem = {
     backButtonHidden: true,
     titleItem: {
@@ -35,7 +35,7 @@ export default class TopBarTitleView extends Component {
     },
   }
 
-  constructor(props) {
+  constructor(props: InjectedProps) {
     super(props)
     this.topBarTitleView = this.topBarTitleView.bind(this)
     this.props.navigator.setParams({

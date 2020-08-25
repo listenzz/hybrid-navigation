@@ -1,11 +1,11 @@
 import React from 'react'
-import { StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text, ViewProps } from 'react-native'
 import { useLayout } from '@react-native-community/hooks'
 
-export default function Badge(props) {
+export default function Badge(props: any) {
   const { onLayout, width, height } = useLayout()
 
-  let style = {}
+  let style = {} as any
   if (width === 0 || height === 0) {
     style.opacity = 0
   } else {

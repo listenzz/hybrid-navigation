@@ -1,6 +1,6 @@
 import React from 'react'
 import { TouchableOpacity, Text, View, ScrollView } from 'react-native'
-import { withNavigationItem } from 'react-native-navigation-hybrid'
+import { withNavigationItem, InjectedProps } from 'react-native-navigation-hybrid'
 
 import styles from './Styles'
 
@@ -11,7 +11,7 @@ export default withNavigationItem({
   },
 })(StatusBarColor)
 
-function StatusBarColor({ garden, navigator }) {
+function StatusBarColor({ garden, navigator }: InjectedProps) {
   function red() {
     garden.updateOptions({ statusBarColorAndroid: '#FF0000' })
   }

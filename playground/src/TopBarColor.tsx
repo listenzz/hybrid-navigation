@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, View, TouchableOpacity, ScrollView } from 'react-native'
-import { withNavigationItem } from 'react-native-navigation-hybrid'
+import { withNavigationItem, InjectedProps } from 'react-native-navigation-hybrid'
 import styles, { paddingTop } from './Styles'
 
 export default withNavigationItem({
@@ -9,7 +9,7 @@ export default withNavigationItem({
   topBarColor: '#FF0000',
 })(TopBarColor)
 
-function TopBarColor({ garden, navigator }) {
+function TopBarColor({ garden, navigator }: InjectedProps) {
   function red() {
     garden.updateOptions({ topBarColor: '#FF0000' })
   }

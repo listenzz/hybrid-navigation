@@ -9,6 +9,8 @@ import {
   useVisibleEffect,
   useVisible,
   useResult,
+  InjectedProps,
+  ResultType,
 } from 'react-native-navigation-hybrid'
 
 export default withNavigationItem({
@@ -27,9 +29,13 @@ export default withNavigationItem({
   },
 })(Navigation)
 
-function Navigation({ navigator, garden, sceneId, popToId }) {
-  const [text, setText] = useState(undefined)
-  const [error, setError] = useState(undefined)
+interface Props extends InjectedProps {
+  popToId?: string
+}
+
+function Navigation({ navigator, garden, sceneId, popToId }: Props) {
+  const [text, setText] = useState<string>()
+  const [error, setError] = useState<string>()
   const [isRoot, setIsRoot] = useState(false)
 
   useEffect(() => {
@@ -74,7 +80,7 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   })
 
   async function push() {
-    let props = {}
+    let props: Partial<Props> = {}
     if (!isRoot) {
       if (popToId !== undefined) {
         props.popToId = popToId
@@ -95,7 +101,9 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
   }
 
   async function popTo() {
-    await navigator.popTo(popToId)
+    if (popToId) {
+      await navigator.popTo(popToId)
+    }
     //await printRouteGraph()
   }
 
@@ -124,7 +132,7 @@ function Navigation({ navigator, garden, sceneId, popToId }) {
     await navigator.switchTab(1)
   }
 
-  function handleResult(resultCode, data) {
+  function handleResult(resultCode: number, data: ResultType) {
     if (resultCode === RESULT_OK) {
       setText(data?.text)
       setError(undefined)

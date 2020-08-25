@@ -7,7 +7,7 @@ import {
   RESULT_OK,
   BarStyleLightContent,
   withNavigationItem,
-  Navigator,
+  InjectedProps,
 } from 'react-native-navigation-hybrid'
 
 export default withNavigationItem({
@@ -26,7 +26,7 @@ export default withNavigationItem({
   }),
 })(Result)
 
-function Result({ navigator, garden }) {
+function Result({ navigator, garden }: InjectedProps) {
   const [text, setText] = useState('')
   const [isRoot, setIsRoot] = useState(false)
 
@@ -41,7 +41,7 @@ function Result({ navigator, garden }) {
       garden.setLeftBarButtonItem({
         title: 'Cancel',
         icon: Image.resolveAssetSource(require('./images/cancel.png')),
-        insets: { top: -1, left: -8, bottom: 0, right: 8 },
+        insetsIOS: { top: -1, left: -8, bottom: 0, right: 8 },
         action: (navigator) => {
           navigator.dismiss()
         },
@@ -77,7 +77,7 @@ function Result({ navigator, garden }) {
     // current.push('Navigation')
   }
 
-  function handleTextChanged(text) {
+  function handleTextChanged(text: string) {
     setText(text)
   }
 

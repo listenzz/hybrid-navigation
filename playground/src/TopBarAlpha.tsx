@@ -11,11 +11,7 @@ import {
 } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import styles from './Styles'
-import { withNavigationItem } from 'react-native-navigation-hybrid'
-
-function ifKitKat(obj1 = {}, obj2 = {}) {
-  return Platform.Version > 18 ? obj1 : obj2
-}
+import { withNavigationItem, InjectedProps } from 'react-native-navigation-hybrid'
 
 const paddingTop = Platform.select({
   ios: {
@@ -29,14 +25,7 @@ const paddingTop = Platform.select({
     ),
   },
   android: {
-    ...ifKitKat(
-      {
-        paddingTop: 12 + StatusBar.currentHeight,
-      },
-      {
-        paddingTop: 12,
-      },
-    ),
+    paddingTop: 12 + StatusBar.currentHeight!,
   },
 })
 
@@ -52,7 +41,12 @@ export default withNavigationItem({
   },
 })(TopBarAlpha)
 
-function TopBarAlpha({ garden, navigator, color, alpha }) {
+interface Props extends InjectedProps {
+  color: string
+  alpha: number
+}
+
+function TopBarAlpha({ garden, navigator, color, alpha }: Props) {
   const [topBarAlpha, setTopBarAlpha] = useState(alpha ? Number(alpha) : 0.5)
   let topBarColor = color || '#FFFFFF'
 
@@ -67,7 +61,7 @@ function TopBarAlpha({ garden, navigator, color, alpha }) {
     navigator.push('TopBarAlpha')
   }
 
-  function handleAlphaChange(value) {
+  function handleAlphaChange(value: number) {
     setTopBarAlpha(value)
   }
 

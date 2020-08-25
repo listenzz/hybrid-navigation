@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native'
-import { BarStyleLightContent, BarStyleDarkContent } from 'react-native-navigation-hybrid'
+import {
+  BarStyleLightContent,
+  BarStyleDarkContent,
+  InjectedProps,
+  Style,
+} from 'react-native-navigation-hybrid'
 import styles, { paddingTop } from './Styles'
 import { withNavigationItem } from 'react-native-navigation-hybrid'
 
@@ -31,8 +36,8 @@ export default withNavigationItem({
   },
 })(TopBarStyle)
 
-function TopBarStyle({ navigator, garden }) {
-  const [style, setStyle] = useState(null)
+function TopBarStyle({ navigator, garden }: InjectedProps) {
+  const [style, setStyle] = useState<Style>()
 
   useEffect(() => {
     if (style) {

@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native'
-import { Navigator, withNavigationItem, useVisibleEffect } from 'react-native-navigation-hybrid'
+import {
+  Navigator,
+  withNavigationItem,
+  useVisibleEffect,
+  InjectedProps,
+  ImageSource,
+  TabBarStyle,
+  TabBadge,
+} from 'react-native-navigation-hybrid'
 
 import styles from './Styles'
 import getLayout from './layout'
@@ -34,7 +42,7 @@ export default withNavigationItem({
   },
 })(Options)
 
-function Options({ sceneId, navigator, garden }) {
+function Options({ sceneId, navigator, garden }: InjectedProps) {
   const visibleCallback = useCallback(() => {
     console.info(`Page Options is visible`)
     garden.setMenuInteractive(true)
@@ -62,7 +70,7 @@ function Options({ sceneId, navigator, garden }) {
 
   useEffect(() => {
     if (leftButtonShowText) {
-      garden.setLeftBarButtonItem({ icon: null })
+      garden.setLeftBarButtonItem({ icon: undefined })
     } else {
       garden.setLeftBarButtonItem({
         icon: Image.resolveAssetSource(require('./images/menu.png')),
@@ -99,7 +107,7 @@ function Options({ sceneId, navigator, garden }) {
     navigator.switchTab(0)
   }
 
-  const [badges, setBadges] = useState(null)
+  const [badges, setBadges] = useState<Array<TabBadge>>()
 
   function toggleTabBadge() {
     if (badges && badges[0].dot) {
@@ -129,7 +137,8 @@ function Options({ sceneId, navigator, garden }) {
     navigator.push('Lifecycle')
   }
 
-  const [icon, setIcon] = useState(null)
+  const [icon, setIcon] = useState<ImageSource>()
+
   function replaceTabIcon() {
     if (icon && icon.uri === 'flower') {
       setIcon(Image.resolveAssetSource(require('./images/flower_1.png')))
@@ -147,7 +156,7 @@ function Options({ sceneId, navigator, garden }) {
     }
   }, [icon, garden])
 
-  const [tabItemColor, setTabItemColor] = useState(null)
+  const [tabItemColor, setTabItemColor] = useState<TabBarStyle>()
 
   function replaceTabItemColor() {
     if (tabItemColor && tabItemColor.tabBarItemColor === '#8BC34A') {
@@ -169,7 +178,7 @@ function Options({ sceneId, navigator, garden }) {
     }
   }, [tabItemColor, garden])
 
-  const [tabBarColor, setTabBarColor] = useState(null)
+  const [tabBarColor, setTabBarColor] = useState<TabBarStyle>()
 
   function updateTabBarColor() {
     if (tabBarColor && tabBarColor.tabBarColor === '#EEEEEE') {

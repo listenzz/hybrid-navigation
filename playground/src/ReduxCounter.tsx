@@ -1,16 +1,24 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, Component, ComponentType } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native'
 import {
   BarStyleLightContent,
   withNavigationItem,
   useVisibleEffect,
+  InjectedProps,
+  NavigationItem,
 } from 'react-native-navigation-hybrid'
 import { createStore } from 'redux'
-import { connect } from 'react-redux'
+import { connect, Provider } from 'react-redux'
 import styles, { paddingTop } from './Styles'
 
+interface Props extends InjectedProps {
+  value: number
+  onDecreaseClick: () => void
+  onIncreaseClick: () => void
+}
+
 // React component
-function ReduxCounter({ sceneId, navigator, value, onDecreaseClick, onIncreaseClick }) {
+function ReduxCounter({ sceneId, navigator, value, onDecreaseClick, onIncreaseClick }: Props) {
   const visibleCallback = useCallback(() => {
     console.info(`Page ReduxCounter is visible`)
     return () => {
@@ -41,11 +49,20 @@ function ReduxCounter({ sceneId, navigator, value, onDecreaseClick, onIncreaseCl
 }
 
 // Action
-const increaseAction = { type: 'increase' }
-const decreaseAction = { type: 'decrease' }
+
+interface Action {
+  type: string
+}
+
+const increaseAction: Action = { type: 'increase' }
+const decreaseAction: Action = { type: 'decrease' }
+
+interface State {
+  count: number
+}
 
 // Reducer
-function counter(state = { count: 0 }, action) {
+function counter(state: State = { count: 0 }, action: Action) {
   const count = state.count
   switch (action.type) {
     case 'increase':
@@ -61,21 +78,21 @@ function counter(state = { count: 0 }, action) {
 const store = createStore(counter)
 
 // Map Redux state to component props
-function mapStateToProps(state) {
+function mapStateToProps(state: { count: number }) {
   return {
     value: state.count,
   }
 }
 
 // Map Redux actions to component props
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: (action: Action) => void) {
   return {
     onIncreaseClick: () => dispatch(increaseAction),
     onDecreaseClick: () => dispatch(decreaseAction),
   }
 }
 
-const navigationItem = {
+const navigationItem: NavigationItem = {
   extendedLayoutIncludesTopBar: true,
   topBarStyle: BarStyleLightContent,
   statusBarColorAndroid: '#00000000',
@@ -112,4 +129,21 @@ export default connect(
   mapDispatchToProps,
 )(withNavigationItem(navigationItem)(ReduxCounter))
 
-export { store }
+export function withRedux(WrappedComponent: ComponentType<any>) {
+  return class ReduxProvider extends Component {
+    static displayName = `withRedux(${WrappedComponent.displayName})`
+    componentDidMount() {
+      // 获取 displayName
+      console.info(`displayName:${ReduxProvider.displayName}`)
+    }
+
+    render() {
+      return (
+        // @ts-ignore
+        <Provider store={store}>
+          <WrappedComponent {...this.props} />
+        </Provider>
+      )
+    }
+  }
+}

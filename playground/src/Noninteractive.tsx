@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, Text, View, ScrollView } from 'react-native'
-import { withNavigationItem } from 'react-native-navigation-hybrid'
+import { withNavigationItem, InjectedProps } from 'react-native-navigation-hybrid'
 import styles from './Styles'
 
 export default withNavigationItem({
@@ -12,7 +12,7 @@ export default withNavigationItem({
   },
 })(Noninteractive)
 
-function Noninteractive({ navigator, garden }) {
+function Noninteractive({ navigator, garden }: InjectedProps) {
   const [backInteractive, setBackInteractive] = useState(false)
 
   function handleBackClick() {

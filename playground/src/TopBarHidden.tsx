@@ -1,12 +1,8 @@
 import React from 'react'
 import { TouchableOpacity, Text, View, ScrollView, StatusBar, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
-import { withNavigationItem } from 'react-native-navigation-hybrid'
+import { withNavigationItem, InjectedProps } from 'react-native-navigation-hybrid'
 import styles from './Styles'
-
-function ifKitKat(obj1 = {}, obj2 = {}) {
-  return Platform.Version > 18 ? obj1 : obj2
-}
 
 const paddingTop = Platform.select({
   ios: {
@@ -20,14 +16,7 @@ const paddingTop = Platform.select({
     ),
   },
   android: {
-    ...ifKitKat(
-      {
-        paddingTop: 16 + StatusBar.currentHeight,
-      },
-      {
-        paddingTop: 16,
-      },
-    ),
+    paddingTop: 16 + StatusBar.currentHeight!,
   },
 })
 
@@ -38,7 +27,7 @@ export default withNavigationItem({
   },
 })(TopBarHidden)
 
-function TopBarHidden({ navigator }) {
+function TopBarHidden({ navigator }: InjectedProps) {
   function topBarHidden() {
     navigator.push('TopBarHidden')
   }

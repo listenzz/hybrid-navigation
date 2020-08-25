@@ -1,9 +1,9 @@
 import React, { useCallback } from 'react'
 import { Text, View, ScrollView, Alert } from 'react-native'
 import styles from './Styles'
-import { useVisibleEffect, withNavigationItem } from 'react-native-navigation-hybrid'
+import { useVisibleEffect, withNavigationItem, InjectedProps } from 'react-native-navigation-hybrid'
 
-function Lifecycle({ sceneId }) {
+function Lifecycle({ sceneId }: InjectedProps) {
   const visibleCallback = useCallback(() => {
     Alert.alert(
       'Lifecycle Alert!',

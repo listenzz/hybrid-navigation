@@ -1,13 +1,9 @@
 import React, { useCallback } from 'react'
 import { TouchableOpacity, Text, View, StatusBar, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
-import { toolbarHeight, useVisibleEffect } from 'react-native-navigation-hybrid'
+import { toolbarHeight, useVisibleEffect, InjectedProps } from 'react-native-navigation-hybrid'
 
 import styles from './Styles'
-
-function ifKitKat(obj1 = {}, obj2 = {}) {
-  return Platform.Version > 18 ? obj1 : obj2
-}
 
 const paddingTop = Platform.select({
   ios: {
@@ -21,18 +17,11 @@ const paddingTop = Platform.select({
     ),
   },
   android: {
-    ...ifKitKat(
-      {
-        paddingTop: 16 + StatusBar.currentHeight + toolbarHeight,
-      },
-      {
-        paddingTop: 16 + toolbarHeight,
-      },
-    ),
+    paddingTop: 16 + StatusBar.currentHeight! + toolbarHeight,
   },
 })
 
-export default function Menu({ navigator, sceneId }) {
+export default function Menu({ navigator, sceneId }: InjectedProps) {
   const push = useCallback(() => {
     navigator.closeMenu()
     navigator.push('OneNative')

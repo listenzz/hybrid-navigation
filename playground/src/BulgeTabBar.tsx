@@ -1,9 +1,28 @@
 import React from 'react'
-import { Text, View, TouchableOpacity, StyleSheet, Platform, Dimensions, Image } from 'react-native'
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  Dimensions,
+  Image,
+  ViewProps,
+  ViewStyle,
+} from 'react-native'
 import TextBadge from './Badge'
 import FastImage from 'react-native-fast-image'
+import { Color, InjectedProps } from 'react-native-navigation-hybrid'
 
 const PlatformImage = Platform.OS === 'android' ? FastImage : Image
+
+interface Props extends InjectedProps {
+  itemColor: Color
+  unselectedItemColor: Color
+  badgeColor: Color
+  tabs: any[]
+  selectedIndex: number
+}
 
 export default function BulgeTabBar({
   navigator,
@@ -12,8 +31,8 @@ export default function BulgeTabBar({
   badgeColor,
   tabs,
   selectedIndex,
-}) {
-  async function handleTabClick(index) {
+}: Props) {
+  async function handleTabClick(index: number) {
     if (index === -1) {
       const [resultCode, data] = await navigator.present('Result')
       console.log(resultCode, data)
@@ -53,6 +72,19 @@ export default function BulgeTabBar({
   )
 }
 
+interface TabProps {
+  onTabClick: () => void
+  icon: string
+  title: string
+  selected: boolean
+  unselectedItemColor: Color
+  itemColor: Color
+  badgeText: string
+  textBadgeStyle: ViewStyle
+  dot: boolean
+  dotBadgeStyle: ViewStyle
+}
+
 function Tab({
   onTabClick,
   icon,
@@ -64,7 +96,7 @@ function Tab({
   textBadgeStyle,
   dot,
   dotBadgeStyle,
-}) {
+}: Partial<TabProps>) {
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       {icon ? (
@@ -95,7 +127,7 @@ function Tab({
   )
 }
 
-function DotBadge(props) {
+function DotBadge(props: ViewProps) {
   return <View style={[styles.dotBadge, props.style]} />
 }
 

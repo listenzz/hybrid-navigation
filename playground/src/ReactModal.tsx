@@ -1,9 +1,14 @@
 import React, { useEffect, useCallback } from 'react'
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import withBottomModal from './withBottomModal'
-import { RESULT_OK, Navigator, useVisibleEffect } from 'react-native-navigation-hybrid'
+import {
+  RESULT_OK,
+  Navigator,
+  useVisibleEffect,
+  InjectedProps,
+} from 'react-native-navigation-hybrid'
 
-function ReactModal({ navigator, sceneId }) {
+function ReactModal({ navigator, sceneId }: InjectedProps) {
   useEffect(() => {
     navigator.setResult(RESULT_OK, {
       text: 'Are you male or female?',
@@ -20,7 +25,7 @@ function ReactModal({ navigator, sceneId }) {
 
   useVisibleEffect(sceneId, visibleCallback)
 
-  async function hideModal(gender) {
+  async function hideModal(gender?: string) {
     if (gender) {
       navigator.setResult(RESULT_OK, {
         text: gender,
@@ -51,7 +56,7 @@ function ReactModal({ navigator, sceneId }) {
     },
   ]
 
-  const renderItem = (text, onPress) => {
+  const renderItem = (text: string, onPress: () => void) => {
     return (
       <TouchableHighlight onPress={onPress} underlayColor={'#212121'}>
         <View style={styles.item}>

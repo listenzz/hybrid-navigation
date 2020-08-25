@@ -10,22 +10,22 @@ import {
 } from 'react-native'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { useLayout, useBackHandler } from '@react-native-community/hooks'
+import { InjectedProps } from 'react-native-navigation-hybrid'
 
 export default function withBottomModal({
   cancelable = true,
   safeAreaColor = '#ffffff',
-  navigationBarColor,
+  navigationBarColor = '#ffffff',
 } = {}) {
-  return function (WrappedComponent) {
-    function BottomModal(props, ref) {
+  return function (WrappedComponent: React.ComponentType<any>) {
+    function BottomModal(props: InjectedProps, ref: React.Ref<React.ComponentType<any>>) {
       const animatedHeight = useRef(new Animated.Value(Dimensions.get('screen').height))
-
       const { onLayout, height } = useLayout()
 
       const realHideModal = useRef(props.navigator.hideModal)
 
       const hideModal = useCallback(() => {
-        return new Promise((resolve) => {
+        return new Promise<boolean>((resolve) => {
           Animated.timing(animatedHeight.current, {
             toValue: height,
             duration: 200,
@@ -65,8 +65,7 @@ export default function withBottomModal({
             {
               transform: [{ translateY: animatedHeight.current }],
             },
-          ]}
-          useNativeDriver>
+          ]}>
           <TouchableWithoutFeedback onPress={handleHardwareBackPress} style={styles.flex1}>
             <View style={styles.flex1} />
           </TouchableWithoutFeedback>
@@ -79,16 +78,17 @@ export default function withBottomModal({
       )
     }
 
-    const FREC = React.forwardRef(BottomModal)
+    const FC = React.forwardRef(BottomModal)
     const name = WrappedComponent.displayName || WrappedComponent.name
-    FREC.displayName = `withBottomModal(${name})`
+    FC.displayName = `withBottomModal(${name})`
 
-    const navigationItem = WrappedComponent.navigationItem || {}
+    const navigationItem = (WrappedComponent as any).navigationItem || {}
     if (!navigationItem.navigationBarColorAndroid) {
       navigationItem.navigationBarColorAndroid = navigationBarColor
     }
-    FREC.navigationItem = navigationItem
-    return FREC
+    ;(FC as any).navigationItem = navigationItem
+
+    return FC
   }
 }
 

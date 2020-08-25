@@ -9,8 +9,8 @@ export default withNavigationItem({
   },
 })(ToastComponent)
 
-function ToastComponent({ navigator }) {
-  const timer = useRef(undefined)
+function ToastComponent() {
+  const timer = useRef<NodeJS.Timeout>()
   useEffect(() => {
     Toast.config({
       // backgroundColor: '#BB000000',

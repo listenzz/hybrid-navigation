@@ -1,3 +1,5 @@
+import { Tabs } from 'react-native-navigation-hybrid'
+
 let tabLayoutStyle = 'custom'
 
 export default function getLayout() {
@@ -13,7 +15,7 @@ export default function getLayout() {
     },
   }
 
-  let options = { selectedIndex: 1 }
+  let options: Tabs['tabs']['options'] = { selectedIndex: 1 }
   if (tabLayoutStyle === 'bulge') {
     tabLayoutStyle = 'normal'
     options = {
@@ -35,7 +37,7 @@ export default function getLayout() {
     }
   }
 
-  const tabs = {
+  const tabs: Tabs = {
     tabs: {
       children: [navigationStack, optionsStack],
       options: options,
