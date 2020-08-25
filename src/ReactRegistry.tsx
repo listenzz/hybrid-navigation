@@ -11,11 +11,12 @@ import {
   ON_COMPONENT_APPEAR,
   ON_COMPONENT_DISAPPEAR,
 } from './NavigationModule'
-import { Garden, NavigationItem } from './Garden'
+import { Garden } from './Garden'
 import { RouteConfig, router } from './router'
 import store from './store'
 import { bindBarButtonItemClickEvent, removeBarButtonItemClickEvent } from './utils'
 import { useResult } from './hooks'
+import { NavigationItem } from './typing'
 
 export interface InjectedProps {
   navigator: Navigator

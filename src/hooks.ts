@@ -13,6 +13,7 @@ import {
   KEY_RESULT_DATA,
 } from './NavigationModule'
 import { Navigator } from './Navigator'
+import { ResultType } from './typing'
 
 export type Visibility = 'visible' | 'gone' | 'pending'
 
@@ -59,7 +60,7 @@ export function useVisibleEffect(sceneId: string, effect: React.EffectCallback) 
 
 export function useResult(
   sceneId: string,
-  fn: (requestCode: number, resultCode: number, data: { [x: string]: any }) => void,
+  fn: (requestCode: number, resultCode: number, data: ResultType) => void,
 ) {
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data) => {

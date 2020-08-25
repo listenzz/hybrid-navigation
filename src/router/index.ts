@@ -1,5 +1,4 @@
-import { IndexType, Navigator, PropsType } from '../Navigator'
-import { NavigationItem } from '../Garden'
+import { Navigator } from '../Navigator'
 import {
   RouteConfig,
   RouteData,
@@ -12,6 +11,7 @@ import { pathToRegexp, match } from 'path-to-regexp'
 import stackHandler from './stack'
 import tabsHandler from './tabs'
 import drawerHandler from './drawer'
+import { PropsType, NavigationItem, IndexType } from '../typing'
 
 let routeDatas = new Map<string, RouteData>()
 let interceptors = new Set<RouteInterceptor>()

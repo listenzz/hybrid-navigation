@@ -11,24 +11,16 @@ import {
 } from './NavigationModule'
 import { bindBarButtonItemClickEvent } from './utils'
 import store from './store'
-import { NavigationItem } from './Garden'
 import { RouteGraph, Route } from './router'
 import { Visibility } from './hooks'
-
-export interface IndexType {
-  [index: string]: any
-}
-
-export interface PropsType {
-  [index: string]: any
-}
-
-export type ResultType = IndexType | null
-
-interface Extras {
-  sceneId: string
-  index?: number
-}
+import {
+  IndexType,
+  ResultType,
+  NavigationInterceptor,
+  Layout,
+  NavigationItem,
+  PropsType,
+} from './typing'
 
 interface Params {
   animated?: boolean
@@ -47,54 +39,9 @@ interface NavigationState {
   resultListeners: ResultListener<any>[]
 }
 
-export interface NavigationInterceptor {
-  (action: string, from?: string, to?: string, extras?: Extras): boolean | Promise<boolean>
-}
-
 interface ResultListener<T extends ResultType> {
   (requestCode: number, resultCode: number, data: T): void
   cancel: () => void
-}
-
-export interface Layout {
-  [index: string]: {}
-}
-
-export interface Screen extends Layout {
-  screen: {
-    moduleName: string
-    props?: IndexType
-    options?: NavigationItem
-  }
-}
-
-export interface Stack extends Layout {
-  stack: {
-    children: Layout[]
-    options?: {}
-  }
-}
-
-export interface Tabs extends Layout {
-  tabs: {
-    children: Layout[]
-    options?: {
-      selectedIndex?: number
-      tabBarModuleName?: string
-      sizeIndeterminate?: boolean
-    }
-  }
-}
-
-export interface Drawer extends Layout {
-  drawer: {
-    children: [Layout, Layout]
-    options?: {
-      maxDrawerWidth?: number
-      minDrawerMargin?: number
-      menuInteractive?: boolean
-    }
-  }
 }
 
 let interceptor: NavigationInterceptor

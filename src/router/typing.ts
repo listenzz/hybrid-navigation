@@ -1,5 +1,4 @@
-import { PropsType } from '../Navigator'
-import { NavigationItem } from 'src/Garden'
+import { PropsType, NavigationItem } from '../typing'
 
 export type RouteMode = 'modal' | 'present' | 'push'
 export type LayoutMode = 'modal' | 'present' | 'normal'
