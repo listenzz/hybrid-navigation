@@ -278,8 +278,6 @@ protected void onCreateMainComponent() {
 />
 ```
 
-<a name="sync-build-version"></a>
-
 在 AndroidManifest.xml 中添加如下权限
 
 ```xml

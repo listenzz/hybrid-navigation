@@ -410,8 +410,6 @@ navigator.push('B')
 navigator.push('B', {...});
 ```
 
-> 注意：第二个参数只支持可以序列化为 json 的对象，不支持函数
-
 B 页面通过 `props` 来访问传递过来的值
 
 - **pushLayout&lt;T&gt;(layout: Layout): Promise&lt;[number, T]&gt;**
@@ -587,27 +585,14 @@ navigator.closeMenu()
   currrent.present('XXX')
   ```
 
-- 如果由于某些原因，需要**异步地**或者**在页面之外**执行路由操作，那么请合理使用 `Navigator.current`、`Navigator.currentRoute`、`Navigator.routeGraph`、`Navigator.get` 等静态方法。
+- 如果由于某些原因，需要**在页面之外**执行导航操作，可以使用 `router`，它会自动获取合适的 navigator 来执行操作，必要时关闭一些页面。
 
-  假如你有这么一个需求，在收到服务器推送后，需要 present 出一个页面，可以这么做：
-
-  ```javascript
-  // 通过 currentRoute 获取当前的路由信息
-  let route = await Navigator.currentRoute()
-  while (route.mode === 'modal') {
-    // 通过路由信息中的 sceneId 来获取当前页面的 navigator
-    const current = Navigator.get(route.sceneId)
-    // 因为我们不能 present 一个页面在 modal 之上，所以先要隐藏 modal
-    current.hideModal()
-    // 再次获取**当前**的路由信息
-    route = await Navigator.currentRoute()
-  }
-  // 关闭 modal 后，再次获取**当前页面**的 navigator
-  const current = Navigator.get(route.sceneId)
-  // 最后，终于到这一步了
-  current.present('Foo')
+  ```js
+  router.open('/path/to/Foo')
   ```
 
-  如果收到服务器推送后，需要通过特定页面执行路由操作，那么可以通过 `Navigator.routeGraph` 获取整张路由图来解析，获得相应的 navigator 来关闭所有不需要的页面，最后通过特定页面的 navigator 来执行目标动作。
+  使用 router，在通过 `ReactRegistry.registerComponent` 注册模块时，需要传递第三个参数，详情请查看[路由注册](./deeplink.md#router-config)
 
-  [DeepLink](./deeplink.md) 也是一种方式，它会自动获取合适的 navigator 来执行操作，必要时关闭一些页面。
+  如果需要从第三方应用(譬如浏览器)打开 App 指定页面，则需要使用 [DeepLink](./deeplink.md)。
+
+  > 在应用内使用 `router.open` 并不需要激活 DeepLink，也不需要配置 schema

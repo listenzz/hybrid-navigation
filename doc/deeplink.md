@@ -4,6 +4,8 @@
 
 ## 注册
 
+<a name="router-config"></a>
+
 需要支持 DeepLink 的页面，在注册时需要传入第三个参数
 
 ```javascript
