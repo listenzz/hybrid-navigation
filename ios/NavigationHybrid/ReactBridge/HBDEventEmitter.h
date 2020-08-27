@@ -16,7 +16,6 @@ extern NSString * const ON_COMPONENT_RESULT;
 extern NSString * const ON_BAR_BUTTON_ITEM_CLICK;
 extern NSString * const ON_COMPONENT_APPEAR;
 extern NSString * const ON_COMPONENT_DISAPPEAR;
-extern NSString * const ON_DIALOG_BACK_PRESSED;
 extern NSString * const ON_COMPONENT_MOUNT;
 extern NSString * const EVENT_SWITCH_TAB;
 extern NSString * const EVENT_NAVIGATION;
