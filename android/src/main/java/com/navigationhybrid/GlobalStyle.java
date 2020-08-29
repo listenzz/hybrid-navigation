@@ -58,6 +58,8 @@ public class GlobalStyle {
         String topBarStyle = options.getString("topBarStyle");
         if (topBarStyle != null) {
             style.setStatusBarStyle(topBarStyle.equals("dark-content") ? BarStyle.DarkContent : BarStyle.LightContent);
+        } else {
+            style.setStatusBarStyle(BarStyle.DarkContent);
         }
 
         // topBarColor
@@ -70,6 +72,16 @@ public class GlobalStyle {
             } else {
                 style.setToolbarBackgroundColor(Color.WHITE);
             }
+        }
+
+        String topBarColorDarkContent = options.getString("topBarColorDarkContent");
+        if (topBarColorDarkContent != null) {
+            style.setToolbarBackgroundColorDarkContent(Color.parseColor(topBarColorDarkContent));
+        }
+
+        String topBarColorLightContent = options.getString("topBarColorLightContent");
+        if (topBarColorLightContent != null) {
+            style.setToolbarBackgroundColorLightContent(Color.parseColor(topBarColorLightContent));
         }
 
         // statusBarColor
@@ -121,10 +133,30 @@ public class GlobalStyle {
             style.setToolbarTintColor(Color.parseColor(topBarTintColor));
         }
 
+        String topBarTintColorDarkContent = options.getString("topBarTintColorDarkContent");
+        if (topBarTintColorDarkContent != null) {
+            style.setToolbarTintColorDarkContent(Color.parseColor(topBarTintColorDarkContent));
+        }
+
+        String topBarTintColorLightContent = options.getString("topBarTintColorLightContent");
+        if (topBarTintColorLightContent != null) {
+            style.setToolbarTintColorLightContent(Color.parseColor(topBarTintColorLightContent));
+        }
+
         // titleTextColor
         String titleTextColor = options.getString("titleTextColor");
         if (titleTextColor != null) {
             style.setTitleTextColor(Color.parseColor(titleTextColor));
+        }
+
+        String titleTextColorDarkContent = options.getString("titleTextColorDarkContent");
+        if (titleTextColorDarkContent != null) {
+            style.setTitleTextColorDarkContent(Color.parseColor(titleTextColorDarkContent));
+        }
+
+        String titleTextColorLightContent = options.getString("titleTextColorLightContent");
+        if (titleTextColorLightContent != null) {
+            style.setTitleTextColorLightContent(Color.parseColor(titleTextColorLightContent));
         }
 
         // titleTextSize

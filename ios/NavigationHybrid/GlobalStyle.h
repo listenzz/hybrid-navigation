@@ -27,4 +27,10 @@
 
 - (void)inflateTabBar:(UITabBar *)tabBar;
 
+- (UIColor *)titleTextColorWithBarStyle:(UIBarStyle)barStyle;
+
+- (UIColor *)tintColorWithBarStyle:(UIBarStyle)barStyle;
+
+- (UIColor *)barTintColorWithBarStyle:(UIBarStyle)barStyle;
+
 @end

@@ -17,19 +17,25 @@ export interface ShadowImage {
 
 export interface Style {
   screenBackgroundColor?: Color // 页面背景，默认是白色
-  topBarStyle?: BarStyle // 顶部导航栏样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
-  topBarColor?: Color // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
+  topBarStyle?: BarStyle // TopBar 样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
+  topBarColor?: Color // TopBar 背景颜色，默认根据 topBarStyle 来计算
+  topBarColorDarkContent?: Color // TopBar 背景颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 topBarColor 的值
+  topBarColorLightContent?: Color // TopBar 背景颜色，当 topBarStyle 的值为 BarStyleLightContent 时生效，覆盖 topBarColor 的值
   statusBarColorAndroid?: Color // 状态栏背景颜色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
   navigationBarColorAndroid?: Color // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
   hideBackTitleIOS?: boolean // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-  elevationAndroid?: number // 顶部导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
-  shadowImage?: ShadowImage // 顶部导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
+  elevationAndroid?: number // TopBar 阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
+  shadowImage?: ShadowImage // TopBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
   backIcon?: ImageSource // 返回按钮图片
-  topBarTintColor?: Color // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
-  titleTextColor?: Color // 顶部导航栏标题颜色，默认根据 topBarStyle 来计算
-  titleTextSize?: number // 顶部导航栏标题字体大小，默认是 17 dp(pt)
-  titleAlignmentAndroid?: TitleAlignment // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
-  barButtonItemTextSize?: number // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
+  topBarTintColor?: Color // TopBar 按钮的颜色。默认根据 topBarStyle 来计算
+  topBarTintColorDarkContent?: Color // TopBar 按钮颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 topBarTintColor 的值
+  topBarTintColorLightContent?: Color // TopBar 按钮颜色，当 topBarStyle 的值为 BarStyleLightContent 时生效，覆盖 topBarTintColor 的值
+  titleTextColor?: Color // TopBar 标题颜色，默认根据 topBarStyle 来计算
+  titleTextColorDarkContent?: Color // TopBar 标题颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 titleTextColor 的值
+  titleTextColorLightContent?: Color // TopBar 标题颜色，当 topBarStyle 的值为 BarStyleLightContent 时生效，覆盖 titleTextColor 的值
+  titleTextSize?: number // TopBar 标题字体大小，默认是 17 dp(pt)
+  titleAlignmentAndroid?: TitleAlignment // TopBar 标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
+  barButtonItemTextSize?: number // TopBar 按钮字体大小，默认是 15 dp(pt)
   swipeBackEnabledAndroid?: boolean // Android 是否开启右滑返回，默认是 false
 
   tabBarColor?: Color // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。

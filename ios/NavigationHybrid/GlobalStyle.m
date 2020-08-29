@@ -17,8 +17,14 @@
 @property (nonatomic, strong) UIImage *shadowImage;
 @property (nonatomic, strong) UIImage *backIcon;
 @property (nonatomic, strong) UIColor *barTintColor;
+@property (nonatomic, strong) UIColor *barTintColorDarkContent;
+@property (nonatomic, strong) UIColor *barTintColorLightContent;
 @property (nonatomic, strong) UIColor *tintColor;
+@property (nonatomic, strong) UIColor *tintColorDarkContent;
+@property (nonatomic, strong) UIColor *tintColorLightContent;
 @property (nonatomic, strong) UIColor *titleTextColor;
+@property (nonatomic, strong) UIColor *titleTextColorDarkContent;
+@property (nonatomic, strong) UIColor *titleTextColorLightContent;
 @property (nonatomic, assign) NSInteger titleTextSize;
 @property (nonatomic, assign) NSInteger barButtonItemTextSize;
 
@@ -56,6 +62,16 @@
             self.barTintColor = [HBDUtils colorWithHexString:topBarColor];
         }
         
+        NSString *topBarColorDarkContent = self.options[@"topBarColorDarkContent"];
+        if (topBarColorDarkContent) {
+            self.barTintColorDarkContent = [HBDUtils colorWithHexString:topBarColorDarkContent];
+        }
+        
+        NSString *topBarColorLightContent = self.options[@"topBarColorLightContent"];
+        if (topBarColorLightContent) {
+            self.barTintColorLightContent = [HBDUtils colorWithHexString:topBarColorLightContent];
+        }
+        
         // navigationBar shadowImeage
         NSDictionary *shadowImeage = self.options[@"shadowImage"];
         if (shadowImeage && ![shadowImeage isEqual:NSNull.null]) {
@@ -91,10 +107,30 @@
             self.tintColor = [HBDUtils colorWithHexString:topBarTintColor];
         }
         
+        NSString *topBarTintColorDarkContent = self.options[@"topBarTintColorDarkContent"];
+        if (topBarTintColorDarkContent) {
+            self.tintColorDarkContent = [HBDUtils colorWithHexString:topBarTintColorDarkContent];
+        }
+        
+        NSString *topBarTintColorLightContent = self.options[@"topBarTintColorLightContent"];
+        if (topBarTintColorLightContent) {
+            self.tintColorLightContent = [HBDUtils colorWithHexString:topBarTintColorLightContent];
+        }
+        
         // titleTextColor,
          NSString *titleTextColor = self.options[@"titleTextColor"];
         if (titleTextColor) {
             self.titleTextColor = [HBDUtils colorWithHexString:titleTextColor];
+        }
+        
+        NSString *titleTextColorDarkContent = self.options[@"titleTextColorDarkContent"];
+        if (titleTextColorDarkContent) {
+            self.titleTextColorDarkContent = [HBDUtils colorWithHexString:titleTextColorDarkContent];
+        }
+        
+        NSString *titleTextColorLightContent = self.options[@"titleTextColorLightContent"];
+        if (titleTextColorLightContent) {
+            self.titleTextColorLightContent = [HBDUtils colorWithHexString:titleTextColorLightContent];
         }
         
         // titleTextSize
@@ -218,6 +254,102 @@
             [tabBar setUnselectedItemTintColor:self.tabBarUnselectedTintColor];
         }
     }
+}
+
+@synthesize barTintColor = _barTintColor;
+
+- (void)setBarTintColor:(UIColor *)barTintColor {
+    _barTintColor = barTintColor;
+    _barTintColorDarkContent = barTintColor;
+    _barTintColorLightContent = barTintColor;
+}
+
+- (UIColor *)barTintColor {
+    return [self barTintColorWithBarStyle:_barStyle];
+}
+
+- (UIColor *)barTintColorWithBarStyle:(UIBarStyle)barStyle {
+    if (barStyle == UIBarStyleDefault && _barTintColorDarkContent) {
+        return _barTintColorDarkContent;
+    }
+    
+    if (barStyle != UIBarStyleDefault && _barTintColorLightContent) {
+        return _barTintColorLightContent;
+    }
+    
+    if (_barTintColor) {
+        return _barTintColor;
+    }
+    
+    if (barStyle == UIBarStyleDefault) {
+        return UIColor.whiteColor;
+    }
+    
+    return UIColor.blackColor;
+}
+
+@synthesize tintColor = _tintColor;
+
+- (void)setTintColor:(UIColor *)tintColor {
+    _tintColor = tintColor;
+    _tintColorDarkContent = tintColor;
+    _tintColorLightContent = tintColor;
+}
+
+- (UIColor *)tintColor {
+    return [self tintColorWithBarStyle:_barStyle];
+}
+
+- (UIColor *)tintColorWithBarStyle:(UIBarStyle)barStyle {
+    if (barStyle == UIBarStyleDefault && _tintColorDarkContent) {
+        return _tintColorDarkContent;
+    }
+    
+    if (barStyle != UIBarStyleDefault && _tintColorLightContent) {
+        return _tintColorLightContent;
+    }
+    
+    if (_tintColor) {
+        return _tintColor;
+    }
+    
+    if (barStyle == UIBarStyleDefault) {
+        return UIColor.blackColor;
+    }
+    
+    return UIColor.whiteColor;
+}
+
+@synthesize titleTextColor = _titleTextColor;
+
+- (void)setTitleTextColor:(UIColor *)titleTextColor {
+    _titleTextColor = titleTextColor;
+    _titleTextColorDarkContent = titleTextColor;
+    _titleTextColorLightContent = titleTextColor;
+}
+
+- (UIColor *)titleTextColor {
+    return [self titleTextColorWithBarStyle:_barStyle];
+}
+
+- (UIColor *)titleTextColorWithBarStyle:(UIBarStyle)barStyle {
+    if (barStyle == UIBarStyleDefault && _titleTextColorDarkContent) {
+           return _titleTextColorDarkContent;
+       }
+       
+       if (barStyle != UIBarStyleDefault && _titleTextColorLightContent) {
+           return _titleTextColorLightContent;
+       }
+       
+       if (_titleTextColor) {
+           return _titleTextColor;
+       }
+       
+       if (barStyle == UIBarStyleDefault) {
+           return UIColor.blackColor;
+       }
+       
+       return UIColor.whiteColor;
 }
 
 @end

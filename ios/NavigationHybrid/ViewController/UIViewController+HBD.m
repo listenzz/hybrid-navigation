@@ -109,6 +109,7 @@
     if ([UINavigationBar appearance].barTintColor) {
         return [UINavigationBar appearance].barTintColor;
     }
+    
     return [UINavigationBar appearance].barStyle == UIBarStyleDefault ? [UIColor whiteColor]: [UIColor blackColor];
 }
 
