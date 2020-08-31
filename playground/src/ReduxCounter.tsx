@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, Component, ComponentType } from 'react'
-import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native'
+import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
 import {
   BarStyleLightContent,
   withNavigationItem,
@@ -9,7 +9,7 @@ import {
 } from 'react-native-navigation-hybrid'
 import { createStore } from 'redux'
 import { connect, Provider } from 'react-redux'
-import styles, { paddingTop } from './Styles'
+import styles from './Styles'
 
 interface Props extends InjectedProps {
   value: number
@@ -37,7 +37,7 @@ function ReduxCounter({ sceneId, navigator, value, onDecreaseClick, onIncreaseCl
       contentInsetAdjustmentBehavior="never"
       automaticallyAdjustContentInsets={false}
       contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
-      <View style={[styles.container, paddingTop]}>
+      <View style={styles.container}>
         <Text style={styles.welcome}>{value}</Text>
 
         <TouchableOpacity onPress={onIncreaseClick} activeOpacity={0.2} style={styles.button}>
@@ -93,19 +93,9 @@ function mapDispatchToProps(dispatch: (action: Action) => void) {
 }
 
 const navigationItem: NavigationItem = {
-  extendedLayoutIncludesTopBar: true,
   topBarStyle: BarStyleLightContent,
-  statusBarColorAndroid: '#00000000',
-  topBarTintColor: '#FFFFFF',
   titleTextColor: '#FFFF00',
-  ...Platform.select({
-    ios: {
-      topBarColor: '#FF344C',
-    },
-    android: {
-      topBarColor: '#F94D53',
-    },
-  }),
+
   titleItem: {
     title: 'Redux Counter',
   },

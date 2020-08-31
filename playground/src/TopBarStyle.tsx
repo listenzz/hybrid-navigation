@@ -1,28 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { TouchableOpacity, Text, View, ScrollView, Platform, Image } from 'react-native'
+import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
 import {
   BarStyleLightContent,
   BarStyleDarkContent,
   InjectedProps,
   Style,
 } from 'react-native-navigation-hybrid'
-import styles, { paddingTop } from './Styles'
+import styles from './Styles'
 import { withNavigationItem } from 'react-native-navigation-hybrid'
 
 export default withNavigationItem({
-  extendedLayoutIncludesTopBar: true,
   topBarStyle: BarStyleLightContent,
-  statusBarColorAndroid: '#00000000',
-  topBarTintColor: '#FFFFFF',
-  titleTextColor: '#FFFFFF',
-  ...Platform.select({
-    ios: {
-      topBarColor: '#FF344C',
-    },
-    android: {
-      topBarColor: '#F94D53',
-    },
-  }),
 
   titleItem: {
     title: 'TopBar Style',
@@ -49,14 +37,10 @@ function TopBarStyle({ navigator, garden }: InjectedProps) {
     if (style && style.topBarStyle === BarStyleDarkContent) {
       setStyle({
         topBarStyle: BarStyleLightContent,
-        topBarTintColor: '#FFFFFF',
-        titleTextColor: '#FFFFFF',
       })
     } else {
       setStyle({
         topBarStyle: BarStyleDarkContent,
-        topBarTintColor: '#000000',
-        titleTextColor: '#000000',
       })
     }
   }
@@ -74,7 +58,7 @@ function TopBarStyle({ navigator, garden }: InjectedProps) {
       contentInsetAdjustmentBehavior="never"
       automaticallyAdjustContentInsets={false}
       contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
-      <View style={[styles.container, paddingTop]}>
+      <View style={styles.container}>
         <Text style={styles.text}>1. Status bar text can only be white on Android below 6.0</Text>
 
         <Text style={styles.text}>

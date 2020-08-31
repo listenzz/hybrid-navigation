@@ -156,10 +156,7 @@
         self.hbd_tintColor = [HBDUtils colorWithHexString:topBarTintColor];
     }
     
-    NSMutableDictionary *titleAttributes = [self.hbd_titleTextAttributes mutableCopy];
-    if (!titleAttributes) {
-        titleAttributes = [@{} mutableCopy];
-    }
+    NSMutableDictionary *titleAttributes = [@{} mutableCopy];
     NSString *titleTextColor = [options objectForKey:@"titleTextColor"];
     NSNumber *titleTextSize = [options objectForKey:@"titleTextSize"];
     if (titleTextColor) {
@@ -168,7 +165,16 @@
     if (titleTextSize) {
         [titleAttributes setObject:[UIFont systemFontOfSize:[titleTextSize floatValue]] forKey:NSFontAttributeName];
     }
-    self.hbd_titleTextAttributes = titleAttributes;
+    
+    if (titleAttributes.count > 0) {
+        if (self.hbd_titleTextAttributes) {
+            NSMutableDictionary *attributes = [self.hbd_titleTextAttributes mutableCopy];
+            [attributes addEntriesFromDictionary:titleAttributes];
+            self.hbd_titleTextAttributes = attributes;
+        } else {
+            self.hbd_titleTextAttributes = titleAttributes;
+        }
+    }
     
     NSString *topBarColor = options[@"topBarColor"];
     if (topBarColor) {

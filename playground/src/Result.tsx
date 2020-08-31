@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { TouchableOpacity, Text, View, TextInput, Platform, Image } from 'react-native'
+import { TouchableOpacity, Text, View, TextInput, Image } from 'react-native'
 import styles from './Styles'
 
 import {
@@ -15,15 +15,6 @@ export default withNavigationItem({
     title: 'RN result',
   },
   topBarStyle: BarStyleLightContent,
-  topBarTintColor: '#FFFFFF',
-  ...Platform.select({
-    ios: {
-      topBarColor: '#FF344C',
-    },
-    android: {
-      topBarColor: '#F94D53',
-    },
-  }),
 })(Result)
 
 function Result({ navigator, garden }: InjectedProps) {

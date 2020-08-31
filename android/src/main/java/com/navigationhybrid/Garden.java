@@ -247,7 +247,7 @@ public class Garden {
 
 
     private boolean shouldUpdateStatusBar(@NonNull ReadableMap readableMap) {
-        String[] keys = new String[]{"statusBarColorAndroid", "statusBarHidden", "topBarStyle", "topBarColor"};
+        String[] keys = new String[]{"topBarStyle", "statusBarColorAndroid", "statusBarHidden", "topBarColor"};
         for (String key : keys) {
             if (readableMap.hasKey(key)) {
                 return true;
@@ -258,6 +258,7 @@ public class Garden {
 
     private boolean shouldUpdateToolbar(@NonNull ReadableMap readableMap) {
         String[] keys = new String[]{
+                "topBarStyle",
                 "topBarColor", "topBarAlpha", "topBarShadowHidden", "topBarTintColor",
                 "titleTextSize", "titleTextColor", "backButtonHidden"
         };

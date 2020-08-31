@@ -51,15 +51,28 @@ graph()
 Garden.setStyle({
   screenBackgroundColor: '#F8F8F8',
   topBarStyle: BarStyleDarkContent,
-  statusBarColorAndroid: Platform.OS === 'android' && Platform.Version < 23 ? '#4A4A4A' : undefined,
-  titleTextSize: 17,
-  topBarColor: '#FFFFFF',
 
-  swipeBackEnabledAndroid: true,
+  topBarColor: '#FFFFFF',
+  ...Platform.select({
+    ios: {
+      topBarColorLightContent: '#FF344C',
+    },
+    android: {
+      topBarColorLightContent: '#F94D53',
+    },
+  }),
   topBarTintColor: '#000000',
+  topBarTintColorLightContent: '#FFFFFF',
+  titleTextColor: '#000000',
+  titleTextColorLightContent: '#FFFFFF',
+  titleTextSize: 17,
+  swipeBackEnabledAndroid: true,
   // badgeColor: '#00FFFF',
-  // titleTextColor: '#00ff00',
+
+  statusBarColorAndroid: Platform.OS === 'android' && Platform.Version < 23 ? '#4A4A4A' : undefined,
   titleAlignmentAndroid: TitleAlignmentCenter,
+  navigationBarColorAndroid: '#FFFFFF',
+
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
   shadowImage: {
     color: '#DDDDDD',
@@ -69,7 +82,7 @@ Garden.setStyle({
   elevationAndroid: 1,
 
   tabBarColor: '#FFFFFF',
-  navigationBarColorAndroid: '#FFFFFF',
+
   tabBarShadowImage: {
     color: '#F0F0F0',
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
