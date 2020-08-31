@@ -168,13 +168,6 @@ export class Navigator {
   constructor(public sceneId: string, public moduleName?: string) {
     this.sceneId = sceneId
     this.moduleName = moduleName
-
-    if (moduleName && store.isReactModule(moduleName)) {
-      const props = store.getProps(moduleName)
-      store.deleteProps(moduleName)
-      this.props = props || {}
-    }
-
     this.dispatch = this.dispatch.bind(this)
     this.setParams = this.setParams.bind(this)
 
@@ -196,8 +189,6 @@ export class Navigator {
     this.closeMenu = this.closeMenu.bind(this)
   }
 
-  readonly props: object = {}
-
   readonly state: NavigationState = {
     params: {},
     resultListeners: [],
@@ -207,17 +198,8 @@ export class Navigator {
     this.state.params = { ...this.state.params, ...params }
   }
 
-  async dispatch(action: string, params: Params = {}) {
-    const { moduleName, props } = params
-    if (moduleName && store.isReactModule(moduleName) && props) {
-      store.setProps(moduleName, props)
-      delete params.props
-    }
-    const success = await Navigator.dispatch(this.sceneId, action, params)
-    if (!success && moduleName && store.isReactModule(moduleName)) {
-      store.deleteProps(moduleName)
-    }
-    return success
+  dispatch(action: string, params: Params = {}) {
+    return Navigator.dispatch(this.sceneId, action, params)
   }
 
   result(requestCode: number, resultCode: number, data: ResultType) {

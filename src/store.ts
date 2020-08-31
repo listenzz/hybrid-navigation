@@ -38,30 +38,6 @@ function clear() {
   events = []
 }
 
-const propsRegistry = new Map<string, object>()
-
-function setProps(moduleName: string, props: object) {
-  propsRegistry.set(moduleName, props)
-}
-
-function getProps(moduleName: string) {
-  return propsRegistry.get(moduleName)
-}
-
-function deleteProps(moduleName: string) {
-  propsRegistry.delete(moduleName)
-}
-
-const reactModules = new Set<string>()
-
-function registerReactModule(moduleName: string) {
-  reactModules.add(moduleName)
-}
-
-function isReactModule(moduleName: string) {
-  return reactModules.has(moduleName)
-}
-
 export default {
   addNavigator,
   removeNavigator,
@@ -70,9 +46,4 @@ export default {
   removeBarButtonItemClickEvent,
   filterBarButtonItemClickEvent,
   clear,
-  setProps,
-  getProps,
-  deleteProps,
-  registerReactModule,
-  isReactModule,
 }

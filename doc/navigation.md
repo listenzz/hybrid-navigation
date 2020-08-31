@@ -410,6 +410,8 @@ navigator.push('B')
 navigator.push('B', {...});
 ```
 
+> 注意：第二个参数只支持可以序列化为 json 的对象，不支持函数
+
 B 页面通过 `props` 来访问传递过来的值
 
 - **pushLayout&lt;T&gt;(layout: Layout): Promise&lt;[number, T]&gt;**
