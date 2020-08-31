@@ -12,6 +12,7 @@
 #import "HBDUtils.h"
 #import "HBDModalViewController.h"
 #import <React/RCTLog.h>
+#import "HBDGarden.h"
 
 @implementation UIViewController (HBD)
 
@@ -75,14 +76,6 @@
     }];
 }
 
-- (UIBarStyle)hbd_barStyle {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    if (obj) {
-        return [obj integerValue];
-    }
-    return [UINavigationBar appearance].barStyle;
-}
-
 - (NSString *)sceneId {
     id obj = objc_getAssociatedObject(self, _cmd);
     if (!obj) {
@@ -90,6 +83,14 @@
         objc_setAssociatedObject(self, @selector(sceneId), obj, OBJC_ASSOCIATION_COPY_NONATOMIC);
     }
      return obj;
+}
+
+- (UIBarStyle)hbd_barStyle {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    if (obj) {
+        return [obj integerValue];
+    }
+    return [UINavigationBar appearance].barStyle;
 }
 
 - (void)setHbd_barStyle:(UIBarStyle)hbd_barStyle {
@@ -106,6 +107,11 @@
         return obj;
     }
     
+    UIColor *colorWithBarStyle = [[HBDGarden globalStyle] barTintColorWithBarStyle:self.hbd_barStyle];
+    if (colorWithBarStyle) {
+       return colorWithBarStyle;
+    }
+    
     if ([UINavigationBar appearance].barTintColor) {
         return [UINavigationBar appearance].barTintColor;
     }
@@ -119,8 +125,16 @@
 
 - (UIColor *)hbd_tintColor {
     id obj = objc_getAssociatedObject(self, _cmd);
-    UIColor *color = obj ?: [UINavigationBar appearance].tintColor;
-    return color;
+    if (obj) {
+        return obj;
+    }
+    
+    UIColor *colorWithBarStyle = [[HBDGarden globalStyle] tintColorWithBarStyle:self.hbd_barStyle];
+    if (colorWithBarStyle) {
+        return colorWithBarStyle;
+    }
+    
+    return [UINavigationBar appearance].tintColor;;
 }
 
 - (void)setHbd_tintColor:(UIColor *)tintColor {
@@ -134,24 +148,15 @@
     }
     
     UIBarStyle barStyle = self.hbd_barStyle;
+    UIColor *colorWithBarStyle = [[HBDGarden globalStyle] titleTextColorWithBarStyle:barStyle];
+    NSDictionary *colorAttributes = @{ NSForegroundColorAttributeName: colorWithBarStyle };
     NSDictionary *attributes = [UINavigationBar appearance].titleTextAttributes;
     if (attributes) {
-        if (![attributes objectForKey:NSForegroundColorAttributeName]) {
-            NSMutableDictionary *mutableAttributes = [attributes mutableCopy];
-            if (barStyle == UIBarStyleBlack) {
-                [mutableAttributes addEntriesFromDictionary:@{ NSForegroundColorAttributeName: UIColor.whiteColor }];
-            } else {
-                [mutableAttributes addEntriesFromDictionary:@{ NSForegroundColorAttributeName: UIColor.blackColor }];
-            }
-            return mutableAttributes;
-        }
-        return attributes;
-    }
-    
-    if (barStyle == UIBarStyleBlack) {
-        return @{ NSForegroundColorAttributeName: UIColor.whiteColor };
+        NSMutableDictionary *mutableAttributes = [attributes mutableCopy];
+        [mutableAttributes addEntriesFromDictionary:colorAttributes];
+        return mutableAttributes;
     } else {
-        return @{ NSForegroundColorAttributeName: UIColor.blackColor };
+        return colorAttributes;
     }
 }
 
