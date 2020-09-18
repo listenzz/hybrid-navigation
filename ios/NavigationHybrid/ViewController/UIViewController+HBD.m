@@ -27,7 +27,9 @@
 
 - (void)hbd_presentViewController:(UIViewController *)viewController animated:(BOOL)flag completion:(void (^)(void))completion {
     if (![self canPresentViewController]) {
-        completion();
+        if (completion) {
+            completion();
+        }
         [self didReceiveResultCode:0 resultData:nil requestCode:viewController.requestCode];
         return;
     }
