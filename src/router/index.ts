@@ -77,10 +77,6 @@ async function open(path: string, props: PropsType = {}, options: NavigationItem
   }
 
   const graphArray = await Navigator.routeGraph()
-  if (!graphArray) {
-    return
-  }
-
   if (graphArray.length > 1) {
     for (let index = graphArray.length - 1; index > 0; index--) {
       const { mode: layoutMode } = graphArray[index]
