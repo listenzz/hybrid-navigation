@@ -166,8 +166,6 @@ export class Navigator {
   visibility: Visibility = 'pending'
 
   constructor(public sceneId: string, public moduleName?: string) {
-    this.sceneId = sceneId
-    this.moduleName = moduleName
     this.dispatch = this.dispatch.bind(this)
     this.setParams = this.setParams.bind(this)
 
