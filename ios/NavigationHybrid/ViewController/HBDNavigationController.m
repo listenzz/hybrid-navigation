@@ -477,14 +477,16 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
+    UIViewController *rootViewController = self.childViewControllers[0];
+    if (self.topViewController.didHideActionBlock && self.topViewController == rootViewController) {
+        self.topViewController.didHideActionBlock();
+        self.topViewController.didHideActionBlock = nil;
+    }
+    
     if (self.childViewControllers.count > 1) {
         self.poppingViewController = self.topViewController;
-    } else {
-        if (self.topViewController.didHideActionBlock) {
-            self.topViewController.didHideActionBlock();
-            self.topViewController.didHideActionBlock = nil;
-        }
     }
+    
     UIViewController *vc = [super popViewControllerAnimated:animated];
     // vc != self.topViewController
     [self fixClickBackIssue];
@@ -492,29 +494,31 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if (self.topViewController.didHideActionBlock && self.topViewController == viewController) {
+        self.topViewController.didHideActionBlock();
+        self.topViewController.didHideActionBlock = nil;
+    }
+        
     if (self.childViewControllers.count > 1) {
         self.poppingViewController = self.topViewController;
-    } else {
-        if (self.topViewController.didHideActionBlock) {
-            self.topViewController.didHideActionBlock();
-            self.topViewController.didHideActionBlock = nil;
-        }
     }
-    self.poppingViewController = self.topViewController;
+    
     NSArray *array = [super popToViewController:viewController animated:animated];
     [self fixClickBackIssue];
     return array;
 }
 
 - (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated {
+    UIViewController *rootViewController = self.childViewControllers[0];
+    if (self.topViewController.didHideActionBlock && self.topViewController == rootViewController) {
+        self.topViewController.didHideActionBlock();
+        self.topViewController.didHideActionBlock = nil;
+    }
+    
     if (self.childViewControllers.count > 1) {
         self.poppingViewController = self.topViewController;
-    } else {
-        if (self.topViewController.didHideActionBlock) {
-            self.topViewController.didHideActionBlock();
-            self.topViewController.didHideActionBlock = nil;
-        }
     }
+    
     NSArray *array = [super popToRootViewControllerAnimated:animated];
     [self fixClickBackIssue];
     return array;
