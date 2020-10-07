@@ -431,12 +431,16 @@
         return;
     }
     
-    HBDModalViewController *modalViewController = [[HBDModalViewController alloc] init];
-    modalViewController.contentViewController = vc;
     self.hbd_popupViewController = vc;
+    [self beginAppearanceTransition:NO animated:YES];
+    [self endAppearanceTransition];
+    
     vc.hbd_barStyle = self.hbd_barStyle;
     vc.hbd_targetViewController = self;
     vc.requestCode = requestCode;
+    
+    HBDModalViewController *modalViewController = [[HBDModalViewController alloc] init];
+    modalViewController.contentViewController = vc;
     [modalViewController showWithAnimated:animated completion:completion];
 }
 
@@ -477,6 +481,8 @@
             completion(finished);
         }
         UIViewController *target = self.hbd_targetViewController;
+        [target beginAppearanceTransition:YES animated:YES];
+        [target endAppearanceTransition];
         [target didReceiveResultCode:self.resultCode resultData:self.resultData requestCode:self.requestCode];
     }];
 }
