@@ -38,6 +38,11 @@ UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
 }
 
 void adjustLayout(UIViewController *vc) {
+    if (vc.hbd_extendedLayoutDidSet) {
+        return;
+    }
+    vc.hbd_extendedLayoutDidSet = YES;
+    
     BOOL isTranslucent = vc.hbd_barHidden || vc.hbd_barAlpha < 1.0 || colorHasAlphaComponent(vc.hbd_barTintColor);
     if (isTranslucent || vc.extendedLayoutIncludesOpaqueBars) {
         vc.edgesForExtendedLayout |= UIRectEdgeTop;
@@ -167,18 +172,15 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    
+    adjustLayout(viewController);
+    
     if (self.proxiedDelegate && [self.proxiedDelegate respondsToSelector:@selector(navigationController:willShowViewController:animated:)]) {
         [self.proxiedDelegate navigationController:navigationController willShowViewController:viewController animated:animated];
     }
     
     HBDNavigationController *nav = self.nav;
     nav.transitional = YES;
-    
-    if (!viewController.hbd_extendedLayoutDidSet) {
-        adjustLayout(viewController);
-        viewController.hbd_extendedLayoutDidSet = YES;
-    }
-    
     id<UIViewControllerTransitionCoordinator> coordinator = nav.transitionCoordinator;
     if (coordinator) {
         if (@available(iOS 11.0, *)) {
@@ -296,6 +298,7 @@ void adjustLayout(UIViewController *vc) {
     } else {
         if (operation == UINavigationControllerOperationPush) {
             if ([self shouldBetterTransitionWithViewController:toVC]) {
+                adjustLayout(toVC);
                 return [HBDPushAnimation new];
             }
         } else if (operation == UINavigationControllerOperationPop) {

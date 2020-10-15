@@ -38,6 +38,7 @@
         _options = options;
         _props = props;
         _garden = [[HBDGarden alloc] initWithViewController:self];
+        [self applayInitialOptions:options];
     }
     return self;
 }
@@ -74,39 +75,6 @@
     } else {
         self.view.backgroundColor = [HBDGarden globalStyle].screenBackgroundColor;
     }
-    
-    [self applyNavigationBarOptions:self.options];
-    
-    NSNumber *topBarHidden = self.options[@"topBarHidden"];
-    if ([topBarHidden boolValue]) {
-        self.hbd_barHidden = YES;
-    }
-    
-    if ([HBDGarden globalStyle].isBackTitleHidden) {
-        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
-    }
-    
-    NSDictionary *backItem = self.options[@"backItemIOS"];
-    if (backItem) {
-        NSString *title = backItem[@"title"];
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
-        backButton.title = title;
-        NSString *tintColor = backItem[@"tintColor"];
-        if (tintColor) {
-            backButton.tintColor = [HBDUtils colorWithHexString:tintColor];
-        }
-        self.navigationItem.backBarButtonItem = backButton;
-    }
-    
-    NSNumber *swipeBackEnabled = self.options[@"swipeBackEnabled"];
-    if (swipeBackEnabled) {
-        self.hbd_swipeBackEnabled = [swipeBackEnabled boolValue];
-    }
-    
-    NSNumber *extendedLayoutIncludesTopBar = self.options[@"extendedLayoutIncludesTopBar"];
-    if (extendedLayoutIncludesTopBar) {
-        self.extendedLayoutIncludesOpaqueBars = [extendedLayoutIncludesTopBar boolValue];
-    }
 }
 
 - (void)updateOptions:(NSDictionary *)options {
@@ -139,6 +107,41 @@
     }
     
     [self hbd_setNeedsUpdateNavigationBar];
+}
+
+- (void)applayInitialOptions:(NSDictionary *)options {
+    [self applyNavigationBarOptions:options];
+    
+    NSNumber *topBarHidden = options[@"topBarHidden"];
+    if ([topBarHidden boolValue]) {
+        self.hbd_barHidden = YES;
+    }
+    
+    if ([HBDGarden globalStyle].isBackTitleHidden) {
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
+    }
+    
+    NSDictionary *backItem = options[@"backItemIOS"];
+    if (backItem) {
+        NSString *title = backItem[@"title"];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+        backButton.title = title;
+        NSString *tintColor = backItem[@"tintColor"];
+        if (tintColor) {
+            backButton.tintColor = [HBDUtils colorWithHexString:tintColor];
+        }
+        self.navigationItem.backBarButtonItem = backButton;
+    }
+    
+    NSNumber *swipeBackEnabled = options[@"swipeBackEnabled"];
+    if (swipeBackEnabled) {
+        self.hbd_swipeBackEnabled = [swipeBackEnabled boolValue];
+    }
+    
+    NSNumber *extendedLayoutIncludesTopBar = options[@"extendedLayoutIncludesTopBar"];
+    if (extendedLayoutIncludesTopBar) {
+        self.extendedLayoutIncludesOpaqueBars = [extendedLayoutIncludesTopBar boolValue];
+    }
 }
 
 - (void)applyNavigationBarOptions:(NSDictionary *)options {

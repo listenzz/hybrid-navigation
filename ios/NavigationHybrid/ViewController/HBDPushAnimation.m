@@ -16,7 +16,6 @@
 - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext {
   
     UIView *toView = [transitionContext viewForKey:UITransitionContextToViewKey];
-    toView.frame = transitionContext.containerView.bounds;
     [transitionContext.containerView addSubview:toView];
     
     toView.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, transitionContext.containerView.bounds.size.width, 0);
