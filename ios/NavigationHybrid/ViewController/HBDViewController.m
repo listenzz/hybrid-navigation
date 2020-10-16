@@ -38,7 +38,8 @@
         _options = options;
         _props = props;
         _garden = [[HBDGarden alloc] initWithViewController:self];
-        [self applayInitialOptions:options];
+        
+        [self applayNeededOptionsForBetterTransition:options];
     }
     return self;
 }
@@ -68,49 +69,37 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self applayInitialOptions:self.options];
+}
+
+- (void)applayNeededOptionsForBetterTransition:(NSDictionary *)options {
+    if([options[@"passThroughTouches"] boolValue]) {
+        NSNumber *topBarHidden = options[@"topBarHidden"];
+        if ([topBarHidden boolValue]) {
+            self.hbd_barHidden = YES;
+        }
+        
+        NSString *topBarColor = options[@"topBarColor"];
+        if (topBarColor) {
+            self.hbd_barTintColor = [HBDUtils colorWithHexString:topBarColor];
+        }
+        
+        NSNumber *topBarAlpha = options[@"topBarAlpha"];
+        if (topBarAlpha) {
+            self.hbd_barAlpha = [topBarAlpha floatValue];
+        }
+    }
+}
+
+- (void)applayInitialOptions:(NSDictionary *)options {
+    [self applyNavigationBarOptions:options];
     
-    NSString *screenColor = self.options[@"screenBackgroundColor"];
+    NSString *screenColor = options[@"screenBackgroundColor"];
     if (screenColor) {
         self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
     } else {
         self.view.backgroundColor = [HBDGarden globalStyle].screenBackgroundColor;
     }
-}
-
-- (void)updateOptions:(NSDictionary *)options {
-    self.options = [HBDUtils mergeItem:options withTarget:self.options];
-    
-    NSMutableDictionary *target = [options mutableCopy];
-    
-    if (options[@"titleItem"]) {
-        target[@"titleItem"] = self.options[@"titleItem"];
-    }
-    
-    if (options[@"leftBarButtonItem"]) {
-        target[@"leftBarButtonItem"] = self.options[@"leftBarButtonItem"];
-    }
-    
-    if (options[@"rightBarButtonItem"]) {
-        target[@"rightBarButtonItem"] = self.options[@"rightBarButtonItem"];
-    }
-    
-    [self applyNavigationBarOptions:target];
-    
-    NSNumber *statusBarHidden = [options objectForKey:@"statusBarHidden"];
-    if (statusBarHidden) {
-        [self hbd_setNeedsStatusBarHiddenUpdate];
-    }
-    
-    NSNumber *passThroughTouches = [options objectForKey:@"passThroughTouches"];
-    if (passThroughTouches) {
-        [self.garden setPassThroughTouches:[passThroughTouches boolValue]];
-    }
-    
-    [self hbd_setNeedsUpdateNavigationBar];
-}
-
-- (void)applayInitialOptions:(NSDictionary *)options {
-    [self applyNavigationBarOptions:options];
     
     NSNumber *topBarHidden = options[@"topBarHidden"];
     if ([topBarHidden boolValue]) {
@@ -248,6 +237,38 @@
     if (leftBarButtonItems) {
         [self.garden setLeftBarButtonItems:leftBarButtonItems];
     }
+}
+
+- (void)updateOptions:(NSDictionary *)options {
+    self.options = [HBDUtils mergeItem:options withTarget:self.options];
+    
+    NSMutableDictionary *target = [options mutableCopy];
+    
+    if (options[@"titleItem"]) {
+        target[@"titleItem"] = self.options[@"titleItem"];
+    }
+    
+    if (options[@"leftBarButtonItem"]) {
+        target[@"leftBarButtonItem"] = self.options[@"leftBarButtonItem"];
+    }
+    
+    if (options[@"rightBarButtonItem"]) {
+        target[@"rightBarButtonItem"] = self.options[@"rightBarButtonItem"];
+    }
+    
+    [self applyNavigationBarOptions:target];
+    
+    NSNumber *statusBarHidden = [options objectForKey:@"statusBarHidden"];
+    if (statusBarHidden) {
+        [self hbd_setNeedsStatusBarHiddenUpdate];
+    }
+    
+    NSNumber *passThroughTouches = [options objectForKey:@"passThroughTouches"];
+    if (passThroughTouches) {
+        [self.garden setPassThroughTouches:[passThroughTouches boolValue]];
+    }
+    
+    [self hbd_setNeedsUpdateNavigationBar];
 }
 
 @end
