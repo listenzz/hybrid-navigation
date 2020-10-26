@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.authors      = { "listen" => "listenzz@163.com" }
   s.homepage     = "https://github.com/listenzz/react-native-navigation-hybrid"
   s.license      = package['license']
-  s.platform     = :ios, "9.0"
+  s.platform     = :ios, "10.0"
   s.module_name  = 'NavigationHybrid'
 
   s.source       = { :git => "https://github.com/listenzz/react-native-navigation-hybrid.git", :tag => "v#{s.version}" }
