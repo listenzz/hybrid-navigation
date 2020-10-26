@@ -1,5 +1,5 @@
 import { AppRegistry, ComponentProvider } from 'react-native'
-import React, { useEffect, ComponentType } from 'react'
+import React, { useEffect, ComponentType, useCallback } from 'react'
 import { Navigator } from './Navigator'
 import {
   NavigationModule,
@@ -76,11 +76,15 @@ function withNavigator(moduleName: string) {
         return () => {
           subscription.remove()
         }
-      })
+      }, [navigator])
 
-      useResult(sceneId, (requestcode, resultCode, data) => {
-        navigator.result(requestcode, resultCode, data)
-      })
+      const resultCallback = useCallback(
+        (requestcode, resultCode, data) => {
+          navigator.result(requestcode, resultCode, data)
+        },
+        [navigator],
+      )
+      useResult(sceneId, resultCallback)
 
       const injected = {
         garden,
