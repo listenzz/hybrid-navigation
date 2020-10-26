@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 project.ext.react = [
-        root           : "../../../",
-        entryFile      : "playground/index.js",
-        bundleInRelease: true,
-        bundleInDebug  : true,
-        enableHermes   : true,
-        hermesCommand  : "../../../node_modules/hermes-engine/%OS-BIN%/hermes",
+        root               : "../../../",
+        entryFile          : "playground/index.js",
+        bundleInRelease    : true,
+        bundleInDebug      : true,
+        enableHermes       : true,
+        hermesCommand      : "../../../node_modules/hermes-engine/%OS-BIN%/hermesc",
 ]
 
 apply from: "../../../node_modules/react-native/react.gradle"
