@@ -43,16 +43,7 @@ public class HBDReactRootView extends ReactRootView {
     public boolean onTouchEvent(MotionEvent ev) {
         int action = ev.getAction() & MotionEvent.ACTION_MASK;
         if (action == MotionEvent.ACTION_DOWN) {
-            if (!shouldConsumeTouchEvent) {
-                final long now = SystemClock.uptimeMillis();
-                MotionEvent event = MotionEvent.obtain(ev.getDownTime(), now,
-                        MotionEvent.ACTION_CANCEL, ev.getX(), ev.getY(), 0);
-                event.setSource(InputDevice.SOURCE_TOUCHSCREEN);
-                super.onTouchEvent(event);
-                event.recycle();
-            }
-        } else {
-            super.onTouchEvent(ev);
+            onChildStartedNativeGesture(ev);
         }
         return shouldConsumeTouchEvent;
     }
