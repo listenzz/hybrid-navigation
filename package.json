@@ -52,7 +52,7 @@
     "react-native": "^0.63.3",
     "react-native-fast-image": "^8.1.5",
     "react-native-iphone-x-helper": "^1.2.0",
-    "react-native-keyboard-aware-scroll-view": "^0.9.1",
+    "react-native-keyboard-aware-scroll-view": "^0.9.3",
     "react-native-toast-hybrid": "^2.3.0",
     "react-redux": "^7.2.1",
     "react-test-renderer": "16.11.0",
