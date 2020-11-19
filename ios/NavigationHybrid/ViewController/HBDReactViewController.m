@@ -109,6 +109,18 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.automaticallyAdjustsScrollViewInsets = NO;
+    id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
+    if (!coordinator || !coordinator.interactive) {
+        if (!self.viewAppeared) {
+            self.viewAppeared = YES;
+            if (self.firstRenderCompleted) {
+                [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+                                                                   KEY_SCENE_ID: self.sceneId,
+                                                                   KEY_ON: ON_COMPONENT_APPEAR
+                                                                   }];
+            }
+        }
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -120,6 +132,22 @@
                                                                KEY_SCENE_ID: self.sceneId,
                                                                KEY_ON: ON_COMPONENT_APPEAR
                                                                }];
+        }
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
+    if (!coordinator || !coordinator.interactive) {
+        if (self.viewAppeared) {
+            self.viewAppeared = NO;
+            if (self.firstRenderCompleted) {
+                [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
+                                                                   KEY_SCENE_ID: self.sceneId,
+                                                                   KEY_ON: ON_COMPONENT_DISAPPEAR
+                                                                   }];
+            }
         }
     }
 }
