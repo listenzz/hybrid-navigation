@@ -46,7 +46,7 @@ public class Garden {
 
     private final Style style;
 
-    private Bundle options;
+    private final Bundle options;
 
     boolean backButtonHidden;
 
@@ -74,7 +74,7 @@ public class Garden {
         this.swipeBackEnabled = options.getBoolean("swipeBackEnabled", true);
         this.toolbarHidden = options.getBoolean("topBarHidden", false);
         Bundle tabItem = options.getBundle("tabItem");
-        this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush");
+        this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush", true);
         this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
 
         String screenColor = options.getString("screenBackgroundColor");

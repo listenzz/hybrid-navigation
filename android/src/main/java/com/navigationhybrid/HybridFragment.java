@@ -14,6 +14,7 @@ import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.AwesomeToolbar;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.Style;
+import com.navigation.androidx.TabBarItem;
 
 import static com.navigationhybrid.Constants.ARG_MODULE_NAME;
 import static com.navigationhybrid.Constants.ARG_OPTIONS;
@@ -111,7 +112,7 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     @Override
-    protected boolean hidesBottomBarWhenPushed() {
+    protected boolean hideTabBarWhenPushed() {
         return garden.hidesBottomBarWhenPushed;
     }
 
@@ -139,6 +140,42 @@ public class HybridFragment extends AwesomeFragment {
 
     public void setOptions(@NonNull Bundle options) {
         this.options = options;
+    }
+
+    @Override
+    public void setArguments(@Nullable Bundle args) {
+        super.setArguments(args);
+        TabBarItem tabBarItem = getTabBarItem();
+        if (tabBarItem == null && args != null) {
+            Bundle options = args.getBundle(Constants.ARG_OPTIONS);
+            if (options != null) {
+                Bundle tabItem = options.getBundle("tabItem");
+                if (tabItem != null) {
+                    String title = tabItem.getString("title");
+                    if (title != null) {
+                        tabBarItem = new TabBarItem(title);
+                        Bundle icon = tabItem.getBundle("icon");
+                        if (icon != null) {
+                            String uri = icon.getString("uri");
+                            if (uri != null) {
+                                tabBarItem = new TabBarItem(title, uri);
+                                Bundle unselectedIcon = tabItem.getBundle("unselectedIcon");
+                                if (unselectedIcon != null) {
+                                    String unselectedUri = unselectedIcon.getString("uri");
+                                    if (unselectedUri != null) {
+                                        tabBarItem = new TabBarItem(title, uri, unselectedUri);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (tabBarItem != null) {
+                        setTabBarItem(tabBarItem);
+                    }
+                }
+            }
+        }
     }
 
     private Bundle props;

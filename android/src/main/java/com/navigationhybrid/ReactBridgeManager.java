@@ -16,7 +16,6 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
-import com.navigation.androidx.TabBarItem;
 import com.navigationhybrid.navigator.DrawerNavigator;
 import com.navigationhybrid.navigator.Navigator;
 import com.navigationhybrid.navigator.ScreenNavigator;
@@ -363,30 +362,6 @@ public class ReactBridgeManager {
             writableMap.merge(readableMap);
             writableMap.merge(Arguments.fromBundle(options));
             options = Arguments.toBundle(writableMap);
-        }
-
-        if (options != null) {
-            Bundle tabItem = options.getBundle("tabItem");
-            if (tabItem != null) {
-                String title = tabItem.getString("title", "Tab");
-                TabBarItem tabBarItem = new TabBarItem(title);
-                Bundle icon = tabItem.getBundle("icon");
-                if (icon != null) {
-                    String uri = icon.getString("uri");
-                    if (uri != null) {
-                        tabBarItem = new TabBarItem(title, uri);
-                        Bundle unselectedIcon = tabItem.getBundle("unselectedIcon");
-                        if (unselectedIcon != null) {
-                            String unselectedUri = unselectedIcon.getString("uri");
-                            if (unselectedUri != null) {
-                                tabBarItem = new TabBarItem(title, uri, unselectedUri);
-                            }
-                        }
-                    }
-                }
-
-                fragment.setTabBarItem(tabBarItem);
-            }
         }
 
         Bundle args = FragmentHelper.getArguments(fragment);

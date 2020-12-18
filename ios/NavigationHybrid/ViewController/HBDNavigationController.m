@@ -421,8 +421,10 @@ void adjustLayout(UIViewController *vc) {
             self.tabBarItem = root.tabBarItem;
             root.tabBarItem = nil;
             NSDictionary *tabItem = root.options[@"tabItem"];
-            if (tabItem) {
+            if (tabItem && tabItem[@"hideTabBarWhenPush"]) {
                 self.hidesBottomBarWhenPushed = [tabItem[@"hideTabBarWhenPush"] boolValue];
+            } else {
+                self.hidesBottomBarWhenPushed = YES;
             }
         }
         self.viewControllers = @[ rootViewController ];

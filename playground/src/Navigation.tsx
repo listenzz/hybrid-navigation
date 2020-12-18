@@ -25,7 +25,6 @@ export default withNavigationItem({
   tabItem: {
     title: 'Navigation',
     icon: Image.resolveAssetSource(require('./images/navigation.png')),
-    hideTabBarWhenPush: true,
   },
 })(Navigation)
 

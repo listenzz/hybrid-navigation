@@ -38,7 +38,6 @@ export default withNavigationItem({
   tabItem: {
     title: 'Options',
     icon: Image.resolveAssetSource(require('./images/flower_1.png')),
-    hideTabBarWhenPush: true,
   },
 })(Options)
 

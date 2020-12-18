@@ -89,6 +89,20 @@
             self.hbd_barAlpha = [topBarAlpha floatValue];
         }
     }
+    
+    NSDictionary *tabItem = options[@"tabItem"];
+    if (tabItem) {
+        UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
+        tabBarItem.title = tabItem[@"title"];
+        NSDictionary *unselectedIcon = tabItem[@"unselectedIcon"];
+        if (unselectedIcon) {
+            tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        } else {
+            tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
+        }
+        self.tabBarItem = tabBarItem;
+    }
 }
 
 - (void)applayInitialOptions:(NSDictionary *)options {
