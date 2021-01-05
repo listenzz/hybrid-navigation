@@ -40,6 +40,7 @@
         _garden = [[HBDGarden alloc] initWithViewController:self];
         
         [self applayNeededOptionsForBetterTransition:options];
+        [self applayNeededOptionsForTabItem:options];
     }
     return self;
 }
@@ -89,7 +90,9 @@
             self.hbd_barAlpha = [topBarAlpha floatValue];
         }
     }
-    
+}
+
+- (void)applayNeededOptionsForTabItem:(NSDictionary *)options {
     NSDictionary *tabItem = options[@"tabItem"];
     if (tabItem) {
         UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
