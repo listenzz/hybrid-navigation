@@ -13,9 +13,10 @@
   "homepage": "https://github.com/listenzz/react-native-navigation-hybrid",
   "readme": "https://github.com/listenzz/react-native-navigation-hybrid#readme",
   "keywords": [
-    "react native",
+    "react-native",
     "navigation",
-    "navigator"
+    "navigator",
+    "router"
   ],
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
