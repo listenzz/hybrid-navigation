@@ -69,9 +69,7 @@ export class Garden {
     GardenModule.setStyle(style)
   }
 
-  constructor(public sceneId: string) {
-    this.sceneId = sceneId
-  }
+  constructor(public sceneId: string) {}
 
   // --------------- instance method --------------
 
