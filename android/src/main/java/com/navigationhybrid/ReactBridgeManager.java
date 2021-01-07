@@ -18,6 +18,7 @@ import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
 import com.navigationhybrid.navigator.DrawerNavigator;
 import com.navigationhybrid.navigator.Navigator;
+import com.navigationhybrid.navigator.NavigatorRegistry;
 import com.navigationhybrid.navigator.ScreenNavigator;
 import com.navigationhybrid.navigator.StackNavigator;
 import com.navigationhybrid.navigator.TabNavigator;
@@ -49,10 +50,6 @@ public class ReactBridgeManager {
     }
 
     private ReactBridgeManager() {
-        registerNavigator(new ScreenNavigator());
-        registerNavigator(new StackNavigator());
-        registerNavigator(new TabNavigator());
-        registerNavigator(new DrawerNavigator());
     }
 
     private final HashMap<String, Class<? extends HybridFragment>> nativeModules = new HashMap<>();
@@ -234,21 +231,6 @@ public class ReactBridgeManager {
         viewHierarchyReady = ready;
     }
 
-    @Nullable
-    public AwesomeFragment createFragment(@Nullable ReadableMap layout) {
-        if (layout == null) {
-            return null;
-        }
-        AwesomeFragment fragment = null;
-        for (Navigator navigator : navigators) {
-            fragment = navigator.createFragment(layout);
-            if (fragment != null) {
-                break;
-            }
-        }
-        return fragment;
-    }
-
     public void buildRouteGraph(@Nullable AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
         if (fragment == null) {
             return;
@@ -260,7 +242,7 @@ public class ReactBridgeManager {
             for (int i = 0; i < children.size(); i++) {
                 AwesomeFragment child = children.get(i);
                 if (child.getShowsDialog() && !child.isDismissed()) {
-                    for (Navigator navigator : navigators) {
+                    for (Navigator navigator : navigatorRegistry.allNavigators()) {
                         if (navigator.buildRouteGraph(child, modal, modal)) {
                             break;
                         }
@@ -269,7 +251,7 @@ public class ReactBridgeManager {
             }
         }
 
-        for (Navigator navigator : navigators) {
+        for (Navigator navigator : navigatorRegistry.allNavigators()) {
             if (navigator.buildRouteGraph(fragment, root, modal)) {
                 break;
             }
@@ -291,7 +273,7 @@ public class ReactBridgeManager {
         }
 
         HybridFragment hybridFragment = null;
-        for (Navigator navigator : navigators) {
+        for (Navigator navigator : navigatorRegistry.allNavigators()) {
             hybridFragment = navigator.primaryFragment(fragment);
             if (hybridFragment != null) {
                 break;
@@ -301,13 +283,32 @@ public class ReactBridgeManager {
     }
 
     public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
-        for (Navigator navigator : navigators) {
-            List<String> supportActions = navigator.supportActions();
-            if (supportActions.contains(action)) {
-                navigator.handleNavigation(target, action, extras, promise);
+        Navigator navigator = navigatorRegistry.navigatorForAction(action);
+        if (navigator != null) {
+            navigator.handleNavigation(target, action, extras, promise);
+        }
+    }
+
+    @Nullable
+    public AwesomeFragment createFragment(@Nullable ReadableMap layout) {
+        if (layout == null) {
+            return null;
+        }
+
+        List<String> layouts = navigatorRegistry.allLayouts();
+        Navigator navigator = null;
+        for (String name : layouts) {
+            if (layout.hasKey(name)) {
+                navigator = navigatorRegistry.navigatorForLayout(name);
                 break;
             }
         }
+
+        if (navigator == null) {
+            throw new IllegalArgumentException("找不到可以处理 " + layout + " 的 navigator, 你是否忘了注册？");
+        }
+
+        return navigator.createFragment(layout);
     }
 
     @NonNull
@@ -373,10 +374,10 @@ public class ReactBridgeManager {
         return fragment;
     }
 
-    private final List<Navigator> navigators = new ArrayList<>();
+    private final NavigatorRegistry navigatorRegistry = new NavigatorRegistry();
 
     public void registerNavigator(@NonNull Navigator navigator) {
-        navigators.add(0, navigator);
+        navigatorRegistry.register(navigator);
     }
 
     public interface MemoryWatcher {

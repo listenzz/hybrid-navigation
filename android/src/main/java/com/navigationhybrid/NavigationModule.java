@@ -167,29 +167,6 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     }
 
-    private String findSceneIdByModuleName(@NonNull String moduleName, AwesomeFragment fragment) {
-        String sceneId = null;
-        if (fragment instanceof HybridFragment) {
-            HybridFragment hybridFragment = (HybridFragment) fragment;
-            if (moduleName.equals(hybridFragment.getModuleName())) {
-                sceneId = hybridFragment.getSceneId();
-            }
-        }
-
-        if (sceneId == null) {
-            List<AwesomeFragment> children = fragment.getChildFragments();
-            int index = 0;
-            int count = children.size();
-            while (index < count && sceneId == null) {
-                AwesomeFragment child = children.get(index);
-                sceneId = findSceneIdByModuleName(moduleName, child);
-                index++;
-            }
-        }
-
-        return sceneId;
-    }
-
     @ReactMethod
     public void findSceneIdByModuleName(@NonNull String moduleName, Promise promise) {
         Runnable task = new Runnable() {
@@ -224,6 +201,29 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             }
         };
         sHandler.post(task);
+    }
+
+    private String findSceneIdByModuleName(@NonNull String moduleName, AwesomeFragment fragment) {
+        String sceneId = null;
+        if (fragment instanceof HybridFragment) {
+            HybridFragment hybridFragment = (HybridFragment) fragment;
+            if (moduleName.equals(hybridFragment.getModuleName())) {
+                sceneId = hybridFragment.getSceneId();
+            }
+        }
+
+        if (sceneId == null) {
+            List<AwesomeFragment> children = fragment.getChildFragments();
+            int index = 0;
+            int count = children.size();
+            while (index < count && sceneId == null) {
+                AwesomeFragment child = children.get(index);
+                sceneId = findSceneIdByModuleName(moduleName, child);
+                index++;
+            }
+        }
+
+        return sceneId;
     }
 
     @ReactMethod

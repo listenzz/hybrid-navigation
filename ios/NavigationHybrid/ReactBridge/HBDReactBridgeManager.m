@@ -15,11 +15,8 @@
 #import "HBDDrawerController.h"
 #import "HBDModalViewController.h"
 #import "HBDViewController.h"
+#import "HBDNavigatorRegistry.h"
 
-#import "HBDScreenNavigator.h"
-#import "HBDStackNavigator.h"
-#import "HBDTabNavigator.h"
-#import "HBDDrawerNavigator.h"
 
 #import "HBDEventEmitter.h"
 
@@ -33,7 +30,7 @@ const NSInteger ResultCancel = 0;
 @property(nonatomic, strong) NSMutableDictionary *nativeModules;
 @property(nonatomic, strong) NSMutableDictionary *reactModules;
 @property(nonatomic, assign, readwrite, getter=isReactModuleRegisterCompleted) BOOL reactModuleRegisterCompleted;
-@property(nonatomic, copy) NSMutableArray *navigators;
+@property(nonatomic, strong) HBDNavigatorRegistry *navigatorRegistry;
 
 @end
 
@@ -44,10 +41,6 @@ const NSInteger ResultCancel = 0;
     static HBDReactBridgeManager *manager;
     dispatch_once(&onceToken, ^{
         manager = [[self alloc] init];
-        [manager registerNavigator:[HBDScreenNavigator new]];
-        [manager registerNavigator:[HBDStackNavigator new]];
-        [manager registerNavigator:[HBDTabNavigator new]];
-        [manager registerNavigator:[HBDDrawerNavigator new]];
     });
     return manager;
 }
@@ -62,7 +55,7 @@ const NSInteger ResultCancel = 0;
         _reactModules = [[NSMutableDictionary alloc] init];
         _reactModuleRegisterCompleted = NO;
         _viewHierarchyReady = NO;
-        _navigators = [[NSMutableArray alloc] init];
+        _navigatorRegistry = [[HBDNavigatorRegistry alloc] init];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReload) name:RCTBridgeWillReloadNotification object:nil];
     }
     return self;
@@ -162,13 +155,21 @@ const NSInteger ResultCancel = 0;
         return nil;
     }
     
-    UIViewController *vc;
-    for (id<HBDNavigator> navigator in self.navigators) {
-        if ((vc = [navigator createViewControllerWithLayout:layout])) {
+    NSArray<NSString *> *layouts = [self.navigatorRegistry allLayouts];
+    id<HBDNavigator> navigator = nil;
+    for (NSString *name in layouts) {
+        if ([[layout allKeys] containsObject:name]) {
+            navigator = [self.navigatorRegistry navigatorForLayout:name];
             break;
         }
     }
-    return vc;
+    
+    if (navigator) {
+        return [navigator createViewControllerWithLayout:layout];
+    } else {
+        RCTLogError(@"找不到可以处理 %@ 的 navigator，你是否忘了注册？", layout);
+        return nil;
+    }
 }
 
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
@@ -342,7 +343,7 @@ const NSInteger ResultCancel = 0;
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
     HBDViewController *hbdVC = nil;
-    for (id<HBDNavigator> navigator in self.navigators) {
+    for (id<HBDNavigator> navigator in [self.navigatorRegistry allNavigators]) {
         hbdVC = [navigator primaryViewControllerWithViewController:vc];
         if (hbdVC) {
             break;
@@ -388,7 +389,7 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)buildRouteGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root {
-    for (id<HBDNavigator> navigator in self.navigators) {
+    for (id<HBDNavigator> navigator in [self.navigatorRegistry allNavigators]) {
         if ([navigator buildRouteGraphWithController:controller root:root]) {
             return;
         }
@@ -396,17 +397,16 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-    for (id<HBDNavigator> navigator in self.navigators) {
-        NSArray<NSString *> *supportActions = navigator.supportActions;
-        if ([supportActions containsObject:action]) {
-            [navigator handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
-            break;
-        }
+    id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForAction:action];
+    if (navigator) {
+        [navigator handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
+    } else {
+        RCTLogWarn(@"找不到可以处理 action %@ 的 navigator", action);
     }
 }
 
 - (void)registerNavigator:(id<HBDNavigator>)navigator {
-    [self.navigators insertObject:navigator atIndex:0];
+    [self.navigatorRegistry registerNavigator:navigator];
 }
 
 #pragma mark - bridge delegate
