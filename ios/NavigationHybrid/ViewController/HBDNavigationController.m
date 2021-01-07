@@ -124,6 +124,10 @@ void adjustLayout(UIViewController *vc) {
     return NO;
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer API_AVAILABLE(ios(7.0)){
+    return YES;
+}
+
 - (void)handleNavigationTransition:(UIScreenEdgePanGestureRecognizer *)pan {
     HBDNavigationController *nav = self.nav;
     
