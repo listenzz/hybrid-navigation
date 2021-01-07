@@ -42,6 +42,10 @@ function addRouteHandler(handler: RouteHandler) {
   handlers.add(handler)
 }
 
+function use(handler: RouteHandler) {
+  handlers.add(handler)
+}
+
 function registerRoute(moduleName: string, route: RouteConfig) {
   let { path, dependency, mode } = route
   let regexp: RegExp | undefined
@@ -167,6 +171,7 @@ export const router = {
   removeInterceptor,
   addRouteHandler,
   registerRoute,
+  use,
   open,
   pathToRoute,
 }
