@@ -79,6 +79,7 @@ void adjustLayout(UIViewController *vc) {
 @property (nonatomic, weak) UIViewController *poppingViewController;
 @property (nonatomic, strong) HBDNavigationControllerDelegate *navigationDelegate;
 
+- (void)updateNavigationBarStyleForViewController:(UIViewController *)vc;
 - (void)updateNavigationBarTinitColorForViewController:(UIViewController *)vc;
 - (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc;
 - (void)updateNavigationBarBackgroundForViewController:(UIViewController *)vc;
@@ -294,8 +295,21 @@ void adjustLayout(UIViewController *vc) {
         [self resetButtonLabelInNavBar:self.nav.navigationBar];
     }
     
-    //
-    // [self.nav updateNavigationBarTinitColorForViewController:viewController animated:true];
+    if (self.nav.poppingViewController) {
+        // Inspired by QMUI
+        UILabel *backButtonLabel = self.nav.navigationBar.backButtonLabel;
+        if (backButtonLabel) {
+            backButtonLabel.hbd_specifiedTextColor = backButtonLabel.textColor;
+        }
+        
+        [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+            
+        } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+            backButtonLabel.hbd_specifiedTextColor = nil;
+        }];
+    }
+    
+    [self.nav updateNavigationBarStyleForViewController:viewController];
 
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         BOOL shouldFake = [self shouldShowFakeBarFrom:from to:to viewController:viewController];
@@ -535,14 +549,18 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (void)updateNavigationBarForViewController:(UIViewController *)vc {
+    [self updateNavigationBarStyleForViewController:vc];
     [self updateNavigationBarAlphaForViewController:vc];
     [self updateNavigationBarBackgroundForViewController:vc];
     [self updateNavigationBarTinitColorForViewController:vc];
 }
 
+- (void)updateNavigationBarStyleForViewController:(UIViewController *)vc {
+    self.navigationBar.barStyle = vc.hbd_barStyle;
+}
+
 - (void)updateNavigationBarTinitColorForViewController:(UIViewController *)vc {
     self.navigationBar.tintColor = vc.hbd_tintColor;
-    self.navigationBar.barStyle = vc.hbd_barStyle;
     self.navigationBar.titleTextAttributes = vc.hbd_titleTextAttributes;
 }
 
