@@ -31,7 +31,6 @@ typedef void(^HBDDidHideActionBlock)(void);
 
 - (void)hbd_setNeedsUpdateNavigationBar;
 
-@property (nonatomic, strong) UIBarButtonItem *hbd_backBarButtonItem;
 @property (nonatomic, assign) BOOL hbd_extendedLayoutDidSet;
 
 @property(nonatomic, copy, readonly) NSString *sceneId;

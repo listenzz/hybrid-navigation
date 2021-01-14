@@ -81,20 +81,6 @@
     return _fakeView;
 }
 
-- (UILabel *)backButtonLabel {
-    if (@available(iOS 11, *)) ; else return nil;
-    UIView *navigationBarContentView = [self valueForKeyPath:@"visualProvider.contentView"];
-    __block UILabel *backButtonLabel = nil;
-    [navigationBarContentView.subviews enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(__kindof UIView * _Nonnull subview, NSUInteger idx, BOOL * _Nonnull stop) {
-        if ([subview isKindOfClass:NSClassFromString(@"_UIButtonBarButton")]) {
-            UIButton *titleButton = [subview valueForKeyPath:@"visualProvider.titleButton"];
-            backButtonLabel = titleButton.titleLabel;
-            *stop = YES;
-        }
-    }];
-    return backButtonLabel;
-}
-
 - (void)setTranslucent:(BOOL)translucent {
     // prevent default behavior
     [super setTranslucent:YES];
