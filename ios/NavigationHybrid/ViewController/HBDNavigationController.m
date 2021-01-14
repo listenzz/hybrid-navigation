@@ -82,7 +82,6 @@ void adjustLayout(UIViewController *vc) {
 - (void)updateNavigationBarTinitColorForViewController:(UIViewController *)vc;
 - (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc;
 - (void)updateNavigationBarBackgroundForViewController:(UIViewController *)vc;
-- (void)updateNavigationBarShadowImageAlphaForViewController:(UIViewController *)vc;
 
 - (void)showFakeBarFrom:(UIViewController *)from to:(UIViewController *)to;
 
@@ -538,7 +537,6 @@ void adjustLayout(UIViewController *vc) {
 - (void)updateNavigationBarForViewController:(UIViewController *)vc {
     [self updateNavigationBarAlphaForViewController:vc];
     [self updateNavigationBarBackgroundForViewController:vc];
-    [self updateNavigationBarShadowImageAlphaForViewController:vc];
     [self updateNavigationBarTinitColorForViewController:vc];
 }
 
@@ -555,10 +553,6 @@ void adjustLayout(UIViewController *vc) {
 
 - (void)updateNavigationBarBackgroundForViewController:(UIViewController *)vc {
     self.navigationBar.barTintColor = vc.hbd_barTintColor;
-}
-
-- (void)updateNavigationBarShadowImageAlphaForViewController:(UIViewController *)vc {
-    self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
 }
 
 - (void)showFakeBarFrom:(UIViewController *)from to:(UIViewController * _Nonnull)to {
