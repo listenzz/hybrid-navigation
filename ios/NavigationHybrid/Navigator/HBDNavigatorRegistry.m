@@ -43,7 +43,7 @@
 }
 
 - (void)registerNavigator:(id<HBDNavigator>)navigator {
-    [self.navigators addObject:navigator];
+    [self.navigators insertObject:navigator atIndex:0];
     [self.layouts addObject:[navigator name]];
     
     for (NSString *action in [navigator supportActions]) {
