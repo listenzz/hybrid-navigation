@@ -1,6 +1,7 @@
 playground/
 example/
 screenshot/app-release.apk
+*/build/
 
 # OSX
 #

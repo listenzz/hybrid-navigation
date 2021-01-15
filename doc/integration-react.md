@@ -17,9 +17,9 @@ MyApp/
 ## 添加依赖
 
 ```
-npm install react-native-navigation-hybrid --save
+npm install hybrid-navigation --save
 # or
-yarn add react-native-navigation-hybrid
+yarn add hybrid-navigation
 ```
 
 ## RN 项目配置
@@ -39,12 +39,7 @@ AppRegistry.registerComponent(appName, () => App)
 现在，你需要像下面那样
 
 ```javascript
-import {
-  ReactRegistry,
-  Garden,
-  Navigator,
-  BarStyleDarkContent,
-} from 'react-native-navigation-hybrid'
+import { ReactRegistry, Garden, Navigator, BarStyleDarkContent } from 'hybrid-navigation'
 import App from './App'
 
 // 配置全局样式
@@ -84,7 +79,7 @@ Navigator.setRoot({
 
 ```jsx
 function withRedux(WrappedComponent) {
-  return props => (
+  return (props) => (
     <Provider store={store}>
       <WrappedComponent {...props} />
     </Provider>
@@ -211,7 +206,7 @@ cd ios & pod install
 
 <a name="migrate-native"></a>
 
-如果懂原生开发，建议像 playground 这个项目那样配置闪屏。
+如果懂原生开发，建议像 example 这个项目那样配置闪屏。
 
 ## 参考
 
@@ -222,5 +217,3 @@ cd ios & pod install
 [RN 0.61 集成本库示范项目](https://github.com/listenzz/RN061)
 
 [RN 0.60 集成本库示范项目](https://github.com/listenzz/RN060)
-
-

@@ -7,7 +7,7 @@ module.exports = {
         root: ['./'],
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
-          'react-native-navigation-hybrid': './index',
+          'hybrid-navigation': './src/index',
         },
       },
     ],

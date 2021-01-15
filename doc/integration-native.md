@@ -61,7 +61,7 @@ ReactNativeProject/
 cd 到 ReactNativeProject，执行如下命令添加依赖
 
 ```bash
-npm install react-native-navigation-hybrid --save
+npm install hybrid-navigation --save
 ```
 
 ## RN 项目配置
@@ -79,7 +79,7 @@ AppRegistry.registerComponent('ReactNativeProject', () => App)
 现在，你需要作出改变
 
 ```javascript
-import { ReactRegistry, Garden, BarStyleDarkContent } from 'react-native-navigation-hybrid'
+import { ReactRegistry, Garden, BarStyleDarkContent } from 'hybrid-navigation'
 import Home from './HomeComponent'
 import Profile from './ProfileComponent'
 
@@ -102,9 +102,9 @@ ReactRegistry.endRegisterComponent()
 现在，我们回到 Android 项目，在 settings.gradle 中添加如下配置
 
 ```gradle
-include ':react-native-navigation-hybrid'
+include ':hybrid-navigation'
 // 注意把 ReactNativeProject 替换成你的 RN 项目
-project(':react-native-navigation-hybrid').projectDir = new File(rootProject.projectDir, '../ReactNativeProject/node_modules/react-native-navigation-hybrid/android')
+project(':hybrid-navigation').projectDir = new File(rootProject.projectDir, '../ReactNativeProject/node_modules/hybrid-navigation/android')
 ```
 
 在根项目的 build.gradle 文件中，确保以下配置或变更
@@ -169,7 +169,7 @@ dependencies {
 +   implementation "com.android.support:support-v4:$rootProject.supportLibVersion"
 +   implementation "com.android.support:design:$rootProject.supportLibVersion"
 
-+   implementation project(':react-native-navigation-hybrid')
++   implementation project(':hybrid-navigation')
 +   implementation "com.facebook.react:react-native:+" // From node_modules
 }
 ```
@@ -317,7 +317,7 @@ pod 'DoubleConversion', :podspec => node_modules_path + 'react-native/third-part
 pod 'GLog', :podspec => node_modules_path + 'react-native/third-party-podspecs/GLog.podspec'
 pod 'Folly', :podspec => node_modules_path + 'react-native/third-party-podspecs/Folly.podspec'
 
-pod 'NavigationHybrid', :path => node_modules_path + 'react-native-navigation-hybrid'
+pod 'NavigationHybrid', :path => node_modules_path + 'hybrid-navigation'
 ```
 
 记得 `pod install` 一次。

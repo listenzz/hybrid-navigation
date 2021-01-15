@@ -20,7 +20,7 @@ ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha, {
 
 path 表示路径，其中冒号开头的片段表示参数，这些参数将会通过 props 传递给目标页面。
 
-dependency 表示前置页面，譬如一个详情页可能会依赖一个列表页，当点击返回按钮时，会回到列表页。这个选项可以确定依赖链。看 playground 中的例子：
+dependency 表示前置页面，譬如一个详情页可能会依赖一个列表页，当点击返回按钮时，会回到列表页。这个选项可以确定依赖链。看 example 中的例子：
 
 ```javascript
 ReactRegistry.registerComponent('Options', () => Options)
@@ -41,10 +41,10 @@ mode 表示跳转模式，present 表示使用 `navigator.present` 打开目标�
 
 我们需要在一个稳定的页面（通常是主页面）激活 DeepLink 功能。
 
-譬如 playground 项目，在 Navigation.js 激活了路由功能
+譬如 example 项目，在 Navigation.js 激活了路由功能
 
 ```javascript
-import { DeepLink } from 'react-native-navigation-hybrid';
+import { DeepLink } from 'hybrid-navigation';
 
 componentDidMount() {
   const prefix = 'hbd://';
@@ -81,7 +81,7 @@ Navigator.setRoot(drawer, true)
 router 对象为我们提供了注册和移除拦截器的一对方法
 
 ```javascript
-import { router } from 'react-native-navigation-hybrid'
+import { router } from 'hybrid-navigation'
 router.addInterceptor(func)
 router.removeInterceptor(func)
 ```
@@ -132,7 +132,7 @@ In SimpleApp/android/app/src/main/AndroidManifest.xml, add the new intent-filter
 
 ## 测试
 
-具体可以参考 playground 这个项目中相关配置
+具体可以参考 example 这个项目中相关配置
 
 可以在终端中通过以下两个命令分别测试 iOS 和 Android 的效果
 

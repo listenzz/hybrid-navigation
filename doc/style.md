@@ -36,7 +36,7 @@ icon: {
 icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
 ```
 
-如果项目中使用了 react-native-vector-icons 这样的库，请参考 playground 中 Options.js 这个文件
+如果项目中使用了 react-native-vector-icons 这样的库，请参考 example 中 Options.js 这个文件
 
 ## 设置全局主题
 
@@ -118,7 +118,7 @@ export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft
 3.双击打开 values-v21 目录中的 styles.xml 文件，把 App 主题样式 `andriod:statusBarColor` 的值设置成和你用 Garden 设置的一样。
 
 ```javascript
-import { Garden } from 'react-native-navigation-hybrid'
+import { Garden } from 'hybrid-navigation'
 
 Garden.setStyle({
   statusBarColor: '#ffffff',
@@ -144,7 +144,7 @@ Garden.setStyle({
 // index.js
 
 import { Image } from 'react-native'
-import { Garden } from 'react-native-navigation-hybrid'
+import { Garden } from 'hybrid-navigation'
 
 Garden.setStyle({
   shadowImage: {
@@ -171,7 +171,7 @@ Garden.setStyle({
 // index.js
 
 import { Image } from 'react-native'
-import { Garden } from 'react-native-navigation-hybrid'
+import { Garden } from 'hybrid-navigation'
 
 Garden.setStyle({
   backIcon: Image.resolveAssetSource(require('./ic_back.png')),
@@ -243,7 +243,7 @@ class Screen extends Component {
       // 图片位置调整，仅对 iOS 生效
       insetsIOS: { top: -1, left: -8, bottom: 0, right: 0 },
       // 按钮点击事件处理
-      action: navigator => {
+      action: (navigator) => {
         navigator.toggleMenu()
       },
       // 按钮是否可以点击
@@ -299,7 +299,7 @@ class Screen extends Component {
 
 - **extendedLayoutIncludesTopBar**
 
-默认情况下，这个值根据 `topBarColor` 的初始值计算得出，如果 `topBarColor` 含有透明度，那么这个值为 true，否则为 false。通常用于需要动态改变 `topBarAlpha` 的场合。参看 [playground/TopBarAlpha](https://github.com/listenzz/react-native-navigation-hybrid/blob/master/playground/src/TopBarAlpha.js) 这个例子。
+默认情况下，这个值根据 `topBarColor` 的初始值计算得出，如果 `topBarColor` 含有透明度，那么这个值为 true，否则为 false。通常用于需要动态改变 `topBarAlpha` 的场合。参看 [example/TopBarAlpha](https://github.com/listenzz/hybrid-navigation/blob/master/example/src/TopBarAlpha.js) 这个例子。
 
 - **titleItem**
 
@@ -315,7 +315,7 @@ layoutFitting 配合 moduleName 使用，自定义标题栏的布局模式，有
 this.props.navigator.setParams({})
 ```
 
-详情请参考 playground 中 TopBarTitleView.js 这个文件。
+详情请参考 example 中 TopBarTitleView.js 这个文件。
 
 - **tabItem**
 
@@ -333,7 +333,7 @@ hideTabBarWhenPush 表示当 stack 嵌套在 tabs 的时候，push 到另一个�
 
   - modal 默认是透明色
 
-  某些页面，比如从底部往上滑的 modal, 需要开发者使用 navigationBarColorAndroid 自行适配，请参考 playground/src/ReactModal.js 这个文件
+  某些页面，比如从底部往上滑的 modal, 需要开发者使用 navigationBarColorAndroid 自行适配，请参考 example/src/ReactModal.js 这个文件
 
 ## 动态配置页面
 
@@ -354,7 +354,7 @@ class B extends Component {
     },
     rightBarButtonItem: {
       title: 'B 的按钮',
-      action: navigator => {},
+      action: (navigator) => {},
     },
   }
 }
@@ -446,7 +446,7 @@ export interface BarButtonItem {
 this.props.garden.setLeftBarButtonItem({
   title: 'Cancel',
   insetsIOS: { top: -1, left: -8, bottom: 0, right: 8 },
-  action: navigator => {
+  action: (navigator) => {
     navigator.dismiss()
   },
 })

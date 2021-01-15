@@ -67,7 +67,7 @@ type Nullable<T> = {
   [P in keyof T]: T[P] extends T[P] | undefined ? T[P] | null : T[P]
 }
 
-const GardenModule = NativeModules.GardenHybrid
+const GardenModule = NativeModules.GardenModule
 export class Garden {
   static setStyle(style: Style = {}) {
     GardenModule.setStyle(style)

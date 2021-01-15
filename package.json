@@ -1,46 +1,48 @@
 {
-  "name": "react-native-navigation-hybrid",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
-  },
-  "version": "0.28.7",
-  "nativePackage": true,
-  "react-native": "./index.ts",
+  "name": "hybrid-navigation",
   "description": "React Native Navigation that supports seamless navigation between Native and React.",
-  "author": "listen <listenzz@163.com>",
-  "license": "MIT",
-  "homepage": "https://github.com/listenzz/react-native-navigation-hybrid",
-  "readme": "https://github.com/listenzz/react-native-navigation-hybrid#readme",
+  "version": "1.0.0",
   "keywords": [
     "react-native",
     "navigation",
     "navigator",
-    "router"
+    "router",
+    "hybrid"
   ],
+  "nativePackage": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/listenzz/hybrid-navigation.git"
+  },
+  "homepage": "https://github.com/listenzz/hybrid-navigation",
+  "author": "listen <listenzz@163.com>",
+  "license": "MIT",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
   "scripts": {
     "build": "rm -rf ./lib && tsc -p tsconfig.build.json",
     "prepare": "npm run build",
     "tsc": "tsc",
-    "start": "react-native start",
-    "run:ios": "react-native run-ios --project-path ./playground/ios",
-    "start:android": "adb shell am start -n com.navigationhybrid.playground/.SplashActivity",
-    "run:android": "cd playground/android && ./gradlew installDebug && npm run start:android",
+    "start": "react-native start --reset-cache",
+    "run:ios": "react-native run-ios --project-path ./example/ios",
+    "start:android": "adb shell am start -n com.reactnative.hybridnavigation.example/.MainActivity",
+    "run:android": "cd example/android && ./gradlew installDebug && npm run start:android",
     "test": "jest",
     "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
   },
   "peerDependencies": {
-    "react": ">=16.8.0",
+    "react": "^16.8.1",
     "react-native": ">=0.60.4"
   },
+  "dependencies": {
+    "path-to-regexp": "^6.1.0"
+  },
   "devDependencies": {
-    "@babel/core": "^7.4.3",
-    "@babel/runtime": "^7.4.3",
-    "@gfez/eslint-config-react-native": "^1.3.0",
+    "@babel/core": "^7.8.4",
+    "@babel/runtime": "^7.8.4",
+    "@gfez/eslint-config-react-native": "^1.0.0",
     "@react-native-community/hooks": "^2.4.7",
-    "@types/jest": "^26.0.0",
+    "@types/jest": "^25.2.1",
     "@types/react": "^16.8.14",
     "@types/react-native": "^0.62.7",
     "@types/react-redux": "^7.1.9",
@@ -58,12 +60,17 @@
     "react-redux": "^7.2.1",
     "react-test-renderer": "16.11.0",
     "redux": "^3.7.2",
-    "typescript": "^3.8.2"
-  },
-  "dependencies": {
-    "path-to-regexp": "^6.1.0"
+    "typescript": "^3.7.3"
   },
   "jest": {
-    "preset": "react-native"
+    "preset": "react-native",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }

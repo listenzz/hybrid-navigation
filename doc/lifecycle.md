@@ -4,15 +4,14 @@ Hooks
 
 ```javascript
 import React, { useCallback } from 'react'
-import { useVisibleEffect } from 'react-native-navigation-hybrid'
+import { useVisibleEffect } from 'hybrid-navigation'
 
 function Lifecycle(props) {
-
   const visibleCallback = useCallback(() => {
     console.info(`Page is visible`)
-      return () => {
-        console.info(`Page is gone`)
-      }
+    return () => {
+      console.info(`Page is gone`)
+    }
   }, [])
 
   useVisibleEffect(sceneId, visibleCallback)
@@ -22,7 +21,7 @@ function Lifecycle(props) {
 ### 如何统一处理页面返回的结果
 
 ```javascript
-import { useResult } from 'react-native-navigation-hybrid'
+import { useResult } from 'hybrid-navigation'
 
 useResult(sceneId, (requestCode, resultCode, data) => {
   console.info(`requestCode: ${requestCode}`, `resultCode: ${resultCode}`, data)

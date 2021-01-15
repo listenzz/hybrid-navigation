@@ -18,7 +18,7 @@ import { ResultType } from './typing'
 export type Visibility = 'visible' | 'gone' | 'pending'
 
 export function useVisible(sceneId: string) {
-  const navigator = Navigator.get(sceneId)
+  const navigator = Navigator.of(sceneId)
   const [visible, setVisible] = useState(navigator.visibility === 'visible')
 
   useEffect(() => {

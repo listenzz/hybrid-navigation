@@ -37,7 +37,7 @@ const handler: RouteHandler = (graph: RouteGraph, route: RouteInfo) => {
 
     if (index !== -1) {
       let peddingModuleNames = moduleNames.slice(index + 1)
-      const navigator = Navigator.get(children[children.length - 1].sceneId)
+      const navigator = Navigator.of(children[children.length - 1].sceneId)
       if (peddingModuleNames.length === 0) {
         navigator.redirectTo(moduleName, props)
       } else {

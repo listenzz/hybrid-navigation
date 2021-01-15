@@ -81,20 +81,25 @@ function checkRequestCode(reqCode: number) {
 }
 
 export class Navigator {
-  static get(sceneId: string): Navigator {
-    return store.getNavigator(sceneId) || new Navigator(sceneId)
+  static of(sceneId: string) {
+    let navigator = store.getNavigator(sceneId)
+    if (!navigator) {
+      navigator = new Navigator(sceneId)
+      store.addNavigator(sceneId, navigator)
+    }
+    return navigator
   }
 
   static async find(moduleName: string) {
     const sceneId = await NavigationModule.findSceneIdByModuleName(moduleName)
     if (sceneId) {
-      return Navigator.get(sceneId)
+      return Navigator.of(sceneId)
     }
   }
 
   static async current(): Promise<Navigator> {
     const route = await Navigator.currentRoute()
-    return Navigator.get(route.sceneId)
+    return Navigator.of(route.sceneId)
   }
 
   static async currentRoute(): Promise<Route> {
@@ -109,7 +114,7 @@ export class Navigator {
     const pureLayout = bindBarButtonItemClickEvent(layout, {
       inLayout: true,
       navigatorFactory: (sceneId: string) => {
-        return Navigator.get(sceneId)
+        return Navigator.of(sceneId)
       },
     })
     if (willSetRootCallback) {
@@ -136,7 +141,7 @@ export class Navigator {
   }
 
   static async dispatch(sceneId: string, action: string, params: Params = {}): Promise<boolean> {
-    const navigator = Navigator.get(sceneId)
+    const navigator = Navigator.of(sceneId)
 
     let intercepted = false
 

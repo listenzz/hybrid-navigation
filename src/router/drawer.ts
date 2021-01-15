@@ -20,13 +20,13 @@ const handler: RouteHandler = (graph: RouteGraph, route: RouteInfo, next: RouteH
 
   const { moduleName, sceneId } = graph.children[1]
   if (moduleName === route.moduleName) {
-    const navigator = Navigator.get(sceneId)
+    const navigator = Navigator.of(sceneId)
     navigator.openMenu()
     return true
   } else {
     let result = next(graph.children[0], route, next)
     if (result) {
-      const navigator = Navigator.get(sceneId)
+      const navigator = Navigator.of(sceneId)
       navigator.closeMenu()
     }
     return result

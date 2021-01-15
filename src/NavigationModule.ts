@@ -1,7 +1,7 @@
 import { NativeModules, NativeEventEmitter } from 'react-native'
 
-const NavigationModule = NativeModules.NavigationHybrid
-const GardenModule = NativeModules.GardenHybrid
+const NavigationModule = NativeModules.NavigationModule
+const GardenModule = NativeModules.GardenModule
 const HBDEventEmitter = NativeModules.HBDEventEmitter
 
 const EventEmitter: NativeEventEmitter = new NativeEventEmitter(HBDEventEmitter)

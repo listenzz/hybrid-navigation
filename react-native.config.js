@@ -1,10 +1,10 @@
 module.exports = {
   project: {
     ios: {
-      project: './playground/ios/Navigation.xcworkspace',
+      project: './example/ios/HybridNavigation.xcworkspace',
     },
     android: {
-      sourceDir: './playground/android/',
+      sourceDir: './example/android/',
     },
   },
 }
