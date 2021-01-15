@@ -45,10 +45,6 @@ const NSInteger ResultCancel = 0;
     return manager;
 }
 
-+ (instancetype)sharedInstance {
-    return [self get];
-}
-
 - (instancetype)init {
     if (self = [super init]) {
         _nativeModules = [[NSMutableDictionary alloc] init];

@@ -26,8 +26,6 @@ extern const NSInteger ResultCancel;
 
 + (instancetype)get;
 
-+ (instancetype)sharedInstance;
-
 @property(nonatomic, strong, readonly) RCTBridge *bridge;
 @property(nonatomic, weak) id<HBDReactBridgeManagerDelegate> delegate;
 @property(nonatomic, assign, readonly, getter=isReactModuleRegisterCompleted) BOOL reactModuleRegisterCompleted;
