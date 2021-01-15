@@ -69,7 +69,7 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
 
   useEffect(() => {
     if (leftButtonShowText) {
-      garden.setLeftBarButtonItem({ icon: undefined })
+      garden.setLeftBarButtonItem({ icon: null })
     } else {
       garden.setLeftBarButtonItem({
         icon: Image.resolveAssetSource(require('./images/menu.png')),

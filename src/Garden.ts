@@ -63,6 +63,10 @@ export interface TabIcon {
   unselectedIcon?: ImageSource
 }
 
+type Nullable<T> = {
+  [P in keyof T]: T[P] extends T[P] | undefined ? T[P] | null : T[P]
+}
+
 const GardenModule = NativeModules.GardenHybrid
 export class Garden {
   static setStyle(style: Style = {}) {
@@ -73,12 +77,12 @@ export class Garden {
 
   // --------------- instance method --------------
 
-  setLeftBarButtonItem(buttonItem: BarButtonItem | null) {
+  setLeftBarButtonItem(buttonItem: Nullable<BarButtonItem> | null) {
     const options = bindBarButtonItemClickEvent(buttonItem, { sceneId: this.sceneId })
     GardenModule.setLeftBarButtonItem(this.sceneId, options)
   }
 
-  setRightBarButtonItem(buttonItem: BarButtonItem | null) {
+  setRightBarButtonItem(buttonItem: Nullable<BarButtonItem> | null) {
     const options = bindBarButtonItemClickEvent(buttonItem, { sceneId: this.sceneId })
     GardenModule.setRightBarButtonItem(this.sceneId, options)
   }
