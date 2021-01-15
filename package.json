@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/listenzz/react-native-navigation-hybrid.git"
   },
-  "version": "0.28.4",
+  "version": "0.28.5",
   "nativePackage": true,
   "react-native": "./index.ts",
   "description": "React Native Navigation that supports seamless navigation between Native and React.",
