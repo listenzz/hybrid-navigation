@@ -95,19 +95,16 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
   }
 
   async function pop() {
-    await printRouteGraph()
     await navigator.pop()
   }
 
   async function popTo() {
-    await printRouteGraph()
     if (popToId) {
       await navigator.popTo(popToId)
     }
   }
 
   async function popToRoot() {
-    await printRouteGraph()
     await navigator.popToRoot()
   }
 
@@ -119,12 +116,13 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
     } else {
       await navigator.redirectTo('Navigation')
     }
-    await printRouteGraph()
   }
 
   async function printRouteGraph() {
     const graph = await Navigator.routeGraph()
-    console.info(graph)
+    console.log(graph)
+    const route = await Navigator.currentRoute()
+    console.log(route)
   }
 
   async function switchTab() {
@@ -213,6 +211,10 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
 
         <TouchableOpacity onPress={showNativeModal} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>show native modal</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={printRouteGraph} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>printRouteGraph</Text>
         </TouchableOpacity>
 
         {text !== undefined && <Text style={styles.result}>received text：{text}</Text>}

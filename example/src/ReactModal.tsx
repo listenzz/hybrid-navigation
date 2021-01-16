@@ -22,10 +22,6 @@ function ReactModal({ navigator, sceneId }: InjectedProps) {
 
   async function hideModal(gender?: string) {
     if (gender) {
-      const graph = await Navigator.routeGraph()
-      console.log(graph)
-      const route = await Navigator.currentRoute()
-      console.log(route)
       navigator.setResult(RESULT_OK, {
         text: gender,
         backId: sceneId,
@@ -34,6 +30,17 @@ function ReactModal({ navigator, sceneId }: InjectedProps) {
     await navigator.hideModal()
     const current = await Navigator.currentRoute()
     console.log(current)
+  }
+
+  async function showModal() {
+    await navigator.showModal('ReactModal')
+  }
+
+  async function printRouteGraph() {
+    const graph = await Navigator.routeGraph()
+    console.log(graph)
+    const route = await Navigator.currentRoute()
+    console.log(route)
   }
 
   function handleCancel() {
@@ -51,6 +58,18 @@ function ReactModal({ navigator, sceneId }: InjectedProps) {
       text: 'Female',
       onPress: () => {
         hideModal('Female')
+      },
+    },
+    {
+      text: 'showModal',
+      onPress: () => {
+        showModal()
+      },
+    },
+    {
+      text: 'printRouteGraph',
+      onPress: () => {
+        printRouteGraph()
       },
     },
   ]

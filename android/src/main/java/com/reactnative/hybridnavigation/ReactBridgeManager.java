@@ -233,6 +233,8 @@ public class ReactBridgeManager {
     public ArrayList<Bundle> buildRouteGraph(@NonNull FragmentManager fragmentManager) {
         ArrayList<Bundle> root = new ArrayList<>();
         ArrayList<Bundle> modal = new ArrayList<>();
+        ArrayList<Bundle> presentation = new ArrayList<>();
+
         List<AwesomeFragment> fragments = FragmentHelper.getFragments(fragmentManager);
         for (int i = 0; i < fragments.size(); i++) {
             AwesomeFragment fragment = fragments.get(i);
@@ -241,28 +243,35 @@ public class ReactBridgeManager {
                 String mode = bundle.getString("mode");
                 if (mode.equals("modal")) {
                     modal.add(bundle);
+                } else if (mode.equals("present")) {
+                    extractModal(bundle, modal, "modal");
+                    presentation.add(bundle);
                 } else {
-                    extractModal(bundle, modal);
+                    extractModal(bundle, modal, "modal");
+                    extractModal(bundle, presentation, "present");
                     root.add(bundle);
                 }
             }
         }
+
+        root.addAll(presentation);
         root.addAll(modal);
         return root;
     }
 
-    private void extractModal(@NonNull Bundle graph, @NonNull ArrayList<Bundle> modal) {
+    private void extractModal(@NonNull Bundle graph, @NonNull ArrayList<Bundle> modal, String expectMode) {
         ArrayList<Bundle> children = graph.getParcelableArrayList("children");
         if (children != null) {
-            int size = children.size();
-            for (int i = size - 1; i > -1; i--) {
-                Bundle bundle = children.get(i);
+            ArrayList<Bundle> copy = new ArrayList<>(children);
+            int size = copy.size();
+            for (int i = 0; i < size; i++) {
+                Bundle bundle = copy.get(i);
                 String mode = bundle.getString("mode");
-                if (mode.equals("modal")) {
+                if (mode.equals(expectMode)) {
                     children.remove(bundle);
                     modal.add(bundle);
                 } else {
-                    extractModal(bundle, modal);
+                    extractModal(bundle, modal, expectMode);
                 }
             }
         }
@@ -298,6 +307,13 @@ public class ReactBridgeManager {
     public HybridFragment primaryFragment(@Nullable AwesomeFragment fragment) {
         if (fragment == null) {
             return null;
+        }
+
+        if (fragment.definesPresentationContext()) {
+            AwesomeFragment p = fragment.getPresentedFragment();
+            if (p != null) {
+                return primaryFragment(p);
+            }
         }
 
         String layout = navigatorRegistry.layoutForFragment(fragment);

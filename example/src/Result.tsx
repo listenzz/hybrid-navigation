@@ -53,15 +53,26 @@ function Result({ navigator, garden }: InjectedProps) {
     navigator.setResult(RESULT_OK, {
       text: text || '',
     })
-    const graph = await Navigator.routeGraph()
-    console.log(graph)
-    const route = await Navigator.currentRoute()
-    console.log(route)
     await navigator.dismiss()
   }
 
   function handleTextChanged(text: string) {
     setText(text)
+  }
+
+  async function present() {
+    await navigator.present('Result')
+  }
+
+  async function showModal() {
+    await navigator.showModal('ReactModal')
+  }
+
+  async function printRouteGraph() {
+    const graph = await Navigator.routeGraph()
+    console.log(graph)
+    const route = await Navigator.currentRoute()
+    console.log(route)
   }
 
   return (
@@ -94,6 +105,18 @@ function Result({ navigator, garden }: InjectedProps) {
 
         <TouchableOpacity onPress={sendResult} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>send data back</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>present</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>showModal</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={printRouteGraph} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>printRouteGraph</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAwareScrollView>

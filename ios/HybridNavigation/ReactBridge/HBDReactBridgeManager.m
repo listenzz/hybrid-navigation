@@ -303,95 +303,107 @@ const NSInteger ResultCancel = 0;
 }
 
 - (HBDViewController *)primaryViewController {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i-1];
-        if ([window isKindOfClass:[HBDModalWindow class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)window.rootViewController;
-            if (modal && !modal.isBeingHidden) {
-                return [self primaryViewControllerWithViewController:modal.contentViewController];
-            }
-        }
-    }
-    
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *controller = mainWindow.rootViewController;
-    while (controller != nil) {
-        UIViewController *presentedController = controller.presentedViewController;
-        if (!presentedController) {
-            break;
-        }
-        
-        if ([presentedController isBeingDismissed]) {
-            break;
-        }
-        
-        if ([presentedController isKindOfClass:[UIAlertController class]]) {
-            break;
-        }
-        controller = presentedController;
-    }
     return [self primaryViewControllerWithViewController:controller];
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
+    HBDModalViewController *modal = vc.hbd_popupViewController.hbd_modalViewController;
+    if (modal && !modal.isBeingHidden) {
+        return [self primaryViewControllerWithViewController:modal.contentViewController];
+    }
+    
+    UIViewController *presented = vc.presentedViewController;
+    if (presented && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
+        return [self primaryViewControllerWithViewController:presented];
+    }
+    
     NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
     if (layout) {
         id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
         return [navigator primaryViewControllerWithViewController:vc];
     }
+    
     return nil;
 }
 
 - (NSArray *)routeGraph {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    NSMutableArray *root = [[NSMutableArray alloc] init];
+    UIWindow *mainWindow = [self mainWindow];
+    UIViewController *vc = mainWindow.rootViewController;
+    NSMutableDictionary *graph = [self buildRouteGraphWithViewController:vc];
     
-    for (NSUInteger i = 0; i < application.windows.count; i ++) {
-        UIWindow *window = application.windows[i];
-        UIViewController *controller = window.rootViewController;
-        
-        if ([controller isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)controller;
-            if (!modal || modal.isBeingHidden) {
-                continue;
-            }
-            NSDictionary *graph = [self buildRouteGraphWithViewController:modal.contentViewController];
-            if (graph) {
-                [root addObject:graph];
-            }
-        }
-        
-        while (controller != nil) {
-            NSDictionary *graph = [self buildRouteGraphWithViewController:controller];
-            if (graph) {
-                [root addObject:graph];
-            }
-            UIViewController *presentedController = controller.presentedViewController;
-            if (!presentedController) {
-                break;
-            }
-
-            if ([presentedController isBeingDismissed]) {
-                break;
-            }
-            
-            if ([presentedController isKindOfClass:[UIAlertController class]]) {
-                break;
-            }
-            controller = presentedController;
-        }
+    NSMutableArray *root = [[NSMutableArray alloc] init];
+    NSMutableArray *modal = [[NSMutableArray alloc] init];
+    NSMutableArray *present = [[NSMutableArray alloc] init];
+    
+    [self extrackModal:modal present:present withGraph:graph];
+    
+    if (graph) {
+        [root addObject:graph];
+    }
+    
+    if ([present count] > 0) {
+        [root addObjectsFromArray:present];
+    }
+    
+    if ([modal count] > 0) {
+        [root addObjectsFromArray:modal];
     }
     
     return root;
 }
 
-- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
+- (void)extrackModal:(NSMutableArray *)modal present:(NSMutableArray *)present withGraph:(NSMutableDictionary *)graph {
+    NSMutableDictionary *m = graph[@"ref_modal"];
+    NSMutableDictionary *p = graph[@"ref_present"];
+    if (m) {
+        [graph removeObjectForKey:@"ref_modal"];
+        [modal addObject:m];
+        [self extrackModal:modal present:present withGraph:m];
+    }
+    
+    if (p) {
+        [graph removeObjectForKey:@"ref_present"];
+        [present addObject:p];
+        [self extrackModal:modal present:present withGraph:p];
+    }
+    
+    NSArray *children = graph[@"children"];
+    if (children) {
+        for (int i = 0; i < children.count; i++) {
+            NSMutableDictionary *child = [children objectAtIndex:i];
+            [self extrackModal:modal present:present withGraph:child];
+        }
+    }
+}
+
+- (NSMutableDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
+    NSMutableDictionary *m = nil;
+    HBDModalViewController *modal = vc.hbd_popupViewController.hbd_modalViewController;
+    if (modal && !modal.isBeingHidden) {
+        m = [self buildRouteGraphWithViewController:modal.contentViewController];
+    }
+    
+    NSMutableDictionary *p = nil;
+    UIViewController *presented = vc.presentedViewController;
+    if (presented && presented.presentingViewController == vc && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
+        p = [self buildRouteGraphWithViewController:presented];
+    }
+    
     NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
     if (layout) {
         id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
-        return [navigator buildRouteGraphWithViewController:vc];
+        NSMutableDictionary *graph = [[navigator buildRouteGraphWithViewController:vc] mutableCopy];
+        if (m) {
+            [graph setObject:m forKey:@"ref_modal"];
+        }
+        if (p) {
+            [graph setObject:p forKey:@"ref_present"];
+        }
+        return graph;
     }
+    
     return nil;
 }
 
