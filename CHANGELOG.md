@@ -1,4 +1,8 @@
-### 2021-01-16 发布 1.1.0
+## 1.2.0
+
+- 修复当 definesPresentationContext 开启时，routeGroup 和 currentRoute 存在的问题
+
+## 1.1.0
 
 - 将 \*/build/ 添加到 .npmignore
 
@@ -6,4 +10,4 @@
 
 - 优化了 routeGroup 和 currentRoute 的实现
 
-### 2021-01-15 发布 1.0.0
+## 1.0.0
