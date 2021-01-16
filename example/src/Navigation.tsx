@@ -95,20 +95,20 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
   }
 
   async function pop() {
+    await printRouteGraph()
     await navigator.pop()
-    //await printRouteGraph()
   }
 
   async function popTo() {
+    await printRouteGraph()
     if (popToId) {
       await navigator.popTo(popToId)
     }
-    //await printRouteGraph()
   }
 
   async function popToRoot() {
+    await printRouteGraph()
     await navigator.popToRoot()
-    // await printRouteGraph()
   }
 
   async function redirectTo() {
@@ -119,7 +119,7 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
     } else {
       await navigator.redirectTo('Navigation')
     }
-    // await printRouteGraph()
+    await printRouteGraph()
   }
 
   async function printRouteGraph() {

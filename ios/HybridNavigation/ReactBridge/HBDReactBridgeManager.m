@@ -16,8 +16,6 @@
 #import "HBDModalViewController.h"
 #import "HBDViewController.h"
 #import "HBDNavigatorRegistry.h"
-
-
 #import "HBDEventEmitter.h"
 
 NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
@@ -152,20 +150,19 @@ const NSInteger ResultCancel = 0;
     }
     
     NSArray<NSString *> *layouts = [self.navigatorRegistry allLayouts];
-    id<HBDNavigator> navigator = nil;
     for (NSString *name in layouts) {
         if ([[layout allKeys] containsObject:name]) {
-            navigator = [self.navigatorRegistry navigatorForLayout:name];
-            break;
+            id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:name];
+            UIViewController *vc = [navigator createViewControllerWithLayout:layout];
+            if (vc) {
+                [self.navigatorRegistry setLayout:name forViewController:vc];
+            }
+            return vc;
         }
     }
     
-    if (navigator) {
-        return [navigator createViewControllerWithLayout:layout];
-    } else {
-        RCTLogError(@"找不到可以处理 %@ 的 navigator，你是否忘了注册？", layout);
-        return nil;
-    }
+    RCTLogError(@"找不到可以处理 %@ 的 navigator，你是否忘了注册？", layout);
+    return nil;
 }
 
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
@@ -338,14 +335,12 @@ const NSInteger ResultCancel = 0;
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
-    HBDViewController *hbdVC = nil;
-    for (id<HBDNavigator> navigator in [self.navigatorRegistry allNavigators]) {
-        hbdVC = [navigator primaryViewControllerWithViewController:vc];
-        if (hbdVC) {
-            break;
-        }
+    NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
+    if (layout) {
+        id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
+        return [navigator primaryViewControllerWithViewController:vc];
     }
-    return hbdVC;
+    return nil;
 }
 
 - (NSArray *)routeGraph {
@@ -361,10 +356,17 @@ const NSInteger ResultCancel = 0;
             if (!modal || modal.isBeingHidden) {
                 continue;
             }
+            NSDictionary *graph = [self buildRouteGraphWithViewController:modal.contentViewController];
+            if (graph) {
+                [root addObject:graph];
+            }
         }
         
         while (controller != nil) {
-            [self buildRouteGraphWithController:controller root:root];
+            NSDictionary *graph = [self buildRouteGraphWithViewController:controller];
+            if (graph) {
+                [root addObject:graph];
+            }
             UIViewController *presentedController = controller.presentedViewController;
             if (!presentedController) {
                 break;
@@ -384,12 +386,13 @@ const NSInteger ResultCancel = 0;
     return root;
 }
 
-- (void)buildRouteGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root {
-    for (id<HBDNavigator> navigator in [self.navigatorRegistry allNavigators]) {
-        if ([navigator buildRouteGraphWithController:controller root:root]) {
-            return;
-        }
+- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
+    NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
+    if (layout) {
+        id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
+        return [navigator buildRouteGraphWithViewController:vc];
     }
+    return nil;
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {

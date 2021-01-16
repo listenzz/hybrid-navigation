@@ -14,8 +14,6 @@ import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.ReactBridgeManager;
 import com.reactnative.hybridnavigation.ReactNavigationFragment;
 
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,7 +22,7 @@ public class ScreenNavigator implements Navigator {
 
     final static String TAG = "ReactNative";
 
-    private List<String> supportActions = Arrays.asList("present", "presentLayout", "dismiss", "showModal", "showModalLayout", "hideModal");
+    private final List<String> supportActions = Arrays.asList("present", "presentLayout", "dismiss", "showModal", "showModalLayout", "hideModal");
 
     @Override
     @NonNull
@@ -68,7 +66,7 @@ public class ScreenNavigator implements Navigator {
     }
 
     @Override
-    public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
+    public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof HybridFragment && fragment.isAdded()) {
             HybridFragment screen = (HybridFragment) fragment;
             Bundle route = new Bundle();
@@ -76,10 +74,9 @@ public class ScreenNavigator implements Navigator {
             route.putString("sceneId", screen.getSceneId());
             route.putString("moduleName", screen.getModuleName());
             route.putString("mode", Navigator.Util.getMode(fragment));
-            root.add(route);
-            return true;
+            return route;
         }
-        return false;
+        return null;
     }
 
     @Override

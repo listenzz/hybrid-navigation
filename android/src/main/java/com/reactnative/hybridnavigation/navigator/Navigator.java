@@ -10,8 +10,6 @@ import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.reactnative.hybridnavigation.HybridFragment;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 public interface Navigator {
@@ -41,7 +39,8 @@ public interface Navigator {
     @Nullable
     AwesomeFragment createFragment(@NonNull ReadableMap layout);
 
-    boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal);
+    @Nullable
+    Bundle buildRouteGraph(@NonNull AwesomeFragment fragment);
 
     @Nullable
     HybridFragment primaryFragment(@NonNull AwesomeFragment fragment);

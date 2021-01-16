@@ -8,6 +8,7 @@ import {
   BarStyleLightContent,
   withNavigationItem,
   InjectedProps,
+  Navigator,
 } from 'hybrid-navigation'
 
 export default withNavigationItem({
@@ -52,20 +53,11 @@ function Result({ navigator, garden }: InjectedProps) {
     navigator.setResult(RESULT_OK, {
       text: text || '',
     })
-
-    // const graph = await Navigator.routeGraph()
-    // const stack = graph[0].children[0].children[0].children
-    // const n = Navigator.of(stack[stack.length - 1].sceneId)
-    // n.switchTab(1, true)
-    // n.pop()
+    const graph = await Navigator.routeGraph()
+    console.log(graph)
+    const route = await Navigator.currentRoute()
+    console.log(route)
     await navigator.dismiss()
-
-    // let current = await Navigator.current()
-    // await current.popToRoot()
-    // current = await Navigator.current()
-    // await current.switchTab(1, true)
-    // current = await Navigator.current()
-    // current.push('Navigation')
   }
 
   function handleTextChanged(text: string) {

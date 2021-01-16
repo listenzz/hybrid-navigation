@@ -22,6 +22,10 @@ function ReactModal({ navigator, sceneId }: InjectedProps) {
 
   async function hideModal(gender?: string) {
     if (gender) {
+      const graph = await Navigator.routeGraph()
+      console.log(graph)
+      const route = await Navigator.currentRoute()
+      console.log(route)
       navigator.setResult(RESULT_OK, {
         text: gender,
         backId: sceneId,

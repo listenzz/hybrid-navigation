@@ -244,8 +244,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-                Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
-                HybridFragment current = getPrimaryFragment(fragment);
+                HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
 
                 if (current != null) {
                     Bundle bundle = new Bundle();
@@ -260,14 +259,6 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         };
 
         sHandler.post(task);
-    }
-
-    @Nullable
-    private HybridFragment getPrimaryFragment(@Nullable Fragment fragment) {
-        if (fragment instanceof AwesomeFragment) {
-            return bridgeManager.primaryFragment((AwesomeFragment) fragment);
-        }
-        return null;
     }
 
     @ReactMethod
@@ -288,18 +279,9 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-
-                ArrayList<Bundle> root = new ArrayList<>();
-                ArrayList<Bundle> modal = new ArrayList<>();
-                List<AwesomeFragment> fragments = FragmentHelper.getFragments(fragmentManager);
-                for (int i = 0; i < fragments.size(); i++) {
-                    AwesomeFragment fragment = fragments.get(i);
-                    buildRouteGraph(fragment, root, modal);
-                }
-                root.addAll(modal);
-
-                if (root.size() > 0) {
-                    promise.resolve(Arguments.fromList(root));
+                ArrayList<Bundle> graph = bridgeManager.buildRouteGraph(fragmentManager);
+                if (graph.size() > 0) {
+                    promise.resolve(Arguments.fromList(graph));
                 } else {
                     sHandler.postDelayed(this, 16);
                 }
@@ -307,10 +289,6 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         };
 
         sHandler.post(task);
-    }
-
-    private void buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
-        bridgeManager.buildRouteGraph(fragment, root, modal);
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {

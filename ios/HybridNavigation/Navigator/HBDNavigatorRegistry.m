@@ -17,10 +17,10 @@
 
 @interface HBDNavigatorRegistry ()
 
-@property(nonatomic, strong) NSMutableArray<id<HBDNavigator>> *navigators;
 @property(nonatomic, strong) NSMutableArray<NSString *> *layouts;
 @property(nonatomic, strong) NSMutableDictionary<NSString *, id<HBDNavigator>> *actionNavigatorPairs;
 @property(nonatomic, strong) NSMutableDictionary<NSString *, id<HBDNavigator>> *layoutNavigatorPairs;
+@property(nonatomic, strong) NSMutableDictionary<Class, NSString *> *classLayoutPairs;
 
 @end
 
@@ -28,10 +28,10 @@
 
 - (instancetype)init {
     if (self = [super init]) {
-        _navigators = [NSMutableArray new];
         _layouts = [NSMutableArray new];
         _actionNavigatorPairs = [NSMutableDictionary new];
         _layoutNavigatorPairs = [NSMutableDictionary new];
+        _classLayoutPairs = [NSMutableDictionary new];
     }
     
     [self registerNavigator:[HBDStackNavigator new]];
@@ -43,7 +43,6 @@
 }
 
 - (void)registerNavigator:(id<HBDNavigator>)navigator {
-    [self.navigators insertObject:navigator atIndex:0];
     [self.layouts addObject:[navigator name]];
     
     for (NSString *action in [navigator supportActions]) {
@@ -70,8 +69,15 @@
     return [self.layoutNavigatorPairs objectForKey:layout];
 }
 
-- (NSArray<id<HBDNavigator>> *) allNavigators {
-    return [self.navigators copy];
+- (NSString *)layoutForViewController:(UIViewController *)vc {
+    return [self.classLayoutPairs objectForKey:[vc class]];
+}
+
+- (void)setLayout:(NSString *)layout forViewController:(UIViewController *)vc {
+    NSString *current = [self layoutForViewController:vc];
+    if (!current || ![current isEqualToString:layout]) {
+        [self.classLayoutPairs setObject:layout forKey:[vc class]];
+    }
 }
 
 - (NSArray<NSString *> *) allLayouts {

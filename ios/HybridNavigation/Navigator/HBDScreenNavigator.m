@@ -35,26 +35,17 @@
     return nil;
 }
 
-- (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
-    
-    if ([vc isKindOfClass:[HBDModalViewController class]]) {
-        HBDModalViewController *modal = (HBDModalViewController *)vc;
-        [[HBDReactBridgeManager get] buildRouteGraphWithController:modal.contentViewController root:root];
-        return YES;
-    }
-    
+- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[HBDViewController class]]) {
         HBDViewController *screen = (HBDViewController *)vc;
-        [root addObject:@{
-                          @"layout": @"screen",
-                          @"sceneId": screen.sceneId,
-                          @"moduleName": screen.moduleName ?: NSNull.null,
-                          @"mode": [vc hbd_mode],
-                          }];
-        return YES;
+        return @{
+            @"layout": @"screen",
+            @"sceneId": screen.sceneId,
+            @"moduleName": screen.moduleName ?: NSNull.null,
+            @"mode": [vc hbd_mode],
+        };
     }
-
-    return NO;
+    return nil;
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
