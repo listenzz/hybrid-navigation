@@ -19,4 +19,6 @@
 #import "HBDTabNavigator.h"
 #import "HBDDrawerNavigator.h"
 
+#import "HBDUtils.h"
+
 #endif /* HybridNavigation_h */

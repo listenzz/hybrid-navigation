@@ -259,7 +259,7 @@ public class ReactBridgeManager {
         return root;
     }
 
-    private void extractModal(@NonNull Bundle graph, @NonNull ArrayList<Bundle> modal, String expectMode) {
+    private void extractModal(@NonNull Bundle graph, @NonNull ArrayList<Bundle> modal, @NonNull String expectMode) {
         ArrayList<Bundle> children = graph.getParcelableArrayList("children");
         if (children != null) {
             ArrayList<Bundle> copy = new ArrayList<>(children);
@@ -280,6 +280,10 @@ public class ReactBridgeManager {
     @Nullable
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
         String layout = navigatorRegistry.layoutForFragment(fragment);
+        if (layout == null && fragment instanceof HybridFragment) {
+            layout = "screen";
+        }
+
         if (layout != null) {
             Navigator navigator = navigatorRegistry.navigatorForLayout(layout);
             if (navigator != null) {
@@ -317,6 +321,10 @@ public class ReactBridgeManager {
         }
 
         String layout = navigatorRegistry.layoutForFragment(fragment);
+        if (layout == null && fragment instanceof HybridFragment) {
+            layout = "screen";
+        }
+
         if (layout != null) {
             Navigator navigator = navigatorRegistry.navigatorForLayout(layout);
             if (navigator != null) {
