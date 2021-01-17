@@ -280,10 +280,6 @@ public class ReactBridgeManager {
     @Nullable
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
         String layout = navigatorRegistry.layoutForFragment(fragment);
-        if (layout == null && fragment instanceof HybridFragment) {
-            layout = "screen";
-        }
-
         if (layout != null) {
             Navigator navigator = navigatorRegistry.navigatorForLayout(layout);
             if (navigator != null) {
@@ -321,10 +317,6 @@ public class ReactBridgeManager {
         }
 
         String layout = navigatorRegistry.layoutForFragment(fragment);
-        if (layout == null && fragment instanceof HybridFragment) {
-            layout = "screen";
-        }
-
         if (layout != null) {
             Navigator navigator = navigatorRegistry.navigatorForLayout(layout);
             if (navigator != null) {

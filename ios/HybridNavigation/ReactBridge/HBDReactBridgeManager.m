@@ -319,11 +319,7 @@ const NSInteger ResultCancel = 0;
         return [self primaryViewControllerWithViewController:presented];
     }
     
-    NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
-    if (!layout && [vc isKindOfClass:[HBDViewController class]]) {
-        layout = @"screen";
-    }
-    
+    NSString *layout = [self.navigatorRegistry layoutForViewController:vc];   
     if (layout) {
         id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
         return [navigator primaryViewControllerWithViewController:vc];
@@ -396,10 +392,6 @@ const NSInteger ResultCancel = 0;
     }
     
     NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
-    if (!layout && [vc isKindOfClass:[HBDViewController class]]) {
-        layout = @"screen";
-    }
-    
     if (layout) {
         id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
         NSMutableDictionary *graph = [[navigator buildRouteGraphWithViewController:vc] mutableCopy];

@@ -4,6 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.DrawerFragment;
+import com.navigation.androidx.NavigationFragment;
+import com.navigation.androidx.TabBarFragment;
+import com.reactnative.hybridnavigation.HybridFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,11 +58,26 @@ public class NavigatorRegistry {
 
     @Nullable
     public String layoutForFragment(@NonNull AwesomeFragment fragment) {
-        return classLayoutPairs.get(fragment.getClass());
+        String layout = classLayoutPairs.get(fragment.getClass());
+        if (layout == null) {
+            if (fragment instanceof HybridFragment) {
+                return "screen";
+            }
+            if (fragment instanceof NavigationFragment) {
+                return "stack";
+            }
+            if (fragment instanceof TabBarFragment) {
+                return "tabs";
+            }
+            if (fragment instanceof DrawerFragment) {
+                return "drawer";
+            }
+        }
+        return layout;
     }
 
     public void setLayoutForFragment(@NonNull String layout, @NonNull AwesomeFragment fragment) {
-        String current = layoutForFragment(fragment);
+        String current = classLayoutPairs.get(fragment.getClass());
         if (current == null || !current.equals(layout)) {
             classLayoutPairs.put(fragment.getClass(), layout);
         }

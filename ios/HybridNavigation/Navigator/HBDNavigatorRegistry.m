@@ -14,6 +14,9 @@
 #import "HBDTabNavigator.h"
 #import "HBDDrawerNavigator.h"
 
+#import "HBDNavigationController.h"
+#import "HBDTabBarController.h"
+#import "HBDDrawerController.h"
 
 @interface HBDNavigatorRegistry ()
 
@@ -70,11 +73,26 @@
 }
 
 - (NSString *)layoutForViewController:(UIViewController *)vc {
-    return [self.classLayoutPairs objectForKey:[vc class]];
+    NSString *layout = [self.classLayoutPairs objectForKey:[vc class]];
+    if (!layout) {
+        if ([vc isKindOfClass:[HBDViewController class]]) {
+            return @"screen";
+        }
+        if ([vc isKindOfClass:[HBDNavigationController class]]) {
+            return @"stack";
+        }
+        if ([vc isKindOfClass:[HBDTabBarController class]]) {
+            return @"tabs";
+        }
+        if ([vc isKindOfClass:[HBDDrawerController class]]) {
+            return @"drawer";
+        }
+    }
+    return layout;
 }
 
 - (void)setLayout:(NSString *)layout forViewController:(UIViewController *)vc {
-    NSString *current = [self layoutForViewController:vc];
+    NSString *current = [self.classLayoutPairs objectForKey:[vc class]];
     if (!current || ![current isEqualToString:layout]) {
         [self.classLayoutPairs setObject:layout forKey:[vc class]];
     }
