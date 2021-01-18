@@ -1,7 +1,7 @@
 {
   "name": "hybrid-navigation",
   "description": "React Native Navigation that supports seamless navigation between Native and React.",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "keywords": [
     "react-native",
     "navigation",
