@@ -135,10 +135,25 @@ RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode
 }
 
 RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *)moduleName resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    Promiss *promiss = [[Promiss alloc] initWithResolver:resolve rejecter:reject];
+    [self performSelector:@selector(findSceneIdWithParams:) withObject:@{
+        @"promiss": promiss,
+        @"moduleName": moduleName,
+    }];
+}
+
+- (void)findSceneIdWithParams:(NSDictionary *)params {
+    if (!self.bridgeManager.isViewHierarchyReady) {
+        [self performSelector:@selector(findSceneIdWithParams:) withObject:params afterDelay:0.016];
+        return;
+    }
     
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     NSString *sceneId = nil;
     NSInteger index = application.windows.count - 1;
+    
+    NSString *moduleName = params[@"moduleName"];
+    Promiss *promiss = params[@"promiss"];
     
     while (index > -1 && sceneId == nil) {
         UIWindow *window = application.windows[index];
@@ -146,7 +161,7 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *)moduleName resolver:(RCTPr
         index--;
     }
     RCTLogInfo(@"通过 %@ 找到的 sceneId:%@", moduleName, sceneId);
-    resolve(RCTNullIfNil(sceneId));
+    promiss.resolve(RCTNullIfNil(sceneId));
 }
 
 - (NSString *)findeSceneIdByModuleName:(NSString *)moduleName withViewController:(UIViewController *)vc {
