@@ -11,6 +11,12 @@ React Native Navigation that supports seamless navigation between Native and Rea
 
 ![navigation-android](./screenshot/android.png)
 
+## Support
+
+| version | react-native version |
+| ------- | -------------------- |
+| 1.0.0+  | 0.60.0+              |
+
 ## Running the example project
 
 To run the example project, first clone this repo:
