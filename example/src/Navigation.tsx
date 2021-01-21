@@ -55,7 +55,9 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
   const visible = useVisible(sceneId)
 
   useEffect(() => {
-    garden.setMenuInteractive(isRoot && visible)
+    if (visible) {
+      garden.setMenuInteractive(isRoot)
+    }
   }, [visible, isRoot, garden])
 
   useEffect(() => {
@@ -139,11 +141,6 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
     }
   }
 
-  function test() {
-    // showModal()
-    present()
-  }
-
   async function present() {
     const [resultCode, data] = await navigator.present('Result')
     handleResult(resultCode, data)
@@ -197,7 +194,7 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
           <Text style={styles.buttonText}>redirectTo</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={test} activeOpacity={0.2} style={styles.button}>
+        <TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>present</Text>
         </TouchableOpacity>
 
