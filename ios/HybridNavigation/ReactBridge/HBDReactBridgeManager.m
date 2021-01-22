@@ -337,7 +337,7 @@ const NSInteger ResultCancel = 0;
     NSMutableArray *modal = [[NSMutableArray alloc] init];
     NSMutableArray *present = [[NSMutableArray alloc] init];
     
-    [self extrackModal:modal present:present withGraph:graph];
+    [self extractModal:modal present:present withGraph:graph];
     
     if (graph) {
         [root addObject:graph];
@@ -354,26 +354,26 @@ const NSInteger ResultCancel = 0;
     return root;
 }
 
-- (void)extrackModal:(NSMutableArray *)modal present:(NSMutableArray *)present withGraph:(NSMutableDictionary *)graph {
+- (void)extractModal:(NSMutableArray *)modal present:(NSMutableArray *)present withGraph:(NSMutableDictionary *)graph {
     NSMutableDictionary *m = graph[@"ref_modal"];
     NSMutableDictionary *p = graph[@"ref_present"];
     if (m) {
         [graph removeObjectForKey:@"ref_modal"];
         [modal addObject:m];
-        [self extrackModal:modal present:present withGraph:m];
+        [self extractModal:modal present:present withGraph:m];
     }
     
     if (p) {
         [graph removeObjectForKey:@"ref_present"];
         [present addObject:p];
-        [self extrackModal:modal present:present withGraph:p];
+        [self extractModal:modal present:present withGraph:p];
     }
     
     NSArray *children = graph[@"children"];
     if (children) {
         for (int i = 0; i < children.count; i++) {
             NSMutableDictionary *child = [children objectAtIndex:i];
-            [self extrackModal:modal present:present withGraph:child];
+            [self extractModal:modal present:present withGraph:child];
         }
     }
 }
