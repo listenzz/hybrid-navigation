@@ -36,11 +36,12 @@ function withNavigator(moduleName: string) {
   return function (WrappedComponent: React.ComponentType<any>) {
     function FC(props: Props, ref: React.Ref<React.ComponentType<any>>) {
       const { sceneId } = props
-      const navigator = store.getNavigator(sceneId) || new Navigator(sceneId, moduleName)
+
+      const navigator = Navigator.of(sceneId)
       if (navigator.moduleName === undefined) {
         navigator.moduleName = moduleName
       }
-      store.addNavigator(sceneId, navigator)
+
       const garden = new Garden(sceneId)
 
       useEffect(() => {

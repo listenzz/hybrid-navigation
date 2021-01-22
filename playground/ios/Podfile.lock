@@ -28,7 +28,7 @@ PODS:
   - libwebp/mux (1.1.0):
     - libwebp/demux
   - libwebp/webp (1.1.0)
-  - NavigationHybrid (0.28.5):
+  - NavigationHybrid (0.28.7):
     - React
   - RCTRequired (0.63.4)
   - RCTTypeSafety (0.63.4):
@@ -378,7 +378,7 @@ SPEC CHECKSUMS:
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
-  NavigationHybrid: b325a2623203c79f59f77c0c838dd8e6b2ede7bc
+  NavigationHybrid: 276aeafef60c7f388109d92df0e9fcbf9184fe61
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
   RCTTypeSafety: 8c9c544ecbf20337d069e4ae7fd9a377aadf504b
   React: b0a957a2c44da4113b0c4c9853d8387f8e64e615

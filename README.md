@@ -2,9 +2,17 @@
 
 **⚠️ 本库已重名名为 hybrid-navigation**
 
-**react-native-navigation-hybrid@0.28.6 等价于 hybrid-navigation@1.0.0**
+**react-native-navigation-hybrid@0.29.0 等价于 hybrid-navigation@1.2.2**
 
 **react-native-navigation-hybrid 自 2021-01-15 起不再维护，请迁移到 hybrid-navigation**
+
+迁移步骤：
+
+1. 首先升级到 react-native-navigation-hybrid@0.28.8
+
+2. 然后升级到 react-native-navigation-hybrid@0.29.0，解决存在问题
+
+3. 最后升级到 hybrid-navigation
 
 React Native Navigation that supports seamless navigation between Native and React.
 

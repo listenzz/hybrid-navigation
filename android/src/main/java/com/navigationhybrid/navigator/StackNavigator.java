@@ -26,7 +26,7 @@ import java.util.List;
 
 public class StackNavigator implements Navigator {
 
-    private List<String> supportActions = Arrays.asList("push", "pushLayout", "pop", "popTo", "popToRoot", "redirectTo");
+    private final List<String> supportActions = Arrays.asList("push", "pushLayout", "pop", "popTo", "popToRoot", "redirectTo");
 
     @Override
     @NonNull
@@ -65,16 +65,18 @@ public class StackNavigator implements Navigator {
         return null;
     }
 
+    @Nullable
     @Override
-    public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
+    public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof NavigationFragment && fragment.isAdded()) {
             NavigationFragment stack = (NavigationFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
             List<AwesomeFragment> fragments = stack.getChildFragments();
             for (int i = 0; i < fragments.size(); i++) {
                 AwesomeFragment child = fragments.get(i);
-                if (!child.getShowsDialog()) {
-                    getReactBridgeManager().buildRouteGraph(child, children, modal);
+                Bundle r = getReactBridgeManager().buildRouteGraph(child);
+                if (r != null) {
+                    children.add(r);
                 }
             }
             Bundle graph = new Bundle();
@@ -82,10 +84,9 @@ public class StackNavigator implements Navigator {
             graph.putString("sceneId", stack.getSceneId());
             graph.putParcelableArrayList("children", children);
             graph.putString("mode", Navigator.Util.getMode(fragment));
-            root.add(graph);
-            return true;
+            return graph;
         }
-        return false;
+        return null;
     }
 
     @Override

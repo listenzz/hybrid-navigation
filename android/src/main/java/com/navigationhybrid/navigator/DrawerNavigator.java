@@ -21,7 +21,7 @@ import java.util.List;
 
 public class DrawerNavigator implements Navigator {
 
-    private List<String> supportActions = Arrays.asList("toggleMenu", "openMenu", "closeMenu");
+    private final List<String> supportActions = Arrays.asList("toggleMenu", "openMenu", "closeMenu");
 
     @Override
     @NonNull
@@ -84,22 +84,28 @@ public class DrawerNavigator implements Navigator {
         return null;
     }
 
+    @Nullable
     @Override
-    public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
+    public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof DrawerFragment && fragment.isAdded()) {
             DrawerFragment drawer = (DrawerFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
-            getReactBridgeManager().buildRouteGraph(drawer.getContentFragment(), children, modal);
-            getReactBridgeManager().buildRouteGraph(drawer.getMenuFragment(), children, modal);
+            List<AwesomeFragment> fragments = drawer.getChildFragments();
+            for (int i = 0; i < fragments.size(); i++) {
+                AwesomeFragment child = fragments.get(i);
+                Bundle r = getReactBridgeManager().buildRouteGraph(child);
+                if (r != null) {
+                    children.add(r);
+                }
+            }
             Bundle graph = new Bundle();
             graph.putString("layout", name());
             graph.putString("sceneId", fragment.getSceneId());
             graph.putParcelableArrayList("children", children);
             graph.putString("mode", Navigator.Util.getMode(fragment));
-            root.add(graph);
-            return true;
+            return graph;
         }
-        return false;
+        return null;
     }
 
     @Override

@@ -55,7 +55,7 @@ function Result({ navigator, garden }: InjectedProps) {
 
     // const graph = await Navigator.routeGraph()
     // const stack = graph[0].children[0].children[0].children
-    // const n = Navigator.get(stack[stack.length - 1].sceneId)
+    // const n = Navigator.of(stack[stack.length - 1].sceneId)
     // n.switchTab(1, true)
     // n.pop()
     await navigator.dismiss()

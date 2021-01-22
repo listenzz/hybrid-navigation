@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactInstanceManager;
@@ -231,31 +233,78 @@ public class ReactBridgeManager {
         viewHierarchyReady = ready;
     }
 
-    public void buildRouteGraph(@Nullable AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
-        if (fragment == null) {
-            return;
-        }
+    @NonNull
+    public ArrayList<Bundle> buildRouteGraph(@NonNull FragmentManager fragmentManager) {
+        ArrayList<Bundle> root = new ArrayList<>();
+        ArrayList<Bundle> modal = new ArrayList<>();
+        ArrayList<Bundle> presentation = new ArrayList<>();
 
-        List<AwesomeFragment> children = fragment.getChildFragments();
-
-        if (children.size() > 0) {
-            for (int i = 0; i < children.size(); i++) {
-                AwesomeFragment child = children.get(i);
-                if (child.getShowsDialog() && !child.isDismissed()) {
-                    for (Navigator navigator : navigatorRegistry.allNavigators()) {
-                        if (navigator.buildRouteGraph(child, modal, modal)) {
-                            break;
-                        }
-                    }
+        List<AwesomeFragment> fragments = FragmentHelper.getFragments(fragmentManager);
+        for (int i = 0; i < fragments.size(); i++) {
+            AwesomeFragment fragment = fragments.get(i);
+            Bundle bundle = buildRouteGraph(fragment);
+            if (bundle != null) {
+                String mode = bundle.getString("mode");
+                if (mode.equals("modal")) {
+                    modal.add(bundle);
+                } else if (mode.equals("present")) {
+                    extractModal(bundle, modal, "modal");
+                    presentation.add(bundle);
+                } else {
+                    extractModal(bundle, modal, "modal");
+                    extractModal(bundle, presentation, "present");
+                    root.add(bundle);
                 }
             }
         }
 
-        for (Navigator navigator : navigatorRegistry.allNavigators()) {
-            if (navigator.buildRouteGraph(fragment, root, modal)) {
-                break;
+        root.addAll(presentation);
+        root.addAll(modal);
+        return root;
+    }
+
+    private void extractModal(@NonNull Bundle graph, @NonNull ArrayList<Bundle> modal, @NonNull String expectMode) {
+        ArrayList<Bundle> children = graph.getParcelableArrayList("children");
+        if (children != null) {
+            ArrayList<Bundle> copy = new ArrayList<>(children);
+            int size = copy.size();
+            for (int i = 0; i < size; i++) {
+                Bundle bundle = copy.get(i);
+                String mode = bundle.getString("mode");
+                if (mode.equals(expectMode)) {
+                    children.remove(bundle);
+                    modal.add(bundle);
+                } else {
+                    extractModal(bundle, modal, expectMode);
+                }
             }
         }
+    }
+
+    @Nullable
+    public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
+        String layout = navigatorRegistry.layoutForFragment(fragment);
+        if (layout != null) {
+            Navigator navigator = navigatorRegistry.navigatorForLayout(layout);
+            if (navigator != null) {
+                return navigator.buildRouteGraph(fragment);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public HybridFragment primaryFragment(@NonNull FragmentManager fragmentManager) {
+        AwesomeFragment dialog = FragmentHelper.getAwesomeDialogFragment(fragmentManager);
+        if (dialog != null) {
+            return primaryFragment(dialog);
+        }
+
+        Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
+        if (fragment instanceof AwesomeFragment) {
+            return primaryFragment((AwesomeFragment) fragment);
+        }
+        return null;
     }
 
     @Nullable
@@ -264,22 +313,21 @@ public class ReactBridgeManager {
             return null;
         }
 
-        List<AwesomeFragment> children = fragment.getChildFragments();
-        if (children.size() > 0) {
-            AwesomeFragment last = children.get(children.size() - 1);
-            if (last.getShowsDialog() && !last.isDismissed()) {
-                fragment = last;
+        if (fragment.definesPresentationContext()) {
+            AwesomeFragment p = fragment.getPresentedFragment();
+            if (p != null) {
+                return primaryFragment(p);
             }
         }
 
-        HybridFragment hybridFragment = null;
-        for (Navigator navigator : navigatorRegistry.allNavigators()) {
-            hybridFragment = navigator.primaryFragment(fragment);
-            if (hybridFragment != null) {
-                break;
+        String layout = navigatorRegistry.layoutForFragment(fragment);
+        if (layout != null) {
+            Navigator navigator = navigatorRegistry.navigatorForLayout(layout);
+            if (navigator != null) {
+                return navigator.primaryFragment(fragment);
             }
         }
-        return hybridFragment;
+        return null;
     }
 
     public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
@@ -296,19 +344,16 @@ public class ReactBridgeManager {
         }
 
         List<String> layouts = navigatorRegistry.allLayouts();
-        Navigator navigator = null;
         for (String name : layouts) {
             if (layout.hasKey(name)) {
-                navigator = navigatorRegistry.navigatorForLayout(name);
-                break;
+                Navigator navigator = navigatorRegistry.navigatorForLayout(name);
+                AwesomeFragment fragment = navigator.createFragment(layout);
+                navigatorRegistry.setLayoutForFragment(name, fragment);
+                return fragment;
             }
         }
 
-        if (navigator == null) {
-            throw new IllegalArgumentException("找不到可以处理 " + layout + " 的 navigator, 你是否忘了注册？");
-        }
-
-        return navigator.createFragment(layout);
+        throw new IllegalArgumentException("找不到可以处理 " + layout + " 的 navigator, 你是否忘了注册？");
     }
 
     @NonNull

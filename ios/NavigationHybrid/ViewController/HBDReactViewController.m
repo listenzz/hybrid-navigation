@@ -95,7 +95,7 @@
     [super viewWillAppear:animated];
     self.automaticallyAdjustsScrollViewInsets = NO;
     id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
-    if (!coordinator || !coordinator.interactive) {
+    if (coordinator && !coordinator.interactive) {
         if (!self.viewAppeared) {
             self.viewAppeared = YES;
             if (self.firstRenderCompleted) {
@@ -124,7 +124,7 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
-    if (!coordinator || !coordinator.interactive) {
+    if (coordinator && !coordinator.interactive) {
         if (self.viewAppeared) {
             self.viewAppeared = NO;
             if (self.firstRenderCompleted) {

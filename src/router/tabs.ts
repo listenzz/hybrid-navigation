@@ -30,7 +30,7 @@ const handler: RouteHandler = (graph: RouteGraph, route: RouteInfo, next: RouteH
       dependencies.some((value) => moduleNames.indexOf(value) !== -1)
     ) {
       if (selectedIndex !== i) {
-        const navigator = Navigator.get(children[i].sceneId)
+        const navigator = Navigator.of(children[i].sceneId)
         navigator.switchTab(i)
       }
       return next(children[i], route, next)

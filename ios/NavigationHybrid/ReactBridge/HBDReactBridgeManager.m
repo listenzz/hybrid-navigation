@@ -16,8 +16,6 @@
 #import "HBDModalViewController.h"
 #import "HBDViewController.h"
 #import "HBDNavigatorRegistry.h"
-
-
 #import "HBDEventEmitter.h"
 
 NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
@@ -152,20 +150,19 @@ const NSInteger ResultCancel = 0;
     }
     
     NSArray<NSString *> *layouts = [self.navigatorRegistry allLayouts];
-    id<HBDNavigator> navigator = nil;
     for (NSString *name in layouts) {
         if ([[layout allKeys] containsObject:name]) {
-            navigator = [self.navigatorRegistry navigatorForLayout:name];
-            break;
+            id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:name];
+            UIViewController *vc = [navigator createViewControllerWithLayout:layout];
+            if (vc) {
+                [self.navigatorRegistry setLayout:name forViewController:vc];
+            }
+            return vc;
         }
     }
     
-    if (navigator) {
-        return [navigator createViewControllerWithLayout:layout];
-    } else {
-        RCTLogError(@"找不到可以处理 %@ 的 navigator，你是否忘了注册？", layout);
-        return nil;
-    }
+    RCTLogError(@"找不到可以处理 %@ 的 navigator，你是否忘了注册？", layout);
+    return nil;
 }
 
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
@@ -306,90 +303,108 @@ const NSInteger ResultCancel = 0;
 }
 
 - (HBDViewController *)primaryViewController {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i-1];
-        if ([window isKindOfClass:[HBDModalWindow class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)window.rootViewController;
-            if (modal && !modal.isBeingHidden) {
-                return [self primaryViewControllerWithViewController:modal.contentViewController];
-            }
-        }
-    }
-    
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *controller = mainWindow.rootViewController;
-    while (controller != nil) {
-        UIViewController *presentedController = controller.presentedViewController;
-        if (!presentedController) {
-            break;
-        }
-        
-        if ([presentedController isBeingDismissed]) {
-            break;
-        }
-        
-        if ([presentedController isKindOfClass:[UIAlertController class]]) {
-            break;
-        }
-        controller = presentedController;
-    }
     return [self primaryViewControllerWithViewController:controller];
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
-    HBDViewController *hbdVC = nil;
-    for (id<HBDNavigator> navigator in [self.navigatorRegistry allNavigators]) {
-        hbdVC = [navigator primaryViewControllerWithViewController:vc];
-        if (hbdVC) {
-            break;
-        }
+    HBDModalViewController *modal = vc.hbd_popupViewController.hbd_modalViewController;
+    if (modal && !modal.isBeingHidden) {
+        return [self primaryViewControllerWithViewController:modal.contentViewController];
     }
-    return hbdVC;
+    
+    UIViewController *presented = vc.presentedViewController;
+    if (presented && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
+        return [self primaryViewControllerWithViewController:presented];
+    }
+    
+    NSString *layout = [self.navigatorRegistry layoutForViewController:vc];   
+    if (layout) {
+        id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
+        return [navigator primaryViewControllerWithViewController:vc];
+    }
+    
+    return nil;
 }
 
 - (NSArray *)routeGraph {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    NSMutableArray *root = [[NSMutableArray alloc] init];
+    UIWindow *mainWindow = [self mainWindow];
+    UIViewController *vc = mainWindow.rootViewController;
+    NSMutableDictionary *graph = [self buildRouteGraphWithViewController:vc];
     
-    for (NSUInteger i = 0; i < application.windows.count; i ++) {
-        UIWindow *window = application.windows[i];
-        UIViewController *controller = window.rootViewController;
-        
-        if ([controller isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)controller;
-            if (!modal || modal.isBeingHidden) {
-                continue;
-            }
-        }
-        
-        while (controller != nil) {
-            [self buildRouteGraphWithController:controller root:root];
-            UIViewController *presentedController = controller.presentedViewController;
-            if (!presentedController) {
-                break;
-            }
-
-            if ([presentedController isBeingDismissed]) {
-                break;
-            }
-            
-            if ([presentedController isKindOfClass:[UIAlertController class]]) {
-                break;
-            }
-            controller = presentedController;
-        }
+    NSMutableArray *root = [[NSMutableArray alloc] init];
+    NSMutableArray *modal = [[NSMutableArray alloc] init];
+    NSMutableArray *present = [[NSMutableArray alloc] init];
+    
+    [self extractModal:modal present:present withGraph:graph];
+    
+    if (graph) {
+        [root addObject:graph];
+    }
+    
+    if ([present count] > 0) {
+        [root addObjectsFromArray:present];
+    }
+    
+    if ([modal count] > 0) {
+        [root addObjectsFromArray:modal];
     }
     
     return root;
 }
 
-- (void)buildRouteGraphWithController:(UIViewController *)controller root:(NSMutableArray *)root {
-    for (id<HBDNavigator> navigator in [self.navigatorRegistry allNavigators]) {
-        if ([navigator buildRouteGraphWithController:controller root:root]) {
-            return;
+- (void)extractModal:(NSMutableArray *)modal present:(NSMutableArray *)present withGraph:(NSMutableDictionary *)graph {
+    NSMutableDictionary *m = graph[@"ref_modal"];
+    NSMutableDictionary *p = graph[@"ref_present"];
+    if (m) {
+        [graph removeObjectForKey:@"ref_modal"];
+        [modal addObject:m];
+        [self extractModal:modal present:present withGraph:m];
+    }
+    
+    if (p) {
+        [graph removeObjectForKey:@"ref_present"];
+        [present addObject:p];
+        [self extractModal:modal present:present withGraph:p];
+    }
+    
+    NSArray *children = graph[@"children"];
+    if (children) {
+        for (int i = 0; i < children.count; i++) {
+            NSMutableDictionary *child = [children objectAtIndex:i];
+            [self extractModal:modal present:present withGraph:child];
         }
     }
+}
+
+- (NSMutableDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
+    NSMutableDictionary *m = nil;
+    HBDModalViewController *modal = vc.hbd_popupViewController.hbd_modalViewController;
+    if (modal && !modal.isBeingHidden) {
+        m = [self buildRouteGraphWithViewController:modal.contentViewController];
+    }
+    
+    NSMutableDictionary *p = nil;
+    UIViewController *presented = vc.presentedViewController;
+    if (presented && presented.presentingViewController == vc && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
+        p = [self buildRouteGraphWithViewController:presented];
+    }
+    
+    NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
+    if (layout) {
+        id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
+        NSMutableDictionary *graph = [[navigator buildRouteGraphWithViewController:vc] mutableCopy];
+        if (m) {
+            [graph setObject:m forKey:@"ref_modal"];
+        }
+        if (p) {
+            [graph setObject:p forKey:@"ref_present"];
+        }
+        return graph;
+    }
+    
+    return nil;
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {

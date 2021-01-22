@@ -107,24 +107,24 @@
     return [tabInfos copy];
 }
 
-- (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
+- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarController = (HBDTabBarController *)vc;
         NSMutableArray *children = [[NSMutableArray alloc] init];
         for (NSInteger i = 0; i < tabBarController.childViewControllers.count; i++) {
             UIViewController *child = tabBarController.childViewControllers[i];
-            [[HBDReactBridgeManager get] buildRouteGraphWithController:child root:children];
+            NSDictionary *graph = [[HBDReactBridgeManager get] buildRouteGraphWithViewController:child];
+            [children addObject:graph];
         }
-        [root addObject:@{
-                          @"layout": self.name,
-                          @"sceneId": vc.sceneId,
-                          @"children": children,
-                          @"mode": [vc hbd_mode],
-                          @"selectedIndex": @(tabBarController.selectedIndex)
-                        }];
-        return YES;
+        return @{
+            @"layout": self.name,
+            @"sceneId": vc.sceneId,
+            @"children": children,
+            @"mode": [vc hbd_mode],
+            @"selectedIndex": @(tabBarController.selectedIndex)
+        };
     }
-    return NO;
+    return nil;
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {

@@ -17,7 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (id<HBDNavigator>)navigatorForLayout:(NSString *)layout;
 
-- (NSArray<id<HBDNavigator>> *) allNavigators;
+- (NSString *)layoutForViewController:(UIViewController *)vc;
+
+- (void)setLayout:(NSString *)layout forViewController:(UIViewController *)vc;
 
 - (NSArray<NSString *> *) allLayouts;
 

@@ -33,23 +33,24 @@
     return nil;
 }
 
-- (BOOL)buildRouteGraphWithController:(UIViewController *)vc root:(NSMutableArray *)root {
+- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[HBDNavigationController class]]) {
         HBDNavigationController *nav = (HBDNavigationController *)vc;
         NSMutableArray *children = [[NSMutableArray alloc] init];
         for (NSInteger i = 0; i < nav.childViewControllers.count; i++) {
             UIViewController *child = nav.childViewControllers[i];
-            [[HBDReactBridgeManager get] buildRouteGraphWithController:child root:children];
+            NSDictionary *graph = [[HBDReactBridgeManager get] buildRouteGraphWithViewController:child];
+            [children addObject:graph];
         }
-        [root addObject:@{
-                          @"layout": @"stack",
-                          @"sceneId": vc.sceneId,
-                          @"children": children,
-                          @"mode": [vc hbd_mode],
-                          }];
-        return YES;
+        
+        return @{
+            @"layout": @"stack",
+            @"sceneId": vc.sceneId,
+            @"children": children,
+            @"mode": [vc hbd_mode],
+        };
     }
-    return NO;
+    return nil;
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {

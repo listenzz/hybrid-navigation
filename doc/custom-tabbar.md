@@ -13,11 +13,11 @@ tabs 容器有一个默认的 TabBar， 支持未读消息数，小红点提示�
 ### TabBar 组件和普通页面组件一样，需要注册：
 
 ```javascript
-import CustomTabBar from './src/CustomTabBar';
-import BulgeTabBar from './src/BulgeTabBar';
+import CustomTabBar from './src/CustomTabBar'
+import BulgeTabBar from './src/BulgeTabBar'
 
-ReactRegistry.registerComponent('CustomTabBar', () => CustomTabBar);
-ReactRegistry.registerComponent('BulgeTabBar', () => BulgeTabBar);
+ReactRegistry.registerComponent('CustomTabBar', () => CustomTabBar)
+ReactRegistry.registerComponent('BulgeTabBar', () => BulgeTabBar)
 ```
 
 ### 在布局对象中，通过 `tabBarModuleName` 指定 TabBar 组件
@@ -33,7 +33,7 @@ Navigator.setRoot({
       sizeIndeterminate: false,
     },
   },
-});
+})
 ```
 
 ```javascript
@@ -58,7 +58,7 @@ Navigator.setRoot({
       sizeIndeterminate: true,
     },
   },
-});
+})
 ```
 
 ```javascript
@@ -132,7 +132,7 @@ tabBar: {
 其中 sceneId 是 tabs 容器的 sceneId，navigator 是 tabs 容器的 navigator，如果你希望获取某个 tab 页面的 navigator，可以通过如下方式：
 
 ```javascript
-const navigator = Navigator.get(this.props.tabs[0].sceneId);
+const navigator = Navigator.of(this.props.tabs[0].sceneId)
 ```
 
 > TabBar 的背景颜色，分割线，仍然由原生控制。

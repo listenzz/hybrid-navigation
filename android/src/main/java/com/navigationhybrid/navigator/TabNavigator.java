@@ -23,7 +23,7 @@ import java.util.List;
 
 public class TabNavigator implements Navigator {
 
-    private List<String> supportActions = Collections.singletonList("switchTab");
+    private final List<String> supportActions = Collections.singletonList("switchTab");
 
     @Override
     @NonNull
@@ -98,15 +98,19 @@ public class TabNavigator implements Navigator {
         return null;
     }
 
+    @Nullable
     @Override
-    public boolean buildRouteGraph(@NonNull AwesomeFragment fragment, @NonNull ArrayList<Bundle> root, @NonNull ArrayList<Bundle> modal) {
+    public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
         if (fragment instanceof TabBarFragment && fragment.isAdded()) {
             TabBarFragment tabs = (TabBarFragment) fragment;
             ArrayList<Bundle> children = new ArrayList<>();
             List<AwesomeFragment> fragments = tabs.getChildFragments();
             for (int i = 0; i < fragments.size(); i++) {
                 AwesomeFragment child = fragments.get(i);
-                getReactBridgeManager().buildRouteGraph(child, children, modal);
+                Bundle r = getReactBridgeManager().buildRouteGraph(child);
+                if (r != null) {
+                    children.add(r);
+                }
             }
             Bundle graph = new Bundle();
             graph.putString("layout", name());
@@ -114,10 +118,9 @@ public class TabNavigator implements Navigator {
             graph.putParcelableArrayList("children", children);
             graph.putString("mode", Navigator.Util.getMode(fragment));
             graph.putInt("selectedIndex", tabs.getSelectedIndex());
-            root.add(graph);
-            return true;
+            return graph;
         }
-        return false;
+        return null;
     }
 
     @Override

@@ -55,7 +55,9 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
   const visible = useVisible(sceneId)
 
   useEffect(() => {
-    garden.setMenuInteractive(isRoot && visible)
+    if (visible) {
+      garden.setMenuInteractive(isRoot)
+    }
   }, [visible, isRoot, garden])
 
   useEffect(() => {
@@ -96,19 +98,16 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
 
   async function pop() {
     await navigator.pop()
-    //await printRouteGraph()
   }
 
   async function popTo() {
     if (popToId) {
       await navigator.popTo(popToId)
     }
-    //await printRouteGraph()
   }
 
   async function popToRoot() {
     await navigator.popToRoot()
-    // await printRouteGraph()
   }
 
   async function redirectTo() {
@@ -119,12 +118,13 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
     } else {
       await navigator.redirectTo('Navigation')
     }
-    // await printRouteGraph()
   }
 
   async function printRouteGraph() {
     const graph = await Navigator.routeGraph()
     console.info(graph)
+    const route = await Navigator.currentRoute()
+    console.info(route)
   }
 
   async function switchTab() {
@@ -139,11 +139,6 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
       setText(undefined)
       setError('ACTION CANCEL')
     }
-  }
-
-  function test() {
-    // showModal()
-    present()
   }
 
   async function present() {
@@ -199,7 +194,7 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
           <Text style={styles.buttonText}>redirectTo</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={test} activeOpacity={0.2} style={styles.button}>
+        <TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>present</Text>
         </TouchableOpacity>
 
@@ -213,6 +208,10 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
 
         <TouchableOpacity onPress={showNativeModal} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>show native modal</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={printRouteGraph} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>printRouteGraph</Text>
         </TouchableOpacity>
 
         {text !== undefined && <Text style={styles.result}>received text：{text}</Text>}

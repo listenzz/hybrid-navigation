@@ -132,14 +132,14 @@ Navigator.setInterceptor((action, from, to, extras) => {
 })
 ```
 
-`extras` 中有我们需要的额外信息。譬如 `sceneId`，它表示动作发出的页面， 通过 `Navigator.get(sceneId)` 可以获取该页面的 `navigator`。如果 action 是 switchTab，我们还可以从 `extras` 中获取 `index` 这个属性，它表示将要切换到的 tab 的位置，从 0 开始。
+`extras` 中有我们需要的额外信息。譬如 `sceneId`，它表示动作发出的页面， 通过 `Navigator.of(sceneId)` 可以获取该页面的 `navigator`。如果 action 是 switchTab，我们还可以从 `extras` 中获取 `index` 这个属性，它表示将要切换到的 tab 的位置，从 0 开始。
 
 - **get(sceneId: string): Navigator**
 
 接受 sceneId 作为参数，返回一个已经存在的 navigator 实例
 
 ```javascript
-this.props.navigator === Navigator.get(this.props.sceneId)
+this.props.navigator === Navigator.of(this.props.sceneId)
 // true
 ```
 
@@ -172,7 +172,7 @@ const route = await Navigator.currentRoute()
 //   mode: 'modal'
 // }
 
-const navigator = Navigator.get(route.sceneId)
+const navigator = Navigator.of(route.sceneId)
 ```
 
 以上操作等同于
@@ -193,7 +193,7 @@ console.info(graph);
 
 const sceneId = // 通过 graph 抽取出我们想要的 sceneId
 
-const navigator = Navigator.get(sceneId);
+const navigator = Navigator.of(sceneId);
 ```
 
 `graph` 是一个数组，它长下面这个样子
