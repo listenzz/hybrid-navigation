@@ -19,7 +19,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - HybridNavigation (1.0.0):
+  - HybridNavigation (1.2.2):
     - React
   - libwebp (1.1.0):
     - libwebp/demux (= 1.1.0)
@@ -377,7 +377,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: f2c97f2529dd79c083355182cc158c9f98f4bd6e
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
-  HybridNavigation: c78758f440ebdb686fb73508f54fc9c82beeb21e
+  HybridNavigation: ffff4191c276f753dbf8cf5a0100dcaddfac9aa7
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   RCTRequired: 082f10cd3f905d6c124597fd1c14f6f2655ff65e
   RCTTypeSafety: 8c9c544ecbf20337d069e4ae7fd9a377aadf504b
