@@ -97,10 +97,14 @@
         NSArray *children = nav.childViewControllers;
         NSInteger count = children.count;
         NSString *moduleName = [extras objectForKey:@"moduleName"];
+        BOOL inclusive = [[extras objectForKey:@"inclusive"] boolValue];
         for (NSInteger i = count - 1; i > -1; i--) {
             HBDViewController *vc = [children objectAtIndex:i];
             if ([moduleName isEqualToString:vc.moduleName] || [moduleName isEqualToString:vc.sceneId]) {
                 viewController = vc;
+                if (inclusive && i - 1 > -1) {
+                    viewController = [children objectAtIndex:(i - 1)];
+                }
                 break;
             }
         }

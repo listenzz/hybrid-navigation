@@ -122,6 +122,7 @@ public class StackNavigator implements Navigator {
                 break;
             case "popTo":
                 String moduleName = extras.getString("moduleName");
+                boolean inclusive = extras.getBoolean("inclusive");
                 FragmentManager fragmentManager = navigationFragment.getChildFragmentManager();
                 int count = fragmentManager.getBackStackEntryCount();
                 for (int i = count - 1; i > -1; i--) {
@@ -133,6 +134,10 @@ public class StackNavigator implements Navigator {
                             if (moduleName != null
                                     && (moduleName.equals(hybridFragment.getModuleName()) || moduleName.equals(hybridFragment.getSceneId()))) {
                                 fragment = hybridFragment;
+                                if (inclusive && i - 1 > -1) {
+                                    FragmentManager.BackStackEntry e = fragmentManager.getBackStackEntryAt(i - 1);
+                                    fragment = (AwesomeFragment) fragmentManager.findFragmentByTag(e.getName());
+                                }
                                 break;
                             }
                         }

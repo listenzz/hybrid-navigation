@@ -261,8 +261,8 @@ export class Navigator {
     return this.dispatch('pop')
   }
 
-  popTo(moduleName: string) {
-    return this.dispatch('popTo', { moduleName })
+  popTo(moduleName: string, inclusive: boolean = false) {
+    return this.dispatch('popTo', { moduleName, inclusive })
   }
 
   popToRoot() {
