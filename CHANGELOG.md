@@ -1,3 +1,9 @@
+## 1.3.1.
+
+### Android specific
+
+- 修复当当前页面类型为 modal 时，`Navigator.current` 未能获取到正确的 navigator 的问题
+
 ## 1.3.0
 
 - 添加第二个参数 `inclusive` 到 `popTo`，指示要不要把第一个参数所代表的页面也一起出栈，默认是 `false`，和原来逻辑保持一致。
