@@ -10,7 +10,7 @@
 
 1. 首先升级到 react-native-navigation-hybrid@0.28.8
 
-2. 然后升级到 react-native-navigation-hybrid@0.29.0，解决存在问题
+2. 然后升级到 react-native-navigation-hybrid@^0.29.0，解决存在问题
 
 3. 最后升级到 hybrid-navigation
 
