@@ -8,23 +8,26 @@ import {
   ImageSource,
   TabBarStyle,
   TabBadge,
+  BarButtonItem,
 } from 'hybrid-navigation'
 
 import styles from './Styles'
 import getLayout from './layout'
+
+const leftBarButtonItem: BarButtonItem = {
+  icon: Image.resolveAssetSource(require('./images/menu.png')),
+  title: 'Menu',
+  action: (navigator) => {
+    navigator.toggleMenu()
+  },
+}
 
 export default withNavigationItem({
   titleItem: {
     title: 'Options',
   },
 
-  leftBarButtonItem: {
-    icon: Image.resolveAssetSource(require('./images/menu.png')),
-    title: 'Menu',
-    action: (navigator) => {
-      navigator.toggleMenu()
-    },
-  },
+  leftBarButtonItem: leftBarButtonItem,
 
   rightBarButtonItem: {
     icon: Image.resolveAssetSource(require('./images/nav.png')),
@@ -61,21 +64,19 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
     }
   }, [])
 
-  const [leftButtonShowText, setLeftButtonShowText] = useState(false)
+  const [showsLeftBarButton, setShowsLeftBarButton] = useState(false)
 
-  function changeLeftButton() {
-    setLeftButtonShowText(!leftButtonShowText)
+  function toggleLeftBarButton() {
+    setShowsLeftBarButton(!showsLeftBarButton)
   }
 
   useEffect(() => {
-    if (leftButtonShowText) {
-      garden.setLeftBarButtonItem({ icon: null })
+    if (showsLeftBarButton) {
+      garden.setLeftBarButtonItem(null)
     } else {
-      garden.setLeftBarButtonItem({
-        icon: Image.resolveAssetSource(require('./images/menu.png')),
-      })
+      garden.setLeftBarButtonItem(leftBarButtonItem)
     }
-  }, [leftButtonShowText, garden])
+  }, [showsLeftBarButton, garden])
 
   const [rightButtonEnabled, setRightButtonEnabled] = useState(false)
 
@@ -228,9 +229,9 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
           <Text style={styles.buttonText}>pass options to another scene</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={changeLeftButton} activeOpacity={0.2} style={styles.button}>
+        <TouchableOpacity onPress={toggleLeftBarButton} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>
-            {leftButtonShowText ? 'change left button to icon' : 'change left button to text'}
+            {showsLeftBarButton ? 'show left bar button' : 'hide left bar button'}
           </Text>
         </TouchableOpacity>
 
