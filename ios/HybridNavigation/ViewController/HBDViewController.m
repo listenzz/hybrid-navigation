@@ -237,12 +237,12 @@
     
     id rightBarButtonItem = options[@"rightBarButtonItem"];
     if (rightBarButtonItem) {
-        [self.garden setRightBarButtonItem:NSNull.null == rightBarButtonItem ? nil : rightBarButtonItem];
+        [self.garden setRightBarButtonItem:RCTNilIfNull(rightBarButtonItem)];
     }
     
     id leftBarButtonItem = options[@"leftBarButtonItem"];
     if (leftBarButtonItem) {
-        [self.garden setLeftBarButtonItem:NSNull.null == leftBarButtonItem ? nil : leftBarButtonItem];
+        [self.garden setLeftBarButtonItem:RCTNilIfNull(leftBarButtonItem)];
     }
     
     NSArray *rightBarButtonItems = options[@"rightBarButtonItems"];

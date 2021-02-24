@@ -19,10 +19,10 @@
             //ignore
         } else if ([obj isKindOfClass:[NSDictionary class]]) {
             NSDictionary *subTarget = [target objectForKey:key];
-            if (!subTarget || [subTarget isEqual:NSNull.null]) {
-                [mutableTarget setObject:obj forKey:key];
-            } else {
+            if (RCTNilIfNull(subTarget)) {
                 [mutableTarget setObject:[self mergeItem:obj withTarget:subTarget] forKey:key];
+            } else {
+                [mutableTarget setObject:obj forKey:key];
             }
         } else {
             [mutableTarget setObject:obj forKey:key];

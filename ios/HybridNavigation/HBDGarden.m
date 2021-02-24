@@ -161,8 +161,7 @@ static GlobalStyle *globalStyle;
     }
 
     NSDictionary *icon = item[@"icon"];
-    BOOL hasIcon = icon && ![icon isEqual:NSNull.null];
-    if (hasIcon) {
+    if (RCTNilIfNull(icon)) {
         UIImage *iconImage = [HBDUtils UIImage:icon];
         if (item[@"renderOriginal"] && [item[@"renderOriginal"] boolValue]) {
             iconImage = [iconImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];

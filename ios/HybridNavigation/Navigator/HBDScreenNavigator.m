@@ -41,7 +41,7 @@
         return @{
             @"layout": @"screen",
             @"sceneId": screen.sceneId,
-            @"moduleName": screen.moduleName ?: NSNull.null,
+            @"moduleName": RCTNullIfNil(screen.moduleName),
             @"mode": [vc hbd_mode],
         };
     }

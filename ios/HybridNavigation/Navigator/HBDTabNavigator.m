@@ -12,6 +12,7 @@
 #import "HBDUtils.h"
 #import "HBDGarden.h"
 #import "GlobalStyle.h"
+#import <React/RCTUtils.h>
 
 @implementation HBDTabNavigator
 
@@ -93,10 +94,10 @@
                 NSDictionary *tab = @{
                       @"index": @(i),
                       @"sceneId": hbdVC.sceneId,
-                      @"moduleName": hbdVC.moduleName ?: NSNull.null,
-                      @"icon": [HBDUtils iconUriFromUri:tabItem[@"icon"][@"uri"]] ?: NSNull.null,
-                      @"unselectedIcon": [HBDUtils iconUriFromUri:tabItem[@"unselectedIcon"][@"uri"]] ?: NSNull.null,
-                      @"title": tabItem[@"title"] ?: NSNull.null
+                      @"moduleName": RCTNullIfNil(hbdVC.moduleName),
+                      @"icon": RCTNullIfNil([HBDUtils iconUriFromUri:tabItem[@"icon"][@"uri"]]),
+                      @"unselectedIcon": RCTNullIfNil([HBDUtils iconUriFromUri:tabItem[@"unselectedIcon"][@"uri"]]),
+                      @"title": RCTNullIfNil(tabItem[@"title"]),
                       };
                 [tabInfos addObject:tab];
             }

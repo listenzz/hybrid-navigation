@@ -44,21 +44,21 @@ RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
 RCT_EXPORT_METHOD(setTitleItem:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateOptions:@{ @"titleItem": item}];
+        [(HBDViewController *)vc updateOptions:@{ @"titleItem": RCTNullIfNil(item)}];
     }
 }
 
 RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)sceneId item:(NSDictionary * __nullable)item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateOptions:@{ @"leftBarButtonItem": item ?: NSNull.null}];
+        [(HBDViewController *)vc updateOptions:@{ @"leftBarButtonItem": RCTNullIfNil(item)}];
     }
 }
 
 RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *)sceneId item:(NSDictionary * __nullable)item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateOptions:@{ @"rightBarButtonItem": item ?: NSNull.null }];
+        [(HBDViewController *)vc updateOptions:@{ @"rightBarButtonItem": RCTNullIfNil(item)}];
     }
 }
 

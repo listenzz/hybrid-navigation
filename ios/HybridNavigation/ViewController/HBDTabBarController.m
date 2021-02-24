@@ -95,7 +95,7 @@
     NSString *tabBarUnselectedItemColor = options[@"tabBarUnselectedItemColor"];
     if (tabBarItemColor) {
         props[@"itemColor"] = tabBarItemColor;
-        props[@"unselectedItemColor"] = tabBarUnselectedItemColor ?: NSNull.null;
+        props[@"unselectedItemColor"] = RCTNullIfNil(tabBarUnselectedItemColor);
     }
     return props;
 }
@@ -122,7 +122,7 @@
         if (self.hasCustomTabBar) {
             NSMutableDictionary *tab = [self tabAtIndex:index];
             tab[@"dot"] = @(dot);
-            tab[@"badgeText"] = text ?: NSNull.null;
+            tab[@"badgeText"] = RCTNullIfNil(text);
         } else {
             UIViewController *vc = self.viewControllers[index];
             vc.tabBarItem.badgeValue = text;
@@ -146,7 +146,7 @@
         if (self.hasCustomTabBar) {
             NSMutableDictionary *tab = [self tabAtIndex:index];
             tab[@"icon"] = [HBDUtils iconUriFromUri:option[@"icon"][@"uri"]];
-            tab[@"unselectedIcon"] = [HBDUtils iconUriFromUri:option[@"unselectedIcon"][@"uri"]] ?: NSNull.null;
+            tab[@"unselectedIcon"] = RCTNullIfNil([HBDUtils iconUriFromUri:option[@"unselectedIcon"][@"uri"]]);
         } else {
             UIViewController *tab = [self.viewControllers objectAtIndex:index];
             [tab hbd_updateTabBarItem:option];
@@ -176,7 +176,7 @@
     }
     
     NSDictionary *tabBarShadowImage = options[@"tabBarShadowImage"];
-    if (tabBarShadowImage && ![tabBarShadowImage isEqual:NSNull.null]) {
+    if (RCTNilIfNull(tabBarShadowImage)) {
         UIImage *image = [UIImage new];
         NSDictionary *imageItem = tabBarShadowImage[@"image"];
         NSString *color = tabBarShadowImage[@"color"];
@@ -194,7 +194,7 @@
         if (self.hasCustomTabBar) {
             NSMutableDictionary *options = [self.tabBarOptions mutableCopy];
             options[@"tabBarItemColor"] = tabBarItemColor;
-            options[@"tabBarUnselectedItemColor"] = tabBarUnselectedItemColor ?: NSNull.null;
+            options[@"tabBarUnselectedItemColor"] = RCTNullIfNil(tabBarUnselectedItemColor);
             self.tabBarOptions = options;
             self.rootView.appProperties = [self props];
         } else {
@@ -215,7 +215,7 @@
                                                            KEY_ON: ON_COMPONENT_RESULT,
                                                            KEY_REQUEST_CODE: @(requestCode),
                                                            KEY_RESULT_CODE: @(resultCode),
-                                                           KEY_RESULT_DATA: data ?: [NSNull null],
+                                                           KEY_RESULT_DATA: RCTNullIfNil(data),
                                                            KEY_SCENE_ID: self.sceneId,
                                                            }];
     }

@@ -8,6 +8,7 @@
 
 #import "GlobalStyle.h"
 #import "HBDUtils.h"
+#import <React/RCTUtils.h>
 
 @interface GlobalStyle ()
 
@@ -74,7 +75,7 @@
         
         // navigationBar shadowImeage
         NSDictionary *shadowImeage = self.options[@"shadowImage"];
-        if (shadowImeage && ![shadowImeage isEqual:NSNull.null]) {
+        if (RCTNilIfNull(shadowImeage)) {
             UIImage *image = [UIImage new];
             NSDictionary *imageItem = shadowImeage[@"image"];
             NSString *color = shadowImeage[@"color"];
@@ -158,7 +159,7 @@
         
         // shadowImeage
         NSDictionary *tabBarShadowImage = self.options[@"tabBarShadowImage"];
-        if (tabBarShadowImage && ![tabBarShadowImage isEqual:NSNull.null]) {
+        if (RCTNilIfNull(tabBarShadowImage)) {
             UIImage *image = [UIImage new];
             NSDictionary *imageItem = tabBarShadowImage[@"image"];
             NSString *color = tabBarShadowImage[@"color"];
