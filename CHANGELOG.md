@@ -1,4 +1,10 @@
-## 1.3.1.
+## 1.4.1
+
+### BreakChanges
+
+- 重新定义了 `Navigator.setInterceptor`
+
+## 1.3.1
 
 ### Android specific
 
