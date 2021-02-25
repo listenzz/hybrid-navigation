@@ -183,8 +183,8 @@ Navigator.setRootLayoutUpdateListener(
 Navigator.setRoot(drawer)
 
 // 设置导航拦截器
-Navigator.setInterceptor(async (action, from, to, extras) => {
-  console.info(`action:${action} from:${from} to:${to}`, extras)
+Navigator.setInterceptor(async (action, extras) => {
+  console.info(`action:${action}`, extras)
 
   // const current = await Navigator.current()
   // if (current.moduleName === to) {

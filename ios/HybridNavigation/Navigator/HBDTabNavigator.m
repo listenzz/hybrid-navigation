@@ -157,8 +157,14 @@
     
     if ([action isEqualToString:@"switchTab"]) {
         BOOL popToRoot = [[extras objectForKey:@"popToRoot"] boolValue];
-        NSInteger index = [[extras objectForKey:@"index"] integerValue];
-        
+        NSNumber *from = [extras objectForKey:@"from"];
+        NSInteger to = [[extras objectForKey:@"to"] integerValue];
+
+        if (from && [from integerValue] == to) {
+            resolve(@(YES));
+            return;
+        }
+ 
         if (popToRoot) {
             UIViewController *vc = [tabBarController selectedViewController];
             UINavigationController *nav = nil;
@@ -180,10 +186,10 @@
         if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
             HBDTabBarController *hbdTabBarVC = (HBDTabBarController *)tabBarController;
             hbdTabBarVC.intercepted = NO;
-            tabBarController.selectedIndex = index;
+            tabBarController.selectedIndex = to;
             hbdTabBarVC.intercepted = YES;
         } else {
-            tabBarController.selectedIndex = index;
+            tabBarController.selectedIndex = to;
         }
     }
     

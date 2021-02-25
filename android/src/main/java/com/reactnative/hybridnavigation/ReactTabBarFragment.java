@@ -9,7 +9,6 @@ import com.facebook.react.bridge.Arguments;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DefaultTabBarProvider;
 import com.navigation.androidx.FragmentHelper;
-import com.navigation.androidx.NavigationFragment;
 import com.navigation.androidx.PresentAnimation;
 import com.navigation.androidx.Style;
 import com.navigation.androidx.TabBar;
@@ -26,7 +25,6 @@ import static com.reactnative.hybridnavigation.Constants.ARG_ACTION;
 import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.EVENT_NAVIGATION;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_INDEX;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_MODULE_NAME;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_ON;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_REQUEST_CODE;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_RESULT_CODE;
@@ -250,48 +248,27 @@ public class ReactTabBarFragment extends TabBarFragment {
             return;
         }
 
-        AwesomeFragment selectedFragment = getSelectedFragment();
-        if (selectedFragment instanceof NavigationFragment) {
-            NavigationFragment nav = (NavigationFragment) selectedFragment;
-            selectedFragment = nav.getRootFragment();
-        }
-
-        ReactFragment selectedReactFragment = null;
-        if (selectedFragment instanceof ReactFragment) {
-            selectedReactFragment = (ReactFragment) selectedFragment;
-        }
-
-        // 必须先判断选中的 fragment 是否为 ReactFragment
-        if (selectedReactFragment == null || !this.intercepted) {
-            super.setSelectedIndex(index, completion);
+        if (shouldIntercept(index)) {
+            TabBarProvider tabBarProvider = getTabBarProvider();
+            if (tabBarProvider != null) {
+                tabBarProvider.setSelectedIndex(getSelectedIndex());
+            }
             return;
         }
 
-        TabBarProvider tabBarProvider = getTabBarProvider();
-        if (tabBarProvider != null) {
-            tabBarProvider.setSelectedIndex(getSelectedIndex());
-        }
+        super.setSelectedIndex(index, completion);
+        intercepted = true;
+    }
 
-        List<AwesomeFragment> fragments = getChildFragments();
-        AwesomeFragment fragment = fragments.get(index);
-
-        if (fragment instanceof NavigationFragment) {
-            NavigationFragment nav = (NavigationFragment) fragment;
-            fragment = nav.getRootFragment();
+    private boolean shouldIntercept(int index) {
+        if (bridgeManager.hasRootLayout() && this.intercepted) {
+            Bundle data = new Bundle();
+            data.putString(KEY_SCENE_ID, getSceneId());
+            data.putString(KEY_INDEX, getSelectedIndex() + "-" + index);
+            HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_SWITCH_TAB, Arguments.fromBundle(data));
+            return true;
         }
-
-        ReactFragment reactFragment = null;
-        if (fragment instanceof ReactFragment) {
-            reactFragment = (ReactFragment) fragment;
-        }
-
-        Bundle data = new Bundle();
-        data.putString(KEY_SCENE_ID, selectedReactFragment.getSceneId());
-        if (reactFragment != null) {
-            data.putString(KEY_MODULE_NAME, reactFragment.getModuleName());
-        }
-        data.putInt(KEY_INDEX, index);
-        HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_SWITCH_TAB, Arguments.fromBundle(data));
+        return false;
     }
 
     @Override

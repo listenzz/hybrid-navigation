@@ -2,6 +2,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
 #import <React/RCTBridgeModule.h>
+#import <React/RCTLog.h>
 #import <HybridNavigation/HybridNavigation.h>
 #import <ToastHybrid/ToastHybrid.h>
 
@@ -19,6 +20,8 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    RCTSetLogThreshold(RCTLogLevelInfo);
     
     // 设置 toast 的 hostView, 可以不设置
     [ToastConfig sharedConfig].hostViewProvider = self;

@@ -6,7 +6,6 @@ import {
   EVENT_SWITCH_TAB,
   KEY_SCENE_ID,
   KEY_INDEX,
-  KEY_MODULE_NAME,
   RESULT_CANCEL,
 } from './NavigationModule'
 import { bindBarButtonItemClickEvent } from './utils'
@@ -26,7 +25,6 @@ interface Params {
   animated?: boolean
   moduleName?: string
   layout?: Layout
-  index?: number
   popToRoot?: boolean
   requestCode?: number
   props?: IndexType
@@ -62,9 +60,11 @@ EventEmitter.addListener(EVENT_WILL_SET_ROOT, (_) => {
 })
 
 EventEmitter.addListener(EVENT_SWITCH_TAB, (event) => {
+  const index = event[KEY_INDEX]
+  const [from, to] = index.split('-')
   Navigator.dispatch(event[KEY_SCENE_ID], 'switchTab', {
-    index: event[KEY_INDEX],
-    moduleName: event[KEY_MODULE_NAME],
+    from: Number(from),
+    to: Number(to),
   })
 })
 
@@ -141,14 +141,12 @@ export class Navigator {
   }
 
   static async dispatch(sceneId: string, action: string, params: Params = {}): Promise<boolean> {
-    const navigator = Navigator.of(sceneId)
-
     let intercepted = false
 
     if (interceptor) {
-      const result = interceptor(action, navigator.moduleName, params.moduleName, {
+      const result = interceptor(action, {
         sceneId,
-        index: params.index,
+        ...params,
       })
       if (result instanceof Promise) {
         intercepted = await result
@@ -202,7 +200,11 @@ export class Navigator {
   }
 
   dispatch(action: string, params: Params = {}) {
-    return Navigator.dispatch(this.sceneId, action, params)
+    return Navigator.dispatch(this.sceneId, action, {
+      from: this.moduleName,
+      to: params.moduleName,
+      ...params,
+    })
   }
 
   result(requestCode: number, resultCode: number, data: ResultType) {
@@ -342,8 +344,9 @@ export class Navigator {
     NavigationModule.setResult(this.sceneId, resultCode, data)
   }
 
-  switchTab(index: number, popToRoot: boolean = false) {
-    return this.dispatch('switchTab', { index, popToRoot })
+  async switchTab(index: number, popToRoot: boolean = false) {
+    const from = await NavigationModule.currentTab(this.sceneId)
+    return this.dispatch('switchTab', { from, to: index, popToRoot })
   }
 
   toggleMenu() {

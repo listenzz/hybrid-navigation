@@ -113,6 +113,16 @@ RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:
     }
 }
 
+RCT_EXPORT_METHOD(currentTab:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
+    UITabBarController *tabs = vc.tabBarController;
+    if (tabs) {
+        resolve(@(tabs.selectedIndex));
+    } else {
+        resolve(@(-1));
+    }
+}
+
 RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UINavigationController *nav = vc.navigationController;

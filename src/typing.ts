@@ -17,7 +17,7 @@ interface Extras {
 }
 
 export interface NavigationInterceptor {
-  (action: string, from?: string, to?: string, extras?: Extras): boolean | Promise<boolean>
+  (action: string, extras: Extras): boolean | Promise<boolean>
 }
 
 export type Color = string
