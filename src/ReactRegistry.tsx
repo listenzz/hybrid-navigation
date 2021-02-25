@@ -7,7 +7,6 @@ import {
   EVENT_NAVIGATION,
   KEY_SCENE_ID,
   KEY_ON,
-  ON_COMPONENT_MOUNT,
   ON_COMPONENT_APPEAR,
   ON_COMPONENT_DISAPPEAR,
 } from './NavigationModule'
@@ -50,17 +49,6 @@ function withNavigator(moduleName: string) {
           removeBarButtonItemClickEvent(navigator.sceneId)
           store.removeNavigator(navigator.sceneId)
           navigator.unmount()
-        }
-      }, [navigator])
-
-      useEffect(() => {
-        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data) => {
-          if (navigator.sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_COMPONENT_MOUNT) {
-            navigator.signalFirstRenderComplete()
-          }
-        })
-        return () => {
-          subscription.remove()
         }
       }, [navigator])
 
