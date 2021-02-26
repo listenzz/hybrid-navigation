@@ -219,7 +219,7 @@ RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock)resolve rejecter:(RCTProm
     
     HBDViewController *current = [self.bridgeManager primaryViewController];
     if (current) {
-        promiss.resolve(@{ @"moduleName": current.moduleName, @"sceneId": current.sceneId, @"mode": [current hbd_mode] });
+        promiss.resolve(@{ @"moduleName": RCTNullIfNil(current.moduleName), @"sceneId": current.sceneId, @"mode": [current hbd_mode] });
     } else {
         [self performSelector:@selector(currentRouteWithPromiss:) withObject:promiss afterDelay:0.016];
     }
