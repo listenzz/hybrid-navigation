@@ -96,15 +96,15 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     public void setActivityRootFragment(@NonNull AwesomeFragment rootFragment, int tag) {
         if (getSupportFragmentManager().isStateSaved()) {
-            scheduleTaskAtStarted(() -> setRootFragmentInternal(rootFragment, tag));
+            scheduleTaskAtStarted(() -> setActivityRootFragmentSync(rootFragment, tag));
         } else {
             if (!isFinishing()) {
-                setRootFragmentInternal(rootFragment, tag);
+                setActivityRootFragmentSync(rootFragment, tag);
             }
         }
     }
 
-    protected void setRootFragmentInternal(AwesomeFragment fragment, int tag) {
+    protected void setActivityRootFragmentSync(AwesomeFragment fragment, int tag) {
         if (!styleInflated) {
             inflateStyle();
             if (!styleInflated) {
@@ -115,7 +115,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         if (getCurrentReactContext() != null && getCurrentReactContext().hasActiveCatalystInstance()) {
             HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());
 
-            super.setRootFragmentInternal(fragment);
+            setActivityRootFragmentSync(fragment);
 
             bridgeManager.setViewHierarchyReady(true);
             WritableMap map = Arguments.createMap();

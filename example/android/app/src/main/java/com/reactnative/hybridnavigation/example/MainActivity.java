@@ -40,8 +40,8 @@ public class MainActivity extends ReactAppCompatActivity {
     }
 
     @Override
-    protected void setRootFragmentInternal(AwesomeFragment fragment, int tag) {
-        super.setRootFragmentInternal(fragment, tag);
+    protected void setActivityRootFragmentSync(AwesomeFragment fragment, int tag) {
+        super.setActivityRootFragmentSync(fragment, tag);
         if (splashFragment != null) {
             // 如果发现有白屏，请调整 delayInMs 参数
             UiThreadUtil.runOnUiThread(() -> {
