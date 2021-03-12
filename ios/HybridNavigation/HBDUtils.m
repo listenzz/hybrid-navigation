@@ -8,6 +8,8 @@
 
 #import "HBDUtils.h"
 #import <React/RCTConvert.h>
+#import <CoreTelephony/CTCallCenter.h>
+#import <CoreTelephony/CTCall.h>
 
 @implementation HBDUtils
 
@@ -165,9 +167,22 @@
 }
 
 + (BOOL)isIphoneX {
-    NSArray *xrs =@[ @812, @896 ];
-    BOOL isIPhoneX = [xrs containsObject:@([UIScreen mainScreen].bounds.size.height)];
-    return isIPhoneX;
+    return @available(iOS 11.0, *) && UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom > 0.0;
+}
+
++ (BOOL)hbd_inCall {
+    if ([HBDUtils isIphoneX]) {
+        CTCallCenter *callCenter = [[CTCallCenter alloc] init] ;
+        for (CTCall *call in callCenter.currentCalls)  {
+            if (call.callState == CTCallStateConnected) {
+                return YES;
+            }
+        }
+        return NO;
+    } else {
+        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        return statusBarHeight == 40;
+    }
 }
 
 @end

@@ -54,18 +54,16 @@
 }
 
 - (BOOL)prefersStatusBarHidden {
-    if (@available(iOS 13.0, *)) {
-        if ([HBDUtils isIphoneX]) {
-            return [self hbd_statusBarHidden] && !self.hbd_inCall;
-        } else {
-            return NO;
-        }
+    if ([HBDUtils isIphoneX] || @available(iOS 13.0, *)) {
+        return [self hbd_statusBarHidden] && ![HBDUtils hbd_inCall];
+    } else {
+        UIView *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
+        BOOL hidden = [self hbd_statusBarHidden] && ![HBDUtils hbd_inCall];
+        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
+        statusBar.alpha = hidden ? 0 : 1.0;
+        return NO;
     }
-    return [super prefersStatusBarHidden];
-}
-
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-    return UIStatusBarAnimationSlide;
 }
 
 - (void)viewDidLoad {
@@ -252,7 +250,7 @@
     
     NSNumber *statusBarHidden = [options objectForKey:@"statusBarHidden"];
     if (statusBarHidden) {
-        [self hbd_setNeedsStatusBarHiddenUpdate];
+        [self setNeedsStatusBarAppearanceUpdate];
     }
     
     NSNumber *passThroughTouches = [options objectForKey:@"passThroughTouches"];

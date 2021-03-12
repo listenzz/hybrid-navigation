@@ -8,7 +8,6 @@
 
 #import "HBDDrawerController.h"
 #import "HBDUtils.h"
-#import "UIViewController+StatusBar.h"
 #import "UIViewController+HBD.h"
 
 @interface HBDDrawerController () <UIGestureRecognizerDelegate>
@@ -96,7 +95,7 @@
     if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation) && statusBarHeight != 0) {
         if (self.menuOpened) {
             [UIView animateWithDuration:0.35 animations:^{
-                CGFloat dy = self.hbd_inCall ? -20 : 20;
+                CGFloat dy = [HBDUtils hbd_inCall] ? -20 : 20;
                 self.menuHolderView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) + dy);
                 self.menuDimmingView.frame = self.menuHolderView.bounds;
                 self.menuController.view.frame = CGRectMake(0, 0, [self menuWidth], self.menuHolderView.bounds.size.height);
@@ -148,7 +147,7 @@
     _menuOpened = menuOpened;
     BOOL hideStatusBar = menuOpened && ![HBDUtils isIphoneX];
     self.menuController.hbd_statusBarHidden = hideStatusBar;
-    [self hbd_setNeedsStatusBarHiddenUpdate];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {

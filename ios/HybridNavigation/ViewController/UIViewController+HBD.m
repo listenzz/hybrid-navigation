@@ -207,6 +207,15 @@
     objc_setAssociatedObject(self, @selector(hbd_barShadowHidden), @(hidden), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
+- (BOOL)hbd_statusBarHidden {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj boolValue] : NO;
+}
+
+- (void)setHbd_statusBarHidden:(BOOL)hidden {
+    objc_setAssociatedObject(self, @selector(hbd_statusBarHidden), @(hidden), OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
 - (BOOL)hbd_backInteractive {
     id obj = objc_getAssociatedObject(self, _cmd);
     return obj ? [obj boolValue] : YES;

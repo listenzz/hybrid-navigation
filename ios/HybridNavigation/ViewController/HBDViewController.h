@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "UIViewController+HBD.h"
-#import "UIViewController+StatusBar.h"
 #import "HBDGarden.h"
 
 @class HBDGarden;
