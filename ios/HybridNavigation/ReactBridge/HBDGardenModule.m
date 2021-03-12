@@ -44,29 +44,29 @@ RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
 RCT_EXPORT_METHOD(setTitleItem:(NSString *)sceneId item:(NSDictionary *)item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateOptions:@{ @"titleItem": RCTNullIfNil(item)}];
+        [(HBDViewController *)vc updateNavigationBarOptions:@{ @"titleItem": RCTNullIfNil(item)}];
     }
 }
 
 RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)sceneId item:(NSDictionary * __nullable)item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateOptions:@{ @"leftBarButtonItem": RCTNullIfNil(item)}];
+        [(HBDViewController *)vc updateNavigationBarOptions:@{ @"leftBarButtonItem": RCTNullIfNil(item)}];
     }
 }
 
 RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *)sceneId item:(NSDictionary * __nullable)item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateOptions:@{ @"rightBarButtonItem": RCTNullIfNil(item)}];
+        [(HBDViewController *)vc updateNavigationBarOptions:@{ @"rightBarButtonItem": RCTNullIfNil(item)}];
     }
 }
 
 RCT_EXPORT_METHOD(updateOptions:(NSString *)sceneId item:(NSDictionary *)options) {
-    NSLog(@"updateOptions: %@", options);
+    NSLog(@"updateNavigationBarOptions: %@", options);
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateOptions:options];
+        [(HBDViewController *)vc updateNavigationBarOptions:options];
     }
 }
 
