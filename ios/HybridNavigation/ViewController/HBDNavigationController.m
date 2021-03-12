@@ -390,7 +390,7 @@ void adjustLayout(UIViewController *vc) {
 @dynamic navigationBar;
 
 - (void)dealloc {
-    NSLog(@"%s", __FUNCTION__);
+    RCTLogInfo(@"%s", __FUNCTION__);
 }
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController {
@@ -540,7 +540,7 @@ void adjustLayout(UIViewController *vc) {
 
 - (void)printSubViews:(UIView *)view prefix:(NSString *)prefix {
     NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-    NSLog(@"%@%@", prefix, viewName);
+    // RCTLogInfo(@"%@%@", prefix, viewName);
     if (view.subviews.count > 0) {
         for (UIView *sub in view.subviews) {
             [self printSubViews:sub prefix:[NSString stringWithFormat:@"--%@", prefix]];

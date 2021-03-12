@@ -56,7 +56,7 @@
 
 - (void)dealloc {
     self.modalWindow = nil;
-    NSLog(@"%s", __FUNCTION__);
+    RCTLogInfo(@"%s", __FUNCTION__);
 }
 
 - (UIViewController *)childViewControllerForStatusBarStyle {

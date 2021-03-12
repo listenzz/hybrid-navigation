@@ -87,7 +87,7 @@ RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionar
 }
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
-    // NSLog(@"signalFirstRenderComplete sceneId:%@",sceneId);
+    // RCTLogInfo(@"signalFirstRenderComplete sceneId:%@",sceneId);
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     if ([vc isKindOfClass:[HBDReactViewController class]]) {
         [(HBDReactViewController *)vc signalFirstRenderComplete];
