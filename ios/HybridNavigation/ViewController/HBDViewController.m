@@ -66,6 +66,27 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (![HBDUtils isIphoneX]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    if (![HBDUtils isIphoneX]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+    }
+}
+
+- (void)statusBarFrameWillChange:(NSNotification *)notification {
+    NSValue *rectValue = [notification.userInfo objectForKey:UIApplicationStatusBarFrameUserInfoKey];
+    CGRect statusRect = [rectValue CGRectValue];
+    // RCTLogInfo(@"statusRect:%@", NSStringFromCGRect(statusRect));
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     NSString *screenColor = self.options[@"screenBackgroundColor"];
