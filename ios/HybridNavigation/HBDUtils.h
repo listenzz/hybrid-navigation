@@ -55,6 +55,6 @@ UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class class, SEL originalSe
 
 + (BOOL)isIphoneX;
 
-+ (BOOL)hbd_inCall;
++ (BOOL)isInCall;
 
 @end

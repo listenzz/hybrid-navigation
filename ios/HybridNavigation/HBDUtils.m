@@ -170,7 +170,7 @@
     return @available(iOS 11.0, *) && UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom > 0.0;
 }
 
-+ (BOOL)hbd_inCall {
++ (BOOL)isInCall {
     if ([HBDUtils isIphoneX]) {
         CTCallCenter *callCenter = [[CTCallCenter alloc] init] ;
         for (CTCall *call in callCenter.currentCalls)  {

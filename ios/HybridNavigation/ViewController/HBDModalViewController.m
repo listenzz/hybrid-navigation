@@ -79,7 +79,7 @@
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     self.dimmingView.frame = self.view.bounds;
-    if ([HBDUtils hbd_inCall]) {
+    if ([HBDUtils isInCall]) {
         self.dimmingView.frame = CGRectMake(CGRectGetMinX(self.view.bounds), CGRectGetMinY(self.view.bounds) + 20, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) - 20);
     }
     CGRect contentViewFrame = [self contentViewFrameForShowing];
@@ -121,7 +121,7 @@
 
 - (void)statusBarFrameWillChange:(NSNotification*)notification {
     [UIView animateWithDuration:0.35 animations:^{
-        CGFloat dy = [HBDUtils hbd_inCall] ? -20 : 20;
+        CGFloat dy = [HBDUtils isInCall] ? -20 : 20;
         self.dimmingView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) + dy);
     }];
 }

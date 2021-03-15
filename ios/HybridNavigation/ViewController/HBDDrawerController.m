@@ -95,7 +95,7 @@
     if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation) && statusBarHeight != 0) {
         if (self.menuOpened) {
             [UIView animateWithDuration:0.35 animations:^{
-                CGFloat dy = [HBDUtils hbd_inCall] ? -20 : 20;
+                CGFloat dy = [HBDUtils isInCall] ? -20 : 20;
                 self.menuHolderView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) + dy);
                 self.menuDimmingView.frame = self.menuHolderView.bounds;
                 self.menuController.view.frame = CGRectMake(0, 0, [self menuWidth], self.menuHolderView.bounds.size.height);

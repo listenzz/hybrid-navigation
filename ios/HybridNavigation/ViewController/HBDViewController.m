@@ -55,10 +55,10 @@
 
 - (BOOL)prefersStatusBarHidden {
     if ([HBDUtils isIphoneX] || @available(iOS 13.0, *)) {
-        return [self hbd_statusBarHidden] && ![HBDUtils hbd_inCall];
+        return [self hbd_statusBarHidden] && ![HBDUtils isInCall];
     } else {
         UIView *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
-        BOOL hidden = [self hbd_statusBarHidden] && ![HBDUtils hbd_inCall];
+        BOOL hidden = [self hbd_statusBarHidden] && ![HBDUtils isInCall];
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
         statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
         statusBar.alpha = hidden ? 0 : 1.0;
