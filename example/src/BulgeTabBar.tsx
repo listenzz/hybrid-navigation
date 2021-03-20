@@ -51,19 +51,9 @@ export default function BulgeTabBar({
   return (
     <View style={styles.container}>
       <View style={styles.tabBar}>
-        <Tab
-          onTabClick={() => handleTabClick(0)}
-          {...tabs[0]}
-          selected={selectedIndex === 0}
-          {...style}
-        />
+        <Tab onTabClick={() => handleTabClick(0)} {...tabs[0]} selected={selectedIndex === 0} {...style} />
         <Tab unselectedItemColor="rgb(255,197,99)" title="发布" />
-        <Tab
-          onTabClick={() => handleTabClick(1)}
-          {...tabs[1]}
-          selected={selectedIndex === 1}
-          {...style}
-        />
+        <Tab onTabClick={() => handleTabClick(1)} {...tabs[1]} selected={selectedIndex === 1} {...style} />
       </View>
       <TouchableOpacity onPress={() => handleTabClick(-1)} activeOpacity={0.8} style={styles.bulge}>
         <FastImage source={require('./images/tabbar_add_yellow.png')} style={styles.bulgeImage} />

@@ -12,14 +12,7 @@ import { bindBarButtonItemClickEvent } from './utils'
 import store from './store'
 import { RouteGraph, Route } from './router'
 import { Visibility } from './hooks'
-import {
-  IndexType,
-  ResultType,
-  NavigationInterceptor,
-  Layout,
-  NavigationItem,
-  PropsType,
-} from './typing'
+import { IndexType, ResultType, NavigationInterceptor, Layout, NavigationItem, PropsType } from './typing'
 
 interface Params {
   animated?: boolean
@@ -48,18 +41,18 @@ let willSetRootCallback: () => void
 let didSetRootCallback: () => void
 let tag = 0
 
-EventEmitter.addListener(EVENT_DID_SET_ROOT, (_) => {
+EventEmitter.addListener(EVENT_DID_SET_ROOT, _ => {
   didSetRootCallback && didSetRootCallback()
   shouldCallWillSetRootCallback = 0
 })
 
-EventEmitter.addListener(EVENT_WILL_SET_ROOT, (_) => {
+EventEmitter.addListener(EVENT_WILL_SET_ROOT, _ => {
   if (shouldCallWillSetRootCallback === 0 && willSetRootCallback) {
     willSetRootCallback()
   }
 })
 
-EventEmitter.addListener(EVENT_SWITCH_TAB, (event) => {
+EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
   const index = event[KEY_INDEX]
   const [from, to] = index.split('-')
   Navigator.dispatch(event[KEY_SCENE_ID], 'switchTab', {
@@ -125,7 +118,7 @@ export class Navigator {
     const flag = --tag
     NavigationModule.setRoot(pureLayout, sticky, flag)
 
-    return new Promise<void>((resolve) => {
+    return new Promise<void>(resolve => {
       const subscription = EventEmitter.addListener(EVENT_DID_SET_ROOT, (data: { tag: number }) => {
         if (data.tag === flag) {
           subscription.remove()
@@ -208,26 +201,23 @@ export class Navigator {
   }
 
   result(requestCode: number, resultCode: number, data: ResultType) {
-    this.state.resultListeners.forEach((listener) => {
+    this.state.resultListeners.forEach(listener => {
       listener(requestCode, resultCode, data)
     })
   }
 
   unmount() {
-    this.state.resultListeners.forEach((listener) => {
+    this.state.resultListeners.forEach(listener => {
       listener.cancel()
     })
     this.state.resultListeners.length = 0
   }
 
-  private waitResult<T extends ResultType>(
-    requestCode: number,
-    successful: boolean,
-  ): Promise<[number, T]> {
+  private waitResult<T extends ResultType>(requestCode: number, successful: boolean): Promise<[number, T]> {
     if (!successful) {
       return Promise.resolve([0, null as any])
     }
-    return new Promise<[number, T]>((resolve) => {
+    return new Promise<[number, T]>(resolve => {
       const listener = (reqCode: number, resultCode: number, data: T) => {
         if (requestCode === reqCode) {
           resolve([resultCode, data])
@@ -271,11 +261,7 @@ export class Navigator {
     return this.dispatch('popToRoot')
   }
 
-  redirectTo<P extends PropsType = PropsType>(
-    moduleName: string,
-    props: P = {} as any,
-    options: NavigationItem = {},
-  ) {
+  redirectTo<P extends PropsType = PropsType>(moduleName: string, props: P = {} as any, options: NavigationItem = {}) {
     return this.dispatch('redirectTo', {
       moduleName,
       props,

@@ -5,14 +5,9 @@ import { useVisibleEffect, withNavigationItem, InjectedProps } from 'hybrid-navi
 
 function Lifecycle({ sceneId }: InjectedProps) {
   const visibleCallback = useCallback(() => {
-    Alert.alert(
-      'Lifecycle Alert!',
-      'componentDidAppear.',
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-      {
-        cancelable: false,
-      },
-    )
+    Alert.alert('Lifecycle Alert!', 'componentDidAppear.', [{ text: 'OK', onPress: () => console.log('OK Pressed') }], {
+      cancelable: false,
+    })
     return () => {
       Alert.alert(
         'Lifecycle Alert!',

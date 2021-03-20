@@ -41,10 +41,7 @@ function Noninteractive({ navigator, garden }: InjectedProps) {
     component = (
       <>
         <Text style={styles.welcome}>Now you can back via any way</Text>
-        <TouchableOpacity
-          onPress={disableBackInteractive}
-          activeOpacity={0.2}
-          style={styles.button}>
+        <TouchableOpacity onPress={disableBackInteractive} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>disable back interactive</Text>
         </TouchableOpacity>
       </>

@@ -5,4 +5,4 @@ module.exports = {
     'no-shadow': 0,
     'react-native/no-inline-styles': 0,
   },
-};
+}

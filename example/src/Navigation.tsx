@@ -38,7 +38,7 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
   const [isRoot, setIsRoot] = useState(false)
 
   useEffect(() => {
-    navigator.isStackRoot().then((root) => {
+    navigator.isStackRoot().then(root => {
       setIsRoot(root)
     })
   }, [navigator])
@@ -72,12 +72,7 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
   }, [navigator, sceneId])
 
   useResult(sceneId, (requestCode, resultCode, data) => {
-    console.info(
-      `requestCode=${requestCode}`,
-      `resultCode=${resultCode}`,
-      `resultData=${data}`,
-      `sceneId=${sceneId}`,
-    )
+    console.info(`requestCode=${requestCode}`, `resultCode=${resultCode}`, `resultData=${data}`, `sceneId=${sceneId}`)
   })
 
   async function push() {
@@ -172,21 +167,11 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
           <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={popTo}
-          activeOpacity={0.2}
-          style={styles.button}
-          disabled={popToId === undefined}>
-          <Text style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}>
-            popTo last but one
-          </Text>
+        <TouchableOpacity onPress={popTo} activeOpacity={0.2} style={styles.button} disabled={popToId === undefined}>
+          <Text style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}>popTo last but one</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={popToRoot}
-          activeOpacity={0.2}
-          style={styles.button}
-          disabled={isRoot}>
+        <TouchableOpacity onPress={popToRoot} activeOpacity={0.2} style={styles.button} disabled={isRoot}>
           <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>popToRoot</Text>
         </TouchableOpacity>
 

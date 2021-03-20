@@ -22,7 +22,7 @@ export function useVisible(sceneId: string) {
   const [visible, setVisible] = useState(navigator.visibility === 'visible')
 
   useEffect(() => {
-    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data) => {
+    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID]) {
         if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
           setVisible(true)
@@ -58,12 +58,9 @@ export function useVisibleEffect(sceneId: string, effect: React.EffectCallback) 
   }, [effect, visible, sceneId])
 }
 
-export function useResult(
-  sceneId: string,
-  fn: (requestCode: number, resultCode: number, data: ResultType) => void,
-) {
+export function useResult(sceneId: string, fn: (requestCode: number, resultCode: number, data: ResultType) => void) {
   useEffect(() => {
-    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data) => {
+    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
       if (sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_COMPONENT_RESULT) {
         fn(data[KEY_REQUEST_CODE], data[KEY_RESULT_CODE], data[KEY_RESULT_DATA])
       }

@@ -1,14 +1,6 @@
 import { NativeModules } from 'react-native'
 import { bindBarButtonItemClickEvent } from './utils'
-import {
-  NavigationOption,
-  ImageSource,
-  Color,
-  BarStyle,
-  TitleAlignment,
-  BarButtonItem,
-  TitleItem,
-} from './typing'
+import { NavigationOption, ImageSource, Color, BarStyle, TitleAlignment, BarButtonItem, TitleItem } from './typing'
 
 export interface ShadowImage {
   image?: ImageSource

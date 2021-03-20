@@ -103,7 +103,7 @@ const navigationItem: NavigationItem = {
   rightBarButtonItem: {
     title: 'MINUS',
     icon: Image.resolveAssetSource(require('./images/minus.png')),
-    action: (navigator) => {
+    action: navigator => {
       navigator.state.params.onDecreaseClick()
     },
   },
@@ -114,10 +114,7 @@ const navigationItem: NavigationItem = {
 //   connect(mapStateToProps, mapDispatchToProps)(ReduxCounter),
 // )
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(withNavigationItem(navigationItem)(ReduxCounter))
+export default connect(mapStateToProps, mapDispatchToProps)(withNavigationItem(navigationItem)(ReduxCounter))
 
 export function withRedux(WrappedComponent: ComponentType<any>) {
   return class ReduxProvider extends Component {
