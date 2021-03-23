@@ -31,8 +31,8 @@
     "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
   },
   "peerDependencies": {
-    "react": "^16.8.1",
-    "react-native": ">=0.60.4"
+    "react": ">=16.8",
+    "react-native": ">=0.60"
   },
   "dependencies": {
     "path-to-regexp": "^6.1.0"
