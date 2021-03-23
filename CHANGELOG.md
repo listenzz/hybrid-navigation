@@ -1,4 +1,14 @@
+## 1.4.3
+
+- 修正了 peer dependencies，以适应 RN0.64
+
+### iOS specific
+
+- 修复某些设备状态栏没有按声明那样隐藏的问题
+
 ## 1.4.2
+
+### Android specific
 
 - 修复 TabBar 可能非正常消失的问题
 
