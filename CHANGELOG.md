@@ -1,3 +1,7 @@
+## 1.4.4
+
+- 修复 Auto-linking
+
 ## 1.4.3
 
 - 修正了 peer dependencies，以适应 RN0.64
