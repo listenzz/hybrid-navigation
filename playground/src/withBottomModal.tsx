@@ -1,13 +1,5 @@
 import React, { useEffect, useCallback, useRef } from 'react'
-import {
-  StyleSheet,
-  Animated,
-  Easing,
-  Dimensions,
-  View,
-  TouchableWithoutFeedback,
-  SafeAreaView,
-} from 'react-native'
+import { StyleSheet, Animated, Easing, Dimensions, View, TouchableWithoutFeedback, SafeAreaView } from 'react-native'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { useLayout, useBackHandler } from '@react-native-community/hooks'
 import { InjectedProps } from 'react-native-navigation-hybrid'
@@ -25,7 +17,7 @@ export default function withBottomModal({
       const realHideModal = useRef(props.navigator.hideModal)
 
       const hideModal = useCallback(() => {
-        return new Promise<boolean>((resolve) => {
+        return new Promise<boolean>(resolve => {
           Animated.timing(animatedHeight.current, {
             toValue: height,
             duration: 200,

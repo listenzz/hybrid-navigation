@@ -87,7 +87,7 @@ RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionar
 }
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
-    // NSLog(@"signalFirstRenderComplete sceneId:%@",sceneId);
+    // RCTLogInfo(@"signalFirstRenderComplete sceneId:%@",sceneId);
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     if ([vc isKindOfClass:[HBDReactViewController class]]) {
         [(HBDReactViewController *)vc signalFirstRenderComplete];
@@ -110,6 +110,16 @@ RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:
     } else {
         resolve(@(NO));
         RCTLogWarn(@"Can't find target scene for action:%@, maybe the scene is gone. \nextras: %@", action, extras);
+    }
+}
+
+RCT_EXPORT_METHOD(currentTab:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
+    UITabBarController *tabs = vc.tabBarController;
+    if (tabs) {
+        resolve(@(tabs.selectedIndex));
+    } else {
+        resolve(@(-1));
     }
 }
 

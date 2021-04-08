@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "UIViewController+HBD.h"
-#import "UIViewController+StatusBar.h"
 #import "HBDGarden.h"
 
 @class HBDGarden;
@@ -24,6 +23,6 @@
 
 - (void)setAppProperties:(NSDictionary *)props;
 
-- (void)updateOptions:(NSDictionary *)options;
+- (void)updateNavigationBarOptions:(NSDictionary *)options;
 
 @end

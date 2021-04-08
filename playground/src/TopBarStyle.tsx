@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
-import {
-  BarStyleLightContent,
-  BarStyleDarkContent,
-  InjectedProps,
-  Style,
-} from 'react-native-navigation-hybrid'
+import { BarStyleLightContent, BarStyleDarkContent, InjectedProps, Style } from 'react-native-navigation-hybrid'
 import styles from './Styles'
 import { withNavigationItem } from 'react-native-navigation-hybrid'
 
@@ -18,7 +13,7 @@ export default withNavigationItem({
 
   rightBarButtonItem: {
     icon: Image.resolveAssetSource(require('./images/settings.png')),
-    action: (navigator) => {
+    action: navigator => {
       navigator.push('TopBarMisc')
     },
   },
@@ -68,9 +63,7 @@ function TopBarStyle({ navigator, garden }: InjectedProps) {
         <TouchableOpacity onPress={switchTopBarStyle} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>
             switch to{' '}
-            {style && style.topBarStyle === BarStyleDarkContent
-              ? 'Light Content Style'
-              : 'Dark Content Style'}
+            {style && style.topBarStyle === BarStyleDarkContent ? 'Light Content Style' : 'Dark Content Style'}
           </Text>
         </TouchableOpacity>
 

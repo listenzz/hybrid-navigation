@@ -1,8 +1,16 @@
 module.exports = {
   root: true,
   extends: ['@gfez/react-native', 'plugin:prettier/recommended', 'prettier/react'],
+  overrides: [
+    {
+      files: ['jest/*'],
+      env: {
+        jest: true,
+      },
+    },
+  ],
   rules: {
-    'no-shadow': 0,
-    'react-native/no-inline-styles': 0,
+    '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+    'no-unused-vars': 'off',
   },
-};
+}

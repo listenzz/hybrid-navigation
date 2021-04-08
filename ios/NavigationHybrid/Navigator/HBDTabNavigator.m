@@ -12,6 +12,7 @@
 #import "HBDUtils.h"
 #import "HBDGarden.h"
 #import "GlobalStyle.h"
+#import <React/RCTUtils.h>
 
 @implementation HBDTabNavigator
 
@@ -95,10 +96,10 @@
                 NSDictionary *tab = @{
                       @"index": @(i),
                       @"sceneId": hbdVC.sceneId,
-                      @"moduleName": hbdVC.moduleName ?: NSNull.null,
-                      @"icon": [HBDUtils iconUriFromUri:tabItem[@"icon"][@"uri"]] ?: NSNull.null,
-                      @"unselectedIcon": [HBDUtils iconUriFromUri:tabItem[@"unselectedIcon"][@"uri"]] ?: NSNull.null,
-                      @"title": tabItem[@"title"] ?: NSNull.null
+                      @"moduleName": RCTNullIfNil(hbdVC.moduleName),
+                      @"icon": RCTNullIfNil([HBDUtils iconUriFromUri:tabItem[@"icon"][@"uri"]]),
+                      @"unselectedIcon": RCTNullIfNil([HBDUtils iconUriFromUri:tabItem[@"unselectedIcon"][@"uri"]]),
+                      @"title": RCTNullIfNil(tabItem[@"title"]),
                       };
                 [tabInfos addObject:tab];
             }
@@ -158,8 +159,14 @@
     
     if ([action isEqualToString:@"switchTab"]) {
         BOOL popToRoot = [[extras objectForKey:@"popToRoot"] boolValue];
-        NSInteger index = [[extras objectForKey:@"index"] integerValue];
-        
+        NSNumber *from = [extras objectForKey:@"from"];
+        NSInteger to = [[extras objectForKey:@"to"] integerValue];
+
+        if (from && [from integerValue] == to) {
+            resolve(@(YES));
+            return;
+        }
+ 
         if (popToRoot) {
             UIViewController *vc = [tabBarController selectedViewController];
             UINavigationController *nav = nil;
@@ -181,10 +188,10 @@
         if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
             HBDTabBarController *hbdTabBarVC = (HBDTabBarController *)tabBarController;
             hbdTabBarVC.intercepted = NO;
-            tabBarController.selectedIndex = index;
+            tabBarController.selectedIndex = to;
             hbdTabBarVC.intercepted = YES;
         } else {
-            tabBarController.selectedIndex = index;
+            tabBarController.selectedIndex = to;
         }
     }
     

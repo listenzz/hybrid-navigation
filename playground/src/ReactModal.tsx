@@ -1,12 +1,7 @@
 import React, { useEffect, useCallback } from 'react'
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import withBottomModal from './withBottomModal'
-import {
-  RESULT_OK,
-  Navigator,
-  useVisibleEffect,
-  InjectedProps,
-} from 'react-native-navigation-hybrid'
+import { RESULT_OK, Navigator, useVisibleEffect, InjectedProps } from 'react-native-navigation-hybrid'
 
 function ReactModal({ navigator, sceneId }: InjectedProps) {
   useEffect(() => {

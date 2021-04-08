@@ -8,28 +8,31 @@ import {
   ImageSource,
   TabBarStyle,
   TabBadge,
+  BarButtonItem,
 } from 'react-native-navigation-hybrid'
 
 import styles from './Styles'
 import getLayout from './layout'
+
+const leftBarButtonItem: BarButtonItem = {
+  icon: Image.resolveAssetSource(require('./images/menu.png')),
+  title: 'Menu',
+  action: navigator => {
+    navigator.toggleMenu()
+  },
+}
 
 export default withNavigationItem({
   titleItem: {
     title: 'Options',
   },
 
-  leftBarButtonItem: {
-    icon: Image.resolveAssetSource(require('./images/menu.png')),
-    title: 'Menu',
-    action: (navigator) => {
-      navigator.toggleMenu()
-    },
-  },
+  leftBarButtonItem: leftBarButtonItem,
 
   rightBarButtonItem: {
     icon: Image.resolveAssetSource(require('./images/nav.png')),
     title: 'SETTING',
-    action: (navigator) => {
+    action: navigator => {
       navigator.push('TopBarMisc')
     },
     enabled: false,
@@ -61,21 +64,19 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
     }
   }, [])
 
-  const [leftButtonShowText, setLeftButtonShowText] = useState(false)
+  const [showsLeftBarButton, setShowsLeftBarButton] = useState(false)
 
-  function changeLeftButton() {
-    setLeftButtonShowText(!leftButtonShowText)
+  function toggleLeftBarButton() {
+    setShowsLeftBarButton(!showsLeftBarButton)
   }
 
   useEffect(() => {
-    if (leftButtonShowText) {
-      garden.setLeftBarButtonItem({ icon: null })
+    if (showsLeftBarButton) {
+      garden.setLeftBarButtonItem(null)
     } else {
-      garden.setLeftBarButtonItem({
-        icon: Image.resolveAssetSource(require('./images/menu.png')),
-      })
+      garden.setLeftBarButtonItem(leftBarButtonItem)
     }
-  }, [leftButtonShowText, garden])
+  }, [showsLeftBarButton, garden])
 
   const [rightButtonEnabled, setRightButtonEnabled] = useState(false)
 
@@ -228,22 +229,16 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
           <Text style={styles.buttonText}>pass options to another scene</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={changeLeftButton} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>
-            {leftButtonShowText ? 'change left button to icon' : 'change left button to text'}
-          </Text>
+        <TouchableOpacity onPress={toggleLeftBarButton} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>{showsLeftBarButton ? 'show left bar button' : 'hide left bar button'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={changeRightButton} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>
-            {rightButtonEnabled ? 'disable right button' : 'enable right button'}
-          </Text>
+          <Text style={styles.buttonText}>{rightButtonEnabled ? 'disable right button' : 'enable right button'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={changeTitle} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>{`change title to '${
-            title === 'Options' ? '配置' : 'Options'
-          }'`}</Text>
+          <Text style={styles.buttonText}>{`change title to '${title === 'Options' ? '配置' : 'Options'}'`}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
@@ -251,9 +246,7 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={toggleTabBadge} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>
-            {badges && badges[0].dot ? 'hide tab badge' : 'show tab badge'}
-          </Text>
+          <Text style={styles.buttonText}>{badges && badges[0].dot ? 'hide tab badge' : 'show tab badge'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={replaceTabIcon} activeOpacity={0.2} style={styles.button}>

@@ -14,14 +14,14 @@ function activate(uriPrefix: string) {
     if (!_hasHandleInitialURL) {
       _hasHandleInitialURL = true
       Linking.getInitialURL()
-        .then((url) => {
+        .then(url => {
           if (url) {
             console.info(`deeplink:${url}`)
             const path = url.replace(_uriPrefix, '')
             return router.open(path)
           }
         })
-        .catch((err) => console.error('An error occurred', err))
+        .catch(err => console.error('An error occurred', err))
     }
     Linking.addEventListener('url', handleLinking)
   }

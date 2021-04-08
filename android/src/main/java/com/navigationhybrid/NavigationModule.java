@@ -19,6 +19,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
+import com.navigation.androidx.TabBarFragment;
 import com.navigationhybrid.navigator.Navigator;
 
 import java.util.ArrayList;
@@ -143,6 +144,21 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 promise.resolve(false);
                 FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
             }
+        });
+    }
+
+    @ReactMethod
+    public void currentTab(final String sceneId, final Promise promise) {
+        sHandler.post(() -> {
+            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+            if (fragment != null) {
+                TabBarFragment tabs = fragment.getTabBarFragment();
+                if (tabs != null) {
+                    promise.resolve(tabs.getSelectedIndex());
+                    return;
+                }
+            }
+            promise.resolve(-1);
         });
     }
 

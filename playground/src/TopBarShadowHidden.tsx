@@ -27,9 +27,7 @@ function TopBarShadowHidden({ garden }: InjectedProps) {
       automaticallyAdjustContentInsets={false}
       contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          {hidden ? 'topBar shadow is hidden' : 'topBar shadow is visible'}
-        </Text>
+        <Text style={styles.welcome}>{hidden ? 'topBar shadow is hidden' : 'topBar shadow is visible'}</Text>
       </View>
 
       <View style={styles.button}>

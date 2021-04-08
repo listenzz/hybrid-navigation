@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Slider,
-  Image,
-  StatusBar,
-  Platform,
-} from 'react-native'
+import { Text, View, TouchableOpacity, ScrollView, Slider, Image, StatusBar, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 import styles from './Styles'
 import { withNavigationItem, InjectedProps } from 'react-native-navigation-hybrid'
@@ -35,7 +26,7 @@ export default withNavigationItem({
   rightBarButtonItem: {
     icon: Image.resolveAssetSource(require('./images/settings.png')),
     title: 'SETTING',
-    action: (navigator) => {
+    action: navigator => {
       navigator.push('TopBarMisc')
     },
   },

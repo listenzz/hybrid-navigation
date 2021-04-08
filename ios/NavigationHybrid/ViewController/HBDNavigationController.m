@@ -390,7 +390,7 @@ void adjustLayout(UIViewController *vc) {
 @dynamic navigationBar;
 
 - (void)dealloc {
-    NSLog(@"%s", __FUNCTION__);
+    RCTLogInfo(@"%s", __FUNCTION__);
 }
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController {
@@ -447,6 +447,26 @@ void adjustLayout(UIViewController *vc) {
     id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     if (!coordinator) {
         [self updateNavigationBarForViewController:self.topViewController];
+    }
+}
+
+- (void)viewSafeAreaInsetsDidChange {
+    [super viewSafeAreaInsetsDidChange];
+    if (![HBDUtils isIphoneX] && @available(iOS 13.0, *)) {
+        UIEdgeInsets safeAreaInsets = self.view.safeAreaInsets;
+        UIEdgeInsets additionalInsets = self.additionalSafeAreaInsets;
+        
+        // RCTLogInfo(@"safeAreaInsets:%@, additionalInsets:%@", NSStringFromUIEdgeInsets(safeAreaInsets), NSStringFromUIEdgeInsets(additionalInsets));
+        
+        BOOL statusBarHidden = [UIApplication sharedApplication].keyWindow.windowScene.statusBarManager.statusBarHidden;
+        
+        if (statusBarHidden && safeAreaInsets.top == 0) {
+            self.additionalSafeAreaInsets = UIEdgeInsetsMake(20, additionalInsets.left, additionalInsets.bottom, additionalInsets.right);
+        }
+        
+        if (!statusBarHidden && safeAreaInsets.top == 40) {
+            self.additionalSafeAreaInsets = UIEdgeInsetsMake(-20, additionalInsets.left, additionalInsets.bottom, additionalInsets.right);
+        }
     }
 }
 
@@ -540,7 +560,7 @@ void adjustLayout(UIViewController *vc) {
 
 - (void)printSubViews:(UIView *)view prefix:(NSString *)prefix {
     NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-    NSLog(@"%@%@", prefix, viewName);
+    // RCTLogInfo(@"%@%@", prefix, viewName);
     if (view.subviews.count > 0) {
         for (UIView *sub in view.subviews) {
             [self printSubViews:sub prefix:[NSString stringWithFormat:@"--%@", prefix]];
@@ -647,7 +667,7 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (CGRect)fakeBarFrameForViewController:(UIViewController *)vc {
-    UIView *back = self.navigationBar.subviews[0];
+    UIView *back = [self.navigationBar.subviews firstObject];
     CGRect frame = [self.navigationBar convertRect:back.frame toView:vc.view];
     frame.origin.x = 0;
     if ((vc.edgesForExtendedLayout & UIRectEdgeTop) == 0) {

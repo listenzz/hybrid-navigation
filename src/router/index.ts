@@ -1,12 +1,5 @@
 import { Navigator } from '../Navigator'
-import {
-  RouteConfig,
-  RouteData,
-  RouteInfo,
-  RouteInterceptor,
-  RouteHandler,
-  RouteGraph,
-} from './typing'
+import { RouteConfig, RouteData, RouteInfo, RouteInterceptor, RouteHandler, RouteGraph } from './typing'
 import { pathToRegexp, match } from 'path-to-regexp'
 import stackHandler from './stack'
 import tabsHandler from './tabs'
@@ -17,11 +10,7 @@ let routeDatas = new Map<string, RouteData>()
 let interceptors = new Set<RouteInterceptor>()
 let handlers = new Set<RouteHandler>([drawerHandler, tabsHandler, stackHandler])
 
-const traverseHandlers: RouteHandler = (
-  graph: RouteGraph,
-  route: RouteInfo,
-  next: RouteHandler,
-) => {
+const traverseHandlers: RouteHandler = (graph: RouteGraph, route: RouteInfo, next: RouteHandler) => {
   for (let handler of handlers.values()) {
     if (handler(graph, route, next)) {
       return true
@@ -110,11 +99,7 @@ async function open(path: string, props: PropsType = {}, options: NavigationItem
   }
 }
 
-function pathToRoute(
-  path: string,
-  props: PropsType,
-  options: NavigationItem,
-): RouteInfo | undefined {
+function pathToRoute(path: string, props: PropsType, options: NavigationItem): RouteInfo | undefined {
   for (const data of routeDatas.values()) {
     if (!data.regexp) {
       continue

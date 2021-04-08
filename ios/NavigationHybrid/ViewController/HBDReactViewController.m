@@ -150,15 +150,6 @@
     }
 }
 
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-    if (parent && self.isViewLoaded && !self.firstRenderCompleted) {
-        [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                                                           KEY_SCENE_ID: self.sceneId,
-                                                           KEY_ON: ON_COMPONENT_MOUNT
-                                                           }];
-    }
-}
-
 - (void)signalFirstRenderComplete {
     if (self.firstRenderCompleted) {
         return;
@@ -178,7 +169,7 @@
                                                        KEY_ON: ON_COMPONENT_RESULT,
                                                        KEY_REQUEST_CODE: @(requestCode),
                                                        KEY_RESULT_CODE: @(resultCode),
-                                                       KEY_RESULT_DATA: data ?: [NSNull null],
+                                                       KEY_RESULT_DATA: RCTNullIfNil(data),
                                                        KEY_SCENE_ID: self.sceneId,
                                                        }];
 }

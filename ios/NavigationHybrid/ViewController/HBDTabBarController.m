@@ -17,10 +17,11 @@
 
 #import <React/RCTRootView.h>
 #import <React/RCTRootViewDelegate.h>
+#import <React/RCTUtils.h>
 
 @interface HBDTabBarController () <UITabBarControllerDelegate, RCTRootViewDelegate>
 
-@property (nonatomic, strong) RCTRootView *rootView;
+@property(nonatomic, strong) RCTRootView *rootView;
 @property(nonatomic, copy) NSDictionary *tabBarOptions;
 @property(nonatomic, assign) BOOL hasCustomTabBar;
 
@@ -95,7 +96,7 @@
     NSString *tabBarUnselectedItemColor = options[@"tabBarUnselectedItemColor"];
     if (tabBarItemColor) {
         props[@"itemColor"] = tabBarItemColor;
-        props[@"unselectedItemColor"] = tabBarUnselectedItemColor ?: NSNull.null;
+        props[@"unselectedItemColor"] = RCTNullIfNil(tabBarUnselectedItemColor);
     }
     return props;
 }
@@ -122,7 +123,7 @@
         if (self.hasCustomTabBar) {
             NSMutableDictionary *tab = [self tabAtIndex:index];
             tab[@"dot"] = @(dot);
-            tab[@"badgeText"] = text ?: NSNull.null;
+            tab[@"badgeText"] = RCTNullIfNil(text);
         } else {
             UIViewController *vc = self.viewControllers[index];
             vc.tabBarItem.badgeValue = text;
@@ -146,7 +147,7 @@
         if (self.hasCustomTabBar) {
             NSMutableDictionary *tab = [self tabAtIndex:index];
             tab[@"icon"] = [HBDUtils iconUriFromUri:option[@"icon"][@"uri"]];
-            tab[@"unselectedIcon"] = [HBDUtils iconUriFromUri:option[@"unselectedIcon"][@"uri"]] ?: NSNull.null;
+            tab[@"unselectedIcon"] = RCTNullIfNil([HBDUtils iconUriFromUri:option[@"unselectedIcon"][@"uri"]]);
         } else {
             UIViewController *tab = [self.viewControllers objectAtIndex:index];
             [tab hbd_updateTabBarItem:option];
@@ -176,7 +177,7 @@
     }
     
     NSDictionary *tabBarShadowImage = options[@"tabBarShadowImage"];
-    if (tabBarShadowImage && ![tabBarShadowImage isEqual:NSNull.null]) {
+    if (RCTNilIfNull(tabBarShadowImage)) {
         UIImage *image = [UIImage new];
         NSDictionary *imageItem = tabBarShadowImage[@"image"];
         NSString *color = tabBarShadowImage[@"color"];
@@ -194,7 +195,7 @@
         if (self.hasCustomTabBar) {
             NSMutableDictionary *options = [self.tabBarOptions mutableCopy];
             options[@"tabBarItemColor"] = tabBarItemColor;
-            options[@"tabBarUnselectedItemColor"] = tabBarUnselectedItemColor ?: NSNull.null;
+            options[@"tabBarUnselectedItemColor"] = RCTNullIfNil(tabBarUnselectedItemColor);
             self.tabBarOptions = options;
             self.rootView.appProperties = [self props];
         } else {
@@ -215,56 +216,39 @@
                                                            KEY_ON: ON_COMPONENT_RESULT,
                                                            KEY_REQUEST_CODE: @(requestCode),
                                                            KEY_RESULT_CODE: @(resultCode),
-                                                           KEY_RESULT_DATA: data ?: [NSNull null],
+                                                           KEY_RESULT_DATA: RCTNullIfNil(data),
                                                            KEY_SCENE_ID: self.sceneId,
                                                            }];
     }
 }
 
 - (void)setSelectedIndex:(NSUInteger)selectedIndex {
-    [super setSelectedIndex:selectedIndex];
+    [self setSelectedViewController:self.viewControllers[selectedIndex]];
+}
+
+- (void)setSelectedViewController:(__kindof UIViewController *)selectedViewController {
+    NSUInteger index = [self.viewControllers indexOfObject:selectedViewController];
+    [super setSelectedViewController:selectedViewController];
+
     if (self.hasCustomTabBar && self.rootView) {
         NSMutableDictionary *props = [[self props] mutableCopy];
-        props[@"selectedIndex"] = @(selectedIndex);
+        props[@"selectedIndex"] = @(index);
         self.rootView.appProperties = props;
     }
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
-
-    UIViewController *selectedVC = self.selectedViewController;
-    if ([selectedVC isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (UINavigationController *)selectedVC;
-        selectedVC = nav.viewControllers[0];
+    if ([[HBDReactBridgeManager get] hasRootLayout] && self.intercepted) {
+        NSInteger from = self.selectedIndex;
+        NSInteger to = [self.childViewControllers indexOfObject:viewController];
+        
+        [HBDEventEmitter sendEvent:EVENT_SWITCH_TAB data:@{
+            KEY_SCENE_ID: self.sceneId,
+            KEY_INDEX: [NSString stringWithFormat:@"%d-%d", from, to],
+        }];
+        return NO;
     }
-    
-    HBDReactViewController *selectedReactVC = nil;
-    if ([selectedVC isKindOfClass:[HBDReactViewController class]]) {
-        selectedReactVC = (HBDReactViewController *)selectedVC;
-    }
-    
-    if (!selectedReactVC || !self.intercepted) {
-        return YES;
-    }
-    
-    NSUInteger index = [self.viewControllers indexOfObject:viewController];
-    
-    if ([viewController isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (UINavigationController *)viewController;
-        viewController = nav.viewControllers[0];
-    }
-    
-    HBDReactViewController *reactVC = nil;
-    if ([viewController isKindOfClass:[HBDReactViewController class]]) {
-        reactVC = (HBDReactViewController *)viewController;
-    }
-    
-    [HBDEventEmitter sendEvent:EVENT_SWITCH_TAB data:@{
-                                                       KEY_SCENE_ID: selectedReactVC.sceneId,
-                                                       KEY_MODULE_NAME: reactVC.moduleName?: NSNull.null,
-                                                       KEY_INDEX: @(index)
-                                                       }];
-    return NO;
+    return YES;
 }
 
 @end

@@ -50,9 +50,7 @@ function ToastComponent() {
   }
 
   function info() {
-    toast.info(
-      'A long long message to tell you, A long long message to tell you, A long long message to tell you',
-    )
+    toast.info('A long long message to tell you, A long long message to tell you, A long long message to tell you')
   }
 
   function done() {

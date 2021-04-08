@@ -7,7 +7,6 @@ import {
   EVENT_NAVIGATION,
   KEY_SCENE_ID,
   KEY_ON,
-  ON_COMPONENT_MOUNT,
   ON_COMPONENT_APPEAR,
   ON_COMPONENT_DISAPPEAR,
 } from './NavigationModule'
@@ -54,18 +53,7 @@ function withNavigator(moduleName: string) {
       }, [navigator])
 
       useEffect(() => {
-        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data) => {
-          if (navigator.sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_COMPONENT_MOUNT) {
-            navigator.signalFirstRenderComplete()
-          }
-        })
-        return () => {
-          subscription.remove()
-        }
-      }, [navigator])
-
-      useEffect(() => {
-        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, (data) => {
+        const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
           if (navigator.sceneId === data[KEY_SCENE_ID]) {
             if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
               navigator.visibility = 'visible'
@@ -121,11 +109,7 @@ export class ReactRegistry {
     NavigationModule.endRegisterReactComponent()
   }
 
-  static registerComponent(
-    appKey: string,
-    getComponentFunc: ComponentProvider,
-    routeConfig?: RouteConfig,
-  ) {
+  static registerComponent(appKey: string, getComponentFunc: ComponentProvider, routeConfig?: RouteConfig) {
     if (routeConfig) {
       router.registerRoute(appKey, routeConfig)
     }
@@ -133,8 +117,7 @@ export class ReactRegistry {
     const WrappedComponent = getComponentFunc()
 
     // build static options
-    let options: object =
-      bindBarButtonItemClickEvent((WrappedComponent as any).navigationItem) || {}
+    let options: object = bindBarButtonItemClickEvent((WrappedComponent as any).navigationItem) || {}
     NavigationModule.registerReactComponent(appKey, options)
 
     let RootComponent: React.ComponentType<any>

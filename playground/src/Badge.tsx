@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, ViewProps } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import { useLayout } from '@react-native-community/hooks'
 
 export default function Badge(props: any) {
@@ -15,11 +15,7 @@ export default function Badge(props: any) {
   console.log(`Badge width:${width} height: ${height}`)
 
   return (
-    <Text
-      {...props}
-      numberOfLines={1}
-      onLayout={onLayout}
-      style={[styles.container, props.style, style]}>
+    <Text {...props} numberOfLines={1} onLayout={onLayout} style={[styles.container, props.style, style]}>
       {props.children}
     </Text>
   )

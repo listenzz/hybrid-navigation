@@ -39,8 +39,8 @@
         _props = props;
         _garden = [[HBDGarden alloc] initWithViewController:self];
         
-        [self applayNeededOptionsForBetterTransition:options];
-        [self applayNeededOptionsForTabItem:options];
+        [self applyNavigationBarOptions:options];
+        [self applyTabBarOptions:options];
     }
     return self;
 }
@@ -54,45 +54,50 @@
 }
 
 - (BOOL)prefersStatusBarHidden {
-    if (@available(iOS 13.0, *)) {
-        if ([HBDUtils isIphoneX]) {
-            return [self hbd_statusBarHidden] && !self.hbd_inCall;
-        } else {
-            return NO;
-        }
+    if ([HBDUtils isIphoneX] || @available(iOS 13.0, *)) {
+        return [self hbd_statusBarHidden] && ![HBDUtils isInCall];
+    } else {
+        UIView *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
+        BOOL hidden = [self hbd_statusBarHidden] && ![HBDUtils isInCall];
+        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
+        statusBar.alpha = hidden ? 0 : 1.0;
+        return NO;
     }
-    return [super prefersStatusBarHidden];
 }
 
-- (UIStatusBarAnimation)preferredStatusBarUpdateAnimation {
-    return UIStatusBarAnimationSlide;
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    if (![HBDUtils isIphoneX]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+    }
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    if (![HBDUtils isIphoneX]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+    }
+}
+
+- (void)statusBarFrameWillChange:(NSNotification *)notification {
+    NSValue *rectValue = [notification.userInfo objectForKey:UIApplicationStatusBarFrameUserInfoKey];
+    CGRect statusRect = [rectValue CGRectValue];
+    // RCTLogInfo(@"statusRect:%@", NSStringFromCGRect(statusRect));
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self applayInitialOptions:self.options];
-}
-
-- (void)applayNeededOptionsForBetterTransition:(NSDictionary *)options {
-    if([options[@"passThroughTouches"] boolValue]) {
-        NSNumber *topBarHidden = options[@"topBarHidden"];
-        if ([topBarHidden boolValue]) {
-            self.hbd_barHidden = YES;
-        }
-        
-        NSString *topBarColor = options[@"topBarColor"];
-        if (topBarColor) {
-            self.hbd_barTintColor = [HBDUtils colorWithHexString:topBarColor];
-        }
-        
-        NSNumber *topBarAlpha = options[@"topBarAlpha"];
-        if (topBarAlpha) {
-            self.hbd_barAlpha = [topBarAlpha floatValue];
-        }
+    NSString *screenColor = self.options[@"screenBackgroundColor"];
+    if (screenColor) {
+        self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
+    } else {
+        self.view.backgroundColor = [HBDGarden globalStyle].screenBackgroundColor;
     }
 }
 
-- (void)applayNeededOptionsForTabItem:(NSDictionary *)options {
+- (void)applyTabBarOptions:(NSDictionary *)options {
     NSDictionary *tabItem = options[@"tabItem"];
     if (tabItem) {
         UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
@@ -105,48 +110,6 @@
             tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
         }
         self.tabBarItem = tabBarItem;
-    }
-}
-
-- (void)applayInitialOptions:(NSDictionary *)options {
-    [self applyNavigationBarOptions:options];
-    
-    NSString *screenColor = options[@"screenBackgroundColor"];
-    if (screenColor) {
-        self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
-    } else {
-        self.view.backgroundColor = [HBDGarden globalStyle].screenBackgroundColor;
-    }
-    
-    NSNumber *topBarHidden = options[@"topBarHidden"];
-    if ([topBarHidden boolValue]) {
-        self.hbd_barHidden = YES;
-    }
-    
-    if ([HBDGarden globalStyle].isBackTitleHidden) {
-        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
-    }
-    
-    NSDictionary *backItem = options[@"backItemIOS"];
-    if (backItem) {
-        NSString *title = backItem[@"title"];
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
-        backButton.title = title;
-        NSString *tintColor = backItem[@"tintColor"];
-        if (tintColor) {
-            backButton.tintColor = [HBDUtils colorWithHexString:tintColor];
-        }
-        self.navigationItem.backBarButtonItem = backButton;
-    }
-    
-    NSNumber *swipeBackEnabled = options[@"swipeBackEnabled"];
-    if (swipeBackEnabled) {
-        self.hbd_swipeBackEnabled = [swipeBackEnabled boolValue];
-    }
-    
-    NSNumber *extendedLayoutIncludesTopBar = options[@"extendedLayoutIncludesTopBar"];
-    if (extendedLayoutIncludesTopBar) {
-        self.extendedLayoutIncludesOpaqueBars = [extendedLayoutIncludesTopBar boolValue];
     }
 }
 
@@ -195,6 +158,37 @@
         self.hbd_barAlpha = [topBarAlpha floatValue];
     }
     
+    NSNumber *topBarHidden = options[@"topBarHidden"];
+    if ([topBarHidden boolValue]) {
+        self.hbd_barHidden = YES;
+    }
+    
+    if ([HBDGarden globalStyle].isBackTitleHidden) {
+        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
+    }
+    
+    NSDictionary *backItem = options[@"backItemIOS"];
+    if (backItem) {
+        NSString *title = backItem[@"title"];
+        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+        backButton.title = title;
+        NSString *tintColor = backItem[@"tintColor"];
+        if (tintColor) {
+            backButton.tintColor = [HBDUtils colorWithHexString:tintColor];
+        }
+        self.navigationItem.backBarButtonItem = backButton;
+    }
+    
+    NSNumber *swipeBackEnabled = options[@"swipeBackEnabled"];
+    if (swipeBackEnabled) {
+        self.hbd_swipeBackEnabled = [swipeBackEnabled boolValue];
+    }
+    
+    NSNumber *extendedLayoutIncludesTopBar = options[@"extendedLayoutIncludesTopBar"];
+    if (extendedLayoutIncludesTopBar) {
+        self.extendedLayoutIncludesOpaqueBars = [extendedLayoutIncludesTopBar boolValue];
+    }
+    
     NSNumber *hideShadow = options[@"topBarShadowHidden"];
     if (hideShadow) {
         self.hbd_barShadowHidden = [hideShadow boolValue];
@@ -237,12 +231,12 @@
     
     id rightBarButtonItem = options[@"rightBarButtonItem"];
     if (rightBarButtonItem) {
-        [self.garden setRightBarButtonItem:NSNull.null == rightBarButtonItem ? nil : rightBarButtonItem];
+        [self.garden setRightBarButtonItem:RCTNilIfNull(rightBarButtonItem)];
     }
     
     id leftBarButtonItem = options[@"leftBarButtonItem"];
     if (leftBarButtonItem) {
-        [self.garden setLeftBarButtonItem:NSNull.null == leftBarButtonItem ? nil : leftBarButtonItem];
+        [self.garden setLeftBarButtonItem:RCTNilIfNull(leftBarButtonItem)];
     }
     
     NSArray *rightBarButtonItems = options[@"rightBarButtonItems"];
@@ -256,7 +250,7 @@
     }
 }
 
-- (void)updateOptions:(NSDictionary *)options {
+- (void)updateNavigationBarOptions:(NSDictionary *)options {
     self.options = [HBDUtils mergeItem:options withTarget:self.options];
     
     NSMutableDictionary *target = [options mutableCopy];
@@ -277,7 +271,7 @@
     
     NSNumber *statusBarHidden = [options objectForKey:@"statusBarHidden"];
     if (statusBarHidden) {
-        [self hbd_setNeedsStatusBarHiddenUpdate];
+        [self setNeedsStatusBarAppearanceUpdate];
     }
     
     NSNumber *passThroughTouches = [options objectForKey:@"passThroughTouches"];

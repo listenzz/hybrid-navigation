@@ -14,7 +14,6 @@ export const ON_COMPONENT_RESULT: string = HBDEventEmitter.ON_COMPONENT_RESULT
 export const ON_BAR_BUTTON_ITEM_CLICK: string = HBDEventEmitter.ON_BAR_BUTTON_ITEM_CLICK
 export const ON_COMPONENT_APPEAR: string = HBDEventEmitter.ON_COMPONENT_APPEAR
 export const ON_COMPONENT_DISAPPEAR: string = HBDEventEmitter.ON_COMPONENT_DISAPPEAR
-export const ON_COMPONENT_MOUNT: string = HBDEventEmitter.ON_COMPONENT_MOUNT
 
 export const KEY_ON: string = HBDEventEmitter.KEY_ON
 export const KEY_REQUEST_CODE: string = HBDEventEmitter.KEY_REQUEST_CODE

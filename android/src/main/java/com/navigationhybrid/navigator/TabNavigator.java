@@ -141,7 +141,15 @@ public class TabNavigator implements Navigator {
         }
 
         if ("switchTab".equals(action)) {
-            int index = extras.getInt("index");
+            int to = extras.getInt("to");
+            if (extras.hasKey("from")) {
+                int from = extras.getInt("from");
+                if (from == to) {
+                    promise.resolve(true);
+                    return;
+                }
+            }
+
             boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
             if (popToRoot) {
                 NavigationFragment nav = target.getNavigationFragment();
@@ -153,10 +161,10 @@ public class TabNavigator implements Navigator {
             if (tabBarFragment instanceof ReactTabBarFragment) {
                 ReactTabBarFragment reactTabBarFragment = (ReactTabBarFragment) tabBarFragment;
                 reactTabBarFragment.setIntercepted(false);
-                reactTabBarFragment.setSelectedIndex(index, () -> promise.resolve(true));
+                reactTabBarFragment.setSelectedIndex(to, () -> promise.resolve(true));
                 reactTabBarFragment.setIntercepted(true);
             } else {
-                tabBarFragment.setSelectedIndex(index, () -> promise.resolve(true));
+                tabBarFragment.setSelectedIndex(to, () -> promise.resolve(true));
             }
         }
     }

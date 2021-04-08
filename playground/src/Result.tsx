@@ -3,12 +3,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { TouchableOpacity, Text, View, TextInput, Image } from 'react-native'
 import styles from './Styles'
 
-import {
-  RESULT_OK,
-  BarStyleLightContent,
-  withNavigationItem,
-  InjectedProps,
-} from 'react-native-navigation-hybrid'
+import { RESULT_OK, BarStyleLightContent, withNavigationItem, InjectedProps } from 'react-native-navigation-hybrid'
 
 export default withNavigationItem({
   titleItem: {
@@ -22,7 +17,7 @@ function Result({ navigator, garden }: InjectedProps) {
   const [isRoot, setIsRoot] = useState(false)
 
   useEffect(() => {
-    navigator.isStackRoot().then((root) => {
+    navigator.isStackRoot().then(root => {
       setIsRoot(root)
     })
   }, [navigator])
@@ -33,7 +28,7 @@ function Result({ navigator, garden }: InjectedProps) {
         title: 'Cancel',
         icon: Image.resolveAssetSource(require('./images/cancel.png')),
         insetsIOS: { top: -1, left: -8, bottom: 0, right: 8 },
-        action: (navigator) => {
+        action: navigator => {
           navigator.dismiss()
         },
       })
@@ -84,11 +79,7 @@ function Result({ navigator, garden }: InjectedProps) {
           <Text style={styles.buttonText}>push to another scene</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={popToRoot}
-          activeOpacity={0.2}
-          style={styles.button}
-          disabled={isRoot}>
+        <TouchableOpacity onPress={popToRoot} activeOpacity={0.2} style={styles.button} disabled={isRoot}>
           <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop to home</Text>
         </TouchableOpacity>
 

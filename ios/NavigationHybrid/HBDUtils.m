@@ -8,6 +8,8 @@
 
 #import "HBDUtils.h"
 #import <React/RCTConvert.h>
+#import <CoreTelephony/CTCallCenter.h>
+#import <CoreTelephony/CTCall.h>
 
 @implementation HBDUtils
 
@@ -19,10 +21,10 @@
             //ignore
         } else if ([obj isKindOfClass:[NSDictionary class]]) {
             NSDictionary *subTarget = [target objectForKey:key];
-            if (!subTarget || [subTarget isEqual:NSNull.null]) {
-                [mutableTarget setObject:obj forKey:key];
-            } else {
+            if (RCTNilIfNull(subTarget)) {
                 [mutableTarget setObject:[self mergeItem:obj withTarget:subTarget] forKey:key];
+            } else {
+                [mutableTarget setObject:obj forKey:key];
             }
         } else {
             [mutableTarget setObject:obj forKey:key];
@@ -83,7 +85,7 @@
          NSString *uri = json[@"uri"];
         if (uri && [uri hasPrefix:@"font:"]) {
             NSString *path = [self imagePathFromFontUri:uri];
-            // NSLog(@"font path:%@", path);
+            // RCTLogInfo(@"font path:%@", path);
             UIImage *image = [UIImage imageWithContentsOfFile:path];
             return image;
         }  else {
@@ -104,7 +106,7 @@
 
 + (NSString *)imagePathFromFontUri:(NSString *)uri {
     uri = [uri substringFromIndex:7];
-    // NSLog(@"font uri:%@", uri);
+    // RCTLogInfo(@"font uri:%@", uri);
     NSArray *components = [uri componentsSeparatedByString:@"/"];
     if (components.count < 3) {
         return nil;
@@ -144,7 +146,7 @@
         NSData *imageData = UIImagePNGRepresentation(iconImage);
         BOOL success = [imageData writeToFile:filePath atomically:YES];
         if(!success) {
-            NSLog(@"can't save %@", fileName);
+            RCTLogInfo(@"can't save %@", fileName);
             return nil;
         }
     }
@@ -165,9 +167,22 @@
 }
 
 + (BOOL)isIphoneX {
-    NSArray *xrs =@[ @812, @896 ];
-    BOOL isIPhoneX = [xrs containsObject:@([UIScreen mainScreen].bounds.size.height)];
-    return isIPhoneX;
+    return @available(iOS 11.0, *) && UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom > 0.0;
+}
+
++ (BOOL)isInCall {
+    if ([HBDUtils isIphoneX]) {
+        CTCallCenter *callCenter = [[CTCallCenter alloc] init] ;
+        for (CTCall *call in callCenter.currentCalls)  {
+            if (call.callState == CTCallStateConnected) {
+                return YES;
+            }
+        }
+        return NO;
+    } else {
+        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+        return statusBarHeight == 40;
+    }
 }
 
 @end
