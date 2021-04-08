@@ -87,14 +87,14 @@ async function open(path: string, props: PropsType = {}, options: NavigationItem
   if (!traverseHandlers(graphArray[0], route, traverseHandlers)) {
     const navigator = await Navigator.current()
     navigator.closeMenu()
-    const { moduleName, mode: routeMode, props } = route
+    const { moduleName, mode: routeMode, props: initialProps } = route
     if (routeMode === 'present') {
-      navigator.present(moduleName, props)
+      navigator.present(moduleName, initialProps)
     } else if (routeMode === 'modal') {
-      navigator.showModal(moduleName, props)
+      navigator.showModal(moduleName, initialProps)
     } else {
       // default push
-      navigator.push(moduleName, props)
+      navigator.push(moduleName, initialProps)
     }
   }
 }
@@ -124,12 +124,11 @@ function pathParams(path: string) {
     encode: encodeURI,
     decode: decodeURIComponent,
   })(path)
-  const pathParams = pathMatch ? pathMatch.params : {}
-  return pathParams
+  return pathMatch ? pathMatch.params : {}
 }
 
 function queryParams(queryString: string) {
-  const queryParams = (queryString || '').split('&').reduce((result: IndexType, item: string) => {
+  return (queryString || '').split('&').reduce((result: IndexType, item: string) => {
     if (item !== '') {
       const nextResult = result || {}
       const [key, value] = item.split('=')
@@ -138,7 +137,6 @@ function queryParams(queryString: string) {
     }
     return result
   }, {})
-  return queryParams
 }
 
 function routeDependencies(routeData: RouteData) {
