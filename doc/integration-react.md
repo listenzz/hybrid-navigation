@@ -79,7 +79,7 @@ Navigator.setRoot({
 
 ```jsx
 function withRedux(WrappedComponent) {
-  return (props) => (
+  return props => (
     <Provider store={store}>
       <WrappedComponent {...props} />
     </Provider>
@@ -99,7 +99,7 @@ ReactRegistry.startRegisterComponent(withRedux)
 
 ```diff
 - import com.facebook.react.ReactActivity;
-+ import com.navigationhybrid.ReactAppCompatActivity;
++ import com.reactnative.hybridnavigation.ReactAppCompatActivity;
 
 - public class MainActivity extends ReactActivity {
 + public class MainActivity extends ReactAppCompatActivity {
@@ -114,7 +114,7 @@ ReactRegistry.startRegisterComponent(withRedux)
 
 ```diff
   import com.facebook.react.ReactNativeHost;
-+ import com.navigationhybrid.ReactBridgeManager;
++ import com.reactnative.hybridnavigation.ReactBridgeManager;
 
 public void onCreate() {
     super.onCreate();
@@ -160,7 +160,7 @@ cd ios & pod install
   #import <React/RCTBridge.h>
   #import <React/RCTBundleURLProvider.h>
 - #import <React/RCTRootView.h>
-+ #import <NavigationHybrid/NavigationHybrid.h>
++ #import <HybridNavigation/HybridNavigation.h>
 
   @implementation AppDelegate
 
@@ -175,7 +175,7 @@ cd ios & pod install
 -
 +  NSURL *jsCodeLocation;
 +  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-+  [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
++  [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
 +
    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 +  self.window.windowLevel = UIWindowLevelStatusBar + 1;

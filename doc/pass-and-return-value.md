@@ -23,7 +23,7 @@ iOS 需要继承 `HBDViewController`，具体可以参考 example 项目中 `One
 
 ```objc
 // ios
-#import <NavigationHybrid/NavigationHybrid.h>
+#import <HybridNavigation/HybridNavigation.h>
 
 @interface OneNativeViewController : HBDViewController
 

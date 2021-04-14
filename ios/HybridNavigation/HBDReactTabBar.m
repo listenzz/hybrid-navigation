@@ -1,6 +1,6 @@
 //
 //  HBDReactTabBar.m
-//  NavigationHybrid
+//  HybridNavigation
 //
 //  Created by Listen on 2019/1/11.
 //  Copyright © 2019 Listen. All rights reserved.

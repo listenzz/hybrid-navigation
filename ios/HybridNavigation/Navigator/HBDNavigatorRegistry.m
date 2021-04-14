@@ -1,6 +1,6 @@
 //
 //  HBDNavigatorRegistry.m
-//  NavigationHybrid
+//  HybridNavigation
 //
 //  Created by 李生 on 2021/1/7.
 //

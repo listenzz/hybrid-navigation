@@ -317,7 +317,7 @@ pod 'DoubleConversion', :podspec => node_modules_path + 'react-native/third-part
 pod 'GLog', :podspec => node_modules_path + 'react-native/third-party-podspecs/GLog.podspec'
 pod 'Folly', :podspec => node_modules_path + 'react-native/third-party-podspecs/Folly.podspec'
 
-pod 'NavigationHybrid', :path => node_modules_path + 'hybrid-navigation'
+pod 'HybridNavigation', :path => node_modules_path + 'hybrid-navigation'
 ```
 
 记得 `pod install` 一次。
@@ -357,7 +357,7 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
 像下面那样更改 AppDelegate.m 文件
 
 ```objc
-#import <NavigationHybrid/NavigationHybrid.h>
+#import <HybridNavigation/HybridNavigation.h>
 #import <React/RCTBundleURLProvider.h>
 
 @interface AppDelegate () <HBDReactBridgeManagerDelegate>
