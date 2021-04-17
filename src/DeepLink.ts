@@ -28,7 +28,7 @@ function activate(uriPrefix: string) {
   _active++
 }
 
-function inactivate() {
+function deactivate() {
   _active--
   if (_active === 0) {
     Linking.removeEventListener('url', handleLinking)
@@ -50,5 +50,5 @@ function handleLinking(event: { url: string }): void {
 
 export const DeepLink = {
   activate,
-  inactivate,
+  deactivate,
 }

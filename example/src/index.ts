@@ -169,7 +169,7 @@ const drawer: Drawer = {
 // 激活 DeepLink，在 Navigator.setRoot 之前
 Navigator.setRootLayoutUpdateListener(
   () => {
-    DeepLink.inactivate()
+    DeepLink.deactivate()
     console.log('------------------------inactive router')
   },
   () => {

@@ -52,7 +52,7 @@ componentDidMount() {
 }
 
 componentWillUnmount() {
-  DeepLink.inactivate();
+  DeepLink.deactivate();
 }
 ```
 
@@ -62,7 +62,7 @@ componentWillUnmount() {
 // 激活 DeepLink，在 Navigator.setRoot 之前
 Navigator.setRootLayoutUpdateListener(
   () => {
-    DeepLink.inactivate()
+    DeepLink.deactivate()
   },
   () => {
     const prefix = 'hbd://'
