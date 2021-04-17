@@ -1,12 +1,12 @@
-playground/
 example/
 screenshot/app-release.apk
-*/build/
 src/
 react-native.config.js
 tsconfig.json
+tsconfig.build.json
 .eslintrc.js
 .prettierrc.js
+*/build/
 
 # OSX
 #
