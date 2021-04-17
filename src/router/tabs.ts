@@ -14,7 +14,7 @@ export function isTabsGraph(graph: RouteGraph): graph is TabsGraph {
   return graph.layout === 'tabs'
 }
 
-const handler: RouteHandler = (graph: RouteGraph, route: RouteInfo, next: RouteHandler) => {
+export function tabsRouteHandler(graph: RouteGraph, route: RouteInfo, next: RouteHandler) {
   if (!isTabsGraph(graph)) {
     return false
   }
@@ -46,5 +46,3 @@ function extractModuleNames(graph: RouteGraph, set: string[]) {
     }
   }
 }
-
-export default handler

@@ -1,4 +1,4 @@
-import { RouteGraph, LayoutMode, RouteHandler, RouteInfo } from './typing'
+import { RouteGraph, LayoutMode, RouteInfo } from './typing'
 import { isScreenGraph } from './screen'
 import { Navigator } from '../Navigator'
 
@@ -13,7 +13,7 @@ export function isStackGraph(graph: RouteGraph): graph is StackGraph {
   return graph.layout === 'stack'
 }
 
-const handler: RouteHandler = (graph: RouteGraph, route: RouteInfo) => {
+export function stackRouteHandler(graph: RouteGraph, route: RouteInfo) {
   if (!isStackGraph(graph)) {
     return false
   }
@@ -55,5 +55,3 @@ const handler: RouteHandler = (graph: RouteGraph, route: RouteInfo) => {
 
   return false
 }
-
-export default handler

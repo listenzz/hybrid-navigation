@@ -1,14 +1,14 @@
 import { Navigator } from '../Navigator'
 import { RouteConfig, RouteData, RouteInfo, RouteInterceptor, RouteHandler, RouteGraph } from './typing'
 import { pathToRegexp, match } from 'path-to-regexp'
-import stackHandler from './stack'
-import tabsHandler from './tabs'
-import drawerHandler from './drawer'
+import { stackRouteHandler } from './stack'
+import { tabsRouteHandler } from './tabs'
+import { drawerRouteHandler } from './drawer'
 import { PropsType, NavigationItem, IndexType } from '../typing'
 
 let routeDatas = new Map<string, RouteData>()
 let interceptors = new Set<RouteInterceptor>()
-let handlers = new Set<RouteHandler>([drawerHandler, tabsHandler, stackHandler])
+let handlers = new Set<RouteHandler>([drawerRouteHandler, tabsRouteHandler, stackRouteHandler])
 
 const traverseHandlers: RouteHandler = (graph: RouteGraph, route: RouteInfo, next: RouteHandler) => {
   for (let handler of handlers.values()) {

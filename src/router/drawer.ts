@@ -13,7 +13,7 @@ export function isDrawerGraph(graph: RouteGraph): graph is DrawerGraph {
   return graph.layout === 'drawer'
 }
 
-const handler: RouteHandler = (graph: RouteGraph, route: RouteInfo, next: RouteHandler) => {
+export function drawerRouteHandler(graph: RouteGraph, route: RouteInfo, next: RouteHandler) {
   if (!isDrawerGraph(graph)) {
     return false
   }
@@ -32,5 +32,3 @@ const handler: RouteHandler = (graph: RouteGraph, route: RouteInfo, next: RouteH
     return result
   }
 }
-
-export default handler
