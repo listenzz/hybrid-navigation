@@ -1,7 +1,6 @@
 package com.reactnative.hybridnavigation;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
@@ -67,9 +67,10 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setStyle(final ReadableMap style) {
         sHandler.post(() -> {
-            Context context = bridgeManager.getCurrentReactContext();
-            if (context != null) {
-                Garden.createGlobalStyle(Arguments.toBundle(style));
+            Garden.createGlobalStyle(Arguments.toBundle(style));
+
+            ReactContext context = getReactApplicationContext();
+            if (context.hasActiveCatalystInstance()) {
                 ReactAppCompatActivity activity = (ReactAppCompatActivity) getCurrentActivity();
                 // 即使 Activity 真的存在，`getCurrentActivity` 依然可能返回 null，尤其是启动时应用被切换到后台
                 if (activity != null) {
@@ -207,7 +208,8 @@ public class GardenModule extends ReactContextBaseJavaModule {
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
-        if (!bridgeManager.isViewHierarchyReady() || bridgeManager.getCurrentReactContext() == null) {
+        ReactContext reactContext = getReactApplicationContext();
+        if (!(bridgeManager.isViewHierarchyReady() && reactContext.hasActiveCatalystInstance())) {
             FLog.w(TAG, "View hierarchy is not ready now.");
             return null;
         }

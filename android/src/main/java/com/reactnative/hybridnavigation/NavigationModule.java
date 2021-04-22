@@ -14,6 +14,7 @@ import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
@@ -108,8 +109,9 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setRoot(final ReadableMap layout, final boolean sticky, final int tag) {
         sHandler.post(() -> {
-            if (bridgeManager.getCurrentReactContext() == null) {
-                FLog.w(TAG, "current react context is null, skip action `setRoot`");
+            ReactContext reactContext = getReactApplicationContext();
+            if (!reactContext.hasActiveCatalystInstance()) {
+                FLog.w(TAG, "ReactContext has not active catalyst instance, skip action `setRoot`");
                 return;
             }
 
@@ -188,8 +190,9 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                if (bridgeManager.getCurrentReactContext() == null) {
-                    FLog.w(TAG, "current react context is null, skip action `currentRoute`");
+                ReactContext reactContext = getReactApplicationContext();
+                if (!reactContext.hasActiveCatalystInstance()) {
+                    FLog.w(TAG, "ReactContext has not active catalyst instance, skip action `currentRoute`");
                     return;
                 }
 
@@ -247,8 +250,9 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                if (bridgeManager.getCurrentReactContext() == null) {
-                    FLog.w(TAG, "current react context is null, skip action `currentRoute`");
+                ReactContext reactContext = getReactApplicationContext();
+                if (!reactContext.hasActiveCatalystInstance()) {
+                    FLog.w(TAG, "ReactContext has not active catalyst instance, skip action `currentRoute`");
                     return;
                 }
 
@@ -282,8 +286,10 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                if (bridgeManager.getCurrentReactContext() == null) {
-                    FLog.w(TAG, "current react context is null, skip action `routeGraph`");
+                ReactContext reactContext = getReactApplicationContext();
+
+                if (!reactContext.hasActiveCatalystInstance()) {
+                    FLog.w(TAG, "ReactContext has not active catalyst instance, skip action `routeGraph`");
                     return;
                 }
 
@@ -308,7 +314,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
-        if (!bridgeManager.isViewHierarchyReady() || bridgeManager.getCurrentReactContext() == null) {
+        ReactContext reactContext = getReactApplicationContext();
+        if (!(bridgeManager.isViewHierarchyReady() && reactContext.hasActiveCatalystInstance())) {
             FLog.w(TAG, "View hierarchy is not ready now.");
             return null;
         }

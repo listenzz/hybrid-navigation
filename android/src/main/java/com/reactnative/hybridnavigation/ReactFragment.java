@@ -159,8 +159,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     private void unmountReactView() {
         getReactBridgeManager().removeReactBridgeReloadListener(this);
 
-        ReactContext reactContext = getReactBridgeManager().getCurrentReactContext();
-        if (reactContext != null && reactContext.hasCatalystInstance()) {
+        ReactContext reactContext = getCurrentReactContext();
+        if (reactContext != null && reactContext.hasActiveCatalystInstance()) {
             if (reactRootView != null) {
                 reactRootView.unmountReactApplication();
                 reactRootView = null;
@@ -176,7 +176,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Override
     protected boolean onBackPressed() {
         if (getShowsDialog() && getReactNativeHost().hasInstance()) {
-            getReactNativeHost().getReactInstanceManager().onBackPressed();
+            getReactInstanceManager().onBackPressed();
             return true;
         }
         return super.onBackPressed();
@@ -236,7 +236,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         containerLayout.addView(reactRootView, layoutParams);
         String moduleName = getModuleName();
 
-        reactRootView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+        reactRootView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
     }
 
     private void initTitleViewIfNeeded() {
@@ -260,7 +260,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                     layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
                 }
                 getAwesomeToolbar().addView(reactTitleView, layoutParams);
-                reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+                reactTitleView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
             }
         }
     }

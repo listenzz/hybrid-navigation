@@ -88,7 +88,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         createMainComponent();
     }
 
-
     @Override
     public void setActivityRootFragment(@NonNull AwesomeFragment rootFragment) {
         setActivityRootFragment(rootFragment, 0);
@@ -112,7 +111,8 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             }
         }
         ReactBridgeManager bridgeManager = getReactBridgeManager();
-        if (getCurrentReactContext() != null && getCurrentReactContext().hasActiveCatalystInstance()) {
+        ReactContext reactContext = getCurrentReactContext();
+        if (reactContext != null && reactContext.hasActiveCatalystInstance()) {
             HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());
 
             setActivityRootFragmentSync(fragment);
@@ -170,7 +170,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         super.onResume();
         activityDelegate.onResume();
         ReactBridgeManager bridgeManager = getReactBridgeManager();
-        if (bridgeManager.hasPendingLayout()) {
+        if (bridgeManager.hasPendingLayout() && isReactModuleRegisterCompleted()) {
             FLog.i(TAG, "set root from pending layout when resume");
             setActivityRootFragment(bridgeManager);
         }
