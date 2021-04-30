@@ -1,3 +1,9 @@
+## 1.4.5
+
+### BreakChanges
+
+- 重命名 `DeepLink.inactive` 为 `DeepLink.deactive`
+
 ## 1.4.4
 
 - 修复 Auto-linking
