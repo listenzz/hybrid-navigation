@@ -69,9 +69,10 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         GlobalStyle globalStyle = Garden.getGlobalStyle();
         if (style != null && globalStyle != null && !isFinishing()) {
             if (styleInflated) {
-                FLog.i(TAG, "Inflate style again.");
+                FLog.i(TAG, "Going to inflate style again.");
             }
             styleInflated = true;
+            FLog.i(TAG, "ReactAppCompatActivity#inflateStyle");
             globalStyle.inflateStyle(this, style);
         }
     }
@@ -85,6 +86,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     public void onReactModuleRegisterCompleted() {
+        FLog.i(TAG, "ReactAppCompatActivity#onReactModuleRegisterCompleted");
         createMainComponent();
     }
 
@@ -95,9 +97,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     public void setActivityRootFragment(@NonNull AwesomeFragment rootFragment, int tag) {
         if (getSupportFragmentManager().isStateSaved()) {
+            FLog.i(TAG, "Schedule to set activity root fragment.");
             scheduleTaskAtStarted(() -> setActivityRootFragmentSync(rootFragment, tag));
         } else {
             if (!isFinishing()) {
+                FLog.i(TAG, "Set activity root fragment immediately.");
                 setActivityRootFragmentSync(rootFragment, tag);
             }
         }
@@ -171,7 +175,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         activityDelegate.onResume();
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         if (bridgeManager.hasPendingLayout() && isReactModuleRegisterCompleted()) {
-            FLog.i(TAG, "set root from pending layout when resume");
+            FLog.i(TAG, "Set root from pending layout when resume.");
             setActivityRootFragment(bridgeManager);
         }
     }

@@ -67,6 +67,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setStyle(final ReadableMap style) {
         sHandler.post(() -> {
+            FLog.i(TAG, "GardenModule#setStyle");
             Garden.createGlobalStyle(Arguments.toBundle(style));
 
             ReactContext context = getReactApplicationContext();

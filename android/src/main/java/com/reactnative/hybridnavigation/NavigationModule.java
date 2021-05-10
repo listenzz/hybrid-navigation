@@ -126,11 +126,11 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 AwesomeFragment fragment = bridgeManager.createFragment(layout);
                 if (fragment != null) {
-                    FLog.i(TAG, "have active activity and react module was registered, set root directly");
+                    FLog.i(TAG, "Have active activity and react module was registered, set root directly");
                     reactAppCompatActivity.setActivityRootFragment(fragment, tag);
                 }
             } else {
-                FLog.w(TAG, "have no active activity or react module was not registered, schedule pending root");
+                FLog.w(TAG, "Have no active activity or react module was not registered, schedule pending root");
                 bridgeManager.setPendingLayout(layout, tag);
             }
         });
