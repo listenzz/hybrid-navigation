@@ -1,3 +1,7 @@
+## 1.4.6
+
+- 优化 stack 路由选择，当 props 为空对象时，pop 到现有页面而不是 redirect
+
 ## 1.4.5
 
 ### BreakChanges
