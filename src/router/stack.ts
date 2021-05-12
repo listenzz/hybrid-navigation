@@ -39,7 +39,11 @@ export function stackRouteHandler(graph: RouteGraph, route: RouteInfo) {
       let peddingModuleNames = moduleNames.slice(index + 1)
       const navigator = Navigator.of(children[children.length - 1].sceneId)
       if (peddingModuleNames.length === 0) {
-        navigator.redirectTo(moduleName, props)
+        if (JSON.stringify(props) === '{}') {
+          navigator.popTo(moduleName)
+        } else {
+          navigator.redirectTo(moduleName, props)
+        }
       } else {
         for (let i = 0; i < peddingModuleNames.length; i++) {
           if (i === peddingModuleNames.length - 1) {
