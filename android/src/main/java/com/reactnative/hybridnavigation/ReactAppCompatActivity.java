@@ -115,12 +115,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             }
         }
         ReactBridgeManager bridgeManager = getReactBridgeManager();
+        bridgeManager.setPendingLayout(null, 0);
         ReactContext reactContext = getCurrentReactContext();
         if (reactContext != null && reactContext.hasActiveCatalystInstance()) {
             HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());
-
             setActivityRootFragmentSync(fragment);
-
             bridgeManager.setViewHierarchyReady(true);
             WritableMap map = Arguments.createMap();
             map.putInt("tag", tag);
