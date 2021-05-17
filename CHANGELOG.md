@@ -1,3 +1,9 @@
+## 1.4.7
+
+### Android specific
+
+- 修复调用 `setRoot` 时，不正常抛 `IllegalStateException` 的问题
+
 ## 1.4.6
 
 - 优化 stack 路由选择，当 props 为空对象时，pop 到现有页面而不是 redirect
