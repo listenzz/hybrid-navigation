@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -32,16 +33,20 @@ import java.util.Map;
 /**
  * Created by Listen on 2017/11/20.
  */
-public class NavigationModule extends ReactContextBaseJavaModule {
+public class NavigationModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
     static final String TAG = "ReactNative";
     static final Handler sHandler = new Handler(Looper.getMainLooper());
 
     private final ReactBridgeManager bridgeManager;
+    private final ReactApplicationContext reactContext;
+    private final UiTaskExecutor uiTaskExecutor = new UiTaskExecutor();
 
     NavigationModule(ReactApplicationContext reactContext, ReactBridgeManager bridgeManager) {
         super(reactContext);
         this.bridgeManager = bridgeManager;
+        this.reactContext = reactContext;
+        reactContext.addLifecycleEventListener(this);
     }
 
     @NonNull
@@ -53,14 +58,17 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
+        reactContext.removeLifecycleEventListener(this);
         FLog.i(TAG, "NavigationModule#onCatalystInstanceDestroy");
         sHandler.removeCallbacksAndMessages(null);
         sHandler.post(() -> {
+            uiTaskExecutor.clear();
             List<ReactBridgeManager.ReactBridgeReloadListener> listeners = bridgeManager.getReactBridgeReloadListeners();
             for (ReactBridgeManager.ReactBridgeReloadListener listener : listeners) {
                 listener.onReload();
             }
             listeners.clear();
+            bridgeManager.setPendingLayout(null, 0);
             bridgeManager.setReactModuleRegisterCompleted(false);
             bridgeManager.setViewHierarchyReady(false);
             Activity activity = getCurrentActivity();
@@ -69,6 +77,23 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 reactAppCompatActivity.clearFragments();
             }
         });
+    }
+
+    @Override
+    public void onHostResume() {
+        FLog.w(TAG, "NavigationModule#onHostResume");
+        uiTaskExecutor.notifyResume();
+    }
+
+    @Override
+    public void onHostPause() {
+        FLog.w(TAG, "NavigationModule#onHostPause");
+        uiTaskExecutor.notifyPause();
+    }
+
+    @Override
+    public void onHostDestroy() {
+        FLog.w(TAG, "NavigationModule#onHostDestroy");
     }
 
     @Nullable
@@ -109,43 +134,48 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setRoot(final ReadableMap layout, final boolean sticky, final int tag) {
         sHandler.post(() -> {
-            ReactContext reactContext = getReactApplicationContext();
-            if (!reactContext.hasActiveCatalystInstance()) {
-                FLog.w(TAG, "ReactContext has not active catalyst instance, skip action `setRoot`");
-                return;
-            }
-
-            if (bridgeManager.getPendingTag() != 0) {
-                throw new IllegalStateException("The previous `setRoot` has not been processed yet, you should `await Navigator.setRoot()` to complete.");
-            }
-
-            bridgeManager.setViewHierarchyReady(false);
-            bridgeManager.setRootLayout(layout, sticky);
-            Activity activity = getCurrentActivity();
-            if (activity instanceof ReactAppCompatActivity && bridgeManager.isReactModuleRegisterCompleted()) {
-                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                AwesomeFragment fragment = bridgeManager.createFragment(layout);
-                if (fragment != null) {
-                    FLog.i(TAG, "Have active activity and react module was registered, set root directly");
-                    reactAppCompatActivity.setActivityRootFragment(fragment, tag);
+            uiTaskExecutor.submit(() -> {
+                ReactContext reactContext = getReactApplicationContext();
+                if (!reactContext.hasActiveCatalystInstance()) {
+                    FLog.w(TAG, "ReactContext has not active catalyst instance, skip action `setRoot`");
+                    return;
                 }
-            } else {
-                FLog.w(TAG, "Have no active activity or react module was not registered, schedule pending root");
+
+                if (bridgeManager.getPendingTag() != 0) {
+                    FLog.e(TAG, "The previous tag: " + bridgeManager.getPendingTag() + " layout: " + bridgeManager.getPendingLayout());
+                    FLog.e(TAG, "Current tag: " + tag + " layout: " + layout);
+                    throw new IllegalStateException("The previous `setRoot` has not been processed yet, you should `await Navigator.setRoot()` to complete.");
+                }
+
+                bridgeManager.setViewHierarchyReady(false);
+                bridgeManager.setRootLayout(layout, sticky);
                 bridgeManager.setPendingLayout(layout, tag);
-            }
+
+                Activity activity = getCurrentActivity();
+                if (activity instanceof ReactAppCompatActivity && bridgeManager.isReactModuleRegisterCompleted()) {
+                    ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                    AwesomeFragment fragment = bridgeManager.createFragment(layout);
+                    if (fragment != null) {
+                        FLog.i(TAG, "Have active Activity and react module was registered, set root Fragment immediately");
+                        reactAppCompatActivity.setActivityRootFragment(fragment, tag);
+                    }
+                }
+            });
         });
     }
 
     @ReactMethod
     public void dispatch(final String sceneId, final String action, final ReadableMap extras, Promise promise) {
         sHandler.post(() -> {
-            AwesomeFragment target = findFragmentBySceneId(sceneId);
-            if (target != null && target.isAdded()) {
-                bridgeManager.handleNavigation(target, action, extras, promise);
-            } else {
-                promise.resolve(false);
-                FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
-            }
+            uiTaskExecutor.submit(() -> {
+                AwesomeFragment target = findFragmentBySceneId(sceneId);
+                if (target != null && target.isAdded()) {
+                    bridgeManager.handleNavigation(target, action, extras, promise);
+                } else {
+                    promise.resolve(false);
+                    FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
+                }
+            });
         });
     }
 
@@ -182,7 +212,6 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 fragment.setResult(resultCode, Arguments.toBundle(result));
             }
         });
-
     }
 
     @ReactMethod
@@ -328,4 +357,6 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         }
         return null;
     }
+
+
 }

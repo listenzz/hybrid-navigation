@@ -68,9 +68,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         Style style = getStyle();
         GlobalStyle globalStyle = Garden.getGlobalStyle();
         if (style != null && globalStyle != null && !isFinishing()) {
-            if (styleInflated) {
-                FLog.i(TAG, "Going to inflate style again.");
-            }
             styleInflated = true;
             FLog.i(TAG, "ReactAppCompatActivity#inflateStyle");
             globalStyle.inflateStyle(this, style);
@@ -97,11 +94,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     public void setActivityRootFragment(@NonNull AwesomeFragment rootFragment, int tag) {
         if (getSupportFragmentManager().isStateSaved()) {
-            FLog.i(TAG, "Schedule to set activity root fragment.");
+            FLog.i(TAG, "Schedule to set Activity root Fragment.");
             scheduleTaskAtStarted(() -> setActivityRootFragmentSync(rootFragment, tag));
         } else {
             if (!isFinishing()) {
-                FLog.i(TAG, "Set activity root fragment immediately.");
+                FLog.i(TAG, "Set Activity root Fragment immediately.");
                 setActivityRootFragmentSync(rootFragment, tag);
             }
         }
@@ -139,22 +136,22 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             reactNavigationFragment.setRootFragment(awesomeFragment);
             setActivityRootFragment(reactNavigationFragment);
         } else if (bridgeManager.hasPendingLayout()) {
-            FLog.i(TAG, "set root from pending layout when create main component");
+            FLog.i(TAG, "Set root Fragment from pending layout when create main component");
             setActivityRootFragment(bridgeManager);
         } else if (bridgeManager.hasStickyLayout()) {
-            FLog.i(TAG, "set root from sticky layout when create main component");
+            FLog.i(TAG, "Set root Fragment from sticky layout when create main component");
             AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getStickyLayout());
             if (fragment != null) {
                 setActivityRootFragment(fragment);
             }
         } else if (bridgeManager.hasRootLayout()) {
-            FLog.i(TAG, "set root from last root layout when create main component");
+            FLog.i(TAG, "Set root Fragment from last root layout when create main component");
             AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getRootLayout());
             if (fragment != null) {
                 setActivityRootFragment(fragment);
             }
         } else {
-            FLog.w(TAG, "no layout to set when create main component");
+            FLog.w(TAG, "No layout to set when create main component");
         }
     }
 
@@ -183,9 +180,10 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         int pendingTag = bridgeManager.getPendingTag();
         ReadableMap pendingLayout = bridgeManager.getPendingLayout();
         AwesomeFragment fragment = bridgeManager.createFragment(pendingLayout);
-        bridgeManager.setPendingLayout(null, 0);
         if (fragment != null) {
             setActivityRootFragment(fragment, pendingTag);
+        } else {
+            FLog.e(TAG, "Could not create fragment from  pending layout.");
         }
     }
 
