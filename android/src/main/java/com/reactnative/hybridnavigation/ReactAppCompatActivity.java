@@ -28,7 +28,7 @@ import com.navigation.androidx.Style;
 
 public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity, ReactBridgeManager.ReactModuleRegisterListener {
 
-    protected static final String TAG = "ReactNative";
+    protected static final String TAG = "Navigation";
 
     private final ReactAppCompatActivityDelegate activityDelegate;
 

@@ -22,9 +22,9 @@ import com.navigation.androidx.Style;
 
 public class GlobalStyle {
 
-    private static final String TAG = "ReactNative";
+    private static final String TAG = "Navigation";
 
-    private Bundle options;
+    private final Bundle options;
 
     public Bundle getOptions() {
         return options;
@@ -36,11 +36,11 @@ public class GlobalStyle {
 
     public void inflateStyle(Context context, Style style) {
         if (options == null) {
-            FLog.w(TAG, "style options is null");
+            FLog.w(TAG, "Style options is null");
             return;
         }
 
-        FLog.i(TAG, "custom global style");
+        FLog.i(TAG, "GlobalStyle#inflateStyle");
 
         // screenBackgroundColor
         String screenBackgroundColor = options.getString("screenBackgroundColor");

@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class NavigationModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
-    static final String TAG = "ReactNative";
+    static final String TAG = "Navigation";
     static final Handler sHandler = new Handler(Looper.getMainLooper());
 
     private final ReactBridgeManager bridgeManager;
@@ -357,6 +357,4 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
         }
         return null;
     }
-
-
 }

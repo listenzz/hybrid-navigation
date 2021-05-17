@@ -32,7 +32,7 @@ import com.facebook.react.modules.core.PermissionListener;
 
 public class ReactAppCompatActivityDelegate {
 
-    private static final String TAG = "ReactNative";
+    private static final String TAG = "Navigation";
 
     private final int REQUEST_OVERLAY_PERMISSION_CODE = 1111;
     private static final String REDBOX_PERMISSION_GRANTED_MESSAGE =
@@ -57,10 +57,10 @@ public class ReactAppCompatActivityDelegate {
 
     private void askPermission() {
         if (getReactNativeHost().getUseDeveloperSupport() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            FLog.i(TAG, "check overlay permission");
+            FLog.i(TAG, "Check overlay permission");
             // Get permission to show redbox in dev builds.
             if (!Settings.canDrawOverlays(getContext())) {
-                FLog.i(TAG, "request overlay permission");
+                FLog.i(TAG, "Request overlay permission");
                 Intent serviceIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getContext().getPackageName()));
                 FLog.w(ReactConstants.TAG, REDBOX_PERMISSION_MESSAGE);
                 Toast.makeText(getContext(), REDBOX_PERMISSION_MESSAGE, Toast.LENGTH_LONG).show();

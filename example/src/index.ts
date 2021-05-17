@@ -170,12 +170,12 @@ const drawer: Drawer = {
 Navigator.setRootLayoutUpdateListener(
   () => {
     DeepLink.deactivate()
-    console.log('------------------------inactive router')
+    console.log('------------------------deactivate router')
   },
   () => {
     const prefix = 'hbd://'
     DeepLink.activate(prefix)
-    console.log('------------------------active router')
+    console.log('------------------------activate router')
   },
 )
 

@@ -38,7 +38,7 @@ import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
 
 public class GardenModule extends ReactContextBaseJavaModule {
 
-    private static final String TAG = "ReactNative";
+    private static final String TAG = "Navigation";
 
 
     static final Handler sHandler = NavigationModule.sHandler;
@@ -73,7 +73,6 @@ public class GardenModule extends ReactContextBaseJavaModule {
             ReactContext context = getReactApplicationContext();
             if (context.hasActiveCatalystInstance()) {
                 ReactAppCompatActivity activity = (ReactAppCompatActivity) getCurrentActivity();
-                // 即使 Activity 真的存在，`getCurrentActivity` 依然可能返回 null，尤其是启动时应用被切换到后台
                 if (activity != null) {
                     activity.inflateStyle();
                 }

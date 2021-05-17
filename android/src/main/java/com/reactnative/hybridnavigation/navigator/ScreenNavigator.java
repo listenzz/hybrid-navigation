@@ -20,7 +20,7 @@ import java.util.List;
 
 public class ScreenNavigator implements Navigator {
 
-    final static String TAG = "ReactNative";
+    final static String TAG = "Navigation";
 
     private final List<String> supportActions = Arrays.asList("present", "presentLayout", "dismiss", "showModal", "showModalLayout", "hideModal");
 

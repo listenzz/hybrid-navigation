@@ -40,7 +40,7 @@ public class ReactBridgeManager {
         void onReload();
     }
 
-    private static final String TAG = "ReactNative";
+    private static final String TAG = "Navigation";
     private final static ReactBridgeManager instance = new ReactBridgeManager();
 
     public static ReactBridgeManager get() {
@@ -71,7 +71,7 @@ public class ReactBridgeManager {
     private void setup() {
         final ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         reactInstanceManager.addReactInstanceEventListener(context -> {
-            FLog.i(TAG, "react instance context initialized.");
+            FLog.i(TAG, "React instance context initialized.");
             rootLayout = null;
             pendingTag = 0;
             stickyLayout = null;
@@ -80,7 +80,7 @@ public class ReactBridgeManager {
         });
 
         if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
-            FLog.i(TAG, "create react context");
+            FLog.i(TAG, "Create react context");
             reactInstanceManager.createReactContextInBackground();
         }
     }
@@ -104,7 +104,7 @@ public class ReactBridgeManager {
 
     private void checkReactNativeHost() {
         if (reactNativeHost == null) {
-            throw new IllegalStateException("must call ReactBridgeManager#install first");
+            throw new IllegalStateException("Must call ReactBridgeManager#install first");
         }
     }
 
@@ -145,13 +145,14 @@ public class ReactBridgeManager {
     }
 
     public void startRegisterReactModule() {
+        FLog.i(TAG, "ReactBridgeManager#startRegisterReactModule");
         reactModules.clear();
         setReactModuleRegisterCompleted(false);
     }
 
     public void endRegisterReactModule() {
         setReactModuleRegisterCompleted(true);
-        FLog.i(TAG, "react module registry completed");
+        FLog.i(TAG, "ReactBridgeManager#endRegisterReactModule");
         for (ReactModuleRegisterListener listener : reactModuleRegisterListeners) {
             listener.onReactModuleRegisterCompleted();
         }
