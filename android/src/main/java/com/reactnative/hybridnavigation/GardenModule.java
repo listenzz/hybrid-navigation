@@ -9,9 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LifecycleRegistry;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -36,18 +40,47 @@ import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
  * Created by Listen on 2017/11/22.
  */
 
-public class GardenModule extends ReactContextBaseJavaModule {
+public class GardenModule extends ReactContextBaseJavaModule implements LifecycleEventListener, LifecycleOwner {
 
     private static final String TAG = "Navigation";
 
-
     static final Handler sHandler = NavigationModule.sHandler;
+    private final UiTaskExecutor uiTaskExecutor;
+    private final LifecycleRegistry lifecycleRegistry;
 
     private final ReactBridgeManager bridgeManager;
 
     public GardenModule(ReactApplicationContext reactContext, ReactBridgeManager bridgeManager) {
         super(reactContext);
         this.bridgeManager = bridgeManager;
+        reactContext.addLifecycleEventListener(this);
+        lifecycleRegistry = new LifecycleRegistry(this);
+        lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
+        uiTaskExecutor = new UiTaskExecutor(this, sHandler);
+        FLog.i(TAG, "GardenModule#onCreate");
+    }
+
+    @Override
+    public void onHostResume() {
+        FLog.i(TAG, "GardenModule#onHostResume");
+        lifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
+    }
+
+    @Override
+    public void onHostPause() {
+        FLog.i(TAG, "GardenModule#onHostPause");
+        lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
+    }
+
+    @Override
+    public void onHostDestroy() {
+        FLog.i(TAG, "GardenModule#onHostDestroy");
+    }
+
+    @NonNull
+    @Override
+    public Lifecycle getLifecycle() {
+        return lifecycleRegistry;
     }
 
     @NonNull
@@ -82,7 +115,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setLeftBarButtonItem(final String sceneId, @Nullable final ReadableMap readableMap) {
-        sHandler.post(() -> {
+        uiTaskExecutor.submit(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
@@ -102,7 +135,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setRightBarButtonItem(final String sceneId, @Nullable final ReadableMap readableMap) {
-        sHandler.post(() -> {
+        uiTaskExecutor.submit(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
@@ -122,7 +155,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setTitleItem(final String sceneId, final ReadableMap readableMap) {
-        sHandler.post(() -> {
+        uiTaskExecutor.submit(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 Bundle options = fragment.getOptions();
@@ -137,7 +170,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateOptions(final String sceneId, final ReadableMap readableMap) {
         FLog.i(TAG, "update options:" + readableMap);
-        sHandler.post(() -> {
+        uiTaskExecutor.submit(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 fragment.getGarden().updateOptions(readableMap);
@@ -148,7 +181,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void updateTabBar(final String sceneId, final ReadableMap readableMap) {
         FLog.i(TAG, "updateTabBar:" + readableMap);
-        sHandler.post(() -> {
+        uiTaskExecutor.submit(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -164,7 +197,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setTabIcon(@NonNull final String sceneId, @NonNull final ReadableArray options) {
-        sHandler.post(() -> {
+        uiTaskExecutor.submit(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -180,7 +213,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setTabBadge(@NonNull final String sceneId, @NonNull final ReadableArray options) {
-        sHandler.post(() -> {
+        uiTaskExecutor.submit(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -196,7 +229,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setMenuInteractive(final String sceneId, final boolean enabled) {
-        sHandler.post(() -> {
+        uiTaskExecutor.submit(() -> {
             AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
             if (awesomeFragment != null) {
                 DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
