@@ -80,12 +80,6 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
         return lifecycleRegistry;
     }
 
-    @NonNull
-    @Override
-    public String getName() {
-        return "NavigationModule";
-    }
-
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
@@ -109,6 +103,12 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
                 reactAppCompatActivity.clearFragments();
             }
         });
+    }
+
+    @NonNull
+    @Override
+    public String getName() {
+        return "NavigationModule";
     }
 
     @Nullable
