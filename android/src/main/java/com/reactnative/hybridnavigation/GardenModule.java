@@ -47,12 +47,13 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     static final Handler sHandler = NavigationModule.sHandler;
     private final UiTaskExecutor uiTaskExecutor;
     private final LifecycleRegistry lifecycleRegistry;
-
+    private final ReactApplicationContext reactContext;
     private final ReactBridgeManager bridgeManager;
 
     public GardenModule(ReactApplicationContext reactContext, ReactBridgeManager bridgeManager) {
         super(reactContext);
         this.bridgeManager = bridgeManager;
+        this.reactContext = reactContext;
         reactContext.addLifecycleEventListener(this);
         lifecycleRegistry = new LifecycleRegistry(this);
         lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
@@ -81,6 +82,12 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     @Override
     public Lifecycle getLifecycle() {
         return lifecycleRegistry;
+    }
+
+    @Override
+    public void onCatalystInstanceDestroy() {
+        super.onCatalystInstanceDestroy();
+        reactContext.removeLifecycleEventListener(this);
     }
 
     @NonNull
