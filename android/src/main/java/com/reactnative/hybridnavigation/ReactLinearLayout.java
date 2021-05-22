@@ -8,7 +8,7 @@ import android.widget.LinearLayout;
 
 public class ReactLinearLayout extends LinearLayout implements ReactRootViewHolder {
 
-    protected static final String TAG = "Navigation";
+    protected static final String TAG = "Navigator";
 
     private VisibilityObserver mVisibilityObserver;
     private HBDReactRootView mReactRootView;

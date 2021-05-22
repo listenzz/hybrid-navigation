@@ -39,7 +39,7 @@
 - (BOOL)canPresentViewController {
     UIViewController *presented = self.presentedViewController;
     if (presented && !presented.isBeingDismissed) {
-        RCTLogWarn(@"can not present since the scene had present another scene already.");
+        RCTLogWarn(@"[Navigator] Can't present since the scene had present another scene already.");
         return NO;
     }
     
@@ -50,7 +50,7 @@
         if ([viewController isKindOfClass:[HBDModalViewController class]]) {
             HBDModalViewController *modal = (HBDModalViewController *)viewController;
             if (!modal.beingHidden) {
-                RCTLogWarn(@"can not present a scene over a modal.");
+                RCTLogWarn(@"[Navigator] Can't present a scene over a modal.");
                 return NO;
             }
         }

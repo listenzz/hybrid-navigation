@@ -161,7 +161,7 @@ const NSInteger ResultCancel = 0;
         }
     }
     
-    RCTLogError(@"找不到可以处理 %@ 的 navigator，你是否忘了注册？", layout);
+    RCTLogError(@"[Navigator] Can't find a navigator that can handle layout '%@'. Did you forget to register?", layout);
     return nil;
 }
 
@@ -169,7 +169,7 @@ const NSInteger ResultCancel = 0;
     HBDViewController *vc = nil;
     
     if (!self.isReactModuleRegisterCompleted) {
-        @throw [NSException exceptionWithName:@"IllegalStateException" reason:@"react module has not register completed." userInfo:@{}];
+        @throw [NSException exceptionWithName:@"IllegalStateException" reason:@"React module hasn't register completed." userInfo:@{}];
     }
     
     if (!props) {
@@ -186,7 +186,7 @@ const NSInteger ResultCancel = 0;
         vc = [[HBDReactViewController alloc] initWithModuleName:moduleName props:props options:options];
     } else {
         Class clazz =  [self nativeModuleClassFromName:moduleName];
-        NSCAssert([self hasNativeModule:moduleName], @"can't find module named with %@ , do you forget to register？", moduleName);
+        NSCAssert([self hasNativeModule:moduleName], @"Can't find module named with %@ , do you forget to register？", moduleName);
         vc = [[clazz alloc] initWithModuleName:moduleName props:props options:options];
     }
     return vc;
@@ -412,7 +412,7 @@ const NSInteger ResultCancel = 0;
     if (navigator) {
         [navigator handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
     } else {
-        RCTLogWarn(@"找不到可以处理 action %@ 的 navigator", action);
+        RCTLogWarn(@"[Navigator] Can't find a navigator that can handle action '%@'", action);
     }
 }
 

@@ -30,7 +30,7 @@ import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_BAR_BUTTON_ITE
  */
 public class Garden {
 
-    private static final String TAG = "Navigation";
+    private static final String TAG = "Navigator";
 
     private static GlobalStyle globalStyle;
 

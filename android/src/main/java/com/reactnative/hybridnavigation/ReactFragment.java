@@ -36,7 +36,8 @@ import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_RESU
  */
 public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver, ReactBridgeManager.ReactBridgeReloadListener {
 
-    protected static final String TAG = "Navigation";
+    protected static final String TAG = "Navigator";
+
     private ViewGroup containerLayout;
     private ReactRootViewHolder reactRootViewHolder;
     private HBDReactRootView reactRootView;

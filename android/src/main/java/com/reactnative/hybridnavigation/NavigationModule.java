@@ -38,7 +38,7 @@ import java.util.Map;
  */
 public class NavigationModule extends ReactContextBaseJavaModule implements LifecycleEventListener, LifecycleOwner {
 
-    static final String TAG = "Navigation";
+    static final String TAG = "Navigator";
     static final Handler sHandler = new Handler(Looper.getMainLooper());
 
     private final ReactBridgeManager bridgeManager;
@@ -151,14 +151,14 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
         uiTaskExecutor.submit(() -> {
             ReactContext reactContext = getReactApplicationContext();
             if (!reactContext.hasActiveCatalystInstance()) {
-                FLog.w(TAG, "ReactContext has not active catalyst instance, skip action `setRoot`");
+                FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `setRoot`");
                 return;
             }
 
             if (bridgeManager.getPendingTag() != 0) {
                 FLog.e(TAG, "The previous tag: " + bridgeManager.getPendingTag() + " layout: " + bridgeManager.getPendingLayout());
                 FLog.e(TAG, "Current tag: " + tag + " layout: " + layout);
-                throw new IllegalStateException("The previous `setRoot` has not been processed yet, you should `await Navigator.setRoot()` to complete.");
+                throw new IllegalStateException("The previous `setRoot` hasn't been processed yet, you should `await Navigator.setRoot()` to complete.");
             }
 
             bridgeManager.setViewHierarchyReady(false);
@@ -170,7 +170,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 AwesomeFragment fragment = bridgeManager.createFragment(layout);
                 if (fragment != null) {
-                    FLog.i(TAG, "Have active Activity and react module was registered, set root Fragment immediately");
+                    FLog.i(TAG, "Have active Activity and React module was registered, set root Fragment immediately.");
                     reactAppCompatActivity.setActivityRootFragment(fragment, tag);
                 }
             }
@@ -232,7 +232,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
             public void run() {
                 ReactContext reactContext = getReactApplicationContext();
                 if (!reactContext.hasActiveCatalystInstance()) {
-                    FLog.w(TAG, "ReactContext has not active catalyst instance, skip action `currentRoute`");
+                    FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `currentRoute`");
                     return;
                 }
 
@@ -247,7 +247,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
                 Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
                 if (fragment instanceof AwesomeFragment) {
                     String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
-                    FLog.i(TAG, "通过 " + moduleName + " 找到的 sceneId:" + sceneId);
+                    FLog.i(TAG, "The sceneId found by " + moduleName + " : " + sceneId);
                     promise.resolve(sceneId);
                 } else {
                     promise.resolve(null);
@@ -287,7 +287,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
             public void run() {
                 ReactContext reactContext = getReactApplicationContext();
                 if (!reactContext.hasActiveCatalystInstance()) {
-                    FLog.w(TAG, "ReactContext has not active catalyst instance, skip action `currentRoute`");
+                    FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `currentRoute`");
                     return;
                 }
 
@@ -324,7 +324,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
                 ReactContext reactContext = getReactApplicationContext();
 
                 if (!reactContext.hasActiveCatalystInstance()) {
-                    FLog.w(TAG, "ReactContext has not active catalyst instance, skip action `routeGraph`");
+                    FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `routeGraph`");
                     return;
                 }
 

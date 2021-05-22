@@ -32,7 +32,7 @@ import com.facebook.react.modules.core.PermissionListener;
 
 public class ReactAppCompatActivityDelegate {
 
-    private static final String TAG = "Navigation";
+    private static final String TAG = "Navigator";
 
     private final int REQUEST_OVERLAY_PERMISSION_CODE = 1111;
     private static final String REDBOX_PERMISSION_GRANTED_MESSAGE =

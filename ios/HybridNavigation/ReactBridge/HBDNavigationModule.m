@@ -87,7 +87,7 @@ RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionar
 }
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *)sceneId) {
-    // RCTLogInfo(@"signalFirstRenderComplete sceneId:%@",sceneId);
+    // RCTLogInfo(@"[Navigator] signalFirstRenderComplete sceneId:%@", sceneId);
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     if ([vc isKindOfClass:[HBDReactViewController class]]) {
         [(HBDReactViewController *)vc signalFirstRenderComplete];
@@ -109,7 +109,7 @@ RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:
         [self.bridgeManager handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
     } else {
         resolve(@(NO));
-        RCTLogWarn(@"Can't find target scene for action:%@, maybe the scene is gone. \nextras: %@", action, extras);
+        RCTLogWarn(@"[Navigator] Can't find target scene for action: %@, maybe the scene is gone. \nextras: %@", action, extras);
     }
 }
 
@@ -170,7 +170,7 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *)moduleName resolver:(RCTPr
         sceneId = [self findeSceneIdByModuleName:moduleName withViewController:window.rootViewController];
         index--;
     }
-    RCTLogInfo(@"通过 %@ 找到的 sceneId:%@", moduleName, sceneId);
+    RCTLogInfo(@"[Navigator] The sceneId found by %@ : %@", moduleName, sceneId);
     promiss.resolve(RCTNullIfNil(sceneId));
 }
 

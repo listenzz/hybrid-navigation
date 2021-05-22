@@ -21,7 +21,7 @@
 @implementation HBDViewController
 
 - (void)dealloc {
-    RCTLogInfo(@"%s", __FUNCTION__);
+    RCTLogInfo(@"[Navigator] %s", __FUNCTION__);
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -83,7 +83,7 @@
 - (void)statusBarFrameWillChange:(NSNotification *)notification {
     NSValue *rectValue = [notification.userInfo objectForKey:UIApplicationStatusBarFrameUserInfoKey];
     CGRect statusRect = [rectValue CGRectValue];
-    // RCTLogInfo(@"statusRect:%@", NSStringFromCGRect(statusRect));
+    // RCTLogInfo(@"[Navigator] statusRect:%@", NSStringFromCGRect(statusRect));
     [self setNeedsStatusBarAppearanceUpdate];
 }
 

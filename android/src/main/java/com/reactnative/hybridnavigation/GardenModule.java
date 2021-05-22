@@ -42,7 +42,7 @@ import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
 
 public class GardenModule extends ReactContextBaseJavaModule implements LifecycleEventListener, LifecycleOwner {
 
-    private static final String TAG = "Navigation";
+    private static final String TAG = "Navigator";
 
     static final Handler sHandler = NavigationModule.sHandler;
     private final UiTaskExecutor uiTaskExecutor;
@@ -58,24 +58,20 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
         lifecycleRegistry = new LifecycleRegistry(this);
         lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
         uiTaskExecutor = new UiTaskExecutor(this, sHandler);
-        FLog.i(TAG, "GardenModule#onCreate");
     }
 
     @Override
     public void onHostResume() {
-        FLog.i(TAG, "GardenModule#onHostResume");
         lifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
     }
 
     @Override
     public void onHostPause() {
-        FLog.i(TAG, "GardenModule#onHostPause");
         lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
     }
 
     @Override
     public void onHostDestroy() {
-        FLog.i(TAG, "GardenModule#onHostDestroy");
     }
 
     @NonNull
@@ -87,7 +83,6 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
-        FLog.i(TAG, "GardenModule#onCatalystInstanceDestroy");
         lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
         reactContext.removeLifecycleEventListener(this);
     }

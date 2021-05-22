@@ -34,7 +34,7 @@ import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
 
 public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.ReactBridgeReloadListener {
 
-    private static final String TAG = "Navigation";
+    private static final String TAG = "Navigator";
 
     private HBDReactRootView reactRootView;
     private ReactTabBarFragment tabBarFragment;

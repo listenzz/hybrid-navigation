@@ -390,7 +390,7 @@ void adjustLayout(UIViewController *vc) {
 @dynamic navigationBar;
 
 - (void)dealloc {
-    RCTLogInfo(@"%s", __FUNCTION__);
+    RCTLogInfo(@"[Navigator] %s", __FUNCTION__);
 }
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController {
@@ -456,7 +456,7 @@ void adjustLayout(UIViewController *vc) {
         UIEdgeInsets safeAreaInsets = self.view.safeAreaInsets;
         UIEdgeInsets additionalInsets = self.additionalSafeAreaInsets;
         
-        // RCTLogInfo(@"safeAreaInsets:%@, additionalInsets:%@", NSStringFromUIEdgeInsets(safeAreaInsets), NSStringFromUIEdgeInsets(additionalInsets));
+        // RCTLogInfo(@"[Navigator] safeAreaInsets:%@, additionalInsets:%@", NSStringFromUIEdgeInsets(safeAreaInsets), NSStringFromUIEdgeInsets(additionalInsets));
         
         BOOL statusBarHidden = [UIApplication sharedApplication].keyWindow.windowScene.statusBarManager.statusBarHidden;
         
@@ -560,7 +560,7 @@ void adjustLayout(UIViewController *vc) {
 
 - (void)printSubViews:(UIView *)view prefix:(NSString *)prefix {
     NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-    // RCTLogInfo(@"%@%@", prefix, viewName);
+    // RCTLogInfo(@"[Navigator] %@%@", prefix, viewName);
     if (view.subviews.count > 0) {
         for (UIView *sub in view.subviews) {
             [self printSubViews:sub prefix:[NSString stringWithFormat:@"--%@", prefix]];

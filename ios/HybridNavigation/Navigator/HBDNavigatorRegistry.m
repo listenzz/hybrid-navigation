@@ -51,7 +51,7 @@
     for (NSString *action in [navigator supportActions]) {
         id<HBDNavigator> duplicated = [self.actionNavigatorPairs objectForKey:action];
         if (duplicated) {
-            RCTLogError(@"%@ 想要注册的 action %@ 已经被 %@ 所注册", [navigator class], action, [duplicated class]);
+            RCTLogError(@"[Navigator] The action %@ that %@ wants to register has been registered by %@", action, [navigator class], [duplicated class]);
         }
         [self.actionNavigatorPairs setObject:navigator forKey:action];
     }
@@ -59,7 +59,7 @@
     NSString *layout = [navigator name];
     id<HBDNavigator> duplicatedLayout = [self.layoutNavigatorPairs objectForKey:layout];
     if (duplicatedLayout) {
-        RCTLogError(@"%@ 想要注册的 layout %@ 已经被 %@ 所注册", [navigator class], layout, [duplicatedLayout class]);
+        RCTLogError(@"[Navigator] The layout %@ that %@ wants to register has been registered by %@", layout, [navigator class], [duplicatedLayout class]);
     }
     [self.layoutNavigatorPairs setObject:navigator forKey:layout];
 }

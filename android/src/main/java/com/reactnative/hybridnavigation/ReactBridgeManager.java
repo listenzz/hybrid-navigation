@@ -40,7 +40,8 @@ public class ReactBridgeManager {
         void onReload();
     }
 
-    private static final String TAG = "Navigation";
+    private static final String TAG = "Navigator";
+
     private final static ReactBridgeManager instance = new ReactBridgeManager();
 
     public static ReactBridgeManager get() {

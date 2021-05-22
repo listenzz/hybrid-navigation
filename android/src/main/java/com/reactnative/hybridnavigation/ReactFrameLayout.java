@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 public class ReactFrameLayout extends FrameLayout implements ReactRootViewHolder {
-    protected static final String TAG = "Navigation";
+    protected static final String TAG = "Navigator";
 
     private HBDReactRootView mReactRootView;
     private VisibilityObserver mVisibilityObserver;

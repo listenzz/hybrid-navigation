@@ -57,7 +57,7 @@
 
 - (void)dealloc {
     self.modalWindow = nil;
-    RCTLogInfo(@"%s", __FUNCTION__);
+    RCTLogInfo(@"[Navigator] %s", __FUNCTION__);
 }
 
 - (UIViewController *)childViewControllerForStatusBarStyle {
@@ -448,7 +448,7 @@
 - (BOOL)canShowModal {
     UIViewController *presented = self.presentedViewController;
     if (presented && !presented.isBeingDismissed) {
-        RCTLogWarn(@"can not show modal since the scene had present another scene already.");
+        RCTLogWarn(@"[Navigator] Can't show modal since the scene had present another scene already.");
         return NO;
     }
     
@@ -459,7 +459,7 @@
         if ([viewController isKindOfClass:[HBDModalViewController class]]) {
             HBDModalViewController *modal = (HBDModalViewController *)viewController;
             if (!modal.beingHidden && window != self.view.window) {
-                RCTLogWarn(@"can not show modal since the scene had show another modal already.");
+                RCTLogWarn(@"[Navigator] Can't show modal since the scene had show another modal already.");
                 return NO;
             }
         }

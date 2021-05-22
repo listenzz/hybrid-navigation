@@ -28,7 +28,7 @@ import com.navigation.androidx.Style;
 
 public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity, ReactBridgeManager.ReactModuleRegisterListener {
 
-    protected static final String TAG = "Navigation";
+    protected static final String TAG = "Navigator";
 
     private final ReactAppCompatActivityDelegate activityDelegate;
 
@@ -108,7 +108,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         if (!styleInflated) {
             inflateStyle();
             if (!styleInflated) {
-                throw new IllegalStateException("Style has not inflated yet. Did you forgot to call `Garden.setStyle` before `Navigator.setRoot` ?");
+                throw new IllegalStateException("Style hasn't inflated yet. Did you forgot to call `Garden.setStyle` before `Navigator.setRoot` ?");
             }
         }
         ReactBridgeManager bridgeManager = getReactBridgeManager();

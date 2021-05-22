@@ -22,7 +22,7 @@ import com.navigation.androidx.Style;
 
 public class GlobalStyle {
 
-    private static final String TAG = "Navigation";
+    private static final String TAG = "Navigator";
 
     private final Bundle options;
 

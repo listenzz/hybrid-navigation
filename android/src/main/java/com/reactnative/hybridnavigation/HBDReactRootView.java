@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 
 public class HBDReactRootView extends ReactRootView {
 
-    protected static final String TAG = "Navigation";
+    protected static final String TAG = "Navigator";
 
     public HBDReactRootView(Context context) {
         super(context);
