@@ -17,6 +17,28 @@ React Native Navigation that supports seamless navigation between Native and Rea
 | ------- | -------------------- |
 | 1.0.0+  | 0.60.0+              |
 
+如果你使用 1.5.0 以上版本，需要修改 android/build.gradle 文件，添加 mavenCentral()
+
+```groovy
+allprojects {
+    repositories {
+        mavenLocal()
+        maven {
+            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+            url("$rootDir/../node_modules/react-native/android")
+        }
+        maven {
+            // Android JSC is installed from npm
+            url("$rootDir/../node_modules/jsc-android/dist")
+        }
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
 ## Running the example project
 
 To run the example project, first clone this repo:
