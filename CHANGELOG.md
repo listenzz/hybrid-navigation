@@ -1,3 +1,13 @@
+## 1.6.0
+
+### Android specific
+
+- 优化 TabBar 可见性在页面转场时的效果，更好地支持自定义转场动画
+
+### iOS specific
+
+- 添加 `splitTopBarTransitionIOS` 属性，支持 TopBar 在转场时总是分离效果
+
 ## 1.5.0
 
 ### Android specific

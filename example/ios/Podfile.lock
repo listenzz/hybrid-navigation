@@ -10,7 +10,7 @@ PODS:
     - React-jsi (= 0.64.0)
     - ReactCommon/turbomodule/core (= 0.64.0)
   - glog (0.3.5)
-  - HybridNavigation (1.4.2):
+  - HybridNavigation (1.6.0):
     - React
   - libwebp (1.1.0):
     - libwebp/demux (= 1.1.0)
@@ -288,7 +288,7 @@ PODS:
   - SDWebImageWebPCoder (0.6.1):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.7)
-  - ToastHybrid (2.3.2):
+  - ToastHybrid (2.3.5):
     - React
   - Yoga (1.14.0)
 
@@ -400,11 +400,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
-  DoubleConversion: cde416483dac037923206447da6e1454df403714
+  DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
   FBLazyVector: 49cbe4b43e445b06bf29199b6ad2057649e4c8f5
   FBReactNativeSpec: 16bf523cef86f6375cd857a1a20392d2c4f7480d
-  glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
-  HybridNavigation: b0d40c61df9d94c4f1df046d4fc14f0964f21282
+  glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
+  HybridNavigation: b1918cd49865cba6fbd0f6ee46ba6d7be19937ee
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: 2f8cb5b7533219bf4218a045f92768129cf7050a
@@ -432,7 +432,7 @@ SPEC CHECKSUMS:
   RNFastImage: d4870d58f5936111c56218dbd7fcfc18e65b58ff
   SDWebImage: b969dcfc02c40a5da71eac0b03b8f1a0c794a86f
   SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
-  ToastHybrid: 9439f061415e8d8f63e4e53835f8b7051e506fd3
+  ToastHybrid: 063ee84fafcff73cd102d3b8836e30be1962a1db
   Yoga: 8c8436d4171c87504c648ae23b1d81242bdf3bbf
 
 PODFILE CHECKSUM: 725a5541a540641a514a7713d595245c32ce85c1
