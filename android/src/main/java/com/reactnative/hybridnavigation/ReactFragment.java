@@ -47,20 +47,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        int color = preferredToolbarColor();
-        float alpha = preferredToolbarAlpha();
-        Garden garden = getGarden();
-        boolean extendedLayoutIncludesToolbar = Color.alpha(color) < 255
-                || alpha < 1.0
-                || garden.toolbarHidden
-                || garden.extendedLayoutIncludesTopBar;
-        View view;
-        if (extendedLayoutIncludesToolbar) {
-            view = inflater.inflate(R.layout.nav_fragment_react_translucent, container, false);
-        } else {
-            view = inflater.inflate(R.layout.nav_fragment_react, container, false);
-        }
-
+        View view = inflater.inflate(R.layout.nav_fragment_react, container, false);
         containerLayout = view.findViewById(R.id.react_content);
         if (containerLayout instanceof ReactRootViewHolder) {
             reactRootViewHolder = (ReactRootViewHolder) containerLayout;
@@ -75,6 +62,17 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
 
         return view;
+    }
+
+    @Override
+    protected boolean extendedLayoutIncludesToolbar() {
+        int color = preferredToolbarColor();
+        float alpha = preferredToolbarAlpha();
+        Garden garden = getGarden();
+        return Color.alpha(color) < 255
+                || alpha < 1.0
+                || garden.toolbarHidden
+                || garden.extendedLayoutIncludesTopBar;
     }
 
     @Override
