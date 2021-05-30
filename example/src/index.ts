@@ -67,6 +67,7 @@ Garden.setStyle({
   titleTextColorLightContent: '#FFFFFF',
   titleTextSize: 17,
   swipeBackEnabledAndroid: true,
+  // splitTopBarTransitionIOS: true,
   // badgeColor: '#00FFFF',
 
   statusBarColorAndroid: Platform.OS === 'android' && Platform.Version < 23 ? '#4A4A4A' : undefined,

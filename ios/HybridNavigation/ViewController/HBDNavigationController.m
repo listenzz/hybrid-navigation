@@ -15,6 +15,7 @@
 #import "HBDReactViewController.h"
 #import "HBDPushAnimation.h"
 #import "HBDPopAnimation.h"
+#import "HBDGarden.h"
 #import <React/RCTLog.h>
 
 UIColor* blendColor(UIColor *from, UIColor *to, float percent) {
@@ -379,6 +380,10 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (BOOL)shouldShowFakeBarFrom:(UIViewController *)from to:(UIViewController *)to viewController:(UIViewController * _Nonnull)viewController {
+    if ([HBDGarden globalStyle].awaysSplitNavigationBarTransition) {
+        return YES;
+    }
+    
     BOOL shouldFake = to == viewController && (![from.hbd_barTintColor.description  isEqual:to.hbd_barTintColor.description] || ABS(from.hbd_barAlpha - to.hbd_barAlpha) > 0.1);
     return shouldFake;
 }

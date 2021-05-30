@@ -34,6 +34,8 @@
 @property (nonatomic, strong) UIColor *tabBarTintColor;
 @property (nonatomic, strong) UIColor *tabBarUnselectedTintColor;
 
+@property (nonatomic, assign, readwrite) BOOL awaysSplitNavigationBarTransition;
+
 @end
 
 @implementation GlobalStyle
@@ -61,6 +63,11 @@
         NSString *topBarColor = self.options[@"topBarColor"];
         if (topBarColor) {
             self.barTintColor = [HBDUtils colorWithHexString:topBarColor];
+        }
+        
+        NSNumber *splitTopBarTransitionIOS = self.options[@"splitTopBarTransitionIOS"];
+        if (splitTopBarTransitionIOS) {
+            self.awaysSplitNavigationBarTransition = [splitTopBarTransitionIOS boolValue];
         }
         
         NSString *topBarColorDarkContent = self.options[@"topBarColorDarkContent"];
