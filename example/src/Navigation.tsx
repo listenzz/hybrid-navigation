@@ -168,7 +168,7 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={popTo} activeOpacity={0.2} style={styles.button} disabled={popToId === undefined}>
-          <Text style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}>popTo last but one</Text>
+          <Text style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}>popTo first</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={popToRoot} activeOpacity={0.2} style={styles.button} disabled={isRoot}>
