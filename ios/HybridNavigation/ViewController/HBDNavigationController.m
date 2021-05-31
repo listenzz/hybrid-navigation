@@ -380,7 +380,7 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (BOOL)shouldShowFakeBarFrom:(UIViewController *)from to:(UIViewController *)to viewController:(UIViewController * _Nonnull)viewController {
-    if ([HBDGarden globalStyle].awaysSplitNavigationBarTransition) {
+    if ([HBDGarden globalStyle].awaysSplitNavigationBarTransition && to == viewController) {
         return YES;
     }
     
