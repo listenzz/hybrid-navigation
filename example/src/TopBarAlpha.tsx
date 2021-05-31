@@ -53,7 +53,7 @@ function TopBarAlpha({ garden, navigator, color, alpha }: Props) {
   }
 
   function handleAlphaChange(value: number) {
-    setTopBarAlpha(value)
+    setTopBarAlpha(Number(value.toFixed(2)))
   }
 
   return (
