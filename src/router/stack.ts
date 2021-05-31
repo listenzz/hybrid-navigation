@@ -26,23 +26,26 @@ export function stackRouteHandler(graph: RouteGraph, route: RouteInfo, next: Rou
 
   const { children } = graph
   const expectedModuleNames = [...dependencies, moduleName]
-  let index = -1
+  let expectedIndex = -1
+  let childIndex = -1
 
   for (let i = children.length - 1; i > -1; i--) {
     const existingModuleNames: string[] = []
     extractModuleNames(children[i], existingModuleNames)
-    index = expectedModuleNames.findIndex(name => existingModuleNames.includes(name))
-    if (index !== -1) {
+    expectedIndex = expectedModuleNames.findIndex(name => existingModuleNames.includes(name))
+    if (expectedIndex !== -1) {
+      childIndex = i
       break
     }
   }
 
-  if (index !== -1) {
-    let pendingModuleNames = expectedModuleNames.slice(index + 1)
-    const navigator = Navigator.of(children[children.length - 1].sceneId)
-    if (!isScreenGraph(children[index])) {
-      next(children[index], route, next)
+  if (expectedIndex !== -1) {
+    if (!isScreenGraph(children[childIndex])) {
+      next(children[childIndex], route, next)
     }
+
+    let pendingModuleNames = expectedModuleNames.slice(expectedIndex + 1)
+    const navigator = Navigator.of(children[children.length - 1].sceneId)
 
     if (pendingModuleNames.length === 0) {
       if (JSON.stringify(props) === '{}') {
