@@ -64,9 +64,9 @@ function Result({ navigator, garden }: InjectedProps) {
 
   async function printRouteGraph() {
     const graph = await Navigator.routeGraph()
-    console.log(graph)
+    console.log(JSON.stringify(graph, null, 2))
     const route = await Navigator.currentRoute()
-    console.log(route)
+    console.log(JSON.stringify(route, null, 2))
   }
 
   return (

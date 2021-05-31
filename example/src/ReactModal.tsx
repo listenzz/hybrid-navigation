@@ -29,7 +29,7 @@ function ReactModal({ navigator, sceneId }: InjectedProps) {
     }
     await navigator.hideModal()
     const current = await Navigator.currentRoute()
-    console.log(current)
+    console.log(JSON.stringify(current, null, 2))
   }
 
   async function showModal() {
@@ -38,9 +38,9 @@ function ReactModal({ navigator, sceneId }: InjectedProps) {
 
   async function printRouteGraph() {
     const graph = await Navigator.routeGraph()
-    console.log(graph)
+    console.log(JSON.stringify(graph, null, 2))
     const route = await Navigator.currentRoute()
-    console.log(route)
+    console.log(JSON.stringify(route, null, 2))
   }
 
   function handleCancel() {
