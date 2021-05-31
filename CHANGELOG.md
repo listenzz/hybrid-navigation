@@ -1,3 +1,9 @@
+## 1.6.2
+
+### Android specific
+
+- 处理因过早使用 `style` 中的属性，而可能导致的 NPE 问题
+
 ## 1.6.1
 
 ### iOS specific
