@@ -1,3 +1,9 @@
+## 1.6.1
+
+### iOS specific
+
+- 修复开启 `splitTopBarTransitionIOS` 后，present 会导致 TopBar 上覆盖一层蒙版的问题
+
 ## 1.6.0
 
 ### Android specific
