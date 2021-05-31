@@ -1,3 +1,7 @@
+## 1.6.3
+
+- 处理 stack 路由的 child 可能不是 screen 的问题
+
 ## 1.6.2
 
 ### Android specific
