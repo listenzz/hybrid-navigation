@@ -21,11 +21,12 @@ export function tabsRouteHandler(graph: RouteGraph, route: RouteInfo, next: Rout
 
   const { children, selectedIndex } = graph
   const { dependencies, moduleName } = route
+  const expectedModuleNames = [...dependencies, moduleName]
 
   for (let i = 0; i < children.length; i++) {
-    const moduleNames: string[] = []
-    extractModuleNames(children[i], moduleNames)
-    if (moduleNames.indexOf(moduleName) !== -1 || dependencies.some(value => moduleNames.indexOf(value) !== -1)) {
+    const existingModuleNames: string[] = []
+    extractModuleNames(children[i], existingModuleNames)
+    if (expectedModuleNames.some(name => existingModuleNames.includes(name))) {
       if (selectedIndex !== i) {
         const navigator = Navigator.of(children[i].sceneId)
         navigator.switchTab(i)
