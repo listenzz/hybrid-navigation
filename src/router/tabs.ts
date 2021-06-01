@@ -14,7 +14,7 @@ export function isTabsGraph(graph: RouteGraph): graph is TabsGraph {
   return graph.layout === 'tabs'
 }
 
-export function tabsRouteHandler(graph: RouteGraph, route: RouteInfo, next: RouteHandler) {
+export async function tabsRouteHandler(graph: RouteGraph, route: RouteInfo, next: RouteHandler) {
   if (!isTabsGraph(graph)) {
     return false
   }
@@ -29,7 +29,7 @@ export function tabsRouteHandler(graph: RouteGraph, route: RouteInfo, next: Rout
     if (expectedModuleNames.some(name => existingModuleNames.includes(name))) {
       if (selectedIndex !== i) {
         const navigator = Navigator.of(children[i].sceneId)
-        navigator.switchTab(i)
+        await navigator.switchTab(i)
       }
       return next(children[i], route, next)
     }

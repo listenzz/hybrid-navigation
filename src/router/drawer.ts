@@ -13,7 +13,7 @@ export function isDrawerGraph(graph: RouteGraph): graph is DrawerGraph {
   return graph.layout === 'drawer'
 }
 
-export function drawerRouteHandler(graph: RouteGraph, route: RouteInfo, next: RouteHandler) {
+export async function drawerRouteHandler(graph: RouteGraph, route: RouteInfo, next: RouteHandler) {
   if (!isDrawerGraph(graph)) {
     return false
   }
@@ -24,7 +24,7 @@ export function drawerRouteHandler(graph: RouteGraph, route: RouteInfo, next: Ro
     navigator.openMenu()
     return true
   } else {
-    let result = next(graph.children[0], route, next)
+    let result = await next(graph.children[0], route, next)
     if (result) {
       const navigator = Navigator.of(sceneId)
       navigator.closeMenu()

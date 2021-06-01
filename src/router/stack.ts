@@ -13,7 +13,7 @@ export function isStackGraph(graph: RouteGraph): graph is StackGraph {
   return graph.layout === 'stack'
 }
 
-export function stackRouteHandler(graph: RouteGraph, route: RouteInfo, next: RouteHandler) {
+export async function stackRouteHandler(graph: RouteGraph, route: RouteInfo, next: RouteHandler) {
   if (!isStackGraph(graph)) {
     return false
   }
@@ -41,7 +41,7 @@ export function stackRouteHandler(graph: RouteGraph, route: RouteInfo, next: Rou
 
   if (expectedIndex !== -1) {
     if (!isScreenGraph(children[childIndex])) {
-      next(children[childIndex], route, next)
+      await next(children[childIndex], route, next)
     }
 
     let pendingModuleNames = expectedModuleNames.slice(expectedIndex + 1)
@@ -49,7 +49,7 @@ export function stackRouteHandler(graph: RouteGraph, route: RouteInfo, next: Rou
 
     if (pendingModuleNames.length === 0) {
       if (JSON.stringify(props) === '{}') {
-        navigator.popTo(moduleName)
+        await navigator.popTo(moduleName)
       } else {
         navigator.redirectTo(moduleName, props)
       }

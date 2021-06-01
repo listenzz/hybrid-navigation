@@ -39,7 +39,7 @@ export interface RouteData {
 }
 
 export interface RouteHandler {
-  (graph: RouteGraph, route: RouteInfo, next: RouteHandler): boolean
+  (graph: RouteGraph, route: RouteInfo, next: RouteHandler): Promise<boolean>
 }
 
 export type RouteInterceptor = (path: string) => boolean | Promise<boolean>

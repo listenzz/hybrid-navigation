@@ -10,9 +10,9 @@ let routeDatas = new Map<string, RouteData>()
 let interceptors = new Set<RouteInterceptor>()
 let handlers = new Set<RouteHandler>([drawerRouteHandler, tabsRouteHandler, stackRouteHandler])
 
-const traverseHandlers: RouteHandler = (graph: RouteGraph, route: RouteInfo, next: RouteHandler) => {
+const traverseHandlers: RouteHandler = async (graph: RouteGraph, route: RouteInfo, next: RouteHandler) => {
   for (let handler of handlers.values()) {
-    if (handler(graph, route, next)) {
+    if (await handler(graph, route, next)) {
       return true
     }
   }
@@ -84,14 +84,14 @@ async function open(path: string, props: PropsType = {}, options: NavigationItem
     }
   }
 
-  if (!traverseHandlers(graphArray[0], route, traverseHandlers)) {
+  if (!(await traverseHandlers(graphArray[0], route, traverseHandlers))) {
     const navigator = await Navigator.current()
     navigator.closeMenu()
     const { moduleName, mode: routeMode, props: initialProps } = route
     if (routeMode === 'present') {
-      navigator.present(moduleName, initialProps)
+      await navigator.present(moduleName, initialProps)
     } else if (routeMode === 'modal') {
-      navigator.showModal(moduleName, initialProps)
+      await navigator.showModal(moduleName, initialProps)
     } else {
       // default push
       navigator.push(moduleName, initialProps)
