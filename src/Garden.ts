@@ -30,6 +30,7 @@ export interface Style {
   barButtonItemTextSize?: number // TopBar 按钮字体大小，默认是 15 dp(pt)
   swipeBackEnabledAndroid?: boolean // Android 是否开启右滑返回，默认是 false
   splitTopBarTransitionIOS?: boolean // iOS 侧滑返回时，是否总是割裂导航栏背景
+  scrimAlphaAndroid?: number // Android 侧滑返回遮罩效果
 
   tabBarColor?: Color // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
   tabBarShadowImage?: ShadowImage // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效

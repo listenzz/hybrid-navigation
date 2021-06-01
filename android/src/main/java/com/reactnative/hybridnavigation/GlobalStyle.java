@@ -237,12 +237,17 @@ public class GlobalStyle {
         boolean swipeBackEnabled = options.getBoolean("swipeBackEnabledAndroid", false);
         style.setSwipeBackEnabled(swipeBackEnabled);
 
-        // badgeColor;
+        // badgeColor
         String badgeColor = options.getString("tabBarBadgeColor");
         if (badgeColor != null) {
             style.setTabBarBadgeColor(badgeColor);
         }
 
+        // scrimAlphaAndroid
+        double scrimAlpha = options.getDouble("scrimAlphaAndroid", -1);
+        if (scrimAlpha != -1) {
+            style.setScrimAlpha((int) scrimAlpha);
+        }
     }
 
 }

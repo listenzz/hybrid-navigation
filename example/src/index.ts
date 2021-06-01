@@ -73,6 +73,7 @@ Garden.setStyle({
   statusBarColorAndroid: Platform.OS === 'android' && Platform.Version < 23 ? '#4A4A4A' : undefined,
   titleAlignmentAndroid: TitleAlignmentCenter,
   navigationBarColorAndroid: '#FFFFFF',
+  // scrimAlphaAndroid: 50,
 
   // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
   shadowImage: {
