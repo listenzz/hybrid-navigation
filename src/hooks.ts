@@ -58,11 +58,11 @@ export function useVisibleEffect(sceneId: string, effect: React.EffectCallback) 
   }, [effect, visible, sceneId])
 }
 
-export function useResult(sceneId: string, fn: (requestCode: number, resultCode: number, data: ResultType) => void) {
+export function useResult(sceneId: string, fn: (resultCode: number, data: ResultType) => void) {
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-      if (sceneId === data[KEY_SCENE_ID] && data[KEY_ON] === ON_COMPONENT_RESULT) {
-        fn(data[KEY_REQUEST_CODE], data[KEY_RESULT_CODE], data[KEY_RESULT_DATA])
+      if (data[KEY_ON] === ON_COMPONENT_RESULT && sceneId === data[KEY_SCENE_ID]) {
+        fn(data[KEY_RESULT_CODE], data[KEY_RESULT_DATA])
       }
     })
 

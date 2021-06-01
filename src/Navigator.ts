@@ -7,6 +7,12 @@ import {
   KEY_SCENE_ID,
   KEY_INDEX,
   RESULT_CANCEL,
+  EVENT_NAVIGATION,
+  KEY_ON,
+  ON_COMPONENT_RESULT,
+  KEY_REQUEST_CODE,
+  KEY_RESULT_CODE,
+  KEY_RESULT_DATA,
 } from './NavigationModule'
 import { bindBarButtonItemClickEvent } from './utils'
 import store from './store'
@@ -27,12 +33,6 @@ interface Params {
 
 interface NavigationState {
   params: { readonly [index: string]: any }
-  resultListeners: ResultListener<any>[]
-}
-
-interface ResultListener<T extends ResultType> {
-  (requestCode: number, resultCode: number, data: T): void
-  cancel: () => void
 }
 
 let interceptor: NavigationInterceptor
@@ -61,17 +61,33 @@ EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
   })
 })
 
-function checkRequestCode(reqCode: number) {
-  if (isNaN(reqCode)) {
-    return --tag
-  }
-
-  if (reqCode < 0) {
-    throw new Error('`requestCode` must be positive.')
-  }
-
-  return reqCode
+interface ResultListener<T extends ResultType> {
+  (resultCode: number, data: T): void
+  cancel: () => void
+  sceneId: string
 }
+
+const resultListeners = new Map<number, ResultListener<any>>()
+
+EventEmitter.addListener(EVENT_NAVIGATION, data => {
+  if (data[KEY_ON] === ON_COMPONENT_RESULT) {
+    const requestCode = data[KEY_REQUEST_CODE]
+    const resultCode = data[KEY_RESULT_CODE]
+    const resultData = data[KEY_RESULT_DATA]
+    const sceneId = data[KEY_SCENE_ID]
+
+    if (requestCode < 0) {
+      const listener = resultListeners.get(requestCode)
+      if (listener) {
+        resultListeners.delete(requestCode)
+        listener(resultCode, resultData)
+      }
+    } else {
+      const navigator = Navigator.of(sceneId)
+      navigator.result(resultCode, resultData)
+    }
+  }
+})
 
 export class Navigator {
   static of(sceneId: string) {
@@ -185,7 +201,6 @@ export class Navigator {
 
   readonly state: NavigationState = {
     params: {},
-    resultListeners: [],
   }
 
   setParams(params: { [index: string]: any }) {
@@ -200,38 +215,57 @@ export class Navigator {
     })
   }
 
-  result(requestCode: number, resultCode: number, data: ResultType) {
-    this.state.resultListeners.forEach(listener => {
-      listener(requestCode, resultCode, data)
-    })
+  result(resultCode: number, data: ResultType) {
+    if (this.resultListener) {
+      this.resultListener(resultCode, data)
+      this.resultListener = null
+    }
   }
 
   unmount() {
-    this.state.resultListeners.forEach(listener => {
-      listener.cancel()
-    })
-    this.state.resultListeners.length = 0
+    const codes: number[] = []
+    for (const [requestCode, listener] of resultListeners) {
+      if (listener.sceneId === this.sceneId) {
+        codes.push(requestCode)
+        listener.cancel()
+      }
+    }
+    codes.forEach(code => resultListeners.delete(code))
+
+    if (this.resultListener) {
+      this.resultListener.cancel()
+      this.resultListener = null
+    }
   }
+
+  private resultListener: ResultListener<any> | null = null
 
   private waitResult<T extends ResultType>(requestCode: number, successful: boolean): Promise<[number, T]> {
     if (!successful) {
-      return Promise.resolve([0, null as any])
+      return Promise.resolve([RESULT_CANCEL, null as any])
     }
+
+    if (this.resultListener) {
+      this.resultListener.cancel()
+      this.resultListener = null
+    }
+
     return new Promise<[number, T]>(resolve => {
-      const listener = (reqCode: number, resultCode: number, data: T) => {
-        if (requestCode === reqCode) {
-          resolve([resultCode, data])
-          const index = this.state.resultListeners.indexOf(listener)
-          if (index !== -1) {
-            this.state.resultListeners.splice(index, 1)
-          }
-        }
+      const listener = (resultCode: number, data: T) => {
+        resolve([resultCode, data])
       }
 
       listener.cancel = () => {
         resolve([RESULT_CANCEL, null as any])
       }
-      this.state.resultListeners.push(listener)
+
+      listener.sceneId = this.sceneId
+
+      if (requestCode < 0) {
+        resultListeners.set(requestCode, listener)
+      } else {
+        this.resultListener = listener
+      }
     })
   }
 
@@ -278,9 +312,8 @@ export class Navigator {
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
-    requestCode: number = NaN,
   ) {
-    requestCode = checkRequestCode(requestCode)
+    const requestCode = --tag
     const success = await this.dispatch('present', {
       moduleName,
       props,
@@ -290,8 +323,8 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async presentLayout<T extends ResultType>(layout: Layout, requestCode: number = NaN) {
-    requestCode = checkRequestCode(requestCode)
+  async presentLayout<T extends ResultType>(layout: Layout) {
+    const requestCode = --tag
     const success = await this.dispatch('presentLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
   }
@@ -304,9 +337,8 @@ export class Navigator {
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
-    requestCode: number = NaN,
   ) {
-    requestCode = checkRequestCode(requestCode)
+    const requestCode = --tag
     const success = await this.dispatch('showModal', {
       moduleName,
       props,
@@ -316,8 +348,8 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async showModalLayout<T extends ResultType>(layout: Layout, requestCode: number = NaN) {
-    requestCode = checkRequestCode(requestCode)
+  async showModalLayout<T extends ResultType>(layout: Layout) {
+    const requestCode = --tag
     const success = await this.dispatch('showModalLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
   }

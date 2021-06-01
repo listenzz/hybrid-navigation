@@ -71,8 +71,8 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
     navigator.setResult(RESULT_OK, { backId: sceneId })
   }, [navigator, sceneId])
 
-  useResult(sceneId, (requestCode, resultCode, data) => {
-    console.info(`requestCode=${requestCode}`, `resultCode=${resultCode}`, `resultData=${data}`, `sceneId=${sceneId}`)
+  useResult(sceneId, (resultCode, data) => {
+    console.info(`resultCode=${resultCode}`, `resultData=${JSON.stringify(data, null, 2)}`, `sceneId=${sceneId}`)
   })
 
   async function push() {
@@ -85,7 +85,6 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
       }
     }
     const [_, data] = await navigator.push('Navigation', props)
-    console.log('===================>>>>>>>>>', sceneId, data)
     if (data) {
       setText(data.backId || undefined)
     }

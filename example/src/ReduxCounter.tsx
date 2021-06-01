@@ -121,7 +121,7 @@ export function withRedux(WrappedComponent: ComponentType<any>) {
     static displayName = `withRedux(${WrappedComponent.displayName})`
     componentDidMount() {
       // 获取 displayName
-      console.info(`displayName:${ReduxProvider.displayName}`)
+      // console.info(`displayName:${ReduxProvider.displayName}`)
     }
 
     render() {
