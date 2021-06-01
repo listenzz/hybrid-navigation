@@ -41,8 +41,7 @@ import Toast from './Toast'
 // MessageQueue.spy(spyFunction);
 
 async function graph() {
-  const graph = await Navigator.routeGraph()
-  console.log(graph)
+  console.log(JSON.stringify(await Navigator.routeGraph(), null, 2))
 }
 
 graph()
