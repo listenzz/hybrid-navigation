@@ -89,9 +89,9 @@ async function open(path: string, props: PropsType = {}, options: NavigationItem
     navigator.closeMenu()
     const { moduleName, mode: routeMode, props: initialProps } = route
     if (routeMode === 'present') {
-      await navigator.present(moduleName, initialProps)
+      navigator.present(moduleName, initialProps)
     } else if (routeMode === 'modal') {
-      await navigator.showModal(moduleName, initialProps)
+      navigator.showModal(moduleName, initialProps)
     } else {
       // default push
       navigator.push(moduleName, initialProps)
