@@ -1,3 +1,17 @@
+## 1.7.0
+
+### BreakChanges
+
+- 路由 Handler 现在返回一个 Promise，这是为了可以将 Result 派发到正确的页面
+
+- 重新设计 Result 相关实现，移除了 `requestCode` 参数，受影响的 API 有 `useResult`，`present`，`showModal`
+
+### Android specific
+
+- 添加 `scrimAlphaAndroid` 属性，用于配置侧滑返回的遮罩效果
+
+- 动画文件名称变更
+
 ## 1.6.4
 
 - 处理 stack 路由存在的问题
