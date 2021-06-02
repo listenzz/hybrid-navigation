@@ -23,7 +23,7 @@ function Lifecycle(props) {
 ```javascript
 import { useResult } from 'hybrid-navigation'
 
-useResult(sceneId, (requestCode, resultCode, data) => {
-  console.info(`requestCode: ${requestCode}`, `resultCode: ${resultCode}`, data)
+useResult(sceneId, (resultCode, data) => {
+  console.info(`resultCode: ${resultCode}`, data)
 })
 ```

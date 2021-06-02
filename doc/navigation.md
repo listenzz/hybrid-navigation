@@ -239,7 +239,7 @@ const navigator = Navigator.of(sceneId);
 
 screen 是最基本的页面，它用来表示通过 `ReactRegistry.registerComponent` 注册的组件。它有一些基本的导航能力，所有容器均继承了这些能力。
 
-- **showModal&lt;T, P&gt;(moduleName: string, props?: P, options?: NavigationItem, requestCode?: number): Promise&lt;[number, T]&gt;**
+- **showModal&lt;T, P&gt;(moduleName: string, props?: P, options?: NavigationItem): Promise&lt;[number, T]&gt;**
 
 将 Component 作为 Modal 显示，用来取代官方的 `Modal` 组件，比较适合做透明弹窗。在 iOS 底层，它是一个新的 window, 在 Android 底层，它是一个 dialog，所以它的层级较高，不容易被普通页面遮盖。
 
@@ -273,13 +273,13 @@ import { useResult } from 'hybrid-navigation'
 
 function FunctionComponent() {
 
-  useResult(requestCode, resultCode, data) {
+  useResult(resultCode, data) {
     // ...
   }
 }
 ```
 
-> ⚠️ 如果遭遇到 Android 生命周期噩梦，请使用 `useResult` 而不是 `async-await` 的方式来接收结果，此时，需要传入 `requestCode` 给 `showModal` 作为参数。
+> ⚠️ 如果遭遇到 Android 生命周期噩梦，请使用 `useResult` 而不是 `async-await` 的方式来接收结果。
 
 - **hideModal()**
 
@@ -287,11 +287,11 @@ function FunctionComponent() {
 
 **在调用 `navigator.hideModal` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
-- **showModalLayout&lt;T&gt;(layout: Layout, requestCode?: number): Promise&lt;[number, T]&gt;**
+- **showModalLayout&lt;T&gt;(layout: Layout): Promise&lt;[number, T]&gt;**
 
 showModal 的加强版，可以将布局对象作为 Modal 显示，同样使用 hideModal 来关闭
 
-- **present&lt;T, P&gt;(moduleName: string, props?: P, options?: NavigationItem, requestCode?: number): Promise&lt;[number, T]&gt;**
+- **present&lt;T, P&gt;(moduleName: string, props?: P, options?: NavigationItem): Promise&lt;[number, T]&gt;**
 
 present 是一种模态交互方式，类似于 Android 的 `startActivityForResult`，要求被 present 的页面返回结果给发起 present 的页面。在 iOS 中，present 表现为从底往上弹出界面。
 
@@ -365,7 +365,7 @@ A 页面通过实现 `async-await` 或 `useResult` 的方式来接收结果（�
 
 **在调用 `navigator.dismiss` 后，该 navigator 将会失效，不要再使用该 navigator 执行任何导航操作。**
 
-- **presentLayout&lt;T&gt;(layout: Layout, requestCode?: number): Promise&lt;[number, T]&gt;**
+- **presentLayout&lt;T&gt;(layout: Layout): Promise&lt;[number, T]&gt;**
 
 present 的加强版，通过传递一个布局对象，用来 present UI 层级比较复杂的页面，同样使用 dismiss 来关闭。
 
@@ -461,7 +461,7 @@ navigator.popTo('B')
 navigator.popToRoot()
 ```
 
-pop, popTo, popToRoot 也可以通过 `navigator.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `async-await` 或 `useResult` 来接收结果。不过由于 push 时并不传递 requestCode, 所以回调时 requestCode 的值总是 0。尽管如此，我们还是可以通过 resultCode 来区分不同情况。
+pop, popTo, popToRoot 也可以通过 `navigator.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `async-await` 或 `useResult` 来接收结果。
 
 - **redirectTo&lt;P&gt;(moduleName: string, props?: P, options?: NavigationItem): void**
 
