@@ -9,11 +9,11 @@ import com.facebook.react.bridge.Arguments;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DefaultTabBarProvider;
 import com.navigation.androidx.FragmentHelper;
-import com.navigation.androidx.PresentAnimation;
 import com.navigation.androidx.Style;
 import com.navigation.androidx.TabBar;
 import com.navigation.androidx.TabBarFragment;
 import com.navigation.androidx.TabBarProvider;
+import com.navigation.androidx.TransitionAnimation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,17 +68,20 @@ public class ReactTabBarFragment extends TabBarFragment {
         outState.putBundle(SAVED_OPTIONS, options);
     }
 
+    private final static TransitionAnimation FadeShort = new TransitionAnimation(R.anim.nav_fade_in_short, R.anim.nav_fade_out_short, R.anim.nav_fade_in_short, R.anim.nav_fade_out_short);
+    private final static TransitionAnimation DelayShort = new TransitionAnimation(R.anim.nav_delay_short, R.anim.nav_delay_short, R.anim.nav_delay_short, R.anim.nav_delay_short);
+
     @Override
     protected void setPresentAnimation(AwesomeFragment current, AwesomeFragment previous) {
         ReactFragment reactFragment = Utils.findReactFragment(current);
         if (reactFragment != null && !reactFragment.isFirstRenderCompleted()) {
             List<AwesomeFragment> children = getChildFragments();
             if (children.indexOf(current) > children.indexOf(previous)) {
-                current.setAnimation(PresentAnimation.FadeShort);
-                previous.setAnimation(PresentAnimation.DelayShort);
+                current.setAnimation(FadeShort);
+                previous.setAnimation(DelayShort);
             } else {
-                current.setAnimation(PresentAnimation.None);
-                previous.setAnimation(PresentAnimation.FadeShort);
+                current.setAnimation(TransitionAnimation.None);
+                previous.setAnimation(FadeShort);
             }
             return;
         }

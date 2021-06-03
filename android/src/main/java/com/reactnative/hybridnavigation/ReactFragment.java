@@ -17,8 +17,8 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
 import com.navigation.androidx.FragmentHelper;
-import com.navigation.androidx.PresentAnimation;
 import com.navigation.androidx.Style;
+import com.navigation.androidx.TransitionAnimation;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.EVENT_NAVIGATION;
@@ -55,7 +55,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
 
         if (!FragmentHelper.isHidden(this) || getShowsDialog()) {
-            if (getAnimation() != PresentAnimation.None) {
+            if (getAnimation() != TransitionAnimation.None) {
                 postponeEnterTransition();
             }
             initReactNative();
@@ -227,8 +227,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
 
         final HBDReactRootView reactRootView = new HBDReactRootView(context);
-        boolean passThroughTouches = getOptions().getBoolean("passThroughTouches", false);
-        reactRootView.setShouldConsumeTouchEvent(!passThroughTouches);
+        reactRootView.setShouldConsumeTouchEvent(!shouldPassThroughTouches());
         this.reactRootView = reactRootView;
 
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
@@ -266,6 +265,10 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     private boolean shouldCreateReactView(@Nullable Context context, @Nullable ReactRootView reactRootView) {
         return (context != null && reactRootView == null && isReactModuleRegisterCompleted());
+    }
+
+    boolean shouldPassThroughTouches() {
+        return getOptions().getBoolean("passThroughTouches", false);
     }
 
     @Override
