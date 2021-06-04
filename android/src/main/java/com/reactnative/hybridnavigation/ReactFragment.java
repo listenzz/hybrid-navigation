@@ -76,6 +76,14 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     @Override
+    protected void onCustomStyle(@NonNull Style style) {
+        if (shouldPassThroughTouches()) {
+            style.setScrimAlpha(0);
+        }
+        super.onCustomStyle(style);
+    }
+
+    @Override
     public void inspectVisibility(int visibility) {
         if (visibility == View.VISIBLE && reactRootView == null) {
             initReactNative();
