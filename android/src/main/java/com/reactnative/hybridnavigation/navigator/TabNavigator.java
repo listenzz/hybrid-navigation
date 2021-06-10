@@ -152,8 +152,8 @@ public class TabNavigator implements Navigator {
 
             boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
             if (popToRoot) {
-                NavigationFragment nav = target.getNavigationFragment();
-                if (nav != null) {
+                NavigationFragment nav = tabBarFragment.getSelectedFragment().getNavigationFragment();
+                if (nav != null && nav.getChildFragments().size() > 1) {
                     nav.popToRootFragment(false);
                 }
             }

@@ -29,7 +29,7 @@ export async function tabsRouteHandler(graph: RouteGraph, route: RouteInfo, next
     if (expectedModuleNames.some(name => existingModuleNames.includes(name))) {
       if (selectedIndex !== i) {
         const navigator = Navigator.of(children[i].sceneId)
-        await navigator.switchTab(i)
+        await navigator.switchTab(i, true)
       }
       return next(children[i], route, next)
     }

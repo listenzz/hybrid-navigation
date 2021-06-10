@@ -176,10 +176,6 @@
             
             if (nav && nav.childViewControllers.count > 1) {
                 [nav popToRootViewControllerAnimated:NO];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
-                });
-                return;
             }
         }
         
