@@ -147,7 +147,9 @@
     _menuOpened = menuOpened;
     BOOL hideStatusBar = menuOpened && ![HBDUtils isIphoneX];
     self.menuController.hbd_statusBarHidden = hideStatusBar;
-    [self setNeedsStatusBarAppearanceUpdate];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setNeedsStatusBarAppearanceUpdate];
+    });
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
