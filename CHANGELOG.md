@@ -1,3 +1,17 @@
+## 1.7.3
+
+- 通过 router 切换 tab 时，调用当前 stack 的 `popToRoot`
+
+### iOS specific
+
+- 处理关闭 drawer 时，因页面状态栏样式不同导致的偶尔闪烁问题
+
+### Android specific
+
+- 延迟释放伪 TabBar，避免偶尔出现的闪烁问题
+- 设置 Modal 的状态栏默认样式为白色，和 Alert 保持一致
+- 确保在主线程设置生命周期状态
+
 ## 1.7.0
 
 ### BreakChanges
