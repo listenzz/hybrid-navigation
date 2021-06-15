@@ -22,7 +22,19 @@
         Class class = [self class];
         hbd_exchangeImplementations(class, @selector(presentViewController:animated:completion:), @selector(hbd_presentViewController:animated:completion:));
         hbd_exchangeImplementations(class, @selector(dismissViewControllerAnimated:completion:), @selector(hbd_dismissViewControllerAnimated:completion:));
+        hbd_exchangeImplementations(class, @selector(viewDidAppear:), @selector(hbd_viewDidAppear:));
+        hbd_exchangeImplementations(class, @selector(viewDidDisappear:), @selector(hbd_viewDidDisappear:));
     });
+}
+
+- (void)hbd_viewDidAppear:(BOOL)animated {
+    [self hbd_viewDidAppear:animated];
+    self.hbd_viewAppeared = YES;
+}
+
+- (void)hbd_viewDidDisappear:(BOOL)animated {
+    [self hbd_viewDidDisappear:animated];
+    self.hbd_viewAppeared = NO;
 }
 
 - (void)hbd_presentViewController:(UIViewController *)viewController animated:(BOOL)flag completion:(void (^)(void))completion {
