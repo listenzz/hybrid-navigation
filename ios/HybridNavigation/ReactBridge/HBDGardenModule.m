@@ -37,6 +37,10 @@ RCT_EXPORT_MODULE(GardenModule)
     return dispatch_get_main_queue();
 }
 
+- (NSDictionary *)constantsToExport {
+    return @{ @"TOOLBAR_HEIGHT": @(44) };
+}
+
 RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
     [HBDGarden createGlobalStyleWithOptions:style];
 }
