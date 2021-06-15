@@ -28,5 +28,6 @@ export const RESULT_OK: number = NavigationModule.RESULT_OK
 export const RESULT_CANCEL: number = NavigationModule.RESULT_CANCEL
 
 export const toolbarHeight: number = GardenModule.TOOLBAR_HEIGHT
+export const TOOLBAR_HEIGHT: number = GardenModule.TOOLBAR_HEIGHT
 
 export { EventEmitter, NavigationModule }

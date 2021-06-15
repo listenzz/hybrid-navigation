@@ -6,4 +6,4 @@ export * from './router'
 export * from './DeepLink'
 export * from './typing'
 
-export { RESULT_OK, RESULT_CANCEL, toolbarHeight } from './NavigationModule'
+export { RESULT_OK, RESULT_CANCEL, TOOLBAR_HEIGHT, toolbarHeight } from './NavigationModule'
