@@ -6,7 +6,6 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 
@@ -98,33 +97,10 @@ public class GlobalStyle {
             style.setNavigationBarColor(Color.parseColor(navigationBarColor));
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // elevation
-            double elevation = options.getDouble("elevationAndroid", -1);
-            if (elevation != -1) {
-                style.setElevation((int) elevation);
-            }
-        } else {
-            // shadow
-            Bundle shadowImage = options.getBundle("shadowImage");
-            if (shadowImage != null) {
-                Bundle image = shadowImage.getBundle("image");
-                String color = shadowImage.getString("color");
-                Drawable drawable = null;
-                if (image != null) {
-                    String uri = image.getString("uri");
-                    if (uri != null) {
-                        drawable = DrawableUtils.fromUri(context, uri);
-                        if (drawable instanceof BitmapDrawable) {
-                            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-                            bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
-                        }
-                    }
-                } else if (color != null) {
-                    drawable = new ColorDrawable(Color.parseColor(color));
-                }
-                style.setShadow(drawable);
-            }
+        // elevation
+        double elevation = options.getDouble("elevationAndroid", -1);
+        if (elevation != -1) {
+            style.setElevation((int) elevation);
         }
 
         // topBarTintColor
