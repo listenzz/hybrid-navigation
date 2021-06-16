@@ -126,11 +126,19 @@ public class Garden {
     }
 
     void setLeftBarButtonItems(ArrayList<Bundle> items) {
-        fragment.setLeftBarButtonItems(barButtonItemsFromBundle(items));
+        if (items != null) {
+            fragment.setLeftBarButtonItems(barButtonItemsFromBundle(items));
+        } else {
+            fragment.setLeftBarButtonItems(null);
+        }
     }
 
     void setRightBarButtonItems(ArrayList<Bundle> items) {
-        fragment.setRightBarButtonItems(barButtonItemsFromBundle(items));
+        if (items != null) {
+            fragment.setRightBarButtonItems(barButtonItemsFromBundle(items));
+        } else {
+            fragment.setRightBarButtonItems(null);
+        }
     }
 
     private ToolbarButtonItem[] barButtonItemsFromBundle(ArrayList<Bundle> items) {

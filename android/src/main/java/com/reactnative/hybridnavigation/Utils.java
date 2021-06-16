@@ -14,10 +14,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.navigation.androidx.DrawableUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -63,6 +66,28 @@ public class Utils {
         writableMap.merge(readableMap);
         Bundle result = Arguments.toBundle(writableMap);
         assert result != null;
+        return result;
+    }
+
+    @NonNull
+    static ArrayList<Bundle> mergeOptions(@NonNull Bundle options, @NonNull String key, @NonNull ReadableArray readableArray) {
+        ArrayList<Bundle> bundles = options.getParcelableArrayList(key);
+        if (bundles != null && bundles.size() != readableArray.size()) {
+            throw new RuntimeException("The count of buttons not match.");
+        }
+
+        if (bundles == null) {
+            bundles = new ArrayList<>();
+            for (int i = 0; i < readableArray.size(); i++) {
+                bundles.add(new Bundle());
+            }
+        }
+
+        ArrayList<Bundle> result = new ArrayList<>();
+        for (int i = 0; i < readableArray.size(); i++) {
+            ReadableMap readableMap = readableArray.getMap(i);
+            result.add(mergeOptions(bundles.get(i), readableMap));
+        }
         return result;
     }
 

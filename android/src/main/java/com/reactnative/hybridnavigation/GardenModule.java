@@ -27,6 +27,7 @@ import com.navigation.androidx.DrawerFragment;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.TabBarFragment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -152,6 +153,46 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
                     options.putBundle("rightBarButtonItem", null);
                     fragment.setOptions(options);
                     fragment.getGarden().setRightBarButtonItem(null);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setLeftBarButtonItems(final String sceneId, @Nullable final ReadableArray array) {
+        uiTaskExecutor.submit(() -> {
+            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                Bundle options = fragment.getOptions();
+                if (array != null) {
+                    ArrayList<Bundle> items = Utils.mergeOptions(options, "leftBarButtonItems", array);
+                    options.putParcelableArrayList("leftBarButtonItems", items);
+                    fragment.setOptions(options);
+                    fragment.getGarden().setLeftBarButtonItems(items);
+                } else {
+                    options.putBundle("leftBarButtonItems", null);
+                    fragment.setOptions(options);
+                    fragment.getGarden().setLeftBarButtonItems(null);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void setRightBarButtonItems(final String sceneId, @Nullable final ReadableArray array) {
+        uiTaskExecutor.submit(() -> {
+            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
+            if (fragment != null && fragment.getView() != null) {
+                Bundle options = fragment.getOptions();
+                if (array != null) {
+                    ArrayList<Bundle> items = Utils.mergeOptions(options, "rightBarButtonItems", array);
+                    options.putParcelableArrayList("rightBarButtonItems", items);
+                    fragment.setOptions(options);
+                    fragment.getGarden().setRightBarButtonItems(items);
+                } else {
+                    options.putBundle("rightBarButtonItems", null);
+                    fragment.setOptions(options);
+                    fragment.getGarden().setRightBarButtonItems(null);
                 }
             }
         });

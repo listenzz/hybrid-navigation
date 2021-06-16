@@ -267,6 +267,14 @@
         target[@"rightBarButtonItem"] = self.options[@"rightBarButtonItem"];
     }
     
+    if (options[@"leftBarButtonItems"]) {
+        target[@"leftBarButtonItems"] = self.options[@"leftBarButtonItems"];
+    }
+    
+    if (options[@"rightBarButtonItems"]) {
+        target[@"rightBarButtonItems"] = self.options[@"rightBarButtonItems"];
+    }
+    
     [self applyNavigationBarOptions:target];
     
     NSNumber *statusBarHidden = [options objectForKey:@"statusBarHidden"];

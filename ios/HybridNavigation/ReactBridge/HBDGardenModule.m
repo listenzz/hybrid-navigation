@@ -66,6 +66,20 @@ RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *)sceneId item:(NSDictionary *
     }
 }
 
+RCT_EXPORT_METHOD(setLeftBarButtonItems:(NSString *)sceneId item:(NSArray * __nullable)items) {
+    HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
+    if (vc) {
+        [(HBDViewController *)vc updateNavigationBarOptions:@{ @"leftBarButtonItems": RCTNullIfNil(items)}];
+    }
+}
+
+RCT_EXPORT_METHOD(setRightBarButtonItems:(NSString *)sceneId item:(NSArray * __nullable)items) {
+    HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
+    if (vc) {
+        [(HBDViewController *)vc updateNavigationBarOptions:@{ @"rightBarButtonItems": RCTNullIfNil(items)}];
+    }
+}
+
 RCT_EXPORT_METHOD(updateOptions:(NSString *)sceneId item:(NSDictionary *)options) {
     RCTLogInfo(@"[Navigator] updateNavigationBarOptions: %@", options);
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];

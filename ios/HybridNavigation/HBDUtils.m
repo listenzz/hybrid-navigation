@@ -26,6 +26,19 @@
             } else {
                 [mutableTarget setObject:obj forKey:key];
             }
+        } else if ([obj isKindOfClass:[NSArray class]]) {
+            NSArray *array = [target objectForKey:key];
+            if (array) {
+                NSArray *items = obj;
+                NSMutableArray *result = [[NSMutableArray alloc] init];
+                for (NSInteger i = 0; i < array.count; i++) {
+                    NSDictionary *dict = [self mergeItem:items[i] withTarget:array[i]];
+                    [result addObject:dict];
+                }
+                [mutableTarget setObject:result forKey:key];
+            } else {
+                [mutableTarget setObject:obj forKey:key];
+            }
         } else {
             [mutableTarget setObject:obj forKey:key];
         }

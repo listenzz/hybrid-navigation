@@ -81,6 +81,16 @@ export class Garden {
     GardenModule.setRightBarButtonItem(this.sceneId, options)
   }
 
+  setLeftBarButtonItems(buttonItems: Array<Nullable<BarButtonItem>> | null) {
+    const options = bindBarButtonItemClickEvent(buttonItems, { sceneId: this.sceneId })
+    GardenModule.setLeftBarButtonItems(this.sceneId, options)
+  }
+
+  setRightBarButtonItems(buttonItems: Array<Nullable<BarButtonItem>> | null) {
+    const options = bindBarButtonItemClickEvent(buttonItems, { sceneId: this.sceneId })
+    GardenModule.setRightBarButtonItems(this.sceneId, options)
+  }
+
   setTitleItem(titleItem: TitleItem) {
     GardenModule.setTitleItem(this.sceneId, titleItem)
   }
