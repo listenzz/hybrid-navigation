@@ -84,8 +84,8 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
-        lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
         reactContext.removeLifecycleEventListener(this);
+        lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
     }
 
     @NonNull

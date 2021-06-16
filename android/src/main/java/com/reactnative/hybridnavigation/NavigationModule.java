@@ -52,6 +52,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
         this.reactContext = reactContext;
         reactContext.addLifecycleEventListener(this);
         lifecycleRegistry = new LifecycleRegistry(this);
+        lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
         uiTaskExecutor = new UiTaskExecutor(this, sHandler);
         FLog.i(TAG, "NavigationModule#onCreate");
     }
@@ -59,9 +60,6 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
     @Override
     public void onHostResume() {
         FLog.i(TAG, "NavigationModule#onHostResume");
-        if (lifecycleRegistry.getCurrentState() == Lifecycle.State.INITIALIZED) {
-            lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
-        }
         lifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
     }
 
@@ -87,8 +85,8 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
         super.onCatalystInstanceDestroy();
         FLog.i(TAG, "NavigationModule#onCatalystInstanceDestroy");
         reactContext.removeLifecycleEventListener(this);
+        lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
         sHandler.removeCallbacksAndMessages(null);
-        sHandler.post(() -> lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED));
         sHandler.post(() -> {
             List<ReactBridgeManager.ReactBridgeReloadListener> listeners = bridgeManager.getReactBridgeReloadListeners();
             for (ReactBridgeManager.ReactBridgeReloadListener listener : listeners) {
