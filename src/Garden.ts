@@ -13,10 +13,10 @@ export interface Style {
   topBarColor?: Color // TopBar 背景颜色，默认根据 topBarStyle 来计算
   topBarColorDarkContent?: Color // TopBar 背景颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 topBarColor 的值
   topBarColorLightContent?: Color // TopBar 背景颜色，当 topBarStyle 的值为 BarStyleLightContent 时生效，覆盖 topBarColor 的值
-  statusBarColorAndroid?: Color // 状态栏背景颜色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
+  statusBarColorAndroid?: Color // 状态栏背景颜色，默认取 topBarColor 的值
   navigationBarColorAndroid?: Color // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
   hideBackTitleIOS?: boolean // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-  elevationAndroid?: number // TopBar 阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
+  elevationAndroid?: number // TopBar 阴影高度，默认值为 4 dp
   shadowImage?: ShadowImage // TopBar 阴影图片，仅对 iOS 生效
   backIcon?: ImageSource // 返回按钮图片
   topBarTintColor?: Color // TopBar 按钮的颜色。默认根据 topBarStyle 来计算
@@ -30,7 +30,7 @@ export interface Style {
   barButtonItemTextSize?: number // TopBar 按钮字体大小，默认是 15 dp(pt)
   swipeBackEnabledAndroid?: boolean // Android 是否开启右滑返回，默认是 false
   splitTopBarTransitionIOS?: boolean // iOS 侧滑返回时，是否总是割裂导航栏背景
-  scrimAlphaAndroid?: number // Android 侧滑返回遮罩效果
+  scrimAlphaAndroid?: number // Android 侧滑返回遮罩效果 [0 - 255]
 
   tabBarColor?: Color // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
   tabBarShadowImage?: ShadowImage // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效

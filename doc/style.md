@@ -47,10 +47,10 @@ export interface Style {
   screenBackgroundColor?: Color // 页面背景，默认是白色
   topBarStyle?: BarStyle // 顶部导航栏样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
   topBarColor?: Color // 顶部导航栏背景颜色，默认根据 topBarStyle 来计算
-  statusBarColorAndroid?: Color // 状态栏背景颜色，默认取 topBarColor 的值， 仅对 Android 5.0 以上版本生效
+  statusBarColorAndroid?: Color // 状态栏背景颜色，默认取 topBarColor 的值
   navigationBarColorAndroid?: Color // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
   hideBackTitleIOS?: boolean // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
-  elevationAndroid?: number // 顶部导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
+  elevationAndroid?: number // 顶部导航栏阴影高度，默认值为 4 dp
   shadowImage?: ShadowImage // 顶部导航栏阴影图片，仅对 iOS 生效
   backIcon?: Image // 返回按钮图片
   topBarTintColor?: Color // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
@@ -58,7 +58,8 @@ export interface Style {
   titleTextSize?: number // 顶部导航栏标题字体大小，默认是 17 dp(pt)
   titleAlignmentAndroid?: TitleAlignment // 顶部导航栏标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
   barButtonItemTextSize?: number // 顶部导航栏按钮字体大小，默认是 15 dp(pt)
-  swipeBackEnabledAndroid?: boolean // Android 是否开启右滑返回，默认是 false
+  swipeBackEnabledAndroid?: boolean // Android 是否开启侧滑返回，默认是 false
+  scrimAlphaAndroid?: number // Android 侧滑返回遮罩效果 [0 - 255]
 
   tabBarColor?: Color // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
   tabBarShadowImage?: ShadowImage // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
@@ -99,13 +100,13 @@ export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft
 
 - **statusBarColorAndroid**
 
-仅对 Android 5.0 以上版本生效。默认取 `topBarColor` 的值。
+默认取 `topBarColor` 的值。
 
 系统启动时，由于还没有设置 statusBarColor，状态栏颜色会出现前后不一致的情况，下图是应用还没启动好时，状态栏可能的颜色。和上面的黑白图对比，是不是有种违和感。
 
 ![statusbar-inperfect](../screenshot/statusbar-inperfect.png)
 
-为了提供一致的用户体验，你可以为 Android 5.0 以上版本配置 `andriod:statusBarColor` 样式。
+为了提供一致的用户体验，你可以为 Android 配置 `andriod:statusBarColor` 样式。
 
 1.在 res 目录下新建一个名为 values-v21 的文件夹
 
