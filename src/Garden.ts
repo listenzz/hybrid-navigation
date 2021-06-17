@@ -17,7 +17,7 @@ export interface Style {
   navigationBarColorAndroid?: Color // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
   hideBackTitleIOS?: boolean // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
   elevationAndroid?: number // TopBar 阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
-  shadowImage?: ShadowImage // TopBar 阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
+  shadowImage?: ShadowImage // TopBar 阴影图片，仅对 iOS 生效
   backIcon?: ImageSource // 返回按钮图片
   topBarTintColor?: Color // TopBar 按钮的颜色。默认根据 topBarStyle 来计算
   topBarTintColorDarkContent?: Color // TopBar 按钮颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 topBarTintColor 的值

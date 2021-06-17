@@ -51,7 +51,7 @@ export interface Style {
   navigationBarColorAndroid?: Color // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
   hideBackTitleIOS?: boolean // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
   elevationAndroid?: number // 顶部导航栏阴影高度，默认值为 4 dp， 仅对 Android 5.0 以上版本生效
-  shadowImage?: ShadowImage // 顶部导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效
+  shadowImage?: ShadowImage // 顶部导航栏阴影图片，仅对 iOS 生效
   backIcon?: Image // 返回按钮图片
   topBarTintColor?: Color // 顶部导航栏按钮的颜色。默认根据 topBarStyle 来计算
   titleTextColor?: Color // 顶部导航栏标题颜色，默认根据 topBarStyle 来计算
@@ -138,7 +138,7 @@ Garden.setStyle({
 
 - **shadowImage**
 
-导航栏阴影图片，仅对 iOS 和 Android 4.4 以下版本生效。
+导航栏阴影图片，仅对 iOS 生效。
 
 ```javascript
 // index.js
@@ -243,7 +243,7 @@ class Screen extends Component {
       // 图片位置调整，仅对 iOS 生效
       insetsIOS: { top: -1, left: -8, bottom: 0, right: 0 },
       // 按钮点击事件处理
-      action: (navigator) => {
+      action: navigator => {
         navigator.toggleMenu()
       },
       // 按钮是否可以点击
@@ -354,7 +354,7 @@ class B extends Component {
     },
     rightBarButtonItem: {
       title: 'B 的按钮',
-      action: (navigator) => {},
+      action: navigator => {},
     },
   }
 }
@@ -446,7 +446,7 @@ export interface BarButtonItem {
 this.props.garden.setLeftBarButtonItem({
   title: 'Cancel',
   insetsIOS: { top: -1, left: -8, bottom: 0, right: 8 },
-  action: (navigator) => {
+  action: navigator => {
     navigator.dismiss()
   },
 })
