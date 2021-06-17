@@ -1,3 +1,7 @@
+## 1.8.0
+
+- 添加 `Garden#setLeftBarButtonItems` 和 `Garden#setRightBarButtonItems`
+
 ## 1.7.3
 
 - 通过 router 切换 tab 时，调用当前 stack 的 `popToRoot`
