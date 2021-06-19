@@ -150,6 +150,20 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
     handleResult(resultCode, data)
   }
 
+  function renderResult() {
+    if (text === undefined) {
+      return null
+    }
+    return <Text style={styles.result}>received text：{text}</Text>
+  }
+
+  function renderError() {
+    if (error === undefined) {
+      return null
+    }
+    return <Text style={styles.result}>{error}</Text>
+  }
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="never"
@@ -197,9 +211,8 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
         <TouchableOpacity onPress={printRouteGraph} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>printRouteGraph</Text>
         </TouchableOpacity>
-
-        {text !== undefined && <Text style={styles.result}>received text：{text}</Text>}
-        {error !== undefined && <Text style={styles.result}>{error}</Text>}
+        {renderResult()}
+        {renderError()}
       </View>
     </ScrollView>
   )
