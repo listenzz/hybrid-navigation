@@ -31,6 +31,7 @@ import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_RESULT_CODE;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_RESULT_DATA;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_SCENE_ID;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_RESULT;
+import static com.reactnative.hybridnavigation.Parameters.mergeOptions;
 
 
 /**
@@ -197,7 +198,7 @@ public class ReactTabBarFragment extends TabBarFragment {
         String tabBarItemColor = options.getString("tabBarItemColor");
         String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
 
-        setOptions(Utils.mergeOptions(getOptions(), options));
+        setOptions(mergeOptions(getOptions(), options));
 
         if (tabBarColor != null) {
             style.setTabBarBackgroundColor(tabBarColor);

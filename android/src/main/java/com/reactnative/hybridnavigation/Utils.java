@@ -13,16 +13,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.ReadableArray;
-import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableArray;
-import com.facebook.react.bridge.WritableMap;
 import com.navigation.androidx.DrawableUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-
 
 public class Utils {
 
@@ -53,68 +46,6 @@ public class Utils {
             iconUri = DrawableUtils.filepathFromFont(context, uri);
         }
         return iconUri;
-    }
-
-    @NonNull
-    static Bundle mergeOptions(@NonNull Bundle options, @NonNull String key, @NonNull ReadableMap readableMap) {
-        Bundle bundle = options.getBundle(key);
-        if (bundle == null) {
-            bundle = new Bundle();
-        }
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.merge(Arguments.fromBundle(bundle));
-        writableMap.merge(readableMap);
-        Bundle result = Arguments.toBundle(writableMap);
-        assert result != null;
-        return result;
-    }
-
-    @NonNull
-    static ArrayList<Bundle> mergeOptions(@NonNull Bundle options, @NonNull String key, @NonNull ReadableArray readableArray) {
-        ArrayList<Bundle> bundles = options.getParcelableArrayList(key);
-        if (bundles != null && bundles.size() != readableArray.size()) {
-            throw new RuntimeException("The count of buttons not match.");
-        }
-
-        if (bundles == null) {
-            bundles = new ArrayList<>();
-            for (int i = 0; i < readableArray.size(); i++) {
-                bundles.add(new Bundle());
-            }
-        }
-
-        ArrayList<Bundle> result = new ArrayList<>();
-        for (int i = 0; i < readableArray.size(); i++) {
-            ReadableMap readableMap = readableArray.getMap(i);
-            result.add(mergeOptions(bundles.get(i), readableMap));
-        }
-        return result;
-    }
-
-    @NonNull
-    static Bundle mergeOptions(@NonNull Bundle options, @Nullable ReadableMap readableMap) {
-        if (readableMap == null) {
-            return options;
-        }
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.merge(Arguments.fromBundle(options));
-        writableMap.merge(readableMap);
-        Bundle result = Arguments.toBundle(writableMap);
-        assert result != null;
-        return result;
-    }
-
-    @NonNull
-    static Bundle mergeOptions(@NonNull Bundle options, @Nullable Bundle bundle) {
-        if (bundle == null) {
-            return options;
-        }
-        WritableMap writableMap = Arguments.createMap();
-        writableMap.merge(Arguments.fromBundle(options));
-        writableMap.merge(Arguments.fromBundle(bundle));
-        Bundle result = Arguments.toBundle(writableMap);
-        assert result != null;
-        return result;
     }
 
     @Nullable

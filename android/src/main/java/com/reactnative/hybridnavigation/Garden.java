@@ -1,6 +1,5 @@
 package com.reactnative.hybridnavigation;
 
-
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -24,6 +23,8 @@ import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_ACTION;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_ON;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_SCENE_ID;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_BAR_BUTTON_ITEM_CLICK;
+import static com.reactnative.hybridnavigation.Parameters.mergeOptions;
+import static com.reactnative.hybridnavigation.Parameters.toBundle;
 
 /**
  * Created by Listen on 2017/11/22.
@@ -253,6 +254,57 @@ public class Garden {
         }
     }
 
+    void updateOptions(@NonNull ReadableMap readableMap) {
+        Bundle patches = toBundle(readableMap);
+
+        applyToolbarOptions(patches);
+
+        if (shouldUpdateStatusBar(readableMap)) {
+            fragment.setNeedsStatusBarAppearanceUpdate();
+        }
+
+        if (shouldUpdateToolbar(readableMap)) {
+            fragment.setNeedsToolbarAppearanceUpdate();
+        }
+
+        if (shouldUpdateNavigationBar(readableMap)) {
+            fragment.setNeedsNavigationBarAppearanceUpdate();
+        }
+
+        if (readableMap.hasKey("passThroughTouches")) {
+            boolean passThroughTouches = readableMap.getBoolean("passThroughTouches");
+            setPassThroughTouches(passThroughTouches);
+        }
+
+        Bundle options = mergeOptions(fragment.getOptions(), patches);
+
+        if (readableMap.hasKey("leftBarButtonItem")) {
+            Bundle bundle = options.getBundle("leftBarButtonItem");
+            setLeftBarButtonItem(bundle);
+        }
+
+        if (readableMap.hasKey("rightBarButtonItem")) {
+            Bundle bundle = options.getBundle("rightBarButtonItem");
+            setRightBarButtonItem(bundle);
+        }
+
+        if (readableMap.hasKey("leftBarButtonItems")) {
+            ArrayList<Bundle> items = options.getParcelableArrayList("leftBarButtonItems");
+            setLeftBarButtonItems(items);
+        }
+
+        if (readableMap.hasKey("rightBarButtonItems")) {
+            ArrayList<Bundle> items = options.getParcelableArrayList("rightBarButtonItems");
+            setRightBarButtonItems(items);
+        }
+
+        if (readableMap.hasKey("titleItem")) {
+            Bundle titleItem = options.getBundle("titleItem");
+            setTitleItem(titleItem);
+        }
+
+        fragment.setOptions(options);
+    }
 
     private boolean shouldUpdateStatusBar(@NonNull ReadableMap readableMap) {
         String[] keys = new String[]{"topBarStyle", "statusBarColorAndroid", "statusBarHidden", "topBarColor"};
@@ -287,32 +339,6 @@ public class Garden {
             }
         }
         return false;
-    }
-
-    void updateOptions(@NonNull ReadableMap readableMap) {
-        Bundle options = Arguments.toBundle(readableMap);
-        if (options != null) {
-            applyToolbarOptions(options);
-
-            if (shouldUpdateStatusBar(readableMap)) {
-                fragment.setNeedsStatusBarAppearanceUpdate();
-            }
-
-            if (shouldUpdateToolbar(readableMap)) {
-                fragment.setNeedsToolbarAppearanceUpdate();
-            }
-
-            if (shouldUpdateNavigationBar(readableMap)) {
-                fragment.setNeedsNavigationBarAppearanceUpdate();
-            }
-
-            if (readableMap.hasKey("passThroughTouches")) {
-                boolean passThroughTouches = readableMap.getBoolean("passThroughTouches");
-                setPassThroughTouches(passThroughTouches);
-            }
-
-            fragment.setOptions(Utils.mergeOptions(fragment.getOptions(), readableMap));
-        }
     }
 
     void setPassThroughTouches(boolean passThroughTouches) {

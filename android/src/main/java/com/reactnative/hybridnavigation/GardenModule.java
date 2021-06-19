@@ -14,7 +14,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 
 import com.facebook.common.logging.FLog;
-import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.JavaOnlyMap;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
@@ -22,12 +22,12 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.WritableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.TabBarFragment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,11 +36,12 @@ import static com.reactnative.hybridnavigation.Constants.ACTION_SET_TAB_ICON;
 import static com.reactnative.hybridnavigation.Constants.ACTION_UPDATE_TAB_BAR;
 import static com.reactnative.hybridnavigation.Constants.ARG_ACTION;
 import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
+import static com.reactnative.hybridnavigation.Parameters.toBundle;
+import static com.reactnative.hybridnavigation.Parameters.toList;
 
 /**
  * Created by Listen on 2017/11/22.
  */
-
 public class GardenModule extends ReactContextBaseJavaModule implements LifecycleEventListener, LifecycleOwner {
 
     private static final String TAG = "Navigator";
@@ -106,7 +107,7 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     public void setStyle(final ReadableMap style) {
         sHandler.post(() -> {
             FLog.i(TAG, "GardenModule#setStyle");
-            Garden.createGlobalStyle(Arguments.toBundle(style));
+            Garden.createGlobalStyle(toBundle(style));
 
             ReactContext context = getReactApplicationContext();
             if (context.hasActiveCatalystInstance()) {
@@ -120,96 +121,27 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void setLeftBarButtonItem(final String sceneId, @Nullable final ReadableMap readableMap) {
-        uiTaskExecutor.submit(() -> {
-            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-            if (fragment != null && fragment.getView() != null) {
-                Bundle options = fragment.getOptions();
-                if (readableMap != null) {
-                    Bundle buttonItem = Utils.mergeOptions(options, "leftBarButtonItem", readableMap);
-                    options.putBundle("leftBarButtonItem", buttonItem);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setLeftBarButtonItem(buttonItem);
-                } else {
-                    options.putBundle("leftBarButtonItem", null);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setLeftBarButtonItem(null);
-                }
-            }
-        });
+        updateOptions(sceneId, readableMap, "leftBarButtonItem");
     }
 
     @ReactMethod
     public void setRightBarButtonItem(final String sceneId, @Nullable final ReadableMap readableMap) {
-        uiTaskExecutor.submit(() -> {
-            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-            if (fragment != null && fragment.getView() != null) {
-                Bundle options = fragment.getOptions();
-                if (readableMap != null) {
-                    Bundle buttonItem = Utils.mergeOptions(options, "rightBarButtonItem", readableMap);
-                    options.putBundle("rightBarButtonItem", buttonItem);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setRightBarButtonItem(buttonItem);
-                } else {
-                    options.putBundle("rightBarButtonItem", null);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setRightBarButtonItem(null);
-                }
-            }
-        });
+        updateOptions(sceneId, readableMap, "rightBarButtonItem");
     }
 
     @ReactMethod
-    public void setLeftBarButtonItems(final String sceneId, @Nullable final ReadableArray array) {
-        uiTaskExecutor.submit(() -> {
-            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-            if (fragment != null && fragment.getView() != null) {
-                Bundle options = fragment.getOptions();
-                if (array != null) {
-                    ArrayList<Bundle> items = Utils.mergeOptions(options, "leftBarButtonItems", array);
-                    options.putParcelableArrayList("leftBarButtonItems", items);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setLeftBarButtonItems(items);
-                } else {
-                    options.putBundle("leftBarButtonItems", null);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setLeftBarButtonItems(null);
-                }
-            }
-        });
+    public void setLeftBarButtonItems(final String sceneId, @Nullable final ReadableArray readableArray) {
+        updateOptions(sceneId, readableArray, "leftBarButtonItems");
     }
 
     @ReactMethod
-    public void setRightBarButtonItems(final String sceneId, @Nullable final ReadableArray array) {
-        uiTaskExecutor.submit(() -> {
-            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-            if (fragment != null && fragment.getView() != null) {
-                Bundle options = fragment.getOptions();
-                if (array != null) {
-                    ArrayList<Bundle> items = Utils.mergeOptions(options, "rightBarButtonItems", array);
-                    options.putParcelableArrayList("rightBarButtonItems", items);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setRightBarButtonItems(items);
-                } else {
-                    options.putBundle("rightBarButtonItems", null);
-                    fragment.setOptions(options);
-                    fragment.getGarden().setRightBarButtonItems(null);
-                }
-            }
-        });
+    public void setRightBarButtonItems(final String sceneId, @Nullable final ReadableArray readableArray) {
+        updateOptions(sceneId, readableArray, "rightBarButtonItems");
     }
 
     @ReactMethod
     public void setTitleItem(final String sceneId, final ReadableMap readableMap) {
-        uiTaskExecutor.submit(() -> {
-            HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-            if (fragment != null && fragment.getView() != null) {
-                Bundle options = fragment.getOptions();
-                Bundle titleItem = Utils.mergeOptions(options, "titleItem", readableMap);
-                options.putBundle("titleItem", titleItem);
-                fragment.setOptions(options);
-                fragment.getGarden().setTitleItem(titleItem);
-            }
-        });
+        updateOptions(sceneId, readableMap, "titleItem");
     }
 
     @ReactMethod
@@ -217,10 +149,30 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
         FLog.i(TAG, "update options:" + readableMap);
         uiTaskExecutor.submit(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-            if (fragment != null && fragment.getView() != null) {
+            if (fragment != null && fragment.isAdded()) {
                 fragment.getGarden().updateOptions(readableMap);
             }
         });
+    }
+
+    private void updateOptions(String sceneId, @Nullable ReadableMap readableMap, String key) {
+        WritableMap writableMap = new JavaOnlyMap();
+        if (readableMap == null) {
+            writableMap.putNull(key);
+        } else {
+            writableMap.putMap(key, readableMap);
+        }
+        updateOptions(sceneId, writableMap);
+    }
+
+    private void updateOptions(String sceneId, @Nullable ReadableArray readableArray, String key) {
+        WritableMap writableMap = new JavaOnlyMap();
+        if (readableArray == null) {
+            writableMap.putNull(key);
+        } else {
+            writableMap.putArray(key, readableArray);
+        }
+        updateOptions(sceneId, writableMap);
     }
 
     @ReactMethod
@@ -233,7 +185,7 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
                 if (tabBarFragment != null) {
                     Bundle bundle = new Bundle();
                     bundle.putString(ARG_ACTION, ACTION_UPDATE_TAB_BAR);
-                    bundle.putBundle(ARG_OPTIONS, Arguments.toBundle(readableMap));
+                    bundle.putBundle(ARG_OPTIONS, toBundle(readableMap));
                     tabBarFragment.updateTabBar(bundle);
                 }
             }
@@ -249,7 +201,7 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
                 if (tabBarFragment != null) {
                     Bundle bundle = new Bundle();
                     bundle.putString(ARG_ACTION, ACTION_SET_TAB_ICON);
-                    bundle.putParcelableArrayList(ARG_OPTIONS, Arguments.toList(options));
+                    bundle.putSerializable(ARG_OPTIONS, toList(options));
                     tabBarFragment.updateTabBar(bundle);
                 }
             }
@@ -265,7 +217,7 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
                 if (tabBarFragment != null) {
                     Bundle bundle = new Bundle();
                     bundle.putString(ARG_ACTION, ACTION_SET_TAB_BADGE);
-                    bundle.putParcelableArrayList(ARG_OPTIONS, Arguments.toList(options));
+                    bundle.putSerializable(ARG_OPTIONS, toList(options));
                     tabBarFragment.updateTabBar(bundle);
                 }
             }
