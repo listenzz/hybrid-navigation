@@ -1,3 +1,27 @@
+## Next Release
+
+- 移除 `useResult`，请使用 `React.Context` 或 `Redux` 等技术代替
+
+  这里有一个关于[如何在 hybrid-navigation 中使用 React.Context](https://github.com/listenzz/MultiContextDemo) 的例子。
+
+- 移除 `useVisibleEffect`，使用如下方式代替
+
+```tsx
+import React, { useCallback } from 'react'
+import { useVisible } from 'hybrid-navigation'
+
+const visible = useVisible(sceneId)
+
+useEffect(() => {
+  if (!visible) {
+    return
+  }
+
+  Alert.alert('Lifecycle Alert!', 'componentDidAppear.')
+  return () => Alert.alert('Lifecycle Alert!', 'componentDidDisappear.')
+}, [visible])
+```
+
 ## 1.8.1
 
 - 修正 `NavigationInterceptor` 中的 `Extras` 类型定义
