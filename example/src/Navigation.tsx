@@ -8,7 +8,6 @@ import {
   withNavigationItem,
   useVisibleEffect,
   useVisible,
-  useResult,
   InjectedProps,
   ResultType,
 } from 'hybrid-navigation'
@@ -70,10 +69,6 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
   useEffect(() => {
     navigator.setResult(RESULT_OK, { backId: sceneId })
   }, [navigator, sceneId])
-
-  useResult(sceneId, (resultCode, data) => {
-    console.info(`resultCode=${resultCode}`, `resultData=${JSON.stringify(data, null, 2)}`, `sceneId=${sceneId}`)
-  })
 
   async function push() {
     let props: Partial<Props> = {}

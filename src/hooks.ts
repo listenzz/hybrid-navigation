@@ -5,14 +5,10 @@ import {
   EVENT_NAVIGATION,
   KEY_SCENE_ID,
   KEY_ON,
-  ON_COMPONENT_RESULT,
   ON_COMPONENT_DISAPPEAR,
   ON_COMPONENT_APPEAR,
-  KEY_RESULT_CODE,
-  KEY_RESULT_DATA,
 } from './NavigationModule'
 import { Navigator } from './Navigator'
-import { ResultType } from './typing'
 
 export type Visibility = 'visible' | 'gone' | 'pending'
 
@@ -55,18 +51,4 @@ export function useVisibleEffect(sceneId: string, effect: React.EffectCallback) 
       }
     }
   }, [effect, visible, sceneId])
-}
-
-export function useResult(sceneId: string, fn: (resultCode: number, data: ResultType) => void) {
-  useEffect(() => {
-    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-      if (data[KEY_ON] === ON_COMPONENT_RESULT && sceneId === data[KEY_SCENE_ID]) {
-        fn(data[KEY_RESULT_CODE], data[KEY_RESULT_DATA])
-      }
-    })
-
-    return () => {
-      subscription.remove()
-    }
-  }, [sceneId, fn])
 }
