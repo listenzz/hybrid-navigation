@@ -151,11 +151,12 @@ export class Navigator {
 
   static async dispatch(sceneId: string, action: string, params: Params = {}): Promise<boolean> {
     let intercepted = false
-
+    const { from, to } = params
     if (interceptor) {
       const result = interceptor(action, {
         sceneId,
-        ...params,
+        from,
+        to,
       })
       if (result instanceof Promise) {
         intercepted = await result

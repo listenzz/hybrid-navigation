@@ -13,7 +13,8 @@ export type ResultType = IndexType | null
 
 interface Extras {
   sceneId: string
-  index?: number
+  from?: number | string
+  to?: number | string
 }
 
 export interface NavigationInterceptor {
