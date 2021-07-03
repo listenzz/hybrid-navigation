@@ -1,3 +1,7 @@
+## 1.8.1
+
+- 修正 `NavigationInterceptor` 中的 `Extras` 类型定义
+
 ## 1.8.0
 
 - 添加 `Garden#setLeftBarButtonItems` 和 `Garden#setRightBarButtonItems`
