@@ -32,7 +32,7 @@ function getDisplayName(WrappedComponent: React.ComponentType<any>) {
 
 function withNavigator(moduleName: string) {
   return function (WrappedComponent: React.ComponentType<any>) {
-    function FC(props: Props, ref: React.Ref<React.ComponentType<any>>) {
+    const FC = React.forwardRef((props: Props, ref: React.Ref<React.ComponentType<any>>) => {
       const { sceneId } = props
 
       const navigator = Navigator.of(sceneId)
@@ -71,11 +71,10 @@ function withNavigator(moduleName: string) {
         navigator,
       }
       return <WrappedComponent ref={ref} {...props} {...injected} />
-    }
+    })
 
-    const FREC = React.forwardRef(FC)
-    FREC.displayName = `withNavigator(${getDisplayName(WrappedComponent)})`
-    return FREC
+    FC.displayName = `withNavigator(${getDisplayName(WrappedComponent)})`
+    return FC
   }
 }
 
@@ -122,8 +121,8 @@ export class ReactRegistry {
 }
 
 export function withNavigationItem(item: NavigationItem) {
-  return function (Func: ComponentType<any>) {
-    ;(Func as any).navigationItem = item
-    return Func
+  return function (WrappedComponent: ComponentType<any>) {
+    ;(WrappedComponent as any).navigationItem = item
+    return WrappedComponent
   }
 }
