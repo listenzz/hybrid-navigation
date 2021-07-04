@@ -153,13 +153,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
                 FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `setRoot`");
                 return;
             }
-
-            if (bridgeManager.getPendingTag() != 0) {
-                FLog.e(TAG, "The previous tag: " + bridgeManager.getPendingTag() + " layout: " + bridgeManager.getPendingLayout());
-                FLog.e(TAG, "Current tag: " + tag + " layout: " + layout);
-                throw new IllegalStateException("The previous `setRoot` hasn't been processed yet, you should `await Navigator.setRoot()` to complete.");
-            }
-
+            
             bridgeManager.setViewHierarchyReady(false);
             bridgeManager.setRootLayout(layout, sticky);
             bridgeManager.setPendingLayout(layout, tag);
