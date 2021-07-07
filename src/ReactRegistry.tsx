@@ -40,7 +40,7 @@ function withNavigator(moduleName: string) {
         navigator.moduleName = moduleName
       }
 
-      const garden = new Garden(sceneId)
+      const garden = navigator.garden
 
       useEffect(() => {
         navigator.signalFirstRenderComplete()

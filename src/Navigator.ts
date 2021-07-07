@@ -19,6 +19,7 @@ import store from './store'
 import { RouteGraph, Route } from './router'
 import { Visibility } from './hooks'
 import { IndexType, ResultType, NavigationInterceptor, Layout, NavigationItem, PropsType } from './typing'
+import { Garden } from './Garden'
 
 interface Params {
   animated?: boolean
@@ -237,6 +238,15 @@ export class Navigator {
       this.resultListener.cancel()
       this.resultListener = null
     }
+  }
+
+  private _garden?: Garden
+
+  get garden() {
+    if (!this._garden) {
+      this._garden = new Garden(this.sceneId)
+    }
+    return this._garden
   }
 
   private resultListener: ResultListener<any> | null = null
