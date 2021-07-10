@@ -1,16 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
 
 import styles from './Styles'
-import {
-  RESULT_OK,
-  Navigator,
-  withNavigationItem,
-  useVisibleEffect,
-  useVisible,
-  InjectedProps,
-  ResultType,
-} from 'hybrid-navigation'
+import { RESULT_OK, Navigator, withNavigationItem, useVisible, InjectedProps, ResultType } from 'hybrid-navigation'
 
 export default withNavigationItem({
   //topBarStyle: 'light-content',
@@ -42,21 +34,18 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
     })
   }, [navigator])
 
-  const visibleCallback = useCallback(() => {
-    console.info(`Page Navigation is visible [${sceneId}]`)
-    return () => {
-      console.info(`Page Navigation is gone [${sceneId}]`)
-    }
-  }, [sceneId])
-
-  useVisibleEffect(sceneId, visibleCallback)
-
   const visible = useVisible(sceneId)
 
   useEffect(() => {
-    if (visible) {
-      garden.setMenuInteractive(isRoot)
+    if (!visible) {
+      return
     }
+    console.info(`Page Navigation is visible [${sceneId}]`)
+    return () => console.info(`Page Navigation is invisible [${sceneId}]`)
+  }, [visible, sceneId])
+
+  useEffect(() => {
+    garden.setMenuInteractive(isRoot && visible)
   }, [visible, isRoot, garden])
 
   useEffect(() => {

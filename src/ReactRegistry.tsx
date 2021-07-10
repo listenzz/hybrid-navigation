@@ -57,7 +57,7 @@ function withNavigator(moduleName: string) {
             if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
               navigator.visibility = 'visible'
             } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
-              navigator.visibility = 'gone'
+              navigator.visibility = 'invisible'
             }
           }
         })

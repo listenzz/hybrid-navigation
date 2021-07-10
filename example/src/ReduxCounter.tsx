@@ -1,12 +1,6 @@
-import React, { useEffect, useCallback, Component, ComponentType } from 'react'
+import React, { useEffect, ComponentType } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
-import {
-  BarStyleLightContent,
-  withNavigationItem,
-  useVisibleEffect,
-  InjectedProps,
-  NavigationItem,
-} from 'hybrid-navigation'
+import { BarStyleLightContent, withNavigationItem, InjectedProps, NavigationItem, useVisible } from 'hybrid-navigation'
 import { createStore } from 'redux'
 import { connect, Provider } from 'react-redux'
 import styles from './Styles'
@@ -19,14 +13,15 @@ interface Props extends InjectedProps {
 
 // React component
 function ReduxCounter({ sceneId, navigator, value, onDecreaseClick, onIncreaseClick }: Props) {
-  const visibleCallback = useCallback(() => {
-    console.info(`Page ReduxCounter is visible`)
-    return () => {
-      console.info(`Page ReduxCounter is gone`)
+  const visible = useVisible(sceneId)
+  useEffect(() => {
+    if (!visible) {
+      return
     }
-  }, [])
 
-  useVisibleEffect(sceneId, visibleCallback)
+    console.info(`Page ReduxCounter is visible`)
+    return () => console.info(`Page ReduxCounter is invisible`)
+  }, [visible])
 
   useEffect(() => {
     navigator.setParams({ onDecreaseClick })
@@ -117,7 +112,7 @@ const navigationItem: NavigationItem = {
 export default connect(mapStateToProps, mapDispatchToProps)(withNavigationItem(navigationItem)(ReduxCounter))
 
 export function withRedux(WrappedComponent: ComponentType<any>) {
-  return class ReduxProvider extends Component {
+  return class ReduxProvider extends React.Component {
     static displayName = `withRedux(${WrappedComponent.displayName})`
     componentDidMount() {
       // 获取 displayName

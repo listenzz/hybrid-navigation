@@ -1,7 +1,9 @@
-import React, { Component } from 'react'
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react'
 import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native'
-import { LayoutFittingExpanded, InjectedProps } from 'hybrid-navigation'
+import { LayoutFittingExpanded, InjectedProps, NavigationItem } from 'hybrid-navigation'
 import styles from './Styles'
+import { Lifecycle, withLifecycle } from './withLifecycle'
 
 function CustomTitleView(props: InjectedProps) {
   let { params } = props.navigator.state
@@ -26,12 +28,14 @@ function CustomTitleView(props: InjectedProps) {
 
 export { CustomTitleView }
 
-export default class TopBarTitleView extends Component<InjectedProps> {
-  static navigationItem = {
+class TopBarTitleView extends React.Component<InjectedProps> implements Lifecycle {
+  static navigationItem: NavigationItem = {
     backButtonHidden: true,
     titleItem: {
-      moduleName: 'CustomTitleView', // registered component name
-      layoutFitting: LayoutFittingExpanded, // `LayoutFittingExpanded` or `LayoutFittingCompressed`, default is `LayoutFittingExpanded`
+      // registered component name
+      moduleName: 'CustomTitleView',
+      // `LayoutFittingExpanded` or `LayoutFittingCompressed`, default is `LayoutFittingExpanded`
+      layoutFitting: LayoutFittingExpanded,
     },
   }
 
@@ -41,6 +45,14 @@ export default class TopBarTitleView extends Component<InjectedProps> {
     this.props.navigator.setParams({
       onFackbookButtonClick: this.onFackbookButtonClick.bind(this),
     })
+  }
+
+  componentDidAppear() {
+    console.info('TopBarTitleView#componentDidAppear')
+  }
+
+  componentDidDisappear() {
+    console.info('TopBarTitleView#componentDidDisAppear')
   }
 
   onFackbookButtonClick() {
@@ -70,3 +82,5 @@ export default class TopBarTitleView extends Component<InjectedProps> {
     )
   }
 }
+
+export default withLifecycle(TopBarTitleView)

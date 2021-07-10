@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native'
 import {
   Navigator,
   withNavigationItem,
-  useVisibleEffect,
   InjectedProps,
   ImageSource,
   TabBarStyle,
   TabBadge,
   BarButtonItem,
+  useVisible,
 } from 'hybrid-navigation'
 
 import styles from './Styles'
@@ -45,17 +45,20 @@ export default withNavigationItem({
 })(Options)
 
 function Options({ sceneId, navigator, garden }: InjectedProps) {
-  const visibleCallback = useCallback(() => {
+  const visible = useVisible(sceneId)
+
+  useEffect(() => {
+    if (!visible) {
+      return
+    }
+
     console.info(`Page Options is visible`)
     garden.setMenuInteractive(true)
-
     return () => {
-      console.info(`Page Options is gone`)
+      console.info(`Page Options is invisible`)
       garden.setMenuInteractive(false)
     }
-  }, [garden])
-
-  useVisibleEffect(sceneId, visibleCallback)
+  }, [visible, sceneId, garden])
 
   useEffect(() => {
     console.info('Page Options componentDidMount')
