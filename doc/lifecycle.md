@@ -1,29 +1,21 @@
-Hooks
+## 如何监听页面显示或隐藏
 
-### 如何监听页面显示或隐藏
+使用 `useVisible`
 
-```javascript
+```tsx
 import React, { useCallback } from 'react'
-import { useVisibleEffect } from 'hybrid-navigation'
+import { useVisible } from 'hybrid-navigation'
 
-function Lifecycle(props) {
-  const visibleCallback = useCallback(() => {
-    console.info(`Page is visible`)
-    return () => {
-      console.info(`Page is gone`)
-    }
-  }, [])
+const visible = useVisible(sceneId)
 
-  useVisibleEffect(sceneId, visibleCallback)
-}
+useEffect(() => {
+  if (!visible) {
+    return
+  }
+
+  Alert.alert('Lifecycle Alert!', 'componentDidAppear.')
+  return () => Alert.alert('Lifecycle Alert!', 'componentDidDisappear.')
+}, [visible])
 ```
 
-### 如何统一处理页面返回的结果
-
-```javascript
-import { useResult } from 'hybrid-navigation'
-
-useResult(sceneId, (resultCode, data) => {
-  console.info(`resultCode: ${resultCode}`, data)
-})
-```
+如果需要精细控制，也可以直接使用 `useVisibility`，它有三个状态值。

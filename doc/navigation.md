@@ -262,24 +262,13 @@ navigator.setResult(resultCode, data)
 navigator.hideModal()
 ```
 
-目标页面（即将 modal 显示出来的页面）可以通过 `async-await` 的方式或者 `useResult` 钩子来接收结果：
+目标页面（即将 modal 显示出来的页面）可以通过 `async-await` 的方式来接收结果：
 
 ```javascript
 const [resultCode, data] = await navigator.showModal('ReactModal')
 ```
 
-```javascript
-import { useResult } from 'hybrid-navigation'
-
-function FunctionComponent() {
-
-  useResult(resultCode, data) {
-    // ...
-  }
-}
-```
-
-> ⚠️ 如果遭遇到 Android 生命周期噩梦，请使用 `useResult` 而不是 `async-await` 的方式来接收结果。
+> ⚠️ 如果遭遇到 Android 生命周期噩梦，请使用 `React.Context` 或 `Redux` 等方案来获取结果。
 
 - **hideModal()**
 
@@ -312,7 +301,7 @@ navigator.dismiss()
 
 **注意：仅支持返回可以序列化为 json 的对象，不支持函数**
 
-A 页面通过实现 `async-await` 或 `useResult` 的方式来接收结果
+A 页面通过实现 `async-await` 的方式来接收结果
 
 ```javascript
 // A.js
@@ -357,7 +346,7 @@ navigator.setResult(RESULT_OK, { uri: 'file://...' })
 navigator.dismiss()
 ```
 
-A 页面通过实现 `async-await` 或 `useResult` 的方式来接收结果（略）。
+A 页面通过实现 `async-await` 的方式来接收结果（略）。
 
 - **dismiss()**
 
@@ -461,7 +450,7 @@ navigator.popTo('B')
 navigator.popToRoot()
 ```
 
-pop, popTo, popToRoot 也可以通过 `navigator.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `async-await` 或 `useResult` 来接收结果。
+pop, popTo, popToRoot 也可以通过 `navigator.setResult(RESULT_OK, {...})`返回结果给目标页面，目标页面通过 `async-await` 来接收结果。
 
 - **redirectTo&lt;P&gt;(moduleName: string, props?: P, options?: NavigationItem): void**
 
