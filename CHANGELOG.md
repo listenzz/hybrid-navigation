@@ -1,4 +1,4 @@
-## Next Release
+## 2.0.0
 
 - 移除 `useResult`，请使用 `React.Context` 或 `Redux` 等技术代替
 
