@@ -251,43 +251,56 @@
 }
 
 - (void)updateNavigationBarOptions:(NSDictionary *)options {
-    self.options = [HBDUtils mergeItem:options withTarget:self.options];
-    
+    NSDictionary *previous = self.options;
+    self.options = [HBDUtils mergeItem:options withTarget:previous];
+
     NSMutableDictionary *target = [options mutableCopy];
-    
+
     if (options[@"titleItem"]) {
         target[@"titleItem"] = self.options[@"titleItem"];
     }
-    
+
     if (options[@"leftBarButtonItem"]) {
         target[@"leftBarButtonItem"] = self.options[@"leftBarButtonItem"];
     }
-    
+
     if (options[@"rightBarButtonItem"]) {
         target[@"rightBarButtonItem"] = self.options[@"rightBarButtonItem"];
     }
-    
+
     if (options[@"leftBarButtonItems"]) {
         target[@"leftBarButtonItems"] = self.options[@"leftBarButtonItems"];
     }
-    
+
     if (options[@"rightBarButtonItems"]) {
         target[@"rightBarButtonItems"] = self.options[@"rightBarButtonItems"];
     }
-    
+
     [self applyNavigationBarOptions:target];
-    
+
     NSNumber *statusBarHidden = [options objectForKey:@"statusBarHidden"];
     if (statusBarHidden) {
         [self setNeedsStatusBarAppearanceUpdate];
     }
-    
+
     NSNumber *passThroughTouches = [options objectForKey:@"passThroughTouches"];
     if (passThroughTouches) {
         [self.garden setPassThroughTouches:[passThroughTouches boolValue]];
     }
-    
-    [self hbd_setNeedsUpdateNavigationBar];
+
+    if ([self shouldUpdateNavigationBar:options compareTo:previous]) {
+        [self hbd_setNeedsUpdateNavigationBar];
+    }
+}
+
+- (BOOL)shouldUpdateNavigationBar:(NSDictionary *)options compareTo:(NSDictionary *)previous {
+    NSArray *keys = @[@"topBarStyle", @"topBarColor", @"topBarAlpha", @"tintColor", @"topBarShadowHidden"];
+    for (NSString *opt in options.allKeys) {
+        if ([keys containsObject:opt] && [NSString stringWithFormat:@"%@", previous[opt]] != [NSString stringWithFormat:@"%@",options[opt]]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end
