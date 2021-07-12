@@ -37,16 +37,14 @@ interface Props extends InjectedProps {
   alpha: number
 }
 
-function TopBarAlpha({ garden, navigator, color, alpha }: Props) {
+function TopBarAlpha({ garden, navigator, alpha }: Props) {
   const [topBarAlpha, setTopBarAlpha] = useState(alpha ? Number(alpha) : 0.5)
-  let topBarColor = color || '#FFFFFF'
 
   useEffect(() => {
     garden.updateOptions({
-      topBarAlpha: topBarAlpha,
-      topBarColor: topBarColor,
+      topBarAlpha,
     })
-  }, [garden, topBarColor, topBarAlpha])
+  }, [garden, topBarAlpha])
 
   function pushToTopBarAlpha() {
     navigator.push('TopBarAlpha')

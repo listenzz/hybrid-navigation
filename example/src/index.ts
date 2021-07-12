@@ -107,19 +107,16 @@ ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc, { dependency: 'O
 ReactRegistry.registerComponent('Noninteractive', () => Noninteractive)
 ReactRegistry.registerComponent('TopBarShadowHidden', () => TopBarShadowHidden)
 ReactRegistry.registerComponent('TopBarHidden', () => TopBarHidden)
-ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha, {
-  path: '/topBarAlpha/:alpha',
-  dependency: 'TopBarMisc',
-})
-ReactRegistry.registerComponent('TopBarColor', () => TopBarColor, {
-  path: '/topBarColor/:color',
-  dependency: 'TopBarMisc',
-})
+ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha)
+ReactRegistry.registerComponent('TopBarColor', () => TopBarColor)
 ReactRegistry.registerComponent('TopBarTitleView', () => TopBarTitleView)
 ReactRegistry.registerComponent('CustomTitleView', () => CustomTitleView)
 ReactRegistry.registerComponent('StatusBarColor', () => StatusBarColor)
 ReactRegistry.registerComponent('StatusBarHidden', () => StatusBarHidden)
-ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle)
+ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle, {
+  path: '/topBarStyle/:who',
+  dependency: 'TopBarMisc',
+})
 
 ReactRegistry.registerComponent('ReactModal', () => ReactModal, { path: '/modal', mode: 'modal' })
 
