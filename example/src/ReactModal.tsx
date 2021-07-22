@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import withBottomModal from './withBottomModal'
-import { RESULT_OK, Navigator, InjectedProps, useVisible } from 'hybrid-navigation'
+import { RESULT_OK, Navigator, InjectedProps, useVisibleEffect } from 'hybrid-navigation'
 
 function ReactModal({ navigator, sceneId }: InjectedProps) {
   useEffect(() => {
@@ -11,16 +11,12 @@ function ReactModal({ navigator, sceneId }: InjectedProps) {
     })
   }, [navigator, sceneId])
 
-  const visible = useVisible(sceneId)
-
-  useEffect(() => {
-    if (!visible) {
-      return
-    }
-
-    console.info(`Page ReactModal is visible [${sceneId}]`)
-    return () => console.info(`Page ReactModal is invisible [${sceneId}]`)
-  }, [visible, sceneId])
+  useVisibleEffect(
+    useCallback(() => {
+      console.info(`Page ReactModal is visible [${sceneId}]`)
+      return () => console.info(`Page ReactModal is invisible [${sceneId}]`)
+    }, [sceneId]),
+  )
 
   async function hideModal(gender?: string) {
     if (gender) {

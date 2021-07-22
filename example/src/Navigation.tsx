@@ -34,7 +34,7 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
     })
   }, [navigator])
 
-  const visible = useVisible(sceneId)
+  const visible = useVisible()
 
   useEffect(() => {
     if (!visible) {

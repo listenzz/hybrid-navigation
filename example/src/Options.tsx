@@ -45,7 +45,7 @@ export default withNavigationItem({
 })(Options)
 
 function Options({ sceneId, navigator, garden }: InjectedProps) {
-  const visible = useVisible(sceneId)
+  const visible = useVisible()
 
   useEffect(() => {
     if (!visible) {

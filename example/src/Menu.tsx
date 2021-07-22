@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import { TouchableOpacity, Text, View, StatusBar, Platform } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
-import { toolbarHeight, InjectedProps, useVisible } from 'hybrid-navigation'
+import { toolbarHeight, InjectedProps, useVisibleEffect } from 'hybrid-navigation'
 
 import styles from './Styles'
 
@@ -21,11 +21,11 @@ const paddingTop = Platform.select({
   },
 })
 
-export default function Menu({ navigator, sceneId }: InjectedProps) {
-  const push = useCallback(() => {
+export default function Menu({ navigator }: InjectedProps) {
+  const push = () => {
     navigator.closeMenu()
     navigator.push('OneNative')
-  }, [navigator])
+  }
 
   function pushToRedux() {
     navigator.closeMenu()
@@ -37,15 +37,12 @@ export default function Menu({ navigator, sceneId }: InjectedProps) {
     navigator.push('Toast')
   }
 
-  const visible = useVisible(sceneId)
-
-  useEffect(() => {
-    if (!visible) {
-      return
-    }
-    console.log(`Menu is visible`)
-    return () => console.log(`Menu is invisible`)
-  }, [visible])
+  useVisibleEffect(
+    useCallback(() => {
+      console.log(`Menu is visible`)
+      return () => console.log(`Menu is invisible`)
+    }, []),
+  )
 
   return (
     <View style={[styles.container, paddingTop]}>
