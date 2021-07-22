@@ -1,3 +1,26 @@
+## 2.1.0
+
+- `useVisible` 不再需要参数
+
+- 添加 `useNavigator`
+
+  ```tsx
+  const navigator = useNavigator()
+  ```
+
+- 添加 `useGarden`
+
+- 重新设计 `useVisibleEffect`，现在它接受一个 useCallback 作为参数，是不是很酷？
+
+  ```tsx
+  useVisibleEffect(
+    useCallback(() => {
+      console.info(`Page ReactModal is visible [${sceneId}]`)
+      return () => console.info(`Page ReactModal is invisible [${sceneId}]`)
+    }, [sceneId]),
+  )
+  ```
+
 ## 2.0.0
 
 - 移除 `useResult`，请使用 `React.Context` 或 `Redux` 等技术代替
