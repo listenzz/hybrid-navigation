@@ -1,21 +1,17 @@
 ## 如何监听页面显示或隐藏
 
-使用 `useVisible`
+使用 `useVisibleEffect`
 
 ```tsx
 import React, { useCallback } from 'react'
-import { useVisible } from 'hybrid-navigation'
+import { useVisibleEffect } from 'hybrid-navigation'
 
-const visible = useVisible(sceneId)
-
-useEffect(() => {
-  if (!visible) {
-    return
-  }
-
-  Alert.alert('Lifecycle Alert!', 'componentDidAppear.')
-  return () => Alert.alert('Lifecycle Alert!', 'componentDidDisappear.')
-}, [visible])
+useVisibleEffect(
+  useCallback(() => {
+    Alert.alert('Lifecycle Alert!', 'componentDidAppear.')
+    return () => Alert.alert('Lifecycle Alert!', 'componentDidDisappear.')
+  }, []),
+)
 ```
 
-如果需要精细控制，也可以直接使用 `useVisibility`，它有三个状态值。
+如果需要获取页面可见状态，使用 `useVisible` 或者 `useVisibility`。
