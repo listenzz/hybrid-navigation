@@ -1,5 +1,5 @@
 import { AppRegistry, ComponentProvider } from 'react-native'
-import React, { useEffect, ComponentType } from 'react'
+import React, { useEffect, ComponentType, createContext } from 'react'
 import { Navigator } from './Navigator'
 import {
   NavigationModule,
@@ -29,6 +29,8 @@ interface Props {
 function getDisplayName(WrappedComponent: React.ComponentType<any>) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component'
 }
+
+export const NavigationContext = createContext<any>(null)
 
 function withNavigator(moduleName: string) {
   return function (WrappedComponent: React.ComponentType<any>) {
@@ -70,7 +72,12 @@ function withNavigator(moduleName: string) {
         garden,
         navigator,
       }
-      return <WrappedComponent ref={ref} {...props} {...injected} />
+
+      return (
+        <NavigationContext.Provider value={navigator}>
+          <WrappedComponent ref={ref} {...props} {...injected} />
+        </NavigationContext.Provider>
+      )
     })
 
     FC.displayName = `withNavigator(${getDisplayName(WrappedComponent)})`

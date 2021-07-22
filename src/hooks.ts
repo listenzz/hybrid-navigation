@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import {
   EventEmitter,
@@ -9,19 +9,22 @@ import {
   ON_COMPONENT_APPEAR,
 } from './NavigationModule'
 import { Navigator } from './Navigator'
+import { NavigationContext } from './ReactRegistry'
 
 export type Visibility = 'visible' | 'invisible' | 'pending'
 
-export function useVisible(sceneId: string) {
-  const visibility = useVisibility(sceneId)
+export function useVisible() {
+  const visibility = useVisibility()
   return visibility === 'visible'
 }
 
-export function useVisibility(sceneId: string) {
-  const [visibility, setVisibility] = useState(Navigator.of(sceneId).visibility)
+export function useVisibility() {
+  const navigator = useNavigator()
+  const [visibility, setVisibility] = useState(navigator.visibility)
 
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+      const sceneId = navigator.sceneId
       if (sceneId === data[KEY_SCENE_ID]) {
         if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
           setVisibility('visible')
@@ -34,7 +37,50 @@ export function useVisibility(sceneId: string) {
     return () => {
       subscription.remove()
     }
-  }, [sceneId])
+  }, [navigator])
 
   return visibility
+}
+
+export function useVisibleEffect(effect: React.EffectCallback) {
+  const navigator = useNavigator()
+  const destructor = useRef<ReturnType<React.EffectCallback>>()
+
+  useEffect(() => {
+    if (navigator.visibility === 'visible') {
+      destructor.current = effect()
+    }
+
+    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
+      const sceneId = navigator.sceneId
+      if (sceneId === data[KEY_SCENE_ID]) {
+        if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
+          destructor.current = effect()
+        } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
+          if (destructor.current) {
+            destructor.current()
+            destructor.current = undefined
+          }
+        }
+      }
+    })
+
+    return () => {
+      if (destructor.current) {
+        destructor.current()
+        destructor.current = undefined
+      }
+      subscription.remove()
+    }
+  }, [effect, navigator])
+}
+
+export function useNavigator(): Navigator {
+  const ctx = useContext<Navigator>(NavigationContext)
+  return ctx
+}
+
+export function useGarden() {
+  const ctx = useContext<Navigator>(NavigationContext)
+  return ctx.garden
 }
