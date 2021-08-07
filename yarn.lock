@@ -5475,10 +5475,10 @@ react-native-codegen@^0.0.6:
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
 
-react-native-fast-image@^8.1.5:
-  version "8.3.6"
-  resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.3.6.tgz#b9f2d2e615919fd46ccbc9f8ad85d372196b0f0c"
-  integrity sha512-vjecBJXg9mCXGGfoUZ94SBEP1SYOkRN/w9SORH7D86PIQUVIqGbxW/Di3N79GI8Wsbay8qI7IWVHK7x26kIHbw==
+react-native-fast-image@^8.3.7:
+  version "8.3.7"
+  resolved "https://registry.yarnpkg.com/react-native-fast-image/-/react-native-fast-image-8.3.7.tgz#c4877de17903101f6d94b6736a4f7e5d7b019224"
+  integrity sha512-J++Ad04PTUe4YgjyGv63gfgV8Fz1gZKAgQHpblf8Z87D9dxfc8UfXHTPv9VLGdTJU4IzdTnQqzoFgDtWdsvBsQ==
 
 react-native-iphone-x-helper@^1.0.3, react-native-iphone-x-helper@^1.2.0:
   version "1.3.1"
@@ -5493,10 +5493,10 @@ react-native-keyboard-aware-scroll-view@^0.9.3:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
-react-native-toast-hybrid@^2.3.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/react-native-toast-hybrid/-/react-native-toast-hybrid-2.4.0.tgz#475d69b5ffc682f21ed4c2fc3ef603e8dfe9e4e8"
-  integrity sha512-hSRIR/t8T6X97RC6d52C4IaH/N6U4eswkmPo84THG/eCW4ucMgeFtazQl8D+rnWGiHtGVNQBx4Asv/MrYZY9TQ==
+react-native-toast-hybrid@^2.4.2:
+  version "2.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-toast-hybrid/-/react-native-toast-hybrid-2.4.2.tgz#0337ededa35ec5651e0dcba3e069df78e606c3eb"
+  integrity sha512-KijMXthTWWjCmGr+6k6qeE+j5rFQqM9ONXQg6A1GxvQiDLjOV6u8nAltFYCAvQe1sLol7BlnISZcIUOAUCObAw==
 
 react-native@^0.64.0:
   version "0.64.2"

@@ -10,7 +10,7 @@ PODS:
     - React-jsi (= 0.64.2)
     - ReactCommon/turbomodule/core (= 0.64.2)
   - glog (0.3.5)
-  - HybridNavigation (2.0.0):
+  - HybridNavigation (2.1.0):
     - React
   - libwebp (1.1.0):
     - libwebp/demux (= 1.1.0)
@@ -278,7 +278,7 @@ PODS:
     - React-cxxreact (= 0.64.2)
     - React-jsi (= 0.64.2)
     - React-perflogger (= 0.64.2)
-  - RNFastImage (8.3.6):
+  - RNFastImage (8.3.7):
     - React-Core
     - SDWebImage (~> 5.8)
     - SDWebImageWebPCoder (~> 0.6.1)
@@ -288,7 +288,7 @@ PODS:
   - SDWebImageWebPCoder (0.6.1):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.7)
-  - ToastHybrid (2.4.0):
+  - ToastHybrid (2.4.2):
     - React
   - Yoga (1.14.0)
 
@@ -400,11 +400,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
-  DoubleConversion: cf9b38bf0b2d048436d9a82ad2abe1404f11e7de
+  DoubleConversion: cde416483dac037923206447da6e1454df403714
   FBLazyVector: e686045572151edef46010a6f819ade377dfeb4b
-  FBReactNativeSpec: b062e1d513ebc2bf9c34a41ce992b786b0c41bb0
-  glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
-  HybridNavigation: 95d75bad24ec928e07116309d5a1ddcc39931b66
+  FBReactNativeSpec: 30877946deb4c4ede121b14da8e79220db9692ed
+  glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
+  HybridNavigation: 95f0c6dfcbd49a6cc39f32926d77e60539c5cd55
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: 6d3e854f0e7260a648badd0d44fc364bc9da9728
@@ -429,10 +429,10 @@ SPEC CHECKSUMS:
   React-RCTVibration: 24600e3b1aaa77126989bc58b6747509a1ba14f3
   React-runtimeexecutor: a9904c6d0218fb9f8b19d6dd88607225927668f9
   ReactCommon: 149906e01aa51142707a10665185db879898e966
-  RNFastImage: 044259b52d726b183fa401f3521b2e5a864afc0a
+  RNFastImage: a7384db75df352500261e8e8f1ac2026def26102
   SDWebImage: b969dcfc02c40a5da71eac0b03b8f1a0c794a86f
   SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
-  ToastHybrid: c5ad7ee8ac15b41da0b714a1b250b3f3fc7d5fa6
+  ToastHybrid: 9aff1a1337afbc028ac4cc439597f1e1198a392c
   Yoga: 575c581c63e0d35c9a83f4b46d01d63abc1100ac
 
 PODFILE CHECKSUM: 725a5541a540641a514a7713d595245c32ce85c1
