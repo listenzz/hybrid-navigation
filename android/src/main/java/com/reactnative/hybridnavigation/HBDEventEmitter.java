@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 
@@ -64,6 +65,16 @@ public class HBDEventEmitter extends ReactContextBaseJavaModule {
         constants.put("EVENT_DID_SET_ROOT", EVENT_DID_SET_ROOT);
         constants.put("EVENT_WILL_SET_ROOT", EVENT_WILL_SET_ROOT);
         return constants;
+    }
+
+    @ReactMethod
+    public void addListener(String eventType) {
+        // do nothing
+    }
+
+    @ReactMethod
+    public void removeListeners(int count) {
+        // do nothing
     }
 
     public static void sendEvent(@NonNull String eventName, @NonNull WritableMap params) {

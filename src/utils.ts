@@ -46,6 +46,10 @@ function bindBarButtonItemClickEvent(
           {},
         )
 
+        if (!event.context) {
+          event.context = {}
+        }
+
         if (options.inLayout) {
           event.context.inLayout = true
         }
