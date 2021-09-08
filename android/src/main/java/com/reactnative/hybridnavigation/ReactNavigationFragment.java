@@ -43,7 +43,7 @@ public class ReactNavigationFragment extends NavigationFragment {
     private final static TransitionAnimation BetterRedirect = new TransitionAnimation(R.anim.nav_push_translucent_enter, R.anim.nav_gone, R.anim.nav_none, R.anim.nav_push_translucent_exit);
 
     @Override
-    protected void pushFragmentSync(AwesomeFragment fragment, TransitionAnimation animation, @Nullable Runnable completion) {
+    protected void pushFragmentSync(@NonNull AwesomeFragment fragment, @NonNull TransitionAnimation animation, @Nullable Runnable completion) {
         if (fragment instanceof ReactFragment) {
             ReactFragment reactFragment = (ReactFragment) fragment;
             if (reactFragment.shouldPassThroughTouches()) {
@@ -55,7 +55,7 @@ public class ReactNavigationFragment extends NavigationFragment {
     }
 
     @Override
-    protected void popToFragmentSync(AwesomeFragment fragment, TransitionAnimation animation, @Nullable Runnable completion) {
+    protected void popToFragmentSync(@NonNull AwesomeFragment fragment, @NonNull TransitionAnimation animation, @Nullable Runnable completion) {
         AwesomeFragment topFragment = getTopFragment();
         if (topFragment instanceof ReactFragment) {
             ReactFragment reactFragment = (ReactFragment) topFragment;
@@ -68,15 +68,15 @@ public class ReactNavigationFragment extends NavigationFragment {
     }
 
     @Override
-    protected void redirectToFragmentSync(@NonNull AwesomeFragment fragment, @Nullable AwesomeFragment from, boolean animated, @Nullable Runnable completion) {
+    protected void redirectToFragmentSync(@NonNull AwesomeFragment fragment, @NonNull TransitionAnimation animation, @Nullable Runnable completion, @Nullable AwesomeFragment from) {
         if (fragment instanceof ReactFragment) {
             ReactFragment reactFragment = (ReactFragment) fragment;
             if (reactFragment.shouldPassThroughTouches()) {
-                super.redirectToFragmentSync(fragment, from, BetterRedirect, completion);
+                super.redirectToFragmentSync(fragment, BetterRedirect, completion, from);
                 return;
             }
         }
 
-        super.redirectToFragmentSync(fragment, from, animated, completion);
+        super.redirectToFragmentSync(fragment, animation, completion, from);
     }
 }

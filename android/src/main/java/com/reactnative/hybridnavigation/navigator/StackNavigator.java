@@ -156,7 +156,7 @@ public class StackNavigator implements Navigator {
             case "redirectTo":
                 fragment = createFragmentWithExtras(extras);
                 if (fragment != null) {
-                    navigationFragment.redirectToFragment(fragment, target, true, () -> promise.resolve(true));
+                    navigationFragment.redirectToFragment(fragment, true, () -> promise.resolve(true), target);
                 } else {
                     promise.resolve(false);
                 }
