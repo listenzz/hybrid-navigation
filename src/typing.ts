@@ -55,6 +55,7 @@ export interface NavigationOption {
   navigationBarColorAndroid?: Color // Android 底部虚拟按钮背景颜色
   navigationBarHiddenAndroid?: boolean // 是否隐藏 Android 底部的虚拟导航栏
   displayCutoutWhenLandscapeAndroid?: boolean // 横屏时，是否将界面延伸至刘海区域，默认 true
+  homeIndicatorAutoHiddenIOS?: boolean // 是否隐藏 Home 指示器，默认 false
 
   backButtonHidden?: boolean // 是否显示返回按钮
   backInteractive?: boolean // 是否允许侧滑返回或通过返回键返回

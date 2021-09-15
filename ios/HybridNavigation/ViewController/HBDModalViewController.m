@@ -68,6 +68,10 @@
     return self.contentViewController;
 }
 
+- (UIViewController *)childViewControllerForHomeIndicatorAutoHidden {
+    return self.contentViewController;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = UIColor.clearColor;

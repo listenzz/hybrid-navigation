@@ -66,6 +66,13 @@
     }
 }
 
+- (BOOL)prefersHomeIndicatorAutoHidden {
+    if (self.options[@"homeIndicatorAutoHiddenIOS"]) {
+        return [self.options[@"homeIndicatorAutoHiddenIOS"] boolValue];
+    }
+    return NO;
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     if (![HBDUtils isIphoneX]) {
@@ -281,6 +288,10 @@
     NSNumber *statusBarHidden = [options objectForKey:@"statusBarHidden"];
     if (statusBarHidden) {
         [self setNeedsStatusBarAppearanceUpdate];
+    }
+    
+    if ([options objectForKey:@"homeIndicatorAutoHiddenIOS"]) {
+        [self setNeedsUpdateOfHomeIndicatorAutoHidden];
     }
 
     NSNumber *passThroughTouches = [options objectForKey:@"passThroughTouches"];

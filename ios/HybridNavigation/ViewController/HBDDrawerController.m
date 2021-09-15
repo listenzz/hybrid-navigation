@@ -60,6 +60,10 @@
     return self.menuOpened ? self.menuController : self.contentController;
 }
 
+- (UIViewController *)childViewControllerForHomeIndicatorAutoHidden {
+    return self.contentController;
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self.contentController beginAppearanceTransition:YES animated:animated];

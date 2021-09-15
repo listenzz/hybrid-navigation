@@ -39,6 +39,10 @@
     return self.selectedViewController;
 }
 
+- (UIViewController *)childViewControllerForHomeIndicatorAutoHidden {
+    return self.selectedViewController;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.definesPresentationContext = NO;

@@ -428,6 +428,10 @@ void adjustLayout(UIViewController *vc) {
     return self.topViewController;
 }
 
+- (UIViewController *)childViewControllerForHomeIndicatorAutoHidden {
+    return self.topViewController;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.definesPresentationContext = NO;
