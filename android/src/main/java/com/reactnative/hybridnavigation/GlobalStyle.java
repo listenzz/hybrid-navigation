@@ -91,6 +91,10 @@ public class GlobalStyle {
             style.setStatusBarColor(Color.TRANSPARENT);
         }
 
+        // 
+        boolean displayCutout = options.getBoolean("displayCutoutWhenLandscapeAndroid", true);
+        style.setDisplayCutoutWhenLandscape(displayCutout);
+
         // navigationBarColor
         String navigationBarColor = options.getString("navigationBarColorAndroid");
         if (navigationBarColor != null) {

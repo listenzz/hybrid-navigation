@@ -31,6 +31,7 @@ export interface Style {
   swipeBackEnabledAndroid?: boolean // Android 是否开启右滑返回，默认是 false
   splitTopBarTransitionIOS?: boolean // iOS 侧滑返回时，是否总是割裂导航栏背景
   scrimAlphaAndroid?: number // Android 侧滑返回遮罩效果 [0 - 255]
+  displayCutoutWhenLandscapeAndroid?: boolean // 横屏时，是否将界面延伸至刘海区域，默认 true
 
   tabBarColor?: Color // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
   tabBarShadowImage?: ShadowImage // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效

@@ -49,9 +49,9 @@ public class Garden {
 
     private final Bundle options;
 
-    boolean backButtonHidden;
+    boolean backButtonHidden = false;
 
-    boolean backInteractive;
+    boolean backInteractive = true;
 
     boolean swipeBackEnabled;
 
@@ -70,8 +70,6 @@ public class Garden {
         Bundle options = fragment.getOptions();
         this.options = options;
 
-        this.backButtonHidden = options.getBoolean("backButtonHidden", false);
-        this.backInteractive = options.getBoolean("backInteractive", true);
         this.swipeBackEnabled = options.getBoolean("swipeBackEnabled", true);
         this.toolbarHidden = options.getBoolean("topBarHidden", false);
         Bundle tabItem = options.getBundle("tabItem");
@@ -83,7 +81,7 @@ public class Garden {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));
         }
 
-        applyToolbarOptions(options);
+        applyOptions(options);
     }
 
     void configureToolbar() {
@@ -193,7 +191,7 @@ public class Garden {
         });
     }
 
-    private void applyToolbarOptions(@NonNull Bundle options) {
+    private void applyOptions(@NonNull Bundle options) {
         String barStyle = options.getString("topBarStyle");
         if (barStyle != null) {
             if (barStyle.equals("dark-content")) {
@@ -211,6 +209,14 @@ public class Garden {
         String navigationBarColor = options.getString("navigationBarColorAndroid");
         if (!TextUtils.isEmpty(navigationBarColor)) {
             style.setNavigationBarColor(Color.parseColor(navigationBarColor));
+        }
+
+        if (options.get("navigationBarHiddenAndroid") != null) {
+            style.setNavigationBarHidden(options.getBoolean("navigationBarHiddenAndroid"));
+        }
+
+        if (options.get("displayCutoutWhenLandscapeAndroid") != null) {
+            style.setDisplayCutoutWhenLandscape(options.getBoolean("displayCutoutWhenLandscapeAndroid"));
         }
 
         boolean statusBarHidden = options.getBoolean("statusBarHidden");
@@ -257,7 +263,7 @@ public class Garden {
     void updateOptions(@NonNull ReadableMap readableMap) {
         Bundle patches = toBundle(readableMap);
 
-        applyToolbarOptions(patches);
+        applyOptions(patches);
 
         if (shouldUpdateStatusBar(readableMap)) {
             fragment.setNeedsStatusBarAppearanceUpdate();
@@ -307,7 +313,7 @@ public class Garden {
     }
 
     private boolean shouldUpdateStatusBar(@NonNull ReadableMap readableMap) {
-        String[] keys = new String[]{"topBarStyle", "statusBarColorAndroid", "statusBarHidden", "topBarColor"};
+        String[] keys = new String[]{"topBarStyle", "statusBarColorAndroid", "statusBarHidden", "topBarColor", "displayCutoutWhenLandscapeAndroid"};
         for (String key : keys) {
             if (readableMap.hasKey(key)) {
                 return true;
@@ -332,7 +338,7 @@ public class Garden {
     }
 
     private boolean shouldUpdateNavigationBar(@NonNull ReadableMap readableMap) {
-        String[] keys = new String[]{"navigationBarColorAndroid"};
+        String[] keys = new String[]{"navigationBarColorAndroid", "navigationBarHiddenAndroid"};
         for (String key : keys) {
             if (readableMap.hasKey(key)) {
                 return true;
