@@ -1,3 +1,15 @@
+## 2.2.0 (2021-09-15)
+
+### Android specific
+
+- 支持隐藏虚拟导航栏
+
+  `navigationBarHiddenAndroid` 默认为 false，仅对页面可设置，可以动态变更
+
+- 支持 Android 9 及以上，设置横屏时，是否将页面延伸至开口区域
+
+  `displayCutoutWhenLandscapeAndroid` 默认为 true，可以全局设置，也可仅针对某页面设置。
+
 ## 2.1.2 （2021-09-10）
 
 - 处理透明导航栏在 Android 10 的兼容性问题
