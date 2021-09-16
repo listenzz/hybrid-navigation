@@ -99,7 +99,7 @@ Navigator.setRoot({
 });
 ```
 
-至此，四种内置布局就已经介绍完成了，我们也可以自定义布局（容器）和导航，[deck](https://github.com/listenzz/react-native-navigation-deck) 就是一个自定义容器，不过这是比较高级的话题了。
+至此，四种内置布局就已经介绍完成了，我们也可以自定义布局（容器）和导航，[deck](https://github.com/listenzz/hybrid-navigation-deck) 就是一个自定义容器，不过这是比较高级的话题了。
 
 > 可以先通过 `Navigator.setRoot` 设置一个入口页面，然后根据应用状态再次调用 `Navigator.setRoot` 决定要进入哪个页面。
 

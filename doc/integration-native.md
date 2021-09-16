@@ -50,7 +50,7 @@ ReactNativeProject/
 
 以上，Android 和 iOS 项目使用 gradle 或者 cocopods 依赖本地 RN 项目。
 
-第二和第三种目录结构，在集成上没多大区别。 这里，我们以第三种目录结构来演示如何集成 react-native-navigaton-hybrid 到原生项目。
+第二和第三种目录结构，在集成上没多大区别。 这里，我们以第三种目录结构来演示如何集成 hybrid-navigation 到原生项目。
 
 ## 创建 RN 项目并集成 Navigation Hybrid
 
