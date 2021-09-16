@@ -1,3 +1,18 @@
+## 2.3.0 (2021-09-16)
+
+### iOS specific
+
+- 支持和 `react-native-gesture-handler` 一起使用
+
+  如果需要支持 react-native-gesture-handler， 需要按如下方式修改 AppDelegate.m 文件
+
+  ```objc
+      RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+      [[HBDReactBridgeManager get] installWithBridge:bridge];
+  ```
+
+- 添加 `homeIndicatorAutoHiddenIOS` 配置项，仅对页面可设置，可以动态更更，用于隐藏该页面的 Home 指示器
+
 ## 2.2.0 (2021-09-15)
 
 ### Android specific
