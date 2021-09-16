@@ -225,6 +225,7 @@ class Screen extends Component {
     navigationBarColorAndroid: string, // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
     navigationBarHiddenAndroid: boolean, // 是否隐藏 Android 底部的虚拟导航栏
     displayCutoutWhenLandscapeAndroid: boolean, // 横屏时，是否将界面延伸至刘海区域，默认 true
+    homeIndicatorAutoHiddenIOS: boolean // 是否隐藏 Home 指示器，默认 false
 
     backButtonHidden: true, // 当前页面是否隐藏返回按钮
     backInteractive: true, // 当前页面是否可以通过右滑或返回键返回
@@ -412,6 +413,7 @@ export interface NavigationOption {
   navigationBarColorAndroid?: Color // Android 底部虚拟按钮背景颜色
   navigationBarHiddenAndroid: boolean // 是否隐藏 Android 底部的虚拟导航栏
   displayCutoutWhenLandscapeAndroid: boolean // 横屏时，是否将界面延伸至刘海区域，默认 true
+  homeIndicatorAutoHiddenIOS: boolean // 是否隐藏 Home 指示器，默认 false
   backButtonHidden?: boolean // 是否显示返回按钮
   backInteractive?: boolean // 是否允许侧滑返回或通过返回键返回
 }

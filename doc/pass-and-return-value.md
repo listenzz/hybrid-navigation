@@ -56,8 +56,8 @@ iOS 注册方式如下
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    NSURL *jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"example/index" fallbackResource:nil];
-    [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+    RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+    [[HBDReactBridgeManager get] installWithBridge:bridge];
 
     // 注册原生模块
     [[HBDReactBridgeManager get] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
