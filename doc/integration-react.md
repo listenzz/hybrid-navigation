@@ -140,20 +140,6 @@ public void onCreate() {
 cd ios & pod install
 ```
 
-修改 AppDelegate.h 文件
-
-```diff
-- #import <React/RCTBridgeDelegate.h>
-#import <UIKit/UIKit.h>
-
-- @interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate>
-+ @interface AppDelegate : UIResponder <UIApplicationDelegate>
-
-@property (nonatomic, strong) UIWindow *window;
-
-@end
-```
-
 修改 AppDelegate.m 文件
 
 ```diff
@@ -166,16 +152,13 @@ cd ios & pod install
 
   - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
   {
--  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 -  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
 -                                                   moduleName:@"RN60"
 -                                            initialProperties:nil];
 -
 -  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
--
-+  NSURL *jsCodeLocation;
-+  jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-+  [[HBDReactBridgeManager get] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
+
++  [[HBDReactBridgeManager get] installWithBridge:bridge];
 +
    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 +  self.window.windowLevel = UIWindowLevelStatusBar + 1;
@@ -187,14 +170,6 @@ cd ios & pod install
    return YES;
  }
 
-- -(NSURL *)sourceURLForBridge:(RCTBridge *)bridge
-- {
-- #if DEBUG
--   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-- #else
--   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-- #endif
-- }
  @end
 ```
 

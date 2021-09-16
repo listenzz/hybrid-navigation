@@ -32,7 +32,9 @@ extern const NSInteger ResultCancel;
 @property(nonatomic, assign, getter=isViewHierarchyReady) BOOL viewHierarchyReady;
 @property(nonatomic, assign) BOOL hasRootLayout;
 
-- (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions;
+- (void)installWithBundleURL:(NSURL *)jsCodeLocation launchOptions:(NSDictionary *)launchOptions;
+
+- (void)installWithBridge:(RCTBridge *)bridge;
 
 - (void)registerNativeModule:(NSString *)moduleName forController:(Class)clazz;
 

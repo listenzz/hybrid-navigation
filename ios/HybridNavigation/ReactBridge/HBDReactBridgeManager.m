@@ -101,10 +101,14 @@ const NSInteger ResultCancel = 0;
     mainWindow.rootViewController = vc;
 }
 
-- (void)installWithBundleURL:jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
+- (void)installWithBundleURL:(NSURL *)jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
     _jsCodeLocation = jsCodeLocation;
     
     _bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+}
+
+- (void)installWithBridge:(RCTBridge *)bridge {
+    _bridge = bridge;
 }
 
 - (void)registerNativeModule:(NSString *)moduleName forController:(Class)clazz {

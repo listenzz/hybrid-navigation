@@ -293,31 +293,18 @@ protected void onCreateMainComponent() {
 
 ```ruby
 # 注意把 ReactNativeProject 替换成你的项目
-node_modules_path = '../ReactNativeProject/node_modules/'
+require_relative '../ReactNativeProject/node_modules/react-native/scripts/react_native_pods'
+require_relative '../ReactNativeProject/node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-pod 'React', :path => node_modules_path + 'react-native', :subspecs => [
-    'Core',
-    'CxxBridge',
-    'DevSupport', # Include this to enable In-App Devmenu if RN >= 0.43
-    'RCTAnimation',
-    'RCTActionSheet',
-    'RCTText',
-    'RCTImage',
-    'RCTSettings',
-    'RCTCameraRoll',
-    'RCTVibration',
-    'RCTNetwork',
-    'RCTLinkingIOS',
-    'RCTWebSocket', # needed for debugging
-]
+target 'ReactNativeProject' do
+    config = use_native_modules!
+    use_react_native!(
+      :path => config[:reactNativePath],
+      # to enable hermes on iOS, change `false` to `true` and then install pods
+      :hermes_enabled => false
+    )
+end
 
-# Explicitly include Yoga if you are using RN >= 0.42.0
-pod 'yoga', :path => node_modules_path +  'react-native/ReactCommon/yoga'
-pod 'DoubleConversion', :podspec => node_modules_path + 'react-native/third-party-podspecs/DoubleConversion.podspec'
-pod 'GLog', :podspec => node_modules_path + 'react-native/third-party-podspecs/GLog.podspec'
-pod 'Folly', :podspec => node_modules_path + 'react-native/third-party-podspecs/Folly.podspec'
-
-pod 'HybridNavigation', :path => node_modules_path + 'hybrid-navigation'
 ```
 
 记得 `pod install` 一次。
@@ -359,8 +346,9 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
 ```objc
 #import <HybridNavigation/HybridNavigation.h>
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTBridgeDelegate.h>
 
-@interface AppDelegate () <HBDReactBridgeManagerDelegate>
+@interface AppDelegate () <HBDReactBridgeManagerDelegate, RCTBridgeDelegate>
 
 @end
 
@@ -368,10 +356,10 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    NSURL *jsCodeLocation;
-    jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
-    [[HBDReactBridgeManager sharedInstance] installWithBundleURL:jsCodeLocation launchOptions:launchOptions];
-    [HBDReactBridgeManager sharedInstance].delegate = self;
+
+    RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+    [[HBDReactBridgeManager get] installWithBridge:bridge];
+    [HBDReactBridgeManager get].delegate = self;
 
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
@@ -379,6 +367,14 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
+#if DEBUG
+    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+#else
+    return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+#endif
 }
 
 - (void)reactModuleRegisterDidCompleted:(HBDReactBridgeManager *)manager {
