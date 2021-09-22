@@ -88,9 +88,6 @@
 }
 
 - (void)statusBarFrameWillChange:(NSNotification *)notification {
-    NSValue *rectValue = [notification.userInfo objectForKey:UIApplicationStatusBarFrameUserInfoKey];
-    CGRect statusRect = [rectValue CGRectValue];
-    // RCTLogInfo(@"[Navigator] statusRect:%@", NSStringFromCGRect(statusRect));
     [self setNeedsStatusBarAppearanceUpdate];
 }
 

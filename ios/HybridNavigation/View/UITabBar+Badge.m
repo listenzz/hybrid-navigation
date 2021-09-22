@@ -15,11 +15,7 @@
     UILabel *label = [[UILabel alloc]init];
     label.tag = 1000 + index;
     
-    if (@available(iOS 10.0, *)) {
-        label.backgroundColor = [UITabBarItem appearance].badgeColor ?: [UIColor colorWithRed:1 green:58.0/255.0 blue:47./255. alpha:1];
-    } else {
-        label.backgroundColor = [UIColor colorWithRed:1 green:58.0/255.0 blue:47./255. alpha:1];
-    }
+    label.backgroundColor = [UITabBarItem appearance].badgeColor ?: [UIColor colorWithRed:1 green:58.0/255.0 blue:47./255. alpha:1];
 
     CGFloat percentX = (index + 0.5) / self.items.count;
     CGFloat x = ceilf(percentX * self.frame.size.width + 10);

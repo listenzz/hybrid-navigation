@@ -203,11 +203,9 @@
             self.tabBarOptions = options;
             self.rootView.appProperties = [self props];
         } else {
-             tabBar.tintColor = [HBDUtils colorWithHexString:tabBarItemColor];
-            if (@available(iOS 10.0, *)) {
-                if (tabBarUnselectedItemColor) {
-                    tabBar.unselectedItemTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
-                }
+            tabBar.tintColor = [HBDUtils colorWithHexString:tabBarItemColor];
+            if (tabBarUnselectedItemColor) {
+                tabBar.unselectedItemTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
             }
         }
     }

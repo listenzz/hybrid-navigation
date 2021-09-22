@@ -194,14 +194,9 @@
         
         NSString *badgeColor = self.options[@"tabBarBadgeColor"];
         self.badgeColorHexString = @"#FF3B30";
-        if (@available(iOS 10.0, *)) {
-            if (badgeColor) {
-                [UITabBarItem appearance].badgeColor = [HBDUtils colorWithHexString:badgeColor];
-                self.badgeColorHexString = badgeColor;
-            }
-        } else {
-            // Fallback on earlier versions
-            
+        if (badgeColor) {
+            [UITabBarItem appearance].badgeColor = [HBDUtils colorWithHexString:badgeColor];
+            self.badgeColorHexString = badgeColor;
         }
     }
     return self;
@@ -257,10 +252,8 @@
         [tabBar setTintColor:self.tabBarTintColor];
     }
 
-    if (@available(iOS 10.0, *)) {
-        if (self.tabBarUnselectedTintColor) {
-            [tabBar setUnselectedItemTintColor:self.tabBarUnselectedTintColor];
-        }
+    if (self.tabBarUnselectedTintColor) {
+        [tabBar setUnselectedItemTintColor:self.tabBarUnselectedTintColor];
     }
 }
 
