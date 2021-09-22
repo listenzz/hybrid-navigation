@@ -1,9 +1,10 @@
-import { Linking } from 'react-native'
+import { EventSubscription, Linking } from 'react-native'
 import { router } from './router'
 
 let _active = 0
 let _uriPrefix: string = ''
 let _hasHandleInitialURL = false
+let _linkingSucscription: EventSubscription | undefined
 
 function activate(uriPrefix: string) {
   if (!uriPrefix) {
@@ -23,7 +24,7 @@ function activate(uriPrefix: string) {
         })
         .catch(err => console.error('An error occurred', err))
     }
-    Linking.addEventListener('url', handleLinking)
+    _linkingSucscription = Linking.addEventListener('url', handleLinking)
   }
   _active++
 }
@@ -31,7 +32,12 @@ function activate(uriPrefix: string) {
 function deactivate() {
   _active--
   if (_active === 0) {
-    Linking.removeEventListener('url', handleLinking)
+    if (_linkingSucscription) {
+      _linkingSucscription.remove()
+      _linkingSucscription = undefined
+    } else {
+      Linking.removeEventListener('url', handleLinking)
+    }
   }
 
   if (_active < 0) {
