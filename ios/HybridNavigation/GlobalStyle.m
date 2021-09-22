@@ -240,6 +240,15 @@
 }
 
 - (void)inflateTabBar:(UITabBar *)tabBar {
+    if (@available(iOS 15.0, *)) {
+        UITabBarAppearance *appearance = [UITabBarAppearance new];
+        [appearance configureWithDefaultBackground];
+        appearance.backgroundImage = [HBDUtils imageWithColor:self.tabBarBackgroundColor];
+        appearance.shadowImage = self.tabBarShadowImage;
+        tabBar.scrollEdgeAppearance = appearance;
+        tabBar.standardAppearance = appearance;
+    }
+    
     if (self.tabBarBackgroundColor) {
         [tabBar setBackgroundImage:[HBDUtils imageWithColor:self.tabBarBackgroundColor]];
     }

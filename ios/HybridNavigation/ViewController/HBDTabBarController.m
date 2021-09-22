@@ -177,7 +177,12 @@
     UITabBar *tabBar = self.tabBar;
     NSString *tabBarColor = [options objectForKey:@"tabBarColor"];
     if (tabBarColor) {
-        [tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]]];
+        if (@available(iOS 15.0, *)) {
+            [tabBar standardAppearance].backgroundImage = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]];
+            [tabBar scrollEdgeAppearance].backgroundImage = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]];
+        } else {
+            [tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]]];
+        }
     }
     
     NSDictionary *tabBarShadowImage = options[@"tabBarShadowImage"];
