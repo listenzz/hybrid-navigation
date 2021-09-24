@@ -23,7 +23,7 @@
 @property(nonatomic, strong) NSMutableArray<NSString *> *layouts;
 @property(nonatomic, strong) NSMutableDictionary<NSString *, id<HBDNavigator>> *actionNavigatorPairs;
 @property(nonatomic, strong) NSMutableDictionary<NSString *, id<HBDNavigator>> *layoutNavigatorPairs;
-@property(nonatomic, strong) NSMutableDictionary<Class, NSString *> *classLayoutPairs;
+@property(nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *classLayoutPairs;
 
 @end
 
@@ -73,7 +73,7 @@
 }
 
 - (NSString *)layoutForViewController:(UIViewController *)vc {
-    NSString *layout = [self.classLayoutPairs objectForKey:[vc class]];
+    NSString *layout = [self.classLayoutPairs objectForKey:NSStringFromClass([vc class])];
     if (!layout) {
         if ([vc isKindOfClass:[HBDViewController class]]) {
             return @"screen";
@@ -92,9 +92,9 @@
 }
 
 - (void)setLayout:(NSString *)layout forViewController:(UIViewController *)vc {
-    NSString *current = [self.classLayoutPairs objectForKey:[vc class]];
+    NSString *current = [self.classLayoutPairs objectForKey:NSStringFromClass([vc class])];
     if (!current || ![current isEqualToString:layout]) {
-        [self.classLayoutPairs setObject:layout forKey:[vc class]];
+        [self.classLayoutPairs setObject:layout forKey:NSStringFromClass([vc class])];
     }
 }
 

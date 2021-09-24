@@ -335,7 +335,7 @@ const NSInteger ResultCancel = 0;
 - (NSArray *)routeGraph {
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *vc = mainWindow.rootViewController;
-    NSMutableDictionary *graph = [self buildRouteGraphWithViewController:vc];
+    NSMutableDictionary *graph = [[self buildRouteGraphWithViewController:vc] mutableCopy];
     
     NSMutableArray *root = [[NSMutableArray alloc] init];
     NSMutableArray *modal = [[NSMutableArray alloc] init];
@@ -386,13 +386,13 @@ const NSInteger ResultCancel = 0;
     NSMutableDictionary *m = nil;
     HBDModalViewController *modal = vc.hbd_popupViewController.hbd_modalViewController;
     if (modal && !modal.isBeingHidden) {
-        m = [self buildRouteGraphWithViewController:modal.contentViewController];
+        m = [[self buildRouteGraphWithViewController:modal.contentViewController] mutableCopy];
     }
     
     NSMutableDictionary *p = nil;
     UIViewController *presented = vc.presentedViewController;
     if (presented && presented.presentingViewController == vc && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
-        p = [self buildRouteGraphWithViewController:presented];
+        p = [[self buildRouteGraphWithViewController:presented] mutableCopy];
     }
     
     NSString *layout = [self.navigatorRegistry layoutForViewController:vc];

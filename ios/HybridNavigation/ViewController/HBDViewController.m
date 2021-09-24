@@ -54,7 +54,11 @@
 }
 
 - (BOOL)prefersStatusBarHidden {
-    if ([HBDUtils isIphoneX] || @available(iOS 13.0, *)) {
+    if (@available(iOS 13.0, *)) {
+        return [self hbd_statusBarHidden] && ![HBDUtils isInCall];
+    }
+    
+    if ([HBDUtils isIphoneX]) {
         return [self hbd_statusBarHidden] && ![HBDUtils isInCall];
     } else {
         UIView *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
@@ -288,7 +292,9 @@
     }
     
     if ([options objectForKey:@"homeIndicatorAutoHiddenIOS"]) {
-        [self setNeedsUpdateOfHomeIndicatorAutoHidden];
+        if (@available(iOS 11.0, *)) {
+            [self setNeedsUpdateOfHomeIndicatorAutoHidden];
+        }
     }
 
     NSNumber *passThroughTouches = [options objectForKey:@"passThroughTouches"];

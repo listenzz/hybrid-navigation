@@ -461,7 +461,11 @@ void adjustLayout(UIViewController *vc) {
 
 - (void)viewSafeAreaInsetsDidChange {
     [super viewSafeAreaInsetsDidChange];
-    if (![HBDUtils isIphoneX] && @available(iOS 13.0, *)) {
+    if ([HBDUtils isIphoneX]) {
+        return;
+    }
+    
+    if (@available(iOS 13.0, *)) {
         UIEdgeInsets safeAreaInsets = self.view.safeAreaInsets;
         UIEdgeInsets additionalInsets = self.additionalSafeAreaInsets;
         
@@ -568,7 +572,7 @@ void adjustLayout(UIViewController *vc) {
 }
 
 - (void)printSubViews:(UIView *)view prefix:(NSString *)prefix {
-    NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
+    // NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
     // RCTLogInfo(@"[Navigator] %@%@", prefix, viewName);
     if (view.subviews.count > 0) {
         for (UIView *sub in view.subviews) {

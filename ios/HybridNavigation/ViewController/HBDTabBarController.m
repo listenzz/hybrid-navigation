@@ -246,12 +246,12 @@
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     if ([[HBDReactBridgeManager get] hasRootLayout] && self.intercepted) {
-        NSInteger from = self.selectedIndex;
-        NSInteger to = [self.childViewControllers indexOfObject:viewController];
+        long from = self.selectedIndex;
+        long to = [self.childViewControllers indexOfObject:viewController];
         
         [HBDEventEmitter sendEvent:EVENT_SWITCH_TAB data:@{
             KEY_SCENE_ID: self.sceneId,
-            KEY_INDEX: [NSString stringWithFormat:@"%d-%d", from, to],
+            KEY_INDEX: [NSString stringWithFormat:@"%ld-%ld", from, to],
         }];
         return NO;
     }

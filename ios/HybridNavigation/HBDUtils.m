@@ -8,8 +8,8 @@
 
 #import "HBDUtils.h"
 #import <React/RCTConvert.h>
-#import <CoreTelephony/CTCallCenter.h>
-#import <CoreTelephony/CTCall.h>
+#import <CallKit/CXCallObserver.h>
+#import <CallKit/CXCall.h>
 
 @implementation HBDUtils
 
@@ -180,14 +180,17 @@
 }
 
 + (BOOL)isIphoneX {
-    return @available(iOS 11.0, *) && UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom > 0.0;
+    if (@available(iOS 11.0, *)) {
+        return UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom > 0.0;
+    }
+    return NO;
 }
 
 + (BOOL)isInCall {
     if ([HBDUtils isIphoneX]) {
-        CTCallCenter *callCenter = [[CTCallCenter alloc] init] ;
-        for (CTCall *call in callCenter.currentCalls)  {
-            if (call.callState == CTCallStateConnected) {
+        CXCallObserver *callCenter = [[CXCallObserver alloc] init] ;
+        for (CXCall *call in callCenter.calls)  {
+            if (call.hasConnected) {
                 return YES;
             }
         }
