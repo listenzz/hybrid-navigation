@@ -73,7 +73,8 @@ function Result({ navigator, garden }: InjectedProps) {
     <KeyboardAwareScrollView
       style={{ flex: 1 }}
       showsHorizontalScrollIndicator={false}
-      contentInsetAdjustmentBehavior="automatic">
+      contentInsetAdjustmentBehavior="automatic"
+    >
       <View style={styles.container}>
         <Text style={styles.welcome}>This's a React Native scene.</Text>
 

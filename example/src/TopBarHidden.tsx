@@ -21,6 +21,7 @@ const paddingTop = Platform.select({
 })
 
 export default withNavigationItem({
+  screenBackgroundColor: '#FF0000',
   topBarHidden: true,
   titleItem: {
     title: 'You can not see me',
@@ -36,7 +37,8 @@ function TopBarHidden({ navigator }: InjectedProps) {
     <ScrollView
       contentInsetAdjustmentBehavior="never"
       automaticallyAdjustContentInsets={false}
-      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
+      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+    >
       <View style={[styles.container, paddingTop]}>
         <Text style={styles.welcome}>TopBar is hidden</Text>
 

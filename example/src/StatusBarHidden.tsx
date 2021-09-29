@@ -46,7 +46,8 @@ function StatusBarHidden({ navigator, garden }: InjectedProps) {
     <ScrollView
       contentInsetAdjustmentBehavior="never"
       automaticallyAdjustContentInsets={false}
-      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
+      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+    >
       <Text style={[styles.welcome, paddingTop]}> StatusBar Hidden</Text>
       <TouchableOpacity onPress={showStatusBar} activeOpacity={0.2} style={styles.button}>
         <Text style={styles.buttonText}>show status bar</Text>

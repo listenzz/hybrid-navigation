@@ -1,0 +1,16 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+charset = utf-8
+trim_trailing_whitespace = false
+insert_final_newline = false
+end_of_line = unset
+
+[*.{js,jsx,ts,tsx,json,yml}]
+indent_size = 2
+
+# Windows files
+[*.bat]
+end_of_line = crlf

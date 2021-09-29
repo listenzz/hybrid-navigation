@@ -57,7 +57,8 @@ export default function withBottomModal({
             {
               transform: [{ translateY: animatedHeight.current }],
             },
-          ]}>
+          ]}
+        >
           <TouchableWithoutFeedback onPress={handleHardwareBackPress} style={styles.flex1}>
             <View style={styles.flex1} />
           </TouchableWithoutFeedback>
