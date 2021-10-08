@@ -1,10 +1,10 @@
-import { EventSubscription, Linking } from 'react-native'
+import { EmitterSubscription, Linking } from 'react-native'
 import { router } from './router'
 
 let _active = 0
 let _uriPrefix: string = ''
 let _hasHandleInitialURL = false
-let _linkingSucscription: EventSubscription | undefined
+let _linkingSucscription: EmitterSubscription | undefined
 
 function activate(uriPrefix: string) {
   if (!uriPrefix) {
