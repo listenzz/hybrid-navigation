@@ -321,8 +321,19 @@ void adjustLayout(UIViewController *vc) {
             [self.nav showFakeBarFrom:from to:to];
         } else {
             [self.nav updateNavigationBarForViewController:viewController];
+            if (@available(iOS 15.0, *)) {
+                self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = viewController.hbd_barTintColor;
+                self.nav.navigationBar.standardAppearance.backgroundColor = viewController.hbd_barTintColor;
+            }
         }
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+        self.nav.poppingViewController = nil;
+        
+        if (@available(iOS 15.0, *)) {
+            self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = UIColor.clearColor;
+            self.nav.navigationBar.standardAppearance.backgroundColor = UIColor.clearColor;
+        }
+        
         if (context.isCancelled) {
             if (to == viewController) {
                 [self.nav updateNavigationBarForViewController:from];
@@ -348,8 +359,6 @@ void adjustLayout(UIViewController *vc) {
             }
         }
     
-        self.nav.poppingViewController = nil;
-        
         if (to == viewController) {
             [self.nav clearFake];
         }
@@ -428,6 +437,10 @@ void adjustLayout(UIViewController *vc) {
     return self.topViewController;
 }
 
+- (UIViewController *)childViewControllerForStatusBarStyle {
+    return self.topViewController;
+}
+
 - (UIViewController *)childViewControllerForHomeIndicatorAutoHidden {
     return self.topViewController;
 }
@@ -437,6 +450,15 @@ void adjustLayout(UIViewController *vc) {
     self.definesPresentationContext = NO;
     [self.navigationBar setTranslucent:YES];
     [self.navigationBar setShadowImage:[UINavigationBar appearance].shadowImage];
+    
+    if (@available(iOS 15.0, *)) {
+        UINavigationBarAppearance *scrollEdgeAppearance = [[UINavigationBarAppearance alloc] init];
+        [scrollEdgeAppearance configureWithTransparentBackground];
+        scrollEdgeAppearance.shadowColor = UIColor.clearColor;
+        scrollEdgeAppearance.backgroundColor = UIColor.clearColor;
+        self.navigationBar.scrollEdgeAppearance = scrollEdgeAppearance;
+        self.navigationBar.standardAppearance = [scrollEdgeAppearance copy];
+    }
     
     self.navigationDelegate = [[HBDNavigationControllerDelegate alloc] initWithNavigationController:self];
     self.navigationDelegate.proxiedDelegate = self.delegate;
@@ -595,6 +617,10 @@ void adjustLayout(UIViewController *vc) {
 - (void)updateNavigationBarTinitColorForViewController:(UIViewController *)vc {
     self.navigationBar.tintColor = vc.hbd_tintColor;
     self.navigationBar.titleTextAttributes = vc.hbd_titleTextAttributes;
+    if (@available(iOS 15.0, *)) {
+        self.navigationBar.scrollEdgeAppearance.titleTextAttributes = vc.hbd_titleTextAttributes;
+        self.navigationBar.standardAppearance.titleTextAttributes = vc.hbd_titleTextAttributes;
+    }
 }
 
 - (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc {

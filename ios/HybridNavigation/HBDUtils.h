@@ -47,6 +47,8 @@ UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class class, SEL originalSe
 
 + (UIColor *)colorWithHexString: (NSString *) hexString;
 
++ (NSString *)hexStringFromColor:(UIColor *)color;
+
 + (UIImage *)UIImage:(NSDictionary *)json;
 
 + (UIImage*)imageWithColor:(UIColor*)color;
