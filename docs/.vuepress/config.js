@@ -7,24 +7,29 @@ module.exports = {
     lastUpdatedText: '上次更新',
     sidebarDepth: 2,
     contributors: false,
-    repo: 'https://github.com/listenzz/hybrid-navigation',
+    repo: 'https://github.com/listenzz',
     editLink: false,
     docsBranch: 'master',
     navbar: [
-      { text: '文档', link: '/', },
-      { text: 'React Native 入门指南', link: 'https://todoit.tech/rn/' },
-      // { text: 'Kubernetes', link: '/k8s/' },
-      // { text: '关于', link: 'https://todoit.tech/about/', target:'_self', rel:'' },
-      // { text: '关于', link: '/about' },
+      { text: '首页', link: 'https://todoit.tech/', target:'_self', rel:''},
+      { text: 'React Native 指南', link: 'https://todoit.tech/rn/', target:'_self', rel:'' },
+      { text: '文档', children: [ 
+        {
+          text: 'Hybrid Navigation',
+          link: '/',
+          target:'_self', 
+          rel:''
+        }]
+      }
     ],
     sidebar: {
       '/': [
         'integration-react',
         'integration-native',
         'navigation',
+        'style',
         'pass-and-return-value',
         'lifecycle',
-        'style',
         'deeplink',
         'custom-tabbar',
         'qa',
