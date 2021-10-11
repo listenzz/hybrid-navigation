@@ -66,3 +66,7 @@ Podfile.lock
 # lib
 lib/
 
+# docs
+dist/
+.temp
+.cache

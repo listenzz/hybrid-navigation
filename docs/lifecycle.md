@@ -1,43 +1,24 @@
-# 常见问题
+# 可见性监听
 
-## 如何和 `React.Context` 一起使用
+## 如何监听页面显示或隐藏
 
-`React.Context` 使得具有相同根组件的所有子组件共享上下文。可是 hybrid-navigation 的每一个页面都是独立的，它们没有共同的根组件，那么，如何才能在 hybrid-navigation 环境下使用 `React.Context` 呢？
+使用 `useVisibleEffect`
 
-请参考 [ContextDemo](https://github.com/listenzz/MultiContextDemo)。
+```tsx
+import React, { useCallback } from 'react'
+import { useVisibleEffect } from 'hybrid-navigation'
 
-## 为什么在 Android 平台，push 到下一个页面时，当前页面的图片会消失？
-
-细心的同学，可能会注意到，在 Android 平台，push 到下一个页面时，当前页面的图片会消失。这是怎么回事呢？
-
-这是由于 React Native 底层使用的图片加载库是 Fresco。Fresco 做了过度优化，会把不可见页面的图片隐藏掉。
-
-相关 [issue](https://github.com/facebook/fresco/issues/1841)。
-
-推荐使用 [FastImage](https://github.com/DylanVann/react-native-fast-image) 替换掉 ReactNative 自带的 Image 组件
-
-为了避免误用 Image 组件，可以在 eslintrc 中加入如下规则
-
-```js
-module.exports = {
-  rules: {
-    'no-restricted-imports': [
-      'error',
-      {
-        paths: [
-          {
-            name: 'react-native',
-            importNames: ['Image'],
-            message: '请使用 FastImage 替代 Image',
-          },
-        ],
-      },
-    ],
-  },
-}
+useVisibleEffect(
+  useCallback(() => {
+    Alert.alert('Lifecycle Alert!', 'componentDidAppear.')
+    return () => Alert.alert('Lifecycle Alert!', 'componentDidDisappear.')
+  }, []),
+)
 ```
 
-## 使用类组件时，如何监听页面可见性？
+如果需要获取页面可见状态，使用 `useVisible` 或者 `useVisibility`。
+
+## 类组件
 
 本项目中的例子几乎都是用函数组件示例的，因为这是趋势，历史的车轮滚滚向前，该忘掉的就忘掉，该丢弃的就丢弃。
 

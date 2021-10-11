@@ -28,7 +28,9 @@
     "start:android": "adb shell am start -n com.reactnative.hybridnavigation.example/.MainActivity",
     "run:android": "cd example/android && ./gradlew installDebug && npm run start:android",
     "test": "jest",
-    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "peerDependencies": {
     "react": ">=16.8",
@@ -60,7 +62,8 @@
     "react-redux": "^7.2.5",
     "react-test-renderer": "17.0.2",
     "redux": "^4.1.1",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "vuepress": "^2.0.0-beta.26"
   },
   "jest": {
     "preset": "react-native",

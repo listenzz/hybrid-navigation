@@ -1,4 +1,4 @@
-## 自定义 TabBar
+# 自定义 TabBar
 
 tabs 容器有一个默认的 TabBar， 支持未读消息数，小红点提示等功能。它是由原生组件实现的，性能优越，满足 80% 常用场景。如果你希望对 TabBar 有更多的控制权，譬如实现如下效果：
 
@@ -10,7 +10,7 @@ tabs 容器有一个默认的 TabBar， 支持未读消息数，小红点提示�
 
 此外，需要注意以下若干事项：
 
-### TabBar 组件和普通页面组件一样，需要注册：
+## TabBar 组件和普通页面组件一样，需要注册：
 
 ```javascript
 import CustomTabBar from './src/CustomTabBar'
@@ -20,7 +20,7 @@ ReactRegistry.registerComponent('CustomTabBar', () => CustomTabBar)
 ReactRegistry.registerComponent('BulgeTabBar', () => BulgeTabBar)
 ```
 
-### 在布局对象中，通过 `tabBarModuleName` 指定 TabBar 组件
+## 在布局对象中，通过 `tabBarModuleName` 指定 TabBar 组件
 
 如果**不需要**中间按钮凸起效果，`sizeIndeterminate` 需要设置为 `false`，同时指定 TabBar 的宽高。
 
@@ -87,7 +87,7 @@ tabBar: {
 },
 ```
 
-### 通过 props 来获取相关数据
+## 通过 props 来获取相关数据
 
 可以通过 props.selectedIndex 来获取当前选中的 tab 的索引。props 还有许多有用的信息，它的数据结构如下：
 
