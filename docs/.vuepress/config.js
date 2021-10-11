@@ -19,7 +19,13 @@ module.exports = {
           link: '/',
           target:'_self', 
           rel:''
-        }]
+        },
+        {
+          text: 'React Native 工程实践',
+          link: 'https://todoit.tech/rndevops/',
+          target:'_self', 
+          rel:''
+        },]
       }
     ],
     sidebar: {
