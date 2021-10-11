@@ -1,7 +1,7 @@
 module.exports = {
   title: 'Hybrid Navigation',
   description: 'hybrid-navitation 文档',
-  base: '/hybrid-navigation/',
+  base: '/rn/hybrid-navigation/',
   themeConfig: {
     home: '/',
     lastUpdatedText: '上次更新',
@@ -22,7 +22,7 @@ module.exports = {
         },
         {
           text: 'React Native 工程实践',
-          link: 'https://todoit.tech/rndevops/',
+          link: 'https://todoit.tech/rn/devops/',
           target:'_self', 
           rel:''
         },]

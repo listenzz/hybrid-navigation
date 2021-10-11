@@ -13,4 +13,4 @@ React Native Navigation that supports seamless navigation between Native and Rea
 
 ## 文档
 
-[从这里开始](https://todoit.tech/hybrid-navigation)
+[从这里开始](https://todoit.tech/rn/hybrid-navigation/)
