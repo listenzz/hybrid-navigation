@@ -148,7 +148,7 @@
         return colorWithBarStyle;
     }
     
-    return [UINavigationBar appearance].tintColor;;
+    return [UINavigationBar appearance].tintColor;
 }
 
 - (void)setHbd_tintColor:(UIColor *)tintColor {

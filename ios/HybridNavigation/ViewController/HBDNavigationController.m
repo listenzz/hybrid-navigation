@@ -322,8 +322,10 @@ void adjustLayout(UIViewController *vc) {
         } else {
             [self.nav updateNavigationBarForViewController:viewController];
             if (@available(iOS 15.0, *)) {
-                self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = viewController.hbd_barTintColor;
-                self.nav.navigationBar.standardAppearance.backgroundColor = viewController.hbd_barTintColor;
+                if (to == viewController) {
+                    self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = viewController.hbd_barTintColor;
+                    self.nav.navigationBar.standardAppearance.backgroundColor = viewController.hbd_barTintColor;
+                }
             }
         }
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
