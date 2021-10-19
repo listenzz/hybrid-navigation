@@ -327,7 +327,7 @@ end
 
 在 Build Phases 中新建一个 Run Script
 
-![ios-run-script](../screenshot/ios-run-script.jpg)
+![integration-native-2021-10-19-15-38-04](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/integration-native-2021-10-19-15-38-04.jpg)
 
 双击标题，将其更名为 Bundle React Native code and images
 
@@ -339,7 +339,7 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
 
 注意将 ReactNativeProject 替换成你的 RN 项目名
 
-![ios-run-script](../screenshot/ios-react-script.png)
+![integration-native-2021-10-19-15-38-21](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/integration-native-2021-10-19-15-38-21.png)
 
 像下面那样更改 AppDelegate.m 文件
 

@@ -97,7 +97,7 @@ export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft
 
 可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`，在 Android 6.0 效果如下：
 
-![topbar-default](../screenshot/topbar-default.png)
+![style-2021-10-19-15-43-21](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/style-2021-10-19-15-43-21.png)
 
 - **statusBarColorAndroid**
 
@@ -105,17 +105,17 @@ export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft
 
 系统启动时，由于还没有设置 statusBarColor，状态栏颜色会出现前后不一致的情况，下图是应用还没启动好时，状态栏可能的颜色。和上面的黑白图对比，是不是有种违和感。
 
-![statusbar-inperfect](../screenshot/statusbar-inperfect.png)
+![style-2021-10-19-15-43-53](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/style-2021-10-19-15-43-53.png)
 
 为了提供一致的用户体验，你可以为 Android 配置 `andriod:statusBarColor` 样式。
 
 1.在 res 目录下新建一个名为 values-v21 的文件夹
 
-![statusbar-setup-step-1](../screenshot/statusbar-setup-step-1.png)
+![style-2021-10-19-15-44-13](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/style-2021-10-19-15-44-13.png)
 
 2.在 values-v21 文件夹新建一个名为 styles.xml 的资源文件
 
-![statusbar-setup-step-2](../screenshot/statusbar-setup-step-2.png)
+![style-2021-10-19-15-44-33](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/style-2021-10-19-15-44-33.png)
 
 3.双击打开 values-v21 目录中的 styles.xml 文件，把 App 主题样式 `andriod:statusBarColor` 的值设置成和你用 Garden 设置的一样。
 

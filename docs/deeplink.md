@@ -110,7 +110,7 @@ In SimpleApp/ios/SimpleApp/AppDelegate.m:
 
 In Xcode, open the project at SimpleApp/ios/SimpleApp.xcodeproj. Select the project in sidebar and navigate to the info tab. Scroll down to "URL Types" and add one. In the new URL type, set the identifier and the url scheme to your desired url scheme.
 
-![xcode-linking](../screenshot/xcode-linking.png)
+![deeplink-2021-10-19-15-37-05](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/deeplink-2021-10-19-15-37-05.png)
 
 ## Android 配置
 

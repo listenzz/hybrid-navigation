@@ -175,7 +175,7 @@ cd ios & pod install
 
 修改 Info.plist 文件
 
-![controller-base](../screenshot/controller-base.jpg)
+![integration-react-2021-10-19-15-38-49](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/integration-react-2021-10-19-15-38-49.jpg)
 
 ## 关于闪屏
 

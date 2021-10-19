@@ -2,7 +2,7 @@
 
 tabs 容器有一个默认的 TabBar， 支持未读消息数，小红点提示等功能。它是由原生组件实现的，性能优越，满足 80% 常用场景。如果你希望对 TabBar 有更多的控制权，譬如实现如下效果：
 
-![](../screenshot/tabbar.jpg)
+![custom-tabbar-2021-10-19-15-36-24](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/custom-tabbar-2021-10-19-15-36-24.jpg)
 
 那么你需要使用 `tabBarModuleName` 选项来指定你的 TabBar 组件。
 

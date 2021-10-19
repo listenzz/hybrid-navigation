@@ -9,7 +9,7 @@
 - 内置 drawer, tabs, stack 标准容器，同时支持自定义容器和导航
 - 支持 deep link
 
-![navigation-android](../screenshot/android.png)
+![README-2021-10-19-15-39-45](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/README-2021-10-19-15-39-45.png)
 
 ## Support
 
@@ -66,11 +66,11 @@ Then, in another CLI window:
 npm run run:android
 ```
 
-[**Download demo apk**](https://raw.githubusercontent.com/listenzz/hybrid-navigation/master/screenshot/app-release.apk)
+[**Download demo apk**](https://todoit.oss-cn-shanghai.aliyuncs.com/app-release.apk)
 
 或通过扫描二维码安装 demo
 
-![demo-qrcode](../screenshot/demo-qrcode.png)
+![README-2021-10-19-15-58-19](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/README-2021-10-19-15-58-19.png)
 
 ### run on iOS
 
