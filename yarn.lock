@@ -1220,10 +1220,10 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/eslint-plugin/-/eslint-plugin-1.1.0.tgz#e42b1bef12d2415411519fd528e64b593b1363dc"
   integrity sha512-W/J0fNYVO01tioHjvYWQ9m6RgndVtbElzYozBq1ZPrHO/iCzlqoySHl4gO/fpCl9QEFjvJfjPgtPMTMlsoq5DQ==
 
-"@react-native-community/hooks@^2.4.7":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@react-native-community/hooks/-/hooks-2.6.0.tgz#dd5f19601eb3684c6bcdd3df3d0c04cf44c24cff"
-  integrity sha512-emBGKvhJ0h++lLJQ5ejsj+od9G67nEaihjvfSx7/JWvNrQGAhP9U0OZqgb9dkKzor9Ufaj9SGt8RNY97cGzttw==
+"@react-native-community/hooks@^2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@react-native-community/hooks/-/hooks-2.7.0.tgz#ff23314f90dd442a244ea1e599e7a35cbc7504dd"
+  integrity sha512-+vT67Rbh4UXyh588CG5oawx58VpugqGIEWI/9h17SvbnEO6fdWSJXzxUfiGZ9ZLc7+5x/NTbNV9kqmGJRXCm4Q==
 
 "@react-native/assets@1.0.0":
   version "1.0.0"
@@ -7544,10 +7544,10 @@ react-native-toast-hybrid@^2.4.4:
   resolved "https://registry.yarnpkg.com/react-native-toast-hybrid/-/react-native-toast-hybrid-2.4.4.tgz#4f49726ea6ebf274ff8b68a793298c9f857583c9"
   integrity sha512-qgIY1+VcnR6S/mr8p28MaZdVErqA+0F61c7J4EdmzWWDGo0wHLSauHabSyAUSlQfDEKlIy6BDbY8lrnl7LkseA==
 
-react-native@^0.66.0:
-  version "0.66.0"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.66.0.tgz#99bdd83a9a612a71b94242767989d666d445b007"
-  integrity sha512-m26TKwzsfHVdZ1hDG+7mZ4M4ftxFFZrhtiT0OXuwfBzmNtB3xhsJtYszPeizw33c9YNp8rvehKT3c4ldDCW6kA==
+react-native@^0.66.1:
+  version "0.66.1"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.66.1.tgz#96defaf60579406321340ebe1dcea76a3c942806"
+  integrity sha512-BBvytmqlOLL+bRcO0jBiYfg16lYRsYDOC8/5E+bpnhb3EGtU+YCQAYfszw6JL7Hfy0ftnQNP5yj8pt+vqMHXIA==
   dependencies:
     "@jest/create-cache-key-function" "^27.0.1"
     "@react-native-community/cli" "^6.0.0"
