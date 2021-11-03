@@ -64,6 +64,10 @@
     self.shadowImageView.frame = CGRectMake(0, CGRectGetHeight(self.shadowImageView.superview.bounds), CGRectGetWidth(self.shadowImageView.superview.bounds), 0.5);
 }
 
+- (UIView *)hbd_backgroundView {
+    return [self valueForKey:@"_backgroundView"];
+}
+
 - (void)setBarTintColor:(UIColor *)barTintColor {
     [super setBarTintColor:barTintColor];
     self.fakeView.subviews.lastObject.backgroundColor =  barTintColor;

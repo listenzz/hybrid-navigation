@@ -117,20 +117,25 @@
     }
     
     id obj = objc_getAssociatedObject(self, _cmd);
+    UIColor *color;
     if (obj) {
-        return obj;
+        color = obj;
     }
     
     UIColor *colorWithBarStyle = [[HBDGarden globalStyle] barTintColorWithBarStyle:self.hbd_barStyle];
-    if (colorWithBarStyle) {
-       return colorWithBarStyle;
+    if (color == nil && colorWithBarStyle != nil) {
+        color = colorWithBarStyle;
     }
     
-    if ([UINavigationBar appearance].barTintColor) {
-        return [UINavigationBar appearance].barTintColor;
+    if (color == nil && [UINavigationBar appearance].barTintColor != nil) {
+        color = [UINavigationBar appearance].barTintColor;
     }
     
-    return [UINavigationBar appearance].barStyle == UIBarStyleDefault ? [UIColor whiteColor]: [UIColor blackColor];
+    if (color == nil) {
+        color = [UINavigationBar appearance].barStyle == UIBarStyleDefault ? [UIColor whiteColor]: [UIColor blackColor];
+    }
+   
+    return color;
 }
 
 - (void)setHbd_barTintColor:(UIColor *)tintColor {

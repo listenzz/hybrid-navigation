@@ -60,6 +60,16 @@ void adjustLayout(UIViewController *vc) {
     }
 }
 
+void printViewHierarchy(UIView *view, NSString *prefix) {
+    NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
+    NSLog(@"%@%@ %@", prefix, viewName, NSStringFromCGRect(view.frame));
+    if (view.subviews.count > 0) {
+        for (UIView *sub in view.subviews) {
+            printViewHierarchy(sub, [NSString stringWithFormat:@"--%@", prefix]);
+        }
+    }
+}
+
 @interface HBDNavigationControllerDelegate : UIScreenEdgePanGestureRecognizer <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak) id<UINavigationControllerDelegate> proxiedDelegate;
@@ -395,8 +405,15 @@ void adjustLayout(UIViewController *vc) {
         return YES;
     }
     
-    BOOL shouldFake = to == viewController && (![from.hbd_barTintColor.description  isEqual:to.hbd_barTintColor.description] || ABS(from.hbd_barAlpha - to.hbd_barAlpha) > 0.1);
-    return shouldFake;
+    if (to != viewController) {
+        return NO;
+    }
+    
+    if (![from.hbd_barTintColor.description isEqual:to.hbd_barTintColor.description]) {
+        return YES;
+    }
+    
+    return from.hbd_barAlpha < 1.0 || to.hbd_barAlpha < 1.0;
 }
 
 @end
@@ -595,16 +612,6 @@ void adjustLayout(UIViewController *vc) {
     }
 }
 
-- (void)printSubViews:(UIView *)view prefix:(NSString *)prefix {
-    // NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-    // RCTLogInfo(@"[Navigator] %@%@", prefix, viewName);
-    if (view.subviews.count > 0) {
-        for (UIView *sub in view.subviews) {
-            [self printSubViews:sub prefix:[NSString stringWithFormat:@"--%@", prefix]];
-        }
-    }
-}
-
 - (void)updateNavigationBarForViewController:(UIViewController *)vc {
     [self updateNavigationBarStyleForViewController:vc];
     [self updateNavigationBarAlphaForViewController:vc];
@@ -628,6 +635,12 @@ void adjustLayout(UIViewController *vc) {
 - (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc {
     self.navigationBar.fakeView.alpha = vc.hbd_barAlpha;
     self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
+    
+    if (vc.hbd_barAlpha == 0) {
+        self.navigationBar.hbd_backgroundView.layer.mask = [CALayer new];
+    } else {
+        self.navigationBar.hbd_backgroundView.layer.mask = nil;
+    }
 }
 
 - (void)updateNavigationBarBackgroundForViewController:(UIViewController *)vc {
@@ -645,9 +658,9 @@ void adjustLayout(UIViewController *vc) {
 
 - (void)showFakeBarFrom:(UIViewController *)from {
     self.fromFakeBar.subviews.lastObject.backgroundColor = from.hbd_barTintColor;
-    self.fromFakeBar.alpha = from.hbd_barAlpha == 0 ? 0.01 : from.hbd_barAlpha;
+    self.fromFakeBar.alpha = from.hbd_barAlpha;
     if (from.hbd_barAlpha == 0) {
-        self.fromFakeBar.subviews.lastObject.alpha = 0.01;
+        self.fromFakeBar.subviews.lastObject.layer.mask = [CALayer new];
     }
     self.fromFakeBar.frame = [self fakeBarFrameForViewController:from];
     [from.view addSubview:self.fromFakeBar];
