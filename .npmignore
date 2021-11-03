@@ -68,3 +68,6 @@ buck-out/
 yarn.lock
 npm-shrinkwrap.json
 package-lock.json
+
+# docs
+*/.vuepress/
