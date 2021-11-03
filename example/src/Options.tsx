@@ -6,9 +6,9 @@ import {
   InjectedProps,
   ImageSource,
   TabBarStyle,
-  TabBadge,
   BarButtonItem,
   useVisible,
+  TabItemInfo,
 } from 'hybrid-navigation'
 
 import styles from './Styles'
@@ -110,25 +110,25 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
     navigator.switchTab(0)
   }
 
-  const [badges, setBadges] = useState<Array<TabBadge>>()
+  const [badges, setBadges] = useState<Array<TabItemInfo>>()
 
   function toggleTabBadge() {
-    if (badges && badges[0].dot) {
+    if (badges && badges[0].badge?.dot) {
       setBadges([
-        { index: 0, hidden: true },
-        { index: 1, hidden: true },
+        { index: 0, badge: { hidden: true } },
+        { index: 1, badge: { hidden: true } },
       ])
     } else {
       setBadges([
-        { index: 0, hidden: false, dot: true },
-        { index: 1, hidden: false, text: '99' },
+        { index: 0, badge: { hidden: false, dot: true } },
+        { index: 1, badge: { hidden: false, text: '99' } },
       ])
     }
   }
 
   useEffect(() => {
     if (badges) {
-      garden.setTabBadge(badges)
+      garden.setTabItem(badges)
     }
   }, [badges, garden])
 
@@ -152,9 +152,12 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
 
   useEffect(() => {
     if (icon) {
-      garden.setTabIcon({
+      garden.setTabItem({
         index: 1,
-        icon,
+        icon: {
+          selected: icon,
+        },
+        // title: '选项',
       })
     }
   }, [icon, garden])
@@ -250,7 +253,7 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={toggleTabBadge} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>{badges && badges[0].dot ? 'hide tab badge' : 'show tab badge'}</Text>
+          <Text style={styles.buttonText}>{badges && badges[0].badge?.dot ? 'hide tab badge' : 'show tab badge'}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={replaceTabIcon} activeOpacity={0.2} style={styles.button}>

@@ -52,6 +52,20 @@ export interface TabBadge {
   dot?: boolean
 }
 
+export interface TabItemInfo {
+  index: number
+  title?: string
+  badge?: {
+    text?: string
+    hidden: boolean
+    dot?: boolean
+  }
+  icon?: {
+    selected: ImageSource
+    unselected?: ImageSource
+  }
+}
+
 export interface TabIcon {
   index: number
   icon: ImageSource
@@ -104,18 +118,49 @@ export class Garden {
     GardenModule.updateTabBar(this.sceneId, options)
   }
 
+  setTabItem(item: TabItemInfo | TabItemInfo[]) {
+    if (!Array.isArray(item)) {
+      item = [item]
+    }
+    GardenModule.setTabItem(this.sceneId, item)
+  }
+
   setTabIcon(icon: TabIcon | TabIcon[]) {
     if (!Array.isArray(icon)) {
       icon = [icon]
     }
-    GardenModule.setTabIcon(this.sceneId, icon)
+    const icons = icon
+    const items: Array<TabItemInfo> = []
+    for (const i of icons) {
+      items.push({
+        index: i.index,
+        icon: {
+          selected: i.icon,
+          unselected: i.unselectedIcon,
+        },
+      })
+    }
+    this.setTabItem(items)
   }
 
   setTabBadge(badge: TabBadge | TabBadge[]) {
     if (!Array.isArray(badge)) {
       badge = [badge]
     }
-    GardenModule.setTabBadge(this.sceneId, badge)
+
+    const badges = badge
+    const items: Array<TabItemInfo> = []
+    for (const b of badges) {
+      items.push({
+        index: b.index,
+        badge: {
+          hidden: b.hidden,
+          text: b.text,
+          dot: b.dot,
+        },
+      })
+    }
+    this.setTabItem(items)
   }
 
   setMenuInteractive(enabled: boolean) {

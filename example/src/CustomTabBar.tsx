@@ -77,9 +77,9 @@ interface TabProps {
   selected: boolean
   unselectedItemColor: Color
   itemColor: Color
-  badgeText: string
+  badgeText?: string
   textBadgeStyle: ViewStyle
-  dot: boolean
+  dot?: boolean
   dotBadgeStyle: ViewStyle
 }
 
@@ -120,7 +120,7 @@ function Tab({
       >
         {title}
       </Text>
-      {badgeText && <TextBadge style={[styles.textBadge, textBadgeStyle]}>{badgeText}</TextBadge>}
+      {!!badgeText && <TextBadge style={[styles.textBadge, textBadgeStyle]}>{badgeText}</TextBadge>}
       {dot && <DotBadge style={dotBadgeStyle} />}
     </TouchableOpacity>
   )

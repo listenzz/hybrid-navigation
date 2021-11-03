@@ -16,8 +16,6 @@
 
 - (void)updateTabBar:(NSDictionary *)options;
 
-- (void)setTabBadge:(NSArray<NSDictionary *> *)options;
-
-- (void)setTabIcon:(NSArray<NSDictionary *> *)options;
+- (void)setTabItem:(NSArray<NSDictionary *> *)options;
 
 @end

@@ -12,8 +12,6 @@ export default function Badge(props: any) {
     style.width = Math.max(height, width)
   }
 
-  console.log(`Badge width:${width} height: ${height}`)
-
   return (
     <Text {...props} numberOfLines={1} onLayout={onLayout} style={[styles.container, props.style, style]}>
       {props.children}

@@ -1,5 +1,12 @@
 package com.reactnative.hybridnavigation;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static com.reactnative.hybridnavigation.Constants.ACTION_SET_TAB_ITEM;
+import static com.reactnative.hybridnavigation.Constants.ACTION_UPDATE_TAB_BAR;
+import static com.reactnative.hybridnavigation.Constants.ARG_ACTION;
+import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,14 +30,6 @@ import com.navigation.androidx.TabBarProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.reactnative.hybridnavigation.Constants.ACTION_SET_TAB_BADGE;
-import static com.reactnative.hybridnavigation.Constants.ACTION_SET_TAB_ICON;
-import static com.reactnative.hybridnavigation.Constants.ACTION_UPDATE_TAB_BAR;
-import static com.reactnative.hybridnavigation.Constants.ARG_ACTION;
-import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
 
 public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.ReactBridgeReloadListener {
 
@@ -152,8 +151,6 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
     public void onDestroyTabBar() {
         unmountReactView();
         tabBarFragment = null;
-
-
         getReactBridgeManager().removeReactBridgeReloadListener(this);
     }
 
@@ -184,20 +181,16 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
         }
 
         switch (action) {
-            case ACTION_SET_TAB_BADGE:
-                setTabBadge(options.getParcelableArrayList(ARG_OPTIONS));
-                break;
-            case ACTION_SET_TAB_ICON:
-                setTabIcon(options.getParcelableArrayList(ARG_OPTIONS));
+            case ACTION_SET_TAB_ITEM:
+                setTabItem(options.getParcelableArrayList(ARG_OPTIONS));
                 break;
             case ACTION_UPDATE_TAB_BAR:
                 updateTabBarAppearance(options.getBundle(ARG_OPTIONS));
                 break;
         }
     }
-
-
-    private void setTabBadge(@Nullable ArrayList<Bundle> options) {
+    
+    private void setTabItem(@Nullable ArrayList<Bundle> options) {
         if (options == null) {
             return;
         }
@@ -211,53 +204,40 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
 
         for (Bundle option : options) {
             int index = (int) option.getDouble("index");
-            boolean hidden = option.getBoolean("hidden", true);
-
-            String text = !hidden ? option.getString("text", null) : null;
-            boolean dot = !hidden && option.getBoolean("dot", false);
-
             Bundle tab = tabs.get(index);
-            tab.putString("badgeText", text);
-            tab.putBoolean("dot", dot);
-        }
-
-        reactRootView.setAppProperties(getProps(tabBarFragment));
-    }
-
-    private void setTabIcon(@Nullable ArrayList<Bundle> options) {
-        if (options == null) {
-            return;
-        }
-
-        Bundle tabBar = tabBarFragment.getOptions();
-        ArrayList<Bundle> tabs = tabBar.getParcelableArrayList("tabs");
-
-        if (tabs == null) {
-            return;
-        }
-
-        for (Bundle option : options) {
-            int index = (int) option.getDouble("index");
+            
+            // title
+            String title = option.getString("title");
+            if (title != null) {
+                tab.putString("title", title);
+            }
+            
+            // icon
             Bundle icon = option.getBundle("icon");
-            Bundle unselectedIcon = option.getBundle("unselectedIcon");
-            Context context = tabBarFragment.requireContext();
-            Bundle tab = tabs.get(index);
             if (icon != null) {
-                String uri = Utils.getIconUri(context, icon.getString("uri"));
-                tab.putString("icon", uri);
-                tab.putString("unselectedIcon", null);
+                Bundle unselected = icon.getBundle("unselected");
+                Bundle selected = icon.getBundle("selected");
+                if (unselected != null) {
+                    tab.putString("unselectedIcon", unselected.getString("uri"));
+                }
+                tab.putString("icon", selected.getString("uri"));
             }
 
-            if (unselectedIcon != null) {
-                String uri = Utils.getIconUri(context, unselectedIcon.getString("uri"));
-                tab.putString("unselectedIcon", uri);
+            // badge
+            Bundle badge = option.getBundle("badge");
+            if (badge != null) {
+                boolean hidden = badge.getBoolean("hidden", true);
+                String text = !hidden ? badge.getString("text", "") : "";
+                boolean dot = !hidden && badge.getBoolean("dot", false);
+
+                tab.putString("badgeText", text);
+                tab.putBoolean("dot", dot);
             }
         }
 
         reactRootView.setAppProperties(getProps(tabBarFragment));
     }
-
-
+    
     private void updateTabBarAppearance(@Nullable Bundle bundle) {
         if (bundle == null) {
             return;

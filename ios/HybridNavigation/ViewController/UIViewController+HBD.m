@@ -13,6 +13,7 @@
 #import "HBDModalViewController.h"
 #import <React/RCTLog.h>
 #import "HBDGarden.h"
+#import "UITabBar+Badge.h"
 
 @implementation UIViewController (HBD)
 
@@ -368,19 +369,44 @@
     return nil;
 }
 
-- (void)hbd_updateTabBarItem:(NSDictionary *)options {
-    NSDictionary *unselectedIcon = options[@"unselectedIcon"];
-    NSDictionary *icon = options[@"icon"];
-    UITabBarItem *tabBarItem = nil;
-    if (unselectedIcon) {
-        UIImage *selectedImage = [[HBDUtils UIImage:icon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        UIImage *image = [[HBDUtils UIImage:unselectedIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        tabBarItem = [[UITabBarItem alloc] initWithTitle:self.tabBarItem.title image:image selectedImage:selectedImage];
-    } else {
-        tabBarItem = [[UITabBarItem alloc] initWithTitle:self.tabBarItem.title image:[HBDUtils UIImage:icon] selectedImage:nil];
+- (void)hbd_updateTabBarItem:(NSDictionary *)option {
+    UITabBarItem *tabBarItem = self.tabBarItem;
+    NSUInteger index = option[@"index"] ? [option[@"index"] integerValue] : 0;
+
+    // title
+    NSString *title = option[@"title"];
+    if (title != nil) {
+        tabBarItem.title = title;
     }
-    tabBarItem.badgeValue = self.tabBarItem.badgeValue;
-    self.tabBarItem = tabBarItem;
+    
+    // icon
+    NSDictionary *icon = option[@"icon"];
+    if (icon != nil) {
+        NSDictionary *unselected = icon[@"unselected"];
+        NSDictionary *selected = icon[@"selected"];
+        if (unselected) {
+            tabBarItem.selectedImage = [[HBDUtils UIImage:selected] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            tabBarItem.image = [[HBDUtils UIImage:unselected] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        } else {
+            tabBarItem.image = [HBDUtils UIImage:selected];
+        }
+    }
+
+   // badge
+    NSDictionary *badge = option[@"badge"];
+    if (badge != nil) {
+        BOOL hidden = badge[@"hidden"] ? [badge[@"hidden"] boolValue] : YES;
+        NSString *text = hidden ? nil : (badge[@"text"] ? badge[@"text"] : nil);
+        BOOL dot = hidden ?  NO : (badge[@"dot"] ? [badge[@"dot"] boolValue] : NO);
+        
+        tabBarItem.badgeValue = text;
+        UITabBar *tabBar = self.tabBarController.tabBar;
+        if (dot) {
+            [tabBar showDotBadgeAtIndex:index];
+        } else {
+            [tabBar hideDotBadgeAtIndex:index];
+        }
+    }
 }
 
 - (NSString *)hbd_mode {

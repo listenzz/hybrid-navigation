@@ -97,24 +97,14 @@ RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
     }
 }
 
-RCT_EXPORT_METHOD(setTabBadge:(NSString *)sceneId options:(NSArray<NSDictionary *> *)options) {
+RCT_EXPORT_METHOD(setTabItem:(NSString *)sceneId options:(NSArray<NSDictionary *> *)options) {
+    RCTLogInfo(@"[Navigator] setTabItem: %@", options);
     UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
-        [tabBarVC setTabBadge:options];
+        [tabBarVC setTabItem:options];
     }
-    RCTLogInfo(@"[Navigator] setTabBadge: %@", options);
-}
-
-RCT_EXPORT_METHOD(setTabIcon:(NSString *)sceneId options:(NSArray<NSDictionary *> *)options) {
-    UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
-    UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
-    if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
-        HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
-        [tabBarVC setTabIcon:options];
-    }
-    RCTLogInfo(@"[Navigator] setTabIcon: %@", options);
 }
 
 RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) {

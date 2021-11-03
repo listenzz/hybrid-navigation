@@ -116,42 +116,11 @@
     }
 }
 
-- (void)setTabBadge:(NSArray<NSDictionary *> *)options {
-    for (NSDictionary *option in options) {
-        NSUInteger index = option[@"index"] ? [option[@"index"] integerValue] : 0;
-        BOOL hidden = option[@"hidden"] ? [option[@"hidden"] boolValue] : YES;
-        
-        NSString *text = hidden ? nil : (option[@"text"] ? option[@"text"] : nil);
-        BOOL dot = hidden ?  NO : (option[@"dot"] ? [option[@"dot"] boolValue] : NO);
-        
-        if (self.hasCustomTabBar) {
-            NSMutableDictionary *tab = [self tabAtIndex:index];
-            tab[@"dot"] = @(dot);
-            tab[@"badgeText"] = RCTNullIfNil(text);
-        } else {
-            UIViewController *vc = self.viewControllers[index];
-            vc.tabBarItem.badgeValue = text;
-            UITabBar *tabBar = self.tabBar;
-            if (dot) {
-                [tabBar showDotBadgeAtIndex:index];
-            } else {
-                [tabBar hideDotBadgeAtIndex:index];
-            }
-        }
-    }
-    
-    if (self.hasCustomTabBar) {
-        self.rootView.appProperties = [self props];
-    }
-}
-
-- (void)setTabIcon:(NSArray<NSDictionary *> *)options {
+- (void)setTabItem:(NSArray<NSDictionary *> *)options {
     for (NSDictionary *option in options) {
         NSUInteger index = option[@"index"] ? [option[@"index"] integerValue] : 0;
         if (self.hasCustomTabBar) {
-            NSMutableDictionary *tab = [self tabAtIndex:index];
-            tab[@"icon"] = [HBDUtils iconUriFromUri:option[@"icon"][@"uri"]];
-            tab[@"unselectedIcon"] = RCTNullIfNil([HBDUtils iconUriFromUri:option[@"unselectedIcon"][@"uri"]]);
+            [self updateCustomTabItem:option atIndex:index];
         } else {
             UIViewController *tab = [self.viewControllers objectAtIndex:index];
             [tab hbd_updateTabBarItem:option];
@@ -171,6 +140,38 @@
     tabs[index] = tab;
     self.tabBarOptions = options;
     return tab;
+}
+
+- (void)updateCustomTabItem:(NSDictionary *)option atIndex:(NSUInteger)index {
+    NSMutableDictionary *tab = [self tabAtIndex:index];
+    
+    // title
+    NSString *title = option[@"title"];
+    if (title != nil) {
+        tab[@"title"] = title;
+    }
+    
+    // icon title
+    NSDictionary *icon = option[@"icon"];
+    if (icon != nil) {
+        NSDictionary *selected = icon[@"selected"];
+        tab[@"icon"] = [HBDUtils iconUriFromUri:selected[@"uri"]];
+        
+        NSDictionary *unselected = icon[@"unselected"];
+        if (unselected != nil) {
+            tab[@"unselectedIcon"] = RCTNullIfNil([HBDUtils iconUriFromUri:unselected[@"uri"]]);
+        }
+    }
+    
+    // badge
+    NSDictionary *badge = option[@"badge"];
+    if (badge != nil) {
+        BOOL hidden = badge[@"hidden"] ? [badge[@"hidden"] boolValue] : YES;
+        NSString *text = hidden ? nil : (badge[@"text"] ? badge[@"text"] : nil);
+        BOOL dot = hidden ?  NO : (badge[@"dot"] ? [badge[@"dot"] boolValue] : NO);
+        tab[@"dot"] = @(dot);
+        tab[@"badgeText"] = RCTNullIfNil(text);
+    }
 }
 
 - (void)updateTabBar:(NSDictionary *)options {

@@ -1,25 +1,6 @@
 package com.reactnative.hybridnavigation;
 
-import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.facebook.react.bridge.Arguments;
-import com.navigation.androidx.AwesomeFragment;
-import com.navigation.androidx.DefaultTabBarProvider;
-import com.navigation.androidx.FragmentHelper;
-import com.navigation.androidx.Style;
-import com.navigation.androidx.TabBar;
-import com.navigation.androidx.TabBarFragment;
-import com.navigation.androidx.TabBarProvider;
-import com.navigation.androidx.TransitionAnimation;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.reactnative.hybridnavigation.Constants.ACTION_SET_TAB_BADGE;
-import static com.reactnative.hybridnavigation.Constants.ACTION_SET_TAB_ICON;
+import static com.reactnative.hybridnavigation.Constants.ACTION_SET_TAB_ITEM;
 import static com.reactnative.hybridnavigation.Constants.ACTION_UPDATE_TAB_BAR;
 import static com.reactnative.hybridnavigation.Constants.ARG_ACTION;
 import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
@@ -32,6 +13,25 @@ import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_RESULT_DATA;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_SCENE_ID;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_RESULT;
 import static com.reactnative.hybridnavigation.Parameters.mergeOptions;
+
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.facebook.react.bridge.Arguments;
+import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.DefaultTabBarProvider;
+import com.navigation.androidx.FragmentHelper;
+import com.navigation.androidx.Style;
+import com.navigation.androidx.TabBar;
+import com.navigation.androidx.TabBarFragment;
+import com.navigation.androidx.TabBarItem;
+import com.navigation.androidx.TabBarProvider;
+import com.navigation.androidx.TransitionAnimation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -126,21 +126,17 @@ public class ReactTabBarFragment extends TabBarFragment {
             }
 
             switch (action) {
-                case ACTION_SET_TAB_BADGE:
-                    setTabBadge(options.getParcelableArrayList(ARG_OPTIONS));
-                    break;
-                case ACTION_SET_TAB_ICON:
-                    setTabIcon(options.getParcelableArrayList(ARG_OPTIONS));
+                case ACTION_SET_TAB_ITEM:
+                    setTabItem(options.getParcelableArrayList(ARG_OPTIONS));
                     break;
                 case ACTION_UPDATE_TAB_BAR:
                     updateTabBarAppearance(options.getBundle(ARG_OPTIONS));
                     break;
             }
-
         }
     }
 
-    private void setTabBadge(@Nullable ArrayList<Bundle> options) {
+    private void setTabItem(@Nullable ArrayList<Bundle> options) {
         if (options == null) {
             return;
         }
@@ -149,42 +145,44 @@ public class ReactTabBarFragment extends TabBarFragment {
         if (tabBar == null) {
             return;
         }
+
         for (Bundle option : options) {
             int index = (int) option.getDouble("index");
-            boolean hidden = option.getBoolean("hidden", true);
-            String text = !hidden ? option.getString("text", "") : "";
-            boolean dot = !hidden && option.getBoolean("dot", false);
-            tabBar.hideBadgeAtIndex(index);
-            tabBar.showTextBadgeAtIndex(index, text);
-            if (dot) {
-                tabBar.showDotBadgeAtIndex(index);
+            TabBarItem tabBarItem = tabBar.getTabBarItem(index);
+            if (tabBarItem == null) {
+                continue;
             }
-        }
-    }
 
-    private void setTabIcon(@Nullable ArrayList<Bundle> options) {
-        TabBar tabBar = getTabBar();
-        if (options == null || tabBar == null) {
-            return;
-        }
+            // title
+            String title = option.getString("title");
+            if (title != null) {
+                tabBarItem.title = title;
+            }
 
-        for (Bundle option : options) {
-            int index = (int) option.getDouble("index");
+            // icon
             Bundle icon = option.getBundle("icon");
-            Bundle unselectedIcon = option.getBundle("unselectedIcon");
-            if (icon != null && icon.getString("uri") != null) {
-                String iconUri = icon.getString("uri");
-                if (iconUri != null) {
-                    if (unselectedIcon != null) {
-                        tabBar.updateTabIcon(index, iconUri, unselectedIcon.getString("uri"));
-                    } else {
-                        tabBar.updateTabIcon(index, iconUri, null);
-                    }
+            if (icon != null) {
+                Bundle unselected = icon.getBundle("unselected");
+                Bundle selected = icon.getBundle("selected");
+                if (unselected != null) {
+                    tabBarItem.unselectedIconUri = unselected.getString("uri");
                 }
+                tabBarItem.iconUri = selected.getString("uri");
             }
-        }
 
-        tabBar.initialise(tabBar.getCurrentSelectedPosition());
+            // badge
+            Bundle badge = option.getBundle("badge");
+            if (badge != null) {
+                boolean hidden = badge.getBoolean("hidden", true);
+                String text = !hidden ? badge.getString("text", "") : "";
+                boolean dot = !hidden && badge.getBoolean("dot", false);
+
+                tabBarItem.badgeText = text;
+                tabBarItem.showDotBadge = dot;
+            }
+            
+            tabBar.renderTabView(index);
+        }
     }
 
     private void updateTabBarAppearance(@Nullable Bundle options) {

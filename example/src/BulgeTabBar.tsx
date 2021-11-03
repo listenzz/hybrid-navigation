@@ -112,7 +112,7 @@ function Tab({
       >
         {title}
       </Text>
-      {badgeText && <TextBadge style={[styles.textBadge, textBadgeStyle]}>{badgeText}</TextBadge>}
+      {!!badgeText && <TextBadge style={[styles.textBadge, textBadgeStyle]}>{badgeText}</TextBadge>}
       {dot && <DotBadge style={dotBadgeStyle} />}
     </TouchableOpacity>
   )

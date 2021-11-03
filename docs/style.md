@@ -6,7 +6,7 @@
 
 1.  加载静态图片
 
-```javascript
+```ts
 import { Image } from 'react-native';
 
 icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
@@ -14,7 +14,7 @@ icon: Image.resolveAssetSource(require('./images/ic_settings.png')),
 
 2.  加载原生图片
 
-```javascript
+```ts
 import { PixelRatio } from 'react-native';
 
 icon: { uri: 'flower', scale: PixelRatio.get() },
@@ -22,7 +22,7 @@ icon: { uri: 'flower', scale: PixelRatio.get() },
 
 3.  加载网络图片（不推荐）
 
-```javascript
+```ts
 icon: {
   uri: 'http://xxx.xx/?width=24&height=24&scale=3'
 }
@@ -32,7 +32,7 @@ icon: {
 
 4.  使用 icon font
 
-```javascript
+```ts
 icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
 ```
 
@@ -119,7 +119,7 @@ export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft
 
 3.双击打开 values-v21 目录中的 styles.xml 文件，把 App 主题样式 `andriod:statusBarColor` 的值设置成和你用 Garden 设置的一样。
 
-```javascript
+```ts
 import { Garden } from 'hybrid-navigation'
 
 Garden.setStyle({
@@ -142,7 +142,7 @@ Garden.setStyle({
 
 导航栏阴影图片，仅对 iOS 生效。
 
-```javascript
+```ts
 // index.js
 
 import { Image } from 'react-native'
@@ -159,7 +159,7 @@ Garden.setStyle({
 
 shadowImage 会有一个默认值，如果你想去掉，可以这样设置
 
-```javascript
+```ts
 Garden.setStyle({
   shadowImage: {},
 })
@@ -169,7 +169,7 @@ Garden.setStyle({
 
 配置返回按钮的图标。如果不配置，则采用平台默认的图标。配置方式如下
 
-```javascript
+```ts
 // index.js
 
 import { Image } from 'react-native'
@@ -206,7 +206,7 @@ UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只�
 
 我们需要在页面实现 `navigationItem` 这个静态字段，完整的可配置项如下：
 
-```javascript
+```ts
 class Screen extends Component {
   static navigationItem = {
     passThroughTouches: false, // 触摸事件是否可以穿透到下一层页面，很少用。
@@ -317,8 +317,8 @@ layoutFitting 配合 moduleName 使用，自定义标题栏的布局模式，有
 
 标题栏和所属页面共享同一个 navigator 对象，你可以在所属页面通过以下方式传递参数给标题栏使用
 
-```javascript
-this.props.navigator.setParams({})
+```ts
+navigator.setParams({})
 ```
 
 详情请参考 example 中 TopBarTitleView.js 这个文件。
@@ -351,7 +351,7 @@ hideTabBarWhenPush 表示当 stack 嵌套在 tabs 的时候，push 到另一个�
 
 譬如以下是 B 页面的静态配置
 
-```javascript
+```ts
 // B.js
 class B extends Component {
   static navigationItem = {
@@ -370,7 +370,7 @@ class B extends Component {
 
 从 A 页面跳转到 B 页面时，我们可以改变 B 页面中的静态设置
 
-```javascript
+```ts
 // A.js
 this.props.navigator.push(
   'B',
@@ -430,7 +430,7 @@ export interface TitleItem {
 ```
 
 ```ts
-this.props.garden.setTitleItem({
+garden.setTitleItem({
   title: '新的标题',
 })
 ```
@@ -451,8 +451,8 @@ export interface BarButtonItem {
 }
 ```
 
-```javascript
-this.props.garden.setLeftBarButtonItem({
+```ts
+garden.setLeftBarButtonItem({
   title: 'Cancel',
   insetsIOS: { top: -1, left: -8, bottom: 0, right: 8 },
   action: navigator => {
@@ -465,8 +465,8 @@ this.props.garden.setLeftBarButtonItem({
 
 更改右侧按钮
 
-```javascript
-this.props.garden.setRightBarButtonItem({
+```ts
+garden.setRightBarButtonItem({
   enabled: false,
 })
 ```
@@ -475,8 +475,8 @@ this.props.garden.setRightBarButtonItem({
 
 动态改变 tabBar 样式, 可配置项如下
 
-```javascript
-this.props.garden.updateTabBar({
+```ts
+garden.updateTabBar({
   tabBarColor: '#FFFFFF',
   tabBarShadowImage: {
     color: '#DDDDDD',
@@ -487,62 +487,47 @@ this.props.garden.updateTabBar({
 })
 ```
 
-- **setTabIcon(icon: TabIcon | TabIcon[])**
+- **setTabItem(item: TabItemInfo | TabItemInfo[])**
 
-替换 tab 图标
+动态设置 tab 的图标、文字、徽章
 
 ```ts
-export interface TabIcon {
+export interface TabItemInfo {
   index: number
-  icon: Image
-  unselectedIcon?: Image
+  title?: string
+  badge?: {
+    text?: string
+    hidden: boolean
+    dot?: boolean
+  }
+  icon?: {
+    selected: ImageSource
+    unselected?: ImageSource
+  }
 }
 ```
 
-```javascript
-this.props.garden.setTabIcon({
+```ts
+garden.setTabItem({
   index: 1,
-  icon: { uri: fontUri('FontAwesome', 'leaf', 24) },
+  icon: {
+    selected: Image.resolveAssetSource(require('./images/ic_settings.png')),
+  },
+  title: '选项',
 })
-```
-
-- **setTabBadge(badge: TabBadge | TabBadge[])**
-
-设置 badge
-
-```ts
-export interface TabBadge {
-  index: number
-  text?: string
-  hidden: boolean
-  dot?: boolean // 是否作为红点显示
-}
-```
-
-```javascript
-if (hideBadge) {
-  this.props.garden.setTabBadge([
-    { index: 0, hidden: true },
-    { index: 1, hidden: true },
-  ])
-} else {
-  this.props.garden.setTabBadge([
-    { index: 0, hidden: false, dot: true },
-    { index: 1, hidden: false, text: '99' },
-  ])
-}
 ```
 
 - **setMenuInteractive(enabled: boolean)**
 
 是否允许侧滑打开抽屉
 
-```javascript
-componentDidAppear() {
-  this.props.garden.setMenuInteractive(true);
-}
-
-componentDidDisappear() {
-  this.props.garden.setMenuInteractive(false);
-}
+```ts
+useVisibleEffect(
+  useCallback(() => {
+    garden.setMenuInteractive(true)
+    return () => {
+      garden.setMenuInteractive(false)
+    }
+  }, [garden]),
+)
 ```
