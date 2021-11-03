@@ -8,8 +8,6 @@
 
 #import "HBDUtils.h"
 #import <React/RCTConvert.h>
-#import <CallKit/CXCallObserver.h>
-#import <CallKit/CXCall.h>
 
 @implementation HBDUtils
 
@@ -188,12 +186,6 @@
 
 + (BOOL)isInCall {
     if ([HBDUtils isIphoneX]) {
-        CXCallObserver *callCenter = [[CXCallObserver alloc] init] ;
-        for (CXCall *call in callCenter.calls)  {
-            if (call.hasConnected) {
-                return YES;
-            }
-        }
         return NO;
     } else {
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
