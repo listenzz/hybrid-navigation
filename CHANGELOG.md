@@ -1,4 +1,12 @@
-## 2.4.3 (2021-10-08)
+## 2.5.0 (2021-11-04)
+
+- 添加 `Garden#setTabItem`，可以动态修改 tab 图标，标题，徽章。
+
+- 弃用 `Garden#setTabIcon`
+
+- 弃用 `Garden#setTabBadge`
+
+## 2.4.3 (2021-11-03)
 
 ### iOS specific
 

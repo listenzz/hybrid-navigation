@@ -126,6 +126,7 @@ export class Garden {
   }
 
   setTabIcon(icon: TabIcon | TabIcon[]) {
+    console.warn(`Garden#setTabIcon is deprecated, use Garden#setTabItem instead.`)
     if (!Array.isArray(icon)) {
       icon = [icon]
     }
@@ -144,6 +145,7 @@ export class Garden {
   }
 
   setTabBadge(badge: TabBadge | TabBadge[]) {
+    console.warn(`Garden#setTabBadge is deprecated, use Garden#setTabItem instead.`)
     if (!Array.isArray(badge)) {
       badge = [badge]
     }
