@@ -1,3 +1,9 @@
+## 2.5.1 (2021-11-09)
+
+### Android specific
+
+- 修复导致键盘 `adjustResize` 模式无效的问题
+
 ## 2.5.0 (2021-11-04)
 
 - 添加 `Garden#setTabItem`，可以动态修改 tab 图标，标题，徽章。
