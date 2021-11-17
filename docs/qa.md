@@ -36,3 +36,20 @@ module.exports = {
   },
 }
 ```
+
+## 如何拦截 Android 物理返回键
+
+```ts
+useVisibleEffect(
+  useCallback(() => {
+    const handleBackPress = () => {
+      console.log('---------------')
+      // true 表示拦截，false 表示不拦截
+      return false
+    }
+
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
+    return () => BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+  }, []),
+)
+```
