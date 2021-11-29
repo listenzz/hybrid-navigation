@@ -1,3 +1,7 @@
+## 2.6.0 (2021-11-29)
+
+- 支持动态设置 `screenBackgroundColor`
+
 ## 2.5.1 (2021-11-09)
 
 ### Android specific
