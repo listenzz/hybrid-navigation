@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
-import { BarStyleLightContent, BarStyleDarkContent, Style, useNavigator, useGarden } from 'hybrid-navigation'
+import { BarStyleLightContent, BarStyleDarkContent, useNavigator, useGarden, NavigationOption } from 'hybrid-navigation'
 import styles from './Styles'
 import { withNavigationItem } from 'hybrid-navigation'
 
@@ -20,24 +20,26 @@ export default withNavigationItem({
 })(TopBarStyle)
 
 function TopBarStyle() {
-  const [style, setStyle] = useState<Style>()
+  const [options, setOptions] = useState<NavigationOption>()
   const navigator = useNavigator()
   const garden = useGarden()
 
   useEffect(() => {
-    if (style) {
-      garden.updateOptions(style)
+    if (options) {
+      garden.updateOptions(options)
     }
-  }, [style, garden])
+  }, [options, garden])
 
   function switchTopBarStyle() {
-    if (style && style.topBarStyle === BarStyleDarkContent) {
-      setStyle({
+    if (options && options.topBarStyle === BarStyleDarkContent) {
+      setOptions({
         topBarStyle: BarStyleLightContent,
+        screenBackgroundColor: '#F8F8F8',
       })
     } else {
-      setStyle({
+      setOptions({
         topBarStyle: BarStyleDarkContent,
+        screenBackgroundColor: '#F0F0F0',
       })
     }
   }
@@ -66,7 +68,7 @@ function TopBarStyle() {
         <TouchableOpacity onPress={switchTopBarStyle} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>
             switch to{' '}
-            {style && style.topBarStyle === BarStyleDarkContent ? 'Light Content Style' : 'Dark Content Style'}
+            {options && options.topBarStyle === BarStyleDarkContent ? 'Light Content Style' : 'Dark Content Style'}
           </Text>
         </TouchableOpacity>
 

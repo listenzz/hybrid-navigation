@@ -285,6 +285,11 @@
     }
 
     [self applyNavigationBarOptions:target];
+    
+    NSString *screenColor = options[@"screenBackgroundColor"];
+    if (screenColor && [self isViewLoaded]) {
+        self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
+    }
 
     NSNumber *statusBarHidden = [options objectForKey:@"statusBarHidden"];
     if (statusBarHidden) {

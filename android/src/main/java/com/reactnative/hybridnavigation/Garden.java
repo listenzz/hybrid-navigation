@@ -2,6 +2,7 @@ package com.reactnative.hybridnavigation;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -107,6 +108,7 @@ public class Garden {
         } else if (rightBarButtonItem != null) {
             setRightBarButtonItem(rightBarButtonItem);
         }
+        
         Bundle leftBarButtonItem = options.getBundle("leftBarButtonItem");
         ArrayList<Bundle> leftBarButtonItems = options.getParcelableArrayList("leftBarButtonItems");
         if (leftBarButtonItems != null) {
@@ -265,6 +267,15 @@ public class Garden {
 
         applyOptions(patches);
 
+        if (readableMap.hasKey("screenBackgroundColor")) {
+            String color = readableMap.getString("screenBackgroundColor");
+            style.setScreenBackgroundColor(Color.parseColor(color));
+            View root = fragment.getView();
+            if (root != null) {
+                root.setBackground(new ColorDrawable(Color.parseColor(color)));
+            }
+        }
+
         if (shouldUpdateStatusBar(readableMap)) {
             fragment.setNeedsStatusBarAppearanceUpdate();
         }
@@ -281,7 +292,7 @@ public class Garden {
             boolean passThroughTouches = readableMap.getBoolean("passThroughTouches");
             setPassThroughTouches(passThroughTouches);
         }
-
+        
         Bundle options = mergeOptions(fragment.getOptions(), patches);
 
         if (readableMap.hasKey("leftBarButtonItem")) {
@@ -338,7 +349,7 @@ public class Garden {
     }
 
     private boolean shouldUpdateNavigationBar(@NonNull ReadableMap readableMap) {
-        String[] keys = new String[]{"navigationBarColorAndroid", "navigationBarHiddenAndroid"};
+        String[] keys = new String[]{"navigationBarColorAndroid", "navigationBarHiddenAndroid", "screenBackgroundColor"};
         for (String key : keys) {
             if (readableMap.hasKey(key)) {
                 return true;

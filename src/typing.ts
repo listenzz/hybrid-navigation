@@ -42,6 +42,7 @@ export type LayoutFittingCompressed = typeof LayoutFittingCompressed
 export type LayoutFitting = LayoutFittingExpanded | LayoutFittingCompressed
 
 export interface NavigationOption {
+  screenBackgroundColor?: Color // 页面背景，默认是白色
   passThroughTouches?: boolean // 触摸事件是否可以穿透到下一层页面，很少用。
   statusBarHidden?: boolean // 是否隐藏状态栏
   statusBarColorAndroid?: Color // 状态栏背景颜色
