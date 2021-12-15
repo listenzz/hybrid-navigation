@@ -11,7 +11,7 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.66.2)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - HybridNavigation (2.5.1):
+  - HybridNavigation (2.6.0):
     - React
   - libwebp (1.2.1):
     - libwebp/demux (= 1.2.1)
@@ -418,7 +418,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 18438b1c04ce502ed681cd19db3f4508964c082a
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 5337263514dd6f09803962437687240c5dc39aa4
-  HybridNavigation: 87e534d437314e109f1cd5f0826b479178aa4f56
+  HybridNavigation: b31c15a6a38933f6f43eab0be58c335df580f63a
   libwebp: 98a37e597e40bfdb4c911fc98f2c53d0b12d05fc
   RCT-Folly: a21c126816d8025b547704b777a2ba552f3d9fa9
   RCTRequired: 5e9e85f48da8dd447f5834ce14c6799ea8c7f41a
