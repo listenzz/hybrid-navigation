@@ -66,8 +66,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     @Override
     protected boolean extendedLayoutIncludesToolbar() {
-        int color = preferredToolbarColor();
-        float alpha = preferredToolbarAlpha();
+        int color = mStyle.getToolbarBackgroundColor();
+        float alpha = mStyle.getToolbarAlpha();
         Garden garden = getGarden();
         return Color.alpha(color) < 255
                 || alpha < 1.0
@@ -265,7 +265,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                 } else {
                     layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
                 }
-                getAwesomeToolbar().addView(reactTitleView, layoutParams);
+                getToolbar().addView(reactTitleView, layoutParams);
                 reactTitleView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
             }
         }
@@ -297,10 +297,10 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     @Override
     protected int preferredNavigationBarColor() {
-        if (style.getNavigationBarColor() != Style.INVALID_COLOR) {
-            return style.getNavigationBarColor();
+        if (mStyle.getNavigationBarColor() != Style.INVALID_COLOR) {
+            return mStyle.getNavigationBarColor();
         } else {
-            return style.getScreenBackgroundColor();
+            return mStyle.getScreenBackgroundColor();
         }
     }
 }

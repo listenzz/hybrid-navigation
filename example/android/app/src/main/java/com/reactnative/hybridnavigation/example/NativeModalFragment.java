@@ -8,17 +8,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.navigation.androidx.AnimationType;
 import com.reactnative.hybridnavigation.HybridFragment;
 
 public class NativeModalFragment extends HybridFragment {
-
-    @NonNull
-    @Override
-    public AnimationType getAnimationType() {
-        return AnimationType.Slide;
-    }
-
+    
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
 import com.navigation.androidx.AwesomeFragment;
-import com.navigation.androidx.NavigationFragment;
+import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.Style;
 import com.navigation.androidx.TabBarFragment;
 import com.navigation.androidx.TabBarItem;
@@ -109,9 +109,9 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
     }
 
     private Pair<String, String> extractSceneIdAndModuleName(AwesomeFragment awesomeFragment) {
-        if (awesomeFragment instanceof NavigationFragment) {
-            NavigationFragment navigationFragment = (NavigationFragment) awesomeFragment;
-            awesomeFragment = navigationFragment.getRootFragment();
+        if (awesomeFragment instanceof StackFragment) {
+            StackFragment stackFragment = (StackFragment) awesomeFragment;
+            awesomeFragment = stackFragment.getRootFragment();
         }
         if (awesomeFragment instanceof HybridFragment) {
             HybridFragment hybridFragment = (HybridFragment) awesomeFragment;

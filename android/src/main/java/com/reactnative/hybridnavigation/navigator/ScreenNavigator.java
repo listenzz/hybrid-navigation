@@ -12,7 +12,7 @@ import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
 import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.ReactBridgeManager;
-import com.reactnative.hybridnavigation.ReactNavigationFragment;
+import com.reactnative.hybridnavigation.ReactStackFragment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -99,9 +99,9 @@ public class ScreenNavigator implements Navigator {
                 fragment = createFragmentWithExtras(extras);
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
-                    ReactNavigationFragment navFragment = new ReactNavigationFragment();
-                    navFragment.setRootFragment(fragment);
-                    target.presentFragment(navFragment, requestCode, () -> promise.resolve(true));
+                    ReactStackFragment stackFragment = new ReactStackFragment();
+                    stackFragment.setRootFragment(fragment);
+                    target.presentFragment(stackFragment, requestCode, () -> promise.resolve(true));
                 } else {
                     promise.resolve(false);
                 }
@@ -118,13 +118,13 @@ public class ScreenNavigator implements Navigator {
                 fragment = createFragmentWithExtras(extras);
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
-                    target.showDialog(fragment, requestCode, () -> promise.resolve(true));
+                    target.showAsDialog(fragment, requestCode, () -> promise.resolve(true));
                 } else {
                     promise.resolve(false);
                 }
                 break;
             case "hideModal":
-                target.hideDialog(() -> promise.resolve(true));
+                target.hideAsDialog(() -> promise.resolve(true));
                 break;
             case "presentLayout":
                 ReadableMap layout = extras.getMap("layout");
@@ -141,7 +141,7 @@ public class ScreenNavigator implements Navigator {
                 fragment = getReactBridgeManager().createFragment(modalLayout);
                 if (fragment != null) {
                     int requestCode = extras.getInt("requestCode");
-                    target.showDialog(fragment, requestCode, () -> promise.resolve(true));
+                    target.showAsDialog(fragment, requestCode, () -> promise.resolve(true));
                 } else {
                     promise.resolve(false);
                 }

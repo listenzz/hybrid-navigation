@@ -45,8 +45,8 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     private static final String TAG = "Navigator";
 
     static final Handler sHandler = NavigationModule.sHandler;
-    private final UiTaskExecutor uiTaskExecutor;
-    private final LifecycleRegistry lifecycleRegistry;
+    private UiTaskExecutor uiTaskExecutor;
+    private LifecycleRegistry lifecycleRegistry;
     private final ReactApplicationContext reactContext;
     private final ReactBridgeManager bridgeManager;
 
@@ -55,19 +55,25 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
         this.bridgeManager = bridgeManager;
         this.reactContext = reactContext;
         reactContext.addLifecycleEventListener(this);
-        lifecycleRegistry = new LifecycleRegistry(this);
-        lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
-        uiTaskExecutor = new UiTaskExecutor(this, sHandler);
+        sHandler.post(() -> {
+            lifecycleRegistry = new LifecycleRegistry(this);
+            lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
+            uiTaskExecutor = new UiTaskExecutor(this, sHandler);
+        });
     }
 
     @Override
     public void onHostResume() {
-        lifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
+        sHandler.post(() -> {
+            lifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
+        });
     }
 
     @Override
     public void onHostPause() {
-        lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
+        sHandler.post(() -> {
+            lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
+        });
     }
 
     @Override
@@ -84,7 +90,10 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
         reactContext.removeLifecycleEventListener(this);
-        lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
+        sHandler.removeCallbacksAndMessages(null);
+        sHandler.post(() -> {
+            lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
+        });
     }
 
     @NonNull
@@ -206,7 +215,7 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
             }
         });
     }
-    
+
     @ReactMethod
     public void setMenuInteractive(final String sceneId, final boolean enabled) {
         uiTaskExecutor.submit(() -> {

@@ -27,12 +27,12 @@ public class MainActivity extends ReactAppCompatActivity {
         if (splashFragment == null) {
             if (!isReactModuleRegisterCompleted()) {
                 splashFragment = new SplashFragment();
-                showDialog(splashFragment, 0);
+                showAsDialog(splashFragment, 0);
             }
         } else {
             if (isReactModuleRegisterCompleted()) {
                 if (splashFragment != null) {
-                    splashFragment.hideDialog();
+                    splashFragment.hideAsDialog();
                     splashFragment = null;
                 }
             }
@@ -46,7 +46,7 @@ public class MainActivity extends ReactAppCompatActivity {
             // 如果发现有白屏，请调整 delayInMs 参数
             UiThreadUtil.runOnUiThread(() -> {
                 if (splashFragment != null) {
-                    splashFragment.hideDialog();
+                    splashFragment.hideAsDialog();
                     splashFragment = null;
                 }
             }, 200);

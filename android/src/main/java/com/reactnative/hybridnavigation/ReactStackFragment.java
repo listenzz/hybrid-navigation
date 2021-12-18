@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.navigation.androidx.AwesomeFragment;
-import com.navigation.androidx.NavigationFragment;
+import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.TabBarItem;
 import com.navigation.androidx.TransitionAnimation;
 
@@ -12,7 +12,7 @@ import com.navigation.androidx.TransitionAnimation;
  * Created by Listen on 2018/1/15.
  */
 
-public class ReactNavigationFragment extends NavigationFragment {
+public class ReactStackFragment extends StackFragment {
 
     private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
 

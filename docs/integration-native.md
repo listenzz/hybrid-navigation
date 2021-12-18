@@ -244,9 +244,9 @@ protected void onCreateMainComponent() {
     // super.onCreateMainComponent();
     ReactBridgeManager bridgeManager = getReactBridgeManager();
 
-    ReactNavigationFragment navigation = new ReactNavigationFragment();
+    ReactStackFragment navigation = new ReactStackFragment();
     navigation.setRootFragment(bridgeManager.createFragment("Navigation"));
-    ReactNavigationFragment options = new ReactNavigationFragment();
+    ReactStackFragment options = new ReactStackFragment();
     options.setRootFragment(bridgeManager.createFragment("Options"));
 
     ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
@@ -262,7 +262,7 @@ protected void onCreateMainComponent() {
 @Override
 protected void onCreateMainComponent() {
     AwesomeFragment home = getReactBridgeManager().createFragment("Home");
-    ReactNavigationFragment navigation = new ReactNavigationFragment();
+    ReactStackFragment navigation = new ReactStackFragment();
     navigation.setRootFragment(home);
 
     setActivityRootFragment(navigation);

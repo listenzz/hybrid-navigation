@@ -199,7 +199,7 @@ public class ReactTabBarFragment extends TabBarFragment {
         setOptions(mergeOptions(getOptions(), options));
 
         if (tabBarColor != null) {
-            style.setTabBarBackgroundColor(tabBarColor);
+            mStyle.setTabBarBackgroundColor(tabBarColor);
             tabBar.setBarBackgroundColor(tabBarColor);
             setNeedsNavigationBarAppearanceUpdate();
         }
@@ -290,7 +290,7 @@ public class ReactTabBarFragment extends TabBarFragment {
     }
 
     public Style getStyle() {
-        return style;
+        return mStyle;
     }
 
 }

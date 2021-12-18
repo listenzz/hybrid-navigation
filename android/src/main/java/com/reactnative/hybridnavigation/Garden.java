@@ -91,7 +91,7 @@ public class Garden {
             return;
         }
 
-        AwesomeToolbar toolbar = fragment.getAwesomeToolbar();
+        AwesomeToolbar toolbar = fragment.getToolbar();
         if (toolbar == null) {
             return;
         }
@@ -292,7 +292,7 @@ public class Garden {
             boolean passThroughTouches = readableMap.getBoolean("passThroughTouches");
             setPassThroughTouches(passThroughTouches);
         }
-        
+
         Bundle options = mergeOptions(fragment.getOptions(), patches);
 
         if (readableMap.hasKey("leftBarButtonItem")) {

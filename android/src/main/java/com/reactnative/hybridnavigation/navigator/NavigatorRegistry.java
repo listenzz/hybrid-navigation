@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
-import com.navigation.androidx.NavigationFragment;
+import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.TabBarFragment;
 import com.reactnative.hybridnavigation.HybridFragment;
 
@@ -63,7 +63,7 @@ public class NavigatorRegistry {
             if (fragment instanceof HybridFragment) {
                 return "screen";
             }
-            if (fragment instanceof NavigationFragment) {
+            if (fragment instanceof StackFragment) {
                 return "stack";
             }
             if (fragment instanceof TabBarFragment) {

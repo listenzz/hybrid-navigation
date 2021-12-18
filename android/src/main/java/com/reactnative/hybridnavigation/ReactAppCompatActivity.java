@@ -95,9 +95,9 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         if (getMainComponentName() != null) {
             AwesomeFragment fragment = bridgeManager.createFragment(getMainComponentName());
-            ReactNavigationFragment navigationFragment = new ReactNavigationFragment();
-            navigationFragment.setRootFragment(fragment);
-            setActivityRootFragment(navigationFragment);
+            ReactStackFragment stackFragment = new ReactStackFragment();
+            stackFragment.setRootFragment(fragment);
+            setActivityRootFragment(stackFragment);
         } else if (bridgeManager.hasPendingLayout()) {
             FLog.i(TAG, "Set root Fragment from pending layout when create main component");
             setActivityRootFragment(bridgeManager);

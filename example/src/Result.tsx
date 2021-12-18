@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { TouchableOpacity, Text, View, TextInput, Image } from 'react-native'
 import styles from './Styles'
 
-import { RESULT_OK, BarStyleLightContent, withNavigationItem, InjectedProps, Navigator } from 'hybrid-navigation'
+import {
+  RESULT_OK,
+  BarStyleLightContent,
+  withNavigationItem,
+  InjectedProps,
+  Navigator,
+  useVisibleEffect,
+} from 'hybrid-navigation'
 
 export default withNavigationItem({
   titleItem: {
@@ -12,7 +19,7 @@ export default withNavigationItem({
   topBarStyle: BarStyleLightContent,
 })(Result)
 
-function Result({ navigator, garden }: InjectedProps) {
+function Result({ navigator, garden, sceneId }: InjectedProps) {
   const [text, setText] = useState('')
   const [isRoot, setIsRoot] = useState(false)
 
@@ -21,6 +28,13 @@ function Result({ navigator, garden }: InjectedProps) {
       setIsRoot(root)
     })
   }, [navigator])
+
+  useVisibleEffect(
+    useCallback(() => {
+      console.info(`Page Result is visible [${sceneId}]`)
+      return () => console.info(`Page Result is invisible [${sceneId}]`)
+    }, [sceneId]),
+  )
 
   useEffect(() => {
     if (isRoot) {

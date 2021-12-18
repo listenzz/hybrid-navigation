@@ -43,30 +43,36 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
 
     private final ReactBridgeManager bridgeManager;
     private final ReactApplicationContext reactContext;
-    private final UiTaskExecutor uiTaskExecutor;
-    private final LifecycleRegistry lifecycleRegistry;
+    private UiTaskExecutor uiTaskExecutor;
+    private LifecycleRegistry lifecycleRegistry;
 
     NavigationModule(ReactApplicationContext reactContext, ReactBridgeManager bridgeManager) {
         super(reactContext);
         this.bridgeManager = bridgeManager;
         this.reactContext = reactContext;
         reactContext.addLifecycleEventListener(this);
-        lifecycleRegistry = new LifecycleRegistry(this);
-        lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
-        uiTaskExecutor = new UiTaskExecutor(this, sHandler);
+        sHandler.post(() -> {
+            lifecycleRegistry = new LifecycleRegistry(this);
+            lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
+            uiTaskExecutor = new UiTaskExecutor(this, sHandler);
+        });
         FLog.i(TAG, "NavigationModule#onCreate");
     }
 
     @Override
     public void onHostResume() {
         FLog.i(TAG, "NavigationModule#onHostResume");
-        lifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
+        sHandler.post(() -> {
+            lifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
+        });
     }
 
     @Override
     public void onHostPause() {
         FLog.i(TAG, "NavigationModule#onHostPause");
-        lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
+        sHandler.post(() -> {
+            lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
+        });
     }
 
     @Override
@@ -85,8 +91,10 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
         super.onCatalystInstanceDestroy();
         FLog.i(TAG, "NavigationModule#onCatalystInstanceDestroy");
         reactContext.removeLifecycleEventListener(this);
-        lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
         sHandler.removeCallbacksAndMessages(null);
+        sHandler.post(() -> {
+            lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
+        });
         sHandler.post(() -> {
             List<ReactBridgeManager.ReactBridgeReloadListener> listeners = bridgeManager.getReactBridgeReloadListeners();
             for (ReactBridgeManager.ReactBridgeReloadListener listener : listeners) {
@@ -153,7 +161,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
                 FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `setRoot`");
                 return;
             }
-            
+
             bridgeManager.setViewHierarchyReady(false);
             bridgeManager.setRootLayout(layout, sticky);
             bridgeManager.setPendingLayout(layout, tag);
@@ -203,7 +211,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
         uiTaskExecutor.submit(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null) {
-                promise.resolve(fragment.isNavigationRoot());
+                promise.resolve(fragment.isStackRoot());
             }
         });
     }

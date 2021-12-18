@@ -90,13 +90,13 @@ HBDViewController *vc = [[HBDReactBridgeManager get] controllerWithModuleName:@"
 
 ```java
 // android
-NavigationFragment navigationFragment = getNavigationFragment();
-if (navigationFragment != null) {
-    navigationFragment.pushFragment(fragment);
+StackFragment stackFragment = getStackFragment();
+if (stackFragment != null) {
+    stackFragment.pushFragment(fragment);
 }
 ```
 
-关于 NavigationFragment 的更多细节，请看 [AndroidNavigation](https://github.com/listenzz/AndroidNavigation) 这个子项目。
+关于 StackFragment 的更多细节，请看 [AndroidNavigation](https://github.com/listenzz/AndroidNavigation) 这个子项目。
 
 ```objc
 // ios

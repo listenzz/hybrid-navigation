@@ -117,11 +117,11 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     @Override
-    protected AwesomeToolbar onCreateAwesomeToolbar(View parent) {
+    protected AwesomeToolbar onCreateToolbar(View parent) {
         if (garden.toolbarHidden) {
             return null;
         }
-        return super.onCreateAwesomeToolbar(parent);
+        return super.onCreateToolbar(parent);
     }
 
     private Bundle options;

@@ -9,7 +9,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
-import com.navigation.androidx.NavigationFragment;
+import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.TabBarFragment;
 import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.ReactBridgeManager;
@@ -152,9 +152,9 @@ public class TabNavigator implements Navigator {
 
             boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
             if (popToRoot) {
-                NavigationFragment nav = tabBarFragment.getSelectedFragment().getNavigationFragment();
-                if (nav != null && nav.getChildFragments().size() > 1) {
-                    nav.popToRootFragment(false);
+                StackFragment stackFragment = tabBarFragment.getSelectedFragment().getStackFragment();
+                if (stackFragment != null && stackFragment.getChildFragments().size() > 1) {
+                    stackFragment.popToRootFragment(false);
                 }
             }
 
