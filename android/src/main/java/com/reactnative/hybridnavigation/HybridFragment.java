@@ -87,11 +87,11 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         garden.configureToolbar();
     }
-
+    
     public Garden getGarden() {
         return garden;
     }

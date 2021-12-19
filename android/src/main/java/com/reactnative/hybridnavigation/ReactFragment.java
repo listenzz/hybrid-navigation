@@ -134,30 +134,23 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         if (!FragmentHelper.isHidden(this)) {
             initTitleViewIfNeeded();
         }
         getReactBridgeManager().addReactBridgeReloadListener(this);
     }
-
+    
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (reactRootViewHolder != null) {
             reactRootViewHolder.setVisibilityObserver(null);
         }
-        // unmountReactView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // unmount react view delay for better transition
         unmountReactView();
     }
-
+    
     @Override
     public void onReload() {
         unmountReactView();

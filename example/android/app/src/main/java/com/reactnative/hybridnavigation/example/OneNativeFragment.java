@@ -70,8 +70,8 @@ public class OneNativeFragment extends HybridFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Bundle props = getProps();
         String greeting = props.getString("greeting");
         if (greeting != null) {
@@ -80,5 +80,4 @@ public class OneNativeFragment extends HybridFragment {
             setTitle("Native");
         }
     }
-
 }
