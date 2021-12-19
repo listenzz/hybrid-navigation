@@ -316,7 +316,7 @@ export class Navigator {
   }
 
   isStackRoot(): Promise<boolean> {
-    return NavigationModule.isNavigationRoot(this.sceneId)
+    return NavigationModule.isStackRoot(this.sceneId)
   }
 
   async present<T extends ResultType, P extends PropsType = PropsType>(

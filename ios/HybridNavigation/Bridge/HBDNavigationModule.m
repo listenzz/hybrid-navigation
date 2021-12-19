@@ -123,7 +123,7 @@ RCT_EXPORT_METHOD(currentTab:(NSString *)sceneId resolver:(RCTPromiseResolveBloc
     }
 }
 
-RCT_EXPORT_METHOD(isNavigationRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(isStackRoot:(NSString *)sceneId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UINavigationController *nav = vc.navigationController;
     if (nav) {

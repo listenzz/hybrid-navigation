@@ -162,7 +162,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void isNavigationRoot(final String sceneId, final Promise promise) {
+    public void isStackRoot(final String sceneId, final Promise promise) {
         UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null) {
