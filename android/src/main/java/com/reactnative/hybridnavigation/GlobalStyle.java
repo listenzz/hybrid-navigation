@@ -38,9 +38,7 @@ public class GlobalStyle {
             FLog.w(TAG, "Style options is null");
             return;
         }
-
-        FLog.i(TAG, "GlobalStyle#inflateStyle");
-
+        
         // screenBackgroundColor
         String screenBackgroundColor = options.getString("screenBackgroundColor");
         if (screenBackgroundColor != null) {

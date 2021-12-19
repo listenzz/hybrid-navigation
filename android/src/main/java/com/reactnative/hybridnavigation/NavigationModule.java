@@ -120,7 +120,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             bridgeManager.setViewHierarchyReady(false);
             bridgeManager.setRootLayout(layout, sticky);
             bridgeManager.setPendingLayout(layout, tag);
-
+            
             Activity activity = reactContext.getCurrentActivity();
             if (activity instanceof ReactAppCompatActivity && bridgeManager.isReactModuleRegisterCompleted()) {
                 ReactAppCompatActivity reactActivity = (ReactAppCompatActivity) activity;

@@ -65,8 +65,8 @@ public class GardenModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(() -> {
             FLog.i(TAG, "GardenModule#setStyle");
             Garden.createGlobalStyle(toBundle(style));
-            ReactContext context = getReactApplicationContextIfActiveOrWarn();
             
+            ReactContext context = getReactApplicationContextIfActiveOrWarn();
             if (context != null) {
                 ReactAppCompatActivity activity = (ReactAppCompatActivity) context.getCurrentActivity();
                 if (activity != null) {

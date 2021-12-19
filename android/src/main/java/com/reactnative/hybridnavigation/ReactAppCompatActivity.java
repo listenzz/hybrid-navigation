@@ -84,6 +84,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     public void onReactModuleRegisterCompleted() {
         FLog.i(TAG, "ReactAppCompatActivity#onReactModuleRegisterCompleted");
+        inflateStyle();
         createMainComponent();
     }
 
@@ -130,11 +131,13 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     private void setActivityRootFragment(ReactBridgeManager bridgeManager) {
         int pendingTag = bridgeManager.getPendingTag();
         ReadableMap pendingLayout = bridgeManager.getPendingLayout();
-        AwesomeFragment fragment = bridgeManager.createFragment(pendingLayout);
-        if (fragment != null) {
-            setActivityRootFragment(fragment, pendingTag);
-        } else {
-            FLog.e(TAG, "Could not create fragment from  pending layout.");
+        if (pendingTag != 0 && pendingLayout != null) {
+            AwesomeFragment fragment = bridgeManager.createFragment(pendingLayout);
+            if (fragment != null) {
+                setActivityRootFragment(fragment, pendingTag);
+            } else {
+                FLog.e(TAG, "Could not create fragment from  pending layout.");
+            }
         }
     }
 
@@ -179,6 +182,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     protected void onResume() {
         super.onResume();
+        setActivityRootFragment(getReactBridgeManager());
         activityDelegate.onResume();
     }
 
