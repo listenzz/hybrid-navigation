@@ -9,25 +9,21 @@ import static com.reactnative.hybridnavigation.Parameters.toList;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LifecycleRegistry;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.JavaOnlyMap;
-import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
@@ -40,62 +36,16 @@ import java.util.Map;
 /**
  * Created by Listen on 2017/11/22.
  */
-public class GardenModule extends ReactContextBaseJavaModule implements LifecycleEventListener, LifecycleOwner {
+public class GardenModule extends ReactContextBaseJavaModule {
 
     private static final String TAG = "Navigator";
-
-    static final Handler sHandler = NavigationModule.sHandler;
-    private UiTaskExecutor uiTaskExecutor;
-    private LifecycleRegistry lifecycleRegistry;
-    private final ReactApplicationContext reactContext;
     private final ReactBridgeManager bridgeManager;
 
     public GardenModule(ReactApplicationContext reactContext, ReactBridgeManager bridgeManager) {
         super(reactContext);
         this.bridgeManager = bridgeManager;
-        this.reactContext = reactContext;
-        reactContext.addLifecycleEventListener(this);
-        sHandler.post(() -> {
-            lifecycleRegistry = new LifecycleRegistry(this);
-            lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
-            uiTaskExecutor = new UiTaskExecutor(this, sHandler);
-        });
     }
-
-    @Override
-    public void onHostResume() {
-        sHandler.post(() -> {
-            lifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
-        });
-    }
-
-    @Override
-    public void onHostPause() {
-        sHandler.post(() -> {
-            lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
-        });
-    }
-
-    @Override
-    public void onHostDestroy() {
-    }
-
-    @NonNull
-    @Override
-    public Lifecycle getLifecycle() {
-        return lifecycleRegistry;
-    }
-
-    @Override
-    public void onCatalystInstanceDestroy() {
-        super.onCatalystInstanceDestroy();
-        reactContext.removeLifecycleEventListener(this);
-        sHandler.removeCallbacksAndMessages(null);
-        sHandler.post(() -> {
-            lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
-        });
-    }
-
+    
     @NonNull
     @Override
     public String getName() {
@@ -112,13 +62,13 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void setStyle(final ReadableMap style) {
-        sHandler.post(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             FLog.i(TAG, "GardenModule#setStyle");
             Garden.createGlobalStyle(toBundle(style));
-
-            ReactContext context = getReactApplicationContext();
-            if (context.hasActiveCatalystInstance()) {
-                ReactAppCompatActivity activity = (ReactAppCompatActivity) getCurrentActivity();
+            ReactContext context = getReactApplicationContextIfActiveOrWarn();
+            
+            if (context != null) {
+                ReactAppCompatActivity activity = (ReactAppCompatActivity) context.getCurrentActivity();
                 if (activity != null) {
                     activity.inflateStyle();
                 }
@@ -154,7 +104,7 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     @ReactMethod
     public void updateOptions(final String sceneId, final ReadableMap readableMap) {
         FLog.i(TAG, "update options:" + readableMap);
-        uiTaskExecutor.submit(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
             if (fragment != null && fragment.isAdded()) {
                 fragment.getGarden().updateOptions(readableMap);
@@ -185,7 +135,7 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     @ReactMethod
     public void updateTabBar(final String sceneId, final ReadableMap readableMap) {
         FLog.i(TAG, "updateTabBar:" + readableMap);
-        uiTaskExecutor.submit(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -202,7 +152,7 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     @ReactMethod
     public void setTabItem(final String sceneId, @NonNull final ReadableArray options) {
         FLog.i(TAG, "setTabItem:" + options);
-        uiTaskExecutor.submit(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null && fragment.getView() != null) {
                 TabBarFragment tabBarFragment = fragment.getTabBarFragment();
@@ -218,7 +168,7 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
 
     @ReactMethod
     public void setMenuInteractive(final String sceneId, final boolean enabled) {
-        uiTaskExecutor.submit(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
             if (awesomeFragment != null) {
                 DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
@@ -230,13 +180,16 @@ public class GardenModule extends ReactContextBaseJavaModule implements Lifecycl
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
-        ReactContext reactContext = getReactApplicationContext();
-        if (!(bridgeManager.isViewHierarchyReady() && reactContext.hasActiveCatalystInstance())) {
+        ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
+        if (reactContext == null) {
+            return null;
+        }
+        if (!bridgeManager.isViewHierarchyReady()) {
             FLog.w(TAG, "View hierarchy is not ready now.");
             return null;
         }
 
-        Activity activity = getCurrentActivity();
+        Activity activity = reactContext.getCurrentActivity();
         if (activity instanceof ReactAppCompatActivity) {
             ReactAppCompatActivity reactActivity = (ReactAppCompatActivity) activity;
             FragmentManager fragmentManager = reactActivity.getSupportFragmentManager();

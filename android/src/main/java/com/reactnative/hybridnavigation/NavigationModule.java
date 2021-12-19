@@ -2,26 +2,21 @@ package com.reactnative.hybridnavigation;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LifecycleRegistry;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.TabBarFragment;
@@ -36,66 +31,22 @@ import java.util.Map;
 /**
  * Created by Listen on 2017/11/20.
  */
-public class NavigationModule extends ReactContextBaseJavaModule implements LifecycleEventListener, LifecycleOwner {
+public class NavigationModule extends ReactContextBaseJavaModule {
 
     static final String TAG = "Navigator";
-    static final Handler sHandler = new Handler(Looper.getMainLooper());
-
     private final ReactBridgeManager bridgeManager;
-    private final ReactApplicationContext reactContext;
-    private UiTaskExecutor uiTaskExecutor;
-    private LifecycleRegistry lifecycleRegistry;
-
+    
     NavigationModule(ReactApplicationContext reactContext, ReactBridgeManager bridgeManager) {
         super(reactContext);
         this.bridgeManager = bridgeManager;
-        this.reactContext = reactContext;
-        reactContext.addLifecycleEventListener(this);
-        sHandler.post(() -> {
-            lifecycleRegistry = new LifecycleRegistry(this);
-            lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
-            uiTaskExecutor = new UiTaskExecutor(this, sHandler);
-        });
         FLog.i(TAG, "NavigationModule#onCreate");
     }
-
-    @Override
-    public void onHostResume() {
-        FLog.i(TAG, "NavigationModule#onHostResume");
-        sHandler.post(() -> {
-            lifecycleRegistry.setCurrentState(Lifecycle.State.STARTED);
-        });
-    }
-
-    @Override
-    public void onHostPause() {
-        FLog.i(TAG, "NavigationModule#onHostPause");
-        sHandler.post(() -> {
-            lifecycleRegistry.setCurrentState(Lifecycle.State.CREATED);
-        });
-    }
-
-    @Override
-    public void onHostDestroy() {
-        FLog.i(TAG, "NavigationModule#onHostDestroy");
-    }
-
-    @NonNull
-    @Override
-    public Lifecycle getLifecycle() {
-        return lifecycleRegistry;
-    }
-
+    
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
         FLog.i(TAG, "NavigationModule#onCatalystInstanceDestroy");
-        reactContext.removeLifecycleEventListener(this);
-        sHandler.removeCallbacksAndMessages(null);
-        sHandler.post(() -> {
-            lifecycleRegistry.setCurrentState(Lifecycle.State.DESTROYED);
-        });
-        sHandler.post(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             List<ReactBridgeManager.ReactBridgeReloadListener> listeners = bridgeManager.getReactBridgeReloadListeners();
             for (ReactBridgeManager.ReactBridgeReloadListener listener : listeners) {
                 listener.onReload();
@@ -104,10 +55,14 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
             bridgeManager.setPendingLayout(null, 0);
             bridgeManager.setReactModuleRegisterCompleted(false);
             bridgeManager.setViewHierarchyReady(false);
-            Activity activity = getCurrentActivity();
-            if (activity instanceof ReactAppCompatActivity) {
-                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                reactAppCompatActivity.clearFragments();
+            
+            ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
+            if (reactContext != null) {
+                Activity activity = reactContext.getCurrentActivity();
+                if (activity instanceof ReactAppCompatActivity) {
+                    ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                    reactAppCompatActivity.clearFragments();
+                }
             }
         });
     }
@@ -129,22 +84,22 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
 
     @ReactMethod
     public void startRegisterReactComponent() {
-        sHandler.post(bridgeManager::startRegisterReactModule);
+        UiThreadUtil.runOnUiThread(bridgeManager::startRegisterReactModule);
     }
 
     @ReactMethod
     public void endRegisterReactComponent() {
-        sHandler.post(bridgeManager::endRegisterReactModule);
+        UiThreadUtil.runOnUiThread(bridgeManager::endRegisterReactModule);
     }
 
     @ReactMethod
     public void registerReactComponent(final String appKey, final ReadableMap options) {
-        sHandler.post(() -> bridgeManager.registerReactModule(appKey, options));
+        UiThreadUtil.runOnUiThread(() -> bridgeManager.registerReactModule(appKey, options));
     }
 
     @ReactMethod
     public void signalFirstRenderComplete(final String sceneId) {
-        uiTaskExecutor.submit(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
             if (awesomeFragment instanceof ReactFragment) {
                 ReactFragment fragment = (ReactFragment) awesomeFragment;
@@ -155,9 +110,9 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
 
     @ReactMethod
     public void setRoot(final ReadableMap layout, final boolean sticky, final int tag) {
-        uiTaskExecutor.submit(() -> {
-            ReactContext reactContext = getReactApplicationContext();
-            if (!reactContext.hasActiveCatalystInstance()) {
+        UiThreadUtil.runOnUiThread(() -> {
+            ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
+            if (reactContext == null) {
                 FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `setRoot`");
                 return;
             }
@@ -166,13 +121,13 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
             bridgeManager.setRootLayout(layout, sticky);
             bridgeManager.setPendingLayout(layout, tag);
 
-            Activity activity = getCurrentActivity();
+            Activity activity = reactContext.getCurrentActivity();
             if (activity instanceof ReactAppCompatActivity && bridgeManager.isReactModuleRegisterCompleted()) {
-                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
+                ReactAppCompatActivity reactActivity = (ReactAppCompatActivity) activity;
                 AwesomeFragment fragment = bridgeManager.createFragment(layout);
                 if (fragment != null) {
                     FLog.i(TAG, "Have active Activity and React module was registered, set root Fragment immediately.");
-                    reactAppCompatActivity.setActivityRootFragment(fragment, tag);
+                    reactActivity.setActivityRootFragment(fragment, tag);
                 }
             }
         });
@@ -180,7 +135,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
 
     @ReactMethod
     public void dispatch(final String sceneId, final String action, final ReadableMap extras, Promise promise) {
-        uiTaskExecutor.submit(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment target = findFragmentBySceneId(sceneId);
             if (target != null && target.isAdded()) {
                 bridgeManager.handleNavigation(target, action, extras, promise);
@@ -193,7 +148,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
 
     @ReactMethod
     public void currentTab(final String sceneId, final Promise promise) {
-        uiTaskExecutor.submit(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null) {
                 TabBarFragment tabs = fragment.getTabBarFragment();
@@ -208,7 +163,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
 
     @ReactMethod
     public void isNavigationRoot(final String sceneId, final Promise promise) {
-        uiTaskExecutor.submit(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null) {
                 promise.resolve(fragment.isStackRoot());
@@ -218,7 +173,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
 
     @ReactMethod
     public void setResult(final String sceneId, final int resultCode, final ReadableMap result) {
-        uiTaskExecutor.submit(() -> {
+        UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment != null) {
                 fragment.setResult(resultCode, Arguments.toBundle(result));
@@ -228,18 +183,17 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
 
     @ReactMethod
     public void findSceneIdByModuleName(@NonNull String moduleName, Promise promise) {
-        Runnable task = new Runnable() {
+       final Runnable task = new Runnable() {
             @Override
             public void run() {
-                ReactContext reactContext = getReactApplicationContext();
-                if (!reactContext.hasActiveCatalystInstance()) {
-                    FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `currentRoute`");
+                ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
+                if (reactContext == null) {
                     return;
                 }
 
-                Activity activity = getCurrentActivity();
+                Activity activity = reactContext.getCurrentActivity();
                 if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
-                    sHandler.postDelayed(() -> uiTaskExecutor.submit(this), 16);
+                    UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
 
@@ -255,7 +209,7 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
                 }
             }
         };
-        uiTaskExecutor.submit(task);
+        UiThreadUtil.runOnUiThread(task);
     }
 
     private String findSceneIdByModuleName(@NonNull String moduleName, AwesomeFragment fragment) {
@@ -286,18 +240,17 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                ReactContext reactContext = getReactApplicationContext();
-                if (!reactContext.hasActiveCatalystInstance()) {
-                    FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `currentRoute`");
+                ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
+                if (reactContext == null) {
                     return;
                 }
 
-                Activity activity = getCurrentActivity();
+                Activity activity = reactContext.getCurrentActivity();
                 if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
-                    sHandler.postDelayed(() -> uiTaskExecutor.submit(this), 16);
+                    UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
-
+                
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
                 FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
                 HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
@@ -309,12 +262,12 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
                     bundle.putString("mode", Navigator.Util.getMode(current));
                     promise.resolve(Arguments.fromBundle(bundle));
                 } else {
-                    sHandler.postDelayed(() -> uiTaskExecutor.submit(this), 16);
+                    UiThreadUtil.runOnUiThread(this, 16);
                 }
             }
         };
 
-        uiTaskExecutor.submit(task);
+        UiThreadUtil.runOnUiThread(task);
     }
 
     @ReactMethod
@@ -322,16 +275,14 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                ReactContext reactContext = getReactApplicationContext();
-
-                if (!reactContext.hasActiveCatalystInstance()) {
-                    FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `routeGraph`");
+                ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
+                if (reactContext == null) {
                     return;
                 }
 
-                Activity activity = getCurrentActivity();
+                Activity activity = reactContext.getCurrentActivity();
                 if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
-                    sHandler.postDelayed(() -> uiTaskExecutor.submit(this), 16);
+                    UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
 
@@ -341,22 +292,26 @@ public class NavigationModule extends ReactContextBaseJavaModule implements Life
                 if (graph.size() > 0) {
                     promise.resolve(Arguments.fromList(graph));
                 } else {
-                    sHandler.postDelayed(() -> uiTaskExecutor.submit(this), 16);
+                    UiThreadUtil.runOnUiThread(this, 16);
                 }
             }
         };
 
-        uiTaskExecutor.submit(task);
+        UiThreadUtil.runOnUiThread(task);
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
-        ReactContext reactContext = getReactApplicationContext();
-        if (!(bridgeManager.isViewHierarchyReady() && reactContext.hasActiveCatalystInstance())) {
+        ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
+        if (reactContext == null) {
+            return null;
+        }
+        
+        if (!bridgeManager.isViewHierarchyReady()) {
             FLog.w(TAG, "View hierarchy is not ready now.");
             return null;
         }
 
-        Activity activity = getCurrentActivity();
+        Activity activity = reactContext.getCurrentActivity();
         if (activity instanceof ReactAppCompatActivity) {
             ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
             FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
