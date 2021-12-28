@@ -1,3 +1,9 @@
+## 2.7.0（2021-12-28）
+
+### Android specific
+
+- 支持 appcompat 1.3
+
 ## 2.6.0 (2021-11-29)
 
 - 支持动态设置 `screenBackgroundColor`
