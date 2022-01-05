@@ -10,7 +10,7 @@ import {
   Tabs,
   Stack,
 } from 'hybrid-navigation'
-import { Platform } from 'react-native'
+import { Image, Platform } from 'react-native'
 import Navigation from './Navigation'
 import Result from './Result'
 import Options from './Options'
@@ -74,7 +74,7 @@ Garden.setStyle({
   navigationBarColorAndroid: '#FFFFFF',
   // scrimAlphaAndroid: 50,
 
-  // backIcon: Image.resolveAssetSource(require('./src/images/ic_settings.png')),
+  backIcon: Image.resolveAssetSource(require('./images/icon_back.png')),
   shadowImage: {
     color: '#DDDDDD',
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
