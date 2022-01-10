@@ -1,3 +1,9 @@
+## 2.7.2 (2022-01-10)
+
+### Android specific
+
+- 修复调用 `setDefinesPresentationContext` 导致空指针的问题
+
 ## 2.7.1 (2022-01-05)
 
 ### iOS specific
