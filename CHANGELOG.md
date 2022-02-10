@@ -1,3 +1,9 @@
+## 2.7.3 (2022-02-10)
+
+### Android specific
+
+- 修复 `Can not perform this action after onSaveInstanceState`
+
 ## 2.7.2 (2022-01-10)
 
 ### Android specific
