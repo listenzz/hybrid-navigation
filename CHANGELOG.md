@@ -1,3 +1,13 @@
+## 2.7.4 (2022-02-14)
+
+### Android specific
+
+- 修复 `FragmentManager is already executing transactions`
+
+### iOS specific
+
+- 确保生命周期函数执行顺序
+
 ## 2.7.3 (2022-02-10)
 
 ### Android specific
