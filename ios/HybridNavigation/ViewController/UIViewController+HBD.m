@@ -40,10 +40,10 @@
 
 - (void)hbd_presentViewController:(UIViewController *)viewController animated:(BOOL)flag completion:(void (^)(void))completion {
     if (![self canPresentViewController]) {
+        [self didReceiveResultCode:0 resultData:nil requestCode:viewController.requestCode];
         if (completion) {
             completion();
         }
-        [self didReceiveResultCode:0 resultData:nil requestCode:viewController.requestCode];
         return;
     }
     [self hbd_presentViewController:viewController animated:flag completion:completion];
@@ -81,12 +81,12 @@
     }
     
     [self hbd_dismissViewControllerAnimated:animated completion:^{
-        if (completion) {
-            completion();
-        }
-        
         if (![presented isKindOfClass:[UIAlertController class]]) {
             [presenting didReceiveResultCode:presented.resultCode resultData:presented.resultData requestCode:presented.requestCode];
+        }
+        
+        if (completion) {
+            completion();
         }
     }];
 }

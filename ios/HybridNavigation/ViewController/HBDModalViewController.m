@@ -429,10 +429,11 @@
 
 - (void)hbd_showViewController:(UIViewController *)vc requestCode:(NSInteger)requestCode animated:(BOOL)animated completion:(void (^)(BOOL))completion {
     if (![self canShowModal]) {
+        [self didReceiveResultCode:0 resultData:nil requestCode:requestCode];
+        
         if (completion) {
             completion(NO);
         }
-        [self didReceiveResultCode:0 resultData:nil requestCode:requestCode];
         return;
     }
     
@@ -482,13 +483,14 @@
     }
     
     [self.hbd_modalViewController hideWithAnimated:animated completion:^(BOOL finished) {
-        if (completion) {
-            completion(finished);
-        }
         UIViewController *target = self.hbd_targetViewController;
         [target beginAppearanceTransition:YES animated:YES];
         [target endAppearanceTransition];
         [target didReceiveResultCode:self.resultCode resultData:self.resultData requestCode:self.requestCode];
+        
+        if (completion) {
+            completion(finished);
+        }
     }];
 }
 

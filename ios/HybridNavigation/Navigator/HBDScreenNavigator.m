@@ -75,16 +75,11 @@
         HBDNavigationController *navVC = [[HBDNavigationController alloc] initWithRootViewController:viewController];
         navVC.modalPresentationStyle = UIModalPresentationCurrentContext;
         [navVC setRequestCode:requestCode];
-        [target beginAppearanceTransition:NO animated:YES];
-        [target endAppearanceTransition];
         [target presentViewController:navVC animated:YES completion:^{
             resolve(@(YES));
         }];
     } else if ([action isEqualToString:@"dismiss"]) {
         UIViewController *presenting = target.presentingViewController;
-        // make sure extra lifecycle excuting order
-        [target beginAppearanceTransition:NO animated:YES];
-        [target endAppearanceTransition];
         if (presenting) {
             [presenting dismissViewControllerAnimated:YES completion:^{
                 resolve(@(YES));
@@ -110,8 +105,6 @@
         viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
         [viewController setRequestCode:requestCode];
         viewController.modalPresentationStyle = UIModalPresentationCurrentContext;
-        [target beginAppearanceTransition:NO animated:YES];
-        [target endAppearanceTransition];
         [target presentViewController:viewController animated:YES completion:^{
             resolve(@(YES));
         }];
