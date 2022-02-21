@@ -295,7 +295,7 @@ PODS:
   - SDWebImageWebPCoder (0.8.4):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
-  - ToastHybrid (2.4.4):
+  - ToastHybrid (2.4.5):
     - React
   - Yoga (1.14.0)
 
@@ -447,7 +447,7 @@ SPEC CHECKSUMS:
   RNFastImage: 1f2cab428712a4baaf78d6169eaec7f622556dd7
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: f93010f3f6c031e2f8fb3081ca4ee6966c539815
-  ToastHybrid: fb8891ced969522e815dec936f391dc5a779e427
+  ToastHybrid: 432381039a804a60e142ebaa7af8290e236c288e
   Yoga: 9b6696970c3289e8dea34b3eda93f23e61fb8121
 
 PODFILE CHECKSUM: 8c4f5163a0ebf22c49615673e7be4bb42a354f7a
