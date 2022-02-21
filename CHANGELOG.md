@@ -1,3 +1,9 @@
+## 2.7.5 (2022-02-21)
+
+### Android specific
+
+- 修复 `IllegalStateException: Fragment not associated with a fragment manager.`
+
 ## 2.7.4 (2022-02-14)
 
 ### Android specific
