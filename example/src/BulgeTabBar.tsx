@@ -108,8 +108,7 @@ function Tab({
           selected
             ? [styles.buttonTextSelected, { color: itemColor }]
             : [styles.buttonText, { color: unselectedItemColor }]
-        }
-      >
+        }>
         {title}
       </Text>
       {!!badgeText && <TextBadge style={[styles.textBadge, textBadgeStyle]}>{badgeText}</TextBadge>}
