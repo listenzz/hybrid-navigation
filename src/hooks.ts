@@ -1,12 +1,12 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 
 import {
-  EventEmitter,
   EVENT_NAVIGATION,
-  KEY_SCENE_ID,
+  EventEmitter,
   KEY_ON,
-  ON_COMPONENT_DISAPPEAR,
+  KEY_SCENE_ID,
   ON_COMPONENT_APPEAR,
+  ON_COMPONENT_DISAPPEAR,
 } from './NavigationModule'
 import { Navigator } from './Navigator'
 import { NavigationContext } from './ReactRegistry'
@@ -24,8 +24,7 @@ export function useVisibility() {
 
   useEffect(() => {
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-      const sceneId = navigator.sceneId
-      if (sceneId === data[KEY_SCENE_ID]) {
+      if (navigator.sceneId === data[KEY_SCENE_ID]) {
         if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
           setVisibility('visible')
         } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
@@ -52,8 +51,7 @@ export function useVisibleEffect(effect: React.EffectCallback) {
     }
 
     const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-      const sceneId = navigator.sceneId
-      if (sceneId === data[KEY_SCENE_ID]) {
+      if (navigator.sceneId === data[KEY_SCENE_ID]) {
         if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
           destructor.current = effect()
         } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
@@ -76,8 +74,7 @@ export function useVisibleEffect(effect: React.EffectCallback) {
 }
 
 export function useNavigator(): Navigator {
-  const ctx = useContext<Navigator>(NavigationContext)
-  return ctx
+  return useContext<Navigator>(NavigationContext)
 }
 
 export function useGarden() {

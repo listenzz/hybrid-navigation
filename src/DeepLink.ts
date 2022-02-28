@@ -4,7 +4,7 @@ import { router } from './router'
 let _active = 0
 let _uriPrefix: string = ''
 let _hasHandleInitialURL = false
-let _linkingSucscription: EmitterSubscription | undefined
+let _linkingSubscription: EmitterSubscription | undefined
 
 function activate(uriPrefix: string) {
   if (!uriPrefix) {
@@ -24,7 +24,7 @@ function activate(uriPrefix: string) {
         })
         .catch(err => console.error('An error occurred', err))
     }
-    _linkingSucscription = Linking.addEventListener('url', handleLinking)
+    _linkingSubscription = Linking.addEventListener('url', handleLinking)
   }
   _active++
 }
@@ -32,9 +32,9 @@ function activate(uriPrefix: string) {
 function deactivate() {
   _active--
   if (_active === 0) {
-    if (_linkingSucscription) {
-      _linkingSucscription.remove()
-      _linkingSucscription = undefined
+    if (_linkingSubscription) {
+      _linkingSubscription.remove()
+      _linkingSubscription = undefined
     } else {
       Linking.removeEventListener('url', handleLinking)
     }
