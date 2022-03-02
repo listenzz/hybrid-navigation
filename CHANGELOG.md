@@ -1,3 +1,9 @@
+## 2.7.6 (2022-03-02)
+
+### Android specific
+
+- 再修复 `FragmentManager is already executing transactions`
+
 ## 2.7.5 (2022-02-21)
 
 ### Android specific
