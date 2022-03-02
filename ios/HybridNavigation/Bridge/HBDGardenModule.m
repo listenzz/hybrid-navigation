@@ -8,11 +8,10 @@
 
 #import "HBDGardenModule.h"
 #import "HBDReactBridgeManager.h"
-#import "HBDViewController.h"
 #import "HBDTabBarController.h"
 #import <React/RCTLog.h>
 
-@interface HBDGardenModule()
+@interface HBDGardenModule ()
 
 @property(nonatomic, strong, readonly) HBDReactBridgeManager *bridgeManager;
 
@@ -38,77 +37,96 @@ RCT_EXPORT_MODULE(GardenModule)
 }
 
 - (NSDictionary *)constantsToExport {
-    return @{ @"TOOLBAR_HEIGHT": @(44) };
+    return @{@"TOOLBAR_HEIGHT": @(44)};
 }
 
-RCT_EXPORT_METHOD(setStyle:(NSDictionary *)style) {
+RCT_EXPORT_METHOD(setStyle:
+    (NSDictionary *) style) {
     [HBDGarden createGlobalStyleWithOptions:style];
 }
 
-RCT_EXPORT_METHOD(setTitleItem:(NSString *)sceneId item:(NSDictionary *)item) {
+RCT_EXPORT_METHOD(setTitleItem:
+    (NSString *) sceneId item:
+    (NSDictionary *) item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateNavigationBarOptions:@{ @"titleItem": RCTNullIfNil(item)}];
+        [vc updateNavigationBarOptions:@{@"titleItem": RCTNullIfNil(item)}];
     }
 }
 
-RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *)sceneId item:(NSDictionary * __nullable)item) {
+RCT_EXPORT_METHOD(setLeftBarButtonItem:
+    (NSString *) sceneId item:
+    (NSDictionary *__nullable) item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateNavigationBarOptions:@{ @"leftBarButtonItem": RCTNullIfNil(item)}];
+        [vc updateNavigationBarOptions:@{@"leftBarButtonItem": RCTNullIfNil(item)}];
     }
 }
 
-RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *)sceneId item:(NSDictionary * __nullable)item) {
+RCT_EXPORT_METHOD(setRightBarButtonItem:
+    (NSString *) sceneId item:
+    (NSDictionary *__nullable) item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateNavigationBarOptions:@{ @"rightBarButtonItem": RCTNullIfNil(item)}];
+        [vc updateNavigationBarOptions:@{@"rightBarButtonItem": RCTNullIfNil(item)}];
     }
 }
 
-RCT_EXPORT_METHOD(setLeftBarButtonItems:(NSString *)sceneId item:(NSArray * __nullable)items) {
+RCT_EXPORT_METHOD(setLeftBarButtonItems:
+    (NSString *) sceneId item:
+    (NSArray *__nullable) items) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateNavigationBarOptions:@{ @"leftBarButtonItems": RCTNullIfNil(items)}];
+        [vc updateNavigationBarOptions:@{@"leftBarButtonItems": RCTNullIfNil(items)}];
     }
 }
 
-RCT_EXPORT_METHOD(setRightBarButtonItems:(NSString *)sceneId item:(NSArray * __nullable)items) {
+RCT_EXPORT_METHOD(setRightBarButtonItems:
+    (NSString *) sceneId item:
+    (NSArray *__nullable) items) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateNavigationBarOptions:@{ @"rightBarButtonItems": RCTNullIfNil(items)}];
+        [vc updateNavigationBarOptions:@{@"rightBarButtonItems": RCTNullIfNil(items)}];
     }
 }
 
-RCT_EXPORT_METHOD(updateOptions:(NSString *)sceneId item:(NSDictionary *)options) {
+RCT_EXPORT_METHOD(updateOptions:
+    (NSString *) sceneId item:
+    (NSDictionary *) options) {
     RCTLogInfo(@"[Navigator] updateNavigationBarOptions: %@", options);
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
-        [(HBDViewController *)vc updateNavigationBarOptions:options];
+        [vc updateNavigationBarOptions:options];
     }
 }
 
-RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
+RCT_EXPORT_METHOD(updateTabBar:
+    (NSString *) sceneId item:
+    (NSDictionary *) item) {
     RCTLogInfo(@"[Navigator] updateTabBar: %@", item);
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarVC = [self tabBarControllerWithViewController:vc];
     if (tabBarVC && [tabBarVC isKindOfClass:[HBDTabBarController class]]) {
-        [((HBDTabBarController *)tabBarVC) updateTabBar:item];
+        [((HBDTabBarController *) tabBarVC) updateTabBar:item];
     }
 }
 
-RCT_EXPORT_METHOD(setTabItem:(NSString *)sceneId options:(NSArray<NSDictionary *> *)options) {
+RCT_EXPORT_METHOD(setTabItem:
+    (NSString *) sceneId options:
+    (NSArray<NSDictionary *> *) options) {
     RCTLogInfo(@"[Navigator] setTabItem: %@", options);
-    UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
-        HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
+        HBDTabBarController *tabBarVC = (HBDTabBarController *) tabBarController;
         [tabBarVC setTabItem:options];
     }
 }
 
-RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) {
-    UIViewController *vc =  [self.bridgeManager controllerForSceneId:sceneId];
+RCT_EXPORT_METHOD(setMenuInteractive:
+    (NSString *) sceneId enabled:
+    (BOOL) enabled) {
+    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     HBDDrawerController *drawer = [vc drawerController];
     if (drawer) {
         drawer.menuInteractive = enabled;
@@ -118,7 +136,7 @@ RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) 
 - (HBDViewController *)HBDViewControllerForSceneId:(NSString *)sceneId {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     if ([vc isKindOfClass:[HBDViewController class]]) {
-        return (HBDViewController *)vc;
+        return (HBDViewController *) vc;
     }
     return nil;
 }
@@ -126,7 +144,7 @@ RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) 
 - (UITabBarController *)tabBarControllerWithViewController:(UIViewController *)vc {
     UITabBarController *tabBarController;
     if ([vc isKindOfClass:[UITabBarController class]]) {
-        tabBarController = (UITabBarController *)vc;
+        tabBarController = (UITabBarController *) vc;
     } else {
         tabBarController = vc.tabBarController;
     }

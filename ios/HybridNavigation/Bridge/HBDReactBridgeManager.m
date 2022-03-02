@@ -10,19 +10,15 @@
 #import <React/RCTLog.h>
 #import "HBDUtils.h"
 #import "HBDReactViewController.h"
-#import "HBDNavigationController.h"
-#import "HBDTabBarController.h"
-#import "HBDDrawerController.h"
 #import "HBDModalViewController.h"
-#import "HBDViewController.h"
 #import "HBDNavigatorRegistry.h"
 #import "HBDEventEmitter.h"
 
-NSString * const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
+NSString *const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
 const NSInteger ResultOK = -1;
 const NSInteger ResultCancel = 0;
 
-@interface HBDReactBridgeManager() <RCTBridgeDelegate>
+@interface HBDReactBridgeManager () <RCTBridgeDelegate>
 
 @property(nonatomic, copy) NSURL *jsCodeLocation;
 @property(nonatomic, strong) NSMutableDictionary *nativeModules;
@@ -72,17 +68,17 @@ const NSInteger ResultCancel = 0;
 - (void)handleReload {
     self.viewHierarchyReady = NO;
     self.reactModuleRegisterCompleted = NO;
-    
+
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i-1];
+        UIWindow *window = application.windows[i - 1];
         UIViewController *controller = window.rootViewController;
         if ([controller isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)controller;
+            HBDModalViewController *modal = (HBDModalViewController *) controller;
             [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
         }
     }
-    
+
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
     if (presentedViewController && !presentedViewController.isBeingDismissed) {
@@ -103,7 +99,7 @@ const NSInteger ResultCancel = 0;
 
 - (void)installWithBundleURL:(NSURL *)jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
     _jsCodeLocation = jsCodeLocation;
-    
+
     _bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 }
 
@@ -116,23 +112,23 @@ const NSInteger ResultCancel = 0;
 }
 
 - (BOOL)hasNativeModule:(NSString *)moduleName {
-    return [_nativeModules objectForKey:moduleName] != nil;
+    return _nativeModules[moduleName] != nil;
 }
 
 - (Class)nativeModuleClassFromName:(NSString *)moduleName {
-    return [_nativeModules objectForKey:moduleName];
+    return _nativeModules[moduleName];
 }
 
 - (void)registerReactModule:(NSString *)moduleName options:(NSDictionary *)options {
-    [_reactModules setObject:options forKey:moduleName];
+    _reactModules[moduleName] = options;
 }
 
 - (NSDictionary *)reactModuleOptionsForKey:(NSString *)moduleName {
-    return [_reactModules objectForKey:moduleName];
+    return _reactModules[moduleName];
 }
 
 - (BOOL)hasReactModuleForName:(NSString *)moduleName {
-    return [_reactModules objectForKey:moduleName] != nil;
+    return _reactModules[moduleName] != nil;
 }
 
 - (void)startRegisterReactModule {
@@ -152,11 +148,11 @@ const NSInteger ResultCancel = 0;
     if (!self.isReactModuleRegisterCompleted) {
         return nil;
     }
-    
+
     NSArray<NSString *> *layouts = [self.navigatorRegistry allLayouts];
     for (NSString *name in layouts) {
         if ([[layout allKeys] containsObject:name]) {
-            id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:name];
+            id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:name];
             UIViewController *vc = [navigator createViewControllerWithLayout:layout];
             if (vc) {
                 [self.navigatorRegistry setLayout:name forViewController:vc];
@@ -164,32 +160,32 @@ const NSInteger ResultCancel = 0;
             return vc;
         }
     }
-    
+
     RCTLogError(@"[Navigator] Can't find a navigator that can handle layout '%@'. Did you forget to register?", layout);
     return nil;
 }
 
 - (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
     HBDViewController *vc = nil;
-    
+
     if (!self.isReactModuleRegisterCompleted) {
         @throw [NSException exceptionWithName:@"IllegalStateException" reason:@"React module hasn't register completed." userInfo:@{}];
     }
-    
+
     if (!props) {
         props = @{};
     }
-    
+
     if (!options) {
         options = @{};
     }
-    
+
     if ([self hasReactModuleForName:moduleName]) {
         NSDictionary *staticOptions = [[HBDReactBridgeManager get] reactModuleOptionsForKey:moduleName];
         options = [HBDUtils mergeItem:options withTarget:staticOptions];
         vc = [[HBDReactViewController alloc] initWithModuleName:moduleName props:props options:options];
     } else {
-        Class clazz =  [self nativeModuleClassFromName:moduleName];
+        Class clazz = [self nativeModuleClassFromName:moduleName];
         NSCAssert([self hasNativeModule:moduleName], @"Can't find module named with %@ , do you forget to register？", moduleName);
         vc = [[clazz alloc] initWithModuleName:moduleName props:props options:options];
     }
@@ -200,19 +196,19 @@ const NSInteger ResultCancel = 0;
     if (!self.viewHierarchyReady) {
         return nil;
     }
-    
+
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     UIViewController *vc = nil;
     for (UIWindow *window in application.windows) {
         if ([window isKindOfClass:[HBDModalWindow class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)window.rootViewController;
+            HBDModalViewController *modal = (HBDModalViewController *) window.rootViewController;
             if (!modal || modal.isBeingHidden) {
                 continue;
             }
         }
-        
+
         vc = [self controllerForSceneId:sceneId withController:window.rootViewController];
-        
+
         if (vc) {
             break;
         }
@@ -222,26 +218,26 @@ const NSInteger ResultCancel = 0;
 
 - (UIViewController *)controllerForSceneId:(NSString *)sceneId withController:(UIViewController *)controller {
     UIViewController *target;
-    
+
     if ([controller.sceneId isEqualToString:sceneId]) {
         target = controller;
     }
-    
+
     if (!target && [controller isKindOfClass:[HBDModalViewController class]]) {
-        HBDModalViewController *modal = (HBDModalViewController *)controller;
+        HBDModalViewController *modal = (HBDModalViewController *) controller;
         target = [self controllerForSceneId:sceneId withController:modal.contentViewController];
     }
-    
+
     if (!target) {
         UIViewController *presentedController = controller.presentedViewController;
         if (presentedController && ![presentedController isBeingDismissed]) {
             target = [self controllerForSceneId:sceneId withController:presentedController];
         }
     }
-    
+
     if (!target && controller.childViewControllers.count > 0) {
         NSUInteger count = controller.childViewControllers.count;
-        for (NSUInteger i = 0; i < count; i ++) {
+        for (NSUInteger i = 0; i < count; i++) {
             UIViewController *child = controller.childViewControllers[i];
             target = [self controllerForSceneId:sceneId withController:child];
             if (target) {
@@ -260,10 +256,10 @@ const NSInteger ResultCancel = 0;
     [HBDEventEmitter sendEvent:EVENT_WILL_SET_ROOT data:@{}];
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i-1];
+        UIWindow *window = application.windows[i - 1];
         UIViewController *controller = window.rootViewController;
         if ([controller isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)controller;
+            HBDModalViewController *modal = (HBDModalViewController *) controller;
             [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
         }
     }
@@ -292,8 +288,8 @@ const NSInteger ResultCancel = 0;
             }
             [UIView setAnimationsEnabled:oldState];
             self.viewHierarchyReady = YES;
-        } completion:^(BOOL finished) {
-            [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{ @"tag": tag }];
+        }               completion:^(BOOL finished) {
+            [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{@"tag": tag}];
         }];
     } else {
         mainWindow.rootViewController = rootViewController;
@@ -302,7 +298,7 @@ const NSInteger ResultCancel = 0;
             [mainWindow makeKeyAndVisible];
         }
         self.viewHierarchyReady = YES;
-        [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{ @"tag": tag }];
+        [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{@"tag": tag}];
     }
 }
 
@@ -317,18 +313,18 @@ const NSInteger ResultCancel = 0;
     if (modal && !modal.isBeingHidden) {
         return [self primaryViewControllerWithViewController:modal.contentViewController];
     }
-    
+
     UIViewController *presented = vc.presentedViewController;
     if (presented && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
         return [self primaryViewControllerWithViewController:presented];
     }
-    
-    NSString *layout = [self.navigatorRegistry layoutForViewController:vc];   
+
+    NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
     if (layout) {
-        id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
+        id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
         return [navigator primaryViewControllerWithViewController:vc];
     }
-    
+
     return nil;
 }
 
@@ -336,25 +332,25 @@ const NSInteger ResultCancel = 0;
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *vc = mainWindow.rootViewController;
     NSMutableDictionary *graph = [[self buildRouteGraphWithViewController:vc] mutableCopy];
-    
+
     NSMutableArray *root = [[NSMutableArray alloc] init];
     NSMutableArray *modal = [[NSMutableArray alloc] init];
     NSMutableArray *present = [[NSMutableArray alloc] init];
-    
+
     [self extractModal:modal present:present withGraph:graph];
-    
+
     if (graph) {
         [root addObject:graph];
     }
-    
+
     if ([present count] > 0) {
         [root addObjectsFromArray:present];
     }
-    
+
     if ([modal count] > 0) {
         [root addObjectsFromArray:modal];
     }
-    
+
     return root;
 }
 
@@ -366,17 +362,17 @@ const NSInteger ResultCancel = 0;
         [modal addObject:m];
         [self extractModal:modal present:present withGraph:m];
     }
-    
+
     if (p) {
         [graph removeObjectForKey:@"ref_present"];
         [present addObject:p];
         [self extractModal:modal present:present withGraph:p];
     }
-    
+
     NSArray *children = graph[@"children"];
     if (children) {
         for (int i = 0; i < children.count; i++) {
-            NSMutableDictionary *child = [children objectAtIndex:i];
+            NSMutableDictionary *child = children[i];
             [self extractModal:modal present:present withGraph:child];
         }
     }
@@ -388,31 +384,31 @@ const NSInteger ResultCancel = 0;
     if (modal && !modal.isBeingHidden) {
         m = [[self buildRouteGraphWithViewController:modal.contentViewController] mutableCopy];
     }
-    
+
     NSMutableDictionary *p = nil;
     UIViewController *presented = vc.presentedViewController;
     if (presented && presented.presentingViewController == vc && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
         p = [[self buildRouteGraphWithViewController:presented] mutableCopy];
     }
-    
+
     NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
     if (layout) {
-        id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
+        id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
         NSMutableDictionary *graph = [[navigator buildRouteGraphWithViewController:vc] mutableCopy];
         if (m) {
-            [graph setObject:m forKey:@"ref_modal"];
+            graph[@"ref_modal"] = m;
         }
         if (p) {
-            [graph setObject:p forKey:@"ref_present"];
+            graph[@"ref_present"] = p;
         }
         return graph;
     }
-    
+
     return nil;
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-    id<HBDNavigator> navigator = [self.navigatorRegistry navigatorForAction:action];
+    id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForAction:action];
     if (navigator) {
         [navigator handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
     } else {
@@ -420,7 +416,7 @@ const NSInteger ResultCancel = 0;
     }
 }
 
-- (void)registerNavigator:(id<HBDNavigator>)navigator {
+- (void)registerNavigator:(id <HBDNavigator>)navigator {
     [self.navigatorRegistry registerNavigator:navigator];
 }
 

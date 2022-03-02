@@ -23,6 +23,6 @@ typedef void(^HBDButtonActionBlock)(void);
 
 @interface HBDBarButton : UIButton
 
-@property (nonatomic) UIEdgeInsets alignmentRectInsetsOverride;
+@property(nonatomic) UIEdgeInsets alignmentRectInsetsOverride;
 
 @end

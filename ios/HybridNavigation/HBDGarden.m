@@ -43,7 +43,7 @@ static GlobalStyle *globalStyle;
     return self;
 }
 
-- (void)setLeftBarButtonItem:(NSDictionary * __nullable)item {
+- (void)setLeftBarButtonItem:(NSDictionary *__nullable)item {
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
@@ -51,23 +51,23 @@ static GlobalStyle *globalStyle;
             spacer.width = -8;
             [array addObject:spacer];
         }
-        
+
         UIBarButtonItem *buttonItem = [self createBarButtonItem:item];
         UIView *customView = buttonItem.customView;
         if ([customView isKindOfClass:[HBDBarButton class]]) {
-            HBDBarButton *button = (HBDBarButton *)customView;
+            HBDBarButton *button = (HBDBarButton *) customView;
             button.imageEdgeInsets = buttonItem.imageInsets;
             button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, 4, 0, -4);
         }
         [array addObject:buttonItem];
-        
+
         self.viewController.navigationItem.leftBarButtonItems = array;
     } else {
         self.viewController.navigationItem.leftBarButtonItems = nil;
     }
 }
 
-- (void)setRightBarButtonItem:(NSDictionary * __nullable)item {
+- (void)setRightBarButtonItem:(NSDictionary *__nullable)item {
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
@@ -75,16 +75,16 @@ static GlobalStyle *globalStyle;
             spacer.width = -8;
             [array addObject:spacer];
         }
-        
+
         UIBarButtonItem *buttonItem = [self createBarButtonItem:item];
         UIView *customView = buttonItem.customView;
         if ([customView isKindOfClass:[HBDBarButton class]]) {
-            HBDBarButton *button = (HBDBarButton *)customView;
+            HBDBarButton *button = (HBDBarButton *) customView;
             button.imageEdgeInsets = buttonItem.imageInsets;
             button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, -4, 0, 4);
         }
         [array addObject:buttonItem];
-        
+
         self.viewController.navigationItem.rightBarButtonItems = array;
     } else {
         self.viewController.navigationItem.rightBarButtonItems = nil;
@@ -95,24 +95,24 @@ static GlobalStyle *globalStyle;
     if (items) {
         NSArray *barButtonItems = [self createBarButtonItems:items];
         NSMutableArray *array = [[NSMutableArray alloc] init];
-        
+
         if (@available(iOS 11.0, *)) {
             UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
             spacer.width = -8;
             [array addObject:spacer];
         }
-    
+
         [array addObjectsFromArray:barButtonItems];
         for (NSUInteger i = 0; i < barButtonItems.count; i++) {
             UIBarButtonItem *buttonItem = barButtonItems[i];
             UIView *customView = buttonItem.customView;
             if ([customView isKindOfClass:[HBDBarButton class]]) {
-                HBDBarButton *button = (HBDBarButton *)customView;
+                HBDBarButton *button = (HBDBarButton *) customView;
                 button.imageEdgeInsets = buttonItem.imageInsets;
                 button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, 4, 0, -4);
             }
         }
-        
+
         self.viewController.navigationItem.leftBarButtonItems = array;
     }
 }
@@ -126,18 +126,18 @@ static GlobalStyle *globalStyle;
             spacer.width = -8;
             [array addObject:spacer];
         }
-        
+
         [array addObjectsFromArray:barButtonItems];
         for (NSUInteger i = 0; i < barButtonItems.count; i++) {
             UIBarButtonItem *buttonItem = barButtonItems[i];
             UIView *customView = buttonItem.customView;
             if ([customView isKindOfClass:[HBDBarButton class]]) {
-                HBDBarButton *button = (HBDBarButton *)customView;
+                HBDBarButton *button = (HBDBarButton *) customView;
                 button.imageEdgeInsets = buttonItem.imageInsets;
                 button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, -4, 0, 4);
             }
         }
-        
+
         self.viewController.navigationItem.rightBarButtonItems = array;
     }
 }
@@ -145,7 +145,7 @@ static GlobalStyle *globalStyle;
 - (NSArray *)createBarButtonItems:(NSArray *)items {
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (NSUInteger i = 0; i < items.count; i++) {
-        NSDictionary *item = [items objectAtIndex:i];
+        NSDictionary *item = items[i];
         [array addObject:[self createBarButtonItem:item]];
     }
     return array;
@@ -153,11 +153,11 @@ static GlobalStyle *globalStyle;
 
 - (HBDBarButtonItem *)createBarButtonItem:(NSDictionary *)item {
     HBDBarButtonItem *barButtonItem;
-    
+
     NSDictionary *insetsOption = item[@"insetsIOS"];
     UIEdgeInsets insets = UIEdgeInsetsZero;
     if (insetsOption) {
-        insets =  [RCTConvert UIEdgeInsets:insetsOption];
+        insets = [RCTConvert UIEdgeInsets:insetsOption];
     }
 
     NSDictionary *icon = item[@"icon"];
@@ -166,7 +166,7 @@ static GlobalStyle *globalStyle;
         if (item[@"renderOriginal"] && [item[@"renderOriginal"] boolValue]) {
             iconImage = [iconImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         }
-        
+
         barButtonItem = [[HBDBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain];
         barButtonItem.imageInsets = insets;
     } else {
@@ -174,31 +174,31 @@ static GlobalStyle *globalStyle;
         barButtonItem = [[HBDBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain];
         [barButtonItem setTitlePositionAdjustment:UIOffsetMake(insets.left, 0) forBarMetrics:UIBarMetricsDefault];
     }
-    
+
     NSNumber *enabled = item[@"enabled"];
     if (enabled) {
         barButtonItem.enabled = [enabled boolValue];
     }
-    
+
     NSString *action = item[@"action"];
     NSString *sceneId = self.viewController.sceneId;
-    
+
     NSString *tintColor = item[@"tintColor"];
     if (tintColor) {
         barButtonItem.tintColor = [HBDUtils colorWithHexString:tintColor];
         UIView *customView = barButtonItem.customView;
         if ([customView isKindOfClass:[HBDBarButton class]]) {
-            HBDBarButton *button = (HBDBarButton *)customView;
+            HBDBarButton *button = (HBDBarButton *) customView;
             button.tintColor = [HBDUtils colorWithHexString:tintColor];
         }
     }
-    
+
     if (action) {
         barButtonItem.actionBlock = ^{
             [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-               KEY_ON: ON_BAR_BUTTON_ITEM_CLICK,
-               KEY_ACTION: action,
-               KEY_SCENE_ID: sceneId,
+                    KEY_ON: ON_BAR_BUTTON_ITEM_CLICK,
+                    KEY_ACTION: action,
+                    KEY_SCENE_ID: sceneId,
             }];
         };
     }
@@ -207,7 +207,7 @@ static GlobalStyle *globalStyle;
 
 - (void)setPassThroughTouches:(BOOL)passThrough {
     if ([self.viewController.view isKindOfClass:[RCTRootView class]]) {
-        RCTRootView *rootView = (RCTRootView *)self.viewController.view;
+        RCTRootView *rootView = (RCTRootView *) self.viewController.view;
         rootView.passThroughTouches = passThrough;
     }
 }

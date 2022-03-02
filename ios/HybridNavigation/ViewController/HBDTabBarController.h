@@ -10,7 +10,7 @@
 
 @interface HBDTabBarController : UITabBarController
 
-@property (nonatomic, assign) BOOL intercepted;
+@property(nonatomic, assign) BOOL intercepted;
 
 - (instancetype)initWithTabBarOptions:(NSDictionary *)options;
 

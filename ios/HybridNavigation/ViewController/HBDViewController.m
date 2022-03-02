@@ -8,7 +8,6 @@
 
 #import "HBDViewController.h"
 #import "HBDUtils.h"
-#import "HBDNavigationController.h"
 #import <React/RCTLog.h>
 
 @interface HBDViewController ()
@@ -38,7 +37,7 @@
         _options = options;
         _props = props;
         _garden = [[HBDGarden alloc] initWithViewController:self];
-        
+
         [self applyNavigationBarOptions:options];
         [self applyTabBarOptions:options];
     }
@@ -57,7 +56,7 @@
     if (@available(iOS 13.0, *)) {
         return [self hbd_statusBarHidden] && ![HBDUtils isInCall];
     }
-    
+
     if ([HBDUtils isIphoneX]) {
         return [self hbd_statusBarHidden] && ![HBDUtils isInCall];
     } else {
@@ -130,22 +129,22 @@
             self.hbd_barStyle = UIBarStyleBlack;
         }
     }
-    
+
     NSString *topBarTintColor = options[@"topBarTintColor"];
     if (topBarTintColor) {
         self.hbd_tintColor = [HBDUtils colorWithHexString:topBarTintColor];
     }
-    
+
     NSMutableDictionary *titleAttributes = [@{} mutableCopy];
-    NSString *titleTextColor = [options objectForKey:@"titleTextColor"];
-    NSNumber *titleTextSize = [options objectForKey:@"titleTextSize"];
+    NSString *titleTextColor = options[@"titleTextColor"];
+    NSNumber *titleTextSize = options[@"titleTextSize"];
     if (titleTextColor) {
-        [titleAttributes setObject:[HBDUtils colorWithHexString:titleTextColor] forKey:NSForegroundColorAttributeName];
+        titleAttributes[NSForegroundColorAttributeName] = [HBDUtils colorWithHexString:titleTextColor];
     }
     if (titleTextSize) {
-        [titleAttributes setObject:[UIFont systemFontOfSize:[titleTextSize floatValue]] forKey:NSFontAttributeName];
+        titleAttributes[NSFontAttributeName] = [UIFont systemFontOfSize:[titleTextSize floatValue]];
     }
-    
+
     if (titleAttributes.count > 0) {
         if (self.hbd_titleTextAttributes) {
             NSMutableDictionary *attributes = [self.hbd_titleTextAttributes mutableCopy];
@@ -155,26 +154,26 @@
             self.hbd_titleTextAttributes = titleAttributes;
         }
     }
-    
+
     NSString *topBarColor = options[@"topBarColor"];
     if (topBarColor) {
         self.hbd_barTintColor = [HBDUtils colorWithHexString:topBarColor];
     }
-    
+
     NSNumber *topBarAlpha = options[@"topBarAlpha"];
     if (topBarAlpha) {
         self.hbd_barAlpha = [topBarAlpha floatValue];
     }
-    
+
     NSNumber *topBarHidden = options[@"topBarHidden"];
     if ([topBarHidden boolValue]) {
         self.hbd_barHidden = YES;
     }
-    
+
     if ([HBDGarden globalStyle].isBackTitleHidden) {
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
     }
-    
+
     NSDictionary *backItem = options[@"backItemIOS"];
     if (backItem) {
         NSString *title = backItem[@"title"];
@@ -186,32 +185,32 @@
         }
         self.navigationItem.backBarButtonItem = backButton;
     }
-    
+
     NSNumber *swipeBackEnabled = options[@"swipeBackEnabled"];
     if (swipeBackEnabled) {
         self.hbd_swipeBackEnabled = [swipeBackEnabled boolValue];
     }
-    
+
     NSNumber *extendedLayoutIncludesTopBar = options[@"extendedLayoutIncludesTopBar"];
     if (extendedLayoutIncludesTopBar) {
         self.extendedLayoutIncludesOpaqueBars = [extendedLayoutIncludesTopBar boolValue];
     }
-    
+
     NSNumber *hideShadow = options[@"topBarShadowHidden"];
     if (hideShadow) {
         self.hbd_barShadowHidden = [hideShadow boolValue];
     }
-    
+
     NSNumber *statusBarHidden = options[@"statusBarHidden"];
     if (statusBarHidden) {
         self.hbd_statusBarHidden = [statusBarHidden boolValue];
     }
-    
+
     NSNumber *backInteractive = options[@"backInteractive"];
     if (backInteractive) {
         self.hbd_backInteractive = [backInteractive boolValue];
     }
-    
+
     NSNumber *backButtonHidden = options[@"backButtonHidden"];
     if (backButtonHidden) {
         if ([backButtonHidden boolValue]) {
@@ -228,7 +227,7 @@
             }
         }
     }
-    
+
     NSDictionary *titleItem = options[@"titleItem"];
     if (titleItem) {
         NSString *moduleName = titleItem[@"moduleName"];
@@ -236,22 +235,22 @@
             self.navigationItem.title = titleItem[@"title"];
         }
     }
-    
+
     id rightBarButtonItem = options[@"rightBarButtonItem"];
     if (rightBarButtonItem) {
         [self.garden setRightBarButtonItem:RCTNilIfNull(rightBarButtonItem)];
     }
-    
+
     id leftBarButtonItem = options[@"leftBarButtonItem"];
     if (leftBarButtonItem) {
         [self.garden setLeftBarButtonItem:RCTNilIfNull(leftBarButtonItem)];
     }
-    
+
     NSArray *rightBarButtonItems = options[@"rightBarButtonItems"];
     if (rightBarButtonItems) {
         [self.garden setRightBarButtonItems:rightBarButtonItems];
     }
-    
+
     NSArray *leftBarButtonItems = options[@"leftBarButtonItems"];
     if (leftBarButtonItems) {
         [self.garden setLeftBarButtonItems:leftBarButtonItems];
@@ -285,24 +284,24 @@
     }
 
     [self applyNavigationBarOptions:target];
-    
+
     NSString *screenColor = options[@"screenBackgroundColor"];
     if (screenColor && [self isViewLoaded]) {
         self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
     }
 
-    NSNumber *statusBarHidden = [options objectForKey:@"statusBarHidden"];
+    NSNumber *statusBarHidden = options[@"statusBarHidden"];
     if (statusBarHidden) {
         [self setNeedsStatusBarAppearanceUpdate];
     }
-    
-    if ([options objectForKey:@"homeIndicatorAutoHiddenIOS"]) {
+
+    if (options[@"homeIndicatorAutoHiddenIOS"]) {
         if (@available(iOS 11.0, *)) {
             [self setNeedsUpdateOfHomeIndicatorAutoHidden];
         }
     }
 
-    NSNumber *passThroughTouches = [options objectForKey:@"passThroughTouches"];
+    NSNumber *passThroughTouches = options[@"passThroughTouches"];
     if (passThroughTouches) {
         [self.garden setPassThroughTouches:[passThroughTouches boolValue]];
     }
@@ -315,7 +314,7 @@
 - (BOOL)shouldUpdateNavigationBar:(NSDictionary *)options compareTo:(NSDictionary *)previous {
     NSArray *keys = @[@"topBarStyle", @"topBarColor", @"topBarAlpha", @"tintColor", @"topBarShadowHidden"];
     for (NSString *opt in options.allKeys) {
-        if ([keys containsObject:opt] && [NSString stringWithFormat:@"%@", previous[opt]] != [NSString stringWithFormat:@"%@",options[opt]]) {
+        if ([keys containsObject:opt] && [NSString stringWithFormat:@"%@", previous[opt]] != [NSString stringWithFormat:@"%@", options[opt]]) {
             return YES;
         }
     }

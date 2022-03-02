@@ -1,7 +1,6 @@
 #import "AppDelegate.h"
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
-#import <React/RCTBridgeModule.h>
 #import <React/RCTLog.h>
 #import <HybridNavigation/HybridNavigation.h>
 #import <ToastHybrid/ToastHybrid.h>

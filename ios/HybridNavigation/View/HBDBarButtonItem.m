@@ -15,10 +15,10 @@
 }
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
-    CGSize acturalSize = self.frame.size;
+    CGSize intrinsicSize = self.frame.size;
     CGSize minimumSize = CGSizeMake(40, 40);
-    CGFloat verticalMargin = acturalSize.height - minimumSize.height >= 0 ? 0 : ((minimumSize.height - acturalSize.height ) / 2);
-    CGFloat horizontalMargin = acturalSize.width - minimumSize.width >= 0 ? 0 : ((minimumSize.width - acturalSize.width ) / 2);
+    CGFloat verticalMargin = intrinsicSize.height - minimumSize.height >= 0 ? 0 : ((minimumSize.height - intrinsicSize.height) / 2);
+    CGFloat horizontalMargin = intrinsicSize.width - minimumSize.width >= 0 ? 0 : ((minimumSize.width - intrinsicSize.width) / 2);
     CGRect newArea = CGRectMake(self.bounds.origin.x - horizontalMargin, self.bounds.origin.y - verticalMargin, self.bounds.size.width + 2 * horizontalMargin, self.bounds.size.height + 2 * verticalMargin);
     return CGRectContainsPoint(newArea, point);
 }
@@ -33,7 +33,7 @@
 
 @end
 
-@interface HBDBarButtonItem()
+@interface HBDBarButtonItem ()
 
 @end
 
@@ -41,7 +41,7 @@
 
 - (instancetype)initWithImage:(UIImage *)image style:(UIBarButtonItemStyle)style {
     HBDBarButton *button = [HBDBarButton buttonWithType:UIButtonTypeSystem];
-    if(@available(iOS 11, *)){
+    if (@available(iOS 11, *)) {
         button.translatesAutoresizingMaskIntoConstraints = NO;
     }
     [button setFrame:CGRectMake(0, 0, 32, 32)];

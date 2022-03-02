@@ -10,9 +10,7 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDNavigationController.h"
 #import "HBDModalViewController.h"
-#import <React/RCTAssert.h>
 #import <React/RCTLog.h>
-#import "HBDEventEmitter.h"
 
 @implementation HBDScreenNavigator
 
@@ -21,15 +19,15 @@
 }
 
 - (NSArray<NSString *> *)supportActions {
-    return @[ @"present", @"presentLayout", @"dismiss", @"showModal", @"showModalLayout", @"hideModal"];
+    return @[@"present", @"presentLayout", @"dismiss", @"showModal", @"showModalLayout", @"hideModal"];
 }
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
-    NSDictionary *screen = [layout objectForKey:self.name];
+    NSDictionary *screen = layout[self.name];
     if (screen) {
-        NSString *moduleName = [screen objectForKey:@"moduleName"];
-        NSDictionary *props = [screen objectForKey:@"props"];
-        NSDictionary *options = [screen objectForKey:@"options"];
+        NSString *moduleName = screen[@"moduleName"];
+        NSDictionary *props = screen[@"props"];
+        NSDictionary *options = screen[@"options"];
         return [[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
     }
     return nil;
@@ -37,12 +35,12 @@
 
 - (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[HBDViewController class]]) {
-        HBDViewController *screen = (HBDViewController *)vc;
+        HBDViewController *screen = (HBDViewController *) vc;
         return @{
-            @"layout": @"screen",
-            @"sceneId": screen.sceneId,
-            @"moduleName": RCTNullIfNil(screen.moduleName),
-            @"mode": [vc hbd_mode],
+                @"layout": @"screen",
+                @"sceneId": screen.sceneId,
+                @"moduleName": RCTNullIfNil(screen.moduleName),
+                @"mode": [vc hbd_mode],
         };
     }
     return nil;
@@ -50,28 +48,28 @@
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[HBDModalViewController class]]) {
-        HBDModalViewController *modal = (HBDModalViewController *)vc;
+        HBDModalViewController *modal = (HBDModalViewController *) vc;
         return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:modal.contentViewController];
     } else if ([vc isKindOfClass:[HBDViewController class]]) {
-        return (HBDViewController *)vc;
+        return (HBDViewController *) vc;
     }
     return nil;
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-    
+
     if (!target.hbd_viewAppeared) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
         });
         return;
     }
-    
+
     UIViewController *viewController = nil;
 
     if ([action isEqualToString:@"present"]) {
         viewController = [self createViewControllerWithExtras:extras];
-        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
+        NSInteger requestCode = [extras[@"requestCode"] integerValue];
         HBDNavigationController *navVC = [[HBDNavigationController alloc] initWithRootViewController:viewController];
         navVC.modalPresentationStyle = UIModalPresentationCurrentContext;
         [navVC setRequestCode:requestCode];
@@ -91,7 +89,7 @@
         }
     } else if ([action isEqualToString:@"showModal"]) {
         viewController = [self createViewControllerWithExtras:extras];
-        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
+        NSInteger requestCode = [extras[@"requestCode"] integerValue];
         [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:^(BOOL finished) {
             resolve(@(finished));
         }];
@@ -100,8 +98,8 @@
             resolve(@(finished));
         }];
     } else if ([action isEqualToString:@"presentLayout"]) {
-        NSDictionary *layout = [extras objectForKey:@"layout"];
-        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
+        NSDictionary *layout = extras[@"layout"];
+        NSInteger requestCode = [extras[@"requestCode"] integerValue];
         viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
         [viewController setRequestCode:requestCode];
         viewController.modalPresentationStyle = UIModalPresentationCurrentContext;
@@ -109,8 +107,8 @@
             resolve(@(YES));
         }];
     } else if ([action isEqualToString:@"showModalLayout"]) {
-        NSInteger requestCode = [[extras objectForKey:@"requestCode"] integerValue];
-        NSDictionary *layout = [extras objectForKey:@"layout"];
+        NSInteger requestCode = [extras[@"requestCode"] integerValue];
+        NSDictionary *layout = extras[@"layout"];
         viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
         [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:^(BOOL finished) {
             resolve(@(finished));
@@ -119,11 +117,11 @@
 }
 
 - (UIViewController *)createViewControllerWithExtras:(NSDictionary *)extras {
-    NSString *moduleName = [extras objectForKey:@"moduleName"];
+    NSString *moduleName = extras[@"moduleName"];
     HBDViewController *viewController = nil;
     if (moduleName) {
-        NSDictionary *props = [extras objectForKey:@"props"];
-        NSDictionary *options = [extras objectForKey:@"options"];
+        NSDictionary *props = extras[@"props"];
+        NSDictionary *options = extras[@"options"];
         viewController = [[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
     }
     return viewController;

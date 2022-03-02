@@ -14,6 +14,6 @@
 
 @end
 
-@interface UINavigationController(UINavigationBar) <UINavigationBarDelegate>
+@interface UINavigationController (UINavigationBar) <UINavigationBarDelegate>
 
 @end

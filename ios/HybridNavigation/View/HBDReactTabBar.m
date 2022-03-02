@@ -11,7 +11,7 @@
 
 @interface HBDReactTabBar ()
 
-@property (nonatomic, strong) RCTRootView *rootView;
+@property(nonatomic, strong) RCTRootView *rootView;
 
 @end
 
@@ -21,7 +21,7 @@
     if (!self.isUserInteractionEnabled || self.isHidden || self.alpha <= 0.01) {
         return nil;
     }
-    
+
     UIView *hitView = [super hitTest:point withEvent:event];
     if (hitView == self.rootView) {
         return hitView;
@@ -35,7 +35,7 @@
 
 - (void)addSubview:(UIView *)view {
     if ([view isKindOfClass:[RCTRootView class]]) {
-        self.rootView = (RCTRootView *)view;
+        self.rootView = (RCTRootView *) view;
     }
     [super addSubview:view];
 }

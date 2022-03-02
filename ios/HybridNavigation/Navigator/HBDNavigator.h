@@ -12,8 +12,8 @@
 
 @protocol HBDNavigator <NSObject>
 
-@property (nonatomic, copy, readonly) NSString *name;
-@property (nonatomic, copy, readonly) NSArray<NSString *> *supportActions;
+@property(nonatomic, copy, readonly) NSString *name;
+@property(nonatomic, copy, readonly) NSArray<NSString *> *supportActions;
 
 - (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout;
 

@@ -11,17 +11,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface HBDNavigatorRegistry : NSObject
 
-- (void)registerNavigator:(id<HBDNavigator>)navigator;
+- (void)registerNavigator:(id <HBDNavigator>)navigator;
 
-- (id<HBDNavigator>)navigatorForAction:(NSString *)action;
+- (id <HBDNavigator>)navigatorForAction:(NSString *)action;
 
-- (id<HBDNavigator>)navigatorForLayout:(NSString *)layout;
+- (id <HBDNavigator>)navigatorForLayout:(NSString *)layout;
 
 - (NSString *)layoutForViewController:(UIViewController *)vc;
 
 - (void)setLayout:(NSString *)layout forViewController:(UIViewController *)vc;
 
-- (NSArray<NSString *> *) allLayouts;
+- (NSArray<NSString *> *)allLayouts;
 
 @end
 

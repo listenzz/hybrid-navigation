@@ -2,8 +2,6 @@
 
 @interface OneNativeViewController ()
 
-@property (nonatomic, copy) NSString *greeting;
-
 @end
 
 @implementation OneNativeViewController

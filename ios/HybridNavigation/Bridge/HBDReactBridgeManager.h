@@ -9,7 +9,7 @@
 #import <React/RCTBridge.h>
 #import "HBDNavigator.h"
 
-extern NSString * const ReactModuleRegistryDidCompletedNotification;
+extern NSString *const ReactModuleRegistryDidCompletedNotification;
 extern const NSInteger ResultOK;
 extern const NSInteger ResultCancel;
 
@@ -27,7 +27,7 @@ extern const NSInteger ResultCancel;
 + (instancetype)get;
 
 @property(nonatomic, strong, readonly) RCTBridge *bridge;
-@property(nonatomic, weak) id<HBDReactBridgeManagerDelegate> delegate;
+@property(nonatomic, weak) id <HBDReactBridgeManagerDelegate> delegate;
 @property(nonatomic, assign, readonly, getter=isReactModuleRegisterCompleted) BOOL reactModuleRegisterCompleted;
 @property(nonatomic, assign, getter=isViewHierarchyReady) BOOL viewHierarchyReady;
 @property(nonatomic, assign) BOOL hasRootLayout;
@@ -72,6 +72,6 @@ extern const NSInteger ResultCancel;
 
 - (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
-- (void)registerNavigator:(id<HBDNavigator>)navigator;
+- (void)registerNavigator:(id <HBDNavigator>)navigator;
 
 @end

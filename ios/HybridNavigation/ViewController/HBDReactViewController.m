@@ -11,10 +11,8 @@
 #import "HBDTitleView.h"
 #import "HBDRootView.h"
 #import "HBDEventEmitter.h"
-#import "HBDUtils.h"
 
 #import <React/RCTConvert.h>
-#import <React/RCTLog.h>
 
 @interface HBDReactViewController ()
 
@@ -80,7 +78,7 @@
     } else {
         props = [@{} mutableCopy];
     }
-    [props setObject:self.sceneId forKey:@"sceneId"];
+    props[@"sceneId"] = self.sceneId;
     return props;
 }
 
@@ -94,15 +92,15 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     self.automaticallyAdjustsScrollViewInsets = NO;
-    id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
+    id <UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     if (coordinator && !coordinator.interactive) {
         if (!self.viewAppeared) {
             self.viewAppeared = YES;
             if (self.firstRenderCompleted) {
                 [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                                                                   KEY_SCENE_ID: self.sceneId,
-                                                                   KEY_ON: ON_COMPONENT_APPEAR
-                                                                   }];
+                        KEY_SCENE_ID: self.sceneId,
+                        KEY_ON: ON_COMPONENT_APPEAR
+                }];
             }
         }
     }
@@ -114,24 +112,24 @@
         self.viewAppeared = YES;
         if (self.firstRenderCompleted) {
             [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                                                               KEY_SCENE_ID: self.sceneId,
-                                                               KEY_ON: ON_COMPONENT_APPEAR
-                                                               }];
+                    KEY_SCENE_ID: self.sceneId,
+                    KEY_ON: ON_COMPONENT_APPEAR
+            }];
         }
     }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    id<UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
+    id <UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     if (coordinator && !coordinator.interactive) {
         if (self.viewAppeared) {
             self.viewAppeared = NO;
             if (self.firstRenderCompleted) {
                 [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                                                                   KEY_SCENE_ID: self.sceneId,
-                                                                   KEY_ON: ON_COMPONENT_DISAPPEAR
-                                                                   }];
+                        KEY_SCENE_ID: self.sceneId,
+                        KEY_ON: ON_COMPONENT_DISAPPEAR
+                }];
             }
         }
     }
@@ -143,9 +141,9 @@
         self.viewAppeared = NO;
         if (self.firstRenderCompleted) {
             [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                                                               KEY_SCENE_ID: self.sceneId,
-                                                               KEY_ON: ON_COMPONENT_DISAPPEAR
-                                                               }];
+                    KEY_SCENE_ID: self.sceneId,
+                    KEY_ON: ON_COMPONENT_DISAPPEAR
+            }];
         }
     }
 }
@@ -157,21 +155,21 @@
     self.firstRenderCompleted = YES;
     if (self.viewAppeared) {
         [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                                                           KEY_SCENE_ID: self.sceneId,
-                                                           KEY_ON: ON_COMPONENT_APPEAR
-                                                           }];
+                KEY_SCENE_ID: self.sceneId,
+                KEY_ON: ON_COMPONENT_APPEAR
+        }];
     }
 }
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                                                       KEY_ON: ON_COMPONENT_RESULT,
-                                                       KEY_REQUEST_CODE: @(requestCode),
-                                                       KEY_RESULT_CODE: @(resultCode),
-                                                       KEY_RESULT_DATA: RCTNullIfNil(data),
-                                                       KEY_SCENE_ID: self.sceneId,
-                                                       }];
+            KEY_ON: ON_COMPONENT_RESULT,
+            KEY_REQUEST_CODE: @(requestCode),
+            KEY_RESULT_CODE: @(resultCode),
+            KEY_RESULT_DATA: RCTNullIfNil(data),
+            KEY_SCENE_ID: self.sceneId,
+    }];
 }
 
 

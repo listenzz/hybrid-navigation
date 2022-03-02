@@ -14,7 +14,7 @@ UIKIT_STATIC_INLINE BOOL colorHasAlphaComponent(UIColor *color) {
         return YES;
     }
     CGFloat red = 0;
-    CGFloat green= 0;
+    CGFloat green = 0;
     CGFloat blue = 0;
     CGFloat alpha = 0;
     [color getRed:&red green:&green blue:&blue alpha:&alpha];
@@ -32,7 +32,7 @@ UIKIT_STATIC_INLINE BOOL imageHasAlphaChannel(UIImage *image) {
 UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class class, SEL originalSelector, SEL swizzledSelector) {
     Method originalMethod = class_getInstanceMethod(class, originalSelector);
     Method swizzledMethod = class_getInstanceMethod(class, swizzledSelector);
-    
+
     BOOL success = class_addMethod(class, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
     if (success) {
         class_replaceMethod(class, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
@@ -45,13 +45,13 @@ UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class class, SEL originalSe
 
 + (NSDictionary *)mergeItem:(NSDictionary *)item withTarget:(NSDictionary *)target;
 
-+ (UIColor *)colorWithHexString: (NSString *) hexString;
++ (UIColor *)colorWithHexString:(NSString *)hexString;
 
 + (NSString *)hexStringFromColor:(UIColor *)color;
 
 + (UIImage *)UIImage:(NSDictionary *)json;
 
-+ (UIImage*)imageWithColor:(UIColor*)color;
++ (UIImage *)imageWithColor:(UIColor *)color;
 
 + (NSString *)iconUriFromUri:(NSString *)uri;
 

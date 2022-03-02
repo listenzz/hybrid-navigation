@@ -61,7 +61,7 @@
 }
 
 - (IBAction)closeModal:(UIButton *)sender {
-    [self setResultCode:ResultOK resultData:@{@"text": @"gretting from native modal.", @"backId": self.sceneId}];
+    [self setResultCode:ResultOK resultData:@{@"text": @"greeting from native modal.", @"backId": self.sceneId}];
     [self hbd_hideViewControllerAnimated:YES completion:^(BOOL finished) {
         
     }];

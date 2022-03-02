@@ -10,15 +10,15 @@
 
 @interface GlobalStyle : NSObject
 
-@property (nonatomic, strong, readonly) UIColor *screenBackgroundColor;
+@property(nonatomic, strong, readonly) UIColor *screenBackgroundColor;
 
-@property (nonatomic, assign, readonly, getter=isBackTitleHidden) BOOL backTitleHidden;
+@property(nonatomic, assign, readonly, getter=isBackTitleHidden) BOOL backTitleHidden;
 
-@property (nonatomic, copy) NSString *badgeColorHexString;
-@property (nonatomic, copy) NSString *tabBarItemColorHexString;
-@property (nonatomic, copy) NSString *tabBarUnselectedItemColorHexString;
-@property (nonatomic, strong, readonly) UIColor *tabBarBackgroundColor;
-@property (nonatomic, assign, readonly) BOOL awaysSplitNavigationBarTransition;
+@property(nonatomic, copy) NSString *badgeColorHexString;
+@property(nonatomic, copy) NSString *tabBarItemColorHexString;
+@property(nonatomic, copy) NSString *tabBarUnselectedItemColorHexString;
+@property(nonatomic, strong, readonly) UIColor *tabBarBackgroundColor;
+@property(nonatomic, assign, readonly) BOOL alwaysSplitNavigationBarTransition;
 
 - (instancetype)initWithOptions:(NSDictionary *)options;
 

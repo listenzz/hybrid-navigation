@@ -16,7 +16,7 @@
         UIView *view = self.contentView.subviews.firstObject;
         while (view) {
             if (view == hitView) {
-               if (CGRectEqualToRect(view.frame, self.bounds)) {
+                if (CGRectEqualToRect(view.frame, self.bounds)) {
                     return nil;
                 } else {
                     break;
@@ -26,11 +26,11 @@
             }
         }
     }
-    
+
     if (!hitView.window) {
         return nil;
     }
-    
+
     return hitView;
 }
 

@@ -12,7 +12,7 @@
 #import "HBDRootView.h"
 #import "HBDUtils.h"
 
-@interface UIViewController()
+@interface UIViewController ()
 
 @property(nonatomic, weak, readwrite) HBDModalViewController *hbd_modalViewController;
 @property(nonatomic, strong, readwrite) UIViewController *hbd_targetViewController;
@@ -24,7 +24,7 @@
 
 @property(nonatomic, assign, readwrite, getter=isBeingHidden) BOOL beingHidden;
 
-@property (nonatomic, strong, readwrite) UIView *contentView;
+@property(nonatomic, strong, readwrite) UIView *contentView;
 
 @property(nonatomic, strong) HBDModalWindow *modalWindow;
 @property(nonatomic, weak, readwrite) UIWindow *previousKeyWindow;
@@ -98,7 +98,7 @@
     if ([self.contentView isKindOfClass:[HBDRootView class]]) {
         return self.view.bounds;
     }
-    CGSize contentViewContainerSize = CGSizeMake(CGRectGetWidth(self.view.bounds) - self.contentViewMargins.left - self.contentViewMargins.right, CGRectGetHeight(self.view.bounds)  - self.contentViewMargins.top - self.contentViewMargins.bottom);
+    CGSize contentViewContainerSize = CGSizeMake(CGRectGetWidth(self.view.bounds) - self.contentViewMargins.left - self.contentViewMargins.right, CGRectGetHeight(self.view.bounds) - self.contentViewMargins.top - self.contentViewMargins.bottom);
     CGSize contentViewLimitSize = CGSizeMake(fmin(self.maximumContentViewWidth, contentViewContainerSize.width), contentViewContainerSize.height);
     CGSize contentViewSize = CGSizeZero;
     if (self.measureBlock) {
@@ -108,14 +108,14 @@
     }
     contentViewSize.width = fmin(contentViewLimitSize.width, contentViewSize.width);
     contentViewSize.height = fmin(contentViewLimitSize.height, contentViewSize.height);
-    CGRect contentViewFrame = CGRectMake((contentViewContainerSize.width - contentViewSize.width)/2 + self.contentViewMargins.left, (contentViewContainerSize.height-contentViewSize.height)/2 + self.contentViewMargins.top, contentViewSize.width, contentViewSize.height);
+    CGRect contentViewFrame = CGRectMake((contentViewContainerSize.width - contentViewSize.width) / 2 + self.contentViewMargins.left, (contentViewContainerSize.height - contentViewSize.height) / 2 + self.contentViewMargins.top, contentViewSize.width, contentViewSize.height);
     contentViewFrame = CGRectApplyAffineTransform(contentViewFrame, self.contentView.transform);
     return contentViewFrame;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:)name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -123,7 +123,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
 }
 
-- (void)statusBarFrameWillChange:(NSNotification*)notification {
+- (void)statusBarFrameWillChange:(NSNotification *)notification {
     [UIView animateWithDuration:0.35 animations:^{
         CGFloat dy = [HBDUtils isInCall] ? -20 : 20;
         self.dimmingView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) + dy);
@@ -136,15 +136,15 @@
     }
 }
 
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+    [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         if (!UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
             self.view.frame = CGRectMake(0, 0, size.width, size.height);
         }
         [self updateLayout];
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-        
+    }                            completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+
     }];
 }
 
@@ -178,11 +178,11 @@
     if (!self.dimmingView) {
         return;
     }
-    
+
     if (self.dimmingViewTapGestureRecognizer.view == self.dimmingView) {
         return;
     }
-    
+
     if (!self.dimmingViewTapGestureRecognizer) {
         self.dimmingViewTapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDimmingViewTapGestureRecognizer:)];
     }
@@ -208,7 +208,7 @@
 - (void)setContentView:(UIView *)contentView {
     _contentView = contentView;
     if ([contentView isKindOfClass:[HBDRootView class]]) {
-        HBDRootView *rootView = (HBDRootView *)contentView;
+        HBDRootView *rootView = (HBDRootView *) contentView;
         rootView.backgroundColor = UIColor.clearColor;
     }
 }
@@ -222,32 +222,32 @@
         [UIView animateWithDuration:.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.dimmingView.alpha = 1.0;
             self.contentView.alpha = 1.0;
-        } completion:^(BOOL finished) {
+        }                completion:^(BOOL finished) {
             if (completion) {
                 completion(finished);
             }
         }];
-        
+
     } else if (self.animationStyle == HBDModalAnimationStylePopup) {
         self.dimmingView.alpha = 0.0;
         self.contentView.transform = CGAffineTransformMakeScale(0, 0);
         [UIView animateWithDuration:.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.dimmingView.alpha = 1.0;
             self.contentView.transform = CGAffineTransformMakeScale(1, 1);
-        } completion:^(BOOL finished) {
+        }                completion:^(BOOL finished) {
             self.contentView.transform = CGAffineTransformIdentity;
             if (completion) {
                 completion(finished);
             }
         }];
-        
+
     } else if (self.animationStyle == HBDModalAnimationStyleSlide) {
         self.dimmingView.alpha = 0.0;
         self.contentView.transform = CGAffineTransformMakeTranslation(0, CGRectGetHeight(self.view.bounds) - CGRectGetMinY(self.contentView.frame));
         [UIView animateWithDuration:.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.dimmingView.alpha = 1.0;
             self.contentView.transform = CGAffineTransformIdentity;
-        } completion:^(BOOL finished) {
+        }                completion:^(BOOL finished) {
             if (completion) {
                 completion(finished);
             }
@@ -260,7 +260,7 @@
         [UIView animateWithDuration:.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.dimmingView.alpha = 0.0;
             self.contentView.alpha = 0.0;
-        } completion:^(BOOL finished) {
+        }                completion:^(BOOL finished) {
             if (completion) {
                 completion(finished);
             }
@@ -269,7 +269,7 @@
         [UIView animateWithDuration:.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.dimmingView.alpha = 0.0;
             self.contentView.transform = CGAffineTransformMakeScale(0.0, 0.0);
-        } completion:^(BOOL finished) {
+        }                completion:^(BOOL finished) {
             if (completion) {
                 self.contentView.transform = CGAffineTransformIdentity;
                 completion(finished);
@@ -279,7 +279,7 @@
         [UIView animateWithDuration:.3 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
             self.dimmingView.alpha = 0.0;
             self.contentView.transform = CGAffineTransformMakeTranslation(0, CGRectGetHeight(self.view.bounds) - CGRectGetMinY(self.contentView.frame));
-        } completion:^(BOOL finished) {
+        }                completion:^(BOOL finished) {
             if (completion) {
                 self.contentView.transform = CGAffineTransformIdentity;
                 completion(finished);
@@ -291,22 +291,22 @@
 - (void)showWithAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
     self.contentView = self.contentViewController.view;
     self.previousKeyWindow = self.contentViewController.hbd_targetViewController.view.window;
-    
+
     if (!self.modalWindow) {
         self.modalWindow = [[HBDModalWindow alloc] init];
         self.modalWindow.windowLevel = UIWindowLevelAlert - 4.0;;
         self.modalWindow.backgroundColor = UIColor.clearColor;// 避免横竖屏旋转时出现黑色
     }
-    
+
     self.modalWindow.rootViewController = self;
     [self.modalWindow makeKeyAndVisible];
-    
+
     void (^didShownCompletion)(BOOL finished) = ^(BOOL finished) {
         if (completion) {
             completion(finished);
         }
     };
-    
+
     if (animated) {
         [self.view addSubview:self.contentView];
         [self.view layoutIfNeeded];
@@ -336,7 +336,7 @@
 - (void)hideWithAnimated:(BOOL)animated completion:(void (^)(BOOL))completion {
     self.beingHidden = YES;
     [self.view endEditing:YES];
-    
+
     if (RCTKeyWindow() == self.modalWindow) {
         if (self.previousKeyWindow) {
             [self.previousKeyWindow makeKeyWindow];
@@ -344,17 +344,17 @@
             [[UIApplication sharedApplication].delegate.window makeKeyWindow];
         }
     }
-    
+
     if (self.contentViewController) {
         [self.contentViewController beginAppearanceTransition:NO animated:animated];
     }
-    
+
     void (^didHiddenCompletion)(BOOL finished) = ^(BOOL finished) {
-        
+
         if (self.contentViewController) {
             [self.contentViewController endAppearanceTransition];
         }
-        
+
         self.modalWindow.hidden = YES;
         self.modalWindow.rootViewController = nil;
         self.previousKeyWindow = nil;
@@ -362,11 +362,11 @@
         if (self.willDismissBlock) {
             self.willDismissBlock(self);
         }
-        
+
         if (completion) {
             completion(YES);
         }
-        
+
         if (self.contentViewController) {
             self.contentViewController.hbd_targetViewController.hbd_popupViewController = nil;
             self.contentViewController.hbd_targetViewController = nil;
@@ -374,7 +374,7 @@
             self.contentViewController = nil;
         }
     };
-    
+
     if (animated) {
         if (self.hidingAnimation) {
             self.hidingAnimation(self, didHiddenCompletion);
@@ -388,8 +388,9 @@
 
 @end
 
-@interface HBDModalViewController(Manager)
+@interface HBDModalViewController (Manager)
 - (void)showWithAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
+
 - (void)hideWithAnimated:(BOOL)animated completion:(void (^)(BOOL finished))completion;
 @end
 
@@ -430,21 +431,21 @@
 - (void)hbd_showViewController:(UIViewController *)vc requestCode:(NSInteger)requestCode animated:(BOOL)animated completion:(void (^)(BOOL))completion {
     if (![self canShowModal]) {
         [self didReceiveResultCode:0 resultData:nil requestCode:requestCode];
-        
+
         if (completion) {
             completion(NO);
         }
         return;
     }
-    
+
     self.hbd_popupViewController = vc;
     [self beginAppearanceTransition:NO animated:YES];
     [self endAppearanceTransition];
-    
+
     vc.hbd_barStyle = self.hbd_barStyle;
     vc.hbd_targetViewController = self;
     vc.requestCode = requestCode;
-    
+
     HBDModalViewController *modalViewController = [[HBDModalViewController alloc] init];
     modalViewController.contentViewController = vc;
     [modalViewController showWithAnimated:animated completion:completion];
@@ -456,20 +457,20 @@
         RCTLogWarn(@"[Navigator] Can't show modal since the scene had present another scene already.");
         return NO;
     }
-    
+
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i-1];
+        UIWindow *window = application.windows[i - 1];
         UIViewController *viewController = window.rootViewController;
         if ([viewController isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)viewController;
+            HBDModalViewController *modal = (HBDModalViewController *) viewController;
             if (!modal.beingHidden && window != self.view.window) {
                 RCTLogWarn(@"[Navigator] Can't show modal since the scene had show another modal already.");
                 return NO;
             }
         }
     }
-    
+
     return YES;
 }
 
@@ -481,13 +482,13 @@
         [parent hbd_hideViewControllerAnimated:animated completion:completion];
         return;
     }
-    
+
     [self.hbd_modalViewController hideWithAnimated:animated completion:^(BOOL finished) {
         UIViewController *target = self.hbd_targetViewController;
         [target beginAppearanceTransition:YES animated:YES];
         [target endAppearanceTransition];
         [target didReceiveResultCode:self.resultCode resultData:self.resultData requestCode:self.requestCode];
-        
+
         if (completion) {
             completion(finished);
         }

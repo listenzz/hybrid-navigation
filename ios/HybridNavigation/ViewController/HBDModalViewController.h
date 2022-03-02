@@ -26,12 +26,12 @@ typedef NS_ENUM(NSUInteger, HBDModalAnimationStyle) {
 /**
  * 等同 contentViewController.view
  */
-@property (nonatomic, strong, readonly) UIView *contentView;
+@property(nonatomic, strong, readonly) UIView *contentView;
 
 /**
  * 黑色遮罩
  */
-@property (nonatomic, strong) UIView *dimmingView;
+@property(nonatomic, strong) UIView *dimmingView;
 
 /**
  *  设置`contentView`布局时与外容器的间距，默认为(20, 20, 20, 20)

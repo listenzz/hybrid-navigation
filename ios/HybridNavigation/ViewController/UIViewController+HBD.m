@@ -12,7 +12,6 @@
 #import "HBDUtils.h"
 #import "HBDModalViewController.h"
 #import <React/RCTLog.h>
-#import "HBDGarden.h"
 #import "UITabBar+Badge.h"
 
 @implementation UIViewController (HBD)
@@ -55,20 +54,20 @@
         RCTLogWarn(@"[Navigator] Can't present since the scene had present another scene already.");
         return NO;
     }
-    
+
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i-1];
+        UIWindow *window = application.windows[i - 1];
         UIViewController *viewController = window.rootViewController;
         if ([viewController isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *)viewController;
+            HBDModalViewController *modal = (HBDModalViewController *) viewController;
             if (!modal.beingHidden) {
                 RCTLogWarn(@"[Navigator] Can't present a scene over a modal.");
                 return NO;
             }
         }
     }
-    
+
     return YES;
 }
 
@@ -79,12 +78,12 @@
         presenting = self.presentingViewController;
         presented = presenting.presentedViewController;
     }
-    
+
     [self hbd_dismissViewControllerAnimated:animated completion:^{
         if (![presented isKindOfClass:[UIAlertController class]]) {
             [presenting didReceiveResultCode:presented.resultCode resultData:presented.resultData requestCode:presented.requestCode];
         }
-        
+
         if (completion) {
             completion();
         }
@@ -97,7 +96,7 @@
         obj = [[NSUUID UUID] UUIDString];
         objc_setAssociatedObject(self, @selector(sceneId), obj, OBJC_ASSOCIATION_COPY_NONATOMIC);
     }
-     return obj;
+    return obj;
 }
 
 - (UIBarStyle)hbd_barStyle {
@@ -116,26 +115,26 @@
     if (self.hbd_barHidden) {
         return UIColor.clearColor;
     }
-    
+
     id obj = objc_getAssociatedObject(self, _cmd);
     UIColor *color;
     if (obj) {
         color = obj;
     }
-    
+
     UIColor *colorWithBarStyle = [[HBDGarden globalStyle] barTintColorWithBarStyle:self.hbd_barStyle];
     if (color == nil && colorWithBarStyle != nil) {
         color = colorWithBarStyle;
     }
-    
+
     if (color == nil && [UINavigationBar appearance].barTintColor != nil) {
         color = [UINavigationBar appearance].barTintColor;
     }
-    
+
     if (color == nil) {
-        color = [UINavigationBar appearance].barStyle == UIBarStyleDefault ? [UIColor whiteColor]: [UIColor blackColor];
+        color = [UINavigationBar appearance].barStyle == UIBarStyleDefault ? [UIColor whiteColor] : [UIColor blackColor];
     }
-   
+
     return color;
 }
 
@@ -148,12 +147,12 @@
     if (obj) {
         return obj;
     }
-    
+
     UIColor *colorWithBarStyle = [[HBDGarden globalStyle] tintColorWithBarStyle:self.hbd_barStyle];
     if (colorWithBarStyle) {
         return colorWithBarStyle;
     }
-    
+
     return [UINavigationBar appearance].tintColor;
 }
 
@@ -166,10 +165,10 @@
     if (obj) {
         return obj;
     }
-    
+
     UIBarStyle barStyle = self.hbd_barStyle;
     UIColor *colorWithBarStyle = [[HBDGarden globalStyle] titleTextColorWithBarStyle:barStyle];
-    NSDictionary *colorAttributes = @{ NSForegroundColorAttributeName: colorWithBarStyle };
+    NSDictionary *colorAttributes = @{NSForegroundColorAttributeName: colorWithBarStyle};
     NSDictionary *attributes = [UINavigationBar appearance].titleTextAttributes;
     if (attributes) {
         NSMutableDictionary *mutableAttributes = [attributes mutableCopy];
@@ -213,12 +212,12 @@
 }
 
 - (float)hbd_barShadowAlpha {
-    return  self.hbd_barShadowHidden ? 0 : self.hbd_barAlpha;
+    return self.hbd_barShadowHidden ? 0 : self.hbd_barAlpha;
 }
 
 - (BOOL)hbd_barShadowHidden {
     id obj = objc_getAssociatedObject(self, _cmd);
-    return  self.hbd_barHidden || obj ? [obj boolValue] : NO;
+    return self.hbd_barHidden || obj ? [obj boolValue] : NO;
 }
 
 - (void)setHbd_barShadowHidden:(BOOL)hidden {
@@ -239,7 +238,7 @@
     return obj ? [obj boolValue] : YES;
 }
 
--(void)setHbd_backInteractive:(BOOL)interactive {
+- (void)setHbd_backInteractive:(BOOL)interactive {
     objc_setAssociatedObject(self, @selector(hbd_backInteractive), @(interactive), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
@@ -249,7 +248,7 @@
 }
 
 - (void)setHbd_swipeBackEnabled:(BOOL)enabled {
-     objc_setAssociatedObject(self, @selector(hbd_swipeBackEnabled), @(enabled), OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(hbd_swipeBackEnabled), @(enabled), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (BOOL)hbd_viewAppeared {
@@ -288,7 +287,7 @@
 
 - (void)hbd_setNeedsUpdateNavigationBar {
     if (self.navigationController && [self.navigationController isKindOfClass:[HBDNavigationController class]]) {
-        HBDNavigationController *nav = (HBDNavigationController *)self.navigationController;
+        HBDNavigationController *nav = (HBDNavigationController *) self.navigationController;
         if (self == nav.topViewController) {
             [nav updateNavigationBarForViewController:self];
         }
@@ -298,9 +297,9 @@
 - (void)setResultCode:(NSInteger)resultCode {
     UIViewController *presenting = self.presentingViewController;
     if (presenting) {
-        objc_setAssociatedObject(presenting.presentedViewController, @selector(resultCode),@(resultCode), OBJC_ASSOCIATION_COPY_NONATOMIC);
+        objc_setAssociatedObject(presenting.presentedViewController, @selector(resultCode), @(resultCode), OBJC_ASSOCIATION_COPY_NONATOMIC);
     }
-    objc_setAssociatedObject(self, @selector(resultCode),@(resultCode), OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self, @selector(resultCode), @(resultCode), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (NSInteger)resultCode {
@@ -336,13 +335,13 @@
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     if ([self isKindOfClass:[UITabBarController class]]) {
-        UIViewController *child = ((UITabBarController *)self).selectedViewController;
+        UIViewController *child = ((UITabBarController *) self).selectedViewController;
         [child didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     } else if ([self isKindOfClass:[UINavigationController class]]) {
-        UIViewController *child = ((UINavigationController *)self).topViewController;
+        UIViewController *child = ((UINavigationController *) self).topViewController;
         [child didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     } else if ([self isKindOfClass:[HBDDrawerController class]]) {
-        UIViewController *child = ((HBDDrawerController *)self).contentController;
+        UIViewController *child = ((HBDDrawerController *) self).contentController;
         [child didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     } else {
         NSArray *children = self.childViewControllers;
@@ -356,16 +355,16 @@
 
 - (HBDDrawerController *)drawerController {
     UIViewController *vc = self;
-    
+
     if ([vc isKindOfClass:[HBDDrawerController class]]) {
-        return (HBDDrawerController *)vc;
+        return (HBDDrawerController *) vc;
     }
-    
+
     UIViewController *parent = self.parentViewController;
     if (parent) {
         return [parent drawerController];
     }
-    
+
     return nil;
 }
 
@@ -378,7 +377,7 @@
     if (title != nil) {
         tabBarItem.title = title;
     }
-    
+
     // icon
     NSDictionary *icon = option[@"icon"];
     if (icon != nil) {
@@ -392,13 +391,13 @@
         }
     }
 
-   // badge
+    // badge
     NSDictionary *badge = option[@"badge"];
     if (badge != nil) {
         BOOL hidden = badge[@"hidden"] ? [badge[@"hidden"] boolValue] : YES;
         NSString *text = hidden ? nil : (badge[@"text"] ? badge[@"text"] : nil);
-        BOOL dot = hidden ?  NO : (badge[@"dot"] ? [badge[@"dot"] boolValue] : NO);
-        
+        BOOL dot = hidden ? NO : (badge[@"dot"] ? [badge[@"dot"] boolValue] : NO);
+
         tabBarItem.badgeValue = text;
         UITabBar *tabBar = self.tabBarController.tabBar;
         if (dot) {
