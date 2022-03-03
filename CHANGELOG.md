@@ -1,3 +1,15 @@
+## 2.7.8 (2022-03-03)
+
+### ios specific
+
+- 修复因 NSUInteger 导致的问题
+
+```objc
+    for (NSUInteger i = count - 1; i > -1; i--) { 
+        // 无法进入此区间
+    }
+```
+
 ## 2.7.7 (2022-03-03)
 
 ### Android specific
