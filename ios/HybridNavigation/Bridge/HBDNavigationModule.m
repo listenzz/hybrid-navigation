@@ -182,13 +182,12 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:
 
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     NSString *sceneId = nil;
-    NSUInteger index = application.windows.count - 1;
-
     NSString *moduleName = params[@"moduleName"];
     Promise *promise = params[@"promise"];
 
-    while (index > -1 && sceneId == nil) {
-        UIWindow *window = application.windows[index];
+    NSUInteger index = application.windows.count;
+    while (index > 0 && sceneId == nil) {
+        UIWindow *window = application.windows[index - 1];
         sceneId = [self findSceneIdByModuleName:moduleName withViewController:window.rootViewController];
         index--;
     }
@@ -216,9 +215,9 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:
         NSArray<UIViewController *> *children = vc.childViewControllers;
         NSUInteger count = children.count;
         if (count > 0) {
-            NSUInteger index = count - 1;
-            while (index > -1 && sceneId == nil) {
-                UIViewController *child = children[index];
+            NSUInteger index = count;
+            while (index > 0 && sceneId == nil) {
+                UIViewController *child = children[index - 1];
                 sceneId = [self findSceneIdByModuleName:moduleName withViewController:child];
                 index--;
             }

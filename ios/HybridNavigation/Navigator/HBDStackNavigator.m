@@ -98,12 +98,13 @@
         NSUInteger count = children.count;
         NSString *moduleName = extras[@"moduleName"];
         BOOL inclusive = [extras[@"inclusive"] boolValue];
-        for (NSUInteger i = count - 1; i > -1; i--) {
-            HBDViewController *vc = children[i];
+        for (NSUInteger i = count; i > 0; i--) {
+            NSUInteger index = i - 1;
+            HBDViewController *vc = children[index];
             if ([moduleName isEqualToString:vc.moduleName] || [moduleName isEqualToString:vc.sceneId]) {
                 viewController = vc;
-                if (inclusive && i - 1 > -1) {
-                    viewController = children[i - 1];
+                if (inclusive && i > 0) {
+                    viewController = children[index];
                 }
                 break;
             }

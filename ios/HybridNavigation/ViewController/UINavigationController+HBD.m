@@ -17,9 +17,10 @@
 - (void)redirectToViewController:(UIViewController *)controller target:(UIViewController *)target animated:(BOOL)animated {
     NSMutableArray *children = [self.childViewControllers mutableCopy];
     NSUInteger count = self.childViewControllers.count;
-    for (NSUInteger i = count - 1; i > -1; i--) {
-        UIViewController *child = children[i];
-        [children removeObjectAtIndex:i];
+    for (NSUInteger i = count; i > 0; i--) {
+        NSUInteger index = i - 1;
+        UIViewController *child = children[index];
+        [children removeObjectAtIndex:index];
         if (child == target) {
             break;
         }

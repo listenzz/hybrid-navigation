@@ -105,8 +105,9 @@
 
 - (void)removeTabBarAboriginal {
     NSUInteger count = self.tabBar.subviews.count;
-    for (NSInteger i = count - 1; i > -1; i--) {
-        UIView *view = self.tabBar.subviews[i];
+    for (NSUInteger i = count; i > 0; i--) {
+        NSUInteger index = i - 1;
+        UIView *view = self.tabBar.subviews[index];
         NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
         if ([viewName isEqualToString:@"UITabBarButton"]) {
             [view removeFromSuperview];
