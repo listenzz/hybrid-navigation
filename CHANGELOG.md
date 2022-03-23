@@ -1,3 +1,9 @@
+## 2.7.9 (2022-03-23)
+
+### Android specific
+
+- 修复 `Fragment is not an active fragment of FragmentManager`
+
 ## 2.7.8 (2022-03-03)
 
 ### ios specific
@@ -5,7 +11,7 @@
 - 修复因 NSUInteger 导致的问题
 
 ```objc
-    for (NSUInteger i = count - 1; i > -1; i--) { 
+    for (NSUInteger i = count - 1; i > -1; i--) {
         // 无法进入此区间
     }
 ```
