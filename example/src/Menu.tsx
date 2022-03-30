@@ -32,6 +32,11 @@ export default function Menu({ navigator }: InjectedProps) {
     navigator.push('ReduxCounter')
   }
 
+  function pushToZustand() {
+    navigator.closeMenu()
+    navigator.push('ZustandCounter')
+  }
+
   function pushToToast() {
     navigator.closeMenu()
     navigator.push('Toast')
@@ -54,6 +59,10 @@ export default function Menu({ navigator }: InjectedProps) {
 
       <TouchableOpacity onPress={pushToRedux} activeOpacity={0.2} style={styles.button}>
         <Text style={styles.buttonText}>Redux Counter</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={pushToZustand} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>Zustand Counter</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={pushToToast} activeOpacity={0.2} style={styles.button}>

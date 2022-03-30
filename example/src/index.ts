@@ -33,6 +33,7 @@ import StatusBarHidden from './StatusBarHidden'
 import CustomTabBar from './CustomTabBar'
 import BulgeTabBar from './BulgeTabBar'
 import Toast from './Toast'
+import ZustandCounter from './ZustandCounter'
 
 // import MessageQueue from 'react-native/Libraries/BatchedBridge/MessageQueue.js';
 // const spyFunction = msg => {
@@ -100,6 +101,7 @@ ReactRegistry.registerComponent('Result', () => Result, { path: '/result', mode:
 ReactRegistry.registerComponent('Options', () => Options, { path: '/options' })
 ReactRegistry.registerComponent('Menu', () => Menu, { path: '/menu' })
 ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter, { path: '/redux' })
+ReactRegistry.registerComponent('ZustandCounter', () => ZustandCounter)
 ReactRegistry.registerComponent('PassOptions', () => PassOptions)
 ReactRegistry.registerComponent('Lifecycle', () => Lifecycle)
 
