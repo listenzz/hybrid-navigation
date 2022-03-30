@@ -16,8 +16,8 @@ interface Props extends InjectedProps {}
 function ZustandCounter({ navigator }: Props) {
   useVisibleEffect(
     useCallback(() => {
-      console.info(`Page ReduxCounter is visible`)
-      return () => console.info(`Page ReduxCounter is invisible`)
+      console.info(`Page ZustandCounter is visible`)
+      return () => console.info(`Page ZustandCounter is invisible`)
     }, []),
   )
 
