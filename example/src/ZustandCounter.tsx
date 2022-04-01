@@ -4,7 +4,13 @@ import { BarStyleLightContent, withNavigationItem, InjectedProps, useVisibleEffe
 import styles from './Styles'
 import create from 'zustand'
 
-const useStore = create(set => ({
+interface CounterState {
+  count: number
+  increase: () => void
+  decrease: () => void
+}
+
+const useStore = create<CounterState>(set => ({
   count: 0,
   increase: () => set(state => ({ count: state.count + 1 })),
   decrease: () => set(state => ({ count: state.count - 1 })),
