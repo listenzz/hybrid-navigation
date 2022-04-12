@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useRef } from 'react'
+import React, { useEffect, useCallback, useRef, ComponentType } from 'react'
 import { StyleSheet, Animated, Easing, Dimensions, View, TouchableWithoutFeedback, SafeAreaView } from 'react-native'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { useLayout, useBackHandler } from '@react-native-community/hooks'
@@ -9,8 +9,8 @@ export default function withBottomModal({
   safeAreaColor = '#ffffff',
   navigationBarColor = '#ffffff',
 } = {}) {
-  return function (WrappedComponent: React.ComponentType<any>) {
-    function BottomModal(props: InjectedProps, ref: React.Ref<React.ComponentType<any>>) {
+  return function (WrappedComponent: ComponentType<any>) {
+    function BottomModal(props: InjectedProps, ref: React.Ref<ComponentType<any>>) {
       const animatedHeight = useRef(new Animated.Value(Dimensions.get('screen').height))
       const { onLayout, height } = useLayout()
 

@@ -26,15 +26,15 @@ interface Props {
   sceneId: string
 }
 
-function getDisplayName(WrappedComponent: React.ComponentType<any>) {
+function getDisplayName(WrappedComponent: ComponentType<any>) {
   return WrappedComponent.displayName || WrappedComponent.name || 'Component'
 }
 
 export const NavigationContext = createContext<any>(null)
 
 function withNavigator(moduleName: string) {
-  return function (WrappedComponent: React.ComponentType<any>) {
-    const FC = React.forwardRef((props: Props, ref: React.Ref<React.ComponentType<any>>) => {
+  return function (WrappedComponent: ComponentType<any>) {
+    const FC = React.forwardRef((props: Props, ref: React.Ref<ComponentType<any>>) => {
       const { sceneId } = props
 
       const navigator = Navigator.of(sceneId)
@@ -85,7 +85,7 @@ function withNavigator(moduleName: string) {
   }
 }
 
-export type HOC = (WrappedComponent: React.ComponentType<any>) => React.ComponentType<any>
+export type HOC = (WrappedComponent: ComponentType<any>) => ComponentType<any>
 let wrap: HOC | undefined
 
 export class ReactRegistry {
@@ -117,7 +117,7 @@ export class ReactRegistry {
     let options: object = bindBarButtonItemClickEvent((WrappedComponent as any).navigationItem) || {}
     NavigationModule.registerReactComponent(appKey, options)
 
-    let RootComponent: React.ComponentType<any>
+    let RootComponent: ComponentType<any>
     if (wrap) {
       RootComponent = wrap(withNavigator(appKey)(WrappedComponent))
     } else {
