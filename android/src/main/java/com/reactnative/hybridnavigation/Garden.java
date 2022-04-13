@@ -62,6 +62,8 @@ public class Garden {
 
     boolean extendedLayoutIncludesTopBar;
 
+    boolean forceTransparentDialogWindow;
+
     Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
@@ -81,6 +83,8 @@ public class Garden {
         if (!TextUtils.isEmpty(screenColor)) {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));
         }
+        
+        this.forceTransparentDialogWindow = options.getBoolean("forceTransparentDialogWindow");
 
         applyOptions(options);
     }

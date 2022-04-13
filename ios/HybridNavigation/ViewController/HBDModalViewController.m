@@ -448,6 +448,12 @@
 
     HBDModalViewController *modalViewController = [[HBDModalViewController alloc] init];
     modalViewController.contentViewController = vc;
+    if ([vc isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hbdvc = (HBDViewController *)vc;
+        if (hbdvc.garden.forceTransparentDialogWindow) {
+            modalViewController.dimmingView.backgroundColor = UIColor.clearColor;
+        }
+    }
     [modalViewController showWithAnimated:animated completion:completion];
 }
 

@@ -20,6 +20,8 @@
 
 // ------
 
+@property(nonatomic, assign) BOOL forceTransparentDialogWindow;
+
 - (instancetype)initWithViewController:(HBDViewController *)vc;
 
 - (void)setLeftBarButtonItem:(NSDictionary *)item;

@@ -37,7 +37,7 @@
         _options = options;
         _props = props;
         _garden = [[HBDGarden alloc] initWithViewController:self];
-
+        _garden.forceTransparentDialogWindow = [options[@"forceTransparentDialogWindow"] boolValue];
         [self applyNavigationBarOptions:options];
         [self applyTabBarOptions:options];
     }

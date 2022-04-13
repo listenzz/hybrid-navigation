@@ -2,6 +2,7 @@ package com.reactnative.hybridnavigation;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
@@ -90,6 +91,11 @@ public class HybridFragment extends AwesomeFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         garden.configureToolbar();
+        if (getShowsDialog() && garden.forceTransparentDialogWindow) {
+            Window window = getWindow();
+            assert window != null;
+            window.setDimAmount(0);
+        }
     }
     
     public Garden getGarden() {
