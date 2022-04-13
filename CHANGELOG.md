@@ -1,3 +1,13 @@
+## 2.7.11 (2022-04-13)
+
+### Android specific
+
+- 确保在 Activity 处于 start 状态时，才获取 `currentRoute` 和 `routeGraph`
+
+## 2.7.10 (2022-04-12)
+
+- 使用 `CompanentType<any>` 代替 `React.ComponentType<any>`
+
 ## 2.7.9 (2022-03-23)
 
 ### Android specific

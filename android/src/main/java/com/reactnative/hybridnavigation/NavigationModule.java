@@ -198,17 +198,20 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 }
 
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-                Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
-                if (fragment instanceof AwesomeFragment) {
-                    String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
-                    FLog.i(TAG, "The sceneId found by " + moduleName + " : " + sceneId);
-                    promise.resolve(sceneId);
-                } else {
-                    promise.resolve(null);
-                }
+                reactAppCompatActivity.scheduleTaskAtStarted(() -> {
+                    FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+                    Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
+                    if (fragment instanceof AwesomeFragment) {
+                        String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
+                        FLog.i(TAG, "The sceneId found by " + moduleName + " : " + sceneId);
+                        promise.resolve(sceneId);
+                    } else {
+                        promise.resolve(null);
+                    }
+                }, true);
             }
         };
+       
         UiThreadUtil.runOnUiThread(task);
     }
 
@@ -252,18 +255,20 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 }
                 
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-                HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
+                reactAppCompatActivity.scheduleTaskAtStarted(() -> {
+                    FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+                    HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
 
-                if (current != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("moduleName", current.getModuleName());
-                    bundle.putString("sceneId", current.getSceneId());
-                    bundle.putString("mode", Navigator.Util.getMode(current));
-                    promise.resolve(Arguments.fromBundle(bundle));
-                } else {
-                    UiThreadUtil.runOnUiThread(this, 16);
-                }
+                    if (current != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("moduleName", current.getModuleName());
+                        bundle.putString("sceneId", current.getSceneId());
+                        bundle.putString("mode", Navigator.Util.getMode(current));
+                        promise.resolve(Arguments.fromBundle(bundle));
+                    } else {
+                        UiThreadUtil.runOnUiThread(this, 16);
+                    }
+                }, true);
             }
         };
 
@@ -287,13 +292,15 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 }
 
                 ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-                ArrayList<Bundle> graph = bridgeManager.buildRouteGraph(fragmentManager);
-                if (graph.size() > 0) {
-                    promise.resolve(Arguments.fromList(graph));
-                } else {
-                    UiThreadUtil.runOnUiThread(this, 16);
-                }
+                reactAppCompatActivity.scheduleTaskAtStarted(() -> {
+                    FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+                    ArrayList<Bundle> graph = bridgeManager.buildRouteGraph(fragmentManager);
+                    if (graph.size() > 0) {
+                        promise.resolve(Arguments.fromList(graph));
+                    } else {
+                        UiThreadUtil.runOnUiThread(this, 16);
+                    }
+                }, true);
             }
         };
 
