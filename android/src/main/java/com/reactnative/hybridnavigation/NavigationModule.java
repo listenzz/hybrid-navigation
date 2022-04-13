@@ -208,7 +208,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     } else {
                         promise.resolve(null);
                     }
-                }, true);
+                });
             }
         };
        
@@ -268,7 +268,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     } else {
                         UiThreadUtil.runOnUiThread(this, 16);
                     }
-                }, true);
+                });
             }
         };
 
@@ -300,7 +300,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     } else {
                         UiThreadUtil.runOnUiThread(this, 16);
                     }
-                }, true);
+                });
             }
         };
 
