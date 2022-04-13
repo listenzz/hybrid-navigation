@@ -1,3 +1,7 @@
+## 2.8.0 （2022-04-13）
+
+- 添加 `forceTransparentDialogWindow` 配置项，用于设置当页面是 Dialog 时，是否强制背景透明
+
 ## 2.7.11 (2022-04-13)
 
 ### Android specific
