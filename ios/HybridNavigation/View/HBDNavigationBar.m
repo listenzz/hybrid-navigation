@@ -11,8 +11,8 @@
 
 @interface HBDNavigationBar ()
 
-@property(nonatomic, strong, readwrite) UIImageView *shadowImageView;
-@property(nonatomic, strong, readwrite) UIVisualEffectView *fakeView;
+@property(nonatomic, strong, readwrite) UIImageView *fakeShadowView;
+@property(nonatomic, strong, readwrite) UIView *fakeBackgroundView;
 
 @end
 
@@ -45,7 +45,7 @@
 
     NSArray *array = @[@"UINavigationBarContentView", @"UIButtonBarStackView", @"HBDNavigationBar"];
     if ([array containsObject:viewName]) {
-        if (self.fakeView.alpha < 0.01) {
+        if (self.fakeBackgroundView.alpha < 0.01) {
             return nil;
         }
     }
@@ -59,29 +59,25 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.fakeView.frame = self.fakeView.superview.bounds;
-    self.shadowImageView.frame = CGRectMake(0, CGRectGetHeight(self.shadowImageView.superview.bounds), CGRectGetWidth(self.shadowImageView.superview.bounds), 0.5);
-}
-
-- (UIView *)hbd_backgroundView {
-    return [self valueForKey:@"_backgroundView"];
+    self.fakeBackgroundView.frame = self.fakeBackgroundView.superview.bounds;
+    self.fakeShadowView.frame = CGRectMake(0, CGRectGetHeight(self.fakeShadowView.superview.bounds), CGRectGetWidth(self.fakeShadowView.superview.bounds), 0.5);
 }
 
 - (void)setBarTintColor:(UIColor *)barTintColor {
     [super setBarTintColor:barTintColor];
-    self.fakeView.subviews.lastObject.backgroundColor = barTintColor;
-    [self makeSureFakeView];
+    self.fakeBackgroundView.backgroundColor = barTintColor;
+    [self makesureFakeBackgroundView];
 }
 
-- (UIVisualEffectView *)fakeView {
-    if (!_fakeView) {
+- (UIView *)fakeBackgroundView {
+    if (!_fakeBackgroundView) {
         [super setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
-        _fakeView = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
-        _fakeView.userInteractionEnabled = NO;
-        _fakeView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [[self.subviews firstObject] insertSubview:_fakeView atIndex:0];
+        _fakeBackgroundView = [[UIView alloc] init];
+        _fakeBackgroundView.userInteractionEnabled = NO;
+        _fakeBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        [[self.subviews firstObject] insertSubview:_fakeBackgroundView atIndex:0];
     }
-    return _fakeView;
+    return _fakeBackgroundView;
 }
 
 - (void)setTranslucent:(BOOL)translucent {
@@ -94,35 +90,35 @@
 }
 
 - (void)setShadowImage:(UIImage *)shadowImage {
-    self.shadowImageView.image = shadowImage;
+    self.fakeShadowView.image = shadowImage;
     if (shadowImage) {
-        self.shadowImageView.backgroundColor = nil;
+        self.fakeShadowView.backgroundColor = nil;
     } else {
-        self.shadowImageView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:77.0 / 255];
+        self.fakeShadowView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:77.0 / 255];
     }
 }
 
-- (UIImageView *)shadowImageView {
-    if (!_shadowImageView) {
+- (UIImageView *)fakeShadowView {
+    if (!_fakeShadowView) {
         [super setShadowImage:[UIImage new]];
-        _shadowImageView = [[UIImageView alloc] init];
-        _shadowImageView.userInteractionEnabled = NO;
-        _shadowImageView.contentScaleFactor = 1;
-        [[self.subviews firstObject] insertSubview:_shadowImageView aboveSubview:self.fakeView];
+        _fakeShadowView = [[UIImageView alloc] init];
+        _fakeShadowView.userInteractionEnabled = NO;
+        _fakeShadowView.contentScaleFactor = 1;
+        [[self.subviews firstObject] insertSubview:_fakeShadowView aboveSubview:self.fakeBackgroundView];
     }
-    return _shadowImageView;
+    return _fakeShadowView;
 }
 
-- (void)makeSureFakeView {
+- (void)makesureFakeBackgroundView {
     [UIView setAnimationsEnabled:NO];
-    if (!self.fakeView.superview) {
-        [[self.subviews firstObject] insertSubview:_fakeView atIndex:0];
-        self.fakeView.frame = self.fakeView.superview.bounds;
+    if (!self.fakeBackgroundView.superview) {
+        [[self.subviews firstObject] insertSubview:_fakeBackgroundView atIndex:0];
+        self.fakeBackgroundView.frame = self.fakeBackgroundView.superview.bounds;
     }
 
-    if (!self.shadowImageView.superview) {
-        [[self.subviews firstObject] insertSubview:_shadowImageView aboveSubview:self.fakeView];
-        self.shadowImageView.frame = CGRectMake(0, CGRectGetHeight(self.shadowImageView.superview.bounds), CGRectGetWidth(self.shadowImageView.superview.bounds), 0.5);
+    if (!self.fakeShadowView.superview) {
+        [[self.subviews firstObject] insertSubview:_fakeShadowView aboveSubview:self.fakeBackgroundView];
+        self.fakeShadowView.frame = CGRectMake(0, CGRectGetHeight(self.fakeShadowView.superview.bounds), CGRectGetWidth(self.fakeShadowView.superview.bounds), 0.5);
     }
     [UIView setAnimationsEnabled:YES];
 }

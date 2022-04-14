@@ -10,10 +10,9 @@
 
 @interface HBDNavigationBar : UINavigationBar
 
-@property(nonatomic, strong, readonly) UIImageView *shadowImageView;
-@property(nonatomic, strong, readonly) UIVisualEffectView *fakeView;
+@property(nonatomic, strong, readonly) UIImageView *fakeShadowView;
+@property(nonatomic, strong, readonly) UIView *fakeBackgroundView;
 @property(nonatomic, strong, readonly) UILabel *backButtonLabel;
-@property(nonatomic, strong, readonly) UIView *hbd_backgroundView;
 
 @end
 

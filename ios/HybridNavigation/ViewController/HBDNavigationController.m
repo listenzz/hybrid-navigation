@@ -79,8 +79,8 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 @interface HBDNavigationController ()
 
 @property(nonatomic, readonly) HBDNavigationBar *navigationBar;
-@property(nonatomic, strong) UIVisualEffectView *fromFakeBar;
-@property(nonatomic, strong) UIVisualEffectView *toFakeBar;
+@property(nonatomic, strong) UIView *fromFakeBar;
+@property(nonatomic, strong) UIView *toFakeBar;
 @property(nonatomic, strong) UIImageView *fromFakeShadow;
 @property(nonatomic, strong) UIImageView *toFakeShadow;
 @property(nonatomic, weak) UIViewController *poppingViewController;
@@ -635,14 +635,8 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 }
 
 - (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc {
-    self.navigationBar.fakeView.alpha = vc.hbd_barAlpha;
-    self.navigationBar.shadowImageView.alpha = vc.hbd_barShadowAlpha;
-
-    if (vc.hbd_barAlpha == 0) {
-        self.navigationBar.hbd_backgroundView.layer.mask = [CALayer new];
-    } else {
-        self.navigationBar.hbd_backgroundView.layer.mask = nil;
-    }
+    self.navigationBar.fakeBackgroundView.alpha = vc.hbd_barAlpha;
+    self.navigationBar.fakeShadowView.alpha = vc.hbd_barShadowAlpha;
 }
 
 - (void)updateNavigationBarBackgroundForViewController:(UIViewController *)vc {
@@ -651,19 +645,16 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 
 - (void)showFakeBarFrom:(UIViewController *)from to:(UIViewController *_Nonnull)to {
     [UIView setAnimationsEnabled:NO];
-    self.navigationBar.fakeView.alpha = 0;
-    self.navigationBar.shadowImageView.alpha = 0;
+    self.navigationBar.fakeBackgroundView.alpha = 0;
+    self.navigationBar.fakeShadowView.alpha = 0;
     [self showFakeBarFrom:from];
     [self showFakeBarTo:to];
     [UIView setAnimationsEnabled:YES];
 }
 
 - (void)showFakeBarFrom:(UIViewController *)from {
-    self.fromFakeBar.subviews.lastObject.backgroundColor = from.hbd_barTintColor;
+    self.fromFakeBar.backgroundColor = from.hbd_barTintColor;
     self.fromFakeBar.alpha = from.hbd_barAlpha;
-    if (from.hbd_barAlpha == 0) {
-        self.fromFakeBar.subviews.lastObject.layer.mask = [CALayer new];
-    }
     self.fromFakeBar.frame = [self fakeBarFrameForViewController:from];
     [from.view addSubview:self.fromFakeBar];
     self.fromFakeShadow.alpha = from.hbd_barShadowAlpha;
@@ -672,7 +663,7 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 }
 
 - (void)showFakeBarTo:(UIViewController *_Nonnull)to {
-    self.toFakeBar.subviews.lastObject.backgroundColor = to.hbd_barTintColor;
+    self.toFakeBar.backgroundColor = to.hbd_barTintColor;
     self.toFakeBar.alpha = to.hbd_barAlpha;
     self.toFakeBar.frame = [self fakeBarFrameForViewController:to];
     [to.view addSubview:self.toFakeBar];
@@ -681,32 +672,32 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
     [to.view addSubview:self.toFakeShadow];
 }
 
-- (UIVisualEffectView *)fromFakeBar {
+- (UIView *)fromFakeBar {
     if (!_fromFakeBar) {
-        _fromFakeBar = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+        _fromFakeBar = [[UIView alloc] init];
     }
     return _fromFakeBar;
 }
 
-- (UIVisualEffectView *)toFakeBar {
+- (UIView *)toFakeBar {
     if (!_toFakeBar) {
-        _toFakeBar = [[UIVisualEffectView alloc] initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleLight]];
+        _toFakeBar = [[UIView alloc] init];
     }
     return _toFakeBar;
 }
 
 - (UIImageView *)fromFakeShadow {
     if (!_fromFakeShadow) {
-        _fromFakeShadow = [[UIImageView alloc] initWithImage:self.navigationBar.shadowImageView.image];
-        _fromFakeShadow.backgroundColor = self.navigationBar.shadowImageView.backgroundColor;
+        _fromFakeShadow = [[UIImageView alloc] initWithImage:self.navigationBar.fakeShadowView.image];
+        _fromFakeShadow.backgroundColor = self.navigationBar.fakeShadowView.backgroundColor;
     }
     return _fromFakeShadow;
 }
 
 - (UIImageView *)toFakeShadow {
     if (!_toFakeShadow) {
-        _toFakeShadow = [[UIImageView alloc] initWithImage:self.navigationBar.shadowImageView.image];
-        _toFakeShadow.backgroundColor = self.navigationBar.shadowImageView.backgroundColor;
+        _toFakeShadow = [[UIImageView alloc] initWithImage:self.navigationBar.fakeShadowView.image];
+        _toFakeShadow.backgroundColor = self.navigationBar.fakeShadowView.backgroundColor;
     }
     return _toFakeShadow;
 }
