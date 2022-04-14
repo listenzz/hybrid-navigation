@@ -9,6 +9,7 @@
 #import "HBDGardenModule.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDTabBarController.h"
+#import "GlobalStyle.h"
 #import <React/RCTLog.h>
 
 @interface HBDGardenModule ()
@@ -42,7 +43,7 @@ RCT_EXPORT_MODULE(GardenModule)
 
 RCT_EXPORT_METHOD(setStyle:
     (NSDictionary *) style) {
-    [HBDGarden createGlobalStyleWithOptions:style];
+    [GlobalStyle createWithOptions:style];
 }
 
 RCT_EXPORT_METHOD(setTitleItem:

@@ -1,49 +1,24 @@
-//
-//  HBDGarden.m
-//  HybridNavigation
-//
-//  Created by Listen on 2017/11/26.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
-#import "HBDGarden.h"
 #import <React/RCTConvert.h>
 #import <React/RCTRootView.h>
+
+#import "HBDViewController+Garden.h"
 
 #import "HBDBarButtonItem.h"
 #import "HBDUtils.h"
 #import "HBDEventEmitter.h"
 
+@implementation HBDViewController (Garden)
 
-@interface HBDGarden ()
-
-@property(nonatomic, weak, readonly) HBDViewController *viewController;
-
-@end
-
-@implementation HBDGarden
-
-static GlobalStyle *globalStyle;
-
-+ (void)createGlobalStyleWithOptions:(NSDictionary *)options {
-    globalStyle = [[GlobalStyle alloc] initWithOptions:options];
-    [globalStyle inflateNavigationBar:[UINavigationBar appearance]];
-    [globalStyle inflateBarButtonItem:[UIBarButtonItem appearance]];
-    [globalStyle inflateTabBar:[UITabBar appearance]];
+- (BOOL)forceTransparentDialogWindow {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj boolValue] : NO;
 }
 
-+ (GlobalStyle *)globalStyle {
-    return globalStyle;
+- (void)setForceTransparentDialogWindow:(BOOL)transparent {
+    objc_setAssociatedObject(self, @selector(forceTransparentDialogWindow), @(transparent), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (instancetype)initWithViewController:(HBDViewController *)vc {
-    if (self = [super init]) {
-        _viewController = vc;
-    }
-    return self;
-}
-
-- (void)setLeftBarButtonItem:(NSDictionary *__nullable)item {
+- (void)setLeftBarButtonItem:(NSDictionary *)item {
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
@@ -61,13 +36,13 @@ static GlobalStyle *globalStyle;
         }
         [array addObject:buttonItem];
 
-        self.viewController.navigationItem.leftBarButtonItems = array;
+        self.navigationItem.leftBarButtonItems = array;
     } else {
-        self.viewController.navigationItem.leftBarButtonItems = nil;
+        self.navigationItem.leftBarButtonItems = nil;
     }
 }
 
-- (void)setRightBarButtonItem:(NSDictionary *__nullable)item {
+- (void)setRightBarButtonItem:(NSDictionary *)item {
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
@@ -85,9 +60,9 @@ static GlobalStyle *globalStyle;
         }
         [array addObject:buttonItem];
 
-        self.viewController.navigationItem.rightBarButtonItems = array;
+        self.navigationItem.rightBarButtonItems = array;
     } else {
-        self.viewController.navigationItem.rightBarButtonItems = nil;
+        self.navigationItem.rightBarButtonItems = nil;
     }
 }
 
@@ -113,7 +88,7 @@ static GlobalStyle *globalStyle;
             }
         }
 
-        self.viewController.navigationItem.leftBarButtonItems = array;
+        self.navigationItem.leftBarButtonItems = array;
     }
 }
 
@@ -138,7 +113,7 @@ static GlobalStyle *globalStyle;
             }
         }
 
-        self.viewController.navigationItem.rightBarButtonItems = array;
+        self.navigationItem.rightBarButtonItems = array;
     }
 }
 
@@ -181,7 +156,7 @@ static GlobalStyle *globalStyle;
     }
 
     NSString *action = item[@"action"];
-    NSString *sceneId = self.viewController.sceneId;
+    NSString *sceneId = self.sceneId;
 
     NSString *tintColor = item[@"tintColor"];
     if (tintColor) {
@@ -206,11 +181,10 @@ static GlobalStyle *globalStyle;
 }
 
 - (void)setPassThroughTouches:(BOOL)passThrough {
-    if ([self.viewController.view isKindOfClass:[RCTRootView class]]) {
-        RCTRootView *rootView = (RCTRootView *) self.viewController.view;
+    if ([self.view isKindOfClass:[RCTRootView class]]) {
+        RCTRootView *rootView = (RCTRootView *) self.view;
         rootView.passThroughTouches = passThrough;
     }
 }
 
 @end
-

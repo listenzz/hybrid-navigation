@@ -6,13 +6,16 @@
 //  Copyright © 2018年 Listen. All rights reserved.
 //
 
-#import "UIViewController+HBD.h"
 #import <objc/runtime.h>
-#import "HBDNavigationController.h"
-#import "HBDUtils.h"
-#import "HBDModalViewController.h"
 #import <React/RCTLog.h>
+
+#import "UIViewController+HBD.h"
 #import "UITabBar+Badge.h"
+
+#import "HBDNavigationController.h"
+#import "HBDModalViewController.h"
+#import "HBDUtils.h"
+#import "GlobalStyle.h"
 
 @implementation UIViewController (HBD)
 
@@ -122,7 +125,7 @@
         color = obj;
     }
 
-    UIColor *colorWithBarStyle = [[HBDGarden globalStyle] barTintColorWithBarStyle:self.hbd_barStyle];
+    UIColor *colorWithBarStyle = [[GlobalStyle globalStyle] barTintColorWithBarStyle:self.hbd_barStyle];
     if (color == nil && colorWithBarStyle != nil) {
         color = colorWithBarStyle;
     }
@@ -148,7 +151,7 @@
         return obj;
     }
 
-    UIColor *colorWithBarStyle = [[HBDGarden globalStyle] tintColorWithBarStyle:self.hbd_barStyle];
+    UIColor *colorWithBarStyle = [[GlobalStyle globalStyle] tintColorWithBarStyle:self.hbd_barStyle];
     if (colorWithBarStyle) {
         return colorWithBarStyle;
     }
@@ -167,7 +170,7 @@
     }
 
     UIBarStyle barStyle = self.hbd_barStyle;
-    UIColor *colorWithBarStyle = [[HBDGarden globalStyle] titleTextColorWithBarStyle:barStyle];
+    UIColor *colorWithBarStyle = [[GlobalStyle globalStyle] titleTextColorWithBarStyle:barStyle];
     NSDictionary *colorAttributes = @{NSForegroundColorAttributeName: colorWithBarStyle};
     NSDictionary *attributes = [UINavigationBar appearance].titleTextAttributes;
     if (attributes) {

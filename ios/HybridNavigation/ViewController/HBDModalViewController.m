@@ -11,6 +11,7 @@
 #import "HBDModalViewController.h"
 #import "HBDRootView.h"
 #import "HBDUtils.h"
+#import "HBDViewController+Garden.h"
 
 @interface UIViewController ()
 
@@ -450,7 +451,7 @@
     modalViewController.contentViewController = vc;
     if ([vc isKindOfClass:[HBDViewController class]]) {
         HBDViewController *hbdvc = (HBDViewController *)vc;
-        if (hbdvc.garden.forceTransparentDialogWindow) {
+        if (hbdvc.forceTransparentDialogWindow) {
             modalViewController.dimmingView.backgroundColor = UIColor.clearColor;
         }
     }

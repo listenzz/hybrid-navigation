@@ -10,6 +10,7 @@
 #import "HBDViewController.h"
 #import "HBDNavigationBar.h"
 #import "HBDUtils.h"
+#import "GlobalStyle.h"
 #import "HBDPushAnimation.h"
 #import "HBDPopAnimation.h"
 #import <React/RCTLog.h>
@@ -402,7 +403,7 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 }
 
 - (BOOL)shouldShowFakeBarFrom:(UIViewController *)from to:(UIViewController *)to viewController:(UIViewController *_Nonnull)viewController {
-    if ([HBDGarden globalStyle].alwaysSplitNavigationBarTransition && to == viewController) {
+    if ([GlobalStyle globalStyle].alwaysSplitNavigationBarTransition && to == viewController) {
         return YES;
     }
 

@@ -6,14 +6,17 @@
 //  Copyright © 2018年 Listen. All rights reserved.
 //
 
-#import "HBDViewController.h"
-#import "HBDUtils.h"
 #import <React/RCTLog.h>
+
+#import "HBDViewController.h"
+#import "HBDViewController+Garden.h"
+#import "HBDUtils.h"
+#import "GlobalStyle.h"
 
 @interface HBDViewController ()
 
 @property(nonatomic, copy, readwrite) NSDictionary *props;
-@property(nonatomic, strong, readwrite) HBDGarden *garden;
+@property(nonatomic, copy, readwrite) NSDictionary *options;
 
 @end
 
@@ -36,8 +39,8 @@
         _moduleName = moduleName;
         _options = options;
         _props = props;
-        _garden = [[HBDGarden alloc] initWithViewController:self];
-        _garden.forceTransparentDialogWindow = [options[@"forceTransparentDialogWindow"] boolValue];
+        
+        self.forceTransparentDialogWindow = [options[@"forceTransparentDialogWindow"] boolValue];
         [self applyNavigationBarOptions:options];
         [self applyTabBarOptions:options];
     }
@@ -100,7 +103,7 @@
     if (screenColor) {
         self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
     } else {
-        self.view.backgroundColor = [HBDGarden globalStyle].screenBackgroundColor;
+        self.view.backgroundColor = [GlobalStyle globalStyle].screenBackgroundColor;
     }
 }
 
@@ -170,7 +173,7 @@
         self.hbd_barHidden = YES;
     }
 
-    if ([HBDGarden globalStyle].isBackTitleHidden) {
+    if ([GlobalStyle globalStyle].isBackTitleHidden) {
         self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
     }
 
@@ -238,22 +241,22 @@
 
     id rightBarButtonItem = options[@"rightBarButtonItem"];
     if (rightBarButtonItem) {
-        [self.garden setRightBarButtonItem:RCTNilIfNull(rightBarButtonItem)];
+        [self setRightBarButtonItem:RCTNilIfNull(rightBarButtonItem)];
     }
 
     id leftBarButtonItem = options[@"leftBarButtonItem"];
     if (leftBarButtonItem) {
-        [self.garden setLeftBarButtonItem:RCTNilIfNull(leftBarButtonItem)];
+        [self setLeftBarButtonItem:RCTNilIfNull(leftBarButtonItem)];
     }
 
     NSArray *rightBarButtonItems = options[@"rightBarButtonItems"];
     if (rightBarButtonItems) {
-        [self.garden setRightBarButtonItems:rightBarButtonItems];
+        [self setRightBarButtonItems:rightBarButtonItems];
     }
 
     NSArray *leftBarButtonItems = options[@"leftBarButtonItems"];
     if (leftBarButtonItems) {
-        [self.garden setLeftBarButtonItems:leftBarButtonItems];
+        [self setLeftBarButtonItems:leftBarButtonItems];
     }
 }
 
@@ -303,7 +306,7 @@
 
     NSNumber *passThroughTouches = options[@"passThroughTouches"];
     if (passThroughTouches) {
-        [self.garden setPassThroughTouches:[passThroughTouches boolValue]];
+        [self setPassThroughTouches:[passThroughTouches boolValue]];
     }
 
     if ([self shouldUpdateNavigationBar:options compareTo:previous]) {

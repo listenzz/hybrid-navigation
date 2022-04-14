@@ -10,6 +10,10 @@
 
 @interface GlobalStyle : NSObject
 
++ (void)createWithOptions:(NSDictionary *)options;
+
++ (GlobalStyle *)globalStyle;
+
 @property(nonatomic, strong, readonly) UIColor *screenBackgroundColor;
 
 @property(nonatomic, assign, readonly, getter=isBackTitleHidden) BOOL backTitleHidden;

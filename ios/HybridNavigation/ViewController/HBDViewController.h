@@ -8,16 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "UIViewController+HBD.h"
-#import "HBDGarden.h"
-
-@class HBDGarden;
 
 @interface HBDViewController : UIViewController
 
 @property(nonatomic, copy, readonly) NSString *moduleName;
 @property(nonatomic, copy, readonly) NSDictionary *props;
-@property(nonatomic, copy) NSDictionary *options;
-@property(nonatomic, strong, readonly) HBDGarden *garden;
+@property(nonatomic, copy, readonly) NSDictionary *options;
 
 - (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options NS_DESIGNATED_INITIALIZER;
 

@@ -40,6 +40,19 @@
 
 @implementation GlobalStyle
 
+static GlobalStyle *globalStyle;
+
++ (void)createWithOptions:(NSDictionary *)options {
+    globalStyle = [[GlobalStyle alloc] initWithOptions:options];
+    [globalStyle inflateNavigationBar:[UINavigationBar appearance]];
+    [globalStyle inflateBarButtonItem:[UIBarButtonItem appearance]];
+    [globalStyle inflateTabBar:[UITabBar appearance]];
+}
+
++ (GlobalStyle *)globalStyle {
+    return globalStyle;
+}
+
 - (instancetype)initWithOptions:(NSDictionary *)options {
     if (self = [super init]) {
         _options = options;

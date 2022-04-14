@@ -10,6 +10,7 @@
 #import "HBDTabBarController.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDUtils.h"
+#import "GlobalStyle.h"
 #import <React/RCTUtils.h>
 
 @implementation HBDTabNavigator
@@ -45,7 +46,7 @@
             tabBarOptions[@"tabBarModuleName"] = tabBarModuleName;
             tabBarOptions[@"sizeIndeterminate"] = @([options[@"sizeIndeterminate"] boolValue]);
             tabBarOptions[@"selectedIndex"] = options[@"selectedIndex"] ?: @(0);
-            GlobalStyle *style = [HBDGarden globalStyle];
+            GlobalStyle *style = [GlobalStyle globalStyle];
             tabBarOptions[@"tabBarItemColor"] = style.tabBarItemColorHexString;
             tabBarOptions[@"tabBarUnselectedItemColor"] = style.tabBarUnselectedItemColorHexString;
             tabBarOptions[@"badgeColor"] = style.badgeColorHexString;
