@@ -174,14 +174,14 @@
     }
 
     if ([GlobalStyle globalStyle].isBackTitleHidden) {
-        self.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
+        UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] init];
+        self.navigationItem.backBarButtonItem = buttonItem;
     }
 
     NSDictionary *backItem = options[@"backItemIOS"];
     if (backItem) {
-        NSString *title = backItem[@"title"];
         UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
-        backButton.title = title;
+        backButton.title = backItem[@"title"];
         NSString *tintColor = backItem[@"tintColor"];
         if (tintColor) {
             backButton.tintColor = [HBDUtils colorWithHexString:tintColor];
