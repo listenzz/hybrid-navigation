@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import withBottomModal from './withBottomModal'
-import { RESULT_OK, Navigator, InjectedProps, useVisibleEffect } from 'hybrid-navigation'
+import { RESULT_OK, Navigator, InjectedProps, useVisibleEffect, withNavigationItem } from 'hybrid-navigation'
 
 function ReactModal({ navigator, sceneId }: InjectedProps) {
   useEffect(() => {
@@ -97,7 +97,11 @@ function ReactModal({ navigator, sceneId }: InjectedProps) {
   )
 }
 
-export default withBottomModal({ safeAreaColor: '#F3F3F3' })(ReactModal)
+export default withBottomModal({ safeAreaColor: '#F3F3F3' })(
+  withNavigationItem({
+    forceTransparentDialogWindow: false,
+  })(ReactModal),
+)
 
 const styles = StyleSheet.create({
   container: {

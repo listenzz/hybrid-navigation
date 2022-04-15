@@ -75,7 +75,7 @@ Garden.setStyle({
   navigationBarColorAndroid: '#FFFFFF',
   // scrimAlphaAndroid: 50,
 
-  backIcon: Image.resolveAssetSource(require('./images/icon_back.png')),
+  backIcon: Platform.OS === 'ios' ? Image.resolveAssetSource(require('./images/icon_back.png')) : undefined,
   shadowImage: {
     color: '#DDDDDD',
     // image: Image.resolveAssetSource(require('./src/images/divider.png')),
