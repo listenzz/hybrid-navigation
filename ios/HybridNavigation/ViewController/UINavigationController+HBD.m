@@ -16,15 +16,12 @@
 
 - (void)redirectToViewController:(UIViewController *)controller target:(UIViewController *)target animated:(BOOL)animated {
     NSMutableArray *children = [self.childViewControllers mutableCopy];
-    NSUInteger count = self.childViewControllers.count;
-    for (NSUInteger i = count; i > 0; i--) {
-        NSUInteger index = i - 1;
-        UIViewController *child = children[index];
-        [children removeObjectAtIndex:index];
-        if (child == target) {
-            break;
-        }
+    NSUInteger index = [children indexOfObject:target];
+    if (index == NSNotFound) {
+        return;
     }
+    NSUInteger count = self.childViewControllers.count;
+    [children removeObjectsInRange:NSMakeRange(index, count - index)];
     [children addObject:controller];
     if (children.count > 1) {
         controller.hidesBottomBarWhenPushed = self.hidesBottomBarWhenPushed;

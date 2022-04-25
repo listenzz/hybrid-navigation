@@ -67,10 +67,21 @@
         resolve(@(NO));
         return;
     }
+    
+    if (nav.transitionCoordinator) {
+        __weak typeof(self) selfObj = self;
+        [nav.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+            
+        } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
+            [selfObj handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
+        }];
+        return;
+    }
 
     if (!nav.hbd_viewAppeared) {
+        __weak typeof(self) selfObj = self;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
+            [selfObj handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
         });
         return;
     }
