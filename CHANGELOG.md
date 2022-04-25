@@ -1,3 +1,9 @@
+## 2.8.1 (2022-04-25)
+
+### iOS specific
+
+- 优化 `redirectTo` 路由实现，避免在转场过程中执行新的路由动作
+
 ## 2.8.0 （2022-04-13）
 
 - 添加 `forceTransparentDialogWindow` 配置项，用于设置当页面是 Dialog 时，是否强制背景透明
