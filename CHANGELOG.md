@@ -1,3 +1,9 @@
+## 2.8.2 （2022-04-27）
+
+### iOS specific
+
+- 修复由于隐藏 back title 而导致 back icon 在转场时表现异常的问题
+
 ## 2.8.1 (2022-04-25)
 
 ### iOS specific
