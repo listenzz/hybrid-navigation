@@ -174,7 +174,7 @@
     }
 
     if ([GlobalStyle globalStyle].isBackTitleHidden) {
-        UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] init];
+        UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
         self.navigationItem.backBarButtonItem = buttonItem;
     }
 
