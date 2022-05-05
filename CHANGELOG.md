@@ -1,3 +1,9 @@
+## 2.8.3 (2022-05-05)
+
+### Android
+
+- 修复 reload 时，会重复 run application 的问题
+
 ## 2.8.2 （2022-04-27）
 
 ### iOS specific
