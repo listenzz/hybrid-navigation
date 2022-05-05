@@ -65,6 +65,23 @@ public class HBDReactRootView extends ReactRootView {
         super.startReactApplication(reactInstanceManager, moduleName, initialProperties);
         removeOnGlobalLayoutListener();
     }
+    
+    // 避免 reload 时，重复 run 的问题
+    private boolean shouldRunApplication = true;
+
+    @Override
+    public void runApplication() {
+        if (shouldRunApplication) {
+            shouldRunApplication = false;
+            super.runApplication();
+        }
+    }
+
+    @Override
+    public void setAppProperties(@Nullable Bundle appProperties) {
+        shouldRunApplication = true;
+        super.setAppProperties(appProperties);
+    }
 
     @Override
     public void unmountReactApplication() {
