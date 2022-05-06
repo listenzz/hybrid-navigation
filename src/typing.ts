@@ -119,14 +119,14 @@ export interface Screen extends Layout {
 
 export interface Stack extends Layout {
   stack: {
-    children: Layout[]
+    children: (Screen | Tabs | Drawer)[]
     options?: {}
   }
 }
 
 export interface Tabs extends Layout {
   tabs: {
-    children: Layout[]
+    children: (Screen | Stack | Drawer)[]
     options?: {
       selectedIndex?: number
       tabBarModuleName?: string
@@ -137,7 +137,7 @@ export interface Tabs extends Layout {
 
 export interface Drawer extends Layout {
   drawer: {
-    children: [Layout, Layout]
+    children: [Screen | Stack | Tabs, Screen | Stack | Tabs]
     options?: {
       maxDrawerWidth?: number
       minDrawerMargin?: number
