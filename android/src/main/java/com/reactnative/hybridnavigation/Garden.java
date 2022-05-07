@@ -74,7 +74,7 @@ public class Garden {
         this.options = options;
 
         this.swipeBackEnabled = options.getBoolean("swipeBackEnabled", true);
-        this.toolbarHidden = options.getBoolean("topBarHidden", false);
+        this.toolbarHidden = options.getBoolean("topBarHidden", globalStyle.getOptions().getBoolean("topBarHidden", false));
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush", true);
         this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
