@@ -18,13 +18,26 @@ import { bindBarButtonItemClickEvent } from './utils'
 import store from './store'
 import { RouteGraph, Route } from './router'
 import { Visibility } from './hooks'
-import { IndexType, ResultType, NavigationInterceptor, Layout, NavigationItem, PropsType } from './typing'
+import {
+  IndexType,
+  ResultType,
+  NavigationInterceptor,
+  Layout,
+  NavigationItem,
+  PropsType,
+  Drawer,
+  Tabs,
+  Stack,
+  Screen,
+} from './typing'
 import { Garden } from './Garden'
+
+type composedLayout = Screen | Stack | Tabs | Drawer | Layout
 
 interface Params {
   animated?: boolean
   moduleName?: string
-  layout?: Layout
+  layout?: composedLayout
   popToRoot?: boolean
   requestCode?: number
   props?: IndexType
@@ -120,7 +133,7 @@ export class Navigator {
     return await NavigationModule.routeGraph()
   }
 
-  static setRoot(layout: Layout, sticky = false) {
+  static setRoot(layout: composedLayout, sticky = false) {
     const pureLayout = bindBarButtonItemClickEvent(layout, {
       inLayout: true,
       navigatorFactory: (sceneId: string) => {
@@ -289,7 +302,7 @@ export class Navigator {
     return await this.waitResult<T>(0, success)
   }
 
-  async pushLayout<T extends ResultType>(layout: Layout) {
+  async pushLayout<T extends ResultType>(layout: composedLayout) {
     const success = await this.dispatch('pushLayout', { layout })
     return await this.waitResult<T>(0, success)
   }
@@ -334,7 +347,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async presentLayout<T extends ResultType>(layout: Layout) {
+  async presentLayout<T extends ResultType>(layout: composedLayout) {
     const requestCode = --tag
     const success = await this.dispatch('presentLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
@@ -359,7 +372,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async showModalLayout<T extends ResultType>(layout: Layout) {
+  async showModalLayout<T extends ResultType>(layout: composedLayout) {
     const requestCode = --tag
     const success = await this.dispatch('showModalLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
