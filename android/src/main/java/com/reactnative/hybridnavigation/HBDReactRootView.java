@@ -2,9 +2,7 @@ package com.reactnative.hybridnavigation;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
 
@@ -13,7 +11,6 @@ import androidx.annotation.Nullable;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactRootView;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 
@@ -97,11 +94,7 @@ public class HBDReactRootView extends ReactRootView {
                 Method method = ReactRootView.class.getDeclaredMethod("getCustomGlobalLayoutListener");
                 method.setAccessible(true);
                 mGlobalLayoutListener = (ViewTreeObserver.OnGlobalLayoutListener) method.invoke(this);
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
