@@ -1,3 +1,33 @@
+## 2.9.0 (2022-05-11)
+
+- 调整传递给 `ReactRegistry.startRegisterComponent` 的 [HOC](https://zh-hans.reactjs.org/docs/higher-order-components.html) 的使用顺序，现在可以通过以下方式全局设置页面特定属性：
+
+  ```js
+  ReactRegistry.startRegisterComponent(withNavigationItem({ topBarHidden: true }))
+  ```
+
+  ⚠️ 实现 HOC 时，注意传递 props 给被包裹的组件，以及注意复制 `navigationItem` 这个静态属性，如
+
+  ```ts
+  export function withRedux(WrappedComponent: ComponentType<any>) {
+    return class ReduxProvider extends React.Component {
+      // 注意复制 navigationItem
+      static navigationItem = (WrappedComponent as any).navigationItem
+
+      static displayName = `withRedux(${WrappedComponent.displayName})`
+
+      render() {
+        return (
+          <Provider store={store}>
+            // 注意传递 props 属性
+            <WrappedComponent {...this.props} />
+          </Provider>
+        )
+      }
+    }
+  }
+  ```
+
 ## 2.8.3 (2022-05-05)
 
 ### Android

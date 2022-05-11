@@ -55,3 +55,27 @@ useVisibleEffect(
   }, []),
 )
 ```
+
+## 如何实现 HOC
+
+⚠️ 实现 [HOC](https://zh-hans.reactjs.org/docs/higher-order-components.html) 时，注意传递 props 给被包裹的组件，以及注意复制 `navigationItem` 这个静态属性，如
+
+```ts
+export function withRedux(WrappedComponent: ComponentType<any>) {
+  return class ReduxProvider extends React.Component {
+    // 注意复制 navigationItem
+    static navigationItem = (WrappedComponent as any).navigationItem
+
+    static displayName = `withRedux(${WrappedComponent.displayName})`
+
+    render() {
+      return (
+        <Provider store={store}>
+          // 注意传递 props 属性
+          <WrappedComponent {...this.props} />
+        </Provider>
+      )
+    }
+  }
+}
+```

@@ -116,11 +116,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(withNavigationItem(n
 
 export function withRedux(WrappedComponent: ComponentType<any>) {
   return class ReduxProvider extends React.Component {
+    // 注意复制 navigationItem
+    static navigationItem = (WrappedComponent as any).navigationItem
+
     static displayName = `withRedux(${WrappedComponent.displayName})`
-    componentDidMount() {
-      // 获取 displayName
-      // console.info(`displayName:${ReduxProvider.displayName}`)
-    }
 
     render() {
       return (
