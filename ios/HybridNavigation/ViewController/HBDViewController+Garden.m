@@ -19,6 +19,10 @@
 }
 
 - (void)setLeftBarButtonItem:(NSDictionary *)item {
+    if (self.hbd_barHidden) {
+        return;
+    }
+    
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
@@ -43,6 +47,10 @@
 }
 
 - (void)setRightBarButtonItem:(NSDictionary *)item {
+    if (self.hbd_barHidden) {
+        return;
+    }
+    
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
         if (@available(iOS 11.0, *)) {
@@ -67,6 +75,10 @@
 }
 
 - (void)setLeftBarButtonItems:(NSArray *)items {
+    if (self.hbd_barHidden) {
+        return;
+    }
+    
     if (items) {
         NSArray *barButtonItems = [self createBarButtonItems:items];
         NSMutableArray *array = [[NSMutableArray alloc] init];
@@ -93,6 +105,10 @@
 }
 
 - (void)setRightBarButtonItems:(NSArray *)items {
+    if (self.hbd_barHidden) {
+        return;
+    }
+    
     if (items) {
         NSArray *barButtonItems = [self createBarButtonItems:items];
         NSMutableArray *array = [[NSMutableArray alloc] init];
