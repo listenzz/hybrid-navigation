@@ -258,8 +258,11 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
                 } else {
                     layoutParams = new Toolbar.LayoutParams(-2, -2, Gravity.CENTER);
                 }
-                getToolbar().addView(reactTitleView, layoutParams);
-                reactTitleView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
+                Toolbar toolbar = getToolbar();
+                if (toolbar != null) {
+                    toolbar.addView(reactTitleView, layoutParams);
+                    reactTitleView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
+                }
             }
         }
     }
