@@ -105,10 +105,6 @@ export interface TabItem {
   hideTabBarWhenPush?: boolean
 }
 
-export interface Layout {
-  [index: string]: {}
-}
-
 export interface Screen extends Layout {
   screen: {
     moduleName: string
@@ -119,14 +115,14 @@ export interface Screen extends Layout {
 
 export interface Stack extends Layout {
   stack: {
-    children: (Screen | Tabs | Drawer | Layout)[]
+    children: Array<BuildInLayout | Layout>
     options?: {}
   }
 }
 
 export interface Tabs extends Layout {
   tabs: {
-    children: (Screen | Stack | Drawer | Layout)[]
+    children: Array<BuildInLayout | Layout>
     options?: {
       selectedIndex?: number
       tabBarModuleName?: string
@@ -135,15 +131,19 @@ export interface Tabs extends Layout {
   }
 }
 
-type drawerLayout = Screen | Stack | Tabs | Layout
-
 export interface Drawer extends Layout {
   drawer: {
-    children: [drawerLayout, drawerLayout]
+    children: [BuildInLayout | Layout, BuildInLayout | Layout]
     options?: {
       maxDrawerWidth?: number
       minDrawerMargin?: number
       menuInteractive?: boolean
     }
   }
+}
+
+export type BuildInLayout = Screen | Stack | Tabs | Drawer
+
+export interface Layout {
+  [index: string]: {}
 }

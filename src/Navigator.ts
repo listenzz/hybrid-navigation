@@ -23,21 +23,16 @@ import {
   ResultType,
   NavigationInterceptor,
   Layout,
+  BuildInLayout,
   NavigationItem,
   PropsType,
-  Drawer,
-  Tabs,
-  Stack,
-  Screen,
 } from './typing'
 import { Garden } from './Garden'
-
-type composedLayout = Screen | Stack | Tabs | Drawer | Layout
 
 interface Params {
   animated?: boolean
   moduleName?: string
-  layout?: composedLayout
+  layout?: BuildInLayout | Layout
   popToRoot?: boolean
   requestCode?: number
   props?: IndexType
@@ -133,7 +128,7 @@ export class Navigator {
     return await NavigationModule.routeGraph()
   }
 
-  static setRoot(layout: composedLayout, sticky = false) {
+  static setRoot(layout: BuildInLayout | Layout, sticky = false) {
     const pureLayout = bindBarButtonItemClickEvent(layout, {
       inLayout: true,
       navigatorFactory: (sceneId: string) => {
@@ -302,7 +297,7 @@ export class Navigator {
     return await this.waitResult<T>(0, success)
   }
 
-  async pushLayout<T extends ResultType>(layout: composedLayout) {
+  async pushLayout<T extends ResultType>(layout: BuildInLayout | Layout) {
     const success = await this.dispatch('pushLayout', { layout })
     return await this.waitResult<T>(0, success)
   }
@@ -347,7 +342,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async presentLayout<T extends ResultType>(layout: composedLayout) {
+  async presentLayout<T extends ResultType>(layout: BuildInLayout | Layout) {
     const requestCode = --tag
     const success = await this.dispatch('presentLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
@@ -372,7 +367,7 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async showModalLayout<T extends ResultType>(layout: composedLayout) {
+  async showModalLayout<T extends ResultType>(layout: BuildInLayout | Layout) {
     const requestCode = --tag
     const success = await this.dispatch('showModalLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)

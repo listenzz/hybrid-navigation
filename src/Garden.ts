@@ -9,7 +9,6 @@ export interface ShadowImage {
 
 export interface Style {
   screenBackgroundColor?: Color // 页面背景，默认是白色
-  topBarHidden?: boolean // TopBar 是否隐藏，默认false
   topBarStyle?: BarStyle // TopBar 样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
   topBarColor?: Color // TopBar 背景颜色，默认根据 topBarStyle 来计算
   topBarColorDarkContent?: Color // TopBar 背景颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 topBarColor 的值
