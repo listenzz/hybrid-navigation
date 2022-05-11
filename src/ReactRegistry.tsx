@@ -111,25 +111,28 @@ export class ReactRegistry {
       router.registerRoute(appKey, routeConfig)
     }
 
-    const WrappedComponent = getComponentFunc()
+    let WrappedComponent = getComponentFunc()
+    if (wrap) {
+      WrappedComponent = wrap(WrappedComponent)
+    }
 
     // build static options
     let options: object = bindBarButtonItemClickEvent((WrappedComponent as any).navigationItem) || {}
     NavigationModule.registerReactComponent(appKey, options)
 
-    let RootComponent: ComponentType<any>
-    if (wrap) {
-      RootComponent = wrap(withNavigator(appKey)(WrappedComponent))
-    } else {
-      RootComponent = withNavigator(appKey)(WrappedComponent)
-    }
+    let RootComponent = withNavigator(appKey)(WrappedComponent)
     AppRegistry.registerComponent(appKey, () => RootComponent)
   }
 }
 
 export function withNavigationItem(item: NavigationItem) {
   return function (WrappedComponent: ComponentType<any>) {
-    ;(WrappedComponent as any).navigationItem = item
+    let navigationItem = (WrappedComponent as any).navigationItem
+    if (navigationItem) {
+      ;(WrappedComponent as any).navigationItem = { ...navigationItem, ...item }
+    } else {
+      ;(WrappedComponent as any).navigationItem = item
+    }
     return WrappedComponent
   }
 }
