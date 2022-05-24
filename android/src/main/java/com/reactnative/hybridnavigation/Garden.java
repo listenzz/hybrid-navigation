@@ -83,7 +83,7 @@ public class Garden {
         if (!TextUtils.isEmpty(screenColor)) {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));
         }
-        
+
         this.forceTransparentDialogWindow = options.getBoolean("forceTransparentDialogWindow");
 
         applyOptions(options);
@@ -112,7 +112,7 @@ public class Garden {
         } else if (rightBarButtonItem != null) {
             setRightBarButtonItem(rightBarButtonItem);
         }
-        
+
         Bundle leftBarButtonItem = options.getBundle("leftBarButtonItem");
         ArrayList<Bundle> leftBarButtonItems = options.getParcelableArrayList("leftBarButtonItems");
         if (leftBarButtonItems != null) {
@@ -124,26 +124,27 @@ public class Garden {
 
     void setTitleItem(@NonNull Bundle titleItem) {
         String moduleName = titleItem.getString("moduleName");
-        if (moduleName == null) {
-            String title = titleItem.getString("title");
-            fragment.setTitle(title);
+        if (moduleName != null) {
+            return;
         }
+        String title = titleItem.getString("title");
+        fragment.setTitle(title);
     }
 
     void setLeftBarButtonItems(ArrayList<Bundle> items) {
-        if (items != null) {
-            fragment.setLeftBarButtonItems(barButtonItemsFromBundle(items));
-        } else {
+        if (items == null) {
             fragment.setLeftBarButtonItems(null);
+            return;
         }
+        fragment.setLeftBarButtonItems(barButtonItemsFromBundle(items));
     }
 
     void setRightBarButtonItems(ArrayList<Bundle> items) {
-        if (items != null) {
-            fragment.setRightBarButtonItems(barButtonItemsFromBundle(items));
-        } else {
+        if (items == null) {
             fragment.setRightBarButtonItems(null);
+            return;
         }
+        fragment.setRightBarButtonItems(barButtonItemsFromBundle(items));
     }
 
     private ToolbarButtonItem[] barButtonItemsFromBundle(ArrayList<Bundle> items) {
@@ -156,19 +157,19 @@ public class Garden {
     }
 
     void setLeftBarButtonItem(@Nullable Bundle item) {
-        if (item != null) {
-            fragment.setLeftBarButtonItem(barButtonItemFromBundle(item));
-        } else {
+        if (item == null) {
             fragment.setLeftBarButtonItem(null);
+            return;
         }
+        fragment.setLeftBarButtonItem(barButtonItemFromBundle(item));
     }
 
     void setRightBarButtonItem(@Nullable Bundle item) {
-        if (item != null) {
-            fragment.setRightBarButtonItem(barButtonItemFromBundle(item));
-        } else {
+        if (item == null) {
             fragment.setRightBarButtonItem(null);
+            return;
         }
+        fragment.setRightBarButtonItem(barButtonItemFromBundle(item));
     }
 
     private ToolbarButtonItem barButtonItemFromBundle(@NonNull Bundle item) {
@@ -339,9 +340,9 @@ public class Garden {
 
     private boolean shouldUpdateToolbar(@NonNull ReadableMap readableMap) {
         String[] keys = new String[]{
-                "topBarStyle",
-                "topBarColor", "topBarAlpha", "topBarShadowHidden", "topBarTintColor",
-                "titleTextSize", "titleTextColor", "backButtonHidden"
+            "topBarStyle",
+            "topBarColor", "topBarAlpha", "topBarShadowHidden", "topBarTintColor",
+            "titleTextSize", "titleTextColor", "backButtonHidden"
         };
 
         for (String key : keys) {

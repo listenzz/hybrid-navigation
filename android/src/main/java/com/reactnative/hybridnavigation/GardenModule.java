@@ -45,7 +45,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         super(reactContext);
         this.bridgeManager = bridgeManager;
     }
-    
+
     @NonNull
     @Override
     public String getName() {
@@ -65,17 +65,16 @@ public class GardenModule extends ReactContextBaseJavaModule {
         UiThreadUtil.runOnUiThread(() -> {
             FLog.i(TAG, "GardenModule#setStyle");
             Garden.createGlobalStyle(toBundle(style));
-            
-            ReactContext context = getReactApplicationContextIfActiveOrWarn();
-            if (context != null) {
-                ReactAppCompatActivity activity = (ReactAppCompatActivity) context.getCurrentActivity();
-                if (activity != null) {
-                    activity.inflateStyle();
-                }
+
+            ReactAppCompatActivity activity = getActiveActivity();
+            if (activity == null) {
+                return;
             }
+
+            activity.inflateStyle();
         });
     }
-
+    
     @ReactMethod
     public void setLeftBarButtonItem(final String sceneId, @Nullable final ReadableMap readableMap) {
         updateOptions(sceneId, readableMap, "leftBarButtonItem");
@@ -106,9 +105,13 @@ public class GardenModule extends ReactContextBaseJavaModule {
         FLog.i(TAG, "update options:" + readableMap);
         UiThreadUtil.runOnUiThread(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-            if (fragment != null && fragment.isAdded()) {
-                fragment.getGarden().updateOptions(readableMap);
+            if (fragment == null) {
+                return;
             }
+            if (!fragment.isAdded()) {
+                return;
+            }
+            fragment.getGarden().updateOptions(readableMap);
         });
     }
 
@@ -136,16 +139,15 @@ public class GardenModule extends ReactContextBaseJavaModule {
     public void updateTabBar(final String sceneId, final ReadableMap readableMap) {
         FLog.i(TAG, "updateTabBar:" + readableMap);
         UiThreadUtil.runOnUiThread(() -> {
-            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment != null && fragment.getView() != null) {
-                TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                if (tabBarFragment != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ARG_ACTION, ACTION_UPDATE_TAB_BAR);
-                    bundle.putBundle(ARG_OPTIONS, toBundle(readableMap));
-                    tabBarFragment.updateTabBar(bundle);
-                }
+            TabBarFragment tabBarFragment = getTabBarFragment(sceneId);
+            if (tabBarFragment == null) {
+                return;
             }
+
+            Bundle bundle = new Bundle();
+            bundle.putString(ARG_ACTION, ACTION_UPDATE_TAB_BAR);
+            bundle.putBundle(ARG_OPTIONS, toBundle(readableMap));
+            tabBarFragment.updateTabBar(bundle);
         });
     }
 
@@ -153,57 +155,84 @@ public class GardenModule extends ReactContextBaseJavaModule {
     public void setTabItem(final String sceneId, @NonNull final ReadableArray options) {
         FLog.i(TAG, "setTabItem:" + options);
         UiThreadUtil.runOnUiThread(() -> {
-            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment != null && fragment.getView() != null) {
-                TabBarFragment tabBarFragment = fragment.getTabBarFragment();
-                if (tabBarFragment != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ARG_ACTION, ACTION_SET_TAB_ITEM);
-                    bundle.putSerializable(ARG_OPTIONS, toList(options));
-                    tabBarFragment.updateTabBar(bundle);
-                }
+            TabBarFragment tabBarFragment = getTabBarFragment(sceneId);
+            if (tabBarFragment == null) {
+                return;
             }
+
+            Bundle bundle = new Bundle();
+            bundle.putString(ARG_ACTION, ACTION_SET_TAB_ITEM);
+            bundle.putSerializable(ARG_OPTIONS, toList(options));
+            tabBarFragment.updateTabBar(bundle);
         });
+    }
+
+    @Nullable
+    private TabBarFragment getTabBarFragment(String sceneId) {
+        AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+        if (fragment == null) {
+            return null;
+        }
+        if (fragment.getView() == null) {
+            return null;
+        }
+
+        return  fragment.getTabBarFragment();
     }
 
     @ReactMethod
     public void setMenuInteractive(final String sceneId, final boolean enabled) {
         UiThreadUtil.runOnUiThread(() -> {
-            AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
-            if (awesomeFragment != null) {
-                DrawerFragment drawerFragment = awesomeFragment.getDrawerFragment();
-                if (drawerFragment != null) {
-                    drawerFragment.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                }
+            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+            if (fragment == null) {
+                return;
             }
+
+            DrawerFragment drawerFragment = fragment.getDrawerFragment();
+            if (drawerFragment == null) {
+                return;
+            }
+
+            drawerFragment.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
-        ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
-        if (reactContext == null) {
-            return null;
-        }
         if (!bridgeManager.isViewHierarchyReady()) {
             FLog.w(TAG, "View hierarchy is not ready now.");
             return null;
         }
 
-        Activity activity = reactContext.getCurrentActivity();
-        if (activity instanceof ReactAppCompatActivity) {
-            ReactAppCompatActivity reactActivity = (ReactAppCompatActivity) activity;
-            FragmentManager fragmentManager = reactActivity.getSupportFragmentManager();
-            return FragmentHelper.findAwesomeFragment(fragmentManager, sceneId);
+        ReactAppCompatActivity activity = getActiveActivity();
+        if (activity == null) {
+            return null;
         }
-        return null;
+        
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        return FragmentHelper.findAwesomeFragment(fragmentManager, sceneId);
     }
 
+    @Nullable
+    private ReactAppCompatActivity getActiveActivity() {
+        ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
+        if (reactContext == null) {
+            return null;
+        }
+
+        Activity activity = reactContext.getCurrentActivity();
+        if (!(activity instanceof ReactAppCompatActivity)) {
+            return null;
+        }
+
+        return (ReactAppCompatActivity) activity;
+    }
+    
     private HybridFragment findHybridFragmentBySceneId(String sceneId) {
         AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-        if (fragment instanceof HybridFragment) {
-            return (HybridFragment) fragment;
+        if (!(fragment instanceof HybridFragment)) {
+            return null;
         }
-        return null;
+        return (HybridFragment) fragment;
     }
 
 }
