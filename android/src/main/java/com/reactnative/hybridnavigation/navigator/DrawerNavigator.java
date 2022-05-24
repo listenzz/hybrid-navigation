@@ -31,93 +31,114 @@ public class DrawerNavigator implements Navigator {
     @Override
     @Nullable
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
-        if (layout.hasKey(name())) {
-            ReadableMap drawer = layout.getMap(name());
-            if (drawer == null) {
-                throw new IllegalArgumentException("drawer should be an object.");
-            }
-            ReadableArray children = drawer.getArray("children");
-            if (children != null && children.size() == 2) {
-
-                ReadableMap content = children.getMap(0);
-                ReadableMap menu = children.getMap(1);
-
-                AwesomeFragment contentFragment = getReactBridgeManager().createFragment(content);
-                if (contentFragment == null) {
-                    throw new IllegalArgumentException("can't create drawer content component with " + content);
-                }
-                AwesomeFragment menuFragment = getReactBridgeManager().createFragment(menu);
-                if (menuFragment == null) {
-                    throw new IllegalArgumentException("can't create drawer menu component with " + menu);
-                }
-
-                ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
-                drawerFragment.setMenuFragment(menuFragment);
-                drawerFragment.setContentFragment(contentFragment);
-                if (drawer.hasKey("options")) {
-                    ReadableMap options = drawer.getMap("options");
-                    if (options == null) {
-                        throw new IllegalArgumentException("options should be an object");
-                    }
-                    if (options.hasKey("maxDrawerWidth")) {
-                        int maxDrawerWidth = options.getInt("maxDrawerWidth");
-                        drawerFragment.setMaxDrawerWidth(maxDrawerWidth);
-                    }
-
-                    if (options.hasKey("minDrawerMargin")) {
-                        int minDrawerMargin = options.getInt("minDrawerMargin");
-                        drawerFragment.setMinDrawerMargin(minDrawerMargin);
-                    }
-
-                    if (options.hasKey("menuInteractive")) {
-                        boolean interactive = options.getBoolean("menuInteractive");
-                        drawerFragment.setMenuInteractive(interactive);
-                    }
-
-                }
-                return drawerFragment;
-            } else {
-                throw new IllegalArgumentException("the drawer layout should had and only had two children");
-            }
+        if (!layout.hasKey(name())) {
+            return null;
         }
-        return null;
+
+        ReadableMap drawer = layout.getMap(name());
+        if (drawer == null) {
+            throw new IllegalArgumentException("drawer should be an object.");
+        }
+
+        ReadableArray children = drawer.getArray("children");
+        boolean match = children != null && children.size() == 2;
+        if (!match) {
+            throw new IllegalArgumentException("the drawer layout should had and only had two children");
+        }
+
+        ReadableMap content = children.getMap(0);
+        ReadableMap menu = children.getMap(1);
+
+        AwesomeFragment contentFragment = getReactBridgeManager().createFragment(content);
+        if (contentFragment == null) {
+            throw new IllegalArgumentException("can't create drawer content component with " + content);
+        }
+        AwesomeFragment menuFragment = getReactBridgeManager().createFragment(menu);
+        if (menuFragment == null) {
+            throw new IllegalArgumentException("can't create drawer menu component with " + menu);
+        }
+
+        ReactDrawerFragment drawerFragment = new ReactDrawerFragment();
+        drawerFragment.setMenuFragment(menuFragment);
+        drawerFragment.setContentFragment(contentFragment);
+
+        if (drawer.hasKey("options")) {
+            setDrawerOptions(drawer, drawerFragment);
+        }
+        
+        return drawerFragment;
+    }
+
+    private void setDrawerOptions(ReadableMap drawer, ReactDrawerFragment drawerFragment) {
+        ReadableMap options = drawer.getMap("options");
+        if (options == null) {
+            throw new IllegalArgumentException("options should be an object");
+        }
+
+        if (options.hasKey("maxDrawerWidth")) {
+            int maxDrawerWidth = options.getInt("maxDrawerWidth");
+            drawerFragment.setMaxDrawerWidth(maxDrawerWidth);
+        }
+
+        if (options.hasKey("minDrawerMargin")) {
+            int minDrawerMargin = options.getInt("minDrawerMargin");
+            drawerFragment.setMinDrawerMargin(minDrawerMargin);
+        }
+
+        if (options.hasKey("menuInteractive")) {
+            boolean interactive = options.getBoolean("menuInteractive");
+            drawerFragment.setMenuInteractive(interactive);
+        }
     }
 
     @Nullable
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof DrawerFragment && fragment.isAdded()) {
-            DrawerFragment drawer = (DrawerFragment) fragment;
-            ArrayList<Bundle> children = new ArrayList<>();
-            List<AwesomeFragment> fragments = drawer.getChildFragments();
-            for (int i = 0; i < fragments.size(); i++) {
-                AwesomeFragment child = fragments.get(i);
-                Bundle r = getReactBridgeManager().buildRouteGraph(child);
-                if (r != null) {
-                    children.add(r);
-                }
-            }
-            Bundle graph = new Bundle();
-            graph.putString("layout", name());
-            graph.putString("sceneId", fragment.getSceneId());
-            graph.putParcelableArrayList("children", children);
-            graph.putString("mode", Navigator.Util.getMode(fragment));
-            return graph;
+        if (!(fragment instanceof DrawerFragment)) {
+            return null;
         }
-        return null;
+        if (!fragment.isAdded()) {
+            return null;
+        }
+
+        DrawerFragment drawer = (DrawerFragment) fragment;
+        ArrayList<Bundle> children = buildChildrenGraph(drawer);
+        Bundle graph = new Bundle();
+        graph.putString("layout", name());
+        graph.putString("sceneId", fragment.getSceneId());
+        graph.putParcelableArrayList("children", children);
+        graph.putString("mode", Navigator.Util.getMode(fragment));
+        return graph;
+    }
+
+    @NonNull
+    private ArrayList<Bundle> buildChildrenGraph(DrawerFragment drawer) {
+        ArrayList<Bundle> children = new ArrayList<>();
+        List<AwesomeFragment> fragments = drawer.getChildFragments();
+        for (int i = 0; i < fragments.size(); i++) {
+            AwesomeFragment child = fragments.get(i);
+            Bundle graph = getReactBridgeManager().buildRouteGraph(child);
+            if (graph != null) {
+                children.add(graph);
+            }
+        }
+        return children;
     }
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof DrawerFragment && fragment.isAdded()) {
-            DrawerFragment drawer = (DrawerFragment) fragment;
-            if (drawer.isMenuPrimary()) {
-                return getReactBridgeManager().primaryFragment(drawer.getMenuFragment());
-            } else {
-                return getReactBridgeManager().primaryFragment(drawer.getContentFragment());
-            }
+        if (!(fragment instanceof DrawerFragment)) {
+            return null;
         }
-        return null;
+        if (!fragment.isAdded()) {
+            return null;
+        }
+
+        DrawerFragment drawer = (DrawerFragment) fragment;
+        if (drawer.isMenuPrimary()) {
+            return getReactBridgeManager().primaryFragment(drawer.getMenuFragment());
+        }
+        return getReactBridgeManager().primaryFragment(drawer.getContentFragment());
     }
 
     @Override

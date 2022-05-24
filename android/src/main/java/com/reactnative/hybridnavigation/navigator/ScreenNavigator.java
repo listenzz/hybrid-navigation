@@ -44,7 +44,7 @@ public class ScreenNavigator implements Navigator {
             if (screen == null) {
                 throw new IllegalArgumentException("screen should be an object.");
             }
-            
+
             String moduleName = screen.getString("moduleName");
             if (moduleName == null) {
                 throw new IllegalArgumentException("moduleName is required.");
@@ -60,16 +60,20 @@ public class ScreenNavigator implements Navigator {
 
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof HybridFragment && fragment.isAdded()) {
-            HybridFragment screen = (HybridFragment) fragment;
-            Bundle route = new Bundle();
-            route.putString("layout", name());
-            route.putString("sceneId", screen.getSceneId());
-            route.putString("moduleName", screen.getModuleName());
-            route.putString("mode", Navigator.Util.getMode(fragment));
-            return route;
+        if (!(fragment instanceof HybridFragment)) {
+            return null;
         }
-        return null;
+        if (!fragment.isAdded()) {
+            return null;
+        }
+
+        HybridFragment screen = (HybridFragment) fragment;
+        Bundle route = new Bundle();
+        route.putString("layout", name());
+        route.putString("sceneId", screen.getSceneId());
+        route.putString("moduleName", screen.getModuleName());
+        route.putString("mode", Navigator.Util.getMode(fragment));
+        return route;
     }
 
     @Override

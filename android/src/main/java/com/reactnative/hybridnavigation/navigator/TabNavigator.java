@@ -40,96 +40,121 @@ public class TabNavigator implements Navigator {
     @Override
     @Nullable
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
-        if (layout.hasKey(name())) {
-            ReadableMap tabs = layout.getMap(name());
-            if (tabs == null) {
-                throw new IllegalArgumentException("tabs should be an object");
-            }
-            ReadableArray children = tabs.getArray("children");
+        if (!layout.hasKey(name())) {
+            return null;
+        }
 
-            if (children == null) {
-                throw new IllegalArgumentException("children is required and it is an array");
-            }
+        ReadableMap tabs = layout.getMap(name());
+        if (tabs == null) {
+            throw new IllegalArgumentException("tabs should be an object");
+        }
 
-            List<AwesomeFragment> fragments = new ArrayList<>();
+        ReadableArray children = tabs.getArray("children");
+        if (children == null) {
+            throw new IllegalArgumentException("children is required and it is an array");
+        }
 
-            for (int i = 0, size = children.size(); i < size; i++) {
-                ReadableMap tab = children.getMap(i);
-                AwesomeFragment awesomeFragment = getReactBridgeManager().createFragment(tab);
-                if (awesomeFragment != null) {
-                    fragments.add(awesomeFragment);
-                }
-            }
+        List<AwesomeFragment> fragments = createChildrenFragment(children);
 
-            if (fragments.size() > 0) {
-                ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
-                tabBarFragment.setChildFragments(fragments);
-                Bundle bundle = new Bundle();
-                if (tabs.hasKey("options")) {
-                    ReadableMap options = tabs.getMap("options");
-                    if (options == null) {
-                        throw new IllegalArgumentException("options should be an object");
-                    }
+        if (fragments.size() == 0) {
+            throw new IllegalArgumentException("tabs layout should has a child at least");
+        }
 
-                    if (options.hasKey("selectedIndex")) {
-                        int selectedIndex = options.getInt("selectedIndex");
-                        tabBarFragment.setSelectedIndex(selectedIndex);
-                        bundle.putInt("selectedIndex", selectedIndex);
-                    }
+        ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
+        tabBarFragment.setChildFragments(fragments);
+        if (tabs.hasKey("options")) {
+            setTabsOptions(tabs, tabBarFragment);
+        }
+        
+        return tabBarFragment;
+    }
 
-                    if (options.hasKey("tabBarModuleName")) {
-                        String tabBarModuleName = options.getString("tabBarModuleName");
-                        bundle.putString("tabBarModuleName", tabBarModuleName);
-                        tabBarFragment.setTabBarProvider(new ReactTabBarProvider());
-                    }
+    private void setTabsOptions(ReadableMap tabs, ReactTabBarFragment tabBarFragment) {
+        ReadableMap options = tabs.getMap("options");
+        if (options == null) {
+            throw new IllegalArgumentException("options should be an object");
+        }
+        
+        Bundle bundle = new Bundle();
+        if (options.hasKey("selectedIndex")) {
+            int selectedIndex = options.getInt("selectedIndex");
+            tabBarFragment.setSelectedIndex(selectedIndex);
+            bundle.putInt("selectedIndex", selectedIndex);
+        }
 
-                    if (options.hasKey("sizeIndeterminate")) {
-                        boolean sizeIndeterminate = options.getBoolean("sizeIndeterminate");
-                        bundle.putBoolean("sizeIndeterminate", sizeIndeterminate);
-                    }
-                }
+        if (options.hasKey("tabBarModuleName")) {
+            String tabBarModuleName = options.getString("tabBarModuleName");
+            bundle.putString("tabBarModuleName", tabBarModuleName);
+            tabBarFragment.setTabBarProvider(new ReactTabBarProvider());
+        }
 
-                tabBarFragment.setOptions(bundle);
-                return tabBarFragment;
-            } else {
-                throw new IllegalArgumentException("tabs layout should has a child at least");
+        if (options.hasKey("sizeIndeterminate")) {
+            boolean sizeIndeterminate = options.getBoolean("sizeIndeterminate");
+            bundle.putBoolean("sizeIndeterminate", sizeIndeterminate);
+        }
+        
+        tabBarFragment.setOptions(bundle);
+    }
+
+    @NonNull
+    private List<AwesomeFragment> createChildrenFragment(ReadableArray children) {
+        List<AwesomeFragment> fragments = new ArrayList<>();
+        for (int i = 0, size = children.size(); i < size; i++) {
+            ReadableMap child = children.getMap(i);
+            AwesomeFragment awesomeFragment = getReactBridgeManager().createFragment(child);
+            if (awesomeFragment != null) {
+                fragments.add(awesomeFragment);
             }
         }
-        return null;
+        return fragments;
     }
 
     @Nullable
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof TabBarFragment && fragment.isAdded()) {
-            TabBarFragment tabs = (TabBarFragment) fragment;
-            ArrayList<Bundle> children = new ArrayList<>();
-            List<AwesomeFragment> fragments = tabs.getChildFragments();
-            for (int i = 0; i < fragments.size(); i++) {
-                AwesomeFragment child = fragments.get(i);
-                Bundle r = getReactBridgeManager().buildRouteGraph(child);
-                if (r != null) {
-                    children.add(r);
-                }
-            }
-            Bundle graph = new Bundle();
-            graph.putString("layout", name());
-            graph.putString("sceneId", fragment.getSceneId());
-            graph.putParcelableArrayList("children", children);
-            graph.putString("mode", Navigator.Util.getMode(fragment));
-            graph.putInt("selectedIndex", tabs.getSelectedIndex());
-            return graph;
+        if (!(fragment instanceof TabBarFragment)) {
+            return null;
         }
-        return null;
+        if (!fragment.isAdded()) {
+            return null;
+        }
+
+        TabBarFragment tabs = (TabBarFragment) fragment;
+        ArrayList<Bundle> children = buildChildrenGraph(tabs);
+        Bundle graph = new Bundle();
+        graph.putString("layout", name());
+        graph.putString("sceneId", fragment.getSceneId());
+        graph.putParcelableArrayList("children", children);
+        graph.putString("mode", Navigator.Util.getMode(fragment));
+        graph.putInt("selectedIndex", tabs.getSelectedIndex());
+        return graph;
+    }
+
+    @NonNull
+    private ArrayList<Bundle> buildChildrenGraph(TabBarFragment tabs) {
+        ArrayList<Bundle> children = new ArrayList<>();
+        List<AwesomeFragment> fragments = tabs.getChildFragments();
+        for (int i = 0; i < fragments.size(); i++) {
+            AwesomeFragment child = fragments.get(i);
+            Bundle graph = getReactBridgeManager().buildRouteGraph(child);
+            if (graph != null) {
+                children.add(graph);
+            }
+        }
+        return children;
     }
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof TabBarFragment && fragment.isAdded()) {
-            TabBarFragment tabs = (TabBarFragment) fragment;
-            return getReactBridgeManager().primaryFragment(tabs.getSelectedFragment());
+        if (!(fragment instanceof TabBarFragment)) {
+            return null;
         }
-        return null;
+        if (!fragment.isAdded()) {
+            return null;
+        }
+
+        TabBarFragment tabs = (TabBarFragment) fragment;
+        return getReactBridgeManager().primaryFragment(tabs.getSelectedFragment());
     }
 
     @Override
@@ -141,31 +166,47 @@ public class TabNavigator implements Navigator {
         }
 
         if ("switchTab".equals(action)) {
-            int to = extras.getInt("to");
-            if (extras.hasKey("from")) {
-                int from = extras.getInt("from");
-                if (from == to) {
-                    promise.resolve(true);
-                    return;
-                }
-            }
+            handleSwitchTab(extras, promise, tabBarFragment);
+        }
+    }
 
-            boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
-            if (popToRoot) {
-                StackFragment stackFragment = tabBarFragment.getSelectedFragment().getStackFragment();
-                if (stackFragment != null && stackFragment.getChildFragments().size() > 1) {
-                    stackFragment.popToRootFragment(false);
-                }
-            }
+    private void handleSwitchTab(@NonNull ReadableMap extras, @NonNull Promise promise, TabBarFragment tabBarFragment) {
+        int to = extras.getInt("to");
+        if (isSameTab(to, extras)) {
+            promise.resolve(true);
+            return;
+        }
 
-            if (tabBarFragment instanceof ReactTabBarFragment) {
-                ReactTabBarFragment reactTabBarFragment = (ReactTabBarFragment) tabBarFragment;
-                reactTabBarFragment.setIntercepted(false);
-                reactTabBarFragment.setSelectedIndex(to, () -> promise.resolve(true));
-                reactTabBarFragment.setIntercepted(true);
-            } else {
-                tabBarFragment.setSelectedIndex(to, () -> promise.resolve(true));
-            }
+        popToStackRootIfNeeded(extras, tabBarFragment);
+
+        if (!(tabBarFragment instanceof ReactTabBarFragment)) {
+            tabBarFragment.setSelectedIndex(to, () -> promise.resolve(true));
+            return;
+        }
+
+        ReactTabBarFragment reactTabBarFragment = (ReactTabBarFragment) tabBarFragment;
+        reactTabBarFragment.setIntercepted(false);
+        reactTabBarFragment.setSelectedIndex(to, () -> promise.resolve(true));
+        reactTabBarFragment.setIntercepted(true);
+    }
+
+    private boolean isSameTab(int to, @NonNull ReadableMap extras) {
+        if (!extras.hasKey("from")) {
+            return false;
+        }
+        int from = extras.getInt("from");
+        return from == to;
+    }
+
+    private void popToStackRootIfNeeded(@NonNull ReadableMap extras, TabBarFragment tabBarFragment) {
+        boolean popToRoot = extras.hasKey("popToRoot") && extras.getBoolean("popToRoot");
+        if (!popToRoot) {
+            return;
+        }
+
+        StackFragment stackFragment = tabBarFragment.getSelectedFragment().getStackFragment();
+        if (stackFragment != null && stackFragment.getChildFragments().size() > 1) {
+            stackFragment.popToRootFragment(false);
         }
     }
 
