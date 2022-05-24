@@ -44,22 +44,15 @@ public class ScreenNavigator implements Navigator {
             if (screen == null) {
                 throw new IllegalArgumentException("screen should be an object.");
             }
+            
             String moduleName = screen.getString("moduleName");
             if (moduleName == null) {
                 throw new IllegalArgumentException("moduleName is required.");
             }
 
-            Bundle props = null;
-            if (screen.hasKey("props")) {
-                ReadableMap map = screen.getMap("props");
-                props = Arguments.toBundle(map);
-            }
+            Bundle props = buildProps(screen);
+            Bundle options = buildOptions(screen);
 
-            Bundle options = null;
-            if (screen.hasKey("options")) {
-                ReadableMap map = screen.getMap("options");
-                options = Arguments.toBundle(map);
-            }
             return getReactBridgeManager().createFragment(moduleName, props, options);
         }
         return null;
@@ -81,91 +74,126 @@ public class ScreenNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof HybridFragment && fragment.isAdded()) {
-            AwesomeFragment presented = FragmentHelper.getFragmentAfter(fragment);
-            if (presented != null) {
-                return (HybridFragment) presented;
-            }
+        if (!(fragment instanceof HybridFragment)) {
+            return null;
+        }
+        if (!fragment.isAdded()) {
+            return null;
+        }
+
+        AwesomeFragment presented = FragmentHelper.getFragmentAfter(fragment);
+        if (presented == null) {
             return (HybridFragment) fragment;
         }
-        return null;
+        return (HybridFragment) presented;
     }
 
     @Override
     public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
-        AwesomeFragment fragment = null;
         switch (action) {
             case "present":
-                fragment = createFragmentWithExtras(extras);
-                if (fragment != null) {
-                    int requestCode = extras.getInt("requestCode");
-                    ReactStackFragment stackFragment = new ReactStackFragment();
-                    stackFragment.setRootFragment(fragment);
-                    target.presentFragment(stackFragment, requestCode, () -> promise.resolve(true));
-                } else {
-                    promise.resolve(false);
-                }
+                handlePresent(target, extras, promise);
                 break;
             case "dismiss":
-                AwesomeFragment presenting = target.getPresentingFragment();
-                if (presenting != null) {
-                    presenting.dismissFragment(() -> promise.resolve(true));
-                } else {
-                    target.dismissFragment(() -> promise.resolve(true));
-                }
+                handleDismiss(target, promise);
                 break;
             case "showModal":
-                fragment = createFragmentWithExtras(extras);
-                if (fragment != null) {
-                    int requestCode = extras.getInt("requestCode");
-                    target.showAsDialog(fragment, requestCode, () -> promise.resolve(true));
-                } else {
-                    promise.resolve(false);
-                }
+                handleShowModal(target, extras, promise);
                 break;
             case "hideModal":
                 target.hideAsDialog(() -> promise.resolve(true));
                 break;
             case "presentLayout":
-                ReadableMap layout = extras.getMap("layout");
-                fragment = getReactBridgeManager().createFragment(layout);
-                if (fragment != null) {
-                    int requestCode = extras.getInt("requestCode");
-                    target.presentFragment(fragment, requestCode, () -> promise.resolve(true));
-                } else {
-                    promise.resolve(false);
-                }
+                handlePresentLayout(target, extras, promise);
                 break;
             case "showModalLayout":
-                ReadableMap modalLayout = extras.getMap("layout");
-                fragment = getReactBridgeManager().createFragment(modalLayout);
-                if (fragment != null) {
-                    int requestCode = extras.getInt("requestCode");
-                    target.showAsDialog(fragment, requestCode, () -> promise.resolve(true));
-                } else {
-                    promise.resolve(false);
-                }
+                handleShowModalLayout(target, extras, promise);
                 break;
         }
     }
 
-    private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {
-        AwesomeFragment fragment = null;
-        if (extras.hasKey("moduleName")) {
-            String moduleName = extras.getString("moduleName");
-            if (moduleName != null) {
-                Bundle props = null;
-                Bundle options = null;
-                if (extras.hasKey("props")) {
-                    props = Arguments.toBundle(extras.getMap("props"));
-                }
-                if (extras.hasKey("options")) {
-                    options = Arguments.toBundle(extras.getMap("options"));
-                }
-                fragment = getReactBridgeManager().createFragment(moduleName, props, options);
-            }
+    private void handleShowModalLayout(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise) {
+        ReadableMap layout = extras.getMap("layout");
+        AwesomeFragment fragment = getReactBridgeManager().createFragment(layout);
+        if (fragment == null) {
+            promise.resolve(false);
+            return;
         }
-        return fragment;
+        int requestCode = extras.getInt("requestCode");
+        target.showAsDialog(fragment, requestCode, () -> promise.resolve(true));
+    }
+
+    private void handlePresentLayout(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise) {
+        ReadableMap layout = extras.getMap("layout");
+        AwesomeFragment fragment = getReactBridgeManager().createFragment(layout);
+        if (fragment == null) {
+            promise.resolve(false);
+            return;
+        }
+        int requestCode = extras.getInt("requestCode");
+        target.presentFragment(fragment, requestCode, () -> promise.resolve(true));
+    }
+
+    private void handleShowModal(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise) {
+        AwesomeFragment fragment = createFragmentWithExtras(extras);
+        if (fragment == null) {
+            promise.resolve(false);
+            return;
+        }
+        int requestCode = extras.getInt("requestCode");
+        target.showAsDialog(fragment, requestCode, () -> promise.resolve(true));
+    }
+
+    private void handleDismiss(@NonNull AwesomeFragment target, @NonNull Promise promise) {
+        AwesomeFragment presenting = target.getPresentingFragment();
+        if (presenting == null) {
+            target.dismissFragment(() -> promise.resolve(true));
+            return;
+        }
+        presenting.dismissFragment(() -> promise.resolve(true));
+    }
+
+    private void handlePresent(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise) {
+        AwesomeFragment fragment = createFragmentWithExtras(extras);
+        if (fragment == null) {
+            promise.resolve(false);
+            return;
+        }
+        int requestCode = extras.getInt("requestCode");
+        ReactStackFragment stackFragment = new ReactStackFragment();
+        stackFragment.setRootFragment(fragment);
+        target.presentFragment(stackFragment, requestCode, () -> promise.resolve(true));
+    }
+
+    private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {
+        if (!extras.hasKey("moduleName")) {
+            return null;
+        }
+
+        String moduleName = extras.getString("moduleName");
+        if (moduleName == null) {
+            return null;
+        }
+
+        Bundle props = buildProps(extras);
+        Bundle options = buildOptions(extras);
+        return getReactBridgeManager().createFragment(moduleName, props, options);
+    }
+
+    @Nullable
+    private Bundle buildOptions(@NonNull ReadableMap extras) {
+        if (!extras.hasKey("options")) {
+            return null;
+        }
+        return Arguments.toBundle(extras.getMap("options"));
+    }
+
+    @Nullable
+    private Bundle buildProps(@NonNull ReadableMap extras) {
+        if (!extras.hasKey("props")) {
+            return null;
+        }
+        return Arguments.toBundle(extras.getMap("props"));
     }
 
     private ReactBridgeManager getReactBridgeManager() {

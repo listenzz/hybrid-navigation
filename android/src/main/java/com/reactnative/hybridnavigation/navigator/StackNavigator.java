@@ -43,59 +43,76 @@ public class StackNavigator implements Navigator {
     @Override
     @Nullable
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
-        if (layout.hasKey(name())) {
-            ReadableMap stack = layout.getMap(name());
-            if (stack == null) {
-                throw new IllegalArgumentException("stack should be an object.");
-            }
-            ReadableArray children = stack.getArray("children");
-            if (children == null) {
-                throw new IllegalArgumentException("children is required, and it is an array.");
-            }
-            ReadableMap root = children.getMap(0);
-            AwesomeFragment rootFragment = getReactBridgeManager().createFragment(root);
-            if (rootFragment != null) {
-                ReactStackFragment stackFragment = new ReactStackFragment();
-                stackFragment.setRootFragment(rootFragment);
-                return stackFragment;
-            } else {
-                throw new IllegalArgumentException("can't create stack component with " + layout);
-            }
+        if (!layout.hasKey(name())) {
+            return null;
         }
-        return null;
+
+        ReadableMap stack = layout.getMap(name());
+        if (stack == null) {
+            throw new IllegalArgumentException("stack should be an object.");
+        }
+
+        ReadableArray children = stack.getArray("children");
+        if (children == null) {
+            throw new IllegalArgumentException("children is required, and it is an array.");
+        }
+
+        ReadableMap root = children.getMap(0);
+        AwesomeFragment rootFragment = getReactBridgeManager().createFragment(root);
+        if (rootFragment == null) {
+            throw new IllegalArgumentException("can't create stack component with " + layout);
+        }
+
+        ReactStackFragment stackFragment = new ReactStackFragment();
+        stackFragment.setRootFragment(rootFragment);
+        return stackFragment;
     }
 
     @Nullable
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof StackFragment && fragment.isAdded()) {
-            StackFragment stack = (StackFragment) fragment;
-            ArrayList<Bundle> children = new ArrayList<>();
-            List<AwesomeFragment> fragments = stack.getChildFragments();
-            for (int i = 0; i < fragments.size(); i++) {
-                AwesomeFragment child = fragments.get(i);
-                Bundle r = getReactBridgeManager().buildRouteGraph(child);
-                if (r != null) {
-                    children.add(r);
-                }
-            }
-            Bundle graph = new Bundle();
-            graph.putString("layout", name());
-            graph.putString("sceneId", stack.getSceneId());
-            graph.putParcelableArrayList("children", children);
-            graph.putString("mode", Navigator.Util.getMode(fragment));
-            return graph;
+        if (!(fragment instanceof StackFragment)) {
+            return null;
         }
-        return null;
+        
+        if (!fragment.isAdded()) {
+            return null;
+        }
+        
+        StackFragment stack = (StackFragment) fragment;
+        ArrayList<Bundle> children = buildChildrenGraph(stack);
+        Bundle graph = new Bundle();
+        graph.putString("layout", name());
+        graph.putString("sceneId", stack.getSceneId());
+        graph.putParcelableArrayList("children", children);
+        graph.putString("mode", Navigator.Util.getMode(fragment));
+        return graph;
     }
 
+    @NonNull
+    private ArrayList<Bundle> buildChildrenGraph(StackFragment stack) {
+        ArrayList<Bundle> children = new ArrayList<>();
+        List<AwesomeFragment> fragments = stack.getChildFragments();
+        for (int i = 0; i < fragments.size(); i++) {
+            AwesomeFragment child = fragments.get(i);
+            Bundle graph = getReactBridgeManager().buildRouteGraph(child);
+            if (graph != null) {
+                children.add(graph);
+            }
+        }
+        return children;
+    }
+    
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (fragment instanceof StackFragment && fragment.isAdded()) {
-            StackFragment stack = (StackFragment) fragment;
-            return getReactBridgeManager().primaryFragment(stack.getTopFragment());
+        if (!(fragment instanceof StackFragment)) {
+            return null;
         }
-        return null;
+        if (!fragment.isAdded()) {
+            return null;
+        }
+        StackFragment stack = (StackFragment) fragment;
+        return getReactBridgeManager().primaryFragment(stack.getTopFragment());
     }
 
     @Override
@@ -106,109 +123,162 @@ public class StackNavigator implements Navigator {
             return;
         }
 
-        AwesomeFragment fragment = null;
-
         switch (action) {
             case "push":
-                fragment = createFragmentWithExtras(extras);
-                if (fragment != null) {
-                    stackFragment.pushFragment(fragment, true, () -> promise.resolve(true));
-                } else {
-                    promise.resolve(false);
-                }
+                handlePush(extras, promise, stackFragment);
                 break;
             case "pop":
                 stackFragment.popFragment(true, () -> promise.resolve(true));
                 break;
             case "popTo":
-                String moduleName = extras.getString("moduleName");
-                boolean inclusive = extras.getBoolean("inclusive");
-                FragmentManager fragmentManager = stackFragment.getChildFragmentManager();
-                int count = fragmentManager.getBackStackEntryCount();
-                for (int i = count - 1; i > -1; i--) {
-                    FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
-                    if (!TextUtils.isEmpty(entry.getName())) {
-                        Fragment f = fragmentManager.findFragmentByTag(entry.getName());
-                        if (f instanceof HybridFragment) {
-                            HybridFragment hybridFragment = (HybridFragment) f;
-                            if (moduleName != null
-                                    && (moduleName.equals(hybridFragment.getModuleName()) || moduleName.equals(hybridFragment.getSceneId()))) {
-                                fragment = hybridFragment;
-                                if (inclusive && i - 1 > -1) {
-                                    FragmentManager.BackStackEntry e = fragmentManager.getBackStackEntryAt(i - 1);
-                                    fragment = (AwesomeFragment) fragmentManager.findFragmentByTag(e.getName());
-                                }
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (fragment != null) {
-                    stackFragment.popToFragment(fragment, true, () -> promise.resolve(true));
-                } else {
-                    promise.resolve(false);
-                }
+                handlePopTo(extras, promise, stackFragment);
                 break;
             case "popToRoot":
                 stackFragment.popToRootFragment(true, () -> promise.resolve(true));
                 break;
             case "redirectTo":
-                fragment = createFragmentWithExtras(extras);
-                if (fragment != null) {
-                    stackFragment.redirectToFragment(fragment, true, () -> promise.resolve(true), target);
-                } else {
-                    promise.resolve(false);
-                }
+                handleRedirectTo(target, extras, promise, stackFragment);
                 break;
             case "pushLayout":
-                ReadableMap layout = extras.getMap("layout");
-                fragment = getReactBridgeManager().createFragment(layout);
-                if (fragment != null) {
-                    stackFragment.pushFragment(fragment, true, () -> promise.resolve(true));
-                } else {
-                    promise.resolve(false);
-                }
+                handlePushLayout(extras, promise, stackFragment);
                 break;
         }
     }
 
-    private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {
-        AwesomeFragment fragment = null;
-        if (extras.hasKey("moduleName")) {
-            String moduleName = extras.getString("moduleName");
-            if (moduleName != null) {
-                Bundle props = null;
-                Bundle options = null;
-                if (extras.hasKey("props")) {
-                    props = Arguments.toBundle(extras.getMap("props"));
-                }
-                if (extras.hasKey("options")) {
-                    options = Arguments.toBundle(extras.getMap("options"));
-                }
-                fragment = getReactBridgeManager().createFragment(moduleName, props, options);
-            }
+    private void handlePushLayout(@NonNull ReadableMap extras, @NonNull Promise promise, StackFragment stackFragment) {
+        ReadableMap layout = extras.getMap("layout");
+        AwesomeFragment fragment = getReactBridgeManager().createFragment(layout);
+        if (fragment == null) {
+            promise.resolve(false);
+            return;
         }
-        return fragment;
+        stackFragment.pushFragment(fragment, true, () -> promise.resolve(true));
     }
 
-    private StackFragment getStackFragment(AwesomeFragment fragment) {
-        if (fragment != null) {
-            StackFragment stackFragment = fragment.getStackFragment();
-            if (stackFragment == null && fragment.getDrawerFragment() != null) {
-                DrawerFragment drawerFragment = fragment.getDrawerFragment();
-                TabBarFragment tabBarFragment = drawerFragment.getContentFragment().getTabBarFragment();
-                if (tabBarFragment != null) {
-                    stackFragment = tabBarFragment.getSelectedFragment().getStackFragment();
-                } else {
-                    stackFragment = drawerFragment.getContentFragment().getStackFragment();
-                }
-            }
-            return stackFragment;
+    private void handleRedirectTo(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise, StackFragment stackFragment) {
+        AwesomeFragment fragment = createFragmentWithExtras(extras);
+        if (fragment == null) {
+            promise.resolve(false);
+            return;
         }
+        stackFragment.redirectToFragment(fragment, true, () -> promise.resolve(true), target);
+    }
+
+    private void handlePopTo(@NonNull ReadableMap extras, @NonNull Promise promise, StackFragment stackFragment) {
+        String moduleName = extras.getString("moduleName");
+        if (moduleName == null) {
+            promise.resolve(false);
+            return;
+        }
+
+        boolean inclusive = extras.getBoolean("inclusive");
+        FragmentManager fragmentManager = stackFragment.getChildFragmentManager();
+        AwesomeFragment fragment = findFragmentForPopTo(moduleName, inclusive, fragmentManager);
+        if (fragment == null) {
+            promise.resolve(false);
+            return;
+        }
+
+        stackFragment.popToFragment(fragment, true, () -> promise.resolve(true));
+    }
+
+    @Nullable
+    private AwesomeFragment findFragmentForPopTo(String moduleName, boolean inclusive, FragmentManager fragmentManager) {
+        int count = fragmentManager.getBackStackEntryCount();
+        for (int i = count - 1; i > -1; i--) {
+            FragmentManager.BackStackEntry entry = fragmentManager.getBackStackEntryAt(i);
+            if (TextUtils.isEmpty(entry.getName())) {
+                continue;
+            }
+
+            Fragment fragment = fragmentManager.findFragmentByTag(entry.getName());
+            if (!(fragment instanceof HybridFragment)) {
+                continue;
+            }
+
+            HybridFragment hybridFragment = (HybridFragment) fragment;
+            boolean match = moduleName.equals(hybridFragment.getModuleName()) || moduleName.equals(hybridFragment.getSceneId());
+            if (!match) {
+                continue;
+            }
+
+            if (inclusive && i - 1 > -1) {
+                FragmentManager.BackStackEntry e = fragmentManager.getBackStackEntryAt(i - 1);
+                return (AwesomeFragment) fragmentManager.findFragmentByTag(e.getName());
+            }
+            return hybridFragment;
+        }
+
         return null;
     }
 
+    private void handlePush(@NonNull ReadableMap extras, @NonNull Promise promise, StackFragment stackFragment) {
+        AwesomeFragment fragment = createFragmentWithExtras(extras);
+        if (fragment == null) {
+            promise.resolve(false);
+            return;
+        }
+        stackFragment.pushFragment(fragment, true, () -> promise.resolve(true));
+    }
+
+    private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {
+        if (!extras.hasKey("moduleName")) {
+            return null;
+        }
+
+        String moduleName = extras.getString("moduleName");
+        if (moduleName == null) {
+            return null;
+        }
+
+        Bundle props = buildProps(extras);
+        Bundle options = buildOptions(extras);
+        return getReactBridgeManager().createFragment(moduleName, props, options);
+    }
+
+    @Nullable
+    private Bundle buildOptions(@NonNull ReadableMap extras) {
+        if (!extras.hasKey("options")) {
+            return null;
+        }
+        return Arguments.toBundle(extras.getMap("options"));
+    }
+
+    @Nullable
+    private Bundle buildProps(@NonNull ReadableMap extras) {
+        if (!extras.hasKey("props")) {
+            return null;
+        }
+        return Arguments.toBundle(extras.getMap("props"));
+    }
+
+    private StackFragment getStackFragment(AwesomeFragment fragment) {
+        if (fragment == null) {
+            return null;
+        }
+
+        StackFragment stackFragment = fragment.getStackFragment();
+        if (stackFragment != null) {
+            return stackFragment;
+        }
+
+        return stackFragmentFromDrawerIfExist(fragment);
+    }
+
+    @Nullable
+    private StackFragment stackFragmentFromDrawerIfExist(AwesomeFragment fragment) {
+        DrawerFragment drawerFragment = fragment.getDrawerFragment();
+        if (drawerFragment == null) {
+            return null;
+        }
+
+        TabBarFragment tabBarFragment = drawerFragment.getContentFragment().getTabBarFragment();
+        if (tabBarFragment != null) {
+            return tabBarFragment.getSelectedFragment().getStackFragment();
+        }
+
+        return drawerFragment.getContentFragment().getStackFragment();
+    }
 
     private ReactBridgeManager getReactBridgeManager() {
         return ReactBridgeManager.get();
