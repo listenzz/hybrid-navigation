@@ -100,11 +100,12 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
 
     private void unmountReactView() {
         ReactContext reactContext = getReactBridgeManager().getCurrentReactContext();
-        if (reactContext != null && reactContext.hasCatalystInstance()) {
-            if (reactRootView != null) {
-                reactRootView.unmountReactApplication();
-                reactRootView = null;
-            }
+        if (reactContext == null || !reactContext.hasCatalystInstance()) {
+            return;
+        }
+        if (reactRootView != null) {
+            reactRootView.unmountReactApplication();
+            reactRootView = null;
         }
     }
 
@@ -127,11 +128,10 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
 
     @NonNull
     private Bundle getProps(@NonNull ReactTabBarFragment tabBarFragment) {
-
         Bundle options = tabBarFragment.getOptions();
         Bundle props = new Bundle();
-        ArrayList<Bundle> tabs = options.getParcelableArrayList("tabs");
-        props.putParcelableArrayList("tabs", tabs);
+
+        props.putParcelableArrayList("tabs", options.getParcelableArrayList("tabs"));
         props.putString("sceneId", tabBarFragment.getSceneId());
         props.putInt("selectedIndex", tabBarFragment.getSelectedIndex());
 
@@ -173,6 +173,13 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
         }
     }
 
+    private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
+
+    @NonNull
+    public ReactBridgeManager getReactBridgeManager() {
+        return bridgeManager;
+    }
+
     @Override
     public void updateTabBar(@NonNull Bundle options) {
         String action = options.getString(ARG_ACTION);
@@ -185,11 +192,11 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
                 setTabItem(options.getParcelableArrayList(ARG_OPTIONS));
                 break;
             case ACTION_UPDATE_TAB_BAR:
-                updateTabBarAppearance(options.getBundle(ARG_OPTIONS));
+                updateTabBarStyle(options.getBundle(ARG_OPTIONS));
                 break;
         }
     }
-    
+
     private void setTabItem(@Nullable ArrayList<Bundle> options) {
         if (options == null) {
             return;
@@ -197,7 +204,6 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
 
         Bundle tabBar = tabBarFragment.getOptions();
         ArrayList<Bundle> tabs = tabBar.getParcelableArrayList("tabs");
-
         if (tabs == null) {
             return;
         }
@@ -205,40 +211,47 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
         for (Bundle option : options) {
             int index = (int) option.getDouble("index");
             Bundle tab = tabs.get(index);
-            
-            // title
-            String title = option.getString("title");
-            if (title != null) {
-                tab.putString("title", title);
-            }
-            
-            // icon
-            Bundle icon = option.getBundle("icon");
-            if (icon != null) {
-                Bundle unselected = icon.getBundle("unselected");
-                Bundle selected = icon.getBundle("selected");
-                if (unselected != null) {
-                    tab.putString("unselectedIcon", unselected.getString("uri"));
-                }
-                tab.putString("icon", selected.getString("uri"));
-            }
-
-            // badge
-            Bundle badge = option.getBundle("badge");
-            if (badge != null) {
-                boolean hidden = badge.getBoolean("hidden", true);
-                String text = !hidden ? badge.getString("text", "") : "";
-                boolean dot = !hidden && badge.getBoolean("dot", false);
-
-                tab.putString("badgeText", text);
-                tab.putBoolean("dot", dot);
-            }
+            buildTabTitle(option, tab);
+            buildTabIcon(option, tab);
+            buildTabBadge(option, tab);
         }
-
         reactRootView.setAppProperties(getProps(tabBarFragment));
     }
-    
-    private void updateTabBarAppearance(@Nullable Bundle bundle) {
+
+    private void buildTabBadge(Bundle option, Bundle tab) {
+        Bundle badge = option.getBundle("badge");
+        if (badge == null) {
+            return;
+        }
+        boolean hidden = badge.getBoolean("hidden", true);
+        String text = !hidden ? badge.getString("text", "") : "";
+        boolean dot = !hidden && badge.getBoolean("dot", false);
+
+        tab.putString("badgeText", text);
+        tab.putBoolean("dot", dot);
+    }
+
+    private void buildTabIcon(Bundle option, Bundle tab) {
+        Bundle icon = option.getBundle("icon");
+        if (icon == null) {
+            return;
+        }
+        Bundle unselected = icon.getBundle("unselected");
+        Bundle selected = icon.getBundle("selected");
+        if (unselected != null) {
+            tab.putString("unselectedIcon", unselected.getString("uri"));
+        }
+        tab.putString("icon", selected.getString("uri"));
+    }
+
+    private void buildTabTitle(Bundle option, Bundle tab) {
+        String title = option.getString("title");
+        if (title != null) {
+            tab.putString("title", title);
+        }
+    }
+
+    private void updateTabBarStyle(@Nullable Bundle bundle) {
         if (bundle == null) {
             return;
         }
@@ -269,13 +282,6 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
             Bundle props = getProps(tabBarFragment);
             reactRootView.setAppProperties(props);
         }
-    }
-
-    private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
-
-    @NonNull
-    public ReactBridgeManager getReactBridgeManager() {
-        return bridgeManager;
     }
 
 }
