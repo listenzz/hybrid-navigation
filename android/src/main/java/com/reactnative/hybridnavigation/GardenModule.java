@@ -108,9 +108,6 @@ public class GardenModule extends ReactContextBaseJavaModule {
             if (fragment == null) {
                 return;
             }
-            if (!fragment.isAdded()) {
-                return;
-            }
             fragment.getGarden().updateOptions(readableMap);
         });
     }
@@ -230,6 +227,9 @@ public class GardenModule extends ReactContextBaseJavaModule {
     private HybridFragment findHybridFragmentBySceneId(String sceneId) {
         AwesomeFragment fragment = findFragmentBySceneId(sceneId);
         if (!(fragment instanceof HybridFragment)) {
+            return null;
+        }
+        if (!fragment.isAdded()) {
             return null;
         }
         return (HybridFragment) fragment;

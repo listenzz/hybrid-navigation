@@ -17,6 +17,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UiThreadUtil;
+import com.navigation.androidx.AwesomeActivity;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.TabBarFragment;
@@ -35,36 +36,28 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     static final String TAG = "Navigator";
     private final ReactBridgeManager bridgeManager;
-    
+
     NavigationModule(ReactApplicationContext reactContext, ReactBridgeManager bridgeManager) {
         super(reactContext);
         this.bridgeManager = bridgeManager;
         FLog.i(TAG, "NavigationModule#onCreate");
     }
-    
+
     @Override
     public void onCatalystInstanceDestroy() {
         super.onCatalystInstanceDestroy();
         FLog.i(TAG, "NavigationModule#onCatalystInstanceDestroy");
         UiThreadUtil.runOnUiThread(() -> {
-            List<ReactBridgeManager.ReactBridgeReloadListener> listeners = bridgeManager.getReactBridgeReloadListeners();
-            for (ReactBridgeManager.ReactBridgeReloadListener listener : listeners) {
-                listener.onReload();
-            }
-            listeners.clear();
-            bridgeManager.setPendingLayout(null, 0);
-            bridgeManager.setReactModuleRegisterCompleted(false);
-            bridgeManager.setViewHierarchyReady(false);
-            
-            ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
-            if (reactContext != null) {
-                Activity activity = reactContext.getCurrentActivity();
-                if (activity instanceof ReactAppCompatActivity) {
-                    ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                    reactAppCompatActivity.clearFragments();
-                }
-            }
+            bridgeManager.handleReload();
+            clearFragments();
         });
+    }
+
+    private void clearFragments() {
+        AwesomeActivity activity = getActiveActivity();
+        if (activity != null) {
+            activity.clearFragments();
+        }
     }
 
     @NonNull
@@ -120,16 +113,23 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             bridgeManager.setViewHierarchyReady(false);
             bridgeManager.setRootLayout(layout, sticky);
             bridgeManager.setPendingLayout(layout, tag);
-            
-            Activity activity = reactContext.getCurrentActivity();
-            if (activity instanceof ReactAppCompatActivity && bridgeManager.isReactModuleRegisterCompleted()) {
-                ReactAppCompatActivity reactActivity = (ReactAppCompatActivity) activity;
-                AwesomeFragment fragment = bridgeManager.createFragment(layout);
-                if (fragment != null) {
-                    FLog.i(TAG, "Have active Activity and React module was registered, set root Fragment immediately.");
-                    reactActivity.setActivityRootFragment(fragment, tag);
-                }
+
+            if (!bridgeManager.isReactModuleRegisterCompleted()) {
+                return;
             }
+
+            AwesomeFragment fragment = bridgeManager.createFragment(layout);
+            if (fragment == null) {
+                return;
+            }
+
+            ReactAppCompatActivity activity = getActiveActivity();
+            if (activity == null) {
+                return;
+            }
+
+            FLog.i(TAG, "Have active Activity and React module was registered, set root Fragment immediately.");
+            activity.setActivityRootFragment(fragment, tag);
         });
     }
 
@@ -137,12 +137,18 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     public void dispatch(final String sceneId, final String action, final ReadableMap extras, Promise promise) {
         UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment target = findFragmentBySceneId(sceneId);
-            if (target != null && target.isAdded()) {
-                bridgeManager.handleNavigation(target, action, extras, promise);
-            } else {
+            if (target == null) {
                 promise.resolve(false);
                 FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
+                return;
             }
+
+            if (!target.isAdded()) {
+                promise.resolve(false);
+                return;
+            }
+
+            bridgeManager.handleNavigation(target, action, extras, promise);
         });
     }
 
@@ -150,14 +156,18 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     public void currentTab(final String sceneId, final Promise promise) {
         UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment != null) {
-                TabBarFragment tabs = fragment.getTabBarFragment();
-                if (tabs != null) {
-                    promise.resolve(tabs.getSelectedIndex());
-                    return;
-                }
+            if (fragment == null) {
+                promise.resolve(-1);
+                return;
             }
-            promise.resolve(-1);
+
+            TabBarFragment tabs = fragment.getTabBarFragment();
+            if (tabs == null) {
+                promise.resolve(-1);
+                return;
+            }
+
+            promise.resolve(tabs.getSelectedIndex());
         });
     }
 
@@ -165,9 +175,11 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     public void isStackRoot(final String sceneId, final Promise promise) {
         UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment != null) {
-                promise.resolve(fragment.isStackRoot());
+            if (fragment == null) {
+                promise.resolve(false);
+                return;
             }
+            promise.resolve(fragment.isStackRoot());
         });
     }
 
@@ -175,67 +187,73 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     public void setResult(final String sceneId, final int resultCode, final ReadableMap result) {
         UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment != null) {
-                fragment.setResult(resultCode, Arguments.toBundle(result));
+            if (fragment == null) {
+                return;
             }
+            fragment.setResult(resultCode, Arguments.toBundle(result));
         });
     }
 
     @ReactMethod
     public void findSceneIdByModuleName(@NonNull String moduleName, Promise promise) {
-       final Runnable task = new Runnable() {
+        final Runnable task = new Runnable() {
             @Override
             public void run() {
-                ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
-                if (reactContext == null) {
-                    return;
-                }
-
-                Activity activity = reactContext.getCurrentActivity();
-                if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
+                AwesomeActivity activity = getActiveActivity();
+                if (activity == null || !bridgeManager.isViewHierarchyReady()) {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
 
-                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                reactAppCompatActivity.scheduleTaskAtStarted(() -> {
-                    FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+                activity.scheduleTaskAtStarted(() -> {
+                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
                     Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
-                    if (fragment instanceof AwesomeFragment) {
-                        String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
-                        FLog.i(TAG, "The sceneId found by " + moduleName + " : " + sceneId);
-                        promise.resolve(sceneId);
-                    } else {
+                    if (!(fragment instanceof AwesomeFragment)) {
                         promise.resolve(null);
+                        return;
                     }
+
+                    String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
+                    FLog.i(TAG, "The sceneId found by " + moduleName + " : " + sceneId);
+                    promise.resolve(sceneId);
                 });
             }
         };
-       
+
         UiThreadUtil.runOnUiThread(task);
     }
 
-    private String findSceneIdByModuleName(@NonNull String moduleName, AwesomeFragment fragment) {
-        String sceneId = null;
-        if (fragment instanceof HybridFragment) {
-            HybridFragment hybridFragment = (HybridFragment) fragment;
-            if (moduleName.equals(hybridFragment.getModuleName())) {
-                sceneId = hybridFragment.getSceneId();
-            }
-        }
-
+    private String findSceneIdByModuleName(@NonNull String moduleName, AwesomeFragment parent) {
+        String sceneId = findSceneIdFromParent(moduleName, parent);
         if (sceneId == null) {
-            List<AwesomeFragment> children = fragment.getChildFragments();
-            int index = 0;
-            int count = children.size();
-            while (index < count && sceneId == null) {
-                AwesomeFragment child = children.get(index);
-                sceneId = findSceneIdByModuleName(moduleName, child);
-                index++;
+            return findSceneIdFromChildren(moduleName, parent.getChildFragments());
+        }
+        return sceneId;
+    }
+
+    private String findSceneIdFromChildren(@NonNull String moduleName, List<AwesomeFragment> children) {
+        for (int i = 0; i < children.size(); i++) {
+            AwesomeFragment child = children.get(i);
+            String sceneId = findSceneIdByModuleName(moduleName, child);
+            if (sceneId != null) {
+                return sceneId;
             }
         }
+        return null;
+    }
 
-        return sceneId;
+    @Nullable
+    private String findSceneIdFromParent(@NonNull String moduleName, AwesomeFragment fragment) {
+        if (!(fragment instanceof HybridFragment)) {
+            return null;
+        }
+
+        HybridFragment hybridFragment = (HybridFragment) fragment;
+        if (!moduleName.equals(hybridFragment.getModuleName())) {
+            return null;
+        }
+
+        return hybridFragment.getSceneId();
     }
 
     @ReactMethod
@@ -243,31 +261,25 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
-                if (reactContext == null) {
-                    return;
-                }
-
-                Activity activity = reactContext.getCurrentActivity();
-                if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
+                AwesomeActivity activity = getActiveActivity();
+                if (activity == null || !bridgeManager.isViewHierarchyReady()) {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
-                
-                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                reactAppCompatActivity.scheduleTaskAtStarted(() -> {
-                    FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-                    HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
 
-                    if (current != null) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString("moduleName", current.getModuleName());
-                        bundle.putString("sceneId", current.getSceneId());
-                        bundle.putString("mode", Navigator.Util.getMode(current));
-                        promise.resolve(Arguments.fromBundle(bundle));
-                    } else {
+                activity.scheduleTaskAtStarted(() -> {
+                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                    HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
+                    if (current == null) {
                         UiThreadUtil.runOnUiThread(this, 16);
+                        return;
                     }
+                    
+                    Bundle bundle = new Bundle();
+                    bundle.putString("moduleName", current.getModuleName());
+                    bundle.putString("sceneId", current.getSceneId());
+                    bundle.putString("mode", Navigator.Util.getMode(current));
+                    promise.resolve(Arguments.fromBundle(bundle));
                 });
             }
         };
@@ -280,26 +292,21 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         Runnable task = new Runnable() {
             @Override
             public void run() {
-                ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
-                if (reactContext == null) {
-                    return;
-                }
-
-                Activity activity = reactContext.getCurrentActivity();
-                if (!bridgeManager.isViewHierarchyReady() || !(activity instanceof ReactAppCompatActivity)) {
+                AwesomeActivity activity = getActiveActivity();
+                if (activity == null || !bridgeManager.isViewHierarchyReady()) {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
 
-                ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-                reactAppCompatActivity.scheduleTaskAtStarted(() -> {
-                    FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
+                activity.scheduleTaskAtStarted(() -> {
+                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
                     ArrayList<Bundle> graph = bridgeManager.buildRouteGraph(fragmentManager);
-                    if (graph.size() > 0) {
-                        promise.resolve(Arguments.fromList(graph));
-                    } else {
+                    if (graph.size() == 0) {
                         UiThreadUtil.runOnUiThread(this, 16);
+                        return;
                     }
+                    
+                    promise.resolve(Arguments.fromList(graph));
                 });
             }
         };
@@ -308,22 +315,32 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     private AwesomeFragment findFragmentBySceneId(String sceneId) {
-        ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
-        if (reactContext == null) {
-            return null;
-        }
-        
         if (!bridgeManager.isViewHierarchyReady()) {
             FLog.w(TAG, "View hierarchy is not ready now.");
             return null;
         }
 
-        Activity activity = reactContext.getCurrentActivity();
-        if (activity instanceof ReactAppCompatActivity) {
-            ReactAppCompatActivity reactAppCompatActivity = (ReactAppCompatActivity) activity;
-            FragmentManager fragmentManager = reactAppCompatActivity.getSupportFragmentManager();
-            return FragmentHelper.findAwesomeFragment(fragmentManager, sceneId);
+        ReactAppCompatActivity activity = getActiveActivity();
+        if (activity == null) {
+            return null;
         }
-        return null;
+
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        return FragmentHelper.findAwesomeFragment(fragmentManager, sceneId);
+    }
+
+    @Nullable
+    private ReactAppCompatActivity getActiveActivity() {
+        ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
+        if (reactContext == null) {
+            return null;
+        }
+
+        Activity activity = reactContext.getCurrentActivity();
+        if (!(activity instanceof ReactAppCompatActivity)) {
+            return null;
+        }
+
+        return (ReactAppCompatActivity) activity;
     }
 }

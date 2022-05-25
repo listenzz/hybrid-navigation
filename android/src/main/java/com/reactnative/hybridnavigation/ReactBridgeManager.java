@@ -77,6 +77,8 @@ public class ReactBridgeManager {
             pendingTag = 0;
             stickyLayout = null;
             pendingLayout = null;
+            reactBridgeReloadListeners.clear();
+            
             setViewHierarchyReady(false);
         });
 
@@ -174,9 +176,18 @@ public class ReactBridgeManager {
     public void removeReactBridgeReloadListener(@NonNull ReactBridgeReloadListener listener) {
         reactBridgeReloadListeners.remove(listener);
     }
-
-    public List<ReactBridgeReloadListener> getReactBridgeReloadListeners() {
-        return reactBridgeReloadListeners;
+    
+    public void handleReload() {
+        invokeReloadListeners();
+        setPendingLayout(null, 0);
+        setReactModuleRegisterCompleted(false);
+        setViewHierarchyReady(false);
+    }
+    
+    private void invokeReloadListeners() {
+        for (ReactBridgeManager.ReactBridgeReloadListener listener : reactBridgeReloadListeners) {
+            listener.onReload();
+        }
     }
 
     public void setRootLayout(@NonNull ReadableMap root, boolean sticky) {
