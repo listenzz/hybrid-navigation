@@ -78,11 +78,11 @@ public class HBDEventEmitter extends ReactContextBaseJavaModule {
     }
 
     public static void sendEvent(@NonNull String eventName, @NonNull WritableMap params) {
-        ReactBridgeManager reactBridgeManager = ReactBridgeManager.get();
-        ReactContext reactContext = reactBridgeManager.getCurrentReactContext();
-        if (reactContext != null && reactContext.hasActiveCatalystInstance() && reactBridgeManager.isReactModuleRegisterCompleted()) {
+        ReactBridgeManager bridgeManager = ReactBridgeManager.get();
+        ReactContext reactContext = bridgeManager.getCurrentReactContext();
+        if (reactContext != null && reactContext.hasActiveCatalystInstance() && bridgeManager.isReactModuleRegisterCompleted()) {
             reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit(eventName, params);
+                .emit(eventName, params);
         }
     }
 

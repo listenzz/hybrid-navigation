@@ -24,50 +24,62 @@ public class Utils {
     public static Drawable createTabBarShadow(Context context, Bundle shadowImage) {
         Bundle image = shadowImage.getBundle("image");
         String color = shadowImage.getString("color");
-        Drawable drawable = new ColorDrawable();
         if (image != null) {
-            String uri = image.getString("uri");
-            if (uri != null) {
-                drawable = DrawableUtils.fromUri(context, uri);
-                if (drawable instanceof BitmapDrawable) {
-                    BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-                    bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
-                }
-            }
-        } else if (color != null) {
-            drawable = new ColorDrawable(Color.parseColor(color));
+            return createImageShadow(context, image);
+        }
+
+        if (color != null) {
+            return new ColorDrawable(Color.parseColor(color));
+        }
+
+        return new ColorDrawable();
+    }
+
+    @Nullable
+    private static Drawable createImageShadow(Context context, Bundle image) {
+        String uri = image.getString("uri");
+        if (uri == null) {
+            return new ColorDrawable();
+        }
+
+        Drawable drawable = DrawableUtils.fromUri(context, uri);
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
         }
         return drawable;
     }
 
     public static String getIconUri(Context context, String uri) {
-        String iconUri = uri;
         if (uri != null && uri.startsWith("font://")) {
-            iconUri = DrawableUtils.filepathFromFont(context, uri);
+            return DrawableUtils.filepathFromFont(context, uri);
         }
-        return iconUri;
+        return uri;
     }
 
     @Nullable
-    static ReactFragment findReactFragment(@NonNull Fragment fragment) {
+    public static ReactFragment findReactFragment(@NonNull Fragment fragment) {
         if (fragment instanceof ReactFragment) {
             return (ReactFragment) fragment;
         }
 
-        if (fragment.isAdded()) {
-            FragmentManager fragmentManager = fragment.getChildFragmentManager();
-            Fragment primaryFragment = fragmentManager.getPrimaryNavigationFragment();
-            if (primaryFragment != null) {
-                return findReactFragment(primaryFragment);
-            }
-
-            List<Fragment> fragments = fragmentManager.getFragments();
-            int count = fragments.size();
-            if (count > 0) {
-                Fragment topFragment = fragments.get(count - 1);
-                return findReactFragment(topFragment);
-            }
+        if (!fragment.isAdded()) {
+            return null;
         }
+
+        FragmentManager fragmentManager = fragment.getChildFragmentManager();
+        Fragment primaryFragment = fragmentManager.getPrimaryNavigationFragment();
+        if (primaryFragment != null) {
+            return findReactFragment(primaryFragment);
+        }
+
+        List<Fragment> fragments = fragmentManager.getFragments();
+        int count = fragments.size();
+        if (count > 0) {
+            Fragment topFragment = fragments.get(count - 1);
+            return findReactFragment(topFragment);
+        }
+
         return null;
     }
 }

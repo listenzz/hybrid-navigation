@@ -46,14 +46,21 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         activityDelegate.onCreate(savedInstanceState);
         getReactBridgeManager().addReactModuleRegisterListener(this);
 
-        if (isReactModuleRegisterCompleted()) {
-            if (savedInstanceState == null) {
-                createMainComponent();
-            } else {
-                if (getSupportFragmentManager().getFragments().size() > 0) {
-                    getReactBridgeManager().setViewHierarchyReady(true);
-                }
-            }
+        ensureViewHierarchy(savedInstanceState);
+    }
+
+    private void ensureViewHierarchy(Bundle savedInstanceState) {
+        if (!isReactModuleRegisterCompleted()) {
+            return;
+        }
+
+        if (savedInstanceState == null) {
+            createMainComponent();
+            return;
+        }
+
+        if (getSupportFragmentManager().getFragments().size() > 0) {
+            getReactBridgeManager().setViewHierarchyReady(true);
         }
     }
 
@@ -99,24 +106,34 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             ReactStackFragment stackFragment = new ReactStackFragment();
             stackFragment.setRootFragment(fragment);
             setActivityRootFragment(stackFragment);
-        } else if (bridgeManager.hasPendingLayout()) {
+            return;
+        }
+        
+        if (bridgeManager.hasPendingLayout()) {
             FLog.i(TAG, "Set root Fragment from pending layout when create main component");
             setActivityRootFragment(bridgeManager);
-        } else if (bridgeManager.hasStickyLayout()) {
+            return;
+        }
+        
+        if (bridgeManager.hasStickyLayout()) {
             FLog.i(TAG, "Set root Fragment from sticky layout when create main component");
             AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getStickyLayout());
             if (fragment != null) {
                 setActivityRootFragment(fragment);
             }
-        } else if (bridgeManager.hasRootLayout()) {
+            return;
+        }
+        
+        if (bridgeManager.hasRootLayout()) {
             FLog.i(TAG, "Set root Fragment from last root layout when create main component");
             AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getRootLayout());
             if (fragment != null) {
                 setActivityRootFragment(fragment);
             }
-        } else {
-            FLog.w(TAG, "No layout to set when create main component");
+            return;
         }
+        
+        FLog.w(TAG, "No layout to set when create main component");
     }
 
     protected String getMainComponentName() {
@@ -131,26 +148,31 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     private void setActivityRootFragment(ReactBridgeManager bridgeManager) {
         int pendingTag = bridgeManager.getPendingTag();
         ReadableMap pendingLayout = bridgeManager.getPendingLayout();
-        if (pendingTag != 0 && pendingLayout != null) {
-            AwesomeFragment fragment = bridgeManager.createFragment(pendingLayout);
-            if (fragment != null) {
-                setActivityRootFragment(fragment, pendingTag);
-            } else {
-                FLog.e(TAG, "Could not create fragment from  pending layout.");
-            }
+        if (pendingTag == 0 || pendingLayout == null) {
+            return;
         }
+
+        AwesomeFragment fragment = bridgeManager.createFragment(pendingLayout);
+        if (fragment == null) {
+            FLog.e(TAG, "Could not create fragment from  pending layout.");
+            return;
+        }
+        setActivityRootFragment(fragment, pendingTag);
     }
 
-    public void setActivityRootFragment(@NonNull AwesomeFragment rootFragment, int tag) {
+    protected void setActivityRootFragment(@NonNull AwesomeFragment rootFragment, int tag) {
+        if (isFinishing()) {
+            return;
+        }
+
         if (getSupportFragmentManager().isStateSaved()) {
             FLog.i(TAG, "Schedule to set Activity root Fragment.");
             scheduleTaskAtStarted(() -> setActivityRootFragmentSync(rootFragment, tag));
-        } else {
-            if (!isFinishing()) {
-                FLog.i(TAG, "Set Activity root Fragment immediately.");
-                setActivityRootFragmentSync(rootFragment, tag);
-            }
+            return;
         }
+
+        FLog.i(TAG, "Set Activity root Fragment immediately.");
+        setActivityRootFragmentSync(rootFragment, tag);
     }
 
     protected void setActivityRootFragmentSync(AwesomeFragment fragment, int tag) {
@@ -160,17 +182,25 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
                 throw new IllegalStateException("Style hasn't inflated yet. Did you forgot to call `Garden.setStyle` before `Navigator.setRoot` ?");
             }
         }
+
+        ReactContext reactContext = getCurrentReactContext();
+        if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
+            return;
+        }
+
+        // will
+        HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());
+
+        // do
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         bridgeManager.setPendingLayout(null, 0);
-        ReactContext reactContext = getCurrentReactContext();
-        if (reactContext != null && reactContext.hasActiveCatalystInstance()) {
-            HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());
-            setActivityRootFragmentSync(fragment);
-            bridgeManager.setViewHierarchyReady(true);
-            WritableMap map = Arguments.createMap();
-            map.putInt("tag", tag);
-            HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, map);
-        }
+        setActivityRootFragmentSync(fragment);
+        bridgeManager.setViewHierarchyReady(true);
+
+        // did
+        WritableMap map = Arguments.createMap();
+        map.putInt("tag", tag);
+        HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, map);
     }
 
     @Override
