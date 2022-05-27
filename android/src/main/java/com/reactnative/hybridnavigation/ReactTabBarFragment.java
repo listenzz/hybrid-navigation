@@ -272,13 +272,15 @@ public class ReactTabBarFragment extends TabBarFragment {
         if (icon == null) {
             return;
         }
+        
+        Bundle selected = icon.getBundle("selected");
+        tabBarItem.iconUri = selected.getString("uri");
 
         Bundle unselected = icon.getBundle("unselected");
-        Bundle selected = icon.getBundle("selected");
-        if (unselected != null) {
-            tabBarItem.unselectedIconUri = unselected.getString("uri");
+        if (unselected == null) {
+            return;
         }
-        tabBarItem.iconUri = selected.getString("uri");
+        tabBarItem.unselectedIconUri = unselected.getString("uri");
     }
 
     private void setTabItemTitle(Bundle option, TabBarItem tabBarItem) {
