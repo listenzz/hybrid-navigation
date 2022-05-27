@@ -42,7 +42,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
     @Override
     public View onCreateTabBar(@NonNull List<TabBarItem> tabBarItems, @NonNull TabBarFragment tabBarFragment, @Nullable Bundle savedInstanceState) {
         if (!(tabBarFragment instanceof ReactTabBarFragment)) {
-            throw new IllegalStateException("必须和 ReactTabBarFragment 一起使用");
+            throw new IllegalStateException("自定义 TabBar 必须和 ReactTabBarFragment 一起使用");
         }
         this.tabBarFragment = (ReactTabBarFragment) tabBarFragment;
 

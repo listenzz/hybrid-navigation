@@ -269,7 +269,6 @@ public class Garden {
 
     void updateOptions(@NonNull ReadableMap readableMap) {
         Bundle patches = toBundle(readableMap);
-
         applyOptions(patches);
 
         if (readableMap.hasKey("screenBackgroundColor")) {
@@ -299,6 +298,7 @@ public class Garden {
         }
 
         Bundle options = mergeOptions(fragment.getOptions(), patches);
+        fragment.setOptions(options);
 
         if (readableMap.hasKey("leftBarButtonItem")) {
             Bundle bundle = options.getBundle("leftBarButtonItem");
@@ -324,8 +324,6 @@ public class Garden {
             Bundle titleItem = options.getBundle("titleItem");
             setTitleItem(titleItem);
         }
-
-        fragment.setOptions(options);
     }
 
     private boolean shouldUpdateStatusBar(@NonNull ReadableMap readableMap) {
