@@ -20,7 +20,7 @@ public interface Navigator {
 
     class Util {
         public static String getMode(@NonNull AwesomeFragment fragment) {
-            if (fragment.isInDialog()) {
+            if (fragment.getDialogFragment() != null) {
                 return MODE_MODAL;
             } else if (fragment.getPresentingFragment() != null) {
                 return MODE_PRESENT;

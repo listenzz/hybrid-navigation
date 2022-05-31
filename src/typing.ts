@@ -43,7 +43,6 @@ export type LayoutFitting = LayoutFittingExpanded | LayoutFittingCompressed
 
 export interface NavigationOption {
   screenBackgroundColor?: Color // 页面背景，默认是白色
-  passThroughTouches?: boolean // 触摸事件是否可以穿透到下一层页面，很少用。
   statusBarHidden?: boolean // 是否隐藏状态栏
   statusBarColorAndroid?: Color // 状态栏背景颜色
   topBarStyle?: BarStyle // TopBar 样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
@@ -63,7 +62,7 @@ export interface NavigationOption {
 }
 
 export interface NavigationItem extends NavigationOption {
-  screenBackgroundColor?: Color // 当前页面背景
+  passThroughTouches?: boolean // 触摸事件是否可以穿透到下一层页面，很少用。
   forceTransparentDialogWindow?: boolean // 当页面是 Dialog 时，是否强制背景透明
   topBarHidden?: boolean // 是否隐藏 TopBar
   extendedLayoutIncludesTopBar?: boolean // 页面内容是否延伸到 TopBar 底下，通常用于需要动态改变 `topBarAlpha` 的场合

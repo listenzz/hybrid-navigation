@@ -76,10 +76,10 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
     @Override
     protected void onCustomStyle(@NonNull Style style) {
+        super.onCustomStyle(style);
         if (shouldPassThroughTouches()) {
             style.setScrimAlpha(0);
         }
-        super.onCustomStyle(style);
     }
 
     @Override
@@ -315,10 +315,6 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         return new Toolbar.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER);
     }
     
-    boolean shouldPassThroughTouches() {
-        return getOptions().getBoolean("passThroughTouches", false);
-    }
-
     @Override
     public void postponeEnterTransition() {
         super.postponeEnterTransition();

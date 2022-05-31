@@ -63,7 +63,7 @@ public class Garden {
     boolean extendedLayoutIncludesTopBar;
 
     boolean forceTransparentDialogWindow;
-
+    
     Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
@@ -85,11 +85,11 @@ public class Garden {
         }
 
         this.forceTransparentDialogWindow = options.getBoolean("forceTransparentDialogWindow");
-
+        
         applyOptions(options);
     }
 
-    void configureToolbar() {
+    void setupToolbar() {
 
         if (fragment.getView() == null || fragment.getContext() == null) {
             return;
@@ -291,12 +291,7 @@ public class Garden {
         if (shouldUpdateNavigationBar(readableMap)) {
             fragment.setNeedsNavigationBarAppearanceUpdate();
         }
-
-        if (readableMap.hasKey("passThroughTouches")) {
-            boolean passThroughTouches = readableMap.getBoolean("passThroughTouches");
-            setPassThroughTouches(passThroughTouches);
-        }
-
+        
         Bundle options = mergeOptions(fragment.getOptions(), patches);
         fragment.setOptions(options);
 
@@ -360,12 +355,5 @@ public class Garden {
         }
         return false;
     }
-
-    void setPassThroughTouches(boolean passThroughTouches) {
-        View view = fragment.getView();
-        if (view instanceof HBDReactRootView) {
-            ((HBDReactRootView) view).setShouldConsumeTouchEvent(!passThroughTouches);
-        }
-    }
-
+    
 }

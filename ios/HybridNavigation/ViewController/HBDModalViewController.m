@@ -451,6 +451,13 @@
     modalViewController.contentViewController = vc;
     if ([vc isKindOfClass:[HBDViewController class]]) {
         HBDViewController *hbdvc = (HBDViewController *)vc;
+        NSString *screenColor = hbdvc.options[@"screenBackgroundColor"];
+        if (screenColor) {
+            UIColor *color = [HBDUtils colorWithHexString:screenColor];
+            if (colorHasAlphaComponent(color)) {
+                modalViewController.dimmingView.backgroundColor = color;
+            }
+        }
         if (hbdvc.forceTransparentDialogWindow) {
             modalViewController.dimmingView.backgroundColor = UIColor.clearColor;
         }
