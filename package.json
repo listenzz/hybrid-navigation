@@ -13,6 +13,9 @@
     "ios",
     "HybridNavigation.podspec",
     "!android/build",
+    "!android/.gradle",
+    "!android/.idea",
+    "!android/local.properties",
     "!ios/build",
     "!**/__tests__"
   ],
