@@ -5,8 +5,7 @@
 #import <HybridNavigation/HybridNavigation.h>
 #import <ToastHybrid/ToastHybrid.h>
 
-#import "OneNativeViewController.h"
-#import "NativeModalViewController.h"
+#import "NativeViewController.h"
 
 #if RCT_DEV
 #import <React/RCTDevLoadingView.h>
@@ -29,9 +28,8 @@
     [[HBDReactBridgeManager get] installWithBridge:bridge];
     
     // register native modules
-    [[HBDReactBridgeManager get] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
-    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModal" forController:[NativeModalViewController class]];
-    
+    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forController:[NativeViewController class]];
+   
 #if RCT_DEV
     [[HBDReactBridgeManager get].bridge moduleForClass:[RCTDevLoadingView class]];
 #endif

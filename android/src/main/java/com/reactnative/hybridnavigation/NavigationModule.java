@@ -226,7 +226,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     private String findSceneIdByModuleName(@NonNull String moduleName, AwesomeFragment parent) {
         String sceneId = findSceneIdFromParent(moduleName, parent);
         if (sceneId == null) {
-            return findSceneIdFromChildren(moduleName, parent.getChildFragments());
+            return findSceneIdFromChildren(moduleName, parent.getChildAwesomeFragments());
         }
         return sceneId;
     }

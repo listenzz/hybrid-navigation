@@ -1,10 +1,10 @@
-#import "OneNativeViewController.h"
+#import "NativeViewController.h"
 
-@interface OneNativeViewController ()
+@interface NativeViewController ()
 
 @end
 
-@implementation OneNativeViewController
+@implementation NativeViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -38,7 +38,7 @@
         else {
             passedProps = @{@"popToId": self.sceneId, @"greeting": @"Hello, Native"};
         }
-        OneNativeViewController *vc = [[OneNativeViewController alloc] initWithModuleName:nil props:passedProps options:nil];
+        NativeViewController *vc = [[NativeViewController alloc] initWithModuleName:nil props:passedProps options:nil];
         [self.navigationController pushViewController:vc animated:YES];
     }
 }

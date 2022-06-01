@@ -52,9 +52,8 @@ public class MainApplication extends Application implements ReactApplication {
 		bridgeManager.install(getReactNativeHost());
 
 		// register native modules
-		bridgeManager.registerNativeModule("OneNative", OneNativeFragment.class);
-		bridgeManager.registerNativeModule("NativeModal", NativeModalFragment.class);
-
+		bridgeManager.registerNativeModule("NativeModule", NativeFragment.class);
+        
 		DraweeView.setGlobalLegacyVisibilityHandlingEnabled(true);
 		FLog.setMinimumLoggingLevel(FLog.INFO);
 

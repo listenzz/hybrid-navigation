@@ -13,7 +13,6 @@
 #import "UITabBar+Badge.h"
 
 #import "HBDNavigationController.h"
-#import "HBDModalViewController.h"
 #import "HBDUtils.h"
 #import "GlobalStyle.h"
 
@@ -57,20 +56,6 @@
         RCTLogWarn(@"[Navigator] Can't present since the scene had present another scene already.");
         return NO;
     }
-
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i - 1];
-        UIViewController *viewController = window.rootViewController;
-        if ([viewController isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *) viewController;
-            if (!modal.beingHidden) {
-                RCTLogWarn(@"[Navigator] Can't present a scene over a modal.");
-                return NO;
-            }
-        }
-    }
-
     return YES;
 }
 
@@ -412,7 +397,7 @@
 }
 
 - (NSString *)hbd_mode {
-    if (self.hbd_targetViewController != nil) {
+    if (self.modalPresentationStyle == UIModalPresentationOverFullScreen) {
         return @"modal";
     } else if (self.presentingViewController != nil) {
         return @"present";

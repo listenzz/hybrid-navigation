@@ -8,10 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4BB97FDD4F0A9063BC6B7A79 /* libPods-HybridNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B06CECFB4465CF3AFD98B52 /* libPods-HybridNavigation.a */; };
-		9161397F25B1849F002B7901 /* OneNativeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9161397A25B1849F002B7901 /* OneNativeViewController.m */; };
-		9161398025B1849F002B7901 /* NativeModalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9161397C25B1849F002B7901 /* NativeModalViewController.xib */; };
-		9161398125B1849F002B7901 /* OneNativeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9161397D25B1849F002B7901 /* OneNativeViewController.xib */; };
-		9161398225B1849F002B7901 /* NativeModalViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9161397E25B1849F002B7901 /* NativeModalViewController.m */; };
+		9161397F25B1849F002B7901 /* NativeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9161397A25B1849F002B7901 /* NativeViewController.m */; };
+		9161398125B1849F002B7901 /* NativeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9161397D25B1849F002B7901 /* NativeViewController.xib */; };
 		916139D225B18B65002B7901 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 916139D125B18B65002B7901 /* LaunchScreen.storyboard */; };
 		91613A2025B18E41002B7901 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91613A1F25B18E41002B7901 /* Main.storyboard */; };
 		91887264236AD544003DC79E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 91887263236AD544003DC79E /* AppDelegate.m */; };
@@ -21,12 +19,9 @@
 
 /* Begin PBXFileReference section */
 		8DA2071974FFBF14F0B3148D /* Pods-HybridNavigation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HybridNavigation.release.xcconfig"; path = "Target Support Files/Pods-HybridNavigation/Pods-HybridNavigation.release.xcconfig"; sourceTree = "<group>"; };
-		9161397925B1849F002B7901 /* OneNativeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OneNativeViewController.h; sourceTree = "<group>"; };
-		9161397A25B1849F002B7901 /* OneNativeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OneNativeViewController.m; sourceTree = "<group>"; };
-		9161397B25B1849F002B7901 /* NativeModalViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NativeModalViewController.h; sourceTree = "<group>"; };
-		9161397C25B1849F002B7901 /* NativeModalViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NativeModalViewController.xib; sourceTree = "<group>"; };
-		9161397D25B1849F002B7901 /* OneNativeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OneNativeViewController.xib; sourceTree = "<group>"; };
-		9161397E25B1849F002B7901 /* NativeModalViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NativeModalViewController.m; sourceTree = "<group>"; };
+		9161397925B1849F002B7901 /* NativeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NativeViewController.h; sourceTree = "<group>"; };
+		9161397A25B1849F002B7901 /* NativeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NativeViewController.m; sourceTree = "<group>"; };
+		9161397D25B1849F002B7901 /* NativeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NativeViewController.xib; sourceTree = "<group>"; };
 		916139D125B18B65002B7901 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		91613A1F25B18E41002B7901 /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		9188725F236AD544003DC79E /* HybridNavigation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HybridNavigation.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -76,12 +71,9 @@
 				91613A1F25B18E41002B7901 /* Main.storyboard */,
 				91887262236AD544003DC79E /* AppDelegate.h */,
 				91887263236AD544003DC79E /* AppDelegate.m */,
-				9161397B25B1849F002B7901 /* NativeModalViewController.h */,
-				9161397E25B1849F002B7901 /* NativeModalViewController.m */,
-				9161397C25B1849F002B7901 /* NativeModalViewController.xib */,
-				9161397925B1849F002B7901 /* OneNativeViewController.h */,
-				9161397A25B1849F002B7901 /* OneNativeViewController.m */,
-				9161397D25B1849F002B7901 /* OneNativeViewController.xib */,
+				9161397925B1849F002B7901 /* NativeViewController.h */,
+				9161397A25B1849F002B7901 /* NativeViewController.m */,
+				9161397D25B1849F002B7901 /* NativeViewController.xib */,
 				9188726E236AD545003DC79E /* Assets.xcassets */,
 				91887273236AD545003DC79E /* Info.plist */,
 				91887274236AD545003DC79E /* main.m */,
@@ -166,10 +158,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9161398125B1849F002B7901 /* OneNativeViewController.xib in Resources */,
+				9161398125B1849F002B7901 /* NativeViewController.xib in Resources */,
 				91613A2025B18E41002B7901 /* Main.storyboard in Resources */,
 				916139D225B18B65002B7901 /* LaunchScreen.storyboard in Resources */,
-				9161398025B1849F002B7901 /* NativeModalViewController.xib in Resources */,
 				9188726F236AD545003DC79E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -241,8 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9161397F25B1849F002B7901 /* OneNativeViewController.m in Sources */,
-				9161398225B1849F002B7901 /* NativeModalViewController.m in Sources */,
+				9161397F25B1849F002B7901 /* NativeViewController.m in Sources */,
 				91887264236AD544003DC79E /* AppDelegate.m in Sources */,
 				91887275236AD545003DC79E /* main.m in Sources */,
 			);

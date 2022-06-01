@@ -87,7 +87,7 @@ public class ReactTabBarFragment extends TabBarFragment {
     }
 
     private void improveTransitionForReact(AwesomeFragment current, AwesomeFragment previous) {
-        List<AwesomeFragment> children = getChildFragments();
+        List<AwesomeFragment> children = getChildAwesomeFragments();
         if (children.indexOf(current) > children.indexOf(previous)) {
             current.setAnimation(FadeShort);
             previous.setAnimation(DelayShort);

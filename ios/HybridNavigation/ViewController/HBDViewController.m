@@ -17,6 +17,7 @@
 
 @property(nonatomic, copy, readwrite) NSDictionary *props;
 @property(nonatomic, copy, readwrite) NSDictionary *options;
+@property(nonatomic, assign) BOOL forceTransparentDialogWindow;
 
 @end
 
@@ -99,11 +100,40 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self setScreenBackgroundColor];
+}
+
+- (void)setScreenBackgroundColor {
+    if (self.modalPresentationStyle == UIModalPresentationOverFullScreen) {
+        [self setModalBackgroundColor];
+        return;
+    }
+    
     NSString *screenColor = self.options[@"screenBackgroundColor"];
     if (screenColor) {
         self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
     } else {
         self.view.backgroundColor = [GlobalStyle globalStyle].screenBackgroundColor;
+    }
+}
+
+- (void)setModalBackgroundColor {
+    if (self.forceTransparentDialogWindow) {
+        self.view.backgroundColor = UIColor.clearColor;
+        return;
+    }
+    
+    self.view.backgroundColor = [UIColor.blackColor colorWithAlphaComponent:0.5];
+    
+    NSString *screenColor = self.options[@"screenBackgroundColor"];
+    
+    if (!screenColor) {
+        return;
+    }
+
+    UIColor *color = [HBDUtils colorWithHexString:screenColor];
+    if (colorHasAlphaComponent(color)) {
+        self.view.backgroundColor = color;
     }
 }
 

@@ -5,12 +5,10 @@ import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
 import static com.reactnative.hybridnavigation.Constants.ARG_PROPS;
 import static com.reactnative.hybridnavigation.Constants.ARG_SCENE_ID;
 
-import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
-import android.view.Window;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
@@ -23,6 +21,7 @@ import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.AwesomeToolbar;
 import com.navigation.androidx.BarStyle;
 import com.navigation.androidx.FragmentHelper;
+import com.navigation.androidx.PresentationStyle;
 import com.navigation.androidx.Style;
 import com.navigation.androidx.SystemUI;
 import com.navigation.androidx.TabBarItem;
@@ -96,31 +95,44 @@ public class HybridFragment extends AwesomeFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         garden.setupToolbar();
+        if (getPresentationStyle() == PresentationStyle.OverFullScreen) {
+            setModalBackground(view);
+        }
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        Window window = dialog.getWindow();
-        
+    private void setModalBackground(@NonNull View view) {
         if (forceTransparentDialogWindow()) {
-            window.setDimAmount(0);
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            view.setBackground(new ColorDrawable(Color.TRANSPARENT));
+            return;
         }
-        
-        return dialog;
+        int color = mStyle.getScreenBackgroundColor();
+        if (Color.alpha(color) < 255) {
+            view.setBackground(new ColorDrawable(color));
+        } else {
+            view.setBackground(new ColorDrawable(Color.parseColor("#77000000")));
+        }
     }
 
     @NonNull
     @Override
     protected BarStyle preferredStatusBarStyle() {
-        if (getShowsDialog() && forceTransparentDialogWindow()) {
-            if (SystemUI.isStatusBarStyleDark(requireActivity().getWindow())) {
-                return BarStyle.DarkContent;
-            }
+        if (forceTransparentDialogWindow() && SystemUI.isStatusBarStyleDark(requireActivity().getWindow())) {
+            return BarStyle.DarkContent;
         }
+
+        if (getPresentationStyle() == PresentationStyle.OverFullScreen) {
+            return BarStyle.LightContent;
+        }
+
         return super.preferredStatusBarStyle();
+    }
+
+    @Override
+    protected boolean preferredNavigationBarHidden() {
+        if (getPresentationStyle() == PresentationStyle.OverFullScreen) {
+            return SystemUI.isNavigationBarHidden(requireActivity().getWindow());
+        }
+        return super.preferredNavigationBarHidden();
     }
 
     public Garden getGarden() {

@@ -17,6 +17,7 @@ export default withNavigationItem({
   //topBarColor: '#666666',
   //topBarTintColor: '#ffffff',
   //titleTextColor: '#ffffff',
+
   titleItem: {
     title: 'RN navigation',
   },
@@ -136,11 +137,6 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
     handleResult(resultCode, data)
   }
 
-  async function showNativeModal() {
-    const [resultCode, data] = await navigator.showModal('NativeModal')
-    handleResult(resultCode, data)
-  }
-
   function renderResult() {
     if (text === undefined) {
       return null
@@ -192,11 +188,7 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>show react modal</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={showNativeModal} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>show native modal</Text>
+          <Text style={styles.buttonText}>show modal</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={printRouteGraph} activeOpacity={0.2} style={styles.button}>

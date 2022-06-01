@@ -112,7 +112,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
     private ArrayList<Bundle> createTabs(@NonNull List<TabBarItem> tabBarItems) {
         ArrayList<Bundle> tabs = new ArrayList<>();
         Context context = tabBarFragment.requireContext();
-        List<AwesomeFragment> children = tabBarFragment.getChildFragments();
+        List<AwesomeFragment> children = tabBarFragment.getChildAwesomeFragments();
         for (int i = 0, size = tabBarItems.size(); i < size; i++) {
             TabBarItem tabBarItem = tabBarItems.get(i);
             Bundle tab = new Bundle();

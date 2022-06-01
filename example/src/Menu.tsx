@@ -24,7 +24,7 @@ const paddingTop = Platform.select({
 export default function Menu({ navigator }: InjectedProps) {
   const push = () => {
     navigator.closeMenu()
-    navigator.push('OneNative')
+    navigator.push('NativeModule')
   }
 
   function pushToRedux() {

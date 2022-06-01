@@ -114,7 +114,7 @@ public class DrawerNavigator implements Navigator {
     @NonNull
     private ArrayList<Bundle> buildChildrenGraph(DrawerFragment drawer) {
         ArrayList<Bundle> children = new ArrayList<>();
-        List<AwesomeFragment> fragments = drawer.getChildFragments();
+        List<AwesomeFragment> fragments = drawer.getChildAwesomeFragments();
         for (int i = 0; i < fragments.size(); i++) {
             AwesomeFragment child = fragments.get(i);
             Bundle graph = getReactBridgeManager().buildRouteGraph(child);

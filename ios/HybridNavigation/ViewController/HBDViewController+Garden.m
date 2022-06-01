@@ -9,15 +9,6 @@
 
 @implementation HBDViewController (Garden)
 
-- (BOOL)forceTransparentDialogWindow {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    return obj ? [obj boolValue] : NO;
-}
-
-- (void)setForceTransparentDialogWindow:(BOOL)transparent {
-    objc_setAssociatedObject(self, @selector(forceTransparentDialogWindow), @(transparent), OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
 - (void)setLeftBarButtonItem:(NSDictionary *)item {
     if (self.hbd_barHidden) {
         return;

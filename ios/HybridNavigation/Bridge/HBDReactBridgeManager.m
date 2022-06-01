@@ -10,7 +10,6 @@
 #import <React/RCTLog.h>
 #import "HBDUtils.h"
 #import "HBDReactViewController.h"
-#import "HBDModalViewController.h"
 #import "HBDNavigatorRegistry.h"
 #import "HBDEventEmitter.h"
 
@@ -68,16 +67,6 @@ const NSInteger ResultCancel = 0;
 - (void)handleReload {
     self.viewHierarchyReady = NO;
     self.reactModuleRegisterCompleted = NO;
-
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i - 1];
-        UIViewController *controller = window.rootViewController;
-        if ([controller isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *) controller;
-            [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
-        }
-    }
 
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
@@ -196,24 +185,8 @@ const NSInteger ResultCancel = 0;
     if (!self.viewHierarchyReady) {
         return nil;
     }
-
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    UIViewController *vc = nil;
-    for (UIWindow *window in application.windows) {
-        if ([window isKindOfClass:[HBDModalWindow class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *) window.rootViewController;
-            if (!modal || modal.isBeingHidden) {
-                continue;
-            }
-        }
-
-        vc = [self controllerForSceneId:sceneId withController:window.rootViewController];
-
-        if (vc) {
-            break;
-        }
-    }
-    return vc;
+    UIWindow *window = [self mainWindow];
+    return [self controllerForSceneId:sceneId withController:window.rootViewController];
 }
 
 - (UIViewController *)controllerForSceneId:(NSString *)sceneId withController:(UIViewController *)controller {
@@ -221,11 +194,6 @@ const NSInteger ResultCancel = 0;
 
     if ([controller.sceneId isEqualToString:sceneId]) {
         target = controller;
-    }
-
-    if (!target && [controller isKindOfClass:[HBDModalViewController class]]) {
-        HBDModalViewController *modal = (HBDModalViewController *) controller;
-        target = [self controllerForSceneId:sceneId withController:modal.contentViewController];
     }
 
     if (!target) {
@@ -254,16 +222,7 @@ const NSInteger ResultCancel = 0;
 
 - (void)setRootViewController:(UIViewController *)rootViewController withTag:(NSNumber *)tag {
     [HBDEventEmitter sendEvent:EVENT_WILL_SET_ROOT data:@{}];
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    for (NSUInteger i = application.windows.count; i > 0; i--) {
-        UIWindow *window = application.windows[i - 1];
-        UIViewController *controller = window.rootViewController;
-        if ([controller isKindOfClass:[HBDModalViewController class]]) {
-            HBDModalViewController *modal = (HBDModalViewController *) controller;
-            [modal.contentViewController hbd_hideViewControllerAnimated:NO completion:nil];
-        }
-    }
-
+    
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
     if (presentedViewController && !presentedViewController.isBeingDismissed) {
@@ -309,11 +268,6 @@ const NSInteger ResultCancel = 0;
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
-    HBDModalViewController *modal = vc.hbd_popupViewController.hbd_modalViewController;
-    if (modal && !modal.isBeingHidden) {
-        return [self primaryViewControllerWithViewController:modal.contentViewController];
-    }
-
     UIViewController *presented = vc.presentedViewController;
     if (presented && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
         return [self primaryViewControllerWithViewController:presented];
@@ -380,11 +334,6 @@ const NSInteger ResultCancel = 0;
 
 - (NSMutableDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
     NSMutableDictionary *m = nil;
-    HBDModalViewController *modal = vc.hbd_popupViewController.hbd_modalViewController;
-    if (modal && !modal.isBeingHidden) {
-        m = [[self buildRouteGraphWithViewController:modal.contentViewController] mutableCopy];
-    }
-
     NSMutableDictionary *p = nil;
     UIViewController *presented = vc.presentedViewController;
     if (presented && presented.presentingViewController == vc && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {

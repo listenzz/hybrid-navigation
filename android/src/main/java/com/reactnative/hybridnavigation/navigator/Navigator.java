@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
+import com.navigation.androidx.PresentationStyle;
 import com.reactnative.hybridnavigation.HybridFragment;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface Navigator {
 
     class Util {
         public static String getMode(@NonNull AwesomeFragment fragment) {
-            if (fragment.getDialogFragment() != null) {
+            if (fragment.getPresentationStyle() == PresentationStyle.OverFullScreen) {
                 return MODE_MODAL;
             } else if (fragment.getPresentingFragment() != null) {
                 return MODE_PRESENT;

@@ -92,7 +92,7 @@ public class StackNavigator implements Navigator {
     @NonNull
     private ArrayList<Bundle> buildChildrenGraph(StackFragment stack) {
         ArrayList<Bundle> children = new ArrayList<>();
-        List<AwesomeFragment> fragments = stack.getChildFragments();
+        List<AwesomeFragment> fragments = stack.getChildAwesomeFragments();
         for (int i = 0; i < fragments.size(); i++) {
             AwesomeFragment child = fragments.get(i);
             Bundle graph = getReactBridgeManager().buildRouteGraph(child);

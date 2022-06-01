@@ -11,7 +11,6 @@
 #import "HBDTabBarController.h"
 #import "HBDDrawerController.h"
 #import "UIViewController+HBD.h"
-#import "HBDModalViewController.h"
 
 #import "HBDNavigator.h"
 #import "HBDScreenNavigator.h"

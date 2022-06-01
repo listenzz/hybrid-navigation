@@ -18,7 +18,7 @@ import com.reactnative.hybridnavigation.HybridFragment;
  * Created by Listen on 2018/1/30.
  */
 
-public class OneNativeFragment extends HybridFragment {
+public class NativeFragment extends HybridFragment {
 
     @Nullable
     @Override
@@ -50,7 +50,7 @@ public class OneNativeFragment extends HybridFragment {
                 Bundle props = new Bundle();
                 props.putString("popToId", popToId);
                 props.putString("greeting", "Hello, Native");
-                HybridFragment fragment = new OneNativeFragment();
+                HybridFragment fragment = new NativeFragment();
                 fragment.setAppProperties(props);
                 stackFragment.pushFragment(fragment);
             }

@@ -10,6 +10,8 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
+import com.navigation.androidx.PresentationStyle;
+import com.navigation.androidx.TransitionAnimation;
 import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.ReactBridgeManager;
 import com.reactnative.hybridnavigation.ReactStackFragment;
@@ -105,7 +107,7 @@ public class ScreenNavigator implements Navigator {
                 handleShowModal(target, extras, promise);
                 break;
             case "hideModal":
-                target.hideAsDialog(() -> promise.resolve(true));
+                handleHideModal(target, promise);
                 break;
             case "presentLayout":
                 handlePresentLayout(target, extras, promise);
@@ -113,39 +115,51 @@ public class ScreenNavigator implements Navigator {
             case "showModalLayout":
                 handleShowModalLayout(target, extras, promise);
                 break;
+
         }
     }
 
-    private void handleShowModalLayout(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    private void handleShowModalLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Promise promise) {
         ReadableMap layout = extras.getMap("layout");
-        AwesomeFragment fragment = getReactBridgeManager().createFragment(layout);
-        if (fragment == null) {
+        AwesomeFragment presented = getReactBridgeManager().createFragment(layout);
+        if (presented == null) {
             promise.resolve(false);
             return;
         }
+        presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
-        target.showAsDialog(fragment, requestCode, () -> promise.resolve(true));
+        presenting.presentFragment(presented, requestCode, TransitionAnimation.None, () -> promise.resolve(true));
     }
 
-    private void handlePresentLayout(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    private void handlePresentLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Promise promise) {
         ReadableMap layout = extras.getMap("layout");
-        AwesomeFragment fragment = getReactBridgeManager().createFragment(layout);
-        if (fragment == null) {
+        AwesomeFragment presented = getReactBridgeManager().createFragment(layout);
+        if (presented == null) {
             promise.resolve(false);
             return;
         }
         int requestCode = extras.getInt("requestCode");
-        target.presentFragment(fragment, requestCode, () -> promise.resolve(true));
+        presenting.presentFragment(presented, requestCode, () -> promise.resolve(true));
     }
 
-    private void handleShowModal(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise) {
-        AwesomeFragment fragment = createFragmentWithExtras(extras);
-        if (fragment == null) {
+    private void handleShowModal(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Promise promise) {
+        AwesomeFragment presented = createFragmentWithExtras(extras);
+        if (presented == null) {
             promise.resolve(false);
             return;
         }
+        presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
-        target.showAsDialog(fragment, requestCode, () -> promise.resolve(true));
+        presenting.presentFragment(presented, requestCode, TransitionAnimation.None, () -> promise.resolve(true));
+    }
+    
+    private void handleHideModal(@NonNull AwesomeFragment target, @NonNull Promise promise) {
+        AwesomeFragment presenting = target.getPresentingFragment();
+        if (presenting == null) {
+            target.dismissFragment(TransitionAnimation.None, () -> promise.resolve(true));
+            return;
+        }
+        presenting.dismissFragment(TransitionAnimation.None, () -> promise.resolve(true));
     }
 
     private void handleDismiss(@NonNull AwesomeFragment target, @NonNull Promise promise) {
@@ -168,7 +182,7 @@ public class ScreenNavigator implements Navigator {
         stackFragment.setRootFragment(fragment);
         target.presentFragment(stackFragment, requestCode, () -> promise.resolve(true));
     }
-
+    
     private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {
         if (!extras.hasKey("moduleName")) {
             return null;

@@ -9,7 +9,6 @@
 #import "HBDScreenNavigator.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDNavigationController.h"
-#import "HBDModalViewController.h"
 #import <React/RCTLog.h>
 
 @implementation HBDScreenNavigator
@@ -47,10 +46,7 @@
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
-    if ([vc isKindOfClass:[HBDModalViewController class]]) {
-        HBDModalViewController *modal = (HBDModalViewController *) vc;
-        return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:modal.contentViewController];
-    } else if ([vc isKindOfClass:[HBDViewController class]]) {
+    if ([vc isKindOfClass:[HBDViewController class]]) {
         return (HBDViewController *) vc;
     }
     return nil;
@@ -90,13 +86,22 @@
     } else if ([action isEqualToString:@"showModal"]) {
         viewController = [self createViewControllerWithExtras:extras];
         NSInteger requestCode = [extras[@"requestCode"] integerValue];
-        [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:^(BOOL finished) {
-            resolve(@(finished));
+        viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+        [viewController setRequestCode:requestCode];
+        [target presentViewController:viewController animated:NO completion:^{
+            resolve(@(YES));
         }];
     } else if ([action isEqualToString:@"hideModal"]) {
-        [target hbd_hideViewControllerAnimated:YES completion:^(BOOL finished) {
-            resolve(@(finished));
-        }];
+        UIViewController *presenting = target.presentingViewController;
+        if (presenting) {
+            [presenting dismissViewControllerAnimated:NO completion:^{
+                resolve(@(YES));
+            }];
+        } else {
+            [target dismissViewControllerAnimated:NO completion:^{
+                resolve(@(YES));
+            }];
+        }
     } else if ([action isEqualToString:@"presentLayout"]) {
         NSDictionary *layout = extras[@"layout"];
         NSInteger requestCode = [extras[@"requestCode"] integerValue];
@@ -110,8 +115,10 @@
         NSInteger requestCode = [extras[@"requestCode"] integerValue];
         NSDictionary *layout = extras[@"layout"];
         viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
-        [target hbd_showViewController:viewController requestCode:requestCode animated:YES completion:^(BOOL finished) {
-            resolve(@(finished));
+        viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+        [viewController setRequestCode:requestCode];
+        [target presentViewController:viewController animated:NO completion:^{
+            resolve(@(YES));
         }];
     }
 }
