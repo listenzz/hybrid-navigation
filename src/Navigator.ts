@@ -319,7 +319,6 @@ export class Navigator {
       moduleName,
       props,
       options,
-      animated: true,
     })
   }
 
