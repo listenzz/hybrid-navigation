@@ -1,3 +1,9 @@
+## 2.10.2 （2022-06-02）
+
+### Android specific
+
+- 修复 `navigationBarHiddenAndroid` 参数对 TabBar 不生效的问题
+
 ## 2.10.1 (2022-05-31)
 
 - 更新 typings
