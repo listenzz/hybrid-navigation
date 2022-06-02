@@ -1,3 +1,7 @@
+## 2.11.1 （2022-06-02）
+
+- 更改 Modal 的实现。现在 Android 的 Modal 由 Fragment 实现，而不再是 Dialog，iOS 的 Modal 由 UIViewController 实现，而不再是 Window。
+
 ## 2.10.2 （2022-06-02）
 
 ### Android specific
