@@ -6,7 +6,6 @@ import static com.reactnative.hybridnavigation.Constants.ARG_PROPS;
 import static com.reactnative.hybridnavigation.Constants.ARG_SCENE_ID;
 
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 
@@ -89,35 +88,33 @@ public class HybridFragment extends AwesomeFragment {
     protected void onCustomStyle(@NonNull Style style) {
         super.onCustomStyle(style);
         garden = new Garden(this, style);
+        if (getPresentationStyle() == PresentationStyle.OverFullScreen) {
+            setBackgroundForModal(style);
+        }
+    }
+
+    private void setBackgroundForModal(@NonNull Style style) {
+        if (forceTransparentDialogWindow()) {
+            style.setScreenBackgroundColor(Color.TRANSPARENT);
+            return;
+        }
+        int color = mStyle.getScreenBackgroundColor();
+        if (Color.alpha(color) == 255) {
+            style.setScreenBackgroundColor(Color.parseColor("#77000000"));
+        }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         garden.setupToolbar();
-        if (getPresentationStyle() == PresentationStyle.OverFullScreen) {
-            setModalBackground(view);
-        }
     }
-
-    private void setModalBackground(@NonNull View view) {
-        if (forceTransparentDialogWindow()) {
-            view.setBackground(new ColorDrawable(Color.TRANSPARENT));
-            return;
-        }
-        int color = mStyle.getScreenBackgroundColor();
-        if (Color.alpha(color) < 255) {
-            view.setBackground(new ColorDrawable(color));
-        } else {
-            view.setBackground(new ColorDrawable(Color.parseColor("#77000000")));
-        }
-    }
-
+    
     @NonNull
     @Override
     protected BarStyle preferredStatusBarStyle() {
-        if (forceTransparentDialogWindow() && SystemUI.isStatusBarStyleDark(requireActivity().getWindow())) {
-            return BarStyle.DarkContent;
+        if (forceTransparentDialogWindow()) {
+            return SystemUI.activityNavigationBarStyle(requireActivity());
         }
 
         if (getPresentationStyle() == PresentationStyle.OverFullScreen) {

@@ -332,12 +332,5 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
         getActivity().supportStartPostponedEnterTransition();
     }
-
-    @Override
-    protected int preferredNavigationBarColor() {
-        if (mStyle.getNavigationBarColor() == Style.INVALID_COLOR) {
-            return mStyle.getScreenBackgroundColor();
-        }
-        return mStyle.getNavigationBarColor();
-    }
+    
 }
