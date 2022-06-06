@@ -1,7 +1,5 @@
 # DeepLink
 
-0.5.0 版本开始支持 DeepLink.
-
 ## 注册
 
 <a name="router-config"></a>

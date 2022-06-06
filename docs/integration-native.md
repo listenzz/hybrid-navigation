@@ -9,7 +9,7 @@
 通过 `react-native init ReactNativeProject` 创建的项目，目录结构是这样的：
 
 ```
-ReactNativeProject/
+ReactNativeProject
 |—— android/
 |—— ios/
 |—— node_modules/
@@ -52,7 +52,7 @@ ReactNativeProject/
 
 第二和第三种目录结构，在集成上没多大区别。 这里，我们以第三种目录结构来演示如何集成 hybrid-navigation 到原生项目。
 
-## 创建 RN 项目并集成 Navigation Hybrid
+## 创建 RN 项目并集成 hybrid-navigation
 
 在和原生应用同级的目录下，使用 `react-native init ReactNativeProject` 命令创建 RN 业务模块。
 

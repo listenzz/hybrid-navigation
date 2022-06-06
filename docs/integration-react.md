@@ -186,9 +186,3 @@ cd ios & pod install
 ## 参考
 
 [一行命令创建 RN 项目并集成本库](https://github.com/listenzz/react-native-create-app)
-
-[RN 0.62 集成本库示范项目](https://github.com/listenzz/RN062)
-
-[RN 0.61 集成本库示范项目](https://github.com/listenzz/RN061)
-
-[RN 0.60 集成本库示范项目](https://github.com/listenzz/RN060)
