@@ -9,14 +9,17 @@ import com.navigation.androidx.AwesomeFragment;
 import com.reactnative.hybridnavigation.ReactAppCompatActivity;
 
 public class MainActivity extends ReactAppCompatActivity {
-
-    private SplashFragment splashFragment;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
+        launchSplash(savedInstanceState);
+    }
 
+    private SplashFragment splashFragment;
+    
+    private void launchSplash(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             String tag = savedInstanceState.getString("splash_tag");
             if (tag != null) {
@@ -24,18 +27,19 @@ public class MainActivity extends ReactAppCompatActivity {
             }
         }
 
-        if (splashFragment == null) {
-            if (!isReactModuleRegisterCompleted()) {
-                splashFragment = new SplashFragment();
-                showAsDialog(splashFragment, 0);
-            }
-        } else {
+        if (splashFragment != null) {
             if (isReactModuleRegisterCompleted()) {
                 if (splashFragment != null) {
                     splashFragment.hideAsDialog();
                     splashFragment = null;
                 }
             }
+            return;
+        }
+        
+        if (!isReactModuleRegisterCompleted()) {
+            splashFragment = new SplashFragment();
+            showAsDialog(splashFragment, 0);
         }
     }
 
