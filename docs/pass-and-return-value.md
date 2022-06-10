@@ -8,24 +8,24 @@ RN 页面如何跳转和传值，我们 [容器与导航](./navigation.md) 一�
 
 ## 创建原生页面
 
-Android 需要继承 `HybridFragment`，具体可以参考 example 项目中 `OneNativeFragment` 这个类：
+Android 需要继承 `HybridFragment`，具体可以参考 example 项目中 `NativeFragment` 这个类：
 
 ```java
 // android
-public class OneNativeFragment extends HybridFragment {
+public class NativeFragment extends HybridFragment {
 
 }
 ```
 
 HybridFragment 继承于 `AwesomeFragment`，关于 AwesomeFragment 更多细节，请看 [AndroidNavigation](https://github.com/listenzz/AndroidNavigation) 这个子项目。
 
-iOS 需要继承 `HBDViewController`，具体可以参考 example 项目中 `OneNativeViewController` 这个类：
+iOS 需要继承 `HBDViewController`，具体可以参考 example 项目中 `NativeViewController` 这个类：
 
 ```objc
 // ios
 #import <HybridNavigation/HybridNavigation.h>
 
-@interface OneNativeViewController : HBDViewController
+@interface NativeViewController : HBDViewController
 
 @end
 ```
@@ -45,7 +45,7 @@ public class MainApplication extends Application implements ReactApplication{
         bridgeManager.install(getReactNativeHost());
 
         // 注册原生模块
-        bridgeManager.registerNativeModule("OneNative", OneNativeFragment.class);
+        bridgeManager.registerNativeModule("NativeModule", NativeFragment.class);
     }
 }
 ```
@@ -60,7 +60,7 @@ iOS 注册方式如下
     [[HBDReactBridgeManager get] installWithBridge:bridge];
 
     // 注册原生模块
-    [[HBDReactBridgeManager get] registerNativeModule:@"OneNative" forController:[OneNativeViewController class]];
+    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forController:[NativeViewController class]];
 
     return YES;
 }
