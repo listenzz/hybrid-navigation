@@ -150,16 +150,16 @@ public class ScreenNavigator implements Navigator {
         }
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
-        presenting.presentFragment(presented, requestCode, TransitionAnimation.None, () -> promise.resolve(true));
+        presenting.presentFragment(presented, requestCode, TransitionAnimation.Fade, () -> promise.resolve(true));
     }
     
     private void handleHideModal(@NonNull AwesomeFragment target, @NonNull Promise promise) {
         AwesomeFragment presenting = target.getPresentingFragment();
         if (presenting == null) {
-            target.dismissFragment(TransitionAnimation.None, () -> promise.resolve(true));
+            target.dismissFragment(TransitionAnimation.Fade, () -> promise.resolve(true));
             return;
         }
-        presenting.dismissFragment(TransitionAnimation.None, () -> promise.resolve(true));
+        presenting.dismissFragment(TransitionAnimation.Fade, () -> promise.resolve(true));
     }
 
     private void handleDismiss(@NonNull AwesomeFragment target, @NonNull Promise promise) {
