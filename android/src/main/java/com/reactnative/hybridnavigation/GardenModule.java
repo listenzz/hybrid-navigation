@@ -229,9 +229,6 @@ public class GardenModule extends ReactContextBaseJavaModule {
         if (!(fragment instanceof HybridFragment)) {
             return null;
         }
-        if (!fragment.isAdded()) {
-            return null;
-        }
         return (HybridFragment) fragment;
     }
 
