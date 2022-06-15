@@ -128,7 +128,7 @@ public class ScreenNavigator implements Navigator {
         }
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
-        presenting.presentFragment(presented, requestCode, TransitionAnimation.None, () -> promise.resolve(true));
+        presenting.presentFragment(presented, requestCode, () -> promise.resolve(true), TransitionAnimation.None);
     }
 
     private void handlePresentLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Promise promise) {
@@ -150,16 +150,16 @@ public class ScreenNavigator implements Navigator {
         }
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
-        presenting.presentFragment(presented, requestCode, TransitionAnimation.Fade, () -> promise.resolve(true));
+        presenting.presentFragment(presented, requestCode, () -> promise.resolve(true), TransitionAnimation.Fade);
     }
-    
+
     private void handleHideModal(@NonNull AwesomeFragment target, @NonNull Promise promise) {
         AwesomeFragment presenting = target.getPresentingFragment();
         if (presenting == null) {
-            target.dismissFragment(TransitionAnimation.Fade, () -> promise.resolve(true));
+            target.dismissFragment(() -> promise.resolve(true), TransitionAnimation.Fade);
             return;
         }
-        presenting.dismissFragment(TransitionAnimation.Fade, () -> promise.resolve(true));
+        presenting.dismissFragment(() -> promise.resolve(true), TransitionAnimation.Fade);
     }
 
     private void handleDismiss(@NonNull AwesomeFragment target, @NonNull Promise promise) {
@@ -182,7 +182,7 @@ public class ScreenNavigator implements Navigator {
         stackFragment.setRootFragment(fragment);
         target.presentFragment(stackFragment, requestCode, () -> promise.resolve(true));
     }
-    
+
     private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {
         if (!extras.hasKey("moduleName")) {
             return null;

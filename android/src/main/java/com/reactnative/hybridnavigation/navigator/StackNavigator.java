@@ -16,6 +16,7 @@ import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
 import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.TabBarFragment;
+import com.navigation.androidx.TransitionAnimation;
 import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.ReactBridgeManager;
 import com.reactnative.hybridnavigation.ReactStackFragment;
@@ -74,11 +75,11 @@ public class StackNavigator implements Navigator {
         if (!(fragment instanceof StackFragment)) {
             return null;
         }
-        
+
         if (!fragment.isAdded()) {
             return null;
         }
-        
+
         StackFragment stack = (StackFragment) fragment;
         ArrayList<Bundle> children = buildChildrenGraph(stack);
         Bundle graph = new Bundle();
@@ -102,7 +103,7 @@ public class StackNavigator implements Navigator {
         }
         return children;
     }
-    
+
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
         if (!(fragment instanceof StackFragment)) {
@@ -128,13 +129,13 @@ public class StackNavigator implements Navigator {
                 handlePush(extras, promise, stackFragment);
                 break;
             case "pop":
-                stackFragment.popFragment(true, () -> promise.resolve(true));
+                stackFragment.popFragment(() -> promise.resolve(true));
                 break;
             case "popTo":
                 handlePopTo(extras, promise, stackFragment);
                 break;
             case "popToRoot":
-                stackFragment.popToRootFragment(true, () -> promise.resolve(true));
+                stackFragment.popToRootFragment(() -> promise.resolve(true));
                 break;
             case "redirectTo":
                 handleRedirectTo(target, extras, promise, stackFragment);
@@ -152,7 +153,7 @@ public class StackNavigator implements Navigator {
             promise.resolve(false);
             return;
         }
-        stackFragment.pushFragment(fragment, true, () -> promise.resolve(true));
+        stackFragment.pushFragment(fragment, () -> promise.resolve(true));
     }
 
     private void handleRedirectTo(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise, StackFragment stackFragment) {
@@ -161,7 +162,7 @@ public class StackNavigator implements Navigator {
             promise.resolve(false);
             return;
         }
-        stackFragment.redirectToFragment(fragment, true, () -> promise.resolve(true), target);
+        stackFragment.redirectToFragment(fragment, () -> promise.resolve(true), TransitionAnimation.Redirect, target);
     }
 
     private void handlePopTo(@NonNull ReadableMap extras, @NonNull Promise promise, StackFragment stackFragment) {
@@ -179,7 +180,7 @@ public class StackNavigator implements Navigator {
             return;
         }
 
-        stackFragment.popToFragment(fragment, true, () -> promise.resolve(true));
+        stackFragment.popToFragment(fragment, () -> promise.resolve(true));
     }
 
     @Nullable
@@ -218,7 +219,7 @@ public class StackNavigator implements Navigator {
             promise.resolve(false);
             return;
         }
-        stackFragment.pushFragment(fragment, true, () -> promise.resolve(true));
+        stackFragment.pushFragment(fragment, () -> promise.resolve(true));
     }
 
     private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {
@@ -272,12 +273,12 @@ public class StackNavigator implements Navigator {
             return null;
         }
 
-        TabBarFragment tabBarFragment = drawerFragment.getContentFragment().getTabBarFragment();
+        TabBarFragment tabBarFragment = drawerFragment.requireContentFragment().getTabBarFragment();
         if (tabBarFragment != null) {
-            return tabBarFragment.getSelectedFragment().getStackFragment();
+            return tabBarFragment.requireSelectedFragment().getStackFragment();
         }
 
-        return drawerFragment.getContentFragment().getStackFragment();
+        return drawerFragment.requireContentFragment().getStackFragment();
     }
 
     private ReactBridgeManager getReactBridgeManager() {

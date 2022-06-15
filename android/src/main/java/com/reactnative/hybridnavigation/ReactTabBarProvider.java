@@ -281,15 +281,17 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
             return;
         }
 
-        Style style = tabBarFragment.getStyle();
+        
         Bundle options = tabBarFragment.getOptions();
         ReactTabBar tabBar = this.tabBar;
 
         String tabBarColor = bundle.getString("tabBarColor");
         if (tabBarColor != null) {
             options.putString("tabBarColor", tabBarColor);
-            style.setTabBarBackgroundColor(tabBarColor);
             tabBar.setTabBarBackground(new ColorDrawable(Color.parseColor(tabBarColor)));
+            
+            Style style = tabBarFragment.getStyle();
+            style.setTabBarBackgroundColor(tabBarColor);
             tabBarFragment.setNeedsNavigationBarAppearanceUpdate();
         }
 

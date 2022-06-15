@@ -11,10 +11,10 @@ import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.TabBarFragment;
+import com.navigation.androidx.TransitionAnimation;
 import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.ReactBridgeManager;
 import com.reactnative.hybridnavigation.ReactTabBarFragment;
-import com.reactnative.hybridnavigation.ReactTabBarProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +85,6 @@ public class TabNavigator implements Navigator {
         if (options.hasKey("tabBarModuleName")) {
             String tabBarModuleName = options.getString("tabBarModuleName");
             bundle.putString("tabBarModuleName", tabBarModuleName);
-            tabBarFragment.setTabBarProvider(new ReactTabBarProvider());
         }
 
         if (options.hasKey("sizeIndeterminate")) {
@@ -204,9 +203,9 @@ public class TabNavigator implements Navigator {
             return;
         }
 
-        StackFragment stackFragment = tabBarFragment.getSelectedFragment().getStackFragment();
+        StackFragment stackFragment = tabBarFragment.requireSelectedFragment().getStackFragment();
         if (stackFragment != null && stackFragment.getChildAwesomeFragments().size() > 1) {
-            stackFragment.popToRootFragment(false);
+            stackFragment.popToRootFragment(()-> {}, TransitionAnimation.None);
         }
     }
 

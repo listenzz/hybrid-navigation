@@ -45,7 +45,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         super.onCreate(savedInstanceState);
         activityDelegate.onCreate(savedInstanceState);
         getReactBridgeManager().addReactModuleRegisterListener(this);
-
         ensureViewHierarchy(savedInstanceState);
     }
 
