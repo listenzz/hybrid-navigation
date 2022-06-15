@@ -128,7 +128,7 @@ public class ScreenNavigator implements Navigator {
         }
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
-        presenting.presentFragment(presented, requestCode, () -> promise.resolve(true), TransitionAnimation.None);
+        presenting.presentFragment(presented, requestCode, () -> promise.resolve(true), TransitionAnimation.Fade);
     }
 
     private void handlePresentLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Promise promise) {

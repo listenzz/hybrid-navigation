@@ -87,18 +87,19 @@
         viewController = [self createViewControllerWithExtras:extras];
         NSInteger requestCode = [extras[@"requestCode"] integerValue];
         viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+        viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [viewController setRequestCode:requestCode];
-        [target presentViewController:viewController animated:NO completion:^{
+        [target presentViewController:viewController animated:YES completion:^{
             resolve(@(YES));
         }];
     } else if ([action isEqualToString:@"hideModal"]) {
         UIViewController *presenting = target.presentingViewController;
         if (presenting) {
-            [presenting dismissViewControllerAnimated:NO completion:^{
+            [presenting dismissViewControllerAnimated:YES completion:^{
                 resolve(@(YES));
             }];
         } else {
-            [target dismissViewControllerAnimated:NO completion:^{
+            [target dismissViewControllerAnimated:YES completion:^{
                 resolve(@(YES));
             }];
         }
@@ -116,8 +117,9 @@
         NSDictionary *layout = extras[@"layout"];
         viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
         viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+        viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [viewController setRequestCode:requestCode];
-        [target presentViewController:viewController animated:NO completion:^{
+        [target presentViewController:viewController animated:YES completion:^{
             resolve(@(YES));
         }];
     }
