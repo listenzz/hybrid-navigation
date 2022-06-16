@@ -62,7 +62,7 @@ export default function withBottomModal({
             <View style={styles.flex1} />
           </TouchableWithoutFeedback>
 
-          <View onLayout={height === 0 ? onLayout : undefined}>
+          <View onLayout={onLayout}>
             <WrappedComponent {...props} ref={ref} />
             {isIphoneX() && <SafeAreaView style={{ backgroundColor: safeAreaColor }} />}
           </View>
