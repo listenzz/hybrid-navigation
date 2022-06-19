@@ -25,10 +25,6 @@ import com.navigation.androidx.Style;
 import com.navigation.androidx.SystemUI;
 import com.navigation.androidx.TabBarItem;
 
-/**
- * Created by Listen on 2018/1/15.
- */
-
 public class HybridFragment extends AwesomeFragment {
 
     private static final String SAVED_OPTIONS = "hybrid_options";
@@ -109,7 +105,7 @@ public class HybridFragment extends AwesomeFragment {
         super.onViewCreated(view, savedInstanceState);
         garden.setupToolbar();
     }
-    
+
     @NonNull
     @Override
     protected BarStyle preferredStatusBarStyle() {
@@ -201,6 +197,7 @@ public class HybridFragment extends AwesomeFragment {
         if (args == null) {
             return;
         }
+
         TabBarItem tabBarItem = getTabBarItem();
         if (tabBarItem != null) {
             return;
@@ -210,10 +207,12 @@ public class HybridFragment extends AwesomeFragment {
         if (options == null) {
             return;
         }
+
         Bundle tabItem = options.getBundle("tabItem");
         if (tabItem == null) {
             return;
         }
+
         String title = tabItem.getString("title");
         if (title == null) {
             return;
@@ -224,6 +223,7 @@ public class HybridFragment extends AwesomeFragment {
             setTabBarItem(new TabBarItem(title));
             return;
         }
+
         String uri = icon.getString("uri");
         if (uri == null) {
             setTabBarItem(new TabBarItem(title));
@@ -235,6 +235,7 @@ public class HybridFragment extends AwesomeFragment {
             setTabBarItem(new TabBarItem(title, uri));
             return;
         }
+
         String unselectedUri = unselectedIcon.getString("uri");
         if (unselectedUri == null) {
             setTabBarItem(new TabBarItem(title, uri));
@@ -261,13 +262,13 @@ public class HybridFragment extends AwesomeFragment {
 
     @CallSuper
     public void setAppProperties(@NonNull Bundle props) {
-        if (!isAdded()) {
+        if (isAdded()) {
+            props.putString(ARG_SCENE_ID, getSceneId());
+            this.props = props;
+        } else {
             Bundle args = FragmentHelper.getArguments(this);
             args.putBundle(ARG_PROPS, props);
-            return;
         }
-        props.putString(ARG_SCENE_ID, getSceneId());
-        this.props = props;
     }
 
     public String getModuleName() {

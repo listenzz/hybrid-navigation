@@ -25,20 +25,15 @@ import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionListener;
 
-
-/**
- * Created by Listen on 2017/11/17.
- */
-
 public class ReactAppCompatActivityDelegate {
 
     private static final String TAG = "Navigator";
 
     private final int REQUEST_OVERLAY_PERMISSION_CODE = 1111;
     private static final String REDBOX_PERMISSION_GRANTED_MESSAGE =
-            "Overlay permissions have been granted.";
+        "Overlay permissions have been granted.";
     private static final String REDBOX_PERMISSION_MESSAGE =
-            "Overlay permissions needs to be granted in order for react native apps to run in dev mode";
+        "Overlay permissions needs to be granted in order for react native apps to run in dev mode";
 
     private final AppCompatActivity mActivity;
     private final ReactBridgeManager mBridgeManager;
@@ -102,8 +97,8 @@ public class ReactAppCompatActivityDelegate {
     protected void onResume() {
         if (getReactNativeHost().hasInstance()) {
             getReactNativeHost().getReactInstanceManager().onHostResume(
-                    getPlainActivity(),
-                    (DefaultHardwareBackBtnHandler) getPlainActivity());
+                getPlainActivity(),
+                (DefaultHardwareBackBtnHandler) getPlainActivity());
         }
 
         if (mPermissionsCallback != null) {
@@ -122,7 +117,7 @@ public class ReactAppCompatActivityDelegate {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (getReactNativeHost().hasInstance()) {
             getReactNativeHost().getReactInstanceManager()
-                    .onActivityResult(getPlainActivity(), requestCode, resultCode, data);
+                .onActivityResult(getPlainActivity(), requestCode, resultCode, data);
         } else {
             // Did we request overlay permissions?
             if (requestCode == REQUEST_OVERLAY_PERMISSION_CODE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -135,8 +130,8 @@ public class ReactAppCompatActivityDelegate {
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (getReactNativeHost().hasInstance()
-                && getReactNativeHost().getUseDeveloperSupport()
-                && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+            && getReactNativeHost().getUseDeveloperSupport()
+            && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
             event.startTracking();
             return true;
         }
@@ -150,7 +145,7 @@ public class ReactAppCompatActivityDelegate {
                 return true;
             }
             boolean didDoubleTapR = Assertions.assertNotNull(mDoubleTapReloadRecognizer)
-                    .didDoubleTapR(keyCode, getPlainActivity().getCurrentFocus());
+                .didDoubleTapR(keyCode, getPlainActivity().getCurrentFocus());
             if (didDoubleTapR) {
                 getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();
                 return true;
@@ -161,8 +156,8 @@ public class ReactAppCompatActivityDelegate {
 
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         if (getReactNativeHost().hasInstance()
-                && getReactNativeHost().getUseDeveloperSupport()
-                && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+            && getReactNativeHost().getUseDeveloperSupport()
+            && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
             getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
             return true;
         }

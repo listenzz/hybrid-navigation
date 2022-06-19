@@ -33,6 +33,7 @@ public class NavigatorRegistry {
         for (String action : navigator.supportActions()) {
             if (actionNavigatorPairs.containsKey(action)) {
                 Navigator duplicated = actionNavigatorPairs.get(action);
+                assert duplicated != null;
                 throw new IllegalArgumentException(navigator.getClass().getName() + " 想要注册的 action " + action + " 已经被 " + duplicated.getClass().getName() + " 所注册。");
             }
             actionNavigatorPairs.put(action, navigator);
@@ -41,6 +42,7 @@ public class NavigatorRegistry {
         String layout = navigator.name();
         if (layoutNavigatorPairs.containsKey(layout)) {
             Navigator duplicated = layoutNavigatorPairs.get(layout);
+            assert duplicated != null;
             throw new IllegalArgumentException("Duplicated layout " + layout + ", which has registered through " + duplicated.getClass().getName());
         }
         layoutNavigatorPairs.put(layout, navigator);
@@ -59,21 +61,24 @@ public class NavigatorRegistry {
     @Nullable
     public String layoutForFragment(@NonNull AwesomeFragment fragment) {
         String layout = classLayoutPairs.get(fragment.getClass());
-        if (layout == null) {
-            if (fragment instanceof HybridFragment) {
-                return "screen";
-            }
-            if (fragment instanceof StackFragment) {
-                return "stack";
-            }
-            if (fragment instanceof TabBarFragment) {
-                return "tabs";
-            }
-            if (fragment instanceof DrawerFragment) {
-                return "drawer";
-            }
+        if (layout != null) {
+            return layout;
         }
-        return layout;
+
+        if (fragment instanceof HybridFragment) {
+            return "screen";
+        }
+        if (fragment instanceof StackFragment) {
+            return "stack";
+        }
+        if (fragment instanceof TabBarFragment) {
+            return "tabs";
+        }
+        if (fragment instanceof DrawerFragment) {
+            return "drawer";
+        }
+
+        return null;
     }
 
     public void setLayoutForFragment(@NonNull String layout, @NonNull AwesomeFragment fragment) {

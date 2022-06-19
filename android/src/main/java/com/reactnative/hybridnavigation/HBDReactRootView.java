@@ -13,7 +13,6 @@ import com.facebook.react.ReactRootView;
 
 import java.lang.reflect.Method;
 
-
 public class HBDReactRootView extends ReactRootView {
 
     protected static final String TAG = "Navigator";
@@ -62,7 +61,7 @@ public class HBDReactRootView extends ReactRootView {
         super.startReactApplication(reactInstanceManager, moduleName, initialProperties);
         removeOnGlobalLayoutListener();
     }
-    
+
     // 避免 reload 时，重复 run 的问题
     private boolean shouldRunApplication = true;
 

@@ -30,9 +30,6 @@ import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.Style;
 import com.navigation.androidx.TransitionAnimation;
 
-/**
- * Created by Listen on 2018/1/15.
- */
 public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver, ReactBridgeManager.ReactBridgeReloadListener {
 
     protected static final String TAG = "Navigator";
@@ -234,9 +231,9 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         if (reactRootView == null) {
             return;
         }
-        
+
         if (isReactModuleRegisterCompleted()) {
-            this.reactRootView.setAppProperties(getProps());
+            reactRootView.setAppProperties(getProps());
         }
     }
 
@@ -244,17 +241,11 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         if (reactRootView != null) {
             return;
         }
-        
-        if (getContext() == null) {
-            return;
+
+        if (isReactModuleRegisterCompleted()) {
+            reactRootView = createReactRootView();
+            reactRootView.startReactApplication(getReactInstanceManager(), getModuleName(), getProps());
         }
-        
-        if (!isReactModuleRegisterCompleted()) {
-            return;
-        }
-        
-        reactRootView = createReactRootView();
-        reactRootView.startReactApplication(getReactInstanceManager(), getModuleName(), getProps());
     }
 
     @NonNull
@@ -270,15 +261,11 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         if (reactTitleView != null) {
             return;
         }
-        
-        if (getContext() == null) {
-            return;
-        }
 
         if (!isReactModuleRegisterCompleted()) {
             return;
         }
-        
+
         if (getToolbar() == null) {
             return;
         }
@@ -299,7 +286,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         reactTitleView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
     }
 
-    private HBDReactRootView createReactTitleView( boolean expanded) {
+    private HBDReactRootView createReactTitleView(boolean expanded) {
         Toolbar.LayoutParams layoutParams = createTitleLayoutParams(expanded);
         HBDReactRootView reactTitleView = new HBDReactRootView(getContext());
         Toolbar toolbar = getToolbar();
@@ -314,23 +301,17 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
         return new Toolbar.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER);
     }
-    
+
     @Override
     public void postponeEnterTransition() {
         super.postponeEnterTransition();
-        if (getActivity() == null) {
-            return;
-        }
-        getActivity().supportPostponeEnterTransition();
+        requireActivity().supportPostponeEnterTransition();
     }
 
     @Override
     public void startPostponedEnterTransition() {
         super.startPostponedEnterTransition();
-        if (getActivity() == null) {
-            return;
-        }
-        getActivity().supportStartPostponedEnterTransition();
+        requireActivity().supportStartPostponedEnterTransition();
     }
-    
+
 }

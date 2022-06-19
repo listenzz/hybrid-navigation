@@ -65,7 +65,7 @@ public class DrawerNavigator implements Navigator {
         if (drawer.hasKey("options")) {
             setDrawerOptions(drawer, drawerFragment);
         }
-        
+
         return drawerFragment;
     }
 
@@ -94,10 +94,7 @@ public class DrawerNavigator implements Navigator {
     @Nullable
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof DrawerFragment)) {
-            return null;
-        }
-        if (!fragment.isAdded()) {
+        if (!(fragment instanceof DrawerFragment) || !fragment.isAdded()) {
             return null;
         }
 
@@ -127,10 +124,7 @@ public class DrawerNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof DrawerFragment)) {
-            return null;
-        }
-        if (!fragment.isAdded()) {
+        if (!(fragment instanceof DrawerFragment) || !fragment.isAdded()) {
             return null;
         }
 

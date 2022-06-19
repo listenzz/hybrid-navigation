@@ -13,7 +13,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class HBDEventEmitter extends ReactContextBaseJavaModule {
 
     public static final String KEY_REQUEST_CODE = "request_code";

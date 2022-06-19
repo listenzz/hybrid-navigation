@@ -33,9 +33,6 @@ import com.navigation.androidx.TabBarFragment;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Listen on 2017/11/22.
- */
 public class GardenModule extends ReactContextBaseJavaModule {
 
     private static final String TAG = "Navigator";
@@ -67,14 +64,12 @@ public class GardenModule extends ReactContextBaseJavaModule {
             Garden.createGlobalStyle(toBundle(style));
 
             ReactAppCompatActivity activity = getActiveActivity();
-            if (activity == null) {
-                return;
+            if (activity != null) {
+                activity.inflateStyle();
             }
-
-            activity.inflateStyle();
         });
     }
-    
+
     @ReactMethod
     public void setLeftBarButtonItem(final String sceneId, @Nullable final ReadableMap readableMap) {
         updateOptions(sceneId, readableMap, "leftBarButtonItem");
@@ -105,10 +100,9 @@ public class GardenModule extends ReactContextBaseJavaModule {
         FLog.i(TAG, "update options:" + readableMap);
         UiThreadUtil.runOnUiThread(() -> {
             HybridFragment fragment = findHybridFragmentBySceneId(sceneId);
-            if (fragment == null) {
-                return;
+            if (fragment != null) {
+                fragment.getGarden().updateOptions(readableMap);
             }
-            fragment.getGarden().updateOptions(readableMap);
         });
     }
 
@@ -167,14 +161,10 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @Nullable
     private TabBarFragment getTabBarFragment(String sceneId) {
         AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-        if (fragment == null) {
+        if (fragment == null || fragment.getView() == null) {
             return null;
         }
-        if (fragment.getView() == null) {
-            return null;
-        }
-
-        return  fragment.getTabBarFragment();
+        return fragment.getTabBarFragment();
     }
 
     @ReactMethod
@@ -204,7 +194,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
         if (activity == null) {
             return null;
         }
-        
+
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         return FragmentHelper.findAwesomeFragment(fragmentManager, sceneId);
     }
@@ -217,19 +207,19 @@ public class GardenModule extends ReactContextBaseJavaModule {
         }
 
         Activity activity = reactContext.getCurrentActivity();
-        if (!(activity instanceof ReactAppCompatActivity)) {
-            return null;
+        if (activity instanceof ReactAppCompatActivity) {
+            return (ReactAppCompatActivity) activity;
         }
 
-        return (ReactAppCompatActivity) activity;
+        return null;
     }
-    
+
     private HybridFragment findHybridFragmentBySceneId(String sceneId) {
         AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-        if (!(fragment instanceof HybridFragment)) {
-            return null;
+        if (fragment instanceof HybridFragment) {
+            return (HybridFragment) fragment;
         }
-        return (HybridFragment) fragment;
+        return null;
     }
 
 }

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 public class TabNavigator implements Navigator {
 
     private final List<String> supportActions = Collections.singletonList("switchTab");
@@ -65,7 +64,7 @@ public class TabNavigator implements Navigator {
         if (tabs.hasKey("options")) {
             setTabsOptions(tabs, tabBarFragment);
         }
-        
+
         return tabBarFragment;
     }
 
@@ -74,7 +73,7 @@ public class TabNavigator implements Navigator {
         if (options == null) {
             throw new IllegalArgumentException("options should be an object");
         }
-        
+
         Bundle bundle = new Bundle();
         if (options.hasKey("selectedIndex")) {
             int selectedIndex = options.getInt("selectedIndex");
@@ -91,7 +90,7 @@ public class TabNavigator implements Navigator {
             boolean sizeIndeterminate = options.getBoolean("sizeIndeterminate");
             bundle.putBoolean("sizeIndeterminate", sizeIndeterminate);
         }
-        
+
         tabBarFragment.setOptions(bundle);
     }
 
@@ -111,10 +110,7 @@ public class TabNavigator implements Navigator {
     @Nullable
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof TabBarFragment)) {
-            return null;
-        }
-        if (!fragment.isAdded()) {
+        if (!(fragment instanceof TabBarFragment) || !fragment.isAdded()) {
             return null;
         }
 
@@ -145,10 +141,7 @@ public class TabNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof TabBarFragment)) {
-            return null;
-        }
-        if (!fragment.isAdded()) {
+        if (!(fragment instanceof TabBarFragment) || !fragment.isAdded()) {
             return null;
         }
 
@@ -205,7 +198,8 @@ public class TabNavigator implements Navigator {
 
         StackFragment stackFragment = tabBarFragment.requireSelectedFragment().getStackFragment();
         if (stackFragment != null && stackFragment.getChildAwesomeFragments().size() > 1) {
-            stackFragment.popToRootFragment(()-> {}, TransitionAnimation.None);
+            stackFragment.popToRootFragment(() -> {
+            }, TransitionAnimation.None);
         }
     }
 

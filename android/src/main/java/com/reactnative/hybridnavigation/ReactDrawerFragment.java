@@ -1,13 +1,8 @@
 package com.reactnative.hybridnavigation;
 
-
 import androidx.annotation.NonNull;
 
 import com.navigation.androidx.DrawerFragment;
-
-/**
- * Created by listen on 2018/1/16.
- */
 
 public class ReactDrawerFragment extends DrawerFragment {
 

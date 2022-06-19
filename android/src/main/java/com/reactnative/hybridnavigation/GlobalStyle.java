@@ -9,15 +9,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.facebook.common.logging.FLog;
 import com.facebook.react.uimanager.PixelUtil;
 import com.navigation.androidx.BarStyle;
 import com.navigation.androidx.DrawableUtils;
 import com.navigation.androidx.Style;
-
-/**
- * Created by Listen on 2018/1/9.
- */
 
 public class GlobalStyle {
 
@@ -38,7 +37,7 @@ public class GlobalStyle {
             FLog.w(TAG, "Style options is null");
             return;
         }
-        
+
         // screenBackgroundColor
         String screenBackgroundColor = options.getString("screenBackgroundColor");
         if (screenBackgroundColor != null) {
@@ -193,22 +192,7 @@ public class GlobalStyle {
         // tabBarShadowImage
         Bundle shadowImage = options.getBundle("tabBarShadowImage");
         if (shadowImage != null) {
-            Bundle image = shadowImage.getBundle("image");
-            String color = shadowImage.getString("color");
-            Drawable drawable = null;
-            if (image != null) {
-                String uri = image.getString("uri");
-                if (uri != null) {
-                    drawable = DrawableUtils.fromUri(context, uri);
-                    if (drawable instanceof BitmapDrawable) {
-                        BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-                        bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
-                    }
-                }
-            } else if (color != null) {
-                drawable = new ColorDrawable(Color.parseColor(color));
-            }
-            style.setTabBarShadow(drawable);
+            setBarBarShadowImage(context, style, shadowImage);
         }
 
         // swipeBackEnabledAndroid
@@ -226,6 +210,34 @@ public class GlobalStyle {
         if (scrimAlpha != -1) {
             style.setScrimAlpha((int) scrimAlpha);
         }
+    }
+
+    private void setBarBarShadowImage(@NonNull Context context, @NonNull Style style, @NonNull Bundle shadowImage) {
+        Bundle image = shadowImage.getBundle("image");
+        if (image != null) {
+            style.setTabBarShadow(buildDrawableFromImageBundle(context, image));
+            return;
+        }
+
+        String color = shadowImage.getString("color");
+        if (color != null) {
+            style.setTabBarShadow(new ColorDrawable(Color.parseColor(color)));
+        }
+    }
+
+    @Nullable
+    private Drawable buildDrawableFromImageBundle(@NonNull Context context, @NonNull Bundle image) {
+        String uri = image.getString("uri");
+        if (uri == null) {
+            throw new IllegalArgumentException("必须指定 image 的 uri 字段");
+        }
+
+        Drawable drawable = DrawableUtils.fromUri(context, uri);
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
+        }
+        return drawable;
     }
 
 }

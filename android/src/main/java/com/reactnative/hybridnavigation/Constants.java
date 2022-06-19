@@ -1,9 +1,5 @@
 package com.reactnative.hybridnavigation;
 
-/**
- * Created by Listen on 2018/1/15.
- */
-
 public class Constants {
 
     public static final String ARG_MODULE_NAME = "module_name";

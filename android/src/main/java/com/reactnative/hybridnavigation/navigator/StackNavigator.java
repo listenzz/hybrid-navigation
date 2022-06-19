@@ -72,11 +72,7 @@ public class StackNavigator implements Navigator {
     @Nullable
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof StackFragment)) {
-            return null;
-        }
-
-        if (!fragment.isAdded()) {
+        if (!(fragment instanceof StackFragment) || !fragment.isAdded()) {
             return null;
         }
 
@@ -106,10 +102,7 @@ public class StackNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof StackFragment)) {
-            return null;
-        }
-        if (!fragment.isAdded()) {
+        if (!(fragment instanceof StackFragment) || !fragment.isAdded()) {
             return null;
         }
         StackFragment stack = (StackFragment) fragment;
@@ -203,7 +196,7 @@ public class StackNavigator implements Navigator {
                 continue;
             }
 
-            if (inclusive && i - 1 > -1) {
+            if (inclusive && i > 0) {
                 FragmentManager.BackStackEntry e = fragmentManager.getBackStackEntryAt(i - 1);
                 return (AwesomeFragment) fragmentManager.findFragmentByTag(e.getName());
             }
@@ -239,18 +232,18 @@ public class StackNavigator implements Navigator {
 
     @Nullable
     private Bundle buildOptions(@NonNull ReadableMap extras) {
-        if (!extras.hasKey("options")) {
-            return null;
+        if (extras.hasKey("options")) {
+            return Arguments.toBundle(extras.getMap("options"));
         }
-        return Arguments.toBundle(extras.getMap("options"));
+        return null;
     }
 
     @Nullable
     private Bundle buildProps(@NonNull ReadableMap extras) {
-        if (!extras.hasKey("props")) {
-            return null;
+        if (extras.hasKey("props")) {
+            return Arguments.toBundle(extras.getMap("props"));
         }
-        return Arguments.toBundle(extras.getMap("props"));
+        return null;
     }
 
     private StackFragment getStackFragment(AwesomeFragment fragment) {

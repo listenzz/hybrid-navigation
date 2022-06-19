@@ -23,11 +23,11 @@ public class Utils {
 
     public static Drawable createTabBarShadow(Context context, Bundle shadowImage) {
         Bundle image = shadowImage.getBundle("image");
-        String color = shadowImage.getString("color");
         if (image != null) {
             return createImageShadow(context, image);
         }
 
+        String color = shadowImage.getString("color");
         if (color != null) {
             return new ColorDrawable(Color.parseColor(color));
         }

@@ -21,11 +21,6 @@ import com.navigation.androidx.AwesomeActivity;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.Style;
 
-
-/**
- * Created by Listen on 2017/11/17.
- */
-
 public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity, ReactBridgeManager.ReactModuleRegisterListener {
 
     protected static final String TAG = "Navigator";
@@ -107,13 +102,13 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             setActivityRootFragment(stackFragment);
             return;
         }
-        
+
         if (bridgeManager.hasPendingLayout()) {
             FLog.i(TAG, "Set root Fragment from pending layout when create main component");
             setActivityRootFragment(bridgeManager);
             return;
         }
-        
+
         if (bridgeManager.hasStickyLayout()) {
             FLog.i(TAG, "Set root Fragment from sticky layout when create main component");
             AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getStickyLayout());
@@ -122,7 +117,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             }
             return;
         }
-        
+
         if (bridgeManager.hasRootLayout()) {
             FLog.i(TAG, "Set root Fragment from last root layout when create main component");
             AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getRootLayout());
@@ -131,7 +126,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             }
             return;
         }
-        
+
         FLog.w(TAG, "No layout to set when create main component");
     }
 

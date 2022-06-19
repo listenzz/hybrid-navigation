@@ -74,7 +74,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
     private void startReactApplication(@NonNull List<TabBarItem> tabBarItems, String tabBarModuleName, HBDReactRootView reactRootView) {
         Bundle options = tabBarFragment.getOptions();
         inflateTabsIfNeeded(tabBarItems, options);
-        
+
         Bundle props = createProps(options);
         props.putInt("selectedIndex", options.getInt("selectedIndex"));
 
@@ -84,7 +84,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
 
         reactRootView.startReactApplication(reactInstanceManager, tabBarModuleName, props);
     }
-    
+
     @NonNull
     private HBDReactRootView createReactRootView() {
         HBDReactRootView reactRootView = new HBDReactRootView(tabBarFragment.requireContext());
@@ -99,7 +99,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
 
         return reactRootView;
     }
-    
+
     private void inflateTabsIfNeeded(@NonNull List<TabBarItem> tabBarItems, Bundle options) {
         ArrayList<Bundle> tabs = options.getParcelableArrayList("tabs");
         if (tabs != null) {
@@ -133,6 +133,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
             StackFragment stackFragment = (StackFragment) fragment;
             fragment = stackFragment.getRootFragment();
         }
+
         if (fragment instanceof HybridFragment) {
             HybridFragment hybridFragment = (HybridFragment) fragment;
             return new Pair<>(hybridFragment.getSceneId(), hybridFragment.getModuleName());
@@ -144,20 +145,21 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         bridgeManager.removeReactBridgeReloadListener(this);
         ReactContext reactContext = bridgeManager.getCurrentReactContext();
-        
+
         if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
             return;
         }
+
         if (reactRootView != null) {
             reactRootView.unmountReactApplication();
             reactRootView = null;
         }
     }
-    
+
     @NonNull
     private Bundle createProps(Bundle options) {
         Bundle props = new Bundle();
-        
+
         props.putParcelableArrayList("tabs", options.getParcelableArrayList("tabs"));
         props.putString("sceneId", tabBarFragment.getSceneId());
         props.putInt("selectedIndex", tabBarFragment.getSelectedIndex());
@@ -281,7 +283,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
             return;
         }
 
-        
+
         Bundle options = tabBarFragment.getOptions();
         ReactTabBar tabBar = this.tabBar;
 
@@ -289,7 +291,7 @@ public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.R
         if (tabBarColor != null) {
             options.putString("tabBarColor", tabBarColor);
             tabBar.setTabBarBackground(new ColorDrawable(Color.parseColor(tabBarColor)));
-            
+
             Style style = tabBarFragment.getStyle();
             style.setTabBarBackgroundColor(tabBarColor);
             tabBarFragment.setNeedsNavigationBarAppearanceUpdate();

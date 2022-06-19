@@ -1,5 +1,13 @@
 package com.reactnative.hybridnavigation;
 
+import static com.reactnative.hybridnavigation.HBDEventEmitter.EVENT_NAVIGATION;
+import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_ACTION;
+import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_ON;
+import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_SCENE_ID;
+import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_BAR_BUTTON_ITEM_CLICK;
+import static com.reactnative.hybridnavigation.Parameters.mergeOptions;
+import static com.reactnative.hybridnavigation.Parameters.toBundle;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -19,17 +27,6 @@ import com.navigation.androidx.ToolbarButtonItem;
 
 import java.util.ArrayList;
 
-import static com.reactnative.hybridnavigation.HBDEventEmitter.EVENT_NAVIGATION;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_ACTION;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_ON;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_SCENE_ID;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_BAR_BUTTON_ITEM_CLICK;
-import static com.reactnative.hybridnavigation.Parameters.mergeOptions;
-import static com.reactnative.hybridnavigation.Parameters.toBundle;
-
-/**
- * Created by Listen on 2017/11/22.
- */
 public class Garden {
 
     private static final String TAG = "Navigator";
@@ -63,7 +60,7 @@ public class Garden {
     boolean extendedLayoutIncludesTopBar;
 
     boolean forceTransparentDialogWindow;
-    
+
     Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
@@ -85,16 +82,11 @@ public class Garden {
         }
 
         this.forceTransparentDialogWindow = options.getBoolean("forceTransparentDialogWindow");
-        
+
         applyOptions(options);
     }
 
     void setupToolbar() {
-
-        if (fragment.getView() == null || fragment.getContext() == null) {
-            return;
-        }
-
         AwesomeToolbar toolbar = fragment.getToolbar();
         if (toolbar == null) {
             return;
@@ -124,27 +116,26 @@ public class Garden {
 
     void setTitleItem(@NonNull Bundle titleItem) {
         String moduleName = titleItem.getString("moduleName");
-        if (moduleName != null) {
-            return;
+        if (moduleName == null) {
+            String title = titleItem.getString("title");
+            fragment.setTitle(title);
         }
-        String title = titleItem.getString("title");
-        fragment.setTitle(title);
     }
 
     void setLeftBarButtonItems(ArrayList<Bundle> items) {
         if (items == null) {
             fragment.setLeftBarButtonItems(null);
-            return;
+        } else {
+            fragment.setLeftBarButtonItems(barButtonItemsFromBundle(items));
         }
-        fragment.setLeftBarButtonItems(barButtonItemsFromBundle(items));
     }
 
     void setRightBarButtonItems(ArrayList<Bundle> items) {
         if (items == null) {
             fragment.setRightBarButtonItems(null);
-            return;
+        } else {
+            fragment.setRightBarButtonItems(barButtonItemsFromBundle(items));
         }
-        fragment.setRightBarButtonItems(barButtonItemsFromBundle(items));
     }
 
     private ToolbarButtonItem[] barButtonItemsFromBundle(ArrayList<Bundle> items) {
@@ -159,17 +150,17 @@ public class Garden {
     void setLeftBarButtonItem(@Nullable Bundle item) {
         if (item == null) {
             fragment.setLeftBarButtonItem(null);
-            return;
+        } else {
+            fragment.setLeftBarButtonItem(barButtonItemFromBundle(item));
         }
-        fragment.setLeftBarButtonItem(barButtonItemFromBundle(item));
     }
 
     void setRightBarButtonItem(@Nullable Bundle item) {
         if (item == null) {
             fragment.setRightBarButtonItem(null);
-            return;
+        } else {
+            fragment.setRightBarButtonItem(barButtonItemFromBundle(item));
         }
-        fragment.setRightBarButtonItem(barButtonItemFromBundle(item));
     }
 
     private ToolbarButtonItem barButtonItemFromBundle(@NonNull Bundle item) {
@@ -177,17 +168,9 @@ public class Garden {
         if (context == null) return null;
         String title = item.getString("title");
         boolean enabled = item.getBoolean("enabled", true);
-        Bundle icon = item.getBundle("icon");
-        String uri = null;
-        if (icon != null) {
-            uri = icon.getString("uri");
-        }
-        final String action = item.getString("action");
-        int tintColor = 0;
-        String color = item.getString("tintColor");
-        if (color != null) {
-            tintColor = Color.parseColor(color);
-        }
+        String uri = uri(item);
+        String action = item.getString("action");
+        int tintColor = tintColor(item);
         boolean renderOriginal = item.getBoolean("renderOriginal", false);
         return new ToolbarButtonItem(uri, 0, renderOriginal, title, tintColor, enabled, view -> {
             Bundle bundle = new Bundle();
@@ -196,6 +179,23 @@ public class Garden {
             bundle.putString(KEY_ON, ON_BAR_BUTTON_ITEM_CLICK);
             HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
         });
+    }
+
+    private int tintColor(@NonNull Bundle item) {
+        String tintColor = item.getString("tintColor");
+        if (tintColor != null) {
+            return Color.parseColor(tintColor);
+        }
+        return 0;
+    }
+
+    @Nullable
+    private String uri(@NonNull Bundle item) {
+        Bundle icon = item.getBundle("icon");
+        if (icon != null) {
+            return icon.getString("uri");
+        }
+        return null;
     }
 
     private void applyOptions(@NonNull Bundle options) {
@@ -274,10 +274,8 @@ public class Garden {
         if (readableMap.hasKey("screenBackgroundColor")) {
             String color = readableMap.getString("screenBackgroundColor");
             style.setScreenBackgroundColor(Color.parseColor(color));
-            View root = fragment.getView();
-            if (root != null) {
-                root.setBackground(new ColorDrawable(Color.parseColor(color)));
-            }
+            View root = fragment.requireView();
+            root.setBackground(new ColorDrawable(Color.parseColor(color)));
         }
 
         if (shouldUpdateStatusBar(readableMap)) {
@@ -291,7 +289,7 @@ public class Garden {
         if (shouldUpdateNavigationBar(readableMap)) {
             fragment.setNeedsNavigationBarAppearanceUpdate();
         }
-        
+
         Bundle options = mergeOptions(fragment.getOptions(), patches);
         fragment.setOptions(options);
 
@@ -355,5 +353,5 @@ public class Garden {
         }
         return false;
     }
-    
+
 }

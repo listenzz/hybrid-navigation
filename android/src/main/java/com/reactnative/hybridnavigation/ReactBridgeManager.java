@@ -26,9 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/**
- * Created by Listen on 2017/11/17.
- */
 @UiThread
 public class ReactBridgeManager {
 
@@ -78,7 +75,7 @@ public class ReactBridgeManager {
             stickyLayout = null;
             pendingLayout = null;
             reactBridgeReloadListeners.clear();
-            
+
             setViewHierarchyReady(false);
         });
 
@@ -176,14 +173,14 @@ public class ReactBridgeManager {
     public void removeReactBridgeReloadListener(@NonNull ReactBridgeReloadListener listener) {
         reactBridgeReloadListeners.remove(listener);
     }
-    
+
     public void handleReload() {
         invokeReloadListeners();
         setPendingLayout(null, 0);
         setReactModuleRegisterCompleted(false);
         setViewHierarchyReady(false);
     }
-    
+
     private void invokeReloadListeners() {
         for (ReactBridgeManager.ReactBridgeReloadListener listener : reactBridgeReloadListeners) {
             listener.onReload();

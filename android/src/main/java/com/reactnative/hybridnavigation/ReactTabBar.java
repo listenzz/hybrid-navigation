@@ -12,7 +12,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
-
 public class ReactTabBar extends FrameLayout {
 
     private Drawable shadow = new ColorDrawable(Color.parseColor("#EEEEEE"));

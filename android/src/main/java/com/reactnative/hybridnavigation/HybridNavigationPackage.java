@@ -11,19 +11,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by Listen on 2017/11/19.
- */
-
 public class HybridNavigationPackage implements ReactPackage {
 
     @NonNull
     @Override
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         return Arrays.<NativeModule>asList(
-                new NavigationModule(reactContext, ReactBridgeManager.get()),
-                new GardenModule(reactContext, ReactBridgeManager.get()),
-                new HBDEventEmitter(reactContext)
+            new NavigationModule(reactContext, ReactBridgeManager.get()),
+            new GardenModule(reactContext, ReactBridgeManager.get()),
+            new HBDEventEmitter(reactContext)
         );
     }
 

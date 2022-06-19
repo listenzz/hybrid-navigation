@@ -28,10 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-/**
- * Created by Listen on 2017/11/20.
- */
 public class NavigationModule extends ReactContextBaseJavaModule {
 
     static final String TAG = "Navigator";
@@ -93,10 +89,10 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void signalFirstRenderComplete(final String sceneId) {
         UiThreadUtil.runOnUiThread(() -> {
-            AwesomeFragment awesomeFragment = findFragmentBySceneId(sceneId);
-            if (awesomeFragment instanceof ReactFragment) {
-                ReactFragment fragment = (ReactFragment) awesomeFragment;
-                fragment.signalFirstRenderComplete();
+            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+            if (fragment instanceof ReactFragment) {
+                ReactFragment reactFragment = (ReactFragment) fragment;
+                reactFragment.signalFirstRenderComplete();
             }
         });
     }
@@ -124,12 +120,10 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             }
 
             ReactAppCompatActivity activity = getActiveActivity();
-            if (activity == null) {
-                return;
+            if (activity != null) {
+                FLog.i(TAG, "Have active Activity and React module was registered, set root Fragment immediately.");
+                activity.setActivityRootFragment(fragment, tag);
             }
-
-            FLog.i(TAG, "Have active Activity and React module was registered, set root Fragment immediately.");
-            activity.setActivityRootFragment(fragment, tag);
         });
     }
 
@@ -187,10 +181,9 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     public void setResult(final String sceneId, final int resultCode, final ReadableMap result) {
         UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment == null) {
-                return;
+            if (fragment != null) {
+                fragment.setResult(resultCode, Arguments.toBundle(result));
             }
-            fragment.setResult(resultCode, Arguments.toBundle(result));
         });
     }
 
@@ -225,10 +218,10 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     private String findSceneIdByModuleName(@NonNull String moduleName, AwesomeFragment parent) {
         String sceneId = findSceneIdFromParent(moduleName, parent);
-        if (sceneId == null) {
-            return findSceneIdFromChildren(moduleName, parent.getChildAwesomeFragments());
+        if (sceneId != null) {
+            return sceneId;
         }
-        return sceneId;
+        return findSceneIdFromChildren(moduleName, parent.getChildAwesomeFragments());
     }
 
     private String findSceneIdFromChildren(@NonNull String moduleName, List<AwesomeFragment> children) {
@@ -249,11 +242,11 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         }
 
         HybridFragment hybridFragment = (HybridFragment) fragment;
-        if (!moduleName.equals(hybridFragment.getModuleName())) {
-            return null;
+        if (moduleName.equals(hybridFragment.getModuleName())) {
+            return hybridFragment.getSceneId();
         }
 
-        return hybridFragment.getSceneId();
+        return null;
     }
 
     @ReactMethod
@@ -274,7 +267,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                         UiThreadUtil.runOnUiThread(this, 16);
                         return;
                     }
-                    
+
                     Bundle bundle = new Bundle();
                     bundle.putString("moduleName", current.getModuleName());
                     bundle.putString("sceneId", current.getSceneId());
@@ -305,7 +298,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                         UiThreadUtil.runOnUiThread(this, 16);
                         return;
                     }
-                    
+
                     promise.resolve(Arguments.fromList(graph));
                 });
             }
@@ -337,10 +330,10 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         }
 
         Activity activity = reactContext.getCurrentActivity();
-        if (!(activity instanceof ReactAppCompatActivity)) {
-            return null;
+        if (activity instanceof ReactAppCompatActivity) {
+            return (ReactAppCompatActivity) activity;
         }
 
-        return (ReactAppCompatActivity) activity;
+        return null;
     }
 }

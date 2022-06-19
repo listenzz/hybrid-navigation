@@ -1,6 +1,5 @@
 package com.reactnative.hybridnavigation;
 
-
 public interface ReactRootViewHolder {
 
     interface VisibilityObserver {

@@ -8,10 +8,6 @@ import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.TabBarItem;
 import com.navigation.androidx.TransitionAnimation;
 
-/**
- * Created by Listen on 2018/1/15.
- */
-
 public class ReactStackFragment extends StackFragment {
 
     private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();

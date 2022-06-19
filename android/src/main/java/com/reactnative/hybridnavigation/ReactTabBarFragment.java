@@ -25,11 +25,6 @@ import com.navigation.androidx.TransitionAnimation;
 
 import java.util.List;
 
-
-/**
- * Created by listen on 2018/1/15.
- */
-
 public class ReactTabBarFragment extends TabBarFragment {
 
     private static final String SAVED_OPTIONS = "hybrid_options";
@@ -68,9 +63,9 @@ public class ReactTabBarFragment extends TabBarFragment {
     protected void setPresentAnimation(AwesomeFragment current, AwesomeFragment previous) {
         if (shouldImproveTransitionForReact(current)) {
             improveTransitionForReact(current, previous);
-            return;
+        } else {
+            super.setPresentAnimation(current, previous);
         }
-        super.setPresentAnimation(current, previous);
     }
 
     private boolean shouldImproveTransitionForReact(AwesomeFragment current) {
@@ -121,8 +116,9 @@ public class ReactTabBarFragment extends TabBarFragment {
         Bundle options = getOptions();
         if (options.getString("tabBarModuleName") != null) {
             return new ReactTabBarProvider();
+        } else {
+            return new DefaultTabBarProvider();
         }
-        return new ReactDefaultTabBarProvider();
     }
 
     private Bundle options;
@@ -155,17 +151,16 @@ public class ReactTabBarFragment extends TabBarFragment {
             sendSwitchTabEvent(index);
             // restore tab bar selected index
             setTabBarSelectedIndex(getSelectedIndex());
-            return;
+        } else {
+            super.setSelectedIndex(index, completion);
+            intercepted = true;
         }
-
-        super.setSelectedIndex(index, completion);
-        intercepted = true;
     }
 
     private boolean shouldIntercept() {
         return isAdded() && bridgeManager.hasRootLayout() && this.intercepted;
     }
-    
+
     private void sendSwitchTabEvent(int index) {
         Bundle data = new Bundle();
         data.putString(KEY_SCENE_ID, getSceneId());
@@ -197,5 +192,5 @@ public class ReactTabBarFragment extends TabBarFragment {
     public Style getStyle() {
         return mStyle;
     }
-    
+
 }

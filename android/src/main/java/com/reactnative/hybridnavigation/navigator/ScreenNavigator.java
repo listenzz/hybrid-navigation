@@ -19,7 +19,6 @@ import com.reactnative.hybridnavigation.ReactStackFragment;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class ScreenNavigator implements Navigator {
 
     final static String TAG = "Navigator";
@@ -41,31 +40,29 @@ public class ScreenNavigator implements Navigator {
     @Override
     @Nullable
     public AwesomeFragment createFragment(@NonNull ReadableMap layout) {
-        if (layout.hasKey(name())) {
-            ReadableMap screen = layout.getMap(name());
-            if (screen == null) {
-                throw new IllegalArgumentException("screen should be an object.");
-            }
-
-            String moduleName = screen.getString("moduleName");
-            if (moduleName == null) {
-                throw new IllegalArgumentException("moduleName is required.");
-            }
-
-            Bundle props = buildProps(screen);
-            Bundle options = buildOptions(screen);
-
-            return getReactBridgeManager().createFragment(moduleName, props, options);
+        if (!layout.hasKey(name())) {
+            return null;
         }
-        return null;
+
+        ReadableMap screen = layout.getMap(name());
+        if (screen == null) {
+            throw new IllegalArgumentException("screen should be an object.");
+        }
+
+        String moduleName = screen.getString("moduleName");
+        if (moduleName == null) {
+            throw new IllegalArgumentException("moduleName is required.");
+        }
+
+        Bundle props = buildProps(screen);
+        Bundle options = buildOptions(screen);
+
+        return getReactBridgeManager().createFragment(moduleName, props, options);
     }
 
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof HybridFragment)) {
-            return null;
-        }
-        if (!fragment.isAdded()) {
+        if (!(fragment instanceof HybridFragment) || !fragment.isAdded()) {
             return null;
         }
 
@@ -80,10 +77,7 @@ public class ScreenNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof HybridFragment)) {
-            return null;
-        }
-        if (!fragment.isAdded()) {
+        if (!(fragment instanceof HybridFragment) || !fragment.isAdded()) {
             return null;
         }
 
@@ -200,18 +194,18 @@ public class ScreenNavigator implements Navigator {
 
     @Nullable
     private Bundle buildOptions(@NonNull ReadableMap extras) {
-        if (!extras.hasKey("options")) {
-            return null;
+        if (extras.hasKey("options")) {
+            return Arguments.toBundle(extras.getMap("options"));
         }
-        return Arguments.toBundle(extras.getMap("options"));
+        return null;
     }
 
     @Nullable
     private Bundle buildProps(@NonNull ReadableMap extras) {
-        if (!extras.hasKey("props")) {
-            return null;
+        if (extras.hasKey("props")) {
+            return Arguments.toBundle(extras.getMap("props"));
         }
-        return Arguments.toBundle(extras.getMap("props"));
+        return null;
     }
 
     private ReactBridgeManager getReactBridgeManager() {

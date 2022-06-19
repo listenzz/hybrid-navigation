@@ -12,7 +12,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.navigation.androidx.DefaultTabBarProvider;
 import com.navigation.androidx.Style;
 import com.navigation.androidx.TabBar;
 import com.navigation.androidx.TabBarFragment;
@@ -21,8 +20,8 @@ import com.navigation.androidx.TabBarItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReactDefaultTabBarProvider extends DefaultTabBarProvider {
-    
+public class DefaultTabBarProvider extends com.navigation.androidx.DefaultTabBarProvider {
+
     private ReactTabBarFragment tabBarFragment;
 
     @Override
@@ -54,7 +53,7 @@ public class ReactDefaultTabBarProvider extends DefaultTabBarProvider {
         }
 
         TabBar tabBar = tabBarFragment.getTabBar();
-        
+
         for (Bundle option : options) {
             int index = (int) option.getDouble("index");
             TabBarItem tabBarItem = tabBar.getTabBarItem(index);
@@ -93,28 +92,26 @@ public class ReactDefaultTabBarProvider extends DefaultTabBarProvider {
         tabBarItem.iconUri = selected.getString("uri");
 
         Bundle unselected = icon.getBundle("unselected");
-        if (unselected == null) {
-            return;
+        if (unselected != null) {
+            tabBarItem.unselectedIconUri = unselected.getString("uri");
         }
-        tabBarItem.unselectedIconUri = unselected.getString("uri");
     }
 
     private void setTabItemTitle(Bundle option, TabBarItem tabBarItem) {
         String title = option.getString("title");
-        if (title == null) {
-            return;
+        if (title != null) {
+            tabBarItem.title = title;
         }
-        tabBarItem.title = title;
     }
 
     private void updateTabBarStyle(@Nullable Bundle options) {
         if (options == null) {
             return;
         }
-        
+
         tabBarFragment.setOptions(mergeOptions(tabBarFragment.getOptions(), options));
         TabBar tabBar = tabBarFragment.getTabBar();
-   
+
         String tabBarColor = options.getString("tabBarColor");
         Bundle shadowImage = options.getBundle("tabBarShadowImage");
         String tabBarItemColor = options.getString("tabBarItemColor");
@@ -122,7 +119,7 @@ public class ReactDefaultTabBarProvider extends DefaultTabBarProvider {
 
         if (tabBarColor != null) {
             tabBar.setBarBackgroundColor(tabBarColor);
-            
+
             Style style = tabBarFragment.getStyle();
             style.setTabBarBackgroundColor(tabBarColor);
             tabBarFragment.setNeedsNavigationBarAppearanceUpdate();
@@ -142,5 +139,5 @@ public class ReactDefaultTabBarProvider extends DefaultTabBarProvider {
 
         tabBar.initialise(tabBar.getCurrentSelectedPosition());
     }
-    
+
 }
