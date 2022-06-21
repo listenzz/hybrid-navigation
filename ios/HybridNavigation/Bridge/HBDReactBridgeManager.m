@@ -285,75 +285,36 @@ const NSInteger ResultCancel = 0;
 - (NSArray *)routeGraph {
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *vc = mainWindow.rootViewController;
-    NSMutableDictionary *graph = [[self buildRouteGraphWithViewController:vc] mutableCopy];
-
+    NSDictionary *graph = [self buildRouteGraphWithViewController:vc];
     NSMutableArray *root = [[NSMutableArray alloc] init];
-    NSMutableArray *modal = [[NSMutableArray alloc] init];
-    NSMutableArray *present = [[NSMutableArray alloc] init];
-
-    [self extractModal:modal present:present withGraph:graph];
-
-    if (graph) {
-        [root addObject:graph];
-    }
-
-    if ([present count] > 0) {
-        [root addObjectsFromArray:present];
-    }
-
-    if ([modal count] > 0) {
-        [root addObjectsFromArray:modal];
-    }
-
+    [root addObject:graph];
+    [root addObjectsFromArray:[self presentedGraphsWithRootViewController:vc]];
+    
     return root;
 }
 
-- (void)extractModal:(NSMutableArray *)modal present:(NSMutableArray *)present withGraph:(NSMutableDictionary *)graph {
-    NSMutableDictionary *m = graph[@"ref_modal"];
-    NSMutableDictionary *p = graph[@"ref_present"];
-    if (m) {
-        [graph removeObjectForKey:@"ref_modal"];
-        [modal addObject:m];
-        [self extractModal:modal present:present withGraph:m];
-    }
-
-    if (p) {
-        [graph removeObjectForKey:@"ref_present"];
-        [present addObject:p];
-        [self extractModal:modal present:present withGraph:p];
-    }
-
-    NSArray *children = graph[@"children"];
-    if (children) {
-        for (int i = 0; i < children.count; i++) {
-            NSMutableDictionary *child = children[i];
-            [self extractModal:modal present:present withGraph:child];
+- (NSArray *)presentedGraphsWithRootViewController:(UIViewController *)vc {
+    NSMutableArray *graphs = [[NSMutableArray alloc] init];
+    UIViewController *presented = vc.presentedViewController;
+    while (presented && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
+        NSDictionary *graph = [self buildRouteGraphWithViewController:presented];
+        if (graph) {
+            [graphs addObject:graph];
         }
+        presented = presented.presentedViewController;
     }
+    
+    return graphs;
 }
 
-- (NSMutableDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
-    NSMutableDictionary *m = nil;
-    NSMutableDictionary *p = nil;
-    UIViewController *presented = vc.presentedViewController;
-    if (presented && presented.presentingViewController == vc && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
-        p = [[self buildRouteGraphWithViewController:presented] mutableCopy];
-    }
-
+- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
     NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
-    if (layout) {
-        id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
-        NSMutableDictionary *graph = [[navigator buildRouteGraphWithViewController:vc] mutableCopy];
-        if (m) {
-            graph[@"ref_modal"] = m;
-        }
-        if (p) {
-            graph[@"ref_present"] = p;
-        }
-        return graph;
+    if (!layout) {
+        return nil;
     }
-
-    return nil;
+    
+    id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
+    return [navigator buildRouteGraphWithViewController:vc];
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
