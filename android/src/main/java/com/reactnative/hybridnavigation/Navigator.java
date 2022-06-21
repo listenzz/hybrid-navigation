@@ -1,4 +1,4 @@
-package com.reactnative.hybridnavigation.navigator;
+package com.reactnative.hybridnavigation;
 
 import android.os.Bundle;
 

@@ -161,10 +161,10 @@ public class GardenModule extends ReactContextBaseJavaModule {
     @Nullable
     private TabBarFragment getTabBarFragment(String sceneId) {
         AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-        if (fragment == null || fragment.getView() == null) {
-            return null;
+        if (fragment != null) {
+            return fragment.getTabBarFragment();
         }
-        return fragment.getTabBarFragment();
+        return null;
     }
 
     @ReactMethod

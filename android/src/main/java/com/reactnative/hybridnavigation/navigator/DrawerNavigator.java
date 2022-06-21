@@ -11,6 +11,7 @@ import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
 import com.reactnative.hybridnavigation.HybridFragment;
+import com.reactnative.hybridnavigation.Navigator;
 import com.reactnative.hybridnavigation.ReactBridgeManager;
 import com.reactnative.hybridnavigation.ReactDrawerFragment;
 

@@ -21,7 +21,6 @@ import com.navigation.androidx.AwesomeActivity;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.TabBarFragment;
-import com.reactnative.hybridnavigation.navigator.Navigator;
 
 import java.util.ArrayList;
 import java.util.HashMap;

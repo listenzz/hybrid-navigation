@@ -1,4 +1,4 @@
-package com.reactnative.hybridnavigation.navigator;
+package com.reactnative.hybridnavigation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,6 +8,11 @@ import com.navigation.androidx.DrawerFragment;
 import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.TabBarFragment;
 import com.reactnative.hybridnavigation.HybridFragment;
+import com.reactnative.hybridnavigation.Navigator;
+import com.reactnative.hybridnavigation.navigator.DrawerNavigator;
+import com.reactnative.hybridnavigation.navigator.ScreenNavigator;
+import com.reactnative.hybridnavigation.navigator.StackNavigator;
+import com.reactnative.hybridnavigation.navigator.TabNavigator;
 
 import java.util.ArrayList;
 import java.util.HashMap;

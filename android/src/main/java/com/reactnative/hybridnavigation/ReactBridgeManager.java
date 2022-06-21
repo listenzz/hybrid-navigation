@@ -18,8 +18,6 @@ import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
-import com.reactnative.hybridnavigation.navigator.Navigator;
-import com.reactnative.hybridnavigation.navigator.NavigatorRegistry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -129,9 +127,13 @@ public class ReactBridgeManager {
         return reactModules.containsKey(moduleName);
     }
 
-    @Nullable
+    @NonNull
     public ReadableMap reactModuleOptionsForKey(@NonNull String moduleName) {
-        return reactModules.get(moduleName);
+        ReadableMap map = reactModules.get(moduleName);
+        if (map != null) {
+            return map;
+        }
+        return Arguments.createMap();
     }
 
     private boolean reactModuleRegisterCompleted = false;
@@ -191,7 +193,6 @@ public class ReactBridgeManager {
         if (sticky && !hasStickyLayout()) {
             stickyLayout = root;
         }
-
         rootLayout = root;
     }
 
@@ -242,60 +243,30 @@ public class ReactBridgeManager {
     @NonNull
     public ArrayList<Bundle> buildRouteGraph(@NonNull FragmentManager fragmentManager) {
         ArrayList<Bundle> root = new ArrayList<>();
-        ArrayList<Bundle> modal = new ArrayList<>();
-        ArrayList<Bundle> presentation = new ArrayList<>();
-
         List<AwesomeFragment> fragments = FragmentHelper.getFragments(fragmentManager);
         for (int i = 0; i < fragments.size(); i++) {
             AwesomeFragment fragment = fragments.get(i);
             Bundle bundle = buildRouteGraph(fragment);
-            if (bundle != null) {
-                String mode = bundle.getString("mode");
-                if (mode.equals("modal")) {
-                    modal.add(bundle);
-                } else if (mode.equals("present")) {
-                    extractModal(bundle, modal, "modal");
-                    presentation.add(bundle);
-                } else {
-                    extractModal(bundle, modal, "modal");
-                    extractModal(bundle, presentation, "present");
-                    root.add(bundle);
-                }
+            if (bundle == null) {
+               continue;
             }
+            root.add(bundle);
         }
-
-        root.addAll(presentation);
-        root.addAll(modal);
         return root;
     }
-
-    private void extractModal(@NonNull Bundle graph, @NonNull ArrayList<Bundle> modal, @NonNull String expectMode) {
-        ArrayList<Bundle> children = graph.getParcelableArrayList("children");
-        if (children != null) {
-            ArrayList<Bundle> copy = new ArrayList<>(children);
-            int size = copy.size();
-            for (int i = 0; i < size; i++) {
-                Bundle bundle = copy.get(i);
-                String mode = bundle.getString("mode");
-                if (mode.equals(expectMode)) {
-                    children.remove(bundle);
-                    modal.add(bundle);
-                } else {
-                    extractModal(bundle, modal, expectMode);
-                }
-            }
-        }
-    }
-
+    
     @Nullable
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
         String layout = navigatorRegistry.layoutForFragment(fragment);
-        if (layout != null) {
-            Navigator navigator = navigatorRegistry.navigatorForLayout(layout);
-            if (navigator != null) {
-                return navigator.buildRouteGraph(fragment);
-            }
+        if (layout == null) {
+            return null;
         }
+
+        Navigator navigator = navigatorRegistry.navigatorForLayout(layout);
+        if (navigator != null) {
+            return navigator.buildRouteGraph(fragment);
+        }
+
         return null;
     }
 
@@ -310,6 +281,7 @@ public class ReactBridgeManager {
         if (fragment instanceof AwesomeFragment) {
             return primaryFragment((AwesomeFragment) fragment);
         }
+
         return null;
     }
 
@@ -320,19 +292,22 @@ public class ReactBridgeManager {
         }
 
         if (fragment.definesPresentationContext()) {
-            AwesomeFragment p = fragment.getPresentedFragment();
-            if (p != null) {
-                return primaryFragment(p);
+            AwesomeFragment presented = fragment.getPresentedFragment();
+            if (presented != null) {
+                return primaryFragment(presented);
             }
         }
 
         String layout = navigatorRegistry.layoutForFragment(fragment);
-        if (layout != null) {
-            Navigator navigator = navigatorRegistry.navigatorForLayout(layout);
-            if (navigator != null) {
-                return navigator.primaryFragment(fragment);
-            }
+        if (layout == null) {
+            return null;
         }
+
+        Navigator navigator = navigatorRegistry.navigatorForLayout(layout);
+        if (navigator != null) {
+            return navigator.primaryFragment(fragment);
+        }
+
         return null;
     }
 
@@ -351,12 +326,20 @@ public class ReactBridgeManager {
 
         List<String> layouts = navigatorRegistry.allLayouts();
         for (String name : layouts) {
-            if (layout.hasKey(name)) {
-                Navigator navigator = navigatorRegistry.navigatorForLayout(name);
-                AwesomeFragment fragment = navigator.createFragment(layout);
-                navigatorRegistry.setLayoutForFragment(name, fragment);
-                return fragment;
+            if (!layout.hasKey(name)) {
+                continue;
             }
+
+            Navigator navigator = navigatorRegistry.navigatorForLayout(name);
+            if (navigator == null) {
+                continue;
+            }
+
+            AwesomeFragment fragment = navigator.createFragment(layout);
+            if (fragment != null) {
+                navigatorRegistry.setLayoutForFragment(name, fragment);
+            }
+            return fragment;
         }
 
         throw new IllegalArgumentException("找不到可以处理 " + layout + " 的 navigator, 你是否忘了注册？");
@@ -377,52 +360,53 @@ public class ReactBridgeManager {
             throw new IllegalStateException("模块还没有注册完，不能执行此操作");
         }
 
-        HybridFragment fragment = null;
-
-        if (hasReactModule(moduleName)) {
-            fragment = new ReactFragment();
-        } else {
-            Class<? extends HybridFragment> fragmentClass = nativeModuleClassForName(moduleName);
-            if (fragmentClass == null) {
-                throw new IllegalArgumentException("未能找到名为 " + moduleName + " 的模块，你是否忘了注册？");
-            }
-            try {
-                fragment = fragmentClass.newInstance();
-            } catch (Exception e) {
-                // ignore
-            }
-        }
-
-        if (fragment == null) {
-            throw new NullPointerException("无法创建名为 " + moduleName + " 的模块。");
-        }
-
-        if (options == null) {
-            options = new Bundle();
-        }
-
-        if (props == null) {
-            props = new Bundle();
-        }
-
-        if (hasReactModule(moduleName)) {
-            ReadableMap readableMap = reactModuleOptionsForKey(moduleName);
-            if (readableMap == null) {
-                readableMap = Arguments.createMap();
-            }
-            WritableMap writableMap = Arguments.createMap();
-            writableMap.merge(readableMap);
-            writableMap.merge(Arguments.fromBundle(options));
-            options = Arguments.toBundle(writableMap);
-        }
+        HybridFragment fragment = newFragment(moduleName);
 
         Bundle args = FragmentHelper.getArguments(fragment);
-        args.putBundle(Constants.ARG_PROPS, props);
-        args.putBundle(Constants.ARG_OPTIONS, options);
+        args.putBundle(Constants.ARG_PROPS, notNull(props));
+        args.putBundle(Constants.ARG_OPTIONS, mergeOptions(moduleName, notNull(options)));
         args.putString(Constants.ARG_MODULE_NAME, moduleName);
+        
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    private Bundle notNull(@Nullable Bundle bundle) {
+        if (bundle == null) {
+            return new Bundle();
+        }
+        return bundle;
+    }
+
+    private Bundle mergeOptions(@NonNull String moduleName, @NonNull Bundle options) {
+        if (!hasReactModule(moduleName)) {
+            return options;
+        }
+        
+        ReadableMap readableMap = reactModuleOptionsForKey(moduleName);
+        WritableMap writableMap = Arguments.createMap();
+        writableMap.merge(readableMap);
+        writableMap.merge(Arguments.fromBundle(options));
+        return Arguments.toBundle(writableMap);
+    }
+
+    @NonNull
+    private HybridFragment newFragment(@NonNull String moduleName) {
+        if (hasReactModule(moduleName)) {
+            return new ReactFragment();
+        }
+
+        Class<? extends HybridFragment> fragmentClass = nativeModuleClassForName(moduleName);
+        if (fragmentClass == null) {
+            throw new IllegalArgumentException("未能找到名为 " + moduleName + " 的模块，你是否忘了注册？");
+        }
+
+        try {
+            return fragmentClass.newInstance();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("无法创建名为 " + moduleName + " 的模块。");
+        }
     }
 
     private final NavigatorRegistry navigatorRegistry = new NavigatorRegistry();

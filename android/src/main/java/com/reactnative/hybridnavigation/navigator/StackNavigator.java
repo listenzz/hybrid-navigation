@@ -18,6 +18,7 @@ import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.TabBarFragment;
 import com.navigation.androidx.TransitionAnimation;
 import com.reactnative.hybridnavigation.HybridFragment;
+import com.reactnative.hybridnavigation.Navigator;
 import com.reactnative.hybridnavigation.ReactBridgeManager;
 import com.reactnative.hybridnavigation.ReactStackFragment;
 
