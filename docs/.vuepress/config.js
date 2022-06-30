@@ -12,7 +12,7 @@ module.exports = {
     docsBranch: 'master',
     navbar: [
       { text: '首页', link: '/', },
-      { text: '博客', link: 'https://todoit.tech/', target: '_self', rel: '' },
+      { text: 'React Native 开发指南', link: 'https://todoit.tech/rn/', target: '_self', rel: '' },
     ],
     sidebar: {
       '/': [
