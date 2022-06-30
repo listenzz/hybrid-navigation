@@ -38,7 +38,11 @@
 
 @end
 
-@implementation GlobalStyle
+@implementation GlobalStyle {
+    UIColor *_barTintColor;
+    UIColor *_tintColor;
+    UIColor *_titleTextColor;
+}
 
 static GlobalStyle *globalStyle;
 
@@ -279,8 +283,6 @@ static GlobalStyle *globalStyle;
     }
 }
 
-@synthesize barTintColor = _barTintColor;
-
 - (void)setBarTintColor:(UIColor *)barTintColor {
     _barTintColor = barTintColor;
     _barTintColorDarkContent = barTintColor;
@@ -311,8 +313,6 @@ static GlobalStyle *globalStyle;
     return UIColor.blackColor;
 }
 
-@synthesize tintColor = _tintColor;
-
 - (void)setTintColor:(UIColor *)tintColor {
     _tintColor = tintColor;
     _tintColorDarkContent = tintColor;
@@ -342,8 +342,6 @@ static GlobalStyle *globalStyle;
 
     return UIColor.whiteColor;
 }
-
-@synthesize titleTextColor = _titleTextColor;
 
 - (void)setTitleTextColor:(UIColor *)titleTextColor {
     _titleTextColor = titleTextColor;
