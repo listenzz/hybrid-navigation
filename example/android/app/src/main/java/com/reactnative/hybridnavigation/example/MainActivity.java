@@ -4,12 +4,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.navigation.androidx.AwesomeFragment;
 import com.reactnative.hybridnavigation.ReactAppCompatActivity;
 
 public class MainActivity extends ReactAppCompatActivity {
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
@@ -17,8 +18,14 @@ public class MainActivity extends ReactAppCompatActivity {
         launchSplash(savedInstanceState);
     }
 
+    @Override
+    protected void setActivityRootFragmentSync(AwesomeFragment fragment, int tag) {
+        super.setActivityRootFragmentSync(fragment, tag);
+        hideSplash();
+    }
+
     private SplashFragment splashFragment;
-    
+
     private void launchSplash(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             String tag = savedInstanceState.getString("splash_tag");
@@ -26,35 +33,26 @@ public class MainActivity extends ReactAppCompatActivity {
                 splashFragment = (SplashFragment) getSupportFragmentManager().findFragmentByTag(tag);
             }
         }
-
-        if (splashFragment != null) {
-            if (isReactModuleRegisterCompleted()) {
-                if (splashFragment != null) {
-                    splashFragment.hideAsDialog();
-                    splashFragment = null;
-                }
-            }
-            return;
-        }
         
-        if (!isReactModuleRegisterCompleted()) {
+        // 当 Activity 销毁后重建，譬如旋转屏幕的时候，如果 React Native 已经启动完成，则不再显示闪屏
+        ReactContext reactContext = getCurrentReactContext();
+        if (splashFragment == null && reactContext == null) {
             splashFragment = new SplashFragment();
             showAsDialog(splashFragment, 0);
         }
     }
 
-    @Override
-    protected void setActivityRootFragmentSync(AwesomeFragment fragment, int tag) {
-        super.setActivityRootFragmentSync(fragment, tag);
-        if (splashFragment != null) {
-            // 如果发现有白屏，请调整 delayInMs 参数
-            UiThreadUtil.runOnUiThread(() -> {
-                if (splashFragment != null) {
-                    splashFragment.hideAsDialog();
-                    splashFragment = null;
-                }
-            }, 200);
+    private void hideSplash() {
+        if (splashFragment == null) {
+            return;
         }
+        // 如果发现有白屏，请调整 delayInMs 参数
+        UiThreadUtil.runOnUiThread(() -> {
+            if (splashFragment != null) {
+                splashFragment.hideAsDialog();
+                splashFragment = null;
+            }
+        }, 500);
     }
 
     @Override
