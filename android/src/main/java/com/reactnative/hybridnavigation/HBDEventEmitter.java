@@ -38,6 +38,7 @@ public class HBDEventEmitter extends ReactContextBaseJavaModule {
         super(reactContext);
     }
 
+    @NonNull
     @Override
     public String getName() {
         return "HBDEventEmitter";
