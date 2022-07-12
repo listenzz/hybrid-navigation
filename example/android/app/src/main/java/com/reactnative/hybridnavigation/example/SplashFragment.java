@@ -1,7 +1,6 @@
 package com.reactnative.hybridnavigation.example;
 
 import android.app.Dialog;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,11 +17,6 @@ public class SplashFragment extends AwesomeFragment {
         setStyle(STYLE_NO_FRAME, R.style.SplashTheme);
         setCancelable(false);
         return super.onCreateDialog(savedInstanceState);
-    }
-
-    @Override
-    protected int preferredNavigationBarColor() {
-        return Color.TRANSPARENT;
     }
 
 }
