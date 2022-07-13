@@ -150,20 +150,20 @@ public class ScreenNavigator implements Navigator {
 
     private void handleHideModal(@NonNull AwesomeFragment target, @NonNull Promise promise) {
         AwesomeFragment presenting = target.getPresentingFragment();
-        if (presenting == null) {
-            target.dismissFragment(() -> promise.resolve(true), TransitionAnimation.Fade);
+        if (presenting != null) {
+            presenting.dismissFragment(() -> promise.resolve(true), TransitionAnimation.Fade);
             return;
         }
-        presenting.dismissFragment(() -> promise.resolve(true), TransitionAnimation.Fade);
+        target.dismissFragment(() -> promise.resolve(true), TransitionAnimation.Fade);
     }
 
     private void handleDismiss(@NonNull AwesomeFragment target, @NonNull Promise promise) {
         AwesomeFragment presenting = target.getPresentingFragment();
-        if (presenting == null) {
-            target.dismissFragment(() -> promise.resolve(true));
+        if (presenting != null) {
+            presenting.dismissFragment(() -> promise.resolve(true));
             return;
         }
-        presenting.dismissFragment(() -> promise.resolve(true));
+        target.dismissFragment(() -> promise.resolve(true));
     }
 
     private void handlePresent(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise) {
