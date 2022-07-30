@@ -3,5 +3,5 @@
   "compilerOptions": {
     "noEmit": false
   },
-  "exclude": ["./example/**/*"]
+  "include": ["./src/**/*"]
 }
