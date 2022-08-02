@@ -9,6 +9,8 @@
 #import "HBDNavigationBar.h"
 #import "HBDUtils.h"
 
+#define hairlineWidth (1.f/[UIScreen mainScreen].scale)
+
 @interface HBDNavigationBar ()
 
 @property(nonatomic, strong, readwrite) UIImageView *fakeShadowView;
@@ -60,13 +62,13 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.fakeBackgroundView.frame = self.fakeBackgroundView.superview.bounds;
-    self.fakeShadowView.frame = CGRectMake(0, CGRectGetHeight(self.fakeShadowView.superview.bounds), CGRectGetWidth(self.fakeShadowView.superview.bounds), 0.5);
+    self.fakeShadowView.frame = CGRectMake(0, CGRectGetHeight(self.fakeShadowView.superview.bounds) - hairlineWidth, CGRectGetWidth(self.fakeShadowView.superview.bounds), hairlineWidth);
 }
 
 - (void)setBarTintColor:(UIColor *)barTintColor {
     [super setBarTintColor:barTintColor];
     self.fakeBackgroundView.backgroundColor = barTintColor;
-    [self makesureFakeBackgroundView];
+    [self makesureFakeView];
 }
 
 - (UIView *)fakeBackgroundView {
@@ -75,7 +77,6 @@
         _fakeBackgroundView = [[UIView alloc] init];
         _fakeBackgroundView.userInteractionEnabled = NO;
         _fakeBackgroundView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        [[self.subviews firstObject] insertSubview:_fakeBackgroundView atIndex:0];
     }
     return _fakeBackgroundView;
 }
@@ -96,6 +97,7 @@
     } else {
         self.fakeShadowView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:77.0 / 255];
     }
+
 }
 
 - (UIImageView *)fakeShadowView {
@@ -104,21 +106,21 @@
         _fakeShadowView = [[UIImageView alloc] init];
         _fakeShadowView.userInteractionEnabled = NO;
         _fakeShadowView.contentScaleFactor = 1;
-        [[self.subviews firstObject] insertSubview:_fakeShadowView aboveSubview:self.fakeBackgroundView];
+        _fakeShadowView.layer.allowsEdgeAntialiasing = YES;
     }
     return _fakeShadowView;
 }
 
-- (void)makesureFakeBackgroundView {
+- (void)makesureFakeView {
     [UIView setAnimationsEnabled:NO];
     if (!self.fakeBackgroundView.superview) {
-        [[self.subviews firstObject] insertSubview:_fakeBackgroundView atIndex:0];
+        [[self.subviews firstObject] insertSubview:self.fakeBackgroundView atIndex:0];
         self.fakeBackgroundView.frame = self.fakeBackgroundView.superview.bounds;
     }
 
     if (!self.fakeShadowView.superview) {
-        [[self.subviews firstObject] insertSubview:_fakeShadowView aboveSubview:self.fakeBackgroundView];
-        self.fakeShadowView.frame = CGRectMake(0, CGRectGetHeight(self.fakeShadowView.superview.bounds), CGRectGetWidth(self.fakeShadowView.superview.bounds), 0.5);
+        [[self.subviews firstObject] insertSubview:self.fakeShadowView aboveSubview:self.fakeBackgroundView];
+        self.fakeShadowView.frame = CGRectMake(0, CGRectGetHeight(self.fakeShadowView.superview.bounds) - hairlineWidth, CGRectGetWidth(self.fakeShadowView.superview.bounds), hairlineWidth);
     }
     [UIView setAnimationsEnabled:YES];
 }

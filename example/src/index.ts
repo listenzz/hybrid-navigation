@@ -78,7 +78,7 @@ Garden.setStyle({
   backIcon: Platform.OS === 'ios' ? Image.resolveAssetSource(require('./images/icon_back.png')) : undefined,
   shadowImage: {
     color: '#DDDDDD',
-    // image: Image.resolveAssetSource(require('./src/images/divider.png')),
+    // image: Image.resolveAssetSource(require('./images/divider.png')),
   },
   // hideBackTitleIOS: true,
   elevationAndroid: 1,
