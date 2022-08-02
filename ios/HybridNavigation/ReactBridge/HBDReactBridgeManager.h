@@ -54,7 +54,7 @@ extern const NSInteger ResultCancel;
 
 - (NSArray *)routeGraph;
 
-- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc;
+- (NSDictionary *)routeGraphWithViewController:(UIViewController *)vc;
 
 - (HBDViewController *)primaryViewController;
 

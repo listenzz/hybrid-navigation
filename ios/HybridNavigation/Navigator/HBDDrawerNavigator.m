@@ -12,91 +12,105 @@
     return @[@"toggleMenu", @"openMenu", @"closeMenu"];
 }
 
-- (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
+- (UIViewController *)viewControllerWithLayout:(NSDictionary *)layout {
     NSDictionary *drawer = layout[self.name];
+    if (!drawer) {
+        return nil;
+    }
+    
     NSArray *children = drawer[@"children"];
-    if (children.count == 2) {
-        NSDictionary *content = children[0];
-        NSDictionary *menu = children[1];
+    if (children.count < 2) {
+        return nil;
+    }
+    
+    UIViewController *contentVC = [[HBDReactBridgeManager get] viewControllerWithLayout:children[0]];
+    UIViewController *menuVC = [[HBDReactBridgeManager get] viewControllerWithLayout:children[1]];
+    
+    if (!contentVC || !menuVC) {
+        return nil;
+    }
 
-        UIViewController *contentVC = [[HBDReactBridgeManager get] viewControllerWithLayout:content];
-        UIViewController *menuVC = [[HBDReactBridgeManager get] viewControllerWithLayout:menu];
+    HBDDrawerController *drawerVC = [[HBDDrawerController alloc] initWithContentViewController:contentVC menuViewController:menuVC];
+    NSDictionary *options = drawer[@"options"];
 
-        if (contentVC && menuVC) {
-            HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:contentVC menuViewController:menuVC];
-            NSDictionary *options = drawer[@"options"];
-            if (options) {
-                NSNumber *maxDrawerWidth = options[@"maxDrawerWidth"];
-                if (maxDrawerWidth) {
-                    [drawerController setMaxDrawerWidth:[maxDrawerWidth floatValue]];
-                }
+    if (options) {
+        NSNumber *maxDrawerWidth = options[@"maxDrawerWidth"];
+        if (maxDrawerWidth) {
+            [drawerVC setMaxDrawerWidth:[maxDrawerWidth floatValue]];
+        }
 
-                NSNumber *minDrawerMargin = options[@"minDrawerMargin"];
-                if (minDrawerMargin) {
-                    [drawerController setMinDrawerMargin:[minDrawerMargin floatValue]];
-                }
+        NSNumber *minDrawerMargin = options[@"minDrawerMargin"];
+        if (minDrawerMargin) {
+            [drawerVC setMinDrawerMargin:[minDrawerMargin floatValue]];
+        }
 
-                NSNumber *menuInteractive = options[@"menuInteractive"];
-                if (menuInteractive) {
-                    drawerController.menuInteractive = [menuInteractive boolValue];
-                }
-            }
-            return drawerController;
+        NSNumber *menuInteractive = options[@"menuInteractive"];
+        if (menuInteractive) {
+            drawerVC.menuInteractive = [menuInteractive boolValue];
         }
     }
-    return nil;
+
+    return drawerVC;
 }
 
-- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
-    if ([vc isKindOfClass:[HBDDrawerController class]]) {
-        HBDDrawerController *drawer = (HBDDrawerController *) vc;
-        NSDictionary *content = [[HBDReactBridgeManager get] buildRouteGraphWithViewController:drawer.contentController];
-        NSDictionary *menu = [[HBDReactBridgeManager get] buildRouteGraphWithViewController:drawer.menuController];
-        return @{
-                @"layout": @"drawer",
-                @"sceneId": vc.sceneId,
-                @"children": @[content, menu],
-                @"mode": [vc hbd_mode],
-        };
+- (NSDictionary *)routeGraphWithViewController:(UIViewController *)vc {
+    if (![vc isKindOfClass:[HBDDrawerController class]]) {
+        return nil;
     }
-    return nil;
+    
+    HBDDrawerController *drawerVC = (HBDDrawerController *) vc;
+    NSDictionary *content = [[HBDReactBridgeManager get] routeGraphWithViewController:drawerVC.contentController];
+    NSDictionary *menu = [[HBDReactBridgeManager get] routeGraphWithViewController:drawerVC.menuController];
+    return @{
+        @"layout": @"drawer",
+        @"sceneId": drawerVC.sceneId,
+        @"children": @[content, menu],
+        @"mode": [drawerVC hbd_mode],
+    };
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
-    if ([vc isKindOfClass:[HBDDrawerController class]]) {
-        HBDDrawerController *drawer = (HBDDrawerController *) vc;
-        if (drawer.isMenuOpened) {
-            return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:drawer.menuController];
-        } else {
-            return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:drawer.contentController];
-        }
+    if (![vc isKindOfClass:[HBDDrawerController class]]) {
+        return nil;
     }
-    return nil;
+    
+    HBDDrawerController *drawerVC = (HBDDrawerController *) vc;
+    if (drawerVC.isMenuOpened) {
+        return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:drawerVC.menuController];
+    } else {
+        return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:drawerVC.contentController];
+    }
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-    HBDDrawerController *drawer = [vc drawerController];
-    if (!drawer) {
+    HBDDrawerController *drawerVC = [vc drawerController];
+    if (!drawerVC) {
         resolve(@(NO));
         return;
     }
 
-    if (!drawer.hbd_viewAppeared) {
+    if (!drawerVC.hbd_viewAppeared) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
         });
         return;
     }
+    
+    resolve(@(YES));
 
     if ([action isEqualToString:@"toggleMenu"]) {
-        [drawer toggleMenu];
-    } else if ([action isEqualToString:@"openMenu"]) {
-        [drawer openMenu];
-    } else if ([action isEqualToString:@"closeMenu"]) {
-        [drawer closeMenu];
+        [drawerVC toggleMenu];
+        return;
     }
-
-    resolve(@(YES));
+    
+    if ([action isEqualToString:@"openMenu"]) {
+        [drawerVC openMenu];
+        return;
+    }
+    
+    if ([action isEqualToString:@"closeMenu"]) {
+        [drawerVC closeMenu];
+    }
 }
 
 @end

@@ -7,9 +7,9 @@
 @property(nonatomic, copy, readonly) NSString *name;
 @property(nonatomic, copy, readonly) NSArray<NSString *> *supportActions;
 
-- (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout;
+- (UIViewController *)viewControllerWithLayout:(NSDictionary *)layout;
 
-- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc;
+- (NSDictionary *)routeGraphWithViewController:(UIViewController *)vc;
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc;
 

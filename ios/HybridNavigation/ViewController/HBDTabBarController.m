@@ -21,11 +21,9 @@
 @implementation HBDTabBarController
 
 - (instancetype)initWithTabBarOptions:(NSDictionary *)options {
-    if (self = [super init]) {
-        self.tabBarOptions = options;
-        self.hasCustomTabBar = YES;
-    }
-    return self;
+    self.tabBarOptions = options;
+    self.hasCustomTabBar = YES;
+    return [super init];
 }
 
 - (UIViewController *)childViewControllerForStatusBarHidden {

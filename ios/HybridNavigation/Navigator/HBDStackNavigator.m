@@ -14,48 +14,129 @@
     return @[@"push", @"pushLayout", @"pop", @"popTo", @"popToRoot", @"redirectTo"];
 }
 
-- (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
+- (UIViewController *)viewControllerWithLayout:(NSDictionary *)layout {
     NSDictionary *stack = layout[self.name];
-    if (stack) {
-        NSArray *children = stack[@"children"];
-        UIViewController *root = [[HBDReactBridgeManager get] viewControllerWithLayout:children.firstObject];
-        if (root) {
-            return [[HBDNavigationController alloc] initWithRootViewController:root];
-        }
+    if (!stack) {
+        return nil;
     }
-    return nil;
+    
+    NSArray *children = stack[@"children"];
+    UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:children.firstObject];
+    return [[HBDNavigationController alloc] initWithRootViewController:vc];
 }
 
-- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
-    if ([vc isKindOfClass:[HBDNavigationController class]]) {
-        HBDNavigationController *nav = (HBDNavigationController *) vc;
-        NSMutableArray *children = [[NSMutableArray alloc] init];
-        for (NSUInteger i = 0; i < nav.childViewControllers.count; i++) {
-            UIViewController *child = nav.childViewControllers[i];
-            NSDictionary *graph = [[HBDReactBridgeManager get] buildRouteGraphWithViewController:child];
-            [children addObject:graph];
-        }
-
-        return @{
-                @"layout": @"stack",
-                @"sceneId": vc.sceneId,
-                @"children": children,
-                @"mode": [vc hbd_mode],
-        };
+- (NSDictionary *)routeGraphWithViewController:(UIViewController *)vc {
+    if (![vc isKindOfClass:[HBDNavigationController class]]) {
+        return nil;
     }
-    return nil;
+    HBDNavigationController *nav = (HBDNavigationController *) vc;
+    NSMutableArray *children = [[NSMutableArray alloc] init];
+    for (NSUInteger i = 0; i < nav.childViewControllers.count; i++) {
+        UIViewController *child = nav.childViewControllers[i];
+        NSDictionary *graph = [[HBDReactBridgeManager get] routeGraphWithViewController:child];
+        [children addObject:graph];
+    }
+
+    return @{
+        @"layout": @"stack",
+        @"sceneId": vc.sceneId,
+        @"children": children,
+        @"mode": [vc hbd_mode],
+    };
 }
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc {
-    if ([vc isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (UINavigationController *) vc;
-        return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:nav.topViewController];
+    if (![vc isKindOfClass:[UINavigationController class]]) {
+        return nil;
     }
-    return nil;
+    UINavigationController *nav = (UINavigationController *)vc;
+    return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:nav.topViewController];
+}
+
+- (void)handlePushWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  resolve:(RCTPromiseResolveBlock)resolve {
+    UIViewController *vc = [self viewControllerWithExtras:extras];
+    if (!vc) {
+        resolve(@(NO));
+        return;
+    }
+    
+    vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
+    vc.didShowActionBlock = ^{
+        resolve(@(YES));
+    };
+    [nav pushViewController:vc animated:YES];
+}
+
+- (void)handlePopWithNavigationController:(UINavigationController *)nav resolve:(RCTPromiseResolveBlock)resolve {
+    nav.topViewController.didHideActionBlock = ^{
+        resolve(@(YES));
+    };
+    [nav popViewControllerAnimated:YES];
+}
+
+- (void)handlePopToWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  resolve:(RCTPromiseResolveBlock)resolve {
+    
+    NSArray *children = nav.childViewControllers;
+    NSUInteger count = children.count;
+    NSString *moduleName = extras[@"moduleName"];
+    BOOL inclusive = [extras[@"inclusive"] boolValue];
+    
+    for (NSUInteger i = count; i > 0; i--) {
+        NSUInteger index = i - 1;
+        HBDViewController *vc = children[index];
+        if ([moduleName isEqualToString:vc.moduleName] || [moduleName isEqualToString:vc.sceneId]) {
+            UIViewController *viewController = vc;
+            if (inclusive && i > 0) {
+                viewController = children[index - 1];
+            }
+            nav.topViewController.didHideActionBlock = ^{
+                resolve(@(YES));
+            };
+            [nav popToViewController:viewController animated:YES];
+            return;
+        }
+    }
+    
+    resolve(@(NO));
+}
+
+- (void)handlePopToRootWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  resolve:(RCTPromiseResolveBlock)resolve {
+    nav.topViewController.didHideActionBlock = ^{
+        resolve(@(YES));
+    };
+    [nav popToRootViewControllerAnimated:YES];
+}
+
+- (void)handleRedirectToWithNavigationController:(UINavigationController *)nav target:(UIViewController *)target extras:(NSDictionary *)extras resolve:(RCTPromiseResolveBlock)resolve {
+    UIViewController *vc = [self viewControllerWithExtras:extras];
+    if (!vc) {
+        resolve(@(NO));
+        return;
+    }
+    
+    vc.didShowActionBlock = ^{
+        resolve(@(YES));
+    };
+    [nav redirectToViewController:vc target:target animated:YES];
+}
+
+- (void)handlePushLayoutWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  resolve:(RCTPromiseResolveBlock)resolve {
+    NSDictionary *layout = extras[@"layout"];
+    UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
+    if (!vc) {
+        resolve(@(NO));
+        return;
+    }
+    
+    vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
+    vc.didShowActionBlock = ^{
+        resolve(@(YES));
+    };
+    [nav pushViewController:vc animated:YES];
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-    UINavigationController *nav = [self navigationControllerForController:target];
+    UINavigationController *nav = [self navigationControllerForViewController:target];
     if (!nav) {
         resolve(@(NO));
         return;
@@ -64,7 +145,7 @@
     if (nav.transitionCoordinator) {
         __weak typeof(self) selfObj = self;
         [nav.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-            
+            // empty
         } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
             [selfObj handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
         }];
@@ -79,112 +160,76 @@
         return;
     }
 
-    UIViewController *viewController = nil;
-
     if ([action isEqualToString:@"push"]) {
-        viewController = [self createViewControllerWithExtras:extras];
-        if (!viewController) {
-            resolve(@(NO));
-            return;
-        }
-        viewController.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
-        viewController.didShowActionBlock = ^{
-            resolve(@(YES));
-        };
-        [nav pushViewController:viewController animated:YES];
-    } else if ([action isEqualToString:@"pop"]) {
-        nav.topViewController.didHideActionBlock = ^{
-            resolve(@(YES));
-        };
-        [nav popViewControllerAnimated:YES];
-    } else if ([action isEqualToString:@"popTo"]) {
-        NSArray *children = nav.childViewControllers;
-        NSUInteger count = children.count;
-        NSString *moduleName = extras[@"moduleName"];
-        BOOL inclusive = [extras[@"inclusive"] boolValue];
-        for (NSUInteger i = count; i > 0; i--) {
-            NSUInteger index = i - 1;
-            HBDViewController *vc = children[index];
-            if ([moduleName isEqualToString:vc.moduleName] || [moduleName isEqualToString:vc.sceneId]) {
-                viewController = vc;
-                if (inclusive && i > 0) {
-                    viewController = children[index];
-                }
-                break;
-            }
-        }
-
-        if (viewController) {
-            nav.topViewController.didHideActionBlock = ^{
-                resolve(@(YES));
-            };
-            [nav popToViewController:viewController animated:YES];
-        } else {
-            resolve(@(NO));
-        }
-    } else if ([action isEqualToString:@"popToRoot"]) {
-        nav.topViewController.didHideActionBlock = ^{
-            resolve(@(YES));
-        };
-        [nav popToRootViewControllerAnimated:YES];
-    } else if ([action isEqualToString:@"redirectTo"]) {
-        viewController = [self createViewControllerWithExtras:extras];
-        if (!viewController) {
-            resolve(@(NO));
-            return;
-        }
-        viewController.didShowActionBlock = ^{
-            resolve(@(YES));
-        };
-        [nav redirectToViewController:viewController target:target animated:YES];
-    } else if ([action isEqualToString:@"pushLayout"]) {
-        NSDictionary *layout = extras[@"layout"];
-        viewController = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
-        if (viewController) {
-            viewController.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
-            viewController.didShowActionBlock = ^{
-                resolve(@(YES));
-            };
-            [nav pushViewController:viewController animated:YES];
-        } else {
-            resolve(@(NO));
-        }
+        [self handlePushWithNavigationController:nav extras:extras resolve:resolve];
+        return;
+    }
+    
+    if ([action isEqualToString:@"pop"]) {
+        [self handlePopWithNavigationController:nav resolve:resolve];
+        return;
+    }
+    
+    if ([action isEqualToString:@"popTo"]) {
+        [self handlePopToWithNavigationController:nav extras:extras resolve:resolve];
+        return;
+    }
+    
+    if ([action isEqualToString:@"popToRoot"]) {
+        [self handlePopToRootWithNavigationController:nav extras:extras resolve:resolve];
+        return;
+    }
+    
+    if ([action isEqualToString:@"redirectTo"]) {
+        [self handleRedirectToWithNavigationController:nav target:target extras:extras resolve:resolve];
+        return;
+    }
+    
+    if ([action isEqualToString:@"pushLayout"]) {
+        [self handlePushLayoutWithNavigationController:nav extras:extras resolve:resolve];
+        return;
     }
 }
 
-- (UIViewController *)createViewControllerWithExtras:(NSDictionary *)extras {
+- (UIViewController *)viewControllerWithExtras:(NSDictionary *)extras {
     NSString *moduleName = extras[@"moduleName"];
-    HBDViewController *viewController = nil;
-    if (moduleName) {
-        NSDictionary *props = extras[@"props"];
-        NSDictionary *options = extras[@"options"];
-        viewController = [[HBDReactBridgeManager get] viewControllerWithModuleName:moduleName props:props options:options];
+    if (!moduleName) {
+        return nil;
     }
-    return viewController;
+    
+    NSDictionary *props = extras[@"props"];
+    NSDictionary *options = extras[@"options"];
+    return [[HBDReactBridgeManager get] viewControllerWithModuleName:moduleName props:props options:options];
 }
 
-- (UINavigationController *)navigationControllerForController:(UIViewController *)controller {
-    UINavigationController *nav = nil;
-    if ([controller isKindOfClass:[UINavigationController class]]) {
-        nav = (UINavigationController *) controller;
-    } else {
-        nav = controller.navigationController;
+- (UINavigationController *)navigationControllerForViewController:(UIViewController *)vc {
+    if ([vc isKindOfClass:[UINavigationController class]]) {
+        return (UINavigationController *)vc;
     }
-
-    if (!nav && controller.drawerController) {
-        HBDDrawerController *drawer = controller.drawerController;
-        if ([drawer.contentController isKindOfClass:[UITabBarController class]]) {
-            UITabBarController *tabBar = (UITabBarController *) drawer.contentController;
-            if ([tabBar.selectedViewController isKindOfClass:[UINavigationController class]]) {
-                nav = tabBar.selectedViewController;
-            }
-        } else if ([drawer.contentController isKindOfClass:[UINavigationController class]]) {
-            nav = (UINavigationController *) drawer.contentController;
-        } else {
-            nav = drawer.contentController.navigationController;
+    
+    UINavigationController *nav = vc.navigationController;
+    if (nav) {
+        return  nav;
+    }
+    
+    HBDDrawerController *drawer = vc.drawerController;
+    if (!drawer) {
+        return nil;
+    }
+    
+    if ([drawer.contentController isKindOfClass:[UITabBarController class]]) {
+        UITabBarController *tabBar = (UITabBarController *) drawer.contentController;
+        if ([tabBar.selectedViewController isKindOfClass:[UINavigationController class]]) {
+            return (UINavigationController *)tabBar.selectedViewController;
         }
+        return nil;
     }
-    return nav;
+    
+    if ([drawer.contentController isKindOfClass:[UINavigationController class]]) {
+        return (UINavigationController *) drawer.contentController;
+    }
+    
+    return nil;
 }
 
 @end

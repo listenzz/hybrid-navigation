@@ -65,21 +65,24 @@
 
 - (NSString *)layoutForViewController:(UIViewController *)vc {
     NSString *layout = self.classLayoutPairs[NSStringFromClass([vc class])];
-    if (!layout) {
-        if ([vc isKindOfClass:[HBDViewController class]]) {
-            return @"screen";
-        }
-        if ([vc isKindOfClass:[HBDNavigationController class]]) {
-            return @"stack";
-        }
-        if ([vc isKindOfClass:[HBDTabBarController class]]) {
-            return @"tabs";
-        }
-        if ([vc isKindOfClass:[HBDDrawerController class]]) {
-            return @"drawer";
-        }
+    if (layout) {
+        return layout;
     }
-    return layout;
+   
+    if ([vc isKindOfClass:[HBDViewController class]]) {
+        return @"screen";
+    }
+    if ([vc isKindOfClass:[HBDNavigationController class]]) {
+        return @"stack";
+    }
+    if ([vc isKindOfClass:[HBDTabBarController class]]) {
+        return @"tabs";
+    }
+    if ([vc isKindOfClass:[HBDDrawerController class]]) {
+        return @"drawer";
+    }
+    
+    return nil;
 }
 
 - (void)setLayout:(NSString *)layout forViewController:(UIViewController *)vc {

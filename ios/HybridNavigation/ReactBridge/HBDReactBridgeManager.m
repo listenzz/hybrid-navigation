@@ -133,7 +133,7 @@ const NSInteger ResultCancel = 0;
     for (NSString *name in layouts) {
         if ([[layout allKeys] containsObject:name]) {
             id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:name];
-            UIViewController *vc = [navigator createViewControllerWithLayout:layout];
+            UIViewController *vc = [navigator viewControllerWithLayout:layout];
             if (vc) {
                 [self.navigatorRegistry setLayout:name forViewController:vc];
             }
@@ -275,7 +275,7 @@ const NSInteger ResultCancel = 0;
 - (NSArray *)routeGraph {
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *vc = mainWindow.rootViewController;
-    NSDictionary *graph = [self buildRouteGraphWithViewController:vc];
+    NSDictionary *graph = [self routeGraphWithViewController:vc];
     NSMutableArray *root = [[NSMutableArray alloc] init];
     [root addObject:graph];
     [root addObjectsFromArray:[self presentedGraphsWithRootViewController:vc]];
@@ -287,7 +287,7 @@ const NSInteger ResultCancel = 0;
     NSMutableArray *graphs = [[NSMutableArray alloc] init];
     UIViewController *presented = vc.presentedViewController;
     while (presented && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
-        NSDictionary *graph = [self buildRouteGraphWithViewController:presented];
+        NSDictionary *graph = [self routeGraphWithViewController:presented];
         if (graph) {
             [graphs addObject:graph];
         }
@@ -297,14 +297,14 @@ const NSInteger ResultCancel = 0;
     return graphs;
 }
 
-- (NSDictionary *)buildRouteGraphWithViewController:(UIViewController *)vc {
+- (NSDictionary *)routeGraphWithViewController:(UIViewController *)vc {
     NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
     if (!layout) {
         return nil;
     }
     
     id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
-    return [navigator buildRouteGraphWithViewController:vc];
+    return [navigator routeGraphWithViewController:vc];
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
