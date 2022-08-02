@@ -1,11 +1,3 @@
-//
-//  HBDReactViewController.m
-//  HybridNavigation
-//
-//  Created by Listen on 2017/11/26.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
 #import "HBDReactViewController.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDTitleView.h"

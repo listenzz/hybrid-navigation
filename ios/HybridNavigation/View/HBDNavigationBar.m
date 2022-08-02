@@ -1,11 +1,3 @@
-//
-//  HBDNavigationBar.m
-//  HybridNavigation
-//
-//  Created by Listen on 2018/3/6.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
 #import "HBDNavigationBar.h"
 #import "HBDUtils.h"
 
@@ -155,8 +147,8 @@
     if (@available(iOS 11, *)); else return;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        Class class = [self class];
-        hbd_exchangeImplementations(class, @selector(setAttributedText:), @selector(hbd_setAttributedText:));
+        Class klass = [self class];
+        hbd_exchangeImplementations(klass, @selector(setAttributedText:), @selector(hbd_setAttributedText:));
     });
 }
 

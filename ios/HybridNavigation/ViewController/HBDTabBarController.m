@@ -1,11 +1,3 @@
-//
-//  HBDTabBarController.m
-//  HybridNavigation
-//
-//  Created by Listen on 2018/1/30.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
 #import "HBDTabBarController.h"
 #import "HBDReactViewController.h"
 #import "HBDReactBridgeManager.h"
@@ -28,9 +20,11 @@
 @implementation HBDTabBarController
 
 - (instancetype)initWithTabBarOptions:(NSDictionary *)options {
-    self.tabBarOptions = options;
-    self.hasCustomTabBar = YES;
-    return [super init];
+    if (self = [super init]) {
+        self.tabBarOptions = options;
+        self.hasCustomTabBar = YES;
+    }
+    return self;
 }
 
 - (UIViewController *)childViewControllerForStatusBarHidden {
@@ -117,7 +111,7 @@
 
 - (void)setTabItem:(NSArray<NSDictionary *> *)options {
     for (NSDictionary *option in options) {
-        NSUInteger index = option[@"index"] ? [option[@"index"] integerValue] : 0;
+        NSUInteger index = (NSUInteger) (option[@"index"] ? [option[@"index"] integerValue] : 0);
         if (self.hasCustomTabBar) {
             [self updateCustomTabItem:option atIndex:index];
         } else {

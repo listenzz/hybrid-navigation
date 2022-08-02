@@ -1,11 +1,3 @@
-//
-//  HBDEventEmitter.m
-//  HybridNavigation
-//
-//  Created by Listen on 2018/12/27.
-//  Copyright © 2018 Listen. All rights reserved.
-//
-
 #import "HBDEventEmitter.h"
 #import "HBDReactBridgeManager.h"
 

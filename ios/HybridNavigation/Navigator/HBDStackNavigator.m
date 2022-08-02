@@ -1,11 +1,3 @@
-//
-//  HBDStackNavigator.m
-//  HybridNavigation
-//
-//  Created by Listen on 2018/6/28.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
 #import "HBDStackNavigator.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDNavigationController.h"

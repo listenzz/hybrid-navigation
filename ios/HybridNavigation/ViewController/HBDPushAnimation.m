@@ -1,10 +1,3 @@
-//
-//  HBDPushAnimation.m
-//  HybridNavigation
-//
-//  Created by 李生 on 2019/9/26.
-//
-
 #import "HBDPushAnimation.h"
 
 @implementation HBDPushAnimation

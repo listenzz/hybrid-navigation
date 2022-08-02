@@ -1,11 +1,3 @@
-//
-//  UIViewController+HBD.m
-//  HybridNavigation
-//
-//  Created by Listen on 2018/1/22.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
 #import <objc/runtime.h>
 #import <React/RCTLog.h>
 
@@ -21,11 +13,11 @@
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        Class class = [self class];
-        hbd_exchangeImplementations(class, @selector(presentViewController:animated:completion:), @selector(hbd_presentViewController:animated:completion:));
-        hbd_exchangeImplementations(class, @selector(dismissViewControllerAnimated:completion:), @selector(hbd_dismissViewControllerAnimated:completion:));
-        hbd_exchangeImplementations(class, @selector(viewDidAppear:), @selector(hbd_viewDidAppear:));
-        hbd_exchangeImplementations(class, @selector(viewDidDisappear:), @selector(hbd_viewDidDisappear:));
+        Class klass = [self class];
+        hbd_exchangeImplementations(klass, @selector(presentViewController:animated:completion:), @selector(hbd_presentViewController:animated:completion:));
+        hbd_exchangeImplementations(klass, @selector(dismissViewControllerAnimated:completion:), @selector(hbd_dismissViewControllerAnimated:completion:));
+        hbd_exchangeImplementations(klass, @selector(viewDidAppear:), @selector(hbd_viewDidAppear:));
+        hbd_exchangeImplementations(klass, @selector(viewDidDisappear:), @selector(hbd_viewDidDisappear:));
     });
 }
 

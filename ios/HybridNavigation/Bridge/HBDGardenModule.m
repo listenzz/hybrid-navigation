@@ -1,11 +1,3 @@
-//
-//  HBDGardenModule.m
-//  HybridNavigation
-//
-//  Created by Listen on 2017/11/26.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
 #import "HBDGardenModule.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDTabBarController.h"
@@ -41,59 +33,46 @@ RCT_EXPORT_MODULE(GardenModule)
     return @{@"TOOLBAR_HEIGHT": @(44)};
 }
 
-RCT_EXPORT_METHOD(setStyle:
-    (NSDictionary *) style) {
+RCT_EXPORT_METHOD(setStyle:(NSDictionary *) style) {
     [GlobalStyle createWithOptions:style];
 }
 
-RCT_EXPORT_METHOD(setTitleItem:
-    (NSString *) sceneId item:
-    (NSDictionary *) item) {
+RCT_EXPORT_METHOD(setTitleItem:(NSString *) sceneId item:(NSDictionary *) item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
         [vc updateNavigationBarOptions:@{@"titleItem": RCTNullIfNil(item)}];
     }
 }
 
-RCT_EXPORT_METHOD(setLeftBarButtonItem:
-    (NSString *) sceneId item:
-    (NSDictionary *__nullable) item) {
+RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *) sceneId item:(NSDictionary *__nullable) item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
         [vc updateNavigationBarOptions:@{@"leftBarButtonItem": RCTNullIfNil(item)}];
     }
 }
 
-RCT_EXPORT_METHOD(setRightBarButtonItem:
-    (NSString *) sceneId item:
-    (NSDictionary *__nullable) item) {
+RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *) sceneId item:(NSDictionary *__nullable) item) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
         [vc updateNavigationBarOptions:@{@"rightBarButtonItem": RCTNullIfNil(item)}];
     }
 }
 
-RCT_EXPORT_METHOD(setLeftBarButtonItems:
-    (NSString *) sceneId item:
-    (NSArray *__nullable) items) {
+RCT_EXPORT_METHOD(setLeftBarButtonItems:(NSString *) sceneId item:(NSArray *__nullable) items) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
         [vc updateNavigationBarOptions:@{@"leftBarButtonItems": RCTNullIfNil(items)}];
     }
 }
 
-RCT_EXPORT_METHOD(setRightBarButtonItems:
-    (NSString *) sceneId item:
-    (NSArray *__nullable) items) {
+RCT_EXPORT_METHOD(setRightBarButtonItems:(NSString *) sceneId item:(NSArray *__nullable) items) {
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
         [vc updateNavigationBarOptions:@{@"rightBarButtonItems": RCTNullIfNil(items)}];
     }
 }
 
-RCT_EXPORT_METHOD(updateOptions:
-    (NSString *) sceneId item:
-    (NSDictionary *) options) {
+RCT_EXPORT_METHOD(updateOptions:(NSString *) sceneId item:(NSDictionary *) options) {
     RCTLogInfo(@"[Navigator] updateNavigationBarOptions: %@", options);
     HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
     if (vc) {
@@ -101,9 +80,7 @@ RCT_EXPORT_METHOD(updateOptions:
     }
 }
 
-RCT_EXPORT_METHOD(updateTabBar:
-    (NSString *) sceneId item:
-    (NSDictionary *) item) {
+RCT_EXPORT_METHOD(updateTabBar:(NSString *) sceneId item:(NSDictionary *) item) {
     RCTLogInfo(@"[Navigator] updateTabBar: %@", item);
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarVC = [self tabBarControllerWithViewController:vc];
@@ -112,9 +89,7 @@ RCT_EXPORT_METHOD(updateTabBar:
     }
 }
 
-RCT_EXPORT_METHOD(setTabItem:
-    (NSString *) sceneId options:
-    (NSArray<NSDictionary *> *) options) {
+RCT_EXPORT_METHOD(setTabItem:(NSString *) sceneId options:(NSArray<NSDictionary *> *) options) {
     RCTLogInfo(@"[Navigator] setTabItem: %@", options);
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
@@ -124,9 +99,7 @@ RCT_EXPORT_METHOD(setTabItem:
     }
 }
 
-RCT_EXPORT_METHOD(setMenuInteractive:
-    (NSString *) sceneId enabled:
-    (BOOL) enabled) {
+RCT_EXPORT_METHOD(setMenuInteractive:(NSString *) sceneId enabled:(BOOL) enabled) {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     HBDDrawerController *drawer = [vc drawerController];
     if (drawer) {

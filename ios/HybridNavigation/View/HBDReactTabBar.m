@@ -1,11 +1,3 @@
-//
-//  HBDReactTabBar.m
-//  HybridNavigation
-//
-//  Created by Listen on 2019/1/11.
-//  Copyright © 2019 Listen. All rights reserved.
-//
-
 #import "HBDReactTabBar.h"
 #import <React/RCTRootView.h>
 

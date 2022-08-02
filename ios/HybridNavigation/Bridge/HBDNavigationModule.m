@@ -1,11 +1,3 @@
-//
-//  HBDNavigatorModule.m
-//  HybridNavigation
-//
-//  Created by Listen on 2017/11/19.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
 #import "HBDNavigationModule.h"
 #import <React/RCTLog.h>
 #import "HBDReactBridgeManager.h"
@@ -87,8 +79,7 @@ RCT_EXPORT_METHOD(registerReactComponent:
     [self.bridgeManager registerReactModule:appKey options:options];
 }
 
-RCT_EXPORT_METHOD(signalFirstRenderComplete:
-    (NSString *) sceneId) {
+RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *) sceneId) {
     // RCTLogInfo(@"[Navigator] signalFirstRenderComplete sceneId:%@", sceneId);
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     if ([vc isKindOfClass:[HBDReactViewController class]]) {
@@ -96,10 +87,7 @@ RCT_EXPORT_METHOD(signalFirstRenderComplete:
     }
 }
 
-RCT_EXPORT_METHOD(setRoot:
-    (NSDictionary *) layout sticky:
-    (BOOL) sticky tag:
-    (NSNumber *__nonnull) tag) {
+RCT_EXPORT_METHOD(setRoot:(NSDictionary *) layout sticky:(BOOL) sticky tag:(NSNumber *__nonnull) tag) {
     self.bridgeManager.viewHierarchyReady = NO;
     UIViewController *vc = [self.bridgeManager controllerWithLayout:layout];
     if (vc) {
@@ -108,12 +96,7 @@ RCT_EXPORT_METHOD(setRoot:
     }
 }
 
-RCT_EXPORT_METHOD(dispatch:
-    (NSString *) sceneId action:
-    (NSString *) action extras:
-    (NSDictionary *) extras resolver:
-    (RCTPromiseResolveBlock) resolve rejecter:
-    (RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(dispatch:(NSString *) sceneId action:(NSString *) action extras:(NSDictionary *) extras resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     if (vc) {
         [self.bridgeManager handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
@@ -123,10 +106,7 @@ RCT_EXPORT_METHOD(dispatch:
     }
 }
 
-RCT_EXPORT_METHOD(currentTab:
-    (NSString *) sceneId resolver:
-    (RCTPromiseResolveBlock) resolve rejecter:
-    (RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(currentTab:(NSString *) sceneId resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UITabBarController *tabs = vc.tabBarController;
     if (tabs) {
@@ -136,10 +116,7 @@ RCT_EXPORT_METHOD(currentTab:
     }
 }
 
-RCT_EXPORT_METHOD(isStackRoot:
-    (NSString *) sceneId resolver:
-    (RCTPromiseResolveBlock) resolve rejecter:
-    (RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(isStackRoot:(NSString *) sceneId resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     UINavigationController *nav = vc.navigationController;
     if (nav) {
@@ -155,18 +132,12 @@ RCT_EXPORT_METHOD(isStackRoot:
     resolve(@NO);
 }
 
-RCT_EXPORT_METHOD(setResult:
-    (NSString *) sceneId resultCode:
-    (NSInteger) resultCode data:
-    (NSDictionary *) data) {
+RCT_EXPORT_METHOD(setResult:(NSString *) sceneId resultCode:(NSInteger) resultCode data:(NSDictionary *) data) {
     UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
     [vc setResultCode:resultCode resultData:data];
 }
 
-RCT_EXPORT_METHOD(findSceneIdByModuleName:
-    (NSString *) moduleName resolver:
-    (RCTPromiseResolveBlock) resolve rejecter:
-    (RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *) moduleName resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
     Promise *promise = [[Promise alloc] initWithResolver:resolve rejecter:reject];
     [self performSelector:@selector(findSceneIdWithParams:) withObject:@{
             @"promise": promise,
@@ -227,9 +198,7 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:
     return sceneId;
 }
 
-RCT_EXPORT_METHOD(currentRoute:
-    (RCTPromiseResolveBlock) resolve rejecter:
-    (RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
     Promise *promise = [[Promise alloc] initWithResolver:resolve rejecter:reject];
     [self performSelector:@selector(currentRouteWithPromise:) withObject:promise];
 }
@@ -248,9 +217,7 @@ RCT_EXPORT_METHOD(currentRoute:
     }
 }
 
-RCT_EXPORT_METHOD(routeGraph:
-    (RCTPromiseResolveBlock) resolve rejecter:
-    (RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
     Promise *promise = [[Promise alloc] initWithResolver:resolve rejecter:reject];
     [self performSelector:@selector(routeGraphWithPromise:) withObject:promise];
 }

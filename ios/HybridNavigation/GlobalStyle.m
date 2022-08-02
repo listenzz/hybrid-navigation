@@ -1,11 +1,3 @@
-//
-//  GlobalStyle.m
-//  HybridNavigation
-//
-//  Created by Listen on 2018/2/8.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
 #import "GlobalStyle.h"
 #import "HBDUtils.h"
 #import <React/RCTUtils.h>

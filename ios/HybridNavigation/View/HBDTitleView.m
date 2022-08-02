@@ -1,11 +1,3 @@
-//
-//  HBDTitleView.m
-//  HybridNavigation
-//
-//  Created by Listen on 2018/3/6.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
 #import "HBDTitleView.h"
 #import <React/RCTRootViewDelegate.h>
 

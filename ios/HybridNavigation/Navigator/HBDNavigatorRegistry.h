@@ -1,10 +1,3 @@
-//
-//  HBDNavigatorRegistry.h
-//  HybridNavigation
-//
-//  Created by 李生 on 2021/1/7.
-//
-
 #import "HBDNavigator.h"
 
 NS_ASSUME_NONNULL_BEGIN

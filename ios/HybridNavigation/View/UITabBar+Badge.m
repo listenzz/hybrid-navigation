@@ -1,10 +1,3 @@
-//
-//  UITabBar+DotBadge.m
-//  HybridNavigation
-//
-//  Created by Listen on 2018/7/5.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
 #import "UITabBar+Badge.h"
 
 @implementation UITabBar (DotBadge)

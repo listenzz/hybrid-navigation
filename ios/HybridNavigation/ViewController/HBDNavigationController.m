@@ -1,11 +1,3 @@
-//
-//  HBDNavigationController.m
-//  HybridNavigation
-//
-//  Created by Listen on 2017/12/16.
-//  Copyright © 2018年 Listen. All rights reserved.
-//
-
 #import "HBDNavigationController.h"
 #import "HBDViewController.h"
 #import "HBDNavigationBar.h"
