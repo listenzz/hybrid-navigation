@@ -1,4 +1,5 @@
 #import "HBDNavigationBar.h"
+
 #import "HBDUtils.h"
 
 #define hairlineWidth (1.f/[UIScreen mainScreen].scale)

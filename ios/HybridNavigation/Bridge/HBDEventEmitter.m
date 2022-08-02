@@ -1,4 +1,5 @@
 #import "HBDEventEmitter.h"
+
 #import "HBDReactBridgeManager.h"
 
 NSString *const ON_COMPONENT_RESULT = @"ON_COMPONENT_RESULT";
@@ -23,7 +24,7 @@ NSString *const KEY_ON = @"on";
 @implementation HBDEventEmitter
 
 
-RCT_EXPORT_MODULE(HBDEventEmitter);
+RCT_EXPORT_MODULE(HBDEventEmitter)
 
 - (NSArray<NSString *> *)supportedEvents {
     return @[EVENT_NAVIGATION, EVENT_SWITCH_TAB, EVENT_DID_SET_ROOT, EVENT_WILL_SET_ROOT];

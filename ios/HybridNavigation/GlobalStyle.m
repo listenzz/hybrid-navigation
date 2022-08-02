@@ -1,5 +1,7 @@
 #import "GlobalStyle.h"
+
 #import "HBDUtils.h"
+
 #import <React/RCTUtils.h>
 
 @interface GlobalStyle ()

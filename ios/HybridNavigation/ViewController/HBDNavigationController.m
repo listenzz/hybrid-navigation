@@ -1,11 +1,15 @@
 #import "HBDNavigationController.h"
+
 #import "HBDViewController.h"
 #import "HBDNavigationBar.h"
 #import "HBDUtils.h"
-#import "GlobalStyle.h"
 #import "HBDPushAnimation.h"
 #import "HBDPopAnimation.h"
+#import "GlobalStyle.h"
+
 #import <React/RCTLog.h>
+
+
 
 UIColor *blendColor(UIColor *from, UIColor *to, CGFloat percent) {
     CGFloat fromRed = 0;

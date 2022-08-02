@@ -1,14 +1,13 @@
 #import "HBDNavigatorRegistry.h"
 
-#import <React/RCTLog.h>
-
 #import "HBDScreenNavigator.h"
 #import "HBDStackNavigator.h"
 #import "HBDTabNavigator.h"
 #import "HBDDrawerNavigator.h"
-
 #import "HBDNavigationController.h"
 #import "HBDTabBarController.h"
+
+#import <React/RCTLog.h>
 
 @interface HBDNavigatorRegistry ()
 
