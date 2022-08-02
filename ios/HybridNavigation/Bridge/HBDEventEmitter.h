@@ -1,4 +1,3 @@
-#import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
 NS_ASSUME_NONNULL_BEGIN
@@ -20,7 +19,7 @@ extern NSString *const KEY_INDEX;
 extern NSString *const KEY_ACTION;
 extern NSString *const KEY_ON;
 
-@interface HBDEventEmitter : RCTEventEmitter <RCTBridgeModule>
+@interface HBDEventEmitter : RCTEventEmitter
 
 + (void)sendEvent:(NSString *)eventName data:(NSDictionary *)data;
 

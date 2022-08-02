@@ -33,9 +33,7 @@
 
 - (instancetype)initWithImage:(UIImage *)image style:(UIBarButtonItemStyle)style {
     HBDBarButton *button = [HBDBarButton buttonWithType:UIButtonTypeSystem];
-    if (@available(iOS 11, *)) {
-        button.translatesAutoresizingMaskIntoConstraints = NO;
-    }
+    button.translatesAutoresizingMaskIntoConstraints = NO;
     [button setFrame:CGRectMake(0, 0, 32, 32)];
     [button setImage:image forState:UIControlStateNormal];
     [button addTarget:self action:@selector(didButtonClick) forControlEvents:UIControlEventTouchUpInside];

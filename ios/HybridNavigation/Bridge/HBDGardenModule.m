@@ -32,7 +32,7 @@ RCT_EXPORT_MODULE(GardenModule)
 }
 
 - (NSDictionary *)constantsToExport {
-    return @{@"TOOLBAR_HEIGHT": @(44)};
+    return @{ @"TOOLBAR_HEIGHT": @(44) };
 }
 
 RCT_EXPORT_METHOD(setStyle:(NSDictionary *) style) {
@@ -40,43 +40,43 @@ RCT_EXPORT_METHOD(setStyle:(NSDictionary *) style) {
 }
 
 RCT_EXPORT_METHOD(setTitleItem:(NSString *) sceneId item:(NSDictionary *) item) {
-    HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
+    HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
-        [vc updateNavigationBarOptions:@{@"titleItem": RCTNullIfNil(item)}];
+        [vc updateNavigationBarOptions:@{ @"titleItem": RCTNullIfNil(item) }];
     }
 }
 
 RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *) sceneId item:(NSDictionary *__nullable) item) {
-    HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
+    HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
-        [vc updateNavigationBarOptions:@{@"leftBarButtonItem": RCTNullIfNil(item)}];
+        [vc updateNavigationBarOptions:@{ @"leftBarButtonItem": RCTNullIfNil(item) }];
     }
 }
 
 RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *) sceneId item:(NSDictionary *__nullable) item) {
-    HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
+    HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
-        [vc updateNavigationBarOptions:@{@"rightBarButtonItem": RCTNullIfNil(item)}];
+        [vc updateNavigationBarOptions:@{ @"rightBarButtonItem": RCTNullIfNil(item) }];
     }
 }
 
 RCT_EXPORT_METHOD(setLeftBarButtonItems:(NSString *) sceneId item:(NSArray *__nullable) items) {
-    HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
+    HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
-        [vc updateNavigationBarOptions:@{@"leftBarButtonItems": RCTNullIfNil(items)}];
+        [vc updateNavigationBarOptions:@{ @"leftBarButtonItems": RCTNullIfNil(items) }];
     }
 }
 
 RCT_EXPORT_METHOD(setRightBarButtonItems:(NSString *) sceneId item:(NSArray *__nullable) items) {
-    HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
+    HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
-        [vc updateNavigationBarOptions:@{@"rightBarButtonItems": RCTNullIfNil(items)}];
+        [vc updateNavigationBarOptions:@{ @"rightBarButtonItems": RCTNullIfNil(items) }];
     }
 }
 
 RCT_EXPORT_METHOD(updateOptions:(NSString *) sceneId item:(NSDictionary *) options) {
     RCTLogInfo(@"[Navigator] updateNavigationBarOptions: %@", options);
-    HBDViewController *vc = [self HBDViewControllerForSceneId:sceneId];
+    HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
         [vc updateNavigationBarOptions:options];
     }
@@ -84,7 +84,7 @@ RCT_EXPORT_METHOD(updateOptions:(NSString *) sceneId item:(NSDictionary *) optio
 
 RCT_EXPORT_METHOD(updateTabBar:(NSString *) sceneId item:(NSDictionary *) item) {
     RCTLogInfo(@"[Navigator] updateTabBar: %@", item);
-    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
     UITabBarController *tabBarVC = [self tabBarControllerWithViewController:vc];
     if (tabBarVC && [tabBarVC isKindOfClass:[HBDTabBarController class]]) {
         [((HBDTabBarController *) tabBarVC) updateTabBar:item];
@@ -93,7 +93,7 @@ RCT_EXPORT_METHOD(updateTabBar:(NSString *) sceneId item:(NSDictionary *) item) 
 
 RCT_EXPORT_METHOD(setTabItem:(NSString *) sceneId options:(NSArray<NSDictionary *> *) options) {
     RCTLogInfo(@"[Navigator] setTabItem: %@", options);
-    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarVC = (HBDTabBarController *) tabBarController;
@@ -102,15 +102,15 @@ RCT_EXPORT_METHOD(setTabItem:(NSString *) sceneId options:(NSArray<NSDictionary 
 }
 
 RCT_EXPORT_METHOD(setMenuInteractive:(NSString *) sceneId enabled:(BOOL) enabled) {
-    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
     HBDDrawerController *drawer = [vc drawerController];
     if (drawer) {
         drawer.menuInteractive = enabled;
     }
 }
 
-- (HBDViewController *)HBDViewControllerForSceneId:(NSString *)sceneId {
-    UIViewController *vc = [self.bridgeManager controllerForSceneId:sceneId];
+- (HBDViewController *)viewControllerWithSceneId:(NSString *)sceneId {
+    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
     if ([vc isKindOfClass:[HBDViewController class]]) {
         return (HBDViewController *) vc;
     }
@@ -118,13 +118,11 @@ RCT_EXPORT_METHOD(setMenuInteractive:(NSString *) sceneId enabled:(BOOL) enabled
 }
 
 - (UITabBarController *)tabBarControllerWithViewController:(UIViewController *)vc {
-    UITabBarController *tabBarController;
     if ([vc isKindOfClass:[UITabBarController class]]) {
-        tabBarController = (UITabBarController *) vc;
+        return (UITabBarController *) vc;
     } else {
-        tabBarController = vc.tabBarController;
+        return  vc.tabBarController;
     }
-    return tabBarController;
 }
 
 @end

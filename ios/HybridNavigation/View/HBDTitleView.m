@@ -50,24 +50,6 @@
     self.bounds = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);
     self.rootView.frame = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);
     self.center = center;
-
-    // 修正版本在 10.0 的情况
-    NSString *version = [UIDevice currentDevice].systemVersion;
-    if (version.doubleValue < 11.0) {
-        UINavigationBar *bar = [self navigationBarInView:self];
-        if (bar) {
-            for (UIView *subview in bar.subviews) {
-                NSString *viewName = [[[subview classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-                if ([viewName isEqualToString:@"UINavigationItemButtonView"]) {
-                    CGFloat dx = subview.frame.origin.x + subview.frame.size.width + self.bounds.size.width / 2 + 6 - center.x;
-                    if (dx > 0) {
-                        self.center = CGPointMake(center.x + dx, center.y);
-                    }
-                    break;
-                }
-            }
-        }
-    }
 }
 
 - (UINavigationBar *)navigationBarInView:(UIView *)view {

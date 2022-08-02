@@ -28,13 +28,13 @@
     [[HBDReactBridgeManager get] installWithBridge:bridge];
     
     // register native modules
-    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forController:[NativeViewController class]];
+    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[NativeViewController class]];
    
 #if RCT_DEV
     [[HBDReactBridgeManager get].bridge moduleForClass:[RCTDevLoadingView class]];
 #endif
 
-    UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
     self.window.windowLevel = UIWindowLevelStatusBar + 1;
     self.window.rootViewController = rootViewController;

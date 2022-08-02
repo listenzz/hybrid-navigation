@@ -240,17 +240,9 @@
     NSNumber *backButtonHidden = options[@"backButtonHidden"];
     if (backButtonHidden) {
         if ([backButtonHidden boolValue]) {
-            if (@available(iOS 11, *)) {
-                [self.navigationItem setHidesBackButton:YES];
-            } else {
-                self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
-            }
+            [self.navigationItem setHidesBackButton:YES];
         } else {
-            if (@available(iOS 11, *)) {
-                [self.navigationItem setHidesBackButton:NO];
-            } else {
-                self.navigationItem.leftBarButtonItem = nil;
-            }
+            [self.navigationItem setHidesBackButton:NO];
         }
     }
 
@@ -322,9 +314,7 @@
     }
 
     if (options[@"homeIndicatorAutoHiddenIOS"]) {
-        if (@available(iOS 11.0, *)) {
-            [self setNeedsUpdateOfHomeIndicatorAutoHidden];
-        }
+        [self setNeedsUpdateOfHomeIndicatorAutoHidden];
     }
 
     NSNumber *passThroughTouches = options[@"passThroughTouches"];

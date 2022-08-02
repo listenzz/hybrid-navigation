@@ -16,12 +16,11 @@
     
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
-        if (@available(iOS 11.0, *)) {
-            UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
-            spacer.width = -8;
-            [array addObject:spacer];
-        }
-
+    
+        UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+        spacer.width = -8;
+        [array addObject:spacer];
+        
         UIBarButtonItem *buttonItem = [self createBarButtonItem:item];
         UIView *customView = buttonItem.customView;
         if ([customView isKindOfClass:[HBDBarButton class]]) {
@@ -44,12 +43,11 @@
     
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
-        if (@available(iOS 11.0, *)) {
-            UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
-            spacer.width = -8;
-            [array addObject:spacer];
-        }
-
+        
+        UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+        spacer.width = -8;
+        [array addObject:spacer];
+        
         UIBarButtonItem *buttonItem = [self createBarButtonItem:item];
         UIView *customView = buttonItem.customView;
         if ([customView isKindOfClass:[HBDBarButton class]]) {
@@ -74,12 +72,10 @@
         NSArray *barButtonItems = [self createBarButtonItems:items];
         NSMutableArray *array = [[NSMutableArray alloc] init];
 
-        if (@available(iOS 11.0, *)) {
-            UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
-            spacer.width = -8;
-            [array addObject:spacer];
-        }
-
+        UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+        spacer.width = -8;
+        [array addObject:spacer];
+        
         [array addObjectsFromArray:barButtonItems];
         for (NSUInteger i = 0; i < barButtonItems.count; i++) {
             UIBarButtonItem *buttonItem = barButtonItems[i];
@@ -103,12 +99,11 @@
     if (items) {
         NSArray *barButtonItems = [self createBarButtonItems:items];
         NSMutableArray *array = [[NSMutableArray alloc] init];
-        if (@available(iOS 11.0, *)) {
-            UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
-            spacer.width = -8;
-            [array addObject:spacer];
-        }
-
+        
+        UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
+        spacer.width = -8;
+        [array addObject:spacer];
+        
         [array addObjectsFromArray:barButtonItems];
         for (NSUInteger i = 0; i < barButtonItems.count; i++) {
             UIBarButtonItem *buttonItem = barButtonItems[i];

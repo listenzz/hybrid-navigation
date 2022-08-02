@@ -119,7 +119,6 @@
 }
 
 - (UILabel *)backButtonLabel {
-    if (@available(iOS 11, *)); else return nil;
     UIView *navigationBarContentView = [self valueForKeyPath:@"visualProvider.contentView"];
     __block UILabel *backButtonLabel = nil;
     [navigationBarContentView.subviews enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(__kindof UIView *_Nonnull subview, NSUInteger idx, BOOL *_Nonnull stop) {
@@ -145,7 +144,6 @@
 }
 
 + (void)load {
-    if (@available(iOS 11, *)); else return;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         Class klass = [self class];

@@ -10,7 +10,6 @@
 #import <React/RCTLog.h>
 
 
-
 UIColor *blendColor(UIColor *from, UIColor *to, CGFloat percent) {
     CGFloat fromRed = 0;
     CGFloat fromGreen = 0;
@@ -45,11 +44,9 @@ void adjustLayout(UIViewController *vc) {
     }
 
     if (vc.hbd_barHidden) {
-        if (@available(iOS 11.0, *)) {
-            UIEdgeInsets insets = vc.additionalSafeAreaInsets;
-            CGFloat height = vc.navigationController.navigationBar.bounds.size.height;
-            vc.additionalSafeAreaInsets = UIEdgeInsetsMake(-height + insets.top, insets.left, insets.bottom, insets.right);
-        }
+        UIEdgeInsets insets = vc.additionalSafeAreaInsets;
+        CGFloat height = vc.navigationController.navigationBar.bounds.size.height;
+        vc.additionalSafeAreaInsets = UIEdgeInsetsMake(-height + insets.top, insets.left, insets.bottom, insets.right);
     }
 }
 
@@ -95,8 +92,6 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 
 - (void)clearFake;
 
-- (void)resetSubviewsInNavBar:(UINavigationBar *)navBar;
-
 - (UIGestureRecognizer *)superInteractivePopGestureRecognizer;
 
 @end
@@ -130,7 +125,7 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
     return NO;
 }
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer API_AVAILABLE(ios(7.0)) {
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     if (gestureRecognizer == self.nav.interactivePopGestureRecognizer) {
         return YES;
     }
@@ -166,19 +161,6 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
             id <HBDNavigationTransitionProtocol> target = (id <HBDNavigationTransitionProtocol>) [nav superInteractivePopGestureRecognizer].delegate;
             if ([target respondsToSelector:@selector(handleNavigationTransition:)]) {
                 [target handleNavigationTransition:pan];
-            }
-        }
-    }
-
-    // ----
-    if (coordinator) {
-        if (@available(iOS 11.0, *)) {
-            // empty
-        } else {
-            UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
-            UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
-            if (pan.state == UIGestureRecognizerStateBegan || pan.state == UIGestureRecognizerStateChanged) {
-                nav.navigationBar.tintColor = blendColor(from.hbd_tintColor, to.hbd_tintColor, coordinator.percentComplete);
             }
         }
     }
@@ -526,7 +508,6 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 - (BOOL)navigationBar:(UINavigationBar *)navigationBar shouldPopItem:(UINavigationItem *)item {
     if (self.viewControllers.count > 1 && self.topViewController.navigationItem == item) {
         if (!self.topViewController.hbd_backInteractive) {
-            [self resetSubviewsInNavBar:self.navigationBar];
             return NO;
         }
     }
@@ -586,28 +567,11 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
         return;
     }
 
-    if (@available(iOS 11.0, *)) {
-        // fix：ios 11，12，当前后两个页面的 barStyle 不一样时，点击返回按钮返回，前一个页面的标题颜色响应迟缓或不响应
-        id <UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
-        if (!(coordinator && coordinator.interactive)) {
-            self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
-            self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
-        }
-    }
-}
-
-- (void)resetSubviewsInNavBar:(UINavigationBar *)navBar {
-    if (@available(iOS 11, *)) {
-        // empty
-    } else {
-        // Workaround for >= iOS7.1. Thanks to @boliva - http://stackoverflow.com/posts/comments/34452906
-        [navBar.subviews enumerateObjectsUsingBlock:^(__kindof UIView *_Nonnull subview, NSUInteger idx, BOOL *_Nonnull stop) {
-            if (subview.alpha < 1.0) {
-                [UIView animateWithDuration:.25 animations:^{
-                    subview.alpha = 1.0;
-                }];
-            }
-        }];
+    // fix：ios 11，12，当前后两个页面的 barStyle 不一样时，点击返回按钮返回，前一个页面的标题颜色响应迟缓或不响应
+    id <UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
+    if (!(coordinator && coordinator.interactive)) {
+        self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
+        self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
     }
 }
 

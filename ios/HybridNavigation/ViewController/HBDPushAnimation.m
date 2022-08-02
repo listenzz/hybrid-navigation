@@ -18,7 +18,7 @@
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         fromView.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, -transitionContext.containerView.bounds.size.width, 0);
         toView.transform = CGAffineTransformIdentity;
-    }                completion:^(BOOL finished) {
+    } completion:^(BOOL finished) {
         fromView.transform = CGAffineTransformIdentity;
         toView.transform = CGAffineTransformIdentity;
         [transitionContext completeTransition:!transitionContext.transitionWasCancelled];

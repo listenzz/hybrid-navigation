@@ -1,6 +1,5 @@
-#import "HBDNavigator.h"
-
 #import <React/RCTBridge.h>
+#import "HBDNavigator.h"
 
 extern NSString *const ReactModuleRegistryDidCompletedNotification;
 extern const NSInteger ResultOK;
@@ -25,31 +24,29 @@ extern const NSInteger ResultCancel;
 @property(nonatomic, assign, getter=isViewHierarchyReady) BOOL viewHierarchyReady;
 @property(nonatomic, assign) BOOL hasRootLayout;
 
-- (void)installWithBundleURL:(NSURL *)jsCodeLocation launchOptions:(NSDictionary *)launchOptions;
-
 - (void)installWithBridge:(RCTBridge *)bridge;
 
-- (void)registerNativeModule:(NSString *)moduleName forController:(Class)clazz;
+- (void)registerNativeModule:(NSString *)moduleName forViewController:(Class)clazz;
 
 - (BOOL)hasNativeModule:(NSString *)moduleName;
 
-- (Class)nativeModuleClassFromName:(NSString *)moduleName;
+- (Class)nativeModuleClass:(NSString *)moduleName;
 
 - (void)registerReactModule:(NSString *)moduleName options:(NSDictionary *)options;
 
-- (NSDictionary *)reactModuleOptionsForKey:(NSString *)moduleName;
+- (NSDictionary *)reactModuleOptions:(NSString *)moduleName;
 
-- (BOOL)hasReactModuleForName:(NSString *)moduleName;
+- (BOOL)hasReactModule:(NSString *)moduleName;
 
 - (void)startRegisterReactModule;
 
 - (void)endRegisterReactModule;
 
-- (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options;
+- (HBDViewController *)viewControllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options;
 
-- (UIViewController *)controllerWithLayout:(NSDictionary *)layout;
+- (UIViewController *)viewControllerWithLayout:(NSDictionary *)layout;
 
-- (UIViewController *)controllerForSceneId:(NSString *)sceneId;
+- (UIViewController *)viewControllerWithSceneId:(NSString *)sceneId;
 
 - (void)setRootViewController:(UIViewController *)rootViewController;
 
@@ -63,8 +60,10 @@ extern const NSInteger ResultCancel;
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc;
 
-- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
 
 - (void)registerNavigator:(id <HBDNavigator>)navigator;
+
+- (void)invalidate;
 
 @end

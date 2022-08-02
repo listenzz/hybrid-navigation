@@ -84,15 +84,18 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     self.automaticallyAdjustsScrollViewInsets = NO;
+#pragma clang diagnostic pop
     id <UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     if (coordinator && !coordinator.interactive) {
         if (!self.viewAppeared) {
             self.viewAppeared = YES;
             if (self.firstRenderCompleted) {
                 [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                        KEY_SCENE_ID: self.sceneId,
-                        KEY_ON: ON_COMPONENT_APPEAR
+                    KEY_SCENE_ID: self.sceneId,
+                    KEY_ON: ON_COMPONENT_APPEAR
                 }];
             }
         }
@@ -105,8 +108,8 @@
         self.viewAppeared = YES;
         if (self.firstRenderCompleted) {
             [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                    KEY_SCENE_ID: self.sceneId,
-                    KEY_ON: ON_COMPONENT_APPEAR
+                KEY_SCENE_ID: self.sceneId,
+                KEY_ON: ON_COMPONENT_APPEAR
             }];
         }
     }
@@ -120,8 +123,8 @@
             self.viewAppeared = NO;
             if (self.firstRenderCompleted) {
                 [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                        KEY_SCENE_ID: self.sceneId,
-                        KEY_ON: ON_COMPONENT_DISAPPEAR
+                    KEY_SCENE_ID: self.sceneId,
+                    KEY_ON: ON_COMPONENT_DISAPPEAR
                 }];
             }
         }
@@ -134,8 +137,8 @@
         self.viewAppeared = NO;
         if (self.firstRenderCompleted) {
             [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                    KEY_SCENE_ID: self.sceneId,
-                    KEY_ON: ON_COMPONENT_DISAPPEAR
+                KEY_SCENE_ID: self.sceneId,
+                KEY_ON: ON_COMPONENT_DISAPPEAR
             }];
         }
     }
@@ -148,8 +151,8 @@
     self.firstRenderCompleted = YES;
     if (self.viewAppeared) {
         [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                KEY_SCENE_ID: self.sceneId,
-                KEY_ON: ON_COMPONENT_APPEAR
+            KEY_SCENE_ID: self.sceneId,
+            KEY_ON: ON_COMPONENT_APPEAR
         }];
     }
 }
@@ -157,11 +160,11 @@
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-            KEY_ON: ON_COMPONENT_RESULT,
-            KEY_REQUEST_CODE: @(requestCode),
-            KEY_RESULT_CODE: @(resultCode),
-            KEY_RESULT_DATA: RCTNullIfNil(data),
-            KEY_SCENE_ID: self.sceneId,
+        KEY_ON: ON_COMPONENT_RESULT,
+        KEY_REQUEST_CODE: @(requestCode),
+        KEY_RESULT_CODE: @(resultCode),
+        KEY_RESULT_DATA: RCTNullIfNil(data),
+        KEY_SCENE_ID: self.sceneId,
     }];
 }
 

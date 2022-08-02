@@ -11,9 +11,8 @@ NSString *const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegis
 const NSInteger ResultOK = -1;
 const NSInteger ResultCancel = 0;
 
-@interface HBDReactBridgeManager () <RCTBridgeDelegate>
+@interface HBDReactBridgeManager ()
 
-@property(nonatomic, copy) NSURL *jsCodeLocation;
 @property(nonatomic, strong) NSMutableDictionary *nativeModules;
 @property(nonatomic, strong) NSMutableDictionary *reactModules;
 @property(nonatomic, assign, readwrite, getter=isReactModuleRegisterCompleted) BOOL reactModuleRegisterCompleted;
@@ -39,13 +38,8 @@ const NSInteger ResultCancel = 0;
         _reactModuleRegisterCompleted = NO;
         _viewHierarchyReady = NO;
         _navigatorRegistry = [[HBDNavigatorRegistry alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleReload) name:RCTBridgeWillReloadNotification object:nil];
     }
     return self;
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillReloadNotification object:nil];
 }
 
 - (UIWindow *)mainWindow {
@@ -58,7 +52,10 @@ const NSInteger ResultCancel = 0;
     return mainWindow;
 }
 
-- (void)handleReload {
+- (void)invalidate {
+    RCTLogInfo(@"[Navigator] HBDReactBridgeManager#invalidate");
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+
     self.viewHierarchyReady = NO;
     self.reactModuleRegisterCompleted = NO;
 
@@ -75,22 +72,22 @@ const NSInteger ResultCancel = 0;
 
 - (void)setLoadingViewController {
     UIWindow *mainWindow = [self mainWindow];
-    UIViewController *vc = [UIViewController new];
-    vc.view.backgroundColor = UIColor.whiteColor;
+    UIViewController *vc;
+    @try {
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+        vc = [storyboard instantiateInitialViewController];
+    } @catch (NSException * e){
+        vc = [UIViewController new];
+        vc.view.backgroundColor = UIColor.whiteColor;
+    }
     mainWindow.rootViewController = vc;
-}
-
-- (void)installWithBundleURL:(NSURL *)jsCodeLocation launchOptions:(NSDictionary *)launchOptions {
-    _jsCodeLocation = jsCodeLocation;
-
-    _bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 }
 
 - (void)installWithBridge:(RCTBridge *)bridge {
     _bridge = bridge;
 }
 
-- (void)registerNativeModule:(NSString *)moduleName forController:(Class)clazz {
+- (void)registerNativeModule:(NSString *)moduleName forViewController:(Class)clazz {
     [_nativeModules setObject:clazz forKey:moduleName];
 }
 
@@ -98,7 +95,7 @@ const NSInteger ResultCancel = 0;
     return _nativeModules[moduleName] != nil;
 }
 
-- (Class)nativeModuleClassFromName:(NSString *)moduleName {
+- (Class)nativeModuleClass:(NSString *)moduleName {
     return _nativeModules[moduleName];
 }
 
@@ -106,11 +103,11 @@ const NSInteger ResultCancel = 0;
     _reactModules[moduleName] = options;
 }
 
-- (NSDictionary *)reactModuleOptionsForKey:(NSString *)moduleName {
+- (NSDictionary *)reactModuleOptions:(NSString *)moduleName {
     return _reactModules[moduleName];
 }
 
-- (BOOL)hasReactModuleForName:(NSString *)moduleName {
+- (BOOL)hasReactModule:(NSString *)moduleName {
     return _reactModules[moduleName] != nil;
 }
 
@@ -127,7 +124,7 @@ const NSInteger ResultCancel = 0;
     [[NSNotificationCenter defaultCenter] postNotificationName:ReactModuleRegistryDidCompletedNotification object:nil];
 }
 
-- (UIViewController *)controllerWithLayout:(NSDictionary *)layout {
+- (UIViewController *)viewControllerWithLayout:(NSDictionary *)layout {
     if (!self.isReactModuleRegisterCompleted) {
         return nil;
     }
@@ -148,9 +145,7 @@ const NSInteger ResultCancel = 0;
     return nil;
 }
 
-- (HBDViewController *)controllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
-    HBDViewController *vc = nil;
-
+- (HBDViewController *)viewControllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
     if (!self.isReactModuleRegisterCompleted) {
         @throw [NSException exceptionWithName:@"IllegalStateException" reason:@"React module hasn't register completed." userInfo:@{}];
     }
@@ -163,51 +158,52 @@ const NSInteger ResultCancel = 0;
         options = @{};
     }
 
-    if ([self hasReactModuleForName:moduleName]) {
-        NSDictionary *staticOptions = [[HBDReactBridgeManager get] reactModuleOptionsForKey:moduleName];
+    if ([self hasReactModule:moduleName]) {
+        NSDictionary *staticOptions = [[HBDReactBridgeManager get] reactModuleOptions:moduleName];
         options = [HBDUtils mergeItem:options withTarget:staticOptions];
-        vc = [[HBDReactViewController alloc] initWithModuleName:moduleName props:props options:options];
+        return [[HBDReactViewController alloc] initWithModuleName:moduleName props:props options:options];
     } else {
-        Class clazz = [self nativeModuleClassFromName:moduleName];
+        Class clazz = [self nativeModuleClass:moduleName];
         NSCAssert([self hasNativeModule:moduleName], @"Can't find module named with %@ , do you forget to register？", moduleName);
-        vc = [[clazz alloc] initWithModuleName:moduleName props:props options:options];
+        return [[clazz alloc] initWithModuleName:moduleName props:props options:options];
     }
-    return vc;
 }
 
-- (UIViewController *)controllerForSceneId:(NSString *)sceneId {
+- (UIViewController *)viewControllerWithSceneId:(NSString *)sceneId {
     if (!self.viewHierarchyReady) {
         return nil;
     }
+
     UIWindow *window = [self mainWindow];
-    return [self controllerForSceneId:sceneId withController:window.rootViewController];
+    return [self viewControllerWithSceneId:sceneId viewController:window.rootViewController];
 }
 
-- (UIViewController *)controllerForSceneId:(NSString *)sceneId withController:(UIViewController *)controller {
-    UIViewController *target;
-
-    if ([controller.sceneId isEqualToString:sceneId]) {
-        target = controller;
+- (UIViewController *)viewControllerWithSceneId:(NSString *)sceneId viewController:(UIViewController *)vc {
+    if ([vc.sceneId isEqualToString:sceneId]) {
+        return vc;
     }
 
-    if (!target) {
-        UIViewController *presentedController = controller.presentedViewController;
-        if (presentedController && ![presentedController isBeingDismissed]) {
-            target = [self controllerForSceneId:sceneId withController:presentedController];
+    UIViewController *presentedViewController = vc.presentedViewController;
+    if (presentedViewController && ![presentedViewController isBeingDismissed]) {
+        UIViewController *target = [self viewControllerWithSceneId:sceneId viewController:presentedViewController];
+        if (target) {
+            return target;
         }
     }
 
-    if (!target && controller.childViewControllers.count > 0) {
-        NSUInteger count = controller.childViewControllers.count;
-        for (NSUInteger i = 0; i < count; i++) {
-            UIViewController *child = controller.childViewControllers[i];
-            target = [self controllerForSceneId:sceneId withController:child];
-            if (target) {
-                break;
-            }
+    NSArray<UIViewController *> *children = vc.childViewControllers;
+    if (children.count == 0) {
+        return nil;
+    }
+
+    for (UIViewController *child in children) {
+        UIViewController *target = [self viewControllerWithSceneId:sceneId viewController:child];
+        if (target) {
+            return target;
         }
     }
-    return target;
+
+    return nil;
 }
 
 - (void)setRootViewController:(UIViewController *)rootViewController {
@@ -311,10 +307,10 @@ const NSInteger ResultCancel = 0;
     return [navigator buildRouteGraphWithViewController:vc];
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
     id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForAction:action];
     if (navigator) {
-        [navigator handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
+        [navigator handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
     } else {
         RCTLogWarn(@"[Navigator] Can't find a navigator that can handle action '%@'", action);
     }
@@ -322,12 +318,6 @@ const NSInteger ResultCancel = 0;
 
 - (void)registerNavigator:(id <HBDNavigator>)navigator {
     [self.navigatorRegistry registerNavigator:navigator];
-}
-
-#pragma mark - bridge delegate
-
-- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
-    return _jsCodeLocation;
 }
 
 @end

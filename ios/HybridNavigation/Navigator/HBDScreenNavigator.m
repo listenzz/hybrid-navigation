@@ -21,7 +21,7 @@
         NSString *moduleName = screen[@"moduleName"];
         NSDictionary *props = screen[@"props"];
         NSDictionary *options = screen[@"options"];
-        return [[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
+        return [[HBDReactBridgeManager get] viewControllerWithModuleName:moduleName props:props options:options];
     }
     return nil;
 }
@@ -100,7 +100,7 @@
     } else if ([action isEqualToString:@"presentLayout"]) {
         NSDictionary *layout = extras[@"layout"];
         NSInteger requestCode = [extras[@"requestCode"] integerValue];
-        viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
+        viewController = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
         [viewController setRequestCode:requestCode];
         viewController.modalPresentationStyle = UIModalPresentationCurrentContext;
         [target presentViewController:viewController animated:YES completion:^{
@@ -109,7 +109,7 @@
     } else if ([action isEqualToString:@"showModalLayout"]) {
         NSInteger requestCode = [extras[@"requestCode"] integerValue];
         NSDictionary *layout = extras[@"layout"];
-        viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
+        viewController = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
         viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
         viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [viewController setRequestCode:requestCode];
@@ -125,7 +125,7 @@
     if (moduleName) {
         NSDictionary *props = extras[@"props"];
         NSDictionary *options = extras[@"options"];
-        viewController = [[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
+        viewController = [[HBDReactBridgeManager get] viewControllerWithModuleName:moduleName props:props options:options];
     }
     return viewController;
 }

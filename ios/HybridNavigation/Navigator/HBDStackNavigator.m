@@ -18,7 +18,7 @@
     NSDictionary *stack = layout[self.name];
     if (stack) {
         NSArray *children = stack[@"children"];
-        UIViewController *root = [[HBDReactBridgeManager get] controllerWithLayout:children.firstObject];
+        UIViewController *root = [[HBDReactBridgeManager get] viewControllerWithLayout:children.firstObject];
         if (root) {
             return [[HBDNavigationController alloc] initWithRootViewController:root];
         }
@@ -139,7 +139,7 @@
         [nav redirectToViewController:viewController target:target animated:YES];
     } else if ([action isEqualToString:@"pushLayout"]) {
         NSDictionary *layout = extras[@"layout"];
-        viewController = [[HBDReactBridgeManager get] controllerWithLayout:layout];
+        viewController = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
         if (viewController) {
             viewController.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
             viewController.didShowActionBlock = ^{
@@ -158,7 +158,7 @@
     if (moduleName) {
         NSDictionary *props = extras[@"props"];
         NSDictionary *options = extras[@"options"];
-        viewController = [[HBDReactBridgeManager get] controllerWithModuleName:moduleName props:props options:options];
+        viewController = [[HBDReactBridgeManager get] viewControllerWithModuleName:moduleName props:props options:options];
     }
     return viewController;
 }

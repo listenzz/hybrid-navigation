@@ -28,7 +28,7 @@
 
         NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:4];
         for (NSDictionary *tab in children) {
-            UIViewController *vc = [[HBDReactBridgeManager get] controllerWithLayout:tab];
+            UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:tab];
             if (vc) {
                 [controllers addObject:vc];
             }

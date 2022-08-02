@@ -2,6 +2,8 @@
 
 #import "HBDReactBridgeManager.h"
 
+#import <React/RCTBridgeModule.h>
+
 NSString *const ON_COMPONENT_RESULT = @"ON_COMPONENT_RESULT";
 NSString *const ON_BAR_BUTTON_ITEM_CLICK = @"ON_BAR_BUTTON_ITEM_CLICK";
 NSString *const ON_COMPONENT_APPEAR = @"ON_COMPONENT_APPEAR";
@@ -22,7 +24,6 @@ NSString *const KEY_ACTION = @"action";
 NSString *const KEY_ON = @"on";
 
 @implementation HBDEventEmitter
-
 
 RCT_EXPORT_MODULE(HBDEventEmitter)
 

@@ -165,10 +165,7 @@
 }
 
 + (BOOL)isIphoneX {
-    if (@available(iOS 11.0, *)) {
-        return UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom > 0.0;
-    }
-    return NO;
+    return UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom > 0.0;
 }
 
 + (BOOL)isInCall {

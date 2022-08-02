@@ -19,11 +19,11 @@
         NSDictionary *content = children[0];
         NSDictionary *menu = children[1];
 
-        UIViewController *contentController = [[HBDReactBridgeManager get] controllerWithLayout:content];
-        UIViewController *menuController = [[HBDReactBridgeManager get] controllerWithLayout:menu];
+        UIViewController *contentVC = [[HBDReactBridgeManager get] viewControllerWithLayout:content];
+        UIViewController *menuVC = [[HBDReactBridgeManager get] viewControllerWithLayout:menu];
 
-        if (contentController && menuController) {
-            HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:contentController menuViewController:menuController];
+        if (contentVC && menuVC) {
+            HBDDrawerController *drawerController = [[HBDDrawerController alloc] initWithContentViewController:contentVC menuViewController:menuVC];
             NSDictionary *options = drawer[@"options"];
             if (options) {
                 NSNumber *maxDrawerWidth = options[@"maxDrawerWidth"];
