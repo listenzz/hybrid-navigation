@@ -6,7 +6,7 @@
 
 请参考 [ContextDemo](https://github.com/listenzz/MultiContextDemo)。
 
-⚠️ 推荐使用 [zustand](https://github.com/pmndrs/zustand)
+> ✔︎ 推荐使用 [zustand](https://github.com/pmndrs/zustand)
 
 ## 为什么在 Android 平台，push 到下一个页面时，当前页面的图片会消失？
 
@@ -58,7 +58,7 @@ useVisibleEffect(
 
 ## 如何实现 HOC
 
-⚠️ 实现 [HOC](https://zh-hans.reactjs.org/docs/higher-order-components.html) 时，注意传递 props 给被包裹的组件，以及注意复制 `navigationItem` 这个静态属性，如
+⚠︎ 实现 [HOC](https://zh-hans.reactjs.org/docs/higher-order-components.html) 时，注意传递 props 给被包裹的组件，以及注意复制 `navigationItem` 这个静态属性，如
 
 ```ts
 export function withRedux(WrappedComponent: ComponentType<any>) {

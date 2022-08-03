@@ -1,11 +1,12 @@
+const { defaultTheme } = require('@vuepress/theme-default')
+
 module.exports = {
   title: 'Hybrid Navigation',
   description: 'hybrid-navitation 文档',
   base: '/rn/hybrid-navigation/',
-  themeConfig: {
+  theme: defaultTheme({
     home: '/',
     lastUpdatedText: '上次更新',
-    sidebarDepth: 2,
     contributors: false,
     repo: 'https://github.com/listenzz/hybrid-navigation',
     editLink: false,
@@ -27,8 +28,8 @@ module.exports = {
         'qa',
       ]
     }
-  },
-
+  }),
+  
   markdown: {
     code: {
       lineNumbers: false

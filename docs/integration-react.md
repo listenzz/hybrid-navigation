@@ -16,7 +16,7 @@ MyApp/
 
 ## 添加依赖
 
-```
+```sh
 npm install hybrid-navigation --save
 # or
 yarn add hybrid-navigation
@@ -136,7 +136,7 @@ public void onCreate() {
 
 更新 pod 依赖
 
-```
+```sh
 cd ios & pod install
 ```
 
@@ -179,9 +179,7 @@ cd ios & pod install
 
 ## 关于闪屏
 
-<a name="migrate-native"></a>
-
-如果懂原生开发，建议像 example 这个项目那样配置闪屏。
+请参考[如何在 React Native 中设置闪屏](https://todoit.tech/splash-screen.html)一文。
 
 ## 参考
 
