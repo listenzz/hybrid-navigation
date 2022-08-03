@@ -38,7 +38,7 @@ AppRegistry.registerComponent(appName, () => App)
 
 现在，你需要像下面那样
 
-```javascript
+```js
 import { ReactRegistry, Garden, Navigator, BarStyleDarkContent } from 'hybrid-navigation'
 import App from './App'
 
@@ -69,7 +69,7 @@ Navigator.setRoot({
 
 `setRoot` 具体用法请查看 [Navigator#setRoot](./navigation.md)
 
-> 务必移除 StatusBar 相关组件和 api，交由本库管理状态栏相关状态。
+> 务必移除 StatusBar 相关组件和 api，交由本库管理状态栏。
 
 ### 支持 Redux
 
@@ -79,11 +79,20 @@ Navigator.setRoot({
 
 ```jsx
 function withRedux(WrappedComponent) {
-  return props => (
-    <Provider store={store}>
-      <WrappedComponent {...props} />
-    </Provider>
-  )
+  return class ReduxProvider extends React.Component {
+    // 注意复制 navigationItem
+    static navigationItem = (WrappedComponent as any).navigationItem
+    static displayName = `withRedux(${WrappedComponent.displayName})`
+
+    render() {
+      return (
+        <Provider store={store}>
+          {/* 注意传递 props 属性 */}
+          <WrappedComponent {...this.props} />
+        </Provider>
+      )
+    }
+  }
 }
 
 ReactRegistry.startRegisterComponent(withRedux)

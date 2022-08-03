@@ -2,66 +2,34 @@
 
 你的大部分业务已经用原生代码实现，你想添加一些 RN 业务模块。
 
-> RN 和原生混合，可以参考 [toast-hybrid](https://github.com/listenzz/react-native-toast-hybrid)，该项目中的 example 示范了 RN 模块和原生模块的混合布局。
+官方文档[Integration with Existing Apps](https://reactnative.dev/docs/0.67/integration-with-existing-apps)，有比较详细的介绍，本文讲述的过程和官方文档大同小异。
 
-添加 RN 业务模块的原生项目，和通过 `react-native init` 命令创建的项目，它们的目录结构往往是不同的。
-
-通过 `react-native init ReactNativeProject` 创建的项目，目录结构是这样的：
+为了确保流畅的体验，使用如下目录结构：
 
 ```
-ReactNativeProject
-|—— android/
-|—— ios/
-|—— node_modules/
-|—— package.json
+MyApp
+|-- android/
+|-- ios/
+|-- node_modules/
+|-- package.json
 ```
 
-添加 RN 业务模块的原生项目，目录结构可能是这样的：
+## 创建 RN 项目
 
-```
-AndroidProject/
-|—— settings.gradle
-|—— ReactNativeProject/
-|   |—— node_modules/
-|   |—— package.json
+运行如下命令，创建一个 RN 项目：
 
-iOSProject/
-|—— Podfile
-|—— ReactNativeProject/
-|   |—— node_modules/
-|   |—— package.json
+```sh
+npx react-native init <AppName>
 ```
 
-以上，Android 和 iOS 项目使用 git submodule 的方式依赖同一个 RN 项目。
+> 也可以使用 `npx react-native-create-app <AppName>` 命令来创建
 
-也可能是这样的：
+创建成功后，打开该目录，**删除里面的 andriod 和 ios 文件夹**。
 
-```
-AndroidProject/
-|—— settings.gradle
+cd 到 RN 项目，执行如下命令添加依赖：
 
-iOSProject/
-|—— Podfile
-
-ReactNativeProject/
-|—— node_modules/
-|—— package.json
-```
-
-以上，Android 和 iOS 项目使用 gradle 或者 cocopods 依赖本地 RN 项目。
-
-第二和第三种目录结构，在集成上没多大区别。 这里，我们以第三种目录结构来演示如何集成 hybrid-navigation 到原生项目。
-
-## 创建 RN 项目并集成 hybrid-navigation
-
-在和原生应用同级的目录下，使用 `react-native init ReactNativeProject` 命令创建 RN 业务模块。
-
-创建成功后，打开该目录，删除里面的 andriod 和 ios 文件夹，因为我们不会用到它们。
-
-cd 到 ReactNativeProject，执行如下命令添加依赖
-
-```bash
-npm install hybrid-navigation --save
+```sh
+yarn add hybrid-navigation
 ```
 
 ## RN 项目配置
@@ -99,134 +67,168 @@ ReactRegistry.endRegisterComponent()
 
 ## Android 项目配置
 
-现在，我们回到 Android 项目，在 settings.gradle 中添加如下配置
+首先，将现有 Android 项目拷贝到 RN 项目的 android 文件夹下。结构如下：
 
-```gradle
-include ':hybrid-navigation'
-// 注意把 ReactNativeProject 替换成你的 RN 项目
-project(':hybrid-navigation').projectDir = new File(rootProject.projectDir, '../ReactNativeProject/node_modules/hybrid-navigation/android')
+```
+MyApp
+|-- android/
+|-- -- app/
+|-- -- build.gradle
+|-- -- settings.gradle
+|-- ios/
+|-- node_modules/
+|-- package.json
+```
+
+在 settings.gradle 中添加如下配置
+
+```groovy
+rootProject.name = 'MyApp'
+apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
+applyNativeModulesSettingsGradle(settings)
+include ':app'
 ```
 
 在根项目的 build.gradle 文件中，确保以下配置或变更
 
 ```diff
-ext {
-+   minSdkVersion = 16
-+   targetSdkVersion = 28
-+   compileSdkVersion = 28
-+   buildToolsVersion = '28.0.3'
-+   supportLibVersion = '28.0.0'
-+   // 注意把 ReactNativeProject 替换成你的 RN 项目
-+   rn_root = "$rootDir/../ReactNativeProject"
-}
+  ext {
++     minSdkVersion = 21
++     targetSdkVersion = 30
++     compileSdkVersion = 30
++     buildToolsVersion = '30.0.2'
+  }
 
-buildscript {
-    repositories {
-+       google()
-        jcenter()
+  buildscript {
+      repositories {
++         google()
++         mavenCentral()
+      }
+      dependencies {
+-         classpath 'com.android.tools.build:gradle:2.2.3'
++         classpath 'com.android.tools.build:gradle:4.2.2'
+      }
+  }
 
-    }
-    dependencies {
--       classpath 'com.android.tools.build:gradle:2.2.3'
-+       classpath 'com.android.tools.build:gradle:3.3.2'
-    }
-}
-
-allprojects {
-    repositories {
-        mavenLocal()
-        jcenter()
-+       google()
-+       maven { url "${rn_root}/node_modules/react-native/android" }
-    }
-}
+  allprojects {
+      repositories {
++         maven {
++             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
++             url("$rootDir/../node_modules/react-native/android")
++         }
++         maven {
++             // Android JSC is installed from npm
++             url("$rootDir/../node_modules/jsc-android/dist")
++         }
++         mavenCentral {
++             // We don't want to fetch react-native from Maven Central as there are
++             // older versions over there.
++             content {
++                 excludeGroup "com.facebook.react"
++             }
++         }
++         google()
++         maven { url 'https://www.jitpack.io' }
+      }
+  }
 ```
 
-然后，在 app/build.gradle 文件中，作如下变更
+在 app/build.gradle 文件中，作如下变更
 
 ```diff
 + project.ext.react = [
-+       entryFile                : "index.js",
-+       root                     : "$rn_root"
++     entryFile: "index.js",
++     enableHermes: false,
 + ]
 
-+ apply from: "$rn_root/node_modules/react-native/react.gradle"
++ apply from: "../../node_modules/react-native/react.gradle"
 
-android {
-+   compileSdkVersion rootProject.ext.compileSdkVersion
-+   buildToolsVersion rootProject.ext.buildToolsVersion
++ def jscFlavor = 'org.webkit:android-jsc:+'
++ def enableHermes = project.ext.react.get("enableHermes", false);
 
-    defaultConfig {
-+       minSdkVersion rootProject.ext.minSdkVersion
-+       targetSdkVersion rootProject.ext.targetSdkVersion
-    }
-}
+  android {
++     compileSdkVersion rootProject.ext.compileSdkVersion
++     buildToolsVersion rootProject.ext.buildToolsVersion
 
-dependencies {
-+   implementation fileTree(include: ['*.jar'], dir: 'libs')
+      defaultConfig {
++         minSdkVersion rootProject.ext.minSdkVersion
++         targetSdkVersion rootProject.ext.targetSdkVersion
+      }
+  }
 
-+   implementation "com.android.support:appcompat-v7:$rootProject.supportLibVersion"
-+   implementation "com.android.support:support-v4:$rootProject.supportLibVersion"
-+   implementation "com.android.support:design:$rootProject.supportLibVersion"
+  dependencies {
++     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-+   implementation project(':hybrid-navigation')
-+   implementation "com.facebook.react:react-native:+" // From node_modules
-}
++     implementation project(':hybrid-navigation')
++     implementation "com.facebook.react:react-native:+" // From node_modules
++     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
++     if (enableHermes) {
++		  def hermesPath = "../../node_modules/hermes-engine/android/";
++		  debugImplementation files(hermesPath + "hermes-debug.aar")
++		  releaseImplementation files(hermesPath + "hermes-release.aar")
++	  } else {
++		  implementation jscFlavor
++	  }
+  }
++ apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
++ applyNativeModulesAppBuildGradle(project)
 ```
 
-在根项目下的 gradle/wrapper/gradle-wrapper.properties 文件中，确保你使用了正确的 gradle wrapper 版本。
+在 android/gradle/wrapper/gradle-wrapper.properties 文件中，确保你使用了正确的 gradle wrapper 版本。
 
 ```diff
 - distributionUrl=https\://services.gradle.org/distributions/gradle-2.14.1-all.zip
-+ distributionUrl=https\://services.gradle.org/distributions/gradle-4.10.2-all.zip
++ distributionUrl=https\://services.gradle.org/distributions/gradle-7.2-all.zip
 ```
 
 修改 MainApplication.java 文件。在你的项目中，可能叫其它名字。
 
 ```java
 public class MainApplication extends Application implements ReactApplication {
-    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    @Override
-    public boolean getUseDeveloperSupport() {
-        return BuildConfig.DEBUG;
-    }
 
-    @Override
-    protected List<ReactPackage> getPackages() {
-        return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
-            new NavigationHybridPackage()
-        );
-    }
+	private final ReactNativeHost mReactNativeHost =
+		new ReactNativeHost(this) {
+			@Override
+			public boolean getUseDeveloperSupport() {
+				return BuildConfig.DEBUG;
+			}
 
-    @Override
-    protected String getJSMainModuleName() {
-        return "index";
-        }
-    };
+			@Override
+			protected List<ReactPackage> getPackages() {
+				@SuppressWarnings("UnnecessaryLocalVariable")
+				List<ReactPackage> packages = new PackageList(this).getPackages();
+				return packages;
+			}
 
-    @Override
-    public ReactNativeHost getReactNativeHost() {
-        return mReactNativeHost;
-    }
+			@Override
+			protected String getJSMainModuleName() {
+				return "index";
+			}
+		};
 
-    public void onCreate() {
-        super.onCreate();
-        // react native
-        SoLoader.init(this, /* native exopackage */ false);
-        ReactBridgeManager bridgeManager = ReactBridgeManager.get();
-        bridgeManager.install(getReactNativeHost());
-    }
+	@Override
+	public ReactNativeHost getReactNativeHost() {
+		return mReactNativeHost;
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		SoLoader.init(this, /* native exopackage */ false);
+		ReactBridgeManager bridgeManager = ReactBridgeManager.get();
+		bridgeManager.install(getReactNativeHost());
+		FLog.setMinimumLoggingLevel(FLog.INFO);
+	}
 }
 ```
 
-> 注意：ReactNativeHost 的实例是 HybridReactNativeHost 对象，它为 reload bundle 做了些优化。
+创建 `ReactEntryActivity`，继承 `ReactAppCompatActivity`。
 
-创建一个 Activity 继承 ReactAppCompatActivity
-
-重写 `getMainComponentName` 方法
+> 可以叫其它名字
 
 ```java
+import com.reactnative.hybridnavigation.ReactAppCompatActivity;
+
 public class ReactEntryActivity extends ReactAppCompatActivity {
     @Override
     protected String getMainComponentName() {
@@ -235,7 +237,7 @@ public class ReactEntryActivity extends ReactAppCompatActivity {
 }
 ```
 
-或者 `onCreateMainComponent` 方法
+如果希望 UI 层级由原生这边决定，则需要实现 `onCreateMainComponent` 方法：
 
 ```java
 @Override
@@ -256,20 +258,7 @@ protected void onCreateMainComponent() {
 }
 ```
 
-第一种写法相当于
-
-```java
-@Override
-protected void onCreateMainComponent() {
-    AwesomeFragment home = getReactBridgeManager().createFragment("Home");
-    ReactStackFragment navigation = new ReactStackFragment();
-    navigation.setRootFragment(home);
-
-    setActivityRootFragment(navigation);
-}
-```
-
-为该 Activity 添加 NoActionBar 主题
+为 `ReactEntryActivity` 添加 NoActionBar 主题
 
 ```xml
 <activity
@@ -283,20 +272,38 @@ protected void onCreateMainComponent() {
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+<application
+    android:usesCleartextTraffic="true"
+    tools:targetApi="28"
+    tools:ignore="GoogleAppIndexingWarning">
+    <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+</application>
 ```
 
 ## iOS 项目配置
 
-假设你使用 cocopods 来管理依赖
+首先，将现有 iOS 项目拷贝到 RN 项目的 ios 文件夹下。结构如下：
 
-在 Podfile 文件中添加如下设置
+```
+MyApp
+|-- android/
+|-- ios/
+|-- -- Podfile
+|-- -- *.xcodeproj/
+|-- -- *.xcworkspace/
+|-- node_modules/
+|-- package.json
+```
+
+假设你使用 cocopods 来管理依赖，在 Podfile 文件中添加如下设置
 
 ```ruby
-# 注意把 ReactNativeProject 替换成你的项目
-require_relative '../ReactNativeProject/node_modules/react-native/scripts/react_native_pods'
-require_relative '../ReactNativeProject/node_modules/@react-native-community/cli-platform-ios/native_modules'
+platform :ios, '11.0'
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-target 'ReactNativeProject' do
+target 'MyApp' do
     config = use_native_modules!
     use_react_native!(
       :path => config[:reactNativePath],
@@ -305,6 +312,10 @@ target 'ReactNativeProject' do
     )
 end
 
+post_install do |installer|
+    react_native_post_install(installer)
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+end
 ```
 
 记得 `pod install` 一次。
@@ -334,21 +345,32 @@ end
 点击三角图标展开，在其中填入
 
 ```bash
-export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/react-native-xcode.sh
+export NODE_BINARY=node ../node_modules/react-native/scripts/react-native-xcode.sh
 ```
 
-注意将 ReactNativeProject 替换成你的 RN 项目名
+像下面那样更改 AppDelegate.h 文件
 
-![integration-native-2021-10-19-15-38-21](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/integration-native-2021-10-19-15-38-21.png)
+```objc
+#import <UIKit/UIKit.h>
+#import <React/RCTBridgeDelegate.h>
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate>
+
+@property (strong, nonatomic) UIWindow *window;
+
+@end
+```
 
 像下面那样更改 AppDelegate.m 文件
 
 ```objc
-#import <HybridNavigation/HybridNavigation.h>
-#import <React/RCTBundleURLProvider.h>
-#import <React/RCTBridgeDelegate.h>
+#import "AppDelegate.h"
 
-@interface AppDelegate () <HBDReactBridgeManagerDelegate, RCTBridgeDelegate>
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTBridgeModule.h>
+#import <HybridNavigation/HybridNavigation.h>
+
+@interface AppDelegate () <HBDReactBridgeManagerDelegate>
 
 @end
 
@@ -359,7 +381,6 @@ export NODE_BINARY=node ../ReactNativeProject/node_modules/react-native/scripts/
 
     RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
     [[HBDReactBridgeManager get] installWithBridge:bridge];
-    [HBDReactBridgeManager get].delegate = self;
 
     UIStoryboard *storyboard =  [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
