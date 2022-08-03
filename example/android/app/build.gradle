@@ -26,7 +26,6 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.reactnative.hybridnavigation"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

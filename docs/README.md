@@ -17,42 +17,16 @@
 | ------- | -------------------- |
 | 1.0.0+  | 0.60.0+              |
 
-如果你使用 1.5.0 以上版本，需要修改 android/build.gradle 文件，添加 mavenCentral()
+## 运行 example 项目
 
-```groovy
-allprojects {
-    repositories {
-        mavenLocal()
-        maven {
-            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-            url("$rootDir/../node_modules/react-native/android")
-        }
-        maven {
-            // Android JSC is installed from npm
-            url("$rootDir/../node_modules/jsc-android/dist")
-        }
-        google()
-        jcenter()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
-}
-```
-
-## Running the example project
-
-To run the example project, first clone this repo:
+首先 clone 本项目
 
 ```shell
 git clone git@github.com:listenzz/hybrid-navigation.git
 cd hybrid-navigation
 ```
 
-### run on Android
-
-First, make sure that you have a simulator or device.
-
-Then,
+然后在项目根目录下运行如下命令：
 
 ```shell
 npm install
@@ -60,10 +34,21 @@ npm install
 npm start
 ```
 
-Then, in another CLI window:
+### 在 Android 上运行
 
-```shell
-npm run run:android
+首先，确保你有一个模拟器或设备
+
+如果熟悉原生开发，使用 Android Studio 打开 example/android，像运行原生应用那样运行它，也可以使用命令行：
+
+```sh
+# 在项目根目录下运行
+npm run android
+```
+
+你可能需要运行如下命令，才可以使用 Hot Reload 功能
+
+```sh
+adb reverse tcp:8081 tcp:8081
 ```
 
 [**Download demo apk**](https://todoit.oss-cn-shanghai.aliyuncs.com/app-release.apk)
@@ -72,22 +57,21 @@ npm run run:android
 
 ![README-2021-10-19-15-58-19](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/README-2021-10-19-15-58-19.png)
 
-### run on iOS
+### 在 iOS 上运行
 
-First,
+首先安装 cocoapods 依赖，在项目根目录下运行如下命令：
 
-```shell
-npm install
-# &
-cd ios && pod install
-# &
-npm start
+```sh
+cd example/ios && pod install
+# 成功安装依赖后，回到根目录
+cd -
 ```
 
-Then, in another CLI window:
+如果熟悉原生开发，使用 Xcode 打开 example/ios，像运行原生应用那样运行它，或者使用命令行：
 
-```shell
-npm run run:ios
+```sh
+# 在项目根目录下运行
+npm run ios
 ```
 
 ## 目录
