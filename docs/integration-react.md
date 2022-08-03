@@ -8,10 +8,10 @@
 
 ```
 MyApp/
-|—— android/
-|—— ios/
-|—— node_modules/
-|—— package.json
+├─ android/
+├─ ios/
+├─ node_modules/
+├─ package.json
 ```
 
 ## 添加依赖

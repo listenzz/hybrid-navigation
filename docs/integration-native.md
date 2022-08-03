@@ -8,10 +8,10 @@
 
 ```
 MyApp
-|-- android/
-|-- ios/
-|-- node_modules/
-|-- package.json
+├─ android/
+├─ ios/
+├─ node_modules/
+├─ package.json
 ```
 
 ## 创建 RN 项目
@@ -71,13 +71,13 @@ ReactRegistry.endRegisterComponent()
 
 ```
 MyApp
-|-- android/
-|-- -- app/
-|-- -- build.gradle
-|-- -- settings.gradle
-|-- ios/
-|-- node_modules/
-|-- package.json
+├─ android/
+│    ├─ app/
+│    ├─ build.gradle
+│    └─ settings.gradle
+├─ ios/
+├─ node_modules/
+├─ package.json
 ```
 
 在 settings.gradle 中添加如下配置
@@ -287,13 +287,13 @@ protected void onCreateMainComponent() {
 
 ```
 MyApp
-|-- android/
-|-- ios/
-|-- -- Podfile
-|-- -- *.xcodeproj/
-|-- -- *.xcworkspace/
-|-- node_modules/
-|-- package.json
+├─ android/
+├─ ios/
+│   ├─ Podfile
+│   ├─ *.xcodeproj/
+│   └─ *.xcworkspace/
+├─ node_modules/
+├─ package.json
 ```
 
 假设你使用 cocopods 来管理依赖，在 Podfile 文件中添加如下设置
