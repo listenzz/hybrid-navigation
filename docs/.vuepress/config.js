@@ -15,6 +15,7 @@ module.exports = {
       { text: '首页', link: '/', },
       { text: 'React Native 开发指南', link: 'https://todoit.tech/' },
     ],
+    sidebarDepth: 3,
     sidebar: {
       '/': [
         'integration-react',
@@ -33,6 +34,9 @@ module.exports = {
   markdown: {
     code: {
       lineNumbers: false
+    },
+    headers: {
+      level: [2, 3, 4]
     }
   },
 }

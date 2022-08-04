@@ -21,14 +21,14 @@
 
 首先 clone 本项目
 
-```shell
+```sh
 git clone git@github.com:listenzz/hybrid-navigation.git
 cd hybrid-navigation
 ```
 
 然后在项目根目录下运行如下命令：
 
-```shell
+```sh
 npm install
 # &
 npm start

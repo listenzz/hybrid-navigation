@@ -8,7 +8,9 @@
 
 > ✔︎ 推荐使用 [zustand](https://github.com/pmndrs/zustand)
 
-## 为什么在 Android 平台，push 到下一个页面时，当前页面的图片会消失？
+## 推荐使用 FastImage 代替 Image 组件
+
+为什么在 Android 平台，push 到下一个页面时，当前页面的图片会消失？
 
 细心的同学，可能会注意到，在 Android 平台，push 到下一个页面时，当前页面的图片会消失。这是怎么回事呢？
 
@@ -58,7 +60,7 @@ useVisibleEffect(
 
 ## 如何实现 HOC
 
-⚠︎ 实现 [HOC](https://zh-hans.reactjs.org/docs/higher-order-components.html) 时，注意传递 props 给被包裹的组件，以及注意复制 `navigationItem` 这个静态属性，如
+:warning: 实现 [HOC](https://zh-hans.reactjs.org/docs/higher-order-components.html) 时，注意传递 props 给被包裹的组件，以及注意复制 `navigationItem` 这个静态属性，如
 
 ```ts
 export function withRedux(WrappedComponent: ComponentType<any>) {

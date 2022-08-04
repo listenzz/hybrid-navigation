@@ -10,9 +10,11 @@ tabs 容器有一个默认的 TabBar， 支持未读消息数，小红点提示�
 
 此外，需要注意以下若干事项：
 
-## TabBar 组件和普通页面组件一样，需要注册：
+## 注册
 
-```javascript
+TabBar 组件和普通页面组件一样，需要注册
+
+```js
 import CustomTabBar from './src/CustomTabBar'
 import BulgeTabBar from './src/BulgeTabBar'
 
@@ -20,11 +22,13 @@ ReactRegistry.registerComponent('CustomTabBar', () => CustomTabBar)
 ReactRegistry.registerComponent('BulgeTabBar', () => BulgeTabBar)
 ```
 
-## 在布局对象中，通过 `tabBarModuleName` 指定 TabBar 组件
+## 启用
+
+在布局对象中，通过 `tabBarModuleName` 启用自定义 TabBar 组件。
 
 如果**不需要**中间按钮凸起效果，`sizeIndeterminate` 需要设置为 `false`，同时指定 TabBar 的宽高。
 
-```javascript
+```js
 Navigator.setRoot({
   tabs: {
     children: [],
@@ -36,7 +40,7 @@ Navigator.setRoot({
 })
 ```
 
-```javascript
+```js
 tabBar: {
   // 56 和 48 是原生 TabBar 容器的实际高度，是固定值。
   height: Platform.OS === 'android' ? 56 : 48,
@@ -49,7 +53,7 @@ tabBar: {
 
 如果**需要**实现中间按钮凸起效果，`sizeIndeterminate` 需要设置为 `true`，同时指定 TabBar 期待的（包含凸起按钮后的）宽高，以及 TabBar 的实际宽高。
 
-```javascript
+```js
 Navigator.setRoot({
   tabs: {
     children: [],
@@ -61,7 +65,7 @@ Navigator.setRoot({
 })
 ```
 
-```javascript
+```js
 container: {
   // TabBar 期待的宽高
   height: Platform.OS === 'android' ? 78 : 72,
@@ -87,7 +91,9 @@ tabBar: {
 },
 ```
 
-## 通过 props 来获取相关数据
+## 属性
+
+通过 props 来获取自定义 TabBar 相关属性。
 
 可以通过 props.selectedIndex 来获取当前选中的 tab 的索引。props 还有许多有用的信息，它的数据结构如下：
 
@@ -131,7 +137,7 @@ tabBar: {
 
 其中 sceneId 是 tabs 容器的 sceneId，navigator 是 tabs 容器的 navigator，如果你希望获取某个 tab 页面的 navigator，可以通过如下方式：
 
-```javascript
+```js
 const navigator = Navigator.of(this.props.tabs[0].sceneId)
 ```
 

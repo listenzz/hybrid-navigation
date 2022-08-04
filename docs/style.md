@@ -85,21 +85,25 @@ export const TitleAlignmentCenter = 'center'
 export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft
 ```
 
-> 全局设置主题，有些样式需要重新运行原生应用才能看到效果。
+::: warning
 
-> 所有关于颜色的设置，仅支持 #AARRGGBB 或者 #RRGGBB 格式的字符。
+- 全局设置主题，有些样式需要重新运行原生应用才能看到效果。
 
-> 所有可配置项均是可选
+- 所有关于颜色的设置，仅支持 #AARRGGBB 或者 #RRGGBB 格式的字符。
 
-- **topBarStyle**
+- 所有可配置项均是可选
+
+:::
+
+### topBarStyle
 
 导航栏和状态栏前景色，在 iOS 中，默认是白底黑字，在 Android 中，默认是黑底白字。
 
-可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`，在 Android 6.0 效果如下：
+可选项有 `BarStyleDarkContent` 和 `BarStyleLightContent`，在 Android 6.0 效果如下：
 
 ![style-2021-10-19-15-43-21](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/style-2021-10-19-15-43-21.png)
 
-- **statusBarColorAndroid**
+### statusBarColorAndroid
 
 默认取 `topBarColor` 的值。
 
@@ -109,15 +113,15 @@ export type TitleAlignment = TitleAlignmentCenter | TitleAlignmentLeft
 
 为了提供一致的用户体验，你可以为 Android 配置 `andriod:statusBarColor` 样式。
 
-1.在 res 目录下新建一个名为 values-v21 的文件夹
+1. 在 res 目录下新建一个名为 values-v21 的文件夹
 
 ![style-2021-10-19-15-44-13](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/style-2021-10-19-15-44-13.png)
 
-2.在 values-v21 文件夹新建一个名为 styles.xml 的资源文件
+2. 在 values-v21 文件夹新建一个名为 styles.xml 的资源文件
 
 ![style-2021-10-19-15-44-33](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/style-2021-10-19-15-44-33.png)
 
-3.双击打开 values-v21 目录中的 styles.xml 文件，把 App 主题样式 `andriod:statusBarColor` 的值设置成和你用 Garden 设置的一样。
+3. 双击打开 values-v21 目录中的 styles.xml 文件，把 App 主题样式 `andriod:statusBarColor` 的值设置成和你用 Garden 设置的一样。
 
 ```ts
 import { Garden } from 'hybrid-navigation'
@@ -138,7 +142,7 @@ Garden.setStyle({
 
 现在，应用启动时和启动完成后的状态栏颜色是一致的了。
 
-- **shadowImage**
+### shadowImage
 
 导航栏阴影图片，仅对 iOS 生效。
 
@@ -165,7 +169,7 @@ Garden.setStyle({
 })
 ```
 
-- **backIcon**
+### backIcon
 
 配置返回按钮的图标。如果不配置，则采用平台默认的图标。配置方式如下
 
@@ -180,25 +184,23 @@ Garden.setStyle({
 })
 ```
 
-- **tabBarShadowImage**
+### tabBarShadowImage
 
 UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只有设置了 tabBarColor 才会生效。
 
-配置方式请参考 `shadowImage`
+配置方式请参考 [shadowImage](#shadowimage)
 
-- **navigationBarColorAndroid**
+### navigationBarColorAndroid
 
-  用于修改底部虚拟键的背景颜色，对 Andriod 8.0 以上版本生效。默认规则如下：
+用于修改底部虚拟键的背景颜色，对 Andriod 8.0 以上版本生效。默认规则如下：
 
-  - 含「底部 Tab」的页面，虚拟键设置为「底部 Tab」的颜色
+- 含「底部 Tab」的页面，虚拟键设置为「底部 Tab」的颜色
 
-  - 不含「底部 Tab」的页面，默认使用页面背景颜色，也就是 screenBackgroundColor
+- 不含「底部 Tab」的页面，默认使用页面背景颜色，也就是 screenBackgroundColor
 
-  - modal 默认是透明色
+- modal 默认是透明色
 
-  一旦全局设置了 navigationBarColorAndroid，默认规则就会失效。
-
-<a name="static-options"></a>
+一旦全局设置了 navigationBarColorAndroid，默认规则就会失效。
 
 ## 静态配置页面
 
@@ -208,7 +210,7 @@ UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只�
 
 ```ts
 class Screen extends Component {
-  static navigationItem = {
+  static navigationItem: NavigationItem = {
     passThroughTouches: false, // 触摸事件是否可以穿透到下一层页面，很少用。
     screenBackgroundColor: '#FFFFFF', // 当前页面背景
     topBarStyle: string, // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
@@ -303,11 +305,11 @@ class Screen extends Component {
 }
 ```
 
-- **extendedLayoutIncludesTopBar**
+### extendedLayoutIncludesTopBar
 
 默认情况下，这个值根据 `topBarColor` 的初始值计算得出，如果 `topBarColor` 含有透明度，那么这个值为 true，否则为 false。通常用于需要动态改变 `topBarAlpha` 的场合。参看 [example/TopBarAlpha](https://github.com/listenzz/hybrid-navigation/blob/master/example/src/TopBarAlpha.js) 这个例子。
 
-- **titleItem**
+### titleItem
 
 如果希望自定义标题栏，可以通过 moduleName 来指定标题栏对应的组件。组件需要通过 ReactRegistry.registerComponent 注册。一旦设置了 moduleName，title 字段将失效。
 
@@ -323,23 +325,17 @@ navigator.setParams({})
 
 详情请参考 example 中 TopBarTitleView.js 这个文件。
 
-- **tabItem**
+### tabItem
 
 如果同时设置了 icon 与 unselectedIcon, 则保留图片原始颜色，否则用全局配置中的 `tabBarItemColor` 与 `tabBarUnselectedItemColor` 对 icon 进行染色。
 
 hideTabBarWhenPush 表示当 stack 嵌套在 tabs 的时候，push 到另一个页面时是否隐藏 TabBar。
 
-- **navigationBarColorAndroid**
+### navigationBarColorAndroid
 
-  用于修改虚拟键的背景颜色，对 Andriod 8.0 以上版本生效。默认规则如下：
+用于修改当前页面对应的虚拟键的背景颜色，对 Andriod 8.0 以上版本生效。
 
-  - 含「底部 Tab」的页面，虚拟键设置为「底部 Tab」的颜色
-
-  - 不含「底部 Tab」的页面，默认使用页面背景颜色，也就是 screenBackgroundColor
-
-  - modal 默认是透明色
-
-  某些页面，比如从底部往上滑的 modal, 需要开发者使用 navigationBarColorAndroid 自行适配，请参考 example/src/ReactModal.js 这个文件
+某些页面，比如从底部往上滑的 modal, 需要开发者使用 navigationBarColorAndroid 自行适配，请参考 example/src/ReactModal.js 这个文件
 
 ## 动态配置页面
 
@@ -394,9 +390,9 @@ this.props.navigator.push(
 
 Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
 
-- **updateOptions(options: NavigationOption)**
+#### updateOptions
 
-动态改变设置, 可配置项如下
+`updateOptions(options: NavigationOption)` 动态改变设置, 可配置项如下
 
 ```ts
 export interface NavigationOption {
@@ -419,9 +415,9 @@ export interface NavigationOption {
 }
 ```
 
-- **setTitleItem(titleItem: TitleItem)**
+#### setTitleItem
 
-更改标题
+`setTitleItem(titleItem: TitleItem)` 更改标题
 
 ```ts
 export interface TitleItem {
@@ -435,9 +431,9 @@ garden.setTitleItem({
 })
 ```
 
-- **setLeftBarButtonItem(buttonItem: BarButtonItem)**
+#### setLeftBarButtonItem
 
-更改左侧按钮
+`setLeftBarButtonItem(buttonItem: BarButtonItem)` 更改左侧按钮
 
 ```ts
 export interface BarButtonItem {
@@ -461,9 +457,9 @@ garden.setLeftBarButtonItem({
 })
 ```
 
-- **setRightBarButtonItem(buttonItem: BarButtonItem)**
+#### setRightBarButtonItem
 
-更改右侧按钮
+`setRightBarButtonItem(buttonItem: BarButtonItem)` 更改右侧按钮
 
 ```ts
 garden.setRightBarButtonItem({
@@ -471,7 +467,7 @@ garden.setRightBarButtonItem({
 })
 ```
 
-- **updateTabBar**
+#### updateTabBar
 
 动态改变 tabBar 样式, 可配置项如下
 
@@ -487,9 +483,9 @@ garden.updateTabBar({
 })
 ```
 
-- **setTabItem(item: TabItemInfo | TabItemInfo[])**
+#### setTabItem
 
-动态设置 tab 的图标、文字、徽章
+`setTabItem(item: TabItemInfo | TabItemInfo[])` 动态设置 tab 的图标、文字、徽章
 
 ```ts
 export interface TabItemInfo {
@@ -517,9 +513,9 @@ garden.setTabItem({
 })
 ```
 
-- **setMenuInteractive(enabled: boolean)**
+#### setMenuInteractive
 
-是否允许侧滑打开抽屉
+`setMenuInteractive(enabled: boolean)` 是否允许侧滑打开抽屉
 
 ```ts
 useVisibleEffect(

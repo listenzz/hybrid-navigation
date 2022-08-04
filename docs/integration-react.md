@@ -64,7 +64,7 @@ Navigator.setRoot({
 })
 ```
 
-`setRoot` 具体用法请查看 [Navigator#setRoot](./navigation.md)
+`setRoot` 具体用法请查看 [Navigator#setRoot](./navigation.md#setroot)
 
 另外有一个需要注意的地方，hybrid-navigation 接管了状态栏，如果代码里面有使用 `<StatusBar />` 组件，需要移除。
 
