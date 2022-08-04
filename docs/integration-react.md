@@ -28,7 +28,7 @@ yarn add hybrid-navigation
 
 以前，你是这么注册 React 组件
 
-```javascript
+```js
 import { AppRegistry } from 'react-native'
 import App from './App'
 import { name as appName } from './app.json'
@@ -55,11 +55,8 @@ ReactRegistry.registerComponent('App', () => App)
 
 // 重要必须
 ReactRegistry.endRegisterComponent()
-```
 
-通过 `Navigator#setRoot` 来设置 UI 层级
-
-```javascript
+// 通过 `Navigator#setRoot` 来设置 UI 层级
 Navigator.setRoot({
   stack: {
     children: [{ screen: { moduleName: 'App' } }],
@@ -69,7 +66,11 @@ Navigator.setRoot({
 
 `setRoot` 具体用法请查看 [Navigator#setRoot](./navigation.md)
 
-> 务必移除 StatusBar 相关组件和 api，交由本库管理状态栏。
+另外有一个需要注意的地方，hybrid-navigation 接管了状态栏，如果代码里面有使用 `<StatusBar />` 组件，需要移除。
+
+```diff
+-  <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+```
 
 ### 支持 Redux
 
@@ -102,8 +103,6 @@ ReactRegistry.startRegisterComponent(withRedux)
 
 ## Android 项目配置
 
-假设你已经配置好了 React 项目
-
 修改 MainActivity.java 文件
 
 ```diff
@@ -112,10 +111,22 @@ ReactRegistry.startRegisterComponent(withRedux)
 
 - public class MainActivity extends ReactActivity {
 + public class MainActivity extends ReactAppCompatActivity {
--   @Override
--   protected String getMainComponentName() {
--       return "MyApp";
--   }
+-     @Override
+-     protected String getMainComponentName() {
+-        return "MyApp";
+-     }
+  }
+```
+
+修改后一般长下面这个样子：
+
+```java
+package com.myapp69;
+
+import com.reactnative.hybridnavigation.ReactAppCompatActivity;
+
+public class MainActivity extends ReactAppCompatActivity {
+
 }
 ```
 
@@ -125,13 +136,13 @@ ReactRegistry.startRegisterComponent(withRedux)
   import com.facebook.react.ReactNativeHost;
 + import com.reactnative.hybridnavigation.ReactBridgeManager;
 
-public void onCreate() {
-    super.onCreate();
-    SoLoader.init(this, /* native exopackage */ false);
+  public void onCreate() {
+      super.onCreate();
+      SoLoader.init(this, /* native exopackage */ false);
 
-+   ReactBridgeManager bridgeManager = ReactBridgeManager.get();
-+   bridgeManager.install(getReactNativeHost());
-}
++     ReactBridgeManager bridgeManager = ReactBridgeManager.get();
++     bridgeManager.install(getReactNativeHost());
+  }
 ```
 
 如果你的 RN 版本 >=0.60 && < 0.62，修改 android/app/build.gradle 文件，添加依赖
@@ -140,6 +151,8 @@ public void onCreate() {
   implementation "com.facebook.react:react-native:+"  // From node_modules
 + implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 ```
+
+运行项目，如果发现 TopBar 的高度不正常，记得移除所有 `<StatusBar />` 组件
 
 ## iOS 项目配置
 
@@ -161,22 +174,22 @@ cd ios & pod install
 
   - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
   {
--  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
 -                                                   moduleName:@"RN60"
 -                                            initialProperties:nil];
 -
--  rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+-    rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 
-+  [[HBDReactBridgeManager get] installWithBridge:bridge];
++    [[HBDReactBridgeManager get] installWithBridge:bridge];
 +
-   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-+  self.window.windowLevel = UIWindowLevelStatusBar + 1;
-   UIViewController *rootViewController = [UIViewController new];
--  rootViewController.view = rootView;
-+  rootViewController.view.backgroundColor = UIColor.whiteColor;
-   self.window.rootViewController = rootViewController;
-   [self.window makeKeyAndVisible];
-   return YES;
+     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
++    self.window.windowLevel = UIWindowLevelStatusBar + 1;
+     UIViewController *rootViewController = [UIViewController new];
+-    rootViewController.view = rootView;
++    rootViewController.view.backgroundColor = UIColor.whiteColor;
+     self.window.rootViewController = rootViewController;
+     [self.window makeKeyAndVisible];
+     return YES;
  }
 
  @end
@@ -185,6 +198,8 @@ cd ios & pod install
 修改 Info.plist 文件
 
 ![integration-react-2021-10-19-15-38-49](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/integration-react-2021-10-19-15-38-49.jpg)
+
+运行项目，如果出现关于状态栏的错误提示，记得移除所有 `<StatusBar />` 组件。
 
 ## 关于闪屏
 
