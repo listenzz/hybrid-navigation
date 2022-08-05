@@ -55,6 +55,11 @@ const NSInteger ResultCancel = 0;
 - (void)invalidate {
     RCTLogInfo(@"[Navigator] HBDReactBridgeManager#invalidate");
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    
+    NSArray<id <HBDNavigator>> *navigators = [self.navigatorRegistry allNavigators];
+    for (id<HBDNavigator> navigator in navigators) {
+        [navigator invalidate];
+    }
 
     self.viewHierarchyReady = NO;
     self.reactModuleRegisterCompleted = NO;
@@ -124,25 +129,37 @@ const NSInteger ResultCancel = 0;
     [[NSNotificationCenter defaultCenter] postNotificationName:ReactModuleRegistryDidCompletedNotification object:nil];
 }
 
+- (UIViewController *)createViewControllerWithLayout:(NSDictionary *)layout {
+    NSArray<NSString *> *layouts = [self.navigatorRegistry allLayouts];
+    for (NSString *name in layouts) {
+        if (![[layout allKeys] containsObject:name]) {
+            continue;
+        }
+        
+        id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:name];
+        UIViewController *vc = [navigator viewControllerWithLayout:layout];
+        if (vc) {
+            [self.navigatorRegistry setLayout:name forViewController:vc];
+        }
+        return vc;
+    }
+    
+    return nil;
+}
+
 - (UIViewController *)viewControllerWithLayout:(NSDictionary *)layout {
     if (!self.isReactModuleRegisterCompleted) {
         return nil;
     }
 
-    NSArray<NSString *> *layouts = [self.navigatorRegistry allLayouts];
-    for (NSString *name in layouts) {
-        if ([[layout allKeys] containsObject:name]) {
-            id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:name];
-            UIViewController *vc = [navigator viewControllerWithLayout:layout];
-            if (vc) {
-                [self.navigatorRegistry setLayout:name forViewController:vc];
-            }
-            return vc;
-        }
+    UIViewController *vc = [self createViewControllerWithLayout:layout];
+    
+    if (!vc) {
+        RCTLogError(@"[Navigator] Can't find a navigator that can handle layout '%@'. Did you forget to register?", layout);
+        return nil;
     }
 
-    RCTLogError(@"[Navigator] Can't find a navigator that can handle layout '%@'. Did you forget to register?", layout);
-    return nil;
+    return vc;
 }
 
 - (HBDViewController *)viewControllerWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
@@ -264,12 +281,11 @@ const NSInteger ResultCancel = 0;
     }
 
     NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
-    if (layout) {
-        id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
-        return [navigator primaryViewControllerWithViewController:vc];
+    if (!layout) {
+        return nil;
     }
-
-    return nil;
+    id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
+    return [navigator primaryViewControllerWithViewController:vc];
 }
 
 - (NSArray *)routeGraph {
@@ -302,18 +318,18 @@ const NSInteger ResultCancel = 0;
     if (!layout) {
         return nil;
     }
-    
     id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
     return [navigator routeGraphWithViewController:vc];
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForAction:action];
-    if (navigator) {
-        [navigator handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
-    } else {
+    if (!navigator) {
         RCTLogWarn(@"[Navigator] Can't find a navigator that can handle action '%@'", action);
+        callback(@[NSNull.null, @NO]);
+        return;
     }
+    [navigator handleNavigationWithViewController:vc action:action extras:extras callback:(RCTResponseSenderBlock)callback];
 }
 
 - (void)registerNavigator:(id <HBDNavigator>)navigator {

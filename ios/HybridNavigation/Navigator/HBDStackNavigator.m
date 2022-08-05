@@ -53,28 +53,28 @@
     return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:nav.topViewController];
 }
 
-- (void)handlePushWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  resolve:(RCTPromiseResolveBlock)resolve {
+- (void)handlePushWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  callback:(RCTResponseSenderBlock)callback {
     UIViewController *vc = [self viewControllerWithExtras:extras];
     if (!vc) {
-        resolve(@(NO));
+        callback(@[NSNull.null, @NO]);
         return;
     }
     
     vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
     vc.didShowActionBlock = ^{
-        resolve(@(YES));
+        callback(@[NSNull.null, @YES]);
     };
     [nav pushViewController:vc animated:YES];
 }
 
-- (void)handlePopWithNavigationController:(UINavigationController *)nav resolve:(RCTPromiseResolveBlock)resolve {
+- (void)handlePopWithNavigationController:(UINavigationController *)nav callback:(RCTResponseSenderBlock)callback {
     nav.topViewController.didHideActionBlock = ^{
-        resolve(@(YES));
+        callback(@[NSNull.null, @YES]);
     };
     [nav popViewControllerAnimated:YES];
 }
 
-- (void)handlePopToWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  resolve:(RCTPromiseResolveBlock)resolve {
+- (void)handlePopToWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  callback:(RCTResponseSenderBlock)callback {
     
     NSArray *children = nav.childViewControllers;
     NSUInteger count = children.count;
@@ -90,55 +90,60 @@
                 viewController = children[index - 1];
             }
             nav.topViewController.didHideActionBlock = ^{
-                resolve(@(YES));
+                callback(@[NSNull.null, @YES]);
             };
             [nav popToViewController:viewController animated:YES];
             return;
         }
     }
     
-    resolve(@(NO));
+    callback(@[NSNull.null, @NO]);
 }
 
-- (void)handlePopToRootWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  resolve:(RCTPromiseResolveBlock)resolve {
+- (void)handlePopToRootWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  callback:(RCTResponseSenderBlock)callback {
     nav.topViewController.didHideActionBlock = ^{
-        resolve(@(YES));
+        callback(@[NSNull.null, @YES]);
     };
     [nav popToRootViewControllerAnimated:YES];
 }
 
-- (void)handleRedirectToWithNavigationController:(UINavigationController *)nav target:(UIViewController *)target extras:(NSDictionary *)extras resolve:(RCTPromiseResolveBlock)resolve {
+- (void)handleRedirectToWithNavigationController:(UINavigationController *)nav target:(UIViewController *)target extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     UIViewController *vc = [self viewControllerWithExtras:extras];
     if (!vc) {
-        resolve(@(NO));
+        callback(@[NSNull.null, @NO]);
         return;
     }
     
     vc.didShowActionBlock = ^{
-        resolve(@(YES));
+        callback(@[NSNull.null, @YES]);
     };
     [nav redirectToViewController:vc target:target animated:YES];
 }
 
-- (void)handlePushLayoutWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  resolve:(RCTPromiseResolveBlock)resolve {
+- (void)handlePushLayoutWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     NSDictionary *layout = extras[@"layout"];
     UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
     if (!vc) {
-        resolve(@(NO));
+        callback(@[NSNull.null, @NO]);
         return;
     }
     
     vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
     vc.didShowActionBlock = ^{
-        resolve(@(YES));
+        callback(@[NSNull.null, @YES]);
     };
     [nav pushViewController:vc animated:YES];
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-    UINavigationController *nav = [self navigationControllerForViewController:target];
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
+    if (!vc.hbd_inViewHierarchy) {
+        callback(@[NSNull.null, @NO]);
+        return;
+    }
+    
+    UINavigationController *nav = [self navigationControllerForViewController:vc];
     if (!nav) {
-        resolve(@(NO));
+        callback(@[NSNull.null, @NO]);
         return;
     }
     
@@ -147,46 +152,48 @@
         [nav.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
             // empty
         } completion:^(id<UIViewControllerTransitionCoordinatorContext>  _Nonnull context) {
-            [selfObj handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
+            [selfObj handleNavigationWithViewController:vc action:action extras:extras callback:callback];
         }];
         return;
     }
 
     if (!nav.hbd_viewAppeared) {
-        __weak typeof(self) selfObj = self;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [selfObj handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
-        });
+        [self performSelector:@selector(handleNavigation:) withObject:@{
+            @"viewController": vc,
+            @"action": action,
+            @"extras": extras,
+            @"callback": callback,
+        } afterDelay:0.05];
         return;
     }
 
     if ([action isEqualToString:@"push"]) {
-        [self handlePushWithNavigationController:nav extras:extras resolve:resolve];
+        [self handlePushWithNavigationController:nav extras:extras callback:callback];
         return;
     }
     
     if ([action isEqualToString:@"pop"]) {
-        [self handlePopWithNavigationController:nav resolve:resolve];
+        [self handlePopWithNavigationController:nav callback:callback];
         return;
     }
     
     if ([action isEqualToString:@"popTo"]) {
-        [self handlePopToWithNavigationController:nav extras:extras resolve:resolve];
+        [self handlePopToWithNavigationController:nav extras:extras callback:callback];
         return;
     }
     
     if ([action isEqualToString:@"popToRoot"]) {
-        [self handlePopToRootWithNavigationController:nav extras:extras resolve:resolve];
+        [self handlePopToRootWithNavigationController:nav extras:extras callback:callback];
         return;
     }
     
     if ([action isEqualToString:@"redirectTo"]) {
-        [self handleRedirectToWithNavigationController:nav target:target extras:extras resolve:resolve];
+        [self handleRedirectToWithNavigationController:nav target:vc extras:extras callback:callback];
         return;
     }
     
     if ([action isEqualToString:@"pushLayout"]) {
-        [self handlePushLayoutWithNavigationController:nav extras:extras resolve:resolve];
+        [self handlePushLayoutWithNavigationController:nav extras:extras callback:callback];
         return;
     }
 }
@@ -230,6 +237,14 @@
     }
     
     return nil;
+}
+
+-(void)handleNavigation:(NSDictionary *)params {
+    [self handleNavigationWithViewController:params[@"viewController"] action:params[@"action"] extras:params[@"extras"] callback:params[@"callback"]];
+}
+
+- (void)invalidate {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
 }
 
 @end

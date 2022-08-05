@@ -48,53 +48,46 @@
     return nil;
 }
 
-- (void)handlePresentWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+- (void)handlePresentWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     UIViewController *vc = [self viewControllerWithExtras:extras];
     NSInteger requestCode = [extras[@"requestCode"] integerValue];
     HBDNavigationController *navVC = [[HBDNavigationController alloc] initWithRootViewController:vc];
     navVC.modalPresentationStyle = UIModalPresentationCurrentContext;
     [navVC setRequestCode:requestCode];
     [presenting presentViewController:navVC animated:YES completion:^{
-        resolve(@(YES));
+        callback(@[NSNull.null, @YES]);
     }];
 }
 
-- (void)handleDismissWithViewController:(UIViewController *) vc resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-    UIViewController *presenting = vc.presentingViewController;
-    if (presenting) {
-        [presenting dismissViewControllerAnimated:YES completion:^{
-            resolve(@(YES));
-        }];
-    } else {
-        [vc dismissViewControllerAnimated:YES completion:^{
-            resolve(@(YES));
-        }];
-    }
+- (void)handleDismissWithViewController:(UIViewController *) vc callback:(RCTResponseSenderBlock)callback {
+    [vc dismissViewControllerAnimated:YES completion:^{
+        callback(@[NSNull.null, @YES]);
+    }];
 }
 
-- (void)handleShowModalWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+- (void)handleShowModalWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     UIViewController *vc = [self viewControllerWithExtras:extras];
     NSInteger requestCode = [extras[@"requestCode"] integerValue];
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     vc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [vc setRequestCode:requestCode];
     [presenting presentViewController:vc animated:YES completion:^{
-        resolve(@(YES));
+        callback(@[NSNull.null, @YES]);
     }];
 }
 
-- (void)handlePresentLayoutWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+- (void)handlePresentLayoutWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     NSDictionary *layout = extras[@"layout"];
     NSInteger requestCode = [extras[@"requestCode"] integerValue];
     UIViewController *viewController = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
     [viewController setRequestCode:requestCode];
     viewController.modalPresentationStyle = UIModalPresentationCurrentContext;
     [presenting presentViewController:viewController animated:YES completion:^{
-        resolve(@(YES));
+        callback(@[NSNull.null, @YES]);
     }];
 }
 
-- (void)handleShowModalLayoutWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras resolve:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
+- (void)handleShowModalLayoutWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     NSInteger requestCode = [extras[@"requestCode"] integerValue];
     NSDictionary *layout = extras[@"layout"];
     UIViewController *viewController = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
@@ -102,45 +95,53 @@
     viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [viewController setRequestCode:requestCode];
     [presenting presentViewController:viewController animated:YES completion:^{
-        resolve(@(YES));
+        callback(@[NSNull.null, @YES]);
     }];
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-    if (!target.hbd_viewAppeared) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self handleNavigationWithViewController:target action:action extras:extras resolver:resolve rejecter:reject];
-        });
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
+    if (!vc.hbd_inViewHierarchy) {
+        callback(@[NSNull.null, @NO]);
+        return;
+    }
+    
+    if (!vc.hbd_viewAppeared) {
+        [self performSelector:@selector(handleNavigation:) withObject:@{
+            @"viewController": vc,
+            @"action": action,
+            @"extras": extras,
+            @"callback": callback,
+        } afterDelay:0.05];
         return;
     }
 
     if ([action isEqualToString:@"present"]) {
-        [self handlePresentWithViewController:target extras:extras resolve:resolve rejecter:reject];
+        [self handlePresentWithViewController:vc extras:extras callback:callback];
         return;
     }
     
     if ([action isEqualToString:@"dismiss"]) {
-        [self handleDismissWithViewController:target resolve:resolve rejecter:reject];
+        [self handleDismissWithViewController:vc callback:callback];
         return;
     }
     
     if ([action isEqualToString:@"showModal"]) {
-        [self handleShowModalWithViewController:target extras:extras resolve:resolve rejecter:reject];
+        [self handleShowModalWithViewController:vc extras:extras callback:callback];
         return;
     }
     
     if ([action isEqualToString:@"hideModal"]) {
-        [self handleDismissWithViewController:target resolve:resolve rejecter:reject];
+        [self handleDismissWithViewController:vc callback:callback];
         return;
     }
     
     if ([action isEqualToString:@"presentLayout"]) {
-        [self handlePresentLayoutWithViewController:target extras:extras resolve:resolve rejecter:reject];
+        [self handlePresentLayoutWithViewController:vc extras:extras callback:callback];
         return;
     }
     
     if ([action isEqualToString:@"showModalLayout"]) {
-        [self handleShowModalLayoutWithViewController:target extras:extras resolve:resolve rejecter:reject];
+        [self handleShowModalLayoutWithViewController:vc extras:extras callback:callback];
         return;
     }
 }
@@ -153,6 +154,14 @@
     NSDictionary *props = extras[@"props"];
     NSDictionary *options = extras[@"options"];
     return [[HBDReactBridgeManager get] viewControllerWithModuleName:moduleName props:props options:options];
+}
+
+-(void)handleNavigation:(NSDictionary *)params {
+    [self handleNavigationWithViewController:params[@"viewController"] action:params[@"action"] extras:params[@"extras"] callback:params[@"callback"]];
+}
+
+- (void)invalidate {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
 }
 
 @end

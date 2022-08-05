@@ -16,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray<NSString *> *)allLayouts;
 
+- (NSArray<id<HBDNavigator>> *)allNavigators;
+
 @end
 
 NS_ASSUME_NONNULL_END

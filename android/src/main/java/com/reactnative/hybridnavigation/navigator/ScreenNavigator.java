@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
@@ -90,92 +91,82 @@ public class ScreenNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Callback callback) {
         switch (action) {
             case "present":
-                handlePresent(target, extras, promise);
+                handlePresent(target, extras, callback);
                 break;
             case "dismiss":
-                handleDismiss(target, promise);
+                handleDismiss(target, callback);
                 break;
             case "showModal":
-                handleShowModal(target, extras, promise);
+                handleShowModal(target, extras, callback);
                 break;
             case "hideModal":
-                handleHideModal(target, promise);
+                handleHideModal(target, callback);
                 break;
             case "presentLayout":
-                handlePresentLayout(target, extras, promise);
+                handlePresentLayout(target, extras, callback);
                 break;
             case "showModalLayout":
-                handleShowModalLayout(target, extras, promise);
+                handleShowModalLayout(target, extras, callback);
                 break;
 
         }
     }
 
-    private void handleShowModalLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    private void handleShowModalLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Callback callback) {
         ReadableMap layout = extras.getMap("layout");
         AwesomeFragment presented = getReactBridgeManager().createFragment(layout);
         if (presented == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
-        presenting.presentFragment(presented, requestCode, () -> promise.resolve(true), TransitionAnimation.Fade);
+        presenting.presentFragment(presented, requestCode, () -> callback.invoke(null, true), TransitionAnimation.Fade);
     }
 
-    private void handlePresentLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    private void handlePresentLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Callback callback) {
         ReadableMap layout = extras.getMap("layout");
         AwesomeFragment presented = getReactBridgeManager().createFragment(layout);
         if (presented == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
         int requestCode = extras.getInt("requestCode");
-        presenting.presentFragment(presented, requestCode, () -> promise.resolve(true));
+        presenting.presentFragment(presented, requestCode, () -> callback.invoke(null, true));
     }
 
-    private void handleShowModal(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    private void handleShowModal(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Callback callback) {
         AwesomeFragment presented = createFragmentWithExtras(extras);
         if (presented == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
-        presenting.presentFragment(presented, requestCode, () -> promise.resolve(true), TransitionAnimation.Fade);
+        presenting.presentFragment(presented, requestCode, () -> callback.invoke(null, true), TransitionAnimation.Fade);
     }
 
-    private void handleHideModal(@NonNull AwesomeFragment target, @NonNull Promise promise) {
-        AwesomeFragment presenting = target.getPresentingFragment();
-        if (presenting != null) {
-            presenting.dismissFragment(() -> promise.resolve(true), TransitionAnimation.Fade);
-            return;
-        }
-        target.dismissFragment(() -> promise.resolve(true), TransitionAnimation.Fade);
+    private void handleHideModal(@NonNull AwesomeFragment target, @NonNull Callback callback) {
+        target.dismissFragment(() -> callback.invoke(null, true), TransitionAnimation.Fade);
     }
 
-    private void handleDismiss(@NonNull AwesomeFragment target, @NonNull Promise promise) {
-        AwesomeFragment presenting = target.getPresentingFragment();
-        if (presenting != null) {
-            presenting.dismissFragment(() -> promise.resolve(true));
-            return;
-        }
-        target.dismissFragment(() -> promise.resolve(true));
+    private void handleDismiss(@NonNull AwesomeFragment target, @NonNull Callback callback) {
+        target.dismissFragment(() -> callback.invoke(null, true));
     }
 
-    private void handlePresent(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    private void handlePresent(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Callback callback) {
         AwesomeFragment fragment = createFragmentWithExtras(extras);
         if (fragment == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
         int requestCode = extras.getInt("requestCode");
         ReactStackFragment stackFragment = new ReactStackFragment();
         stackFragment.setRootFragment(fragment);
-        target.presentFragment(stackFragment, requestCode, () -> promise.resolve(true));
+        target.presentFragment(stackFragment, requestCode, () -> callback.invoke(null, true));
     }
 
     private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {

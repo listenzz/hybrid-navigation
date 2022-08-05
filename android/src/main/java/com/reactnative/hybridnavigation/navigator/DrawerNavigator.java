@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
@@ -143,22 +143,22 @@ public class DrawerNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Callback callback) {
         DrawerFragment drawerFragment = target.getDrawerFragment();
         if (drawerFragment == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
 
         switch (action) {
             case "toggleMenu":
-                drawerFragment.toggleMenu(() -> promise.resolve(true));
+                drawerFragment.toggleMenu(() -> callback.invoke(null, true));
                 break;
             case "openMenu":
-                drawerFragment.openMenu(() -> promise.resolve(true));
+                drawerFragment.openMenu(() -> callback.invoke(null, true));
                 break;
             case "closeMenu":
-                drawerFragment.closeMenu(() -> promise.resolve(true));
+                drawerFragment.closeMenu(() -> callback.invoke(null, true));
                 break;
         }
     }

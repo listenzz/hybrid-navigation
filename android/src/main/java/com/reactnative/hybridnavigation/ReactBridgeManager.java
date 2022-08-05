@@ -12,7 +12,7 @@ import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableMap;
@@ -176,7 +176,7 @@ public class ReactBridgeManager {
         reactBridgeReloadListeners.remove(listener);
     }
 
-    public void handleReload() {
+    public void invalidate() {
         invokeReloadListeners();
         setPendingLayout(null, 0);
         setReactModuleRegisterCompleted(false);
@@ -311,10 +311,10 @@ public class ReactBridgeManager {
         return null;
     }
 
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Callback callback) {
         Navigator navigator = navigatorRegistry.navigatorForAction(action);
         if (navigator != null) {
-            navigator.handleNavigation(target, action, extras, promise);
+            navigator.handleNavigation(target, action, extras, callback);
         }
     }
 

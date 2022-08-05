@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
@@ -111,58 +111,58 @@ public class StackNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Callback callback) {
         StackFragment stackFragment = getStackFragment(target);
         if (stackFragment == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
 
         switch (action) {
             case "push":
-                handlePush(extras, promise, stackFragment);
+                handlePush(stackFragment, extras, callback);
                 break;
             case "pop":
-                stackFragment.popFragment(() -> promise.resolve(true));
+                stackFragment.popFragment(() -> callback.invoke(null, true));
                 break;
             case "popTo":
-                handlePopTo(extras, promise, stackFragment);
+                handlePopTo(stackFragment, extras, callback);
                 break;
             case "popToRoot":
-                stackFragment.popToRootFragment(() -> promise.resolve(true));
+                stackFragment.popToRootFragment(() -> callback.invoke(null,true));
                 break;
             case "redirectTo":
-                handleRedirectTo(target, extras, promise, stackFragment);
+                handleRedirectTo(stackFragment, extras, target, callback);
                 break;
             case "pushLayout":
-                handlePushLayout(extras, promise, stackFragment);
+                handlePushLayout(stackFragment, extras, callback);
                 break;
         }
     }
 
-    private void handlePushLayout(@NonNull ReadableMap extras, @NonNull Promise promise, StackFragment stackFragment) {
+    private void handlePushLayout(@NonNull StackFragment stackFragment, @NonNull ReadableMap extras, @NonNull Callback callback) {
         ReadableMap layout = extras.getMap("layout");
         AwesomeFragment fragment = getReactBridgeManager().createFragment(layout);
         if (fragment == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
-        stackFragment.pushFragment(fragment, () -> promise.resolve(true));
+        stackFragment.pushFragment(fragment, () -> callback.invoke(null, true));
     }
 
-    private void handleRedirectTo(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Promise promise, StackFragment stackFragment) {
+    private void handleRedirectTo(@NonNull StackFragment stackFragment, @NonNull ReadableMap extras, @NonNull AwesomeFragment target, @NonNull Callback callback) {
         AwesomeFragment fragment = createFragmentWithExtras(extras);
         if (fragment == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
-        stackFragment.redirectToFragment(fragment, () -> promise.resolve(true), TransitionAnimation.Redirect, target);
+        stackFragment.redirectToFragment(fragment, () -> callback.invoke(null, true), TransitionAnimation.Redirect, target);
     }
 
-    private void handlePopTo(@NonNull ReadableMap extras, @NonNull Promise promise, StackFragment stackFragment) {
+    private void handlePopTo(@NonNull StackFragment stackFragment, @NonNull ReadableMap extras, @NonNull Callback callback) {
         String moduleName = extras.getString("moduleName");
         if (moduleName == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
 
@@ -170,11 +170,11 @@ public class StackNavigator implements Navigator {
         FragmentManager fragmentManager = stackFragment.getChildFragmentManager();
         AwesomeFragment fragment = findFragmentForPopTo(moduleName, inclusive, fragmentManager);
         if (fragment == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
 
-        stackFragment.popToFragment(fragment, () -> promise.resolve(true));
+        stackFragment.popToFragment(fragment, () -> callback.invoke(null, true));
     }
 
     @Nullable
@@ -207,13 +207,13 @@ public class StackNavigator implements Navigator {
         return null;
     }
 
-    private void handlePush(@NonNull ReadableMap extras, @NonNull Promise promise, StackFragment stackFragment) {
+    private void handlePush(@NonNull StackFragment stackFragment, @NonNull ReadableMap extras, @NonNull Callback callback) {
         AwesomeFragment fragment = createFragmentWithExtras(extras);
         if (fragment == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
-        stackFragment.pushFragment(fragment, () -> promise.resolve(true));
+        stackFragment.pushFragment(fragment, () -> callback.invoke(null, true));
     }
 
     private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {

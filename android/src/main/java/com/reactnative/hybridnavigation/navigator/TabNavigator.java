@@ -5,7 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
@@ -151,35 +151,35 @@ public class TabNavigator implements Navigator {
     }
 
     @Override
-    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Promise promise) {
+    public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Callback callback) {
         TabBarFragment tabBarFragment = target.getTabBarFragment();
         if (tabBarFragment == null) {
-            promise.resolve(false);
+            callback.invoke(null, false);
             return;
         }
 
         if ("switchTab".equals(action)) {
-            handleSwitchTab(extras, promise, tabBarFragment);
+            handleSwitchTab(tabBarFragment, extras, callback);
         }
     }
 
-    private void handleSwitchTab(@NonNull ReadableMap extras, @NonNull Promise promise, TabBarFragment tabBarFragment) {
+    private void handleSwitchTab(@NonNull TabBarFragment tabBarFragment, @NonNull ReadableMap extras, @NonNull Callback callback) {
         int to = extras.getInt("to");
         if (isSameTab(to, extras)) {
-            promise.resolve(true);
+            callback.invoke(null, true);
             return;
         }
 
         popToStackRootIfNeeded(extras, tabBarFragment);
 
         if (!(tabBarFragment instanceof ReactTabBarFragment)) {
-            tabBarFragment.setSelectedIndex(to, () -> promise.resolve(true));
+            tabBarFragment.setSelectedIndex(to, () -> callback.invoke(null, true));
             return;
         }
 
         ReactTabBarFragment reactTabBarFragment = (ReactTabBarFragment) tabBarFragment;
         reactTabBarFragment.setIntercepted(false);
-        reactTabBarFragment.setSelectedIndex(to, () -> promise.resolve(true));
+        reactTabBarFragment.setSelectedIndex(to, () -> callback.invoke(null, true));
         reactTabBarFragment.setIntercepted(true);
     }
 

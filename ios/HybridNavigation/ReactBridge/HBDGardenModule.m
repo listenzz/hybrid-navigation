@@ -32,7 +32,7 @@ RCT_EXPORT_MODULE(GardenModule)
 }
 
 - (NSDictionary *)constantsToExport {
-    return @{ @"TOOLBAR_HEIGHT": @(44) };
+    return @{@"TOOLBAR_HEIGHT": @(44)};
 }
 
 RCT_EXPORT_METHOD(setStyle:(NSDictionary *) style) {
@@ -42,35 +42,35 @@ RCT_EXPORT_METHOD(setStyle:(NSDictionary *) style) {
 RCT_EXPORT_METHOD(setTitleItem:(NSString *) sceneId item:(NSDictionary *) item) {
     HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
-        [vc updateNavigationBarOptions:@{ @"titleItem": RCTNullIfNil(item) }];
+        [vc updateNavigationBarOptions:@{@"titleItem": RCTNullIfNil(item)}];
     }
 }
 
 RCT_EXPORT_METHOD(setLeftBarButtonItem:(NSString *) sceneId item:(NSDictionary *__nullable) item) {
     HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
-        [vc updateNavigationBarOptions:@{ @"leftBarButtonItem": RCTNullIfNil(item) }];
+        [vc updateNavigationBarOptions:@{@"leftBarButtonItem": RCTNullIfNil(item)}];
     }
 }
 
 RCT_EXPORT_METHOD(setRightBarButtonItem:(NSString *) sceneId item:(NSDictionary *__nullable) item) {
     HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
-        [vc updateNavigationBarOptions:@{ @"rightBarButtonItem": RCTNullIfNil(item) }];
+        [vc updateNavigationBarOptions:@{@"rightBarButtonItem": RCTNullIfNil(item)}];
     }
 }
 
 RCT_EXPORT_METHOD(setLeftBarButtonItems:(NSString *) sceneId item:(NSArray *__nullable) items) {
     HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
-        [vc updateNavigationBarOptions:@{ @"leftBarButtonItems": RCTNullIfNil(items) }];
+        [vc updateNavigationBarOptions:@{@"leftBarButtonItems": RCTNullIfNil(items)}];
     }
 }
 
 RCT_EXPORT_METHOD(setRightBarButtonItems:(NSString *) sceneId item:(NSArray *__nullable) items) {
     HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
-        [vc updateNavigationBarOptions:@{ @"rightBarButtonItems": RCTNullIfNil(items) }];
+        [vc updateNavigationBarOptions:@{@"rightBarButtonItems": RCTNullIfNil(items)}];
     }
 }
 
@@ -87,7 +87,7 @@ RCT_EXPORT_METHOD(updateTabBar:(NSString *) sceneId item:(NSDictionary *) item) 
     UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
     UITabBarController *tabBarVC = [self tabBarControllerWithViewController:vc];
     if (tabBarVC && [tabBarVC isKindOfClass:[HBDTabBarController class]]) {
-        [((HBDTabBarController *) tabBarVC) updateTabBar:item];
+        [((HBDTabBarController *)tabBarVC) updateTabBar:item];
     }
 }
 
@@ -112,16 +112,16 @@ RCT_EXPORT_METHOD(setMenuInteractive:(NSString *) sceneId enabled:(BOOL) enabled
 - (HBDViewController *)viewControllerWithSceneId:(NSString *)sceneId {
     UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
     if ([vc isKindOfClass:[HBDViewController class]]) {
-        return (HBDViewController *) vc;
+        return (HBDViewController *)vc;
     }
     return nil;
 }
 
 - (UITabBarController *)tabBarControllerWithViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[UITabBarController class]]) {
-        return (UITabBarController *) vc;
+        return (UITabBarController *)vc;
     } else {
-        return  vc.tabBarController;
+        return vc.tabBarController;
     }
 }
 

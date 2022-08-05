@@ -21,6 +21,7 @@ typedef void(^HBDDidHideActionBlock)(void);
 @property(nonatomic, assign) BOOL hbd_statusBarHidden;
 
 @property(nonatomic, assign) BOOL hbd_viewAppeared;
+@property(nonatomic, assign) BOOL hbd_inViewHierarchy;
 @property(nonatomic, copy) HBDDidShowActionBlock didShowActionBlock;
 @property(nonatomic, copy) HBDDidHideActionBlock didHideActionBlock;
 

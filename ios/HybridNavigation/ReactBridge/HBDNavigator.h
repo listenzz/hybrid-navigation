@@ -13,6 +13,8 @@
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc;
 
-- (void)handleNavigationWithViewController:(UIViewController *)target action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback;
+
+- (void)invalidate;
 
 @end

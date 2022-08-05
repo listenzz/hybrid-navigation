@@ -12,12 +12,18 @@
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        Class klass = [self class];
-        hbd_exchangeImplementations(klass, @selector(presentViewController:animated:completion:), @selector(hbd_presentViewController:animated:completion:));
-        hbd_exchangeImplementations(klass, @selector(dismissViewControllerAnimated:completion:), @selector(hbd_dismissViewControllerAnimated:completion:));
-        hbd_exchangeImplementations(klass, @selector(viewDidAppear:), @selector(hbd_viewDidAppear:));
-        hbd_exchangeImplementations(klass, @selector(viewDidDisappear:), @selector(hbd_viewDidDisappear:));
+        Class clazz = [self class];
+        hbd_exchangeImplementations(clazz, @selector(presentViewController:animated:completion:), @selector(hbd_presentViewController:animated:completion:));
+        hbd_exchangeImplementations(clazz, @selector(dismissViewControllerAnimated:completion:), @selector(hbd_dismissViewControllerAnimated:completion:));
+        hbd_exchangeImplementations(clazz, @selector(viewDidAppear:), @selector(hbd_viewDidAppear:));
+        hbd_exchangeImplementations(clazz, @selector(viewDidDisappear:), @selector(hbd_viewDidDisappear:));
+        hbd_exchangeImplementations(clazz, @selector(didMoveToParentViewController:), @selector(hbd_didMoveToParentViewController:));
     });
+}
+
+- (void)hbd_didMoveToParentViewController:(UIViewController *)parent {
+    [self hbd_didMoveToParentViewController:parent];
+    self.hbd_inViewHierarchy = parent != nil;
 }
 
 - (void)hbd_viewDidAppear:(BOOL)animated {
@@ -237,6 +243,15 @@
 
 - (void)setHbd_viewAppeared:(BOOL)viewAppeared {
     objc_setAssociatedObject(self, @selector(hbd_viewAppeared), @(viewAppeared), OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (BOOL)hbd_inViewHierarchy {
+    id obj = objc_getAssociatedObject(self, _cmd);
+    return obj ? [obj boolValue] : YES;
+}
+
+- (void)setHbd_inViewHierarchy:(BOOL)inViewHierarchy {
+    objc_setAssociatedObject(self, @selector(hbd_inViewHierarchy), @(inViewHierarchy), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (HBDDidShowActionBlock)didShowActionBlock {

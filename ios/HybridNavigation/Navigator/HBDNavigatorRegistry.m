@@ -12,6 +12,7 @@
 @interface HBDNavigatorRegistry ()
 
 @property(nonatomic, strong) NSMutableArray<NSString *> *layouts;
+@property(nonatomic, strong) NSMutableArray<id <HBDNavigator>> *navigators;
 @property(nonatomic, strong) NSMutableDictionary<NSString *, id <HBDNavigator>> *actionNavigatorPairs;
 @property(nonatomic, strong) NSMutableDictionary<NSString *, id <HBDNavigator>> *layoutNavigatorPairs;
 @property(nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *classLayoutPairs;
@@ -37,7 +38,7 @@
 }
 
 - (void)registerNavigator:(id <HBDNavigator>)navigator {
-    [self.layouts addObject:[navigator name]];
+    
 
     for (NSString *action in [navigator supportActions]) {
         id <HBDNavigator> duplicated = self.actionNavigatorPairs[action];
@@ -48,11 +49,15 @@
     }
 
     NSString *layout = [navigator name];
+    [self.layouts addObject:layout];
+    
     id <HBDNavigator> duplicatedLayout = self.layoutNavigatorPairs[layout];
     if (duplicatedLayout) {
         RCTLogError(@"[Navigator] The layout %@ that %@ wants to register has been registered by %@", layout, [navigator class], [duplicatedLayout class]);
     }
     self.layoutNavigatorPairs[layout] = navigator;
+    
+    [self.navigators addObject:navigator];
 }
 
 - (id <HBDNavigator>)navigatorForAction:(NSString *)action {
@@ -94,6 +99,10 @@
 
 - (NSArray<NSString *> *)allLayouts {
     return [self.layouts copy];
+}
+
+- (NSArray<id<HBDNavigator>> *)allNavigators {
+    return [self.navigators copy];
 }
 
 @end

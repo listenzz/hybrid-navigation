@@ -201,8 +201,8 @@ public class GardenModule extends ReactContextBaseJavaModule {
 
     @Nullable
     private ReactAppCompatActivity getActiveActivity() {
-        ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
-        if (reactContext == null) {
+        ReactContext reactContext = getReactApplicationContext();
+        if (reactContext == null || !reactContext.hasActiveReactInstance()) {
             return null;
         }
 

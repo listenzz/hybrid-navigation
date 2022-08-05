@@ -5,25 +5,6 @@
 
 #import <React/RCTLog.h>
 
-@interface Promise : NSObject
-
-@property(nonatomic, copy) RCTPromiseResolveBlock resolve;
-@property(nonatomic, copy) RCTPromiseRejectBlock reject;
-
-@end
-
-@implementation Promise
-
-- (instancetype)initWithResolver:(RCTPromiseResolveBlock)resolver rejecter:(RCTPromiseRejectBlock)rejecter {
-    if (self = [super init]) {
-        _resolve = resolver;
-        _reject = rejecter;
-    }
-    return self;
-}
-
-@end
-
 @interface HBDNavigationModule () <RCTInvalidating>
 
 @property(nonatomic, strong, readonly) HBDReactBridgeManager *bridgeManager;
@@ -93,48 +74,48 @@ RCT_EXPORT_METHOD(setRoot:(NSDictionary *) layout sticky:(BOOL) sticky tag:(NSNu
     }
 }
 
-RCT_EXPORT_METHOD(dispatch:(NSString *) sceneId action:(NSString *) action extras:(NSDictionary *) extras resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback) {
     UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
     if (!vc) {
-        resolve(@(NO));
+        callback(@[NSNull.null, @NO]);
         RCTLogWarn(@"[Navigator] Can't find target scene for action: %@, maybe the scene is gone. \nextras: %@", action, extras);
         return;
     }
 
-    [self.bridgeManager handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
+    [self.bridgeManager handleNavigationWithViewController:vc action:action extras:extras callback:(RCTResponseSenderBlock)callback];
 }
 
-RCT_EXPORT_METHOD(currentTab:(NSString *) sceneId resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(currentTab:(NSString *)sceneId callback:(RCTResponseSenderBlock)callback) {
     UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
     UITabBarController *tabs = vc.tabBarController;
     if (tabs) {
-        resolve(@(tabs.selectedIndex));
+        callback(@[NSNull.null, @(tabs.selectedIndex)]);
     } else {
-        resolve(@(-1));
+        callback(@[NSNull.null, @(-1)]);
     }
 }
 
-RCT_EXPORT_METHOD(isStackRoot:(NSString *) sceneId resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
+RCT_EXPORT_METHOD(isStackRoot:(NSString *)sceneId callback:(RCTResponseSenderBlock)callback) {
     UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
     UINavigationController *nav = vc.navigationController;
     if (!nav) {
-        resolve(@NO);
+        callback(@[NSNull.null, @NO]);
         return;
     }
 
     NSArray *children = nav.childViewControllers;
     if (children.count == 0) {
-        resolve(@NO);
+        callback(@[NSNull.null, @NO]);
         return;
     }
 
-    HBDReactViewController *reactViewController = children[0];
-    if ([reactViewController.sceneId isEqualToString:sceneId]) {
-        resolve(@YES);
+    UIViewController *root = children[0];
+    if ([root.sceneId isEqualToString:sceneId]) {
+        callback(@[NSNull.null, @YES]);
         return;
     }
 
-    resolve(@NO);
+    callback(@[NSNull.null, @NO]);
 }
 
 RCT_EXPORT_METHOD(setResult:(NSString *) sceneId resultCode:(NSInteger) resultCode data:(NSDictionary *) data) {
@@ -142,23 +123,22 @@ RCT_EXPORT_METHOD(setResult:(NSString *) sceneId resultCode:(NSInteger) resultCo
     [vc setResultCode:resultCode resultData:data];
 }
 
-RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *) moduleName resolver:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
-    Promise *promise = [[Promise alloc] initWithResolver:resolve rejecter:reject];
-    [self performSelector:@selector(findSceneIdWithParams:) withObject:@{
-        @"promise": promise,
+RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *) moduleName callback:(RCTResponseSenderBlock) callback) {
+    [self performSelector:@selector(findSceneId:) withObject:@{
+        @"callback": callback,
         @"moduleName": moduleName,
     }];
 }
 
-- (void)findSceneIdWithParams:(NSDictionary *)params {
+- (void)findSceneId:(NSDictionary *)params {
     if (!self.bridgeManager.isViewHierarchyReady) {
-        [self performSelector:@selector(findSceneIdWithParams:) withObject:params afterDelay:0.016];
+        [self performSelector:@selector(findSceneId:) withObject:params afterDelay:0.016];
         return;
     }
 
     UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     NSString *moduleName = params[@"moduleName"];
-    Promise *promise = params[@"promise"];
+    RCTResponseSenderBlock callback = params[@"callback"];
 
     NSUInteger index = application.windows.count;
     while (index > 0) {
@@ -166,13 +146,13 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *) moduleName resolver:(RCTP
         NSString *sceneId = [self findSceneIdByModuleName:moduleName withViewController:window.rootViewController];
         if (sceneId != nil) {
             RCTLogInfo(@"[Navigator] The sceneId found by %@ : %@", moduleName, sceneId);
-            promise.resolve(RCTNullIfNil(sceneId));
+            callback(@[[NSNull null], RCTNullIfNil(sceneId)]);
             return;
         }
         index--;
     }
     RCTLogInfo(@"[Navigator] Can't find sceneId by : %@", moduleName);
-    promise.resolve(NSNull.null);
+    callback(@[[NSNull null]]);
 }
 
 - (NSString *)findSceneIdByModuleName:(NSString *)moduleName withViewController:(UIViewController *)vc {
@@ -205,41 +185,43 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *) moduleName resolver:(RCTP
     return nil;
 }
 
-RCT_EXPORT_METHOD(currentRoute:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
-    Promise *promise = [[Promise alloc] initWithResolver:resolve rejecter:reject];
-    [self performSelector:@selector(currentRouteWithPromise:) withObject:promise];
+RCT_EXPORT_METHOD(currentRoute:(RCTResponseSenderBlock) callback) {
+    [self performSelector:@selector(currentRouteWithCallback:) withObject:callback];
 }
 
-- (void)currentRouteWithPromise:(Promise *)promise {
+- (void)currentRouteWithCallback:(RCTResponseSenderBlock)callback {
     if (!self.bridgeManager.isViewHierarchyReady) {
-        [self performSelector:@selector(currentRouteWithPromise:) withObject:promise afterDelay:0.016];
+        [self performSelector:@selector(currentRouteWithCallback:) withObject:callback afterDelay:0.016];
         return;
     }
 
     HBDViewController *current = [self.bridgeManager primaryViewController];
     if (current) {
-        promise.resolve(@{ @"moduleName": RCTNullIfNil(current.moduleName), @"sceneId": current.sceneId, @"mode": [current hbd_mode] });
+        callback(@[[NSNull null], @{
+            @"moduleName": RCTNullIfNil(current.moduleName),
+            @"sceneId": current.sceneId,
+            @"mode": [current hbd_mode]
+        }]);
     } else {
-        [self performSelector:@selector(currentRouteWithPromise:) withObject:promise afterDelay:0.016];
+        [self performSelector:@selector(currentRouteWithCallback:) withObject:callback afterDelay:0.016];
     }
 }
 
-RCT_EXPORT_METHOD(routeGraph:(RCTPromiseResolveBlock) resolve rejecter:(RCTPromiseRejectBlock) reject) {
-    Promise *promise = [[Promise alloc] initWithResolver:resolve rejecter:reject];
-    [self performSelector:@selector(routeGraphWithPromise:) withObject:promise];
+RCT_EXPORT_METHOD(routeGraph:(RCTResponseSenderBlock) callback) {
+    [self performSelector:@selector(routeGraphWithCallback:) withObject:callback];
 }
 
-- (void)routeGraphWithPromise:(Promise *)promise {
+- (void)routeGraphWithCallback:(RCTResponseSenderBlock) callback {
     if (!self.bridgeManager.isViewHierarchyReady) {
-        [self performSelector:@selector(routeGraphWithPromise:) withObject:promise afterDelay:0.016];
+        [self performSelector:@selector(routeGraphWithCallback:) withObject:callback afterDelay:0.016];
         return;
     }
 
     NSArray *root = [self.bridgeManager routeGraph];
     if (root.count > 0) {
-        promise.resolve(root);
+        callback(@[[NSNull null], root]);
     } else {
-        [self performSelector:@selector(routeGraphWithPromise:) withObject:promise afterDelay:0.016];
+        [self performSelector:@selector(routeGraphWithCallback:) withObject:callback afterDelay:0.016];
     }
 }
 

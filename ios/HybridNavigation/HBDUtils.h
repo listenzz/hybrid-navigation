@@ -21,13 +21,13 @@ UIKIT_STATIC_INLINE BOOL imageHasAlphaChannel(UIImage *image) {
             alpha == kCGImageAlphaPremultipliedLast);
 }
 
-UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class klass, SEL originalSelector, SEL swizzledSelector) {
-    Method originalMethod = class_getInstanceMethod(klass, originalSelector);
-    Method swizzledMethod = class_getInstanceMethod(klass, swizzledSelector);
+UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class clazz, SEL originalSelector, SEL swizzledSelector) {
+    Method originalMethod = class_getInstanceMethod(clazz, originalSelector);
+    Method swizzledMethod = class_getInstanceMethod(clazz, swizzledSelector);
 
-    BOOL success = class_addMethod(klass, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
+    BOOL success = class_addMethod(clazz, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
     if (success) {
-        class_replaceMethod(klass, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
+        class_replaceMethod(clazz, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));
     } else {
         method_exchangeImplementations(originalMethod, swizzledMethod);
     }

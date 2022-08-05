@@ -109,7 +109,16 @@ export class Navigator {
   }
 
   static async find(moduleName: string) {
-    const sceneId = await NavigationModule.findSceneIdByModuleName(moduleName)
+    const sceneId = await new Promise<string>((resolve, reject) => {
+      NavigationModule.findSceneIdByModuleName(moduleName, (error: never, id: string) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(id)
+        }
+      })
+    })
+
     if (sceneId) {
       return Navigator.of(sceneId)
     }
@@ -120,12 +129,28 @@ export class Navigator {
     return Navigator.of(route.sceneId)
   }
 
-  static async currentRoute(): Promise<Route> {
-    return await NavigationModule.currentRoute()
+  static currentRoute(): Promise<Route> {
+    return new Promise<Route>((resolve, reject) => {
+      NavigationModule.currentRoute((error: never, route: Route) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(route)
+        }
+      })
+    })
   }
 
-  static async routeGraph(): Promise<RouteGraph[]> {
-    return await NavigationModule.routeGraph()
+  static routeGraph(): Promise<RouteGraph[]> {
+    return new Promise<RouteGraph[]>((resolve, reject) => {
+      NavigationModule.routeGraph((error: never, result: RouteGraph[]) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(result)
+        }
+      })
+    })
   }
 
   static setRoot(layout: BuildInLayout | Layout, sticky = false) {
@@ -175,7 +200,15 @@ export class Navigator {
     }
 
     if (!intercepted) {
-      return await NavigationModule.dispatch(sceneId, action, params)
+      return new Promise<boolean>((resolve, reject) => {
+        NavigationModule.dispatch(sceneId, action, params, (error: never, result: boolean) => {
+          if (error) {
+            reject(error)
+          } else {
+            resolve(result)
+          }
+        })
+      })
     }
 
     return false
@@ -185,39 +218,19 @@ export class Navigator {
     interceptor = interceptFn
   }
 
+  constructor(public sceneId: string, public moduleName?: string) {}
+
   visibility: Visibility = 'pending'
-
-  constructor(public sceneId: string, public moduleName?: string) {
-    this.dispatch = this.dispatch.bind(this)
-    this.setParams = this.setParams.bind(this)
-
-    this.push = this.push.bind(this)
-    this.pop = this.pop.bind(this)
-    this.popTo = this.popTo.bind(this)
-    this.popToRoot = this.popToRoot.bind(this)
-    this.redirectTo = this.redirectTo.bind(this)
-    this.isStackRoot = this.isStackRoot.bind(this)
-
-    this.present = this.present.bind(this)
-    this.dismiss = this.dismiss.bind(this)
-    this.showModal = this.showModal.bind(this)
-    this.hideModal = this.hideModal.bind(this)
-    this.setResult = this.setResult.bind(this)
-
-    this.toggleMenu = this.toggleMenu.bind(this)
-    this.openMenu = this.openMenu.bind(this)
-    this.closeMenu = this.closeMenu.bind(this)
-  }
 
   readonly state: NavigationState = {
     params: {},
   }
 
-  setParams(params: { [index: string]: any }) {
+  setParams = (params: { [index: string]: any }) => {
     this.state.params = { ...this.state.params, ...params }
   }
 
-  dispatch(action: string, params: Params = {}) {
+  dispatch = (action: string, params: Params = {}) => {
     return Navigator.dispatch(this.sceneId, action, {
       from: this.moduleName,
       to: params.moduleName,
@@ -225,14 +238,14 @@ export class Navigator {
     })
   }
 
-  result(resultCode: number, data: ResultType) {
+  result = (resultCode: number, data: ResultType) => {
     if (this.resultListener) {
       this.resultListener(resultCode, data)
       this.resultListener = null
     }
   }
 
-  unmount() {
+  unmount = () => {
     const codes: number[] = []
     for (const [requestCode, listener] of resultListeners) {
       if (listener.sceneId === this.sceneId) {
@@ -288,33 +301,37 @@ export class Navigator {
     })
   }
 
-  async push<T extends ResultType, P extends PropsType = PropsType>(
+  push = async <T extends ResultType, P extends PropsType = PropsType>(
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
-  ) {
+  ) => {
     const success = await this.dispatch('push', { moduleName, props, options })
     return await this.waitResult<T>(0, success)
   }
 
-  async pushLayout<T extends ResultType>(layout: BuildInLayout | Layout) {
+  pushLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
     const success = await this.dispatch('pushLayout', { layout })
     return await this.waitResult<T>(0, success)
   }
 
-  pop() {
+  pop = () => {
     return this.dispatch('pop')
   }
 
-  popTo(moduleName: string, inclusive: boolean = false) {
+  popTo = (moduleName: string, inclusive: boolean = false) => {
     return this.dispatch('popTo', { moduleName, inclusive })
   }
 
-  popToRoot() {
+  popToRoot = () => {
     return this.dispatch('popToRoot')
   }
 
-  redirectTo<P extends PropsType = PropsType>(moduleName: string, props: P = {} as any, options: NavigationItem = {}) {
+  redirectTo = <P extends PropsType = PropsType>(
+    moduleName: string,
+    props: P = {} as any,
+    options: NavigationItem = {},
+  ) => {
     return this.dispatch('redirectTo', {
       moduleName,
       props,
@@ -322,15 +339,23 @@ export class Navigator {
     })
   }
 
-  isStackRoot(): Promise<boolean> {
-    return NavigationModule.isStackRoot(this.sceneId)
+  isStackRoot = () => {
+    return new Promise<boolean>((resolve, reject) => {
+      NavigationModule.isStackRoot(this.sceneId, (error: never, result: boolean) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(result)
+        }
+      })
+    })
   }
 
-  async present<T extends ResultType, P extends PropsType = PropsType>(
+  present = async <T extends ResultType, P extends PropsType = PropsType>(
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
-  ) {
+  ) => {
     const requestCode = --tag
     const success = await this.dispatch('present', {
       moduleName,
@@ -341,21 +366,21 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async presentLayout<T extends ResultType>(layout: BuildInLayout | Layout) {
+  presentLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
     const requestCode = --tag
     const success = await this.dispatch('presentLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
   }
 
-  dismiss() {
+  dismiss = () => {
     return this.dispatch('dismiss')
   }
 
-  async showModal<T extends ResultType, P extends PropsType = PropsType>(
+  showModal = async <T extends ResultType, P extends PropsType = PropsType>(
     moduleName: string,
     props: P = {} as any,
     options: NavigationItem = {},
-  ) {
+  ) => {
     const requestCode = --tag
     const success = await this.dispatch('showModal', {
       moduleName,
@@ -366,38 +391,46 @@ export class Navigator {
     return await this.waitResult<T>(requestCode, success)
   }
 
-  async showModalLayout<T extends ResultType>(layout: BuildInLayout | Layout) {
+  showModalLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
     const requestCode = --tag
     const success = await this.dispatch('showModalLayout', { layout, requestCode })
     return await this.waitResult<T>(requestCode, success)
   }
 
-  hideModal() {
+  hideModal = () => {
     return this.dispatch('hideModal')
   }
 
-  setResult<T extends ResultType>(resultCode: number, data: T = null as any): void {
+  setResult = <T extends ResultType>(resultCode: number, data: T = null as any): void => {
     NavigationModule.setResult(this.sceneId, resultCode, data)
   }
 
-  async switchTab(index: number, popToRoot: boolean = false) {
-    const from = await NavigationModule.currentTab(this.sceneId)
+  switchTab = async (index: number, popToRoot: boolean = false) => {
+    const from = await new Promise<number>((resolve, reject) => {
+      NavigationModule.currentTab(this.sceneId, (error: never, result: number) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(result)
+        }
+      })
+    })
     return this.dispatch('switchTab', { from, to: index, popToRoot })
   }
 
-  toggleMenu() {
+  toggleMenu = () => {
     return this.dispatch('toggleMenu')
   }
 
-  openMenu() {
+  openMenu = () => {
     return this.dispatch('openMenu')
   }
 
-  closeMenu() {
+  closeMenu = () => {
     return this.dispatch('closeMenu')
   }
 
-  signalFirstRenderComplete(): void {
+  signalFirstRenderComplete = () => {
     NavigationModule.signalFirstRenderComplete(this.sceneId)
   }
 }

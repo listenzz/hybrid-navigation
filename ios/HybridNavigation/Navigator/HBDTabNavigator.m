@@ -138,13 +138,13 @@
     }
 }
 
-- (void)handleSwitchTabWithTabBarController:(UITabBarController *)tabBarController extras:(NSDictionary *)extras resolve:(RCTPromiseResolveBlock)resolve {
+- (void)handleSwitchTabWithTabBarController:(UITabBarController *)tabBarController extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     BOOL popToRoot = [extras[@"popToRoot"] boolValue];
     NSNumber *from = extras[@"from"];
     NSUInteger to = [extras[@"to"] integerValue];
     
     if (from && [from integerValue] == to) {
-        resolve(@(YES));
+        callback(@[NSNull.null, @YES]);
         return;
     }
     
@@ -171,29 +171,44 @@
         tabBarController.selectedIndex = to;
     }
     
-    resolve(@(YES));
+    callback(@[NSNull.null, @YES]);
 }
 
-- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject {
-
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
+    if (!vc.hbd_inViewHierarchy) {
+        callback(@[NSNull.null, @NO]);
+        return;
+    }
+    
     UITabBarController * tabBarController = [self tabBarControllerForViewController:vc];
 
     if (!tabBarController) {
-        resolve(@(NO));
+        callback(@[NSNull.null, @NO]);
         return;
     }
 
     if (!tabBarController.hbd_viewAppeared) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self handleNavigationWithViewController:vc action:action extras:extras resolver:resolve rejecter:reject];
-        });
+        [self performSelector:@selector(handleNavigation:) withObject:@{
+            @"viewController": vc,
+            @"action": action,
+            @"extras": extras,
+            @"callback": callback,
+        } afterDelay:0.05];
         return;
     }
 
     if ([action isEqualToString:@"switchTab"]) {
-        [self handleSwitchTabWithTabBarController:tabBarController extras:extras resolve:resolve];
+        [self handleSwitchTabWithTabBarController:tabBarController extras:extras callback:callback];
         return;
     }
+}
+
+-(void)handleNavigation:(NSDictionary *)params {
+    [self handleNavigationWithViewController:params[@"viewController"] action:params[@"action"] extras:params[@"extras"] callback:params[@"callback"]];
+}
+
+- (void)invalidate {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
 }
 
 @end

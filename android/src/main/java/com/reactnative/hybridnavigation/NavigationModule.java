@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -39,15 +39,14 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @Override
-    public void onCatalystInstanceDestroy() {
-        super.onCatalystInstanceDestroy();
-        FLog.i(TAG, "NavigationModule#onCatalystInstanceDestroy");
+    public void invalidate() {
+        FLog.i(TAG, "NavigationModule#invalidate");
         UiThreadUtil.runOnUiThread(() -> {
-            bridgeManager.handleReload();
+            bridgeManager.invalidate();
             clearFragments();
         });
     }
-
+    
     private void clearFragments() {
         AwesomeActivity activity = getActiveActivity();
         if (activity != null) {
@@ -99,8 +98,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setRoot(final ReadableMap layout, final boolean sticky, final int tag) {
         UiThreadUtil.runOnUiThread(() -> {
-            ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
-            if (reactContext == null) {
+            ReactContext reactContext = getReactApplicationContext();
+            if (reactContext == null || !reactContext.hasActiveReactInstance()) {
                 FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `setRoot`");
                 return;
             }
@@ -127,52 +126,52 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void dispatch(final String sceneId, final String action, final ReadableMap extras, Promise promise) {
+    public void dispatch(final String sceneId, final String action, final ReadableMap extras, Callback callback) {
         UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment target = findFragmentBySceneId(sceneId);
             if (target == null) {
-                promise.resolve(false);
+                callback.invoke(null, false);
                 FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
                 return;
             }
 
             if (!target.isAdded()) {
-                promise.resolve(false);
+                callback.invoke(null, false);
                 return;
             }
 
-            bridgeManager.handleNavigation(target, action, extras, promise);
+            bridgeManager.handleNavigation(target, action, extras, callback);
         });
     }
 
     @ReactMethod
-    public void currentTab(final String sceneId, final Promise promise) {
+    public void currentTab(final String sceneId, final Callback callback) {
         UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment == null) {
-                promise.resolve(-1);
+                callback.invoke(null, -1);
                 return;
             }
 
             TabBarFragment tabs = fragment.getTabBarFragment();
             if (tabs == null) {
-                promise.resolve(-1);
+                callback.invoke(null, -1);
                 return;
             }
-
-            promise.resolve(tabs.getSelectedIndex());
+            
+            callback.invoke(null, tabs.getSelectedIndex());
         });
     }
 
     @ReactMethod
-    public void isStackRoot(final String sceneId, final Promise promise) {
+    public void isStackRoot(final String sceneId, final Callback callback) {
         UiThreadUtil.runOnUiThread(() -> {
             AwesomeFragment fragment = findFragmentBySceneId(sceneId);
             if (fragment == null) {
-                promise.resolve(false);
+                callback.invoke(null, false);
                 return;
             }
-            promise.resolve(fragment.isStackRoot());
+            callback.invoke(null, fragment.isStackRoot());
         });
     }
 
@@ -187,7 +186,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void findSceneIdByModuleName(@NonNull String moduleName, Promise promise) {
+    public void findSceneIdByModuleName(@NonNull String moduleName, Callback callback) {
         final Runnable task = new Runnable() {
             @Override
             public void run() {
@@ -201,13 +200,13 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     FragmentManager fragmentManager = activity.getSupportFragmentManager();
                     Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
                     if (!(fragment instanceof AwesomeFragment)) {
-                        promise.resolve(null);
+                        callback.invoke(null, null);
                         return;
                     }
 
                     String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
                     FLog.i(TAG, "The sceneId found by " + moduleName + " : " + sceneId);
-                    promise.resolve(sceneId);
+                    callback.invoke(null, sceneId);
                 });
             }
         };
@@ -249,7 +248,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void currentRoute(final Promise promise) {
+    public void currentRoute(final Callback callback) {
         Runnable task = new Runnable() {
             @Override
             public void run() {
@@ -271,7 +270,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     bundle.putString("moduleName", current.getModuleName());
                     bundle.putString("sceneId", current.getSceneId());
                     bundle.putString("mode", Navigator.Util.getMode(current));
-                    promise.resolve(Arguments.fromBundle(bundle));
+                    callback.invoke(null, Arguments.fromBundle(bundle));
                 });
             }
         };
@@ -280,7 +279,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void routeGraph(final Promise promise) {
+    public void routeGraph(final Callback callback) {
         Runnable task = new Runnable() {
             @Override
             public void run() {
@@ -297,8 +296,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                         UiThreadUtil.runOnUiThread(this, 16);
                         return;
                     }
-
-                    promise.resolve(Arguments.fromList(graph));
+                    
+                    callback.invoke(null, Arguments.fromList(graph));
                 });
             }
         };
@@ -323,8 +322,8 @@ public class NavigationModule extends ReactContextBaseJavaModule {
 
     @Nullable
     private ReactAppCompatActivity getActiveActivity() {
-        ReactContext reactContext = getReactApplicationContextIfActiveOrWarn();
-        if (reactContext == null) {
+        ReactContext reactContext = getReactApplicationContext();
+        if (reactContext == null || !reactContext.hasActiveReactInstance()) {
             return null;
         }
 

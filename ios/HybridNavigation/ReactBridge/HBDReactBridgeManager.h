@@ -60,9 +60,9 @@ extern const NSInteger ResultCancel;
 
 - (HBDViewController *)primaryViewControllerWithViewController:(UIViewController *)vc;
 
-- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject;
+- (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback;
 
-- (void)registerNavigator:(id <HBDNavigator>)navigator;
+- (void)registerNavigator:(id<HBDNavigator>)navigator;
 
 - (void)invalidate;
 

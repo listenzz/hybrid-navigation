@@ -146,8 +146,8 @@
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        Class klass = [self class];
-        hbd_exchangeImplementations(klass, @selector(setAttributedText:), @selector(hbd_setAttributedText:));
+        Class clazz = [self class];
+        hbd_exchangeImplementations(clazz, @selector(setAttributedText:), @selector(hbd_setAttributedText:));
     });
 }
 
