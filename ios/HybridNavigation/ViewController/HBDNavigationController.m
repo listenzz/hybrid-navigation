@@ -196,20 +196,8 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
     }
 
     UIViewController *poppingVC = self.nav.poppingViewController;
-    if (poppingVC) {
-        if (poppingVC.didHideActionBlock) {
-            poppingVC.didHideActionBlock();
-            poppingVC.didHideActionBlock = nil;
-        }
-
-        if ([poppingVC isKindOfClass:[HBDViewController class]]) {
-            [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
-        }
-    } else {
-        if (viewController.didShowActionBlock) {
-            viewController.didShowActionBlock();
-            viewController.didShowActionBlock = nil;
-        }
+    if (poppingVC && [poppingVC isKindOfClass:[HBDViewController class]]) {
+        [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
     }
 
     self.nav.poppingViewController = nil;
@@ -334,20 +322,8 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
             // `to` != `viewController` when present
             [self.nav updateNavigationBarForViewController:viewController];
             UIViewController *poppingVC = self.nav.poppingViewController;
-            if (poppingVC) {
-                if (poppingVC.didHideActionBlock) {
-                    poppingVC.didHideActionBlock();
-                    poppingVC.didHideActionBlock = nil;
-                }
-
-                if ([poppingVC isKindOfClass:[HBDViewController class]]) {
-                    [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
-                }
-            } else {
-                if (viewController.didShowActionBlock) {
-                    viewController.didShowActionBlock();
-                    viewController.didShowActionBlock = nil;
-                }
+            if (poppingVC && [poppingVC isKindOfClass:[HBDViewController class]]) {
+                [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
             }
         }
 
@@ -515,12 +491,6 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 }
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
-    UIViewController *rootViewController = self.childViewControllers[0];
-    if (self.topViewController.didHideActionBlock && self.topViewController == rootViewController) {
-        self.topViewController.didHideActionBlock();
-        self.topViewController.didHideActionBlock = nil;
-    }
-
     if (self.childViewControllers.count > 1) {
         self.poppingViewController = self.topViewController;
     }
@@ -532,11 +502,6 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 }
 
 - (NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    if (self.topViewController.didHideActionBlock && self.topViewController == viewController) {
-        self.topViewController.didHideActionBlock();
-        self.topViewController.didHideActionBlock = nil;
-    }
-
     if (self.childViewControllers.count > 1) {
         self.poppingViewController = self.topViewController;
     }
@@ -547,12 +512,6 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 }
 
 - (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated {
-    UIViewController *rootViewController = self.childViewControllers[0];
-    if (self.topViewController.didHideActionBlock && self.topViewController == rootViewController) {
-        self.topViewController.didHideActionBlock();
-        self.topViewController.didHideActionBlock = nil;
-    }
-
     if (self.childViewControllers.count > 1) {
         self.poppingViewController = self.topViewController;
     }

@@ -2,10 +2,6 @@
 
 #import <UIKit/UIKit.h>
 
-typedef void(^HBDDidShowActionBlock)(void);
-
-typedef void(^HBDDidHideActionBlock)(void);
-
 @interface UIViewController (HBD)
 
 @property(nonatomic, assign) UIBarStyle hbd_barStyle;
@@ -22,8 +18,6 @@ typedef void(^HBDDidHideActionBlock)(void);
 
 @property(nonatomic, assign) BOOL hbd_viewAppeared;
 @property(nonatomic, assign) BOOL hbd_inViewHierarchy;
-@property(nonatomic, copy) HBDDidShowActionBlock didShowActionBlock;
-@property(nonatomic, copy) HBDDidHideActionBlock didHideActionBlock;
 
 - (void)hbd_setNeedsUpdateNavigationBar;
 

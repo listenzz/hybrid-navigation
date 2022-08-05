@@ -254,22 +254,6 @@
     objc_setAssociatedObject(self, @selector(hbd_inViewHierarchy), @(inViewHierarchy), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (HBDDidShowActionBlock)didShowActionBlock {
-    return objc_getAssociatedObject(self, _cmd);
-}
-
-- (void)setDidShowActionBlock:(HBDDidShowActionBlock)actionBlock {
-    objc_setAssociatedObject(self, @selector(didShowActionBlock), actionBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-- (HBDDidHideActionBlock)didHideActionBlock {
-    return objc_getAssociatedObject(self, _cmd);
-}
-
-- (void)setDidHideActionBlock:(HBDDidHideActionBlock)actionBlock {
-    objc_setAssociatedObject(self, @selector(didHideActionBlock), actionBlock, OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
 - (BOOL)hbd_extendedLayoutDidSet {
     id obj = objc_getAssociatedObject(self, _cmd);
     return obj ? [obj boolValue] : NO;
