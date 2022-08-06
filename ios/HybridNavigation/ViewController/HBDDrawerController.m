@@ -132,7 +132,7 @@
         [self dismissMenuView];
     }
 }
-
+ 
 - (void)toggleMenu {
     if (self.isMenuOpened) {
         [self closeMenu];

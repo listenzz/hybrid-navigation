@@ -15,12 +15,12 @@
 }
 
 - (UIViewController *)viewControllerWithLayout:(NSDictionary *)layout {
-    NSDictionary *stack = layout[self.name];
-    if (!stack) {
+    NSDictionary *model = layout[self.name];
+    if (!model) {
         return nil;
     }
     
-    NSArray *children = stack[@"children"];
+    NSArray *children = model[@"children"];
     UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:children.firstObject];
     return [[HBDNavigationController alloc] initWithRootViewController:vc];
 }
@@ -29,7 +29,9 @@
     if (![vc isKindOfClass:[HBDNavigationController class]]) {
         return nil;
     }
+    
     HBDNavigationController *nav = (HBDNavigationController *) vc;
+    
     NSMutableArray *children = [[NSMutableArray alloc] init];
     for (NSUInteger i = 0; i < nav.childViewControllers.count; i++) {
         UIViewController *child = nav.childViewControllers[i];
@@ -39,9 +41,9 @@
 
     return @{
         @"layout": @"stack",
-        @"sceneId": vc.sceneId,
+        @"sceneId": nav.sceneId,
         @"children": children,
-        @"mode": [vc hbd_mode],
+        @"mode": [nav hbd_mode],
     };
 }
 
@@ -133,29 +135,36 @@
 }
 
 - (void)handlePopToWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  callback:(RCTResponseSenderBlock)callback {
+    UIViewController *vc = [self findViewControllerWithNavigationController:nav extras:extras];
+    if (!vc) {
+        callback(@[NSNull.null, @NO]);
+        return;
+    }
+    
+    [nav popToViewController:vc animated:YES];
+    [self animateAlongsideTransition:nav callback:callback];
+}
+
+- (UIViewController *)findViewControllerWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras {
     NSArray *children = nav.childViewControllers;
-    NSUInteger count = children.count;
     NSString *moduleName = extras[@"moduleName"];
     BOOL inclusive = [extras[@"inclusive"] boolValue];
     
-    for (NSUInteger i = count; i > 0; i--) {
+    for (NSUInteger i = children.count; i > 0; i--) {
         NSUInteger index = i - 1;
         HBDViewController *vc = children[index];
         if ([moduleName isEqualToString:vc.moduleName] || [moduleName isEqualToString:vc.sceneId]) {
-            UIViewController *viewController = vc;
-            if (inclusive && i > 0) {
-                viewController = children[index - 1];
+            if (inclusive && index > 0) {
+                return children[index - 1];
             }
-            [nav popToViewController:viewController animated:YES];
-            [self animateAlongsideTransition:nav callback:callback];
-            return;
+            return vc;
         }
     }
     
-    callback(@[NSNull.null, @NO]);
+    return nil;
 }
 
-- (void)handlePopToRootWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  callback:(RCTResponseSenderBlock)callback {
+- (void)handlePopToRootWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     [nav popToRootViewControllerAnimated:YES];
     [self animateAlongsideTransition:nav callback:callback];
 }
@@ -199,10 +208,6 @@
 
 - (UIViewController *)viewControllerWithExtras:(NSDictionary *)extras {
     NSString *moduleName = extras[@"moduleName"];
-    if (!moduleName) {
-        return nil;
-    }
-    
     NSDictionary *props = extras[@"props"];
     NSDictionary *options = extras[@"options"];
     return [[HBDReactBridgeManager get] viewControllerWithModuleName:moduleName props:props options:options];

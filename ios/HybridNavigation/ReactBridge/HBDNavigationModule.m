@@ -13,8 +13,6 @@
 
 @implementation HBDNavigationModule
 
-@synthesize bridge = _bridge;
-
 + (BOOL)requiresMainQueueSetup {
     return YES;
 }
@@ -53,7 +51,7 @@ RCT_EXPORT_METHOD(endRegisterReactComponent) {
     [self.bridgeManager endRegisterReactModule];
 }
 
-RCT_EXPORT_METHOD(registerReactComponent:(NSString *) appKey options:(NSDictionary *) options) {
+RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionary *)options) {
     [self.bridgeManager registerReactModule:appKey options:options];
 }
 
@@ -65,7 +63,7 @@ RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *) sceneId) {
     }
 }
 
-RCT_EXPORT_METHOD(setRoot:(NSDictionary *) layout sticky:(BOOL) sticky tag:(NSNumber *__nonnull) tag) {
+RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky tag:(NSNumber *__nonnull)tag) {
     self.bridgeManager.viewHierarchyReady = NO;
     UIViewController *vc = [self.bridgeManager viewControllerWithLayout:layout];
     if (vc) {
@@ -118,46 +116,57 @@ RCT_EXPORT_METHOD(isStackRoot:(NSString *)sceneId callback:(RCTResponseSenderBlo
     callback(@[NSNull.null, @NO]);
 }
 
-RCT_EXPORT_METHOD(setResult:(NSString *) sceneId resultCode:(NSInteger) resultCode data:(NSDictionary *) data) {
+RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode data:(NSDictionary *)data) {
     UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
     [vc setResultCode:resultCode resultData:data];
 }
 
-RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *) moduleName callback:(RCTResponseSenderBlock) callback) {
-    [self performSelector:@selector(findSceneId:) withObject:@{
+RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *)moduleName callback:(RCTResponseSenderBlock)callback) {
+    [self performSelector:@selector(findSceneIdWithParams:) withObject:@{
         @"callback": callback,
         @"moduleName": moduleName,
     }];
 }
 
-- (void)findSceneId:(NSDictionary *)params {
+- (void)findSceneIdWithParams:(NSDictionary *)params {
     if (!self.bridgeManager.isViewHierarchyReady) {
-        [self performSelector:@selector(findSceneId:) withObject:params afterDelay:0.016];
+        [self performSelector:@selector(findSceneIdWithParams:) withObject:params afterDelay:0.016];
         return;
     }
 
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
     NSString *moduleName = params[@"moduleName"];
     RCTResponseSenderBlock callback = params[@"callback"];
+    
+    NSString *sceneId = [self findSceneIdByModuleName:moduleName];
+    if (sceneId == nil) {
+        RCTLogInfo(@"[Navigator] Can't find sceneId by : %@", moduleName);
+        callback(@[NSNull.null, NSNull.null]);
+        return;
+    }
+    
+    RCTLogInfo(@"[Navigator] The sceneId found by %@ : %@", moduleName, sceneId);
+    callback(@[[NSNull null], sceneId]);
+}
 
-    NSUInteger index = application.windows.count;
-    while (index > 0) {
-        UIWindow *window = application.windows[index - 1];
+- (NSString *)findSceneIdByModuleName:(NSString *)moduleName {
+    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
+    NSUInteger count = application.windows.count;
+    
+    for (NSInteger i = count - 1; i > -1; i--) {
+        UIWindow *window = application.windows[i];
         NSString *sceneId = [self findSceneIdByModuleName:moduleName withViewController:window.rootViewController];
         if (sceneId != nil) {
             RCTLogInfo(@"[Navigator] The sceneId found by %@ : %@", moduleName, sceneId);
-            callback(@[[NSNull null], RCTNullIfNil(sceneId)]);
-            return;
+            return sceneId;
         }
-        index--;
     }
-    RCTLogInfo(@"[Navigator] Can't find sceneId by : %@", moduleName);
-    callback(@[[NSNull null]]);
+    
+    return nil;
 }
 
 - (NSString *)findSceneIdByModuleName:(NSString *)moduleName withViewController:(UIViewController *)vc {
     if ([vc isKindOfClass:[HBDViewController class]]) {
-        HBDViewController *hbd = (HBDViewController *) vc;
+        HBDViewController *hbd = (HBDViewController *)vc;
         if ([moduleName isEqualToString:hbd.moduleName]) {
             return hbd.sceneId;
         }
@@ -185,7 +194,7 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *) moduleName callback:(RCTR
     return nil;
 }
 
-RCT_EXPORT_METHOD(currentRoute:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(currentRoute:(RCTResponseSenderBlock)callback) {
     [self performSelector:@selector(currentRouteWithCallback:) withObject:callback];
 }
 
@@ -207,11 +216,11 @@ RCT_EXPORT_METHOD(currentRoute:(RCTResponseSenderBlock) callback) {
     }
 }
 
-RCT_EXPORT_METHOD(routeGraph:(RCTResponseSenderBlock) callback) {
+RCT_EXPORT_METHOD(routeGraph:(RCTResponseSenderBlock)callback) {
     [self performSelector:@selector(routeGraphWithCallback:) withObject:callback];
 }
 
-- (void)routeGraphWithCallback:(RCTResponseSenderBlock) callback {
+- (void)routeGraphWithCallback:(RCTResponseSenderBlock)callback {
     if (!self.bridgeManager.isViewHierarchyReady) {
         [self performSelector:@selector(routeGraphWithCallback:) withObject:callback afterDelay:0.016];
         return;

@@ -18,22 +18,22 @@
 }
 
 - (UIViewController *)viewControllerWithLayout:(NSDictionary *)layout {
-    NSDictionary *tabs = layout[self.name];
-    NSArray *children = tabs[@"children"];
+    NSDictionary *model = layout[self.name];
+    NSArray *children = model[@"children"];
     if (!children) {
         return nil;
     }
    
-    NSMutableArray *controllers = [[NSMutableArray alloc] initWithCapacity:4];
+    NSMutableArray *viewControllers = [[NSMutableArray alloc] initWithCapacity:4];
     for (NSDictionary *tab in children) {
         UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:tab];
-        [controllers addObject:vc];
+        [viewControllers addObject:vc];
     }
     
-    NSDictionary *options = tabs[@"options"];
-    NSArray *tabInfos = [self tabInfosWithChildren:controllers];
-    HBDTabBarController * tabBarController = [self createTabBarControllerWithTabInfos:tabInfos options:options];
-    [tabBarController setViewControllers:controllers];
+    NSDictionary *options = model[@"options"];
+    NSArray *tabModels = [self tabModelsWithViewControllers:viewControllers];
+    HBDTabBarController *tabBarController = [self createTabBarControllerWithTabModels:tabModels options:options];
+    [tabBarController setViewControllers:viewControllers];
 
     if (options) {
         NSNumber *selectedIndex = options[@"selectedIndex"];
@@ -47,7 +47,7 @@
     return tabBarController;
 }
 
-- (HBDTabBarController *)createTabBarControllerWithTabInfos:(NSArray *)tabInfos options:(NSDictionary *)options  {
+- (HBDTabBarController *)createTabBarControllerWithTabModels:(NSArray *)tabModels options:(NSDictionary *)options  {
     NSString *moduleName = options[@"tabBarModuleName"];
     BOOL hasCustomTabBar = moduleName.length > 0;
     
@@ -58,7 +58,7 @@
     GlobalStyle *style = [GlobalStyle globalStyle];
     
     NSDictionary *tabBarOptions = @{
-        @"tabs":                      tabInfos,
+        @"tabs":                      tabModels,
         @"tabBarModuleName":          moduleName,
         @"sizeIndeterminate":         options[@"sizeIndeterminate"],
         @"selectedIndex":             options[@"selectedIndex"] ?: @(0),
@@ -70,9 +70,9 @@
     return [[HBDTabBarController alloc] initWithTabBarOptions:tabBarOptions];
 }
 
-- (NSArray<NSDictionary *> *)tabInfosWithChildren:(NSArray<UIViewController *> *)children {
+- (NSArray<NSDictionary *> *)tabModelsWithViewControllers:(NSArray<UIViewController *> *)children {
     NSUInteger count = children.count;
-    NSMutableArray *tabInfos = [[NSMutableArray alloc] initWithCapacity:4];
+    NSMutableArray *tabModels = [[NSMutableArray alloc] initWithCapacity:4];
     
     for (NSUInteger i = 0; i < count; i++) {
         UIViewController *vc = children[i];
@@ -92,12 +92,12 @@
                         @"unselectedIcon": RCTNullIfNil([HBDUtils iconUriFromUri:tabItem[@"unselectedIcon"][@"uri"]]),
                         @"title": RCTNullIfNil(tabItem[@"title"]),
                 };
-                [tabInfos addObject:tab];
+                [tabModels addObject:tab];
             }
         }
     }
     
-    return [tabInfos copy];
+    return [tabModels copy];
 }
 
 - (NSDictionary *)routeGraphWithViewController:(UIViewController *)vc {
@@ -115,9 +115,9 @@
     
     return @{
         @"layout": self.name,
-        @"sceneId": vc.sceneId,
+        @"sceneId": tabBarController.sceneId,
         @"children": children,
-        @"mode": [vc hbd_mode],
+        @"mode": [tabBarController hbd_mode],
         @"selectedIndex": @(tabBarController.selectedIndex)
     };
 }
@@ -126,8 +126,8 @@
     if (![vc isKindOfClass:[UITabBarController class]]) {
         return nil;
     }
-    UITabBarController *tabBarVc = (UITabBarController *) vc;
-    return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:tabBarVc.selectedViewController];
+    UITabBarController *tabBarController = (UITabBarController *) vc;
+    return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:tabBarController.selectedViewController];
 }
 
 - (UITabBarController *)tabBarControllerForViewController:(UIViewController *)vc {
@@ -152,7 +152,7 @@
         UIViewController *selectedViewController = [tabBarController selectedViewController];
         UINavigationController *nav = nil;
         if ([selectedViewController isKindOfClass:[UINavigationController class]]) {
-            nav = (UINavigationController *) selectedViewController;
+            nav = (UINavigationController *)selectedViewController;
         } else {
             nav = selectedViewController.navigationController;
         }
@@ -163,10 +163,10 @@
     }
     
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
-        HBDTabBarController *hbdTabBarVC = (HBDTabBarController *) tabBarController;
-        hbdTabBarVC.intercepted = NO;
+        HBDTabBarController *hbdTabBarController = (HBDTabBarController *)tabBarController;
+        hbdTabBarController.intercepted = NO;
         tabBarController.selectedIndex = to;
-        hbdTabBarVC.intercepted = YES;
+        hbdTabBarController.intercepted = YES;
     } else {
         tabBarController.selectedIndex = to;
     }
@@ -180,7 +180,7 @@
         return;
     }
     
-    UITabBarController * tabBarController = [self tabBarControllerForViewController:vc];
+    UITabBarController *tabBarController = [self tabBarControllerForViewController:vc];
 
     if (!tabBarController) {
         callback(@[NSNull.null, @NO]);

@@ -315,19 +315,24 @@
     if ([self isKindOfClass:[UITabBarController class]]) {
         UIViewController *child = ((UITabBarController *) self).selectedViewController;
         [child didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
-    } else if ([self isKindOfClass:[UINavigationController class]]) {
+        return;
+    }
+    
+    if ([self isKindOfClass:[UINavigationController class]]) {
         UIViewController *child = ((UINavigationController *) self).topViewController;
         [child didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
-    } else if ([self isKindOfClass:[HBDDrawerController class]]) {
+        return;
+    }
+    
+    if ([self isKindOfClass:[HBDDrawerController class]]) {
         UIViewController *child = ((HBDDrawerController *) self).contentController;
         [child didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
-    } else {
-        NSArray *children = self.childViewControllers;
-        if (children) {
-            for (UIViewController *vc in children) {
-                [vc didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
-            }
-        }
+        return;
+    }
+    
+    NSArray *children = self.childViewControllers;
+    for (UIViewController *vc in children) {
+        [vc didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
     }
 }
 

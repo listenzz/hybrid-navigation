@@ -9,6 +9,8 @@
 
 #import <React/RCTLog.h>
 
+#define hairlineWidth (1.f/[UIScreen mainScreen].scale)
+
 
 UIColor *blendColor(UIColor *from, UIColor *to, CGFloat percent) {
     CGFloat fromRed = 0;
@@ -653,7 +655,7 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 }
 
 - (CGRect)fakeShadowFrameWithBarFrame:(CGRect)frame {
-    return CGRectMake(frame.origin.x, frame.size.height + frame.origin.y, frame.size.width, 0.5);
+    return CGRectMake(frame.origin.x, frame.size.height + frame.origin.y - hairlineWidth, frame.size.width, hairlineWidth);
 }
 
 @end

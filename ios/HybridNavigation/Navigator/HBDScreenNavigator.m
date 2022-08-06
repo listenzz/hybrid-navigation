@@ -16,14 +16,14 @@
 }
 
 - (UIViewController *)viewControllerWithLayout:(NSDictionary *)layout {
-    NSDictionary *screen = layout[self.name];
-    if (!screen) {
+    NSDictionary *model = layout[self.name];
+    if (!model) {
         return nil;
     }
    
-    NSString *moduleName = screen[@"moduleName"];
-    NSDictionary *props = screen[@"props"];
-    NSDictionary *options = screen[@"options"];
+    NSString *moduleName = model[@"moduleName"];
+    NSDictionary *props = model[@"props"];
+    NSDictionary *options = model[@"options"];
     return [[HBDReactBridgeManager get] viewControllerWithModuleName:moduleName props:props options:options];
 }
 
@@ -37,7 +37,7 @@
         @"layout": @"screen",
         @"sceneId": screen.sceneId,
         @"moduleName": RCTNullIfNil(screen.moduleName),
-        @"mode": [vc hbd_mode],
+        @"mode": [screen hbd_mode],
     };
 }
 
@@ -46,57 +46,6 @@
         return (HBDViewController *) vc;
     }
     return nil;
-}
-
-- (void)handlePresentWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
-    UIViewController *vc = [self viewControllerWithExtras:extras];
-    NSInteger requestCode = [extras[@"requestCode"] integerValue];
-    HBDNavigationController *navVC = [[HBDNavigationController alloc] initWithRootViewController:vc];
-    navVC.modalPresentationStyle = UIModalPresentationCurrentContext;
-    [navVC setRequestCode:requestCode];
-    [presenting presentViewController:navVC animated:YES completion:^{
-        callback(@[NSNull.null, @YES]);
-    }];
-}
-
-- (void)handleDismissWithViewController:(UIViewController *) vc callback:(RCTResponseSenderBlock)callback {
-    [vc dismissViewControllerAnimated:YES completion:^{
-        callback(@[NSNull.null, @YES]);
-    }];
-}
-
-- (void)handleShowModalWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
-    UIViewController *vc = [self viewControllerWithExtras:extras];
-    NSInteger requestCode = [extras[@"requestCode"] integerValue];
-    vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
-    vc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [vc setRequestCode:requestCode];
-    [presenting presentViewController:vc animated:YES completion:^{
-        callback(@[NSNull.null, @YES]);
-    }];
-}
-
-- (void)handlePresentLayoutWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
-    NSDictionary *layout = extras[@"layout"];
-    NSInteger requestCode = [extras[@"requestCode"] integerValue];
-    UIViewController *viewController = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
-    [viewController setRequestCode:requestCode];
-    viewController.modalPresentationStyle = UIModalPresentationCurrentContext;
-    [presenting presentViewController:viewController animated:YES completion:^{
-        callback(@[NSNull.null, @YES]);
-    }];
-}
-
-- (void)handleShowModalLayoutWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
-    NSInteger requestCode = [extras[@"requestCode"] integerValue];
-    NSDictionary *layout = extras[@"layout"];
-    UIViewController *viewController = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
-    viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
-    viewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [viewController setRequestCode:requestCode];
-    [presenting presentViewController:viewController animated:YES completion:^{
-        callback(@[NSNull.null, @YES]);
-    }];
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
@@ -144,6 +93,57 @@
         [self handleShowModalLayoutWithViewController:vc extras:extras callback:callback];
         return;
     }
+}
+
+- (void)handlePresentWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
+    UIViewController *vc = [self viewControllerWithExtras:extras];
+    NSInteger requestCode = [extras[@"requestCode"] integerValue];
+    HBDNavigationController *nav = [[HBDNavigationController alloc] initWithRootViewController:vc];
+    nav.modalPresentationStyle = UIModalPresentationCurrentContext;
+    [nav setRequestCode:requestCode];
+    [presenting presentViewController:nav animated:YES completion:^{
+        callback(@[NSNull.null, @YES]);
+    }];
+}
+
+- (void)handleDismissWithViewController:(UIViewController *) vc callback:(RCTResponseSenderBlock)callback {
+    [vc dismissViewControllerAnimated:YES completion:^{
+        callback(@[NSNull.null, @YES]);
+    }];
+}
+
+- (void)handleShowModalWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
+    UIViewController *vc = [self viewControllerWithExtras:extras];
+    NSInteger requestCode = [extras[@"requestCode"] integerValue];
+    vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    vc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [vc setRequestCode:requestCode];
+    [presenting presentViewController:vc animated:YES completion:^{
+        callback(@[NSNull.null, @YES]);
+    }];
+}
+
+- (void)handlePresentLayoutWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
+    NSDictionary *layout = extras[@"layout"];
+    NSInteger requestCode = [extras[@"requestCode"] integerValue];
+    UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
+    [vc setRequestCode:requestCode];
+    vc.modalPresentationStyle = UIModalPresentationCurrentContext;
+    [presenting presentViewController:vc animated:YES completion:^{
+        callback(@[NSNull.null, @YES]);
+    }];
+}
+
+- (void)handleShowModalLayoutWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
+    NSInteger requestCode = [extras[@"requestCode"] integerValue];
+    NSDictionary *layout = extras[@"layout"];
+    UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
+    vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    vc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    [vc setRequestCode:requestCode];
+    [presenting presentViewController:vc animated:YES completion:^{
+        callback(@[NSNull.null, @YES]);
+    }];
 }
 
 - (UIViewController *)viewControllerWithExtras:(NSDictionary *)extras {
