@@ -254,15 +254,6 @@
     objc_setAssociatedObject(self, @selector(hbd_inViewHierarchy), @(inViewHierarchy), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (BOOL)hbd_extendedLayoutDidSet {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    return obj ? [obj boolValue] : NO;
-}
-
-- (void)setHbd_extendedLayoutDidSet:(BOOL)didSet {
-    objc_setAssociatedObject(self, @selector(hbd_extendedLayoutDidSet), @(didSet), OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
 - (void)hbd_setNeedsUpdateNavigationBar {
     if (self.navigationController && [self.navigationController isKindOfClass:[HBDNavigationController class]]) {
         HBDNavigationController *nav = (HBDNavigationController *) self.navigationController;

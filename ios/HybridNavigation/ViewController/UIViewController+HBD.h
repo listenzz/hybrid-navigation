@@ -21,8 +21,6 @@
 
 - (void)hbd_setNeedsUpdateNavigationBar;
 
-@property(nonatomic, assign) BOOL hbd_extendedLayoutDidSet;
-
 @property(nonatomic, copy, readonly) NSString *sceneId;
 @property(nonatomic, assign) NSInteger resultCode;
 @property(nonatomic, assign) NSInteger requestCode;

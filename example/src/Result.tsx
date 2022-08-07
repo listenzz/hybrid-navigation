@@ -87,7 +87,7 @@ function Result({ navigator, garden, sceneId }: InjectedProps) {
     <KeyboardAwareScrollView
       style={{ flex: 1 }}
       showsHorizontalScrollIndicator={false}
-      contentInsetAdjustmentBehavior="automatic">
+      contentInsetAdjustmentBehavior="never">
       <View style={styles.container}>
         <Text style={styles.welcome}>This's a React Native scene.</Text>
 
@@ -105,6 +105,7 @@ function Result({ navigator, garden, sceneId }: InjectedProps) {
           value={text}
           placeholder={'enter your text'}
           textAlignVertical="center"
+          autoFocus
         />
 
         <TouchableOpacity onPress={sendResult} activeOpacity={0.2} style={styles.button}>

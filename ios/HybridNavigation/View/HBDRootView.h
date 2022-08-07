@@ -1,5 +1,7 @@
 #import <React/RCTRootView.h>
 
-@interface HBDRootView : RCTRootView
+@interface HBDRootView : UIView
+
+- (instancetype)initWithRootView:(RCTRootView *)rootView;
 
 @end

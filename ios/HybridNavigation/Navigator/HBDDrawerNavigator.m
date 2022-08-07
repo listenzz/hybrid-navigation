@@ -74,7 +74,7 @@
         return nil;
     }
     
-    HBDDrawerController *drawer = (HBDDrawerController *) vc;
+    HBDDrawerController *drawer = (HBDDrawerController *)vc;
     if (drawer.isMenuOpened) {
         return [[HBDReactBridgeManager get] primaryViewControllerWithViewController:drawer.menuController];
     } else {

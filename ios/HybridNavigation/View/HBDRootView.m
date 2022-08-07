@@ -1,28 +1,25 @@
 #import "HBDRootView.h"
 
+@interface HBDRootView ()
+
+@property (nonatomic, strong, readonly) RCTRootView *rootView;
+
+@end
+
 @implementation HBDRootView
+
+- (instancetype)initWithRootView:(RCTRootView *)rootView {
+    if (self = [super init]) {
+        _rootView = rootView;
+    }
+    return self;
+}
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     UIView *hitView = [super hitTest:point withEvent:event];
-    if (self.passThroughTouches && hitView) {
-        UIView *view = self.contentView.subviews.firstObject;
-        while (view) {
-            if (view == hitView) {
-                if (CGRectEqualToRect(view.frame, self.bounds)) {
-                    return nil;
-                } else {
-                    break;
-                }
-            } else {
-                view = view.subviews.firstObject;
-            }
-        }
-    }
-
-    if (!hitView.window) {
+    if (self.rootView.passThroughTouches && hitView == self) {
         return nil;
     }
-
     return hitView;
 }
 

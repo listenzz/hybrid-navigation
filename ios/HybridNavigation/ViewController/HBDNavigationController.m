@@ -11,7 +11,6 @@
 
 #define hairlineWidth (1.f/[UIScreen mainScreen].scale)
 
-
 UIColor *blendColor(UIColor *from, UIColor *to, CGFloat percent) {
     CGFloat fromRed = 0;
     CGFloat fromGreen = 0;
@@ -30,26 +29,6 @@ UIColor *blendColor(UIColor *from, UIColor *to, CGFloat percent) {
     CGFloat newBlue = fromBlue + (toBlue - fromBlue) * fminf(1, (float) (percent * 4));
     CGFloat newAlpha = fromAlpha + (toAlpha - fromAlpha) * fminf(1, (float) (percent * 4));
     return [UIColor colorWithRed:newRed green:newGreen blue:newBlue alpha:newAlpha];
-}
-
-void adjustLayout(UIViewController *vc) {
-    if (vc.hbd_extendedLayoutDidSet) {
-        return;
-    }
-    vc.hbd_extendedLayoutDidSet = YES;
-
-    BOOL isTranslucent = vc.hbd_barHidden || vc.hbd_barAlpha < 1.0 || colorHasAlphaComponent(vc.hbd_barTintColor);
-    if (isTranslucent || vc.extendedLayoutIncludesOpaqueBars) {
-        vc.edgesForExtendedLayout |= UIRectEdgeTop;
-    } else {
-        vc.edgesForExtendedLayout &= ~UIRectEdgeTop;
-    }
-
-    if (vc.hbd_barHidden) {
-        UIEdgeInsets insets = vc.additionalSafeAreaInsets;
-        CGFloat height = vc.navigationController.navigationBar.bounds.size.height;
-        vc.additionalSafeAreaInsets = UIEdgeInsetsMake(-height + insets.top, insets.left, insets.bottom, insets.right);
-    }
 }
 
 void printViewHierarchy(UIView *view, NSString *prefix) {
@@ -170,8 +149,6 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
 
-    adjustLayout(viewController);
-
     if (self.proxyDelegate && [self.proxyDelegate respondsToSelector:@selector(navigationController:willShowViewController:animated:)]) {
         [self.proxyDelegate navigationController:navigationController willShowViewController:viewController animated:animated];
     }
@@ -246,7 +223,6 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
     } else {
         if (operation == UINavigationControllerOperationPush) {
             if ([self shouldBetterTransitionWithViewController:toVC]) {
-                adjustLayout(toVC);
                 return [HBDPushAnimation new];
             }
         } else if (operation == UINavigationControllerOperationPop) {
@@ -309,7 +285,7 @@ void printViewHierarchy(UIView *view, NSString *prefix) {
                 }
             }
         }
-    }                            completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+    } completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         self.nav.poppingViewController = nil;
         if (@available(iOS 13.0, *)) {
             self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = UIColor.clearColor;

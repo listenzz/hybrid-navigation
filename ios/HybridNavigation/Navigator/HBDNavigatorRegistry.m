@@ -38,8 +38,6 @@
 }
 
 - (void)registerNavigator:(id <HBDNavigator>)navigator {
-    
-
     for (NSString *action in [navigator supportActions]) {
         id <HBDNavigator> duplicated = self.actionNavigatorPairs[action];
         if (duplicated) {

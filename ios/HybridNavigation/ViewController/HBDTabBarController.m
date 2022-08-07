@@ -5,11 +5,12 @@
 #import "HBDUtils.h"
 #import "HBDEventEmitter.h"
 #import "HBDReactTabBar.h"
-#import "HBDRootView.h"
 #import "HBDFadeAnimation.h"
 
+#import <React/RCTRootView.h>
 #import <React/RCTRootViewDelegate.h>
 #import <React/RCTLog.h>
+
 
 @interface HBDTabBarController () <UITabBarControllerDelegate, RCTRootViewDelegate>
 
@@ -58,7 +59,7 @@
     NSString *moduleName = self.tabBarOptions[@"tabBarModuleName"];
     NSMutableDictionary *props = [[self props] mutableCopy];
     props[@"selectedIndex"] = self.tabBarOptions[@"selectedIndex"];
-    RCTRootView *rootView = [[HBDRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:moduleName initialProperties:props];
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:moduleName initialProperties:props];
     rootView.backgroundColor = UIColor.clearColor;
 
     BOOL sizeIndeterminate = [self.tabBarOptions[@"sizeIndeterminate"] boolValue];

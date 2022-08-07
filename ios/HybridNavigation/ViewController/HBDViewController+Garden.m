@@ -16,7 +16,6 @@
     
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
-    
         UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
         spacer.width = -8;
         [array addObject:spacer];
@@ -24,7 +23,7 @@
         UIBarButtonItem *buttonItem = [self createBarButtonItem:item];
         UIView *customView = buttonItem.customView;
         if ([customView isKindOfClass:[HBDBarButton class]]) {
-            HBDBarButton *button = (HBDBarButton *) customView;
+            HBDBarButton *button = (HBDBarButton *)customView;
             button.imageEdgeInsets = buttonItem.imageInsets;
             button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, 4, 0, -4);
         }
@@ -43,7 +42,6 @@
     
     if (item) {
         NSMutableArray *array = [[NSMutableArray alloc] init];
-        
         UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
         spacer.width = -8;
         [array addObject:spacer];
@@ -51,7 +49,7 @@
         UIBarButtonItem *buttonItem = [self createBarButtonItem:item];
         UIView *customView = buttonItem.customView;
         if ([customView isKindOfClass:[HBDBarButton class]]) {
-            HBDBarButton *button = (HBDBarButton *) customView;
+            HBDBarButton *button = (HBDBarButton *)customView;
             button.imageEdgeInsets = buttonItem.imageInsets;
             button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, -4, 0, 4);
         }
@@ -71,7 +69,6 @@
     if (items) {
         NSArray *barButtonItems = [self createBarButtonItems:items];
         NSMutableArray *array = [[NSMutableArray alloc] init];
-
         UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
         spacer.width = -8;
         [array addObject:spacer];
@@ -81,7 +78,7 @@
             UIBarButtonItem *buttonItem = barButtonItems[i];
             UIView *customView = buttonItem.customView;
             if ([customView isKindOfClass:[HBDBarButton class]]) {
-                HBDBarButton *button = (HBDBarButton *) customView;
+                HBDBarButton *button = (HBDBarButton *)customView;
                 button.imageEdgeInsets = buttonItem.imageInsets;
                 button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, 4, 0, -4);
             }
@@ -99,7 +96,6 @@
     if (items) {
         NSArray *barButtonItems = [self createBarButtonItems:items];
         NSMutableArray *array = [[NSMutableArray alloc] init];
-        
         UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:NULL];
         spacer.width = -8;
         [array addObject:spacer];
@@ -109,7 +105,7 @@
             UIBarButtonItem *buttonItem = barButtonItems[i];
             UIView *customView = buttonItem.customView;
             if ([customView isKindOfClass:[HBDBarButton class]]) {
-                HBDBarButton *button = (HBDBarButton *) customView;
+                HBDBarButton *button = (HBDBarButton *)customView;
                 button.imageEdgeInsets = buttonItem.imageInsets;
                 button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, -4, 0, 4);
             }
@@ -130,7 +126,6 @@
 
 - (HBDBarButtonItem *)createBarButtonItem:(NSDictionary *)item {
     HBDBarButtonItem *barButtonItem;
-
     NSDictionary *insetsOption = item[@"insetsIOS"];
     UIEdgeInsets insets = UIEdgeInsetsZero;
     if (insetsOption) {

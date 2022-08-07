@@ -4,6 +4,7 @@
 #import "HBDTitleView.h"
 #import "HBDRootView.h"
 #import "HBDEventEmitter.h"
+#import "HBDUtils.h"
 
 #import <React/RCTConvert.h>
 
@@ -15,7 +16,9 @@
 
 @end
 
-@implementation HBDReactViewController
+@implementation HBDReactViewController {
+    NSArray *_reactViewConstraints;
+}
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillReloadNotification object:nil];
@@ -34,15 +37,21 @@
 }
 
 - (void)loadView {
-    RCTRootView *rootView = [[HBDRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
+    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
+    self.rootView = rootView;
+
     BOOL passThroughTouches = [self.options[@"passThroughTouches"] boolValue];
     rootView.passThroughTouches = passThroughTouches;
-    self.view = rootView;
-    self.rootView = rootView;
+    rootView.backgroundColor = UIColor.clearColor;
+    rootView.translatesAutoresizingMaskIntoConstraints = NO;
+    self.view = [[HBDRootView alloc] initWithRootView:rootView];
+    [self.view addSubview:rootView];
+    [self updateReactViewConstraints];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     NSDictionary *titleItem = self.options[@"titleItem"];
     if (titleItem && self.navigationController) {
         if (self.hbd_barHidden) {
@@ -62,6 +71,34 @@
             self.navigationItem.titleView = titleView;
         }
     }
+}
+
+- (void)viewSafeAreaInsetsDidChange {
+    [super viewSafeAreaInsetsDidChange];
+    [self updateReactViewConstraints];
+}
+
+- (void)updateReactViewConstraints {
+    if (self.isViewLoaded && self.rootView) {
+        [NSLayoutConstraint deactivateConstraints:_reactViewConstraints];
+        _reactViewConstraints = @[
+            [self.rootView.topAnchor
+             constraintEqualToAnchor:self.shouldFitWindowInsetTop ? self.view.topAnchor : self.view.safeAreaLayoutGuide.topAnchor],
+            [self.rootView.bottomAnchor
+                constraintEqualToAnchor:self.view.bottomAnchor],
+            [self.rootView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor],
+            [self.rootView.rightAnchor constraintEqualToAnchor:self.view.rightAnchor]
+        ];
+        [NSLayoutConstraint activateConstraints:_reactViewConstraints];
+    }
+}
+
+- (BOOL)shouldFitWindowInsetTop {
+    if (![self.parentViewController isKindOfClass:UINavigationController.class]) {
+        return YES;
+    }
+    BOOL isTranslucent = self.hbd_barHidden || self.hbd_barAlpha < 1.0 || colorHasAlphaComponent(self.hbd_barTintColor);
+    return isTranslucent || self.extendedLayoutIncludesOpaqueBars;
 }
 
 - (NSDictionary *)propsWithSceneId {
