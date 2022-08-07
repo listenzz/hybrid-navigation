@@ -6,6 +6,7 @@
 #import "HBDEventEmitter.h"
 #import "HBDReactTabBar.h"
 #import "HBDRootView.h"
+#import "HBDFadeAnimation.h"
 
 #import <React/RCTRootViewDelegate.h>
 #import <React/RCTLog.h>
@@ -249,6 +250,15 @@
         return NO;
     }
     return YES;
+}
+
+- (id<UIViewControllerAnimatedTransitioning>)tabBarController:(UITabBarController *)tabBarController animationControllerForTransitionFromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
+    
+    if (toVC.viewLoaded) {
+        return nil;
+    }
+    
+    return [[HBDFadeAnimation alloc] init];
 }
 
 @end
