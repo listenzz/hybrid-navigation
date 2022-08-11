@@ -1,25 +1,8 @@
 import React, { useCallback } from 'react'
-import { TouchableOpacity, Text, View, Platform } from 'react-native'
-import { ifIphoneX, getStatusBarHeight } from 'react-native-iphone-x-helper'
-import { toolbarHeight, InjectedProps, useVisibleEffect } from 'hybrid-navigation'
+import { TouchableOpacity, Text, View } from 'react-native'
+import { Garden, InjectedProps, useVisibleEffect } from 'hybrid-navigation'
 
 import styles from './Styles'
-
-const paddingTop = Platform.select({
-  ios: {
-    ...ifIphoneX(
-      {
-        paddingTop: 91,
-      },
-      {
-        paddingTop: 64,
-      },
-    ),
-  },
-  android: {
-    paddingTop: toolbarHeight + getStatusBarHeight(),
-  },
-})
 
 export default function Menu({ navigator }: InjectedProps) {
   const push = () => {
@@ -50,10 +33,10 @@ export default function Menu({ navigator }: InjectedProps) {
   )
 
   return (
-    <View style={[styles.container, paddingTop]}>
+    <View style={[styles.container, { paddingTop: Garden.topBarHeight }]}>
       <Text style={styles.welcome}>This's a React Native Menu.</Text>
 
-      <TouchableOpacity onPress={push} activeOpacity={0.2} style={[styles.button, { backgroundColor: 'red' }]}>
+      <TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>
         <Text style={styles.buttonText}>push to native</Text>
       </TouchableOpacity>
 

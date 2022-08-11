@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, TouchableOpacity, ScrollView, Slider, Image } from 'react-native'
 import styles from './Styles'
-import { withNavigationItem, InjectedProps } from 'hybrid-navigation'
-import { getStatusBarHeight } from 'react-native-iphone-x-helper'
+import { withNavigationItem, InjectedProps, Garden } from 'hybrid-navigation'
 
 export default withNavigationItem({
   topBarAlpha: 0.5,
@@ -40,7 +39,7 @@ function TopBarAlpha({ garden, navigator, alpha }: Props) {
 
   return (
     <ScrollView>
-      <View style={[styles.container, { paddingTop: getStatusBarHeight(true) }]}>
+      <View style={[styles.container, { paddingTop: Garden.statusBarHeight }]}>
         <Text style={styles.welcome}>Try to slide</Text>
         <Slider
           style={{ marginLeft: 32, marginRight: 32, marginTop: 40 }}

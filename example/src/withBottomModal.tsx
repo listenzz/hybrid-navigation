@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback, useRef, ComponentType } from 'react'
 import { StyleSheet, Animated, Easing, Dimensions, View, TouchableWithoutFeedback, SafeAreaView } from 'react-native'
-import { isIphoneX } from 'react-native-iphone-x-helper'
 import { useLayout, useBackHandler } from '@react-native-community/hooks'
 import { InjectedProps } from 'hybrid-navigation'
 
@@ -64,7 +63,7 @@ export default function withBottomModal({
 
           <View onLayout={onLayout}>
             <WrappedComponent {...props} ref={ref} />
-            {isIphoneX() && <SafeAreaView style={{ backgroundColor: safeAreaColor }} />}
+            <SafeAreaView style={{ backgroundColor: safeAreaColor }} />
           </View>
         </Animated.View>
       )

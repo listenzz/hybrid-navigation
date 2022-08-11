@@ -1,9 +1,8 @@
 import React from 'react'
 import { TouchableOpacity, Text, View } from 'react-native'
-import { withNavigationItem, InjectedProps } from 'hybrid-navigation'
+import { withNavigationItem, InjectedProps, Garden } from 'hybrid-navigation'
 
 import styles from './Styles'
-import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 
 export default withNavigationItem({
   statusBarHidden: true,
@@ -27,7 +26,7 @@ function StatusBarHidden({ navigator, garden }: InjectedProps) {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: getStatusBarHeight(true) }]}>
+    <View style={[styles.container, { paddingTop: Garden.statusBarHeight }]}>
       <Text style={styles.welcome}> StatusBar Hidden</Text>
       <TouchableOpacity onPress={showStatusBar} activeOpacity={0.2} style={styles.button}>
         <Text style={styles.buttonText}>show status bar</Text>

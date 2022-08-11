@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native'
+import { NativeEventEmitter, NativeModules, Platform } from 'react-native'
 import { bindBarButtonItemClickEvent } from './utils'
 import { NavigationOption, ImageSource, Color, BarStyle, TitleAlignment, BarButtonItem, TitleItem } from './typing'
 
@@ -77,10 +77,24 @@ type Nullable<T> = {
 }
 
 const GardenModule = NativeModules.GardenModule
+const { STATUSBAR_HEIGHT, EVENT_STATUSBAR_FRAME_CHANGE, TOOLBAR_HEIGHT } = GardenModule.getConstants()
+
+if (Platform.OS === 'ios') {
+  const GardenEventEmitter: NativeEventEmitter = new NativeEventEmitter(GardenModule)
+  GardenEventEmitter.addListener(EVENT_STATUSBAR_FRAME_CHANGE, ({ statusBarHeight }) => {
+    Garden.statusBarHeight = statusBarHeight
+    Garden.topBarHeight = statusBarHeight + TOOLBAR_HEIGHT
+  })
+}
+
 export class Garden {
   static setStyle(style: Style = {}) {
     GardenModule.setStyle(style)
   }
+
+  static statusBarHeight: number = STATUSBAR_HEIGHT
+  static toolbarHeight: number = TOOLBAR_HEIGHT
+  static topBarHeight: number = TOOLBAR_HEIGHT + STATUSBAR_HEIGHT
 
   constructor(public sceneId: string) {}
 

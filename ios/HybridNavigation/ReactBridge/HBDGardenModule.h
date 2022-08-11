@@ -1,5 +1,6 @@
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@interface HBDGardenModule : NSObject <RCTBridgeModule>
+@interface HBDGardenModule : RCTEventEmitter <RCTBridgeModule>
 
 @end

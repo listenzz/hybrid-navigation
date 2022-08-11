@@ -1,7 +1,6 @@
 import { NativeModules, NativeEventEmitter } from 'react-native'
 
 const NavigationModule = NativeModules.NavigationModule
-const GardenModule = NativeModules.GardenModule
 const HBDEventEmitter = NativeModules.HBDEventEmitter
 
 const EventEmitter: NativeEventEmitter = new NativeEventEmitter(HBDEventEmitter)
@@ -26,8 +25,5 @@ export const KEY_ACTION: string = HBDEventEmitter.KEY_ACTION
 
 export const RESULT_OK: number = NavigationModule.RESULT_OK
 export const RESULT_CANCEL: number = NavigationModule.RESULT_CANCEL
-
-export const toolbarHeight: number = GardenModule.TOOLBAR_HEIGHT
-export const TOOLBAR_HEIGHT: number = GardenModule.TOOLBAR_HEIGHT
 
 export { EventEmitter, NavigationModule }

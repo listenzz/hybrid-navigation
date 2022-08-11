@@ -25,9 +25,11 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.uimanager.PixelUtil;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
 import com.navigation.androidx.FragmentHelper;
+import com.navigation.androidx.SystemUI;
 import com.navigation.androidx.TabBarFragment;
 
 import java.util.HashMap;
@@ -54,6 +56,8 @@ public class GardenModule extends ReactContextBaseJavaModule {
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
         constants.put("TOOLBAR_HEIGHT", 56);
+        float statusBarHeight = PixelUtil.toDIPFromPixel(SystemUI.getStatusBarHeight(getReactApplicationContext()));
+        constants.put("STATUSBAR_HEIGHT", statusBarHeight);
         return constants;
     }
 

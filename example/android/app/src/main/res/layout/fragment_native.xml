@@ -7,8 +7,8 @@
     <TextView
         android:id="@+id/description"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_height="25dp"
+        android:layout_margin="16dp"
         android:gravity="center"
         android:text="This's a native page"
         android:textSize="17dp" />
@@ -17,7 +17,6 @@
         android:id="@+id/push_to_react"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="push to RN"
         android:textColor="@color/touchable_opacity_font_color" />
@@ -26,7 +25,6 @@
         android:id="@+id/push_to_native"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="push to Native"
         android:textColor="@color/touchable_opacity_font_color" />
