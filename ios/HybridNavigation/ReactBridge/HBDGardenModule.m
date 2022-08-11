@@ -60,18 +60,13 @@ RCT_EXPORT_MODULE(GardenModule)
 }
 
 - (void)handleStatusBarFrameChange {
-    RCTLogInfo(@"handleStatusBarFrameChange: %f", [self currentStatusBarHeight]);
+    RCTLogInfo(@"[Navigator] handleStatusBarFrameChange: %f", [self currentStatusBarHeight]);
     if ([self.bridge isValid]) {
         [self sendEventWithName:EVENT_STATUSBAR_FRAME_CHANGE body:@{
             @"statusBarHeight": @([self currentStatusBarHeight])
         }];
     }
 }
-
-RCT_EXPORT_METHOD(statusBarHeight:(RCTResponseSenderBlock)callback) {
-    callback(@[NSNull.null, @([self currentStatusBarHeight])]);
-}
-
 
 RCT_EXPORT_METHOD(setStyle:(NSDictionary *) style) {
     [GlobalStyle createWithOptions:style];
