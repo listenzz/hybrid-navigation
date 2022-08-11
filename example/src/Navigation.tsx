@@ -159,7 +159,7 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
       <View style={styles.container}>
         <Text style={styles.welcome}>This's a React Native scene.</Text>
 
-        <TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>
+        <TouchableOpacity onPress={push} activeOpacity={0.2} style={[styles.button, { backgroundColor: 'red' }]}>
           <Text style={styles.buttonText}>push</Text>
         </TouchableOpacity>
 

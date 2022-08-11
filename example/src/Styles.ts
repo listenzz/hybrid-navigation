@@ -1,29 +1,10 @@
-import { StyleSheet, Platform, StatusBar } from 'react-native'
-import { ifIphoneX } from 'react-native-iphone-x-helper'
-import { toolbarHeight } from 'hybrid-navigation'
-
-export const paddingTop = Platform.select({
-  ios: {
-    ...ifIphoneX(
-      {
-        paddingTop: 16 + 88,
-      },
-      {
-        paddingTop: 16 + 64,
-      },
-    ),
-  },
-  android: {
-    paddingTop: 16 + StatusBar.currentHeight! + toolbarHeight,
-  },
-})
+import { StyleSheet } from 'react-native'
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    paddingTop: 16,
   },
 
   transparent: {
@@ -45,6 +26,7 @@ export default StyleSheet.create({
   buttonText: {
     backgroundColor: 'transparent',
     color: 'rgb(34,88,220)',
+    fontSize: 15,
   },
 
   buttonTextDisable: {
@@ -74,9 +56,10 @@ export default StyleSheet.create({
 
   welcome: {
     backgroundColor: 'transparent',
+    lineHeight: 25,
     fontSize: 17,
     textAlign: 'center',
-    margin: 8,
+    margin: 16,
   },
 
   text: {

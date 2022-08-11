@@ -1,24 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, TouchableOpacity, ScrollView, Slider, Image, StatusBar, Platform } from 'react-native'
-import { ifIphoneX } from 'react-native-iphone-x-helper'
+import { Text, View, TouchableOpacity, ScrollView, Slider, Image } from 'react-native'
 import styles from './Styles'
 import { withNavigationItem, InjectedProps } from 'hybrid-navigation'
-
-const paddingTop = Platform.select({
-  ios: {
-    ...ifIphoneX(
-      {
-        paddingTop: 8 + 44,
-      },
-      {
-        paddingTop: 8 + 20,
-      },
-    ),
-  },
-  android: {
-    paddingTop: 12 + StatusBar.currentHeight!,
-  },
-})
+import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 
 export default withNavigationItem({
   topBarAlpha: 0.5,
@@ -55,13 +39,9 @@ function TopBarAlpha({ garden, navigator, alpha }: Props) {
   }
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="never"
-      automaticallyAdjustContentInsets={false}
-      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
-      <View style={[styles.container, paddingTop]}>
+    <ScrollView>
+      <View style={[styles.container, { paddingTop: getStatusBarHeight(true) }]}>
         <Text style={styles.welcome}>Try to slide</Text>
-
         <Slider
           style={{ marginLeft: 32, marginRight: 32, marginTop: 40 }}
           onValueChange={handleAlphaChange}

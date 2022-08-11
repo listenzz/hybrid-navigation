@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { Text, View, TouchableOpacity, StatusBar } from 'react-native'
 import Toast, { useToast } from 'react-native-toast-hybrid'
 import { withNavigationItem } from 'hybrid-navigation'
+import styles from './Styles'
 
 export default withNavigationItem({
   titleItem: {
@@ -62,7 +63,7 @@ function ToastComponent() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: StatusBar.currentHeight! }]}>
       <TouchableOpacity onPress={loading} activeOpacity={0.2} style={styles.button}>
         <Text style={styles.buttonText}> loading </Text>
       </TouchableOpacity>
@@ -85,31 +86,3 @@ function ToastComponent() {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'stretch',
-    paddingTop: 16,
-  },
-
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 40,
-  },
-
-  buttonText: {
-    backgroundColor: 'transparent',
-    color: 'rgb(34,88,220)',
-  },
-
-  text: {
-    backgroundColor: 'transparent',
-    fontSize: 16,
-    alignSelf: 'flex-start',
-    textAlign: 'left',
-    margin: 8,
-  },
-})

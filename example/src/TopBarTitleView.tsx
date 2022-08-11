@@ -15,7 +15,7 @@ function CustomTitleView(props: InjectedProps) {
         justifyContent: 'center',
         alignItems: 'center',
       }}>
-      <Text style={styles.welcome}>--Custom Title--</Text>
+      <Text style={{ fontSize: 17, fontWeight: 'bold' }}>--Custom Title--</Text>
       <TouchableOpacity onPress={params.onFackbookButtonClick}>
         <Image
           style={{ width: 24, height: 24 }}
