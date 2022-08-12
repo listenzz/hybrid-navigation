@@ -2,6 +2,7 @@
 
 #import "HBDViewController+Garden.h"
 #import "HBDUtils.h"
+#import "HBDAnimationObserver.h"
 #import "GlobalStyle.h"
 
 #import <React/RCTLog.h>
@@ -75,6 +76,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [[HBDAnimationObserver sharedObserver] endAnimation];
     if (![HBDUtils isIphoneX]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     }

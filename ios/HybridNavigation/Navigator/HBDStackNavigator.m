@@ -3,6 +3,7 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDNavigationController.h"
 #import "UINavigationController+HBD.h"
+#import "HBDAnimationObserver.h"
 
 @implementation HBDStackNavigator
 
@@ -125,6 +126,7 @@
     }
     
     vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
+    [[HBDAnimationObserver sharedObserver] beginAnimation];
     [nav pushViewController:vc animated:YES];
     [self animateAlongsideTransition:nav callback:callback];
 }
@@ -176,6 +178,7 @@
         return;
     }
     
+    [[HBDAnimationObserver sharedObserver] beginAnimation];
     [nav redirectToViewController:vc target:target animated:YES];
     [self animateAlongsideTransition:nav callback:callback];
 }
@@ -189,6 +192,7 @@
     }
     
     vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
+    [[HBDAnimationObserver sharedObserver] beginAnimation];
     [nav pushViewController:vc animated:YES];
     [self animateAlongsideTransition:nav callback:callback];
 }

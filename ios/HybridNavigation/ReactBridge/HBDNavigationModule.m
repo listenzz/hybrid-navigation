@@ -2,6 +2,7 @@
 
 #import "HBDReactBridgeManager.h"
 #import "HBDReactViewController.h"
+#import "HBDAnimationObserver.h"
 
 #import <React/RCTLog.h>
 
@@ -29,6 +30,7 @@ RCT_EXPORT_MODULE(NavigationModule)
 - (void)invalidate {
     RCTLogInfo(@"[Navigator] NavigationModule#invalidate");
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    [[HBDAnimationObserver sharedObserver] invalidate];
     [self.bridgeManager invalidate];
 }
 
