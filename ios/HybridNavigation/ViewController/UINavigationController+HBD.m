@@ -9,9 +9,6 @@
 - (void)redirectToViewController:(UIViewController *)controller target:(UIViewController *)target animated:(BOOL)animated {
     NSMutableArray *children = [self.childViewControllers mutableCopy];
     NSUInteger index = [children indexOfObject:target];
-    if (index == NSNotFound) {
-        return;
-    }
     NSUInteger count = self.childViewControllers.count;
     [children removeObjectsInRange:NSMakeRange(index, count - index)];
     [children addObject:controller];

@@ -118,7 +118,7 @@
     }
 }
 
-- (void)handlePushWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  callback:(RCTResponseSenderBlock)callback {
+- (void)handlePushWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     UIViewController *vc = [self viewControllerWithExtras:extras];
     if (!vc) {
         callback(@[NSNull.null, @NO]);
@@ -136,7 +136,7 @@
     [self animateAlongsideTransition:nav callback:callback];
 }
 
-- (void)handlePopToWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras  callback:(RCTResponseSenderBlock)callback {
+- (void)handlePopToWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     UIViewController *vc = [self findViewControllerWithNavigationController:nav extras:extras];
     if (!vc) {
         callback(@[NSNull.null, @NO]);
@@ -172,6 +172,11 @@
 }
 
 - (void)handleRedirectToWithNavigationController:(UINavigationController *)nav target:(UIViewController *)target extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
+    if (![nav.childViewControllers containsObject:target]) {
+        callback(@[NSNull.null, @NO]);
+        return;
+    }
+    
     UIViewController *vc = [self viewControllerWithExtras:extras];
     if (!vc) {
         callback(@[NSNull.null, @NO]);

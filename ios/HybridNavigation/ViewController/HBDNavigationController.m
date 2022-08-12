@@ -11,36 +11,6 @@
 
 #define hairlineWidth (1.f/[UIScreen mainScreen].scale)
 
-UIColor *blendColor(UIColor *from, UIColor *to, CGFloat percent) {
-    CGFloat fromRed = 0;
-    CGFloat fromGreen = 0;
-    CGFloat fromBlue = 0;
-    CGFloat fromAlpha = 0;
-    [from getRed:&fromRed green:&fromGreen blue:&fromBlue alpha:&fromAlpha];
-
-    CGFloat toRed = 0;
-    CGFloat toGreen = 0;
-    CGFloat toBlue = 0;
-    CGFloat toAlpha = 0;
-    [to getRed:&toRed green:&toGreen blue:&toBlue alpha:&toAlpha];
-
-    CGFloat newRed = fromRed + (toRed - fromRed) * fminf(1, (float) (percent * 4));
-    CGFloat newGreen = fromGreen + (toGreen - fromGreen) * fminf(1, (float) (percent * 4));
-    CGFloat newBlue = fromBlue + (toBlue - fromBlue) * fminf(1, (float) (percent * 4));
-    CGFloat newAlpha = fromAlpha + (toAlpha - fromAlpha) * fminf(1, (float) (percent * 4));
-    return [UIColor colorWithRed:newRed green:newGreen blue:newBlue alpha:newAlpha];
-}
-
-void printViewHierarchy(UIView *view, NSString *prefix) {
-    NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-    NSLog(@"%@%@ %@", prefix, viewName, NSStringFromCGRect(view.frame));
-    if (view.subviews.count > 0) {
-        for (UIView *sub in view.subviews) {
-            printViewHierarchy(sub, [NSString stringWithFormat:@"--%@", prefix]);
-        }
-    }
-}
-
 @interface HBDNavigationControllerDelegate : UIScreenEdgePanGestureRecognizer <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
 @property(nonatomic, weak) id <UINavigationControllerDelegate> proxyDelegate;

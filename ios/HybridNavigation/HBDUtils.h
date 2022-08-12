@@ -5,12 +5,7 @@ UIKIT_STATIC_INLINE BOOL colorHasAlphaComponent(UIColor *color) {
     if (!color) {
         return YES;
     }
-    CGFloat red = 0;
-    CGFloat green = 0;
-    CGFloat blue = 0;
-    CGFloat alpha = 0;
-    [color getRed:&red green:&green blue:&blue alpha:&alpha];
-    return alpha < 1.0;
+    return CGColorGetAlpha(color.CGColor) < 1.0;
 }
 
 UIKIT_STATIC_INLINE BOOL imageHasAlphaChannel(UIImage *image) {
@@ -50,5 +45,7 @@ UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class clazz, SEL originalSe
 + (BOOL)isIphoneX;
 
 + (BOOL)isInCall;
+
++ (void)printViewHierarchy:(UIView *)view withPrefix:(NSString *)prefix;
 
 @end

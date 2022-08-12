@@ -9,7 +9,7 @@
 @implementation HBDRootView
 
 - (instancetype)initWithRootView:(RCTRootView *)rootView {
-    if (self = [super init]) {
+    if (self = [super initWithFrame:[UIScreen mainScreen].bounds]) {
         _rootView = rootView;
     }
     return self;
@@ -17,8 +17,14 @@
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
     UIView *hitView = [super hitTest:point withEvent:event];
-    if (self.rootView.passThroughTouches && hitView == self) {
-        return nil;
+    if (self.rootView.passThroughTouches) {
+        if (hitView == self) {
+            return nil;
+        }
+        
+        if (hitView && CGRectEqualToRect(hitView.frame, self.rootView.bounds)) {
+            return nil;
+        }
     }
     return hitView;
 }

@@ -178,6 +178,16 @@
     }
 }
 
++ (void)printViewHierarchy:(UIView *)view withPrefix:(NSString *)prefix {
+    NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
+    NSLog(@"%@%@ %@", prefix, viewName, NSStringFromCGRect(view.frame));
+    if (view.subviews.count > 0) {
+        for (UIView *sub in view.subviews) {
+            [self printViewHierarchy:sub withPrefix:[NSString stringWithFormat:@"--%@", prefix]];
+        }
+    }
+}
+
 static void (*__SWZ_didMoveToWindow_orig)(id self, SEL _cmd);
 
 static void __HBD_didMoveToWindow(UIView *self, SEL _cmd) {

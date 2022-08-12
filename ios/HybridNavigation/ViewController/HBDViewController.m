@@ -201,8 +201,12 @@
     }
 
     if ([GlobalStyle globalStyle].isBackTitleHidden) {
-        UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
-        self.navigationItem.backBarButtonItem = buttonItem;
+        if (@available(iOS 14.0, *)) {
+            self.navigationItem.backButtonDisplayMode = UINavigationItemBackButtonDisplayModeMinimal;
+        } else {
+            UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
+            self.navigationItem.backBarButtonItem = buttonItem;
+        }
     }
 
     NSDictionary *backItem = options[@"backItemIOS"];
@@ -215,7 +219,7 @@
         }
         self.navigationItem.backBarButtonItem = backButton;
     }
-
+    
     NSNumber *swipeBackEnabled = options[@"swipeBackEnabled"];
     if (swipeBackEnabled) {
         self.hbd_swipeBackEnabled = [swipeBackEnabled boolValue];
