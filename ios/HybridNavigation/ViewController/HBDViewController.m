@@ -61,8 +61,10 @@
         UIView *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
         BOOL hidden = [self hbd_statusBarHidden] && ![HBDUtils isInCall];
         CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
-        statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
-        statusBar.alpha = hidden ? 0 : 1.0;
+        [UIView animateWithDuration:0.2 animations:^{
+            statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
+            statusBar.alpha = hidden ? 0 : 1.0;
+        }];
         return NO;
     }
 }
