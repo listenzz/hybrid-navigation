@@ -28,7 +28,6 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.Style;
-import com.navigation.androidx.TransitionAnimation;
 
 public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver, ReactBridgeManager.ReactBridgeReloadListener {
 
@@ -49,11 +48,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             reactRootViewHolder = (ReactRootViewHolder) containerLayout;
             reactRootViewHolder.setVisibilityObserver(this);
         }
-
+        
         if (!FragmentHelper.isHidden(this) || getShowsDialog()) {
-            if (getAnimation() != TransitionAnimation.None) {
-                postponeEnterTransition();
-            }
             initReactRootView();
         }
 
@@ -201,8 +197,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             return;
         }
         firstRenderCompleted = true;
-        startPostponedEnterTransition();
-
+        
         if (isViewReady() && isResumed()) {
             sendViewAppearEvent(true);
             reactRootView.addOnGlobalLayoutListener();
@@ -301,17 +296,5 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
         return new Toolbar.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER);
     }
-
-    @Override
-    public void postponeEnterTransition() {
-        super.postponeEnterTransition();
-        requireActivity().supportPostponeEnterTransition();
-    }
-
-    @Override
-    public void startPostponedEnterTransition() {
-        super.startPostponedEnterTransition();
-        requireActivity().supportStartPostponedEnterTransition();
-    }
-
+    
 }
