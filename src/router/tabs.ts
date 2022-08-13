@@ -1,6 +1,6 @@
-import { RouteGraph, LayoutMode, RouteHandler, RouteInfo } from './typing'
 import { Navigator } from '../Navigator'
 import { isScreenGraph } from './screen'
+import { LayoutMode, RouteGraph, RouteHandler, RouteInfo } from '../Route'
 
 export interface TabsGraph extends RouteGraph {
   layout: 'tabs'

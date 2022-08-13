@@ -1,29 +1,118 @@
-import { NativeModules, NativeEventEmitter } from 'react-native'
+import { NativeModules } from 'react-native'
+import { Route, RouteGraph } from './Route'
 
-const NavigationModule = NativeModules.NavigationModule
-const HBDEventEmitter = NativeModules.HBDEventEmitter
+type Callback = (error: never, result: any) => void
 
-const EventEmitter: NativeEventEmitter = new NativeEventEmitter(HBDEventEmitter)
-export const EVENT_SWITCH_TAB: string = HBDEventEmitter.EVENT_SWITCH_TAB
-export const EVENT_NAVIGATION: string = HBDEventEmitter.EVENT_NAVIGATION
-export const EVENT_WILL_SET_ROOT: string = HBDEventEmitter.EVENT_WILL_SET_ROOT
-export const EVENT_DID_SET_ROOT: string = HBDEventEmitter.EVENT_DID_SET_ROOT
+interface NavigationModule {
+  getConstants: () => {
+    RESULT_OK: number
+    RESULT_CANCEL: number
+  }
 
-export const ON_COMPONENT_RESULT: string = HBDEventEmitter.ON_COMPONENT_RESULT
-export const ON_BAR_BUTTON_ITEM_CLICK: string = HBDEventEmitter.ON_BAR_BUTTON_ITEM_CLICK
-export const ON_COMPONENT_APPEAR: string = HBDEventEmitter.ON_COMPONENT_APPEAR
-export const ON_COMPONENT_DISAPPEAR: string = HBDEventEmitter.ON_COMPONENT_DISAPPEAR
+  startRegisterReactComponent: () => void
+  endRegisterReactComponent: () => void
+  registerReactComponent: (appKey: string, options: object) => void
+  signalFirstRenderComplete: (sceneId: string) => void
+  setRoot: (layout: object, sticky: boolean, tag: number) => void
+  setResult: (sceneId: string, resultCode: number, data: object | null) => void
+  dispatch: (sceneId: string, action: string, params: object, callback: Callback) => void
+  currentTab: (sceneId: string, callback: Callback) => void
+  isStackRoot: (sceneId: string, callback: Callback) => void
+  findSceneIdByModuleName: (moduleName: string, callback: Callback) => void
+  currentRoute: (callback: Callback) => void
+  routeGraph: (callback: Callback) => void
+}
 
-export const KEY_ON: string = HBDEventEmitter.KEY_ON
-export const KEY_REQUEST_CODE: string = HBDEventEmitter.KEY_REQUEST_CODE
-export const KEY_RESULT_CODE: string = HBDEventEmitter.KEY_RESULT_CODE
-export const KEY_RESULT_DATA: string = HBDEventEmitter.KEY_RESULT_DATA
-export const KEY_SCENE_ID: string = HBDEventEmitter.KEY_SCENE_ID
-export const KEY_MODULE_NAME: string = HBDEventEmitter.KEY_MODULE_NAME
-export const KEY_INDEX: string = HBDEventEmitter.KEY_INDEX
-export const KEY_ACTION: string = HBDEventEmitter.KEY_ACTION
+const NavigationModule: NavigationModule = NativeModules.NavigationModule
 
-export const RESULT_OK: number = NavigationModule.RESULT_OK
-export const RESULT_CANCEL: number = NavigationModule.RESULT_CANCEL
+function getConstants() {
+  return NavigationModule.getConstants()
+}
 
-export { EventEmitter, NavigationModule }
+function startRegisterReactComponent() {
+  NavigationModule.startRegisterReactComponent()
+}
+
+function endRegisterReactComponent() {
+  NavigationModule.endRegisterReactComponent()
+}
+
+function registerReactComponent(appKey: string, options: object) {
+  NavigationModule.registerReactComponent(appKey, options)
+}
+
+function signalFirstRenderComplete(sceneId: string) {
+  NavigationModule.signalFirstRenderComplete(sceneId)
+}
+
+function setResult(sceneId: string, resultCode: number, data: object | null) {
+  NavigationModule.setResult(sceneId, resultCode, data)
+}
+
+function setRoot(layout: object, sticky: boolean, tag: number) {
+  NavigationModule.setRoot(layout, sticky, tag)
+}
+
+function dispatch(sceneId: string, action: string, params: object) {
+  return new Promise<boolean>(resolve => {
+    NavigationModule.dispatch(sceneId, action, params, (_, result) => {
+      resolve(result)
+    })
+  })
+}
+
+function currentTab(sceneId: string) {
+  return new Promise<number>(resolve => {
+    NavigationModule.currentTab(sceneId, (_, result) => {
+      resolve(result)
+    })
+  })
+}
+
+function isStackRoot(sceneId: string) {
+  return new Promise<boolean>(resolve => {
+    NavigationModule.isStackRoot(sceneId, (_, result) => {
+      resolve(result)
+    })
+  })
+}
+
+function findSceneIdByModuleName(moduleName: string) {
+  return new Promise<string | null>(resolve => {
+    NavigationModule.findSceneIdByModuleName(moduleName, (_, result) => {
+      resolve(result)
+    })
+  })
+}
+
+function currentRoute() {
+  return new Promise<Route>(resolve => {
+    NavigationModule.currentRoute((_, result) => {
+      resolve(result)
+    })
+  })
+}
+
+function routeGraph() {
+  return new Promise<RouteGraph[]>(resolve => {
+    NavigationModule.routeGraph((_, result) => {
+      resolve(result)
+    })
+  })
+}
+
+export default {
+  getConstants,
+  startRegisterReactComponent,
+  endRegisterReactComponent,
+  registerReactComponent,
+  signalFirstRenderComplete,
+  setResult,
+  setRoot,
+  dispatch,
+  currentTab,
+  isStackRoot,
+  findSceneIdByModuleName,
+  currentRoute,
+  routeGraph,
+}

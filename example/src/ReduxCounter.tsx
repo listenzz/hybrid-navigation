@@ -112,7 +112,10 @@ const navigationItem: NavigationItem = {
 //   connect(mapStateToProps, mapDispatchToProps)(ReduxCounter),
 // )
 
-export default connect(mapStateToProps, mapDispatchToProps)(withNavigationItem(navigationItem)(ReduxCounter))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withNavigationItem(navigationItem)(ReduxCounter))
 
 export function withRedux(WrappedComponent: ComponentType<any>) {
   return class ReduxProvider extends React.Component {

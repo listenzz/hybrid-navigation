@@ -55,9 +55,19 @@ export default function CustomTabBar({
 
   return (
     <View style={styles.tabBar}>
-      <Tab onTabClick={() => handleTabClick(0)} {...tabs[0]} selected={selectedIndex === 0} {...style} />
+      <Tab
+        onTabClick={() => handleTabClick(0)}
+        {...tabs[0]}
+        selected={selectedIndex === 0}
+        {...style}
+      />
       <Add onTabClick={() => handleTabClick(-1)} />
-      <Tab onTabClick={() => handleTabClick(1)} {...tabs[1]} selected={selectedIndex === 1} {...style} />
+      <Tab
+        onTabClick={() => handleTabClick(1)}
+        {...tabs[1]}
+        selected={selectedIndex === 1}
+        {...style}
+      />
     </View>
   )
 }

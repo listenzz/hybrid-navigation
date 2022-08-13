@@ -1,17 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import {
-  EVENT_NAVIGATION,
-  EventEmitter,
-  KEY_ON,
-  KEY_SCENE_ID,
-  ON_COMPONENT_APPEAR,
-  ON_COMPONENT_DISAPPEAR,
-} from './NavigationModule'
-import { Navigator } from './Navigator'
-import { NavigationContext } from './ReactRegistry'
-
-export type Visibility = 'visible' | 'invisible' | 'pending'
+import Event from './Event'
+import { Navigator, NavigationContext } from './Navigator'
 
 export function useVisible() {
   const visibility = useVisibility()
@@ -23,19 +13,19 @@ export function useVisibility() {
   const [visibility, setVisibility] = useState(navigator.visibility)
 
   useEffect(() => {
-    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-      if (navigator.sceneId === data[KEY_SCENE_ID]) {
-        if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
+    const subscription = Event.listenComponentVisibility(
+      (sceneId: string) => {
+        if (sceneId === navigator.sceneId) {
           setVisibility('visible')
-        } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
+        }
+      },
+      (sceneId: string) => {
+        if (sceneId === navigator.sceneId) {
           setVisibility('invisible')
         }
-      }
-    })
-
-    return () => {
-      subscription.remove()
-    }
+      },
+    )
+    return () => subscription.remove()
   }, [navigator])
 
   return visibility
@@ -50,18 +40,19 @@ export function useVisibleEffect(effect: React.EffectCallback) {
       destructor.current = effect()
     }
 
-    const subscription = EventEmitter.addListener(EVENT_NAVIGATION, data => {
-      if (navigator.sceneId === data[KEY_SCENE_ID]) {
-        if (data[KEY_ON] === ON_COMPONENT_APPEAR) {
+    const subscription = Event.listenComponentVisibility(
+      (sceneId: string) => {
+        if (sceneId === navigator.sceneId) {
           destructor.current = effect()
-        } else if (data[KEY_ON] === ON_COMPONENT_DISAPPEAR) {
-          if (destructor.current) {
-            destructor.current()
-            destructor.current = undefined
-          }
         }
-      }
-    })
+      },
+      (sceneId: string) => {
+        if (sceneId === navigator.sceneId && destructor.current) {
+          destructor.current()
+          destructor.current = undefined
+        }
+      },
+    )
 
     return () => {
       if (destructor.current) {

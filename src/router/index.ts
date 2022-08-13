@@ -1,16 +1,31 @@
-import { Navigator } from '../Navigator'
-import { RouteConfig, RouteData, RouteInfo, RouteInterceptor, RouteHandler, RouteGraph } from './typing'
 import { pathToRegexp, match } from 'path-to-regexp'
 import { stackRouteHandler } from './stack'
 import { tabsRouteHandler } from './tabs'
 import { drawerRouteHandler } from './drawer'
-import { PropsType, NavigationItem, IndexType } from '../typing'
+import { Navigator } from '../Navigator'
+import {
+  RouteConfig,
+  RouteData,
+  RouteGraph,
+  RouteHandler,
+  RouteInfo,
+  RouteInterceptor,
+} from '../Route'
+import { NavigationItem } from '../Options'
+
+interface IndexType {
+  [index: string]: any
+}
 
 let routeDatas = new Map<string, RouteData>()
 let interceptors = new Set<RouteInterceptor>()
 let handlers = new Set<RouteHandler>([drawerRouteHandler, tabsRouteHandler, stackRouteHandler])
 
-const traverseHandlers: RouteHandler = async (graph: RouteGraph, route: RouteInfo, next: RouteHandler) => {
+const traverseHandlers: RouteHandler = async (
+  graph: RouteGraph,
+  route: RouteInfo,
+  next: RouteHandler,
+) => {
   for (let handler of handlers.values()) {
     if (await handler(graph, route, next)) {
       return true
@@ -25,10 +40,6 @@ function addInterceptor(func: RouteInterceptor) {
 
 function removeInterceptor(func: RouteInterceptor) {
   interceptors.delete(func)
-}
-
-function addRouteHandler(handler: RouteHandler) {
-  handlers.add(handler)
 }
 
 function use(handler: RouteHandler) {
@@ -48,7 +59,7 @@ function registerRoute(moduleName: string, route: RouteConfig) {
   routeDatas.set(moduleName, { moduleName, mode, path, regexp, dependency })
 }
 
-async function open(path: string, props: PropsType = {}, options: NavigationItem = {}) {
+async function open(path: string, props: object = {}, options: NavigationItem = {}) {
   let intercepted = false
   for (let interceptor of interceptors.values()) {
     const result = interceptor(path)
@@ -99,7 +110,7 @@ async function open(path: string, props: PropsType = {}, options: NavigationItem
   }
 }
 
-function pathToRoute(path: string, props: PropsType, options: NavigationItem): RouteInfo | undefined {
+function pathToRoute(path: string, props: object, options: NavigationItem): RouteInfo | undefined {
   for (const data of routeDatas.values()) {
     if (!data.regexp) {
       continue
@@ -152,14 +163,12 @@ function routeDependencies(routeData: RouteData) {
 export const router = {
   addInterceptor,
   removeInterceptor,
-  addRouteHandler,
   registerRoute,
   use,
   open,
   pathToRoute,
 }
 
-export * from './typing'
 export * from './drawer'
 export * from './screen'
 export * from './stack'

@@ -1,25 +1,5 @@
-import { Insets } from 'react-native'
-import { Navigator } from './Navigator'
-
-export interface IndexType {
-  [index: string]: any
-}
-
-export interface PropsType {
-  [index: string]: any
-}
-
-export type ResultType = IndexType | null
-
-interface Extras {
-  sceneId: string
-  from?: number | string
-  to?: number | string
-}
-
-export interface NavigationInterceptor {
-  (action: string, extras: Extras): boolean | Promise<boolean>
-}
+import type { Insets } from 'react-native'
+import type { Navigator } from './Navigator'
 
 export type Color = string
 export type ImageSource = { uri: string; scale?: number; height?: number; width?: number }
@@ -104,45 +84,59 @@ export interface TabItem {
   hideTabBarWhenPush?: boolean
 }
 
-export interface Screen extends Layout {
-  screen: {
-    moduleName: string
-    props?: IndexType
-    options?: NavigationItem
-  }
+export interface ShadowImage {
+  image?: ImageSource
+  color?: Color
 }
 
-export interface Stack extends Layout {
-  stack: {
-    children: Array<BuildInLayout | Layout>
-    options?: {}
-  }
+export interface DefaultOptions {
+  screenBackgroundColor?: Color // 页面背景，默认是白色
+  topBarStyle?: BarStyle // TopBar 样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
+  topBarColor?: Color // TopBar 背景颜色，默认根据 topBarStyle 来计算
+  topBarColorDarkContent?: Color // TopBar 背景颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 topBarColor 的值
+  topBarColorLightContent?: Color // TopBar 背景颜色，当 topBarStyle 的值为 BarStyleLightContent 时生效，覆盖 topBarColor 的值
+  statusBarColorAndroid?: Color // 状态栏背景颜色，默认取 topBarColor 的值
+  navigationBarColorAndroid?: Color // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
+  hideBackTitleIOS?: boolean // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
+  elevationAndroid?: number // TopBar 阴影高度，默认值为 4 dp
+  shadowImage?: ShadowImage // TopBar 阴影图片，仅对 iOS 生效
+  backIcon?: ImageSource // 返回按钮图片
+  topBarTintColor?: Color // TopBar 按钮的颜色。默认根据 topBarStyle 来计算
+  topBarTintColorDarkContent?: Color // TopBar 按钮颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 topBarTintColor 的值
+  topBarTintColorLightContent?: Color // TopBar 按钮颜色，当 topBarStyle 的值为 BarStyleLightContent 时生效，覆盖 topBarTintColor 的值
+  titleTextColor?: Color // TopBar 标题颜色，默认根据 topBarStyle 来计算
+  titleTextColorDarkContent?: Color // TopBar 标题颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 titleTextColor 的值
+  titleTextColorLightContent?: Color // TopBar 标题颜色，当 topBarStyle 的值为 BarStyleLightContent 时生效，覆盖 titleTextColor 的值
+  titleTextSize?: number // TopBar 标题字体大小，默认是 17 dp(pt)
+  titleAlignmentAndroid?: TitleAlignment // TopBar 标题的位置，可选项有 `TitleAlignmentLeft` 和 `TitleAlignmentCenter` ，仅对 Android 生效
+  barButtonItemTextSize?: number // TopBar 按钮字体大小，默认是 15 dp(pt)
+  swipeBackEnabledAndroid?: boolean // Android 是否开启右滑返回，默认是 false
+  splitTopBarTransitionIOS?: boolean // iOS 侧滑返回时，是否总是割裂导航栏背景
+  scrimAlphaAndroid?: number // Android 侧滑返回遮罩效果 [0 - 255]
+  displayCutoutWhenLandscapeAndroid?: boolean // 横屏时，是否将界面延伸至刘海区域，默认 true
+
+  tabBarColor?: Color // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
+  tabBarShadowImage?: ShadowImage // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
+  tabBarItemColor?: Color // 底部 TabBarItem icon 选中颜色
+  tabBarUnselectedItemColor?: Color // 底部 TabBarItem icon 未选中颜色，默认为 #BDBDBD
+  tabBarBadgeColor?: Color //  Tab badge 颜色
 }
 
-export interface Tabs extends Layout {
-  tabs: {
-    children: Array<BuildInLayout | Layout>
-    options?: {
-      selectedIndex?: number
-      tabBarModuleName?: string
-      sizeIndeterminate?: boolean
-    }
+export type TabBarStyle = Pick<
+  DefaultOptions,
+  'tabBarColor' | 'tabBarShadowImage' | 'tabBarItemColor' | 'tabBarUnselectedItemColor'
+>
+
+export interface TabItemInfo {
+  index: number
+  title?: string
+  badge?: {
+    text?: string
+    hidden: boolean
+    dot?: boolean
   }
-}
-
-export interface Drawer extends Layout {
-  drawer: {
-    children: [BuildInLayout | Layout, BuildInLayout | Layout]
-    options?: {
-      maxDrawerWidth?: number
-      minDrawerMargin?: number
-      menuInteractive?: boolean
-    }
+  icon?: {
+    selected: ImageSource
+    unselected?: ImageSource
   }
-}
-
-export type BuildInLayout = Screen | Stack | Tabs | Drawer
-
-export interface Layout {
-  [index: string]: {}
 }

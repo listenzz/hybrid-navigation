@@ -236,15 +236,21 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={toggleLeftBarButton} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>{showsLeftBarButton ? 'show left bar button' : 'hide left bar button'}</Text>
+          <Text style={styles.buttonText}>
+            {showsLeftBarButton ? 'show left bar button' : 'hide left bar button'}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={changeRightButton} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>{rightButtonEnabled ? 'disable right button' : 'enable right button'}</Text>
+          <Text style={styles.buttonText}>
+            {rightButtonEnabled ? 'disable right button' : 'enable right button'}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={changeTitle} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>{`change title to '${title === 'Options' ? '配置' : 'Options'}'`}</Text>
+          <Text style={styles.buttonText}>{`change title to '${
+            title === 'Options' ? '配置' : 'Options'
+          }'`}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
@@ -252,7 +258,9 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={toggleTabBadge} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>{badges && badges[0].badge?.dot ? 'hide tab badge' : 'show tab badge'}</Text>
+          <Text style={styles.buttonText}>
+            {badges && badges[0].badge?.dot ? 'hide tab badge' : 'show tab badge'}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={replaceTabIcon} activeOpacity={0.2} style={styles.button}>

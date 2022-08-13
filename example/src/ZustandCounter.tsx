@@ -1,6 +1,11 @@
 import React, { useEffect, useCallback } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
-import { BarStyleLightContent, withNavigationItem, InjectedProps, useVisibleEffect } from 'hybrid-navigation'
+import {
+  BarStyleLightContent,
+  withNavigationItem,
+  InjectedProps,
+  useVisibleEffect,
+} from 'hybrid-navigation'
 import styles from './Styles'
 import create from 'zustand'
 

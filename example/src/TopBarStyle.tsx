@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
-import { BarStyleLightContent, BarStyleDarkContent, useNavigator, useGarden, NavigationOption } from 'hybrid-navigation'
+import {
+  BarStyleLightContent,
+  BarStyleDarkContent,
+  useNavigator,
+  useGarden,
+  NavigationOption,
+} from 'hybrid-navigation'
 import styles from './Styles'
 import { withNavigationItem } from 'hybrid-navigation'
 
@@ -67,7 +73,9 @@ function TopBarStyle() {
         <TouchableOpacity onPress={switchTopBarStyle} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>
             switch to{' '}
-            {options && options.topBarStyle === BarStyleDarkContent ? 'Light Content Style' : 'Dark Content Style'}
+            {options && options.topBarStyle === BarStyleDarkContent
+              ? 'Light Content Style'
+              : 'Dark Content Style'}
           </Text>
         </TouchableOpacity>
 

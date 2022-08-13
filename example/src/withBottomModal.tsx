@@ -1,5 +1,13 @@
 import React, { useEffect, useCallback, useRef, ComponentType } from 'react'
-import { StyleSheet, Animated, Easing, Dimensions, View, TouchableWithoutFeedback, SafeAreaView } from 'react-native'
+import {
+  StyleSheet,
+  Animated,
+  Easing,
+  Dimensions,
+  View,
+  TouchableWithoutFeedback,
+  SafeAreaView,
+} from 'react-native'
 import { useLayout, useBackHandler } from '@react-native-community/hooks'
 import { InjectedProps } from 'hybrid-navigation'
 

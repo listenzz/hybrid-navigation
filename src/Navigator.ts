@@ -1,100 +1,112 @@
-import {
-  EventEmitter,
-  NavigationModule,
-  EVENT_WILL_SET_ROOT,
-  EVENT_DID_SET_ROOT,
-  EVENT_SWITCH_TAB,
-  KEY_SCENE_ID,
-  KEY_INDEX,
-  RESULT_CANCEL,
-  EVENT_NAVIGATION,
-  KEY_ON,
-  ON_COMPONENT_RESULT,
-  KEY_REQUEST_CODE,
-  KEY_RESULT_CODE,
-  KEY_RESULT_DATA,
-} from './NavigationModule'
-import { bindBarButtonItemClickEvent } from './utils'
+import { createContext } from 'react'
+
+import NavigationModule from './NavigationModule'
+import Event from './Event'
 import store from './store'
-import { RouteGraph, Route } from './router'
-import { Visibility } from './hooks'
-import {
-  IndexType,
-  ResultType,
-  NavigationInterceptor,
-  Layout,
-  BuildInLayout,
-  NavigationItem,
-  PropsType,
-} from './typing'
+import { Visibility, Layout, BuildInLayout, Route, RouteGraph } from './Route'
+import { NavigationItem } from './Options'
 import { Garden } from './Garden'
 
-interface Params {
+const { RESULT_CANCEL } = NavigationModule.getConstants()
+
+export const NavigationContext = createContext<any>(null)
+
+interface NavigationState {
+  params: { readonly [index: string]: any }
+}
+
+interface IndexType {
+  [index: string]: any
+}
+interface PropsType {
+  [index: string]: any
+}
+
+interface DispatchParams {
   animated?: boolean
   moduleName?: string
   layout?: BuildInLayout | Layout
   popToRoot?: boolean
   requestCode?: number
-  props?: IndexType
+  props?: object
   options?: NavigationItem
   [index: string]: any
 }
 
-interface NavigationState {
-  params: { readonly [index: string]: any }
+interface InterceptParams {
+  sceneId: string
+  from?: number | string
+  to?: number | string
+}
+export interface NavigationInterceptor {
+  (action: string, params: InterceptParams): boolean | Promise<boolean>
 }
 
 let interceptor: NavigationInterceptor
 let shouldCallWillSetRootCallback = 0
 let willSetRootCallback: () => void
 let didSetRootCallback: () => void
-let tag = 0
+let tagGenerator = 0
 
-EventEmitter.addListener(EVENT_DID_SET_ROOT, _ => {
-  didSetRootCallback && didSetRootCallback()
-  shouldCallWillSetRootCallback = 0
+Event.listenSetRoot(
+  () => {
+    if (shouldCallWillSetRootCallback === 0 && willSetRootCallback) {
+      willSetRootCallback()
+    }
+  },
+  () => {
+    didSetRootCallback && didSetRootCallback()
+    shouldCallWillSetRootCallback = 0
+  },
+)
+
+Event.listenSwitchTab((sceneId: string, from: number, to: number) => {
+  Navigator.dispatch(sceneId, 'switchTab', { from, to })
 })
 
-EventEmitter.addListener(EVENT_WILL_SET_ROOT, _ => {
-  if (shouldCallWillSetRootCallback === 0 && willSetRootCallback) {
-    willSetRootCallback()
-  }
-})
-
-EventEmitter.addListener(EVENT_SWITCH_TAB, event => {
-  const index = event[KEY_INDEX]
-  const [from, to] = index.split('-')
-  Navigator.dispatch(event[KEY_SCENE_ID], 'switchTab', {
-    from: Number(from),
-    to: Number(to),
-  })
-})
-
+type ResultType = IndexType | null
 interface ResultListener<T extends ResultType> {
   (resultCode: number, data: T): void
   cancel: () => void
   sceneId: string
 }
 
-const resultListeners = new Map<number, ResultListener<any>>()
+const globalResultListeners = new Map<number, ResultListener<any>>()
 
-EventEmitter.addListener(EVENT_NAVIGATION, data => {
-  if (data[KEY_ON] === ON_COMPONENT_RESULT) {
-    const requestCode = data[KEY_REQUEST_CODE]
-    const resultCode = data[KEY_RESULT_CODE]
-    const resultData = data[KEY_RESULT_DATA]
-    const sceneId = data[KEY_SCENE_ID]
-
+Event.listenComponentResult(
+  (sceneId: string, requestCode: number, resultCode: number, data: any) => {
     if (requestCode < 0) {
-      const listener = resultListeners.get(requestCode)
+      const listener = globalResultListeners.get(requestCode)
       if (listener) {
-        resultListeners.delete(requestCode)
-        listener(resultCode, resultData)
+        globalResultListeners.delete(requestCode)
+        listener(resultCode, data)
       }
     } else {
       const navigator = Navigator.of(sceneId)
-      navigator.result(resultCode, resultData)
+      navigator.result(resultCode, data)
     }
+  },
+)
+
+Event.listenComponentVisibility(
+  (sceneId: string) => {
+    const navigator = store.getNavigator(sceneId)
+    if (navigator) {
+      navigator.visibility = 'visible'
+    }
+  },
+  (sceneId: string) => {
+    const navigator = store.getNavigator(sceneId)
+    if (navigator) {
+      navigator.visibility = 'invisible'
+    }
+  },
+)
+
+Event.setBarButtonClickHandlerFactory(() => {
+  return (sceneId, value) => {
+    const navigator = Navigator.of(sceneId)
+    value(navigator)
   }
 })
 
@@ -109,16 +121,7 @@ export class Navigator {
   }
 
   static async find(moduleName: string) {
-    const sceneId = await new Promise<string>((resolve, reject) => {
-      NavigationModule.findSceneIdByModuleName(moduleName, (error: never, id: string) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(id)
-        }
-      })
-    })
-
+    const sceneId = await NavigationModule.findSceneIdByModuleName(moduleName)
     if (sceneId) {
       return Navigator.of(sceneId)
     }
@@ -130,51 +133,32 @@ export class Navigator {
   }
 
   static currentRoute(): Promise<Route> {
-    return new Promise<Route>((resolve, reject) => {
-      NavigationModule.currentRoute((error: never, route: Route) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(route)
-        }
-      })
-    })
+    return NavigationModule.currentRoute()
   }
 
   static routeGraph(): Promise<RouteGraph[]> {
-    return new Promise<RouteGraph[]>((resolve, reject) => {
-      NavigationModule.routeGraph((error: never, result: RouteGraph[]) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(result)
-        }
-      })
-    })
+    return NavigationModule.routeGraph()
   }
 
   static setRoot(layout: BuildInLayout | Layout, sticky = false) {
-    const pureLayout = bindBarButtonItemClickEvent(layout, {
-      inLayout: true,
-      navigatorFactory: (sceneId: string) => {
-        return Navigator.of(sceneId)
-      },
-    })
     if (willSetRootCallback) {
       shouldCallWillSetRootCallback++
       willSetRootCallback()
     }
 
-    const flag = --tag
-    NavigationModule.setRoot(pureLayout, sticky, flag)
+    const flag = --tagGenerator
+    NavigationModule.setRoot(layout, sticky, flag)
 
     return new Promise<void>(resolve => {
-      const subscription = EventEmitter.addListener(EVENT_DID_SET_ROOT, (data: { tag: number }) => {
-        if (data.tag === flag) {
-          subscription.remove()
-          resolve()
-        }
-      })
+      const subscription = Event.listenSetRoot(
+        () => {},
+        (tag: number) => {
+          if (tag === flag) {
+            subscription.remove()
+            resolve()
+          }
+        },
+      )
     })
   }
 
@@ -183,7 +167,11 @@ export class Navigator {
     didSetRootCallback = didSetRoot
   }
 
-  static async dispatch(sceneId: string, action: string, params: Params = {}): Promise<boolean> {
+  static async dispatch(
+    sceneId: string,
+    action: string,
+    params: DispatchParams = {},
+  ): Promise<boolean> {
     let intercepted = false
     const { from, to } = params
     if (interceptor) {
@@ -200,15 +188,7 @@ export class Navigator {
     }
 
     if (!intercepted) {
-      return new Promise<boolean>((resolve, reject) => {
-        NavigationModule.dispatch(sceneId, action, params, (error: never, result: boolean) => {
-          if (error) {
-            reject(error)
-          } else {
-            resolve(result)
-          }
-        })
-      })
+      return NavigationModule.dispatch(sceneId, action, params)
     }
 
     return false
@@ -220,6 +200,15 @@ export class Navigator {
 
   constructor(public sceneId: string, public moduleName?: string) {}
 
+  private _garden?: Garden
+
+  get garden() {
+    if (!this._garden) {
+      this._garden = new Garden(this.sceneId)
+    }
+    return this._garden
+  }
+
   visibility: Visibility = 'pending'
 
   readonly state: NavigationState = {
@@ -230,7 +219,7 @@ export class Navigator {
     this.state.params = { ...this.state.params, ...params }
   }
 
-  dispatch = (action: string, params: Params = {}) => {
+  dispatch = (action: string, params: DispatchParams = {}) => {
     return Navigator.dispatch(this.sceneId, action, {
       from: this.moduleName,
       to: params.moduleName,
@@ -246,14 +235,17 @@ export class Navigator {
   }
 
   unmount = () => {
+    Event.removeBarButtonClickEvent(this.sceneId)
+    store.removeNavigator(this.sceneId)
+
     const codes: number[] = []
-    for (const [requestCode, listener] of resultListeners) {
+    for (const [requestCode, listener] of globalResultListeners) {
       if (listener.sceneId === this.sceneId) {
         codes.push(requestCode)
         listener.cancel()
       }
     }
-    codes.forEach(code => resultListeners.delete(code))
+    codes.forEach(code => globalResultListeners.delete(code))
 
     if (this.resultListener) {
       this.resultListener.cancel()
@@ -261,22 +253,9 @@ export class Navigator {
     }
   }
 
-  private _garden?: Garden
-
-  get garden() {
-    if (!this._garden) {
-      this._garden = new Garden(this.sceneId)
-    }
-    return this._garden
-  }
-
   private resultListener: ResultListener<any> | null = null
 
-  private waitResult<T extends ResultType>(requestCode: number, successful: boolean): Promise<[number, T]> {
-    if (!successful) {
-      return Promise.resolve([RESULT_CANCEL, null as any])
-    }
-
+  private waitResult<T extends ResultType>(requestCode: number): Promise<[number, T]> {
     if (this.resultListener) {
       this.resultListener.cancel()
       this.resultListener = null
@@ -288,149 +267,130 @@ export class Navigator {
       }
 
       listener.cancel = () => {
-        resolve([RESULT_CANCEL, null as any])
+        resolve([RESULT_CANCEL, null] as [number, T])
       }
 
       listener.sceneId = this.sceneId
 
       if (requestCode < 0) {
-        resultListeners.set(requestCode, listener)
+        globalResultListeners.set(requestCode, listener)
       } else {
         this.resultListener = listener
       }
     })
   }
 
-  push = async <T extends ResultType, P extends PropsType = PropsType>(
+  push = async <T extends ResultType, P extends PropsType = {}>(
     moduleName: string,
-    props: P = {} as any,
+    props: P = {} as P,
     options: NavigationItem = {},
   ) => {
     const success = await this.dispatch('push', { moduleName, props, options })
-    return await this.waitResult<T>(0, success)
+    if (!success) {
+      return [RESULT_CANCEL] as unknown as [number, T]
+    }
+    return await this.waitResult<T>(0)
   }
 
   pushLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
     const success = await this.dispatch('pushLayout', { layout })
-    return await this.waitResult<T>(0, success)
+    if (!success) {
+      return [RESULT_CANCEL] as unknown as [number, T]
+    }
+    return await this.waitResult<T>(0)
   }
 
-  pop = () => {
-    return this.dispatch('pop')
-  }
+  pop = () => this.dispatch('pop')
 
-  popTo = (moduleName: string, inclusive: boolean = false) => {
-    return this.dispatch('popTo', { moduleName, inclusive })
-  }
+  popTo = (moduleName: string, inclusive: boolean = false) =>
+    this.dispatch('popTo', { moduleName, inclusive })
 
-  popToRoot = () => {
-    return this.dispatch('popToRoot')
-  }
+  popToRoot = () => this.dispatch('popToRoot')
 
-  redirectTo = <P extends PropsType = PropsType>(
+  redirectTo = <P extends PropsType>(
     moduleName: string,
-    props: P = {} as any,
+    props: P = {} as P,
     options: NavigationItem = {},
-  ) => {
-    return this.dispatch('redirectTo', {
+  ) =>
+    this.dispatch('redirectTo', {
       moduleName,
       props,
       options,
     })
-  }
 
-  isStackRoot = () => {
-    return new Promise<boolean>((resolve, reject) => {
-      NavigationModule.isStackRoot(this.sceneId, (error: never, result: boolean) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(result)
-        }
-      })
-    })
-  }
+  isStackRoot = () => NavigationModule.isStackRoot(this.sceneId)
 
-  present = async <T extends ResultType, P extends PropsType = PropsType>(
+  present = async <T extends ResultType, P extends PropsType = {}>(
     moduleName: string,
-    props: P = {} as any,
+    props: P = {} as P,
     options: NavigationItem = {},
   ) => {
-    const requestCode = --tag
+    const requestCode = --tagGenerator
     const success = await this.dispatch('present', {
       moduleName,
       props,
       options,
       requestCode,
     })
-    return await this.waitResult<T>(requestCode, success)
+    if (!success) {
+      return [RESULT_CANCEL] as unknown as [number, T]
+    }
+    return await this.waitResult<T>(requestCode)
   }
 
   presentLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
-    const requestCode = --tag
+    const requestCode = --tagGenerator
     const success = await this.dispatch('presentLayout', { layout, requestCode })
-    return await this.waitResult<T>(requestCode, success)
+    if (!success) {
+      return [RESULT_CANCEL] as unknown as [number, T]
+    }
+    return await this.waitResult<T>(requestCode)
   }
 
-  dismiss = () => {
-    return this.dispatch('dismiss')
-  }
+  dismiss = () => this.dispatch('dismiss')
 
-  showModal = async <T extends ResultType, P extends PropsType = PropsType>(
+  showModal = async <T extends ResultType, P extends PropsType = {}>(
     moduleName: string,
-    props: P = {} as any,
+    props: P = {} as P,
     options: NavigationItem = {},
   ) => {
-    const requestCode = --tag
+    const requestCode = --tagGenerator
     const success = await this.dispatch('showModal', {
       moduleName,
       props,
       options,
       requestCode,
     })
-    return await this.waitResult<T>(requestCode, success)
+    if (!success) {
+      return [RESULT_CANCEL] as unknown as [number, T]
+    }
+    return await this.waitResult<T>(requestCode)
   }
 
   showModalLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
-    const requestCode = --tag
+    const requestCode = --tagGenerator
     const success = await this.dispatch('showModalLayout', { layout, requestCode })
-    return await this.waitResult<T>(requestCode, success)
+    if (!success) {
+      return [RESULT_CANCEL] as unknown as [number, T]
+    }
+    return await this.waitResult<T>(requestCode)
   }
 
-  hideModal = () => {
-    return this.dispatch('hideModal')
-  }
+  hideModal = () => this.dispatch('hideModal')
 
-  setResult = <T extends ResultType>(resultCode: number, data: T = null as any): void => {
+  setResult = <T extends ResultType>(resultCode: number, data: T = null as any): void =>
     NavigationModule.setResult(this.sceneId, resultCode, data)
-  }
 
   switchTab = async (index: number, popToRoot: boolean = false) => {
-    const from = await new Promise<number>((resolve, reject) => {
-      NavigationModule.currentTab(this.sceneId, (error: never, result: number) => {
-        if (error) {
-          reject(error)
-        } else {
-          resolve(result)
-        }
-      })
-    })
+    const from = await NavigationModule.currentTab(this.sceneId)
     return this.dispatch('switchTab', { from, to: index, popToRoot })
   }
 
-  toggleMenu = () => {
-    return this.dispatch('toggleMenu')
-  }
+  toggleMenu = () => this.dispatch('toggleMenu')
 
-  openMenu = () => {
-    return this.dispatch('openMenu')
-  }
+  openMenu = () => this.dispatch('openMenu')
 
-  closeMenu = () => {
-    return this.dispatch('closeMenu')
-  }
+  closeMenu = () => this.dispatch('closeMenu')
 
-  signalFirstRenderComplete = () => {
-    NavigationModule.signalFirstRenderComplete(this.sceneId)
-  }
+  signalFirstRenderComplete = () => NavigationModule.signalFirstRenderComplete(this.sceneId)
 }

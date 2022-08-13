@@ -4,6 +4,9 @@ export * from './ReactRegistry'
 export * from './hooks'
 export * from './router'
 export * from './DeepLink'
-export * from './typing'
+export * from './Route'
+export * from './Options'
 
-export { RESULT_OK, RESULT_CANCEL } from './NavigationModule'
+import NavigationModule from './NavigationModule'
+
+export const { RESULT_OK, RESULT_CANCEL } = NavigationModule.getConstants()

@@ -85,7 +85,6 @@ function Result({ navigator, garden, sceneId }: InjectedProps) {
 
   return (
     <KeyboardAwareScrollView
-      style={{ flex: 1 }}
       showsHorizontalScrollIndicator={false}
       contentInsetAdjustmentBehavior="never">
       <View style={styles.container}>
@@ -95,7 +94,11 @@ function Result({ navigator, garden, sceneId }: InjectedProps) {
           <Text style={styles.buttonText}>push to another scene</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={popToRoot} activeOpacity={0.2} style={styles.button} disabled={isRoot}>
+        <TouchableOpacity
+          onPress={popToRoot}
+          activeOpacity={0.2}
+          style={styles.button}
+          disabled={isRoot}>
           <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop to home</Text>
         </TouchableOpacity>
 

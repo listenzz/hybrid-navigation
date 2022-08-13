@@ -1,6 +1,6 @@
-import { RouteGraph, LayoutMode, RouteInfo, RouteHandler } from './typing'
 import { isScreenGraph } from './screen'
 import { Navigator } from '../Navigator'
+import { LayoutMode, RouteGraph, RouteHandler, RouteInfo } from '../Route'
 
 export interface StackGraph extends RouteGraph {
   layout: 'stack'

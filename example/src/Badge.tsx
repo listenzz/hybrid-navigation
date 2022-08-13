@@ -13,7 +13,11 @@ export default function Badge(props: any) {
   }
 
   return (
-    <Text {...props} numberOfLines={1} onLayout={onLayout} style={[styles.container, props.style, style]}>
+    <Text
+      {...props}
+      numberOfLines={1}
+      onLayout={onLayout}
+      style={[styles.container, props.style, style]}>
       {props.children}
     </Text>
   )

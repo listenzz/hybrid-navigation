@@ -1,4 +1,4 @@
-import { RouteGraph, LayoutMode } from './typing'
+import { LayoutMode, RouteGraph } from '../Route'
 
 export interface ScreenGraph extends RouteGraph {
   layout: 'screen'

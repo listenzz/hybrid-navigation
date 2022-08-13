@@ -8,7 +8,6 @@ import {
   withNavigationItem,
   useVisible,
   InjectedProps,
-  ResultType,
   useVisibleEffect,
 } from 'hybrid-navigation'
 
@@ -116,7 +115,7 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
     await navigator.switchTab(1)
   }
 
-  function handleResult(resultCode: number, data: ResultType) {
+  function handleResult(resultCode: number, data: { text?: string }) {
     console.log(`Navigation result [${sceneId}]`, resultCode, data)
     if (resultCode === RESULT_OK) {
       setText(data?.text)
@@ -128,12 +127,12 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
   }
 
   async function present() {
-    const [resultCode, data] = await navigator.present('Result')
+    const [resultCode, data] = await navigator.present<{ text?: string }>('Result')
     handleResult(resultCode, data)
   }
 
   async function showModal() {
-    const [resultCode, data] = await navigator.showModal('ReactModal')
+    const [resultCode, data] = await navigator.showModal<{ text?: string }>('ReactModal')
     handleResult(resultCode, data)
   }
 
@@ -167,11 +166,21 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
           <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={popTo} activeOpacity={0.2} style={styles.button} disabled={popToId === undefined}>
-          <Text style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}>popTo first</Text>
+        <TouchableOpacity
+          onPress={popTo}
+          activeOpacity={0.2}
+          style={styles.button}
+          disabled={popToId === undefined}>
+          <Text style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}>
+            popTo first
+          </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={popToRoot} activeOpacity={0.2} style={styles.button} disabled={isRoot}>
+        <TouchableOpacity
+          onPress={popToRoot}
+          activeOpacity={0.2}
+          style={styles.button}
+          disabled={isRoot}>
           <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>popToRoot</Text>
         </TouchableOpacity>
 
