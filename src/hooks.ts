@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import Navigation from './Navigation'
 
-import Event from './Event'
 import { Navigator, NavigationContext } from './Navigator'
 
 export function useVisible() {
@@ -13,18 +13,9 @@ export function useVisibility() {
   const [visibility, setVisibility] = useState(navigator.visibility)
 
   useEffect(() => {
-    const subscription = Event.listenComponentVisibility(
-      (sceneId: string) => {
-        if (sceneId === navigator.sceneId) {
-          setVisibility('visible')
-        }
-      },
-      (sceneId: string) => {
-        if (sceneId === navigator.sceneId) {
-          setVisibility('invisible')
-        }
-      },
-    )
+    const subscription = Navigation.addVisibilityEventListener(navigator.sceneId, v => {
+      setVisibility(v)
+    })
     return () => subscription.remove()
   }, [navigator])
 
@@ -40,25 +31,18 @@ export function useVisibleEffect(effect: React.EffectCallback) {
       destructor.current = effect()
     }
 
-    const subscription = Event.listenComponentVisibility(
-      (sceneId: string) => {
-        if (sceneId === navigator.sceneId) {
-          destructor.current = effect()
-        }
-      },
-      (sceneId: string) => {
-        if (sceneId === navigator.sceneId && destructor.current) {
-          destructor.current()
-          destructor.current = undefined
-        }
-      },
-    )
-
-    return () => {
-      if (destructor.current) {
-        destructor.current()
+    const subscription = Navigation.addVisibilityEventListener(navigator.sceneId, visibility => {
+      if (visibility === 'visible') {
+        destructor.current = effect()
+      } else {
+        destructor.current && destructor.current()
         destructor.current = undefined
       }
+    })
+
+    return () => {
+      destructor.current && destructor.current()
+      destructor.current = undefined
       subscription.remove()
     }
   }, [effect, navigator])

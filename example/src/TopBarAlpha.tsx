@@ -39,7 +39,7 @@ function TopBarAlpha({ garden, navigator, alpha }: Props) {
 
   return (
     <ScrollView>
-      <View style={[styles.container, { paddingTop: Garden.statusBarHeight }]}>
+      <View style={[styles.container, { paddingTop: Garden.statusBarHeight() }]}>
         <Text style={styles.welcome}>Try to slide</Text>
         <Slider
           style={{ marginLeft: 32, marginRight: 32, marginTop: 40 }}

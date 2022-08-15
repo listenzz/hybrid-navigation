@@ -26,7 +26,7 @@ function StatusBarHidden({ navigator, garden }: InjectedProps) {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: Garden.statusBarHeight }]}>
+    <View style={[styles.container, { paddingTop: Garden.statusBarHeight() }]}>
       <Text style={styles.welcome}> StatusBar Hidden</Text>
       <TouchableOpacity onPress={showStatusBar} activeOpacity={0.2} style={styles.button}>
         <Text style={styles.buttonText}>show status bar</Text>

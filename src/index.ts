@@ -7,6 +7,4 @@ export * from './DeepLink'
 export * from './Route'
 export * from './Options'
 
-import NavigationModule from './NavigationModule'
-
-export const { RESULT_OK, RESULT_CANCEL } = NavigationModule.getConstants()
+export { RESULT_OK, RESULT_CANCEL } from './Navigation'

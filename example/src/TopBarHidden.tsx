@@ -18,7 +18,7 @@ function TopBarHidden({ navigator }: InjectedProps) {
 
   return (
     <ScrollView>
-      <View style={[styles.container, { paddingTop: Garden.statusBarHeight }]}>
+      <View style={[styles.container, { paddingTop: Garden.statusBarHeight() }]}>
         <Text style={styles.welcome}>TopBar is hidden</Text>
         <TouchableOpacity onPress={topBarHidden} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>TopBarHidden</Text>

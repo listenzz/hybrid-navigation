@@ -33,7 +33,7 @@ export default function Menu({ navigator }: InjectedProps) {
   )
 
   return (
-    <View style={[styles.container, { paddingTop: Garden.topBarHeight }]}>
+    <View style={[styles.container, { paddingTop: Garden.topBarHeight() }]}>
       <Text style={styles.welcome}>This's a React Native Menu.</Text>
 
       <TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>

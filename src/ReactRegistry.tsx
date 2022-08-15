@@ -1,12 +1,13 @@
 import { AppRegistry, ComponentProvider } from 'react-native'
 import React, { useEffect } from 'react'
+
+import type { Garden } from './Garden'
+import type { NavigationItem } from './Options'
+import type { RouteConfig } from './Route'
+
 import { Navigator, NavigationContext } from './Navigator'
-import { Garden } from './Garden'
 import { router } from './router'
-import NavigationModule from './NavigationModule'
-import Event from './Event'
-import { NavigationItem } from './Options'
-import { RouteConfig } from './Route'
+import Navigation from './Navigation'
 
 export interface InjectedProps {
   navigator: Navigator
@@ -66,7 +67,7 @@ export class ReactRegistry {
   static startRegisterComponent(hoc?: HOC) {
     wrap = hoc
     ReactRegistry.registerEnded = false
-    NavigationModule.startRegisterReactComponent()
+    Navigation.startRegisterReactComponent()
   }
 
   static endRegisterComponent() {
@@ -75,7 +76,7 @@ export class ReactRegistry {
       return
     }
     ReactRegistry.registerEnded = true
-    NavigationModule.endRegisterReactComponent()
+    Navigation.endRegisterReactComponent()
   }
 
   static registerComponent(
@@ -94,8 +95,9 @@ export class ReactRegistry {
 
     // build static options
     let options: object =
-      Event.bindBarButtonClickEvent('permanent', (WrappedComponent as any).navigationItem) || {}
-    NavigationModule.registerReactComponent(appKey, options)
+      Navigation.bindBarButtonClickEvent('permanent', (WrappedComponent as any).navigationItem) ||
+      {}
+    Navigation.registerReactComponent(appKey, options)
 
     let RootComponent = withNavigation(appKey)(WrappedComponent)
     AppRegistry.registerComponent(appKey, () => RootComponent)

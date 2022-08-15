@@ -1,7 +1,5 @@
-import { Platform } from 'react-native'
-import GardenModule from './GardenModule'
-import Event from './Event'
-import {
+import Navigation from './Navigation'
+import type {
   BarButtonItem,
   DefaultOptions,
   NavigationOption,
@@ -14,68 +12,59 @@ type Nullable<T> = {
   [P in keyof T]: T[P] extends T[P] | undefined ? T[P] | null : T[P]
 }
 
-const { STATUSBAR_HEIGHT, TOOLBAR_HEIGHT } = GardenModule.getConstants()
-
-if (Platform.OS === 'ios') {
-  Event.listenStatusBarHeightChanged(statusBarHeight => {
-    Garden.statusBarHeight = statusBarHeight
-    Garden.topBarHeight = statusBarHeight + TOOLBAR_HEIGHT
-  })
-}
-
-export class Garden {
-  static setStyle(style: DefaultOptions = {}) {
-    GardenModule.setStyle(style)
+export interface Garden {}
+export class Garden implements Garden {
+  static setStyle(style: DefaultOptions) {
+    Navigation.setDefaultOptions(style)
   }
 
-  static statusBarHeight: number = STATUSBAR_HEIGHT
-  static toolbarHeight: number = TOOLBAR_HEIGHT
-  static topBarHeight: number = TOOLBAR_HEIGHT + STATUSBAR_HEIGHT
+  static statusBarHeight() {
+    return Navigation.statusBarHeight()
+  }
+
+  static toolbarHeight() {
+    return Navigation.toolbarHeight()
+  }
+
+  static topBarHeight() {
+    return Navigation.topBarHeight()
+  }
 
   constructor(public sceneId: string) {}
 
-  // --------------- instance method --------------
-
   setLeftBarButtonItem(buttonItem: Nullable<BarButtonItem> | null) {
-    const options = Event.bindBarButtonClickEvent(this.sceneId, buttonItem)
-    GardenModule.setLeftBarButtonItem(this.sceneId, options)
+    Navigation.setLeftBarButtonItem(this.sceneId, buttonItem)
   }
 
   setRightBarButtonItem(buttonItem: Nullable<BarButtonItem> | null) {
-    const options = Event.bindBarButtonClickEvent(this.sceneId, buttonItem)
-    GardenModule.setRightBarButtonItem(this.sceneId, options)
+    Navigation.setRightBarButtonItem(this.sceneId, buttonItem)
   }
 
   setLeftBarButtonItems(buttonItems: Array<Nullable<BarButtonItem>> | null) {
-    const options = Event.bindBarButtonClickEvent(this.sceneId, buttonItems)
-    GardenModule.setLeftBarButtonItems(this.sceneId, options)
+    Navigation.setLeftBarButtonItems(this.sceneId, buttonItems)
   }
 
   setRightBarButtonItems(buttonItems: Array<Nullable<BarButtonItem>> | null) {
-    const options = Event.bindBarButtonClickEvent(this.sceneId, buttonItems)
-    GardenModule.setRightBarButtonItems(this.sceneId, options)
+    Navigation.setRightBarButtonItems(this.sceneId, buttonItems)
   }
 
   setTitleItem(titleItem: TitleItem) {
-    GardenModule.setTitleItem(this.sceneId, titleItem)
+    Navigation.setTitleItem(this.sceneId, titleItem)
   }
 
   updateOptions(options: NavigationOption) {
-    GardenModule.updateOptions(this.sceneId, options)
+    Navigation.updateOptions(this.sceneId, options)
   }
 
   updateTabBar(options: TabBarStyle) {
-    GardenModule.updateTabBar(this.sceneId, options)
+    Navigation.updateTabBar(this.sceneId, options)
   }
 
   setTabItem(item: TabItemInfo | TabItemInfo[]) {
-    if (!Array.isArray(item)) {
-      item = [item]
-    }
-    GardenModule.setTabItem(this.sceneId, item)
+    Navigation.setTabItem(this.sceneId, item)
   }
 
   setMenuInteractive(enabled: boolean) {
-    GardenModule.setMenuInteractive(this.sceneId, enabled)
+    Navigation.setMenuInteractive(this.sceneId, enabled)
   }
 }
