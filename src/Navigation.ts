@@ -1,4 +1,5 @@
-import { Platform } from 'react-native'
+import type React from 'react'
+import { AppRegistry, ComponentProvider, Platform } from 'react-native'
 
 import type {
   BarButtonItem,
@@ -8,7 +9,7 @@ import type {
   TabItemInfo,
   TitleItem,
 } from './Options'
-import type { BuildInLayout, Layout, RouteGraph, Route } from './Route'
+import type { BuildInLayout, Layout, Route, RouteGraph, RouteConfig } from './Route'
 
 import BarButtonEventHandler from './handler/BarButtonEventHandler'
 import LayoutCommandHandler from './handler/LayoutCommandHandler'
@@ -40,6 +41,8 @@ export type NavigationSubscription = {
   remove: () => void
 }
 
+export type HOC = (WrappedComponent: React.ComponentType<any>) => React.ComponentType<any>
+
 export interface Navigation {}
 
 export class Navigation implements Navigation {
@@ -57,16 +60,50 @@ export class Navigation implements Navigation {
     this.resultHandler.handleComponentResult()
   }
 
-  startRegisterReactComponent() {
+  private wrap?: (moduleName: string) => HOC
+  private hoc?: HOC
+  private registerEnded = false
+
+  startRegisterComponent(hoc?: HOC) {
+    this.hoc = hoc
+    this.registerEnded = false
     NavigationModule.startRegisterReactComponent()
   }
 
-  endRegisterReactComponent() {
+  endRegisterComponent() {
+    if (this.registerEnded) {
+      console.warn(`Please don't call ReactRegistry#endRegisterComponent multiple times.`)
+      return
+    }
+    this.registerEnded = true
     NavigationModule.endRegisterReactComponent()
   }
 
-  registerReactComponent(appKey: string, options: object) {
+  registerComponent(
+    appKey: string,
+    getComponentFunc: ComponentProvider,
+    routeConfig?: RouteConfig,
+  ) {
+    if (routeConfig) {
+      this.registerRoute(appKey, routeConfig)
+    }
+
+    let WrappedComponent = getComponentFunc()
+    if (this.hoc) {
+      WrappedComponent = this.hoc(WrappedComponent)
+    }
+
+    // build static options
+    let options: object =
+      this.bindBarButtonClickEvent('permanent', (WrappedComponent as any).navigationItem) || {}
     NavigationModule.registerReactComponent(appKey, options)
+
+    let RootComponent = this.wrap!(appKey)(WrappedComponent)
+    AppRegistry.registerComponent(appKey, () => RootComponent)
+  }
+
+  setNavigationComponentWrap(wrap: (moduleName: string) => HOC) {
+    this.wrap = wrap
   }
 
   addGlobalVisibilityEventListener(
@@ -149,6 +186,16 @@ export class Navigation implements Navigation {
     return NavigationModule.routeGraph()
   }
 
+  private _routeConfigs = new Map<string, RouteConfig>()
+
+  private registerRoute(moduleName: string, route: RouteConfig) {
+    this._routeConfigs.set(moduleName, route)
+  }
+
+  routeConfigs() {
+    return this._routeConfigs
+  }
+
   setDefaultOptions(options: DefaultOptions) {
     GardenModule.setStyle(options)
   }
@@ -223,7 +270,7 @@ export class Navigation implements Navigation {
     this.buttonHandler.setBarButtonClickEventListener(listener)
   }
 
-  bindBarButtonClickEvent(sceneId: string, item: object | null | undefined): object | null {
+  private bindBarButtonClickEvent(sceneId: string, item: object | null | undefined): object | null {
     return this.buttonHandler.bindBarButtonClickEvent(sceneId, item)
   }
 }

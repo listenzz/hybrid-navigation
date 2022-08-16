@@ -12,6 +12,7 @@ import {
   RouteInterceptor,
 } from '../Route'
 import { NavigationItem } from '../Options'
+import Navigation from '../Navigation'
 
 interface IndexType {
   [index: string]: any
@@ -59,7 +60,21 @@ function registerRoute(moduleName: string, route: RouteConfig) {
   routeDatas.set(moduleName, { moduleName, mode, path, regexp, dependency })
 }
 
+let isRouteConfigInflated = false
+
+function inflateRouteConfigs() {
+  const routeConfigs = Navigation.routeConfigs()
+  for (const [moduleName, config] of routeConfigs) {
+    registerRoute(moduleName, config)
+  }
+}
+
 async function open(path: string, props: object = {}, options: NavigationItem = {}) {
+  if (!isRouteConfigInflated) {
+    inflateRouteConfigs()
+    isRouteConfigInflated = true
+  }
+
   let intercepted = false
   for (let interceptor of interceptors.values()) {
     const result = interceptor(path)

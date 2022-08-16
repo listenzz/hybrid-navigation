@@ -47,6 +47,11 @@ export class Navigator implements Navigator {
     return navigator
   }
 
+  /**
+   * @deprecated Use Navigation.findSceneIdByModuleName() instead.
+   * @param moduleName
+   * @returns
+   */
   static async find(moduleName: string) {
     const sceneId = await Navigation.findSceneIdByModuleName(moduleName)
     if (sceneId) {
@@ -59,22 +64,47 @@ export class Navigator implements Navigator {
     return Navigator.of(route.sceneId)
   }
 
+  /**
+   * @deprecated Use Navigation.currentRoute() instead
+   * @returns
+   */
   static currentRoute(): Promise<Route> {
     return Navigation.currentRoute()
   }
 
+  /**
+   * @deprecated Use Navigation.routeGraph() instead
+   * @returns
+   */
   static routeGraph(): Promise<RouteGraph[]> {
     return Navigation.routeGraph()
   }
 
+  /**
+   * @deprecated Use Navigation.setRoot() instead
+   * @param layout
+   * @param sticky
+   */
   static setRoot(layout: BuildInLayout | Layout, sticky = false) {
     Navigation.setRoot(layout, sticky)
   }
 
+  /**
+   * @deprecated Use Navigation.setRootLayoutUpdateListener() instead
+   * @param willSetRoot
+   * @param didSetRoot
+   */
   static setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {}) {
     Navigation.setRootLayoutUpdateListener(willSetRoot, didSetRoot)
   }
 
+  /**
+   * @deprecated Use Navigation.dispatch() instead
+   * @param sceneId
+   * @param action
+   * @param params
+   * @returns
+   */
   static async dispatch(
     sceneId: string,
     action: string,
@@ -83,8 +113,12 @@ export class Navigator implements Navigator {
     return Navigation.dispatch(sceneId, action, params)
   }
 
-  static setInterceptor(interceptFn: NavigationInterceptor) {
-    Navigation.setInterceptor(interceptFn)
+  /**
+   * @deprecated Use Navigation.setInterceptor() instead
+   * @param interceptor
+   */
+  static setInterceptor(interceptor: NavigationInterceptor) {
+    Navigation.setInterceptor(interceptor)
   }
 
   constructor(public sceneId: string, public moduleName?: string) {}
