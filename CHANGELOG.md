@@ -1,3 +1,30 @@
+## 2.13.0 (2022-08-17)
+
+- 添加 `statusBarHeight()`、`toolbarHeight()`、`topBarHeight()` 几个方法用来获取状态栏、工具栏、顶部栏的高度
+
+  ```ts
+  import { statusBarHeight, toolbarHeight, topBarHeight } from 'hybrid-navigation'
+  ```
+
+- 标记 `Garden`、`ReactRegistry` 为弃用，使用 `Navigation` 对象对应的方法代替
+
+  ```ts
+  import Navigation from 'hybrid-navigation'
+  import App from './App'
+
+  Navigation.registerComponent('App', () => App)
+  ```
+
+- 标记 `Navigator` 中的大部分静态方法为弃用，使用 `Navigation` 对象对应的方法代替
+
+  ```ts
+  import Navigation from 'hybrid-navigation'
+
+  Navigation.setRoot({})
+  ```
+
+- 处理了切换页面时，TextInput 自动获取焦点弹出键盘导致的问题
+
 ## 2.12.4 （2022-08-02）
 
 ### iOS specific
