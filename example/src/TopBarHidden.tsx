@@ -1,6 +1,6 @@
 import React from 'react'
 import { TouchableOpacity, Text, View, ScrollView } from 'react-native'
-import { withNavigationItem, InjectedProps, Garden } from 'hybrid-navigation'
+import { withNavigationItem, NavigationProps, statusBarHeight } from 'hybrid-navigation'
 import styles from './Styles'
 
 export default withNavigationItem({
@@ -11,14 +11,14 @@ export default withNavigationItem({
   },
 })(TopBarHidden)
 
-function TopBarHidden({ navigator }: InjectedProps) {
+function TopBarHidden({ navigator }: NavigationProps) {
   function topBarHidden() {
     navigator.push('TopBarHidden')
   }
 
   return (
     <ScrollView>
-      <View style={[styles.container, { paddingTop: Garden.statusBarHeight() }]}>
+      <View style={[styles.container, { paddingTop: statusBarHeight() }]}>
         <Text style={styles.welcome}>TopBar is hidden</Text>
         <TouchableOpacity onPress={topBarHidden} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>TopBarHidden</Text>

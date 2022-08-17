@@ -1,6 +1,6 @@
 import React from 'react'
 import { TouchableOpacity, Text, View } from 'react-native'
-import { withNavigationItem, InjectedProps, Garden } from 'hybrid-navigation'
+import Navigation, { withNavigationItem, NavigationProps, statusBarHeight } from 'hybrid-navigation'
 
 import styles from './Styles'
 
@@ -12,21 +12,21 @@ export default withNavigationItem({
   },
 })(StatusBarHidden)
 
-function StatusBarHidden({ navigator, garden }: InjectedProps) {
+function StatusBarHidden({ navigator, sceneId }: NavigationProps) {
   function statusBarHidden() {
     navigator.push('StatusBarHidden')
   }
 
   function showStatusBar() {
-    garden.updateOptions({ statusBarHidden: false })
+    Navigation.updateOptions(sceneId, { statusBarHidden: false })
   }
 
   function hideStatusBar() {
-    garden.updateOptions({ statusBarHidden: true })
+    Navigation.updateOptions(sceneId, { statusBarHidden: true })
   }
 
   return (
-    <View style={[styles.container, { paddingTop: Garden.statusBarHeight() }]}>
+    <View style={[styles.container, { paddingTop: statusBarHeight() }]}>
       <Text style={styles.welcome}> StatusBar Hidden</Text>
       <TouchableOpacity onPress={showStatusBar} activeOpacity={0.2} style={styles.button}>
         <Text style={styles.buttonText}>show status bar</Text>

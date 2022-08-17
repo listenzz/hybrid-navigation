@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native'
 import { useLayout, useBackHandler } from '@react-native-community/hooks'
-import { InjectedProps } from 'hybrid-navigation'
+import { NavigationProps } from 'hybrid-navigation'
 
 export default function withBottomModal({
   cancelable = true,
@@ -17,7 +17,7 @@ export default function withBottomModal({
   navigationBarColor = '#ffffff',
 } = {}) {
   return function (WrappedComponent: ComponentType<any>) {
-    function BottomModal(props: InjectedProps, ref: React.Ref<ComponentType<any>>) {
+    function BottomModal(props: NavigationProps, ref: React.Ref<ComponentType<any>>) {
       const animatedHeight = useRef(new Animated.Value(Dimensions.get('screen').height))
       const { onLayout, height } = useLayout()
 

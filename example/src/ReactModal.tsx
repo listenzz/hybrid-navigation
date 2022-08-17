@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native'
 import withBottomModal from './withBottomModal'
-import {
+import Navigation, {
   RESULT_OK,
-  Navigator,
-  InjectedProps,
+  NavigationProps,
   useVisibleEffect,
   withNavigationItem,
 } from 'hybrid-navigation'
 
-function ReactModal({ navigator, sceneId }: InjectedProps) {
+function ReactModal({ navigator, sceneId }: NavigationProps) {
   useEffect(() => {
     navigator.setResult(RESULT_OK, {
       text: 'Are you male or female?',
@@ -32,7 +31,7 @@ function ReactModal({ navigator, sceneId }: InjectedProps) {
       })
     }
     await navigator.hideModal()
-    const current = await Navigator.currentRoute()
+    const current = await Navigation.currentRoute()
     console.log(JSON.stringify(current, null, 2))
   }
 
@@ -41,9 +40,9 @@ function ReactModal({ navigator, sceneId }: InjectedProps) {
   }
 
   async function printRouteGraph() {
-    const graph = await Navigator.routeGraph()
+    const graph = await Navigation.routeGraph()
     console.log(JSON.stringify(graph, null, 2))
-    const route = await Navigator.currentRoute()
+    const route = await Navigation.currentRoute()
     console.log(JSON.stringify(route, null, 2))
   }
 

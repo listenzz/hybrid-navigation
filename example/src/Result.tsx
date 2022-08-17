@@ -3,11 +3,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { TouchableOpacity, Text, View, TextInput, Image } from 'react-native'
 import styles from './Styles'
 
-import {
+import Navigation, {
   RESULT_OK,
   BarStyleLightContent,
   withNavigationItem,
-  InjectedProps,
+  NavigationProps,
   Navigator,
   useVisibleEffect,
 } from 'hybrid-navigation'
@@ -19,7 +19,7 @@ export default withNavigationItem({
   topBarStyle: BarStyleLightContent,
 })(Result)
 
-function Result({ navigator, garden, sceneId }: InjectedProps) {
+function Result({ navigator, sceneId }: NavigationProps) {
   const [text, setText] = useState('')
   const [isRoot, setIsRoot] = useState(false)
 
@@ -38,7 +38,7 @@ function Result({ navigator, garden, sceneId }: InjectedProps) {
 
   useEffect(() => {
     if (isRoot) {
-      garden.setLeftBarButtonItem({
+      Navigation.setLeftBarButtonItem(sceneId, {
         title: 'Cancel',
         icon: Image.resolveAssetSource(require('./images/cancel.png')),
         insetsIOS: { top: -1, left: -8, bottom: 0, right: 8 },
@@ -47,7 +47,7 @@ function Result({ navigator, garden, sceneId }: InjectedProps) {
         },
       })
     }
-  }, [isRoot, garden])
+  }, [isRoot, sceneId])
 
   function popToRoot() {
     navigator.popToRoot()

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text, View, TouchableOpacity, ScrollView } from 'react-native'
-import { withNavigationItem, InjectedProps } from 'hybrid-navigation'
+import { withNavigationItem, NavigationProps } from 'hybrid-navigation'
 import styles from './Styles'
 
 export default withNavigationItem({
@@ -9,7 +9,7 @@ export default withNavigationItem({
   },
 })(TopBarMisc)
 
-function TopBarMisc({ navigator }: InjectedProps) {
+function TopBarMisc({ navigator }: NavigationProps) {
   function noninteractive() {
     navigator.push('Noninteractive')
   }

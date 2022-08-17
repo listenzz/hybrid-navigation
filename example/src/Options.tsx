@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native'
-import {
-  Navigator,
+import Navigation, {
   withNavigationItem,
-  InjectedProps,
+  NavigationProps,
   ImageSource,
   TabBarStyle,
   BarButtonItem,
@@ -44,7 +43,7 @@ export default withNavigationItem({
   },
 })(Options)
 
-function Options({ sceneId, navigator, garden }: InjectedProps) {
+function Options({ sceneId, navigator }: NavigationProps) {
   const visible = useVisible()
 
   useEffect(() => {
@@ -53,12 +52,12 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
     }
 
     console.info(`Page Options is visible`)
-    garden.setMenuInteractive(true)
+    Navigation.setMenuInteractive(sceneId, true)
     return () => {
       console.info(`Page Options is invisible`)
-      garden.setMenuInteractive(false)
+      Navigation.setMenuInteractive(sceneId, false)
     }
-  }, [visible, sceneId, garden])
+  }, [visible, sceneId])
 
   useEffect(() => {
     console.info('Page Options componentDidMount')
@@ -75,11 +74,11 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
 
   useEffect(() => {
     if (showsLeftBarButton) {
-      garden.setLeftBarButtonItem(null)
+      Navigation.setLeftBarButtonItem(sceneId, null)
     } else {
-      garden.setLeftBarButtonItem(leftBarButtonItem)
+      Navigation.setLeftBarButtonItem(sceneId, leftBarButtonItem)
     }
-  }, [showsLeftBarButton, garden])
+  }, [showsLeftBarButton, sceneId])
 
   const [rightButtonEnabled, setRightButtonEnabled] = useState(false)
 
@@ -88,10 +87,10 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
   }
 
   useEffect(() => {
-    garden.setRightBarButtonItem({
+    Navigation.setRightBarButtonItem(sceneId, {
       enabled: rightButtonEnabled,
     })
-  }, [rightButtonEnabled, garden])
+  }, [rightButtonEnabled, sceneId])
 
   const [title, setTitle] = useState('Options')
   function changeTitle() {
@@ -99,8 +98,8 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
   }
 
   useEffect(() => {
-    garden.setTitleItem({ title })
-  }, [title, garden])
+    Navigation.setTitleItem(sceneId, { title })
+  }, [title, sceneId])
 
   function passOptions() {
     navigator.push('PassOptions', {}, { titleItem: { title: 'The Passing Title' } })
@@ -128,9 +127,9 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
 
   useEffect(() => {
     if (badges) {
-      garden.setTabItem(badges)
+      Navigation.setTabItem(sceneId, badges)
     }
-  }, [badges, garden])
+  }, [badges, sceneId])
 
   function topBarMisc() {
     navigator.push('TopBarMisc')
@@ -152,7 +151,7 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
 
   useEffect(() => {
     if (icon) {
-      garden.setTabItem({
+      Navigation.setTabItem(sceneId, {
         index: 1,
         icon: {
           selected: icon,
@@ -160,7 +159,7 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
         // title: '选项',
       })
     }
-  }, [icon, garden])
+  }, [icon, sceneId])
 
   const [tabItemColor, setTabItemColor] = useState<TabBarStyle>()
 
@@ -180,9 +179,9 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
 
   useEffect(() => {
     if (tabItemColor) {
-      garden.updateTabBar(tabItemColor)
+      Navigation.updateTabBar(sceneId, tabItemColor)
     }
-  }, [tabItemColor, garden])
+  }, [tabItemColor, sceneId])
 
   const [tabBarColor, setTabBarColor] = useState<TabBarStyle>()
 
@@ -206,12 +205,12 @@ function Options({ sceneId, navigator, garden }: InjectedProps) {
 
   useEffect(() => {
     if (tabBarColor) {
-      garden.updateTabBar(tabBarColor)
+      Navigation.updateTabBar(sceneId, tabBarColor)
     }
-  }, [tabBarColor, garden])
+  }, [tabBarColor, sceneId])
 
   async function changeTabBar() {
-    await Navigator.setRoot(getLayout())
+    await Navigation.setRoot(getLayout())
     console.log('finish setRoot!!')
   }
 

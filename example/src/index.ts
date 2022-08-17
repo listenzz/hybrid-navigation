@@ -1,7 +1,4 @@
-import {
-  ReactRegistry,
-  Garden,
-  Navigator,
+import Navigation, {
   DeepLink,
   BarStyleDarkContent,
   TitleAlignmentCenter,
@@ -11,7 +8,7 @@ import {
   Stack,
 } from 'hybrid-navigation'
 import { Image, Platform } from 'react-native'
-import Navigation from './Navigation'
+import NavigationScreen from './Navigation'
 import Result from './Result'
 import Options from './Options'
 import Menu from './Menu'
@@ -42,13 +39,13 @@ import ZustandCounter from './ZustandCounter'
 // MessageQueue.spy(spyFunction);
 
 async function graph() {
-  console.log(JSON.stringify(await Navigator.routeGraph(), null, 2))
+  console.log(JSON.stringify(await Navigation.routeGraph(), null, 2))
 }
 
 graph()
 
 // 设置全局样式
-Garden.setStyle({
+Navigation.setDefaultOptions({
   screenBackgroundColor: '#F8F8F8',
   topBarStyle: BarStyleDarkContent,
 
@@ -95,40 +92,41 @@ Garden.setStyle({
 })
 
 // 开始注册组件，即基本页面单元
-ReactRegistry.startRegisterComponent(withRedux)
 
-ReactRegistry.registerComponent('Navigation', () => Navigation)
-ReactRegistry.registerComponent('Result', () => Result, { path: '/result', mode: 'present' })
-ReactRegistry.registerComponent('Options', () => Options, { path: '/options' })
-ReactRegistry.registerComponent('Menu', () => Menu, { path: '/menu' })
-ReactRegistry.registerComponent('ReduxCounter', () => ReduxCounter, { path: '/redux' })
-ReactRegistry.registerComponent('ZustandCounter', () => ZustandCounter)
-ReactRegistry.registerComponent('PassOptions', () => PassOptions)
-ReactRegistry.registerComponent('Lifecycle', () => Lifecycle)
+Navigation.startRegisterComponent(withRedux)
 
-ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc, { dependency: 'Options' })
-ReactRegistry.registerComponent('Noninteractive', () => Noninteractive)
-ReactRegistry.registerComponent('TopBarShadowHidden', () => TopBarShadowHidden)
-ReactRegistry.registerComponent('TopBarHidden', () => TopBarHidden)
-ReactRegistry.registerComponent('TopBarAlpha', () => TopBarAlpha)
-ReactRegistry.registerComponent('TopBarColor', () => TopBarColor)
-ReactRegistry.registerComponent('TopBarTitleView', () => TopBarTitleView)
-ReactRegistry.registerComponent('CustomTitleView', () => CustomTitleView)
-ReactRegistry.registerComponent('StatusBarColor', () => StatusBarColor)
-ReactRegistry.registerComponent('StatusBarHidden', () => StatusBarHidden)
-ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle, {
+Navigation.registerComponent('Navigation', () => NavigationScreen)
+Navigation.registerComponent('Result', () => Result, { path: '/result', mode: 'present' })
+Navigation.registerComponent('Options', () => Options, { path: '/options' })
+Navigation.registerComponent('Menu', () => Menu, { path: '/menu' })
+Navigation.registerComponent('ReduxCounter', () => ReduxCounter, { path: '/redux' })
+Navigation.registerComponent('ZustandCounter', () => ZustandCounter)
+Navigation.registerComponent('PassOptions', () => PassOptions)
+Navigation.registerComponent('Lifecycle', () => Lifecycle)
+
+Navigation.registerComponent('TopBarMisc', () => TopBarMisc, { dependency: 'Options' })
+Navigation.registerComponent('Noninteractive', () => Noninteractive)
+Navigation.registerComponent('TopBarShadowHidden', () => TopBarShadowHidden)
+Navigation.registerComponent('TopBarHidden', () => TopBarHidden)
+Navigation.registerComponent('TopBarAlpha', () => TopBarAlpha)
+Navigation.registerComponent('TopBarColor', () => TopBarColor)
+Navigation.registerComponent('TopBarTitleView', () => TopBarTitleView)
+Navigation.registerComponent('CustomTitleView', () => CustomTitleView)
+Navigation.registerComponent('StatusBarColor', () => StatusBarColor)
+Navigation.registerComponent('StatusBarHidden', () => StatusBarHidden)
+Navigation.registerComponent('TopBarStyle', () => TopBarStyle, {
   path: '/topBarStyle/:who',
   dependency: 'TopBarMisc',
 })
 
-ReactRegistry.registerComponent('ReactModal', () => ReactModal, { path: '/modal', mode: 'modal' })
+Navigation.registerComponent('ReactModal', () => ReactModal, { path: '/modal', mode: 'modal' })
 
-ReactRegistry.registerComponent('CustomTabBar', () => CustomTabBar)
-ReactRegistry.registerComponent('BulgeTabBar', () => BulgeTabBar)
-ReactRegistry.registerComponent('Toast', () => Toast)
+Navigation.registerComponent('CustomTabBar', () => CustomTabBar)
+Navigation.registerComponent('BulgeTabBar', () => BulgeTabBar)
+Navigation.registerComponent('Toast', () => Toast)
 
 // 完成注册组件
-ReactRegistry.endRegisterComponent()
+Navigation.endRegisterComponent()
 
 const navigationStack: Stack = {
   stack: {
@@ -167,8 +165,8 @@ const drawer: Drawer = {
   },
 }
 
-// 激活 DeepLink，在 Navigator.setRoot 之前
-Navigator.setRootLayoutUpdateListener(
+// 激活 DeepLink，在 Navigation.setRoot 之前
+Navigation.setRootLayoutUpdateListener(
   () => {
     DeepLink.deactivate()
     console.log('------------------------deactivate router')
@@ -181,17 +179,17 @@ Navigator.setRootLayoutUpdateListener(
 )
 
 // 设置 UI 层级
-Navigator.setRoot(drawer)
+Navigation.setRoot(drawer)
 
 // 设置导航拦截器
-Navigator.setInterceptor(async (action, extras) => {
+Navigation.setInterceptor(async (action, extras) => {
   console.info(`action:${action}`, extras)
 
-  // const current = await Navigator.current()
-  // if (current.moduleName === to) {
+  // const current = await Navigation.currentRoute()
+  // if (current.moduleName === extras.to) {
   //   // 拦截跳转
   //   return true
   // }
-  // 不拦截任何操作
+  // // 不拦截任何操作
   return false
 })

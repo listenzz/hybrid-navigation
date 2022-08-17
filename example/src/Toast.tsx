@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
 import Toast, { useToast } from 'react-native-toast-hybrid'
-import { Garden, withNavigationItem } from 'hybrid-navigation'
+import { statusBarHeight, withNavigationItem } from 'hybrid-navigation'
 import styles from './Styles'
 
 export default withNavigationItem({
@@ -65,7 +65,7 @@ function ToastComponent() {
   }
 
   return (
-    <View style={[styles.container, { paddingTop: Garden.statusBarHeight() }]}>
+    <View style={[styles.container, { paddingTop: statusBarHeight() }]}>
       <TouchableOpacity onPress={loading} activeOpacity={0.2} style={styles.button}>
         <Text style={styles.buttonText}> loading </Text>
       </TouchableOpacity>

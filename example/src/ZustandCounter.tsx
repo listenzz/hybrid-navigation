@@ -3,7 +3,7 @@ import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
 import {
   BarStyleLightContent,
   withNavigationItem,
-  InjectedProps,
+  NavigationProps,
   useVisibleEffect,
 } from 'hybrid-navigation'
 import styles from './Styles'
@@ -21,7 +21,7 @@ const useStore = create<CounterState>(set => ({
   decrease: () => set(state => ({ count: state.count - 1 })),
 }))
 
-interface Props extends InjectedProps {}
+interface Props extends NavigationProps {}
 
 // React component
 function ZustandCounter({ navigator }: Props) {

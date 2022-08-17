@@ -2,12 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
 
 import styles from './Styles'
-import {
+import Navigation, {
   RESULT_OK,
-  Navigator,
   withNavigationItem,
   useVisible,
-  InjectedProps,
+  NavigationProps,
   useVisibleEffect,
 } from 'hybrid-navigation'
 
@@ -25,13 +24,13 @@ export default withNavigationItem({
     title: 'Navigation',
     icon: Image.resolveAssetSource(require('./images/navigation.png')),
   },
-})(Navigation)
+})(NavigationScreen)
 
-interface Props extends InjectedProps {
+interface Props extends NavigationProps {
   popToId?: string
 }
 
-function Navigation({ navigator, garden, sceneId, popToId }: Props) {
+function NavigationScreen({ navigator, sceneId, popToId }: Props) {
   const [text, setText] = useState<string>()
   const [error, setError] = useState<string>()
   const [isRoot, setIsRoot] = useState(false)
@@ -51,8 +50,8 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
 
   const visible = useVisible()
   useEffect(() => {
-    garden.setMenuInteractive(isRoot && visible)
-  }, [visible, isRoot, garden])
+    Navigation.setMenuInteractive(sceneId, isRoot && visible)
+  }, [visible, isRoot, sceneId])
 
   useEffect(() => {
     console.info(`Page Navigation componentDidMount [${sceneId}]`)
@@ -105,9 +104,9 @@ function Navigation({ navigator, garden, sceneId, popToId }: Props) {
   }
 
   async function printRouteGraph() {
-    const graph = await Navigator.routeGraph()
+    const graph = await Navigation.routeGraph()
     console.log(JSON.stringify(graph, null, 2))
-    const route = await Navigator.currentRoute()
+    const route = await Navigation.currentRoute()
     console.log(JSON.stringify(route, null, 2))
   }
 

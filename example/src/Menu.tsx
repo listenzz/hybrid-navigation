@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
 import { TouchableOpacity, Text, View } from 'react-native'
-import { Garden, InjectedProps, useVisibleEffect } from 'hybrid-navigation'
+import { NavigationProps, topBarHeight, useVisibleEffect } from 'hybrid-navigation'
 
 import styles from './Styles'
 
-export default function Menu({ navigator }: InjectedProps) {
+export default function Menu({ navigator }: NavigationProps) {
   const push = () => {
     navigator.closeMenu()
     navigator.push('NativeModule')
@@ -33,7 +33,7 @@ export default function Menu({ navigator }: InjectedProps) {
   )
 
   return (
-    <View style={[styles.container, { paddingTop: Garden.topBarHeight() }]}>
+    <View style={[styles.container, { paddingTop: topBarHeight() }]}>
       <Text style={styles.welcome}>This's a React Native Menu.</Text>
 
       <TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>

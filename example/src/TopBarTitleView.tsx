@@ -1,11 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react'
 import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native'
-import { LayoutFittingExpanded, InjectedProps, NavigationItem } from 'hybrid-navigation'
+import { LayoutFittingExpanded, NavigationProps, NavigationItem } from 'hybrid-navigation'
 import styles from './Styles'
 import { Lifecycle, withLifecycle } from './withLifecycle'
 
-function CustomTitleView(props: InjectedProps) {
+function CustomTitleView(props: NavigationProps) {
   let { params } = props.navigator.state
   return (
     <View
@@ -28,7 +28,7 @@ function CustomTitleView(props: InjectedProps) {
 
 export { CustomTitleView }
 
-class TopBarTitleView extends React.Component<InjectedProps> implements Lifecycle {
+class TopBarTitleView extends React.Component<NavigationProps> implements Lifecycle {
   static navigationItem: NavigationItem = {
     backButtonHidden: true,
     titleItem: {
@@ -39,7 +39,7 @@ class TopBarTitleView extends React.Component<InjectedProps> implements Lifecycl
     },
   }
 
-  constructor(props: InjectedProps) {
+  constructor(props: NavigationProps) {
     super(props)
     this.topBarTitleView = this.topBarTitleView.bind(this)
     this.props.navigator.setParams({

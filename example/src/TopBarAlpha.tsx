@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, TouchableOpacity, ScrollView, Slider, Image } from 'react-native'
 import styles from './Styles'
-import { withNavigationItem, InjectedProps, Garden } from 'hybrid-navigation'
+import Navigation, { withNavigationItem, NavigationProps, statusBarHeight } from 'hybrid-navigation'
 
 export default withNavigationItem({
   topBarAlpha: 0.5,
@@ -15,19 +15,19 @@ export default withNavigationItem({
   },
 })(TopBarAlpha)
 
-interface Props extends InjectedProps {
+interface Props extends NavigationProps {
   color: string
   alpha: number
 }
 
-function TopBarAlpha({ garden, navigator, alpha }: Props) {
+function TopBarAlpha({ sceneId, navigator, alpha }: Props) {
   const [topBarAlpha, setTopBarAlpha] = useState(alpha ? Number(alpha) : 0.5)
 
   useEffect(() => {
-    garden.updateOptions({
+    Navigation.updateOptions(sceneId, {
       topBarAlpha,
     })
-  }, [garden, topBarAlpha])
+  }, [sceneId, topBarAlpha])
 
   function pushToTopBarAlpha() {
     navigator.push('TopBarAlpha')
@@ -39,7 +39,7 @@ function TopBarAlpha({ garden, navigator, alpha }: Props) {
 
   return (
     <ScrollView>
-      <View style={[styles.container, { paddingTop: Garden.statusBarHeight() }]}>
+      <View style={[styles.container, { paddingTop: statusBarHeight() }]}>
         <Text style={styles.welcome}>Try to slide</Text>
         <Slider
           style={{ marginLeft: 32, marginRight: 32, marginTop: 40 }}

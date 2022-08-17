@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
-import {
+import Navigation, {
   BarStyleLightContent,
   BarStyleDarkContent,
   useNavigator,
-  useGarden,
   NavigationOption,
 } from 'hybrid-navigation'
 import styles from './Styles'
@@ -28,13 +27,12 @@ export default withNavigationItem({
 function TopBarStyle() {
   const [options, setOptions] = useState<NavigationOption>()
   const navigator = useNavigator()
-  const garden = useGarden()
 
   useEffect(() => {
     if (options) {
-      garden.updateOptions(options)
+      Navigation.updateOptions(navigator.sceneId, options)
     }
-  }, [options, garden])
+  }, [options, navigator])
 
   function switchTopBarStyle() {
     if (options && options.topBarStyle === BarStyleDarkContent) {

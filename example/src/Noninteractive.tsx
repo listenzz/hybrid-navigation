@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, Text, View, ScrollView } from 'react-native'
-import { withNavigationItem, InjectedProps } from 'hybrid-navigation'
+import Navigation, { withNavigationItem, NavigationProps } from 'hybrid-navigation'
 import styles from './Styles'
 
 export default withNavigationItem({
@@ -12,7 +12,7 @@ export default withNavigationItem({
   },
 })(Noninteractive)
 
-function Noninteractive({ navigator, garden }: InjectedProps) {
+function Noninteractive({ navigator, sceneId }: NavigationProps) {
   const [backInteractive, setBackInteractive] = useState(false)
 
   function handleBackClick() {
@@ -20,7 +20,7 @@ function Noninteractive({ navigator, garden }: InjectedProps) {
   }
 
   function enableBackInteractive() {
-    garden.updateOptions({
+    Navigation.updateOptions(sceneId, {
       backButtonHidden: false,
       backInteractive: true,
     })
@@ -28,7 +28,7 @@ function Noninteractive({ navigator, garden }: InjectedProps) {
   }
 
   function disableBackInteractive() {
-    garden.updateOptions({
+    Navigation.updateOptions(sceneId, {
       backButtonHidden: true,
       backInteractive: false,
     })

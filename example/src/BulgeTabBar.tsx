@@ -12,11 +12,11 @@ import {
 } from 'react-native'
 import TextBadge from './Badge'
 import FastImage from 'react-native-fast-image'
-import { Color, InjectedProps } from 'hybrid-navigation'
+import { Color, NavigationProps } from 'hybrid-navigation'
 
 const PlatformImage = Platform.OS === 'android' ? FastImage : Image
 
-interface Props extends InjectedProps {
+interface Props extends NavigationProps {
   itemColor: Color
   unselectedItemColor: Color
   badgeColor: Color

@@ -1,23 +1,23 @@
 import React from 'react'
 import { Text, View, TouchableOpacity, ScrollView } from 'react-native'
-import { withNavigationItem, InjectedProps } from 'hybrid-navigation'
+import Navigation, { withNavigationItem, NavigationProps } from 'hybrid-navigation'
 import styles from './Styles'
 
 export default withNavigationItem({
   topBarColor: '#FF0000',
 })(TopBarColor)
 
-function TopBarColor({ garden, navigator }: InjectedProps) {
+function TopBarColor({ sceneId, navigator }: NavigationProps) {
   function red() {
-    garden.updateOptions({ topBarColor: '#FF0000' })
+    Navigation.updateOptions(sceneId, { topBarColor: '#FF0000' })
   }
 
   function green() {
-    garden.updateOptions({ topBarColor: '#00FF00' })
+    Navigation.updateOptions(sceneId, { topBarColor: '#00FF00' })
   }
 
   function blue() {
-    garden.updateOptions({ topBarColor: '#0000FF' })
+    Navigation.updateOptions(sceneId, { topBarColor: '#0000FF' })
   }
 
   function topBarColor() {

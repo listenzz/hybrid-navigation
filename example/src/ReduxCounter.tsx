@@ -3,7 +3,7 @@ import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
 import {
   BarStyleLightContent,
   withNavigationItem,
-  InjectedProps,
+  NavigationProps,
   NavigationItem,
   useVisibleEffect,
 } from 'hybrid-navigation'
@@ -11,7 +11,7 @@ import { createStore } from 'redux'
 import { connect, Provider } from 'react-redux'
 import styles from './Styles'
 
-interface Props extends InjectedProps {
+interface Props extends NavigationProps {
   value: number
   onDecreaseClick: () => void
   onIncreaseClick: () => void

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, ScrollView, Switch } from 'react-native'
-import { withNavigationItem, InjectedProps } from 'hybrid-navigation'
+import Navigation, { withNavigationItem, NavigationProps } from 'hybrid-navigation'
 import styles from './Styles'
 
 export default withNavigationItem({
@@ -10,12 +10,12 @@ export default withNavigationItem({
   },
 })(TopBarShadowHidden)
 
-function TopBarShadowHidden({ garden }: InjectedProps) {
+function TopBarShadowHidden({ sceneId }: NavigationProps) {
   const [hidden, setHidden] = useState(true)
 
   useEffect(() => {
-    garden.updateOptions({ topBarShadowHidden: hidden })
-  }, [hidden, garden])
+    Navigation.updateOptions(sceneId, { topBarShadowHidden: hidden })
+  }, [hidden, sceneId])
 
   function handleHiddenChange(value: boolean) {
     setHidden(value)
