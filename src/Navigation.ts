@@ -102,6 +102,16 @@ export class Navigation implements Navigation {
     AppRegistry.registerComponent(appKey, () => RootComponent)
   }
 
+  private _routeConfigs = new Map<string, RouteConfig>()
+
+  private registerRoute(moduleName: string, route: RouteConfig) {
+    this._routeConfigs.set(moduleName, route)
+  }
+
+  routeConfigs() {
+    return this._routeConfigs
+  }
+
   setNavigationComponentWrap(wrap: (moduleName: string) => HOC) {
     this.wrap = wrap
   }
@@ -142,7 +152,7 @@ export class Navigation implements Navigation {
   setResult = <T extends ResultType>(
     sceneId: string,
     resultCode: number,
-    data: T = null as any,
+    data: T = null as T,
   ): void => NavigationModule.setResult(sceneId, resultCode, data)
 
   result<T>(sceneId: string, resultCode: number) {
@@ -184,16 +194,6 @@ export class Navigation implements Navigation {
 
   routeGraph(): Promise<RouteGraph[]> {
     return NavigationModule.routeGraph()
-  }
-
-  private _routeConfigs = new Map<string, RouteConfig>()
-
-  private registerRoute(moduleName: string, route: RouteConfig) {
-    this._routeConfigs.set(moduleName, route)
-  }
-
-  routeConfigs() {
-    return this._routeConfigs
   }
 
   setDefaultOptions(options: DefaultOptions) {
