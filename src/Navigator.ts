@@ -155,7 +155,13 @@ export class Navigator implements Navigator {
     props: P = {} as P,
     options: NavigationItem = {},
   ) => {
-    const success = await Navigation.dispatch(this.sceneId, 'push', { moduleName, props, options })
+    const success = await Navigation.dispatch(this.sceneId, 'push', {
+      moduleName,
+      from: this.moduleName,
+      to: moduleName,
+      props,
+      options,
+    })
     if (!success) {
       return [RESULT_CANCEL, null] as [number, T]
     }
@@ -163,7 +169,10 @@ export class Navigator implements Navigator {
   }
 
   pushLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
-    const success = await Navigation.dispatch(this.sceneId, 'pushLayout', { layout })
+    const success = await Navigation.dispatch(this.sceneId, 'pushLayout', {
+      from: this.moduleName,
+      layout,
+    })
     if (!success) {
       return [RESULT_CANCEL, null] as [number, T]
     }
@@ -196,6 +205,8 @@ export class Navigator implements Navigator {
     const requestCode = --tagGenerator
     const success = await Navigation.dispatch(this.sceneId, 'present', {
       moduleName,
+      from: this.moduleName,
+      to: moduleName,
       props,
       options,
       requestCode,
@@ -210,6 +221,7 @@ export class Navigator implements Navigator {
     const requestCode = --tagGenerator
     const success = await Navigation.dispatch(this.sceneId, 'presentLayout', {
       layout,
+      from: this.moduleName,
       requestCode,
     })
     if (!success) {
@@ -228,6 +240,8 @@ export class Navigator implements Navigator {
     const requestCode = --tagGenerator
     const success = await Navigation.dispatch(this.sceneId, 'showModal', {
       moduleName,
+      from: this.moduleName,
+      to: moduleName,
       props,
       options,
       requestCode,
@@ -241,6 +255,7 @@ export class Navigator implements Navigator {
   showModalLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
     const requestCode = --tagGenerator
     const success = await Navigation.dispatch(this.sceneId, 'showModalLayout', {
+      from: this.moduleName,
       layout,
       requestCode,
     })

@@ -1,5 +1,5 @@
 import type React from 'react'
-import { AppRegistry, ComponentProvider, Platform } from 'react-native'
+import { AppRegistry, ComponentProvider } from 'react-native'
 
 import type {
   BarButtonItem,
@@ -34,7 +34,6 @@ type Nullable<T> = {
   [P in keyof T]: T[P] extends T[P] | undefined ? T[P] | null : T[P]
 }
 
-const { STATUSBAR_HEIGHT, TOOLBAR_HEIGHT } = GardenModule.getConstants()
 export const { RESULT_CANCEL, RESULT_OK } = NavigationModule.getConstants()
 
 export type NavigationSubscription = {
@@ -53,7 +52,6 @@ export class Navigation implements Navigation {
   private visibilityHandler = new VisibilityEventHandler()
 
   constructor() {
-    this.handleStatusBarHeightChange()
     this.handleTabSwitch()
     this.layoutHandler.handleRootLayoutChange()
     this.visibilityHandler.handleComponentVisibility()
@@ -241,29 +239,6 @@ export class Navigation implements Navigation {
 
   setMenuInteractive(sceneId: string, enabled: boolean) {
     GardenModule.setMenuInteractive(sceneId, enabled)
-  }
-
-  private _statusBarHeight = STATUSBAR_HEIGHT
-  private _toolbarHeight = TOOLBAR_HEIGHT
-
-  private handleStatusBarHeightChange() {
-    if (Platform.OS === 'ios') {
-      Event.listenStatusBarHeightChange(statusBarHeight => {
-        this._statusBarHeight = statusBarHeight
-      })
-    }
-  }
-
-  statusBarHeight() {
-    return this._statusBarHeight
-  }
-
-  toolbarHeight() {
-    return this._toolbarHeight
-  }
-
-  topBarHeight() {
-    return this.statusBarHeight() + this.toolbarHeight()
   }
 
   setBarButtonClickEventListener(listener: BarButtonClickEventListener) {

@@ -13,6 +13,10 @@ type Nullable<T> = {
 }
 
 export interface Garden {}
+
+/**
+ * @deprecated use Navigation instead. import Navigation from 'hybrid-navigation'
+ */
 export class Garden implements Garden {
   /**
    * @deprecated Use Navigation.setDefaultOptions() instead.

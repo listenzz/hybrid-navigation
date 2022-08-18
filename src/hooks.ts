@@ -52,6 +52,10 @@ export function useNavigator(): Navigator {
   return useContext<Navigator>(NavigationContext)
 }
 
+/**
+ * @deprecated Use Navigation related methods instead.
+ * @returns
+ */
 export function useGarden() {
   const ctx = useContext<Navigator>(NavigationContext)
   return ctx.garden

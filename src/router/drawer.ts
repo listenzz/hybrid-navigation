@@ -1,6 +1,6 @@
-import { ScreenGraph } from './screen'
-import { Navigator } from '../Navigator'
+import { ScreenGraph, isTargetLocateIn } from './screen'
 import { LayoutMode, RouteGraph, RouteHandler, RouteInfo } from '../Route'
+import Navigation from '../Navigation'
 
 export interface DrawerGraph extends RouteGraph {
   layout: 'drawer'
@@ -13,22 +13,25 @@ export function isDrawerGraph(graph: RouteGraph): graph is DrawerGraph {
   return graph.layout === 'drawer'
 }
 
-export async function drawerRouteHandler(graph: RouteGraph, route: RouteInfo, next: RouteHandler) {
-  if (!isDrawerGraph(graph)) {
-    return false
-  }
-
-  const { moduleName, sceneId } = graph.children[1]
-  if (moduleName === route.moduleName) {
-    const navigator = Navigator.of(sceneId)
-    navigator.openMenu()
-    return true
-  } else {
-    let result = await next(graph.children[0], route, next)
-    if (result) {
-      const navigator = Navigator.of(sceneId)
-      navigator.closeMenu()
+export class DrawerRouteHandler implements RouteHandler {
+  async process(graph: RouteGraph, target: RouteInfo): Promise<[boolean, RouteGraph | null]> {
+    if (!isDrawerGraph(graph)) {
+      throw new Error(`${graph} is Not a DrawerGraph`)
     }
-    return result
+
+    const { children } = graph
+
+    const { moduleName, sceneId } = children[1]
+    if (moduleName === target.moduleName) {
+      await Navigation.dispatch(sceneId, 'openMenu')
+      return [true, null]
+    }
+
+    if (isTargetLocateIn(children[0], target)) {
+      Navigation.dispatch(sceneId, 'closeMenu', { from: moduleName })
+      return [true, children[0]]
+    }
+
+    return [false, graph]
   }
 }

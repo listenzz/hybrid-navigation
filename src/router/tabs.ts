@@ -1,6 +1,6 @@
-import { Navigator } from '../Navigator'
-import { isScreenGraph } from './screen'
+import { isTargetLocateIn } from './screen'
 import { LayoutMode, RouteGraph, RouteHandler, RouteInfo } from '../Route'
+import Navigation from '../Navigation'
 
 export interface TabsGraph extends RouteGraph {
   layout: 'tabs'
@@ -13,37 +13,27 @@ export interface TabsGraph extends RouteGraph {
 export function isTabsGraph(graph: RouteGraph): graph is TabsGraph {
   return graph.layout === 'tabs'
 }
-
-export async function tabsRouteHandler(graph: RouteGraph, route: RouteInfo, next: RouteHandler) {
-  if (!isTabsGraph(graph)) {
-    return false
-  }
-
-  const { children, selectedIndex } = graph
-  const { dependencies, moduleName } = route
-  const expectedModuleNames = [...dependencies, moduleName]
-
-  for (let i = 0; i < children.length; i++) {
-    const existingModuleNames: string[] = []
-    extractModuleNames(children[i], existingModuleNames)
-    if (expectedModuleNames.some(name => existingModuleNames.includes(name))) {
-      if (selectedIndex !== i) {
-        const navigator = Navigator.of(children[i].sceneId)
-        await navigator.switchTab(i, true)
-      }
-      return next(children[i], route, next)
+export class TabsRouteHandler implements RouteHandler {
+  async process(graph: RouteGraph, target: RouteInfo): Promise<[boolean, RouteGraph]> {
+    if (!isTabsGraph(graph)) {
+      throw new Error(`${graph} is NOT a TabsGraph`)
     }
-  }
-  return false
-}
 
-function extractModuleNames(graph: RouteGraph, set: string[]) {
-  if (isScreenGraph(graph)) {
-    set.push(graph.moduleName)
-  } else {
-    const children = graph.children!
+    const { children, selectedIndex } = graph
+
     for (let i = 0; i < children.length; i++) {
-      extractModuleNames(children[i], set)
+      if (isTargetLocateIn(children[i], target)) {
+        if (selectedIndex !== i) {
+          await Navigation.dispatch(children[selectedIndex].sceneId, 'switchTab', {
+            from: selectedIndex,
+            to: i,
+            popToRoot: true,
+          })
+        }
+        return [true, children[i]]
+      }
     }
+
+    return [false, graph]
   }
 }

@@ -65,14 +65,6 @@ export interface RouteConfig {
   mode?: RouteMode
 }
 
-export interface RouteInfo {
-  moduleName: string
-  dependencies: string[]
-  mode: RouteMode
-  props: object
-  options: object
-}
-
 export interface RouteData {
   moduleName: string
   regexp?: RegExp
@@ -81,8 +73,21 @@ export interface RouteData {
   mode: RouteMode
 }
 
+export interface RouteInfo {
+  moduleName: string
+  mode: RouteMode
+  dependencies: string[]
+  props: object
+  options: object
+}
+
 export interface RouteHandler {
-  (graph: RouteGraph, route: RouteInfo, next: RouteHandler): Promise<boolean>
+  /**
+   * @param graph - current RouteGraph to process
+   * @param target - route may add to the graph
+   * @reurns [boolean, RouteGraph] - if the route is handled, return true and  childGraph for next Handler to process, [false, graph] otherwise
+   */
+  process: (graph: RouteGraph, target: RouteInfo) => Promise<[boolean, RouteGraph | null]>
 }
 
 export type RouteInterceptor = (path: string) => boolean | Promise<boolean>

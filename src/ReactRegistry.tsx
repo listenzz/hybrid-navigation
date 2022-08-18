@@ -3,6 +3,9 @@ import type { RouteConfig } from './Route'
 
 import Navigation, { HOC } from './Navigation'
 
+/**
+ * @deprecated use Navigation instead. import Navigation from 'hybrid-navigation'
+ */
 export class ReactRegistry {
   /**
    * @deprecated Use Navigation.startRegisterComponent() instead.

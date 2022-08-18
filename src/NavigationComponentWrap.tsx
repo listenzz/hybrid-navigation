@@ -12,7 +12,7 @@ export interface NavigationProps {
 }
 
 /**
- * @deprecated Use NavigationComponentProps instead.
+ * @deprecated Use NavigationProps instead.
  */
 export type InjectedProps = NavigationProps
 

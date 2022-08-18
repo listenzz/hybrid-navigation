@@ -5,6 +5,8 @@ import { BuildInLayout, Layout } from '../Route'
 export interface DispatchParams {
   animated?: boolean
   moduleName?: string
+  from?: string | number
+  to?: string | number
   layout?: BuildInLayout | Layout
   popToRoot?: boolean
   requestCode?: number
