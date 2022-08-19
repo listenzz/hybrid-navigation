@@ -1,3 +1,9 @@
+## 2.13.1 (2022-08-19)
+
+- 重构了 Router 相关的代码，使其更加简洁易懂。
+
+- 移除了 Router 中重复的 API。
+
 ## 2.13.0 (2022-08-17)
 
 - 添加 `statusBarHeight()`、`toolbarHeight()`、`topBarHeight()` 几个方法用来获取状态栏、工具栏、顶部栏的高度
