@@ -1,8 +1,8 @@
 import { Platform } from 'react-native'
-import Navigation from './Navigation'
 import Event from './Event'
 import GardenModule from './GardenModule'
 import { withNavigation } from './NavigationComponentWrap'
+import Navigation from './Navigation'
 
 Navigation.setNavigationComponentWrap(withNavigation)
 
@@ -29,12 +29,7 @@ function topBarHeight() {
 export default Navigation
 export { statusBarHeight, toolbarHeight, topBarHeight }
 export { RESULT_OK, RESULT_CANCEL } from './Navigation'
-export {
-  withNavigation,
-  withNavigationItem,
-  NavigationProps,
-  InjectedProps,
-} from './NavigationComponentWrap'
+export { withNavigationItem, NavigationProps, InjectedProps } from './NavigationComponentWrap'
 
 export * from './Navigator'
 export * from './Garden'

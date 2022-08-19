@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react'
-
 import type { Garden } from './Garden'
 import type { NavigationItem } from './Options'
-
 import { Navigator, NavigationContext } from './Navigator'
 
 export interface NavigationProps {

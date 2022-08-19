@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import Navigation from './Navigation'
-
 import { Navigator, NavigationContext } from './Navigator'
 
 export function useVisible() {

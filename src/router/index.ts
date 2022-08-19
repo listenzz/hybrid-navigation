@@ -152,7 +152,6 @@ class Router {
     }
 
     const route = this.pathToRoute(path, props, options)
-
     if (!route) {
       return
     }
@@ -175,7 +174,6 @@ class Router {
     const routeGraph = graphArray[0]
 
     const consumed = await this.processRoute(route, routeGraph)
-
     if (consumed) {
       return
     }
