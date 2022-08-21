@@ -1,15 +1,5 @@
 import { NativeModules, NativeEventEmitter, NativeModule } from 'react-native'
-import GardenModule from './GardenModule'
 import type { Visibility } from './Route'
-
-function listenStatusBarHeightChange(listener: (statusBarHeight: number) => void) {
-  const GardenEventReceiver = new NativeEventEmitter(GardenModule)
-  const { EVENT_STATUSBAR_FRAME_CHANGE } = GardenModule.getConstants()
-  return GardenEventReceiver.addListener(EVENT_STATUSBAR_FRAME_CHANGE, ({ statusBarHeight }) => {
-    listener(statusBarHeight)
-  })
-}
-
 interface HBDEventEmitter extends NativeModule {
   getConstants: () => {
     EVENT_NAVIGATION: string
@@ -113,7 +103,6 @@ function listenDidSetRoot(didSetRoot: (tag: number) => void) {
 }
 
 export default {
-  listenStatusBarHeightChange,
   listenBarButtonItemClick,
   listenComponentResult,
   listenComponentVisibility,

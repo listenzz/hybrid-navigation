@@ -1,4 +1,4 @@
-import { NativeModules, NativeModule } from 'react-native'
+import { NativeModules, NativeModule, NativeEventEmitter, Platform } from 'react-native'
 
 interface GardenModule extends NativeModule {
   getConstants: () => {
@@ -20,5 +20,31 @@ interface GardenModule extends NativeModule {
 }
 
 const GardenModule: GardenModule = NativeModules.GardenModule
+
+const { STATUSBAR_HEIGHT, TOOLBAR_HEIGHT, EVENT_STATUSBAR_FRAME_CHANGE } =
+  GardenModule.getConstants()
+
+let _statusBarHeight = STATUSBAR_HEIGHT
+
+if (Platform.OS === 'ios') {
+  const GardenEventReceiver = new NativeEventEmitter(GardenModule)
+  GardenEventReceiver.addListener(EVENT_STATUSBAR_FRAME_CHANGE, ({ statusBarHeight: height }) => {
+    _statusBarHeight = height
+  })
+}
+
+function statusBarHeight() {
+  return _statusBarHeight
+}
+
+function toolbarHeight() {
+  return TOOLBAR_HEIGHT
+}
+
+function topBarHeight() {
+  return statusBarHeight() + toolbarHeight()
+}
+
+export { statusBarHeight, toolbarHeight, topBarHeight }
 
 export default GardenModule
