@@ -53,7 +53,7 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)invalidate {
-    RCTLogInfo(@"[Navigator] HBDReactBridgeManager#invalidate");
+    RCTLogInfo(@"[Navigation] HBDReactBridgeManager#invalidate");
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     
     NSArray<id <HBDNavigator>> *navigators = [self.navigatorRegistry allNavigators];
@@ -156,7 +156,7 @@ const NSInteger ResultCancel = 0;
     UIViewController *vc = [self createViewControllerWithLayout:layout];
     
     if (!vc) {
-        RCTLogError(@"[Navigator] Can't find a navigator that can handle layout '%@'. Did you forget to register?", layout);
+        RCTLogError(@"[Navigation] Can't find a navigator that can handle layout '%@'. Did you forget to register?", layout);
         return nil;
     }
 
@@ -330,7 +330,7 @@ const NSInteger ResultCancel = 0;
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForAction:action];
     if (!navigator) {
-        RCTLogWarn(@"[Navigator] Can't find a navigator that can handle action '%@'", action);
+        RCTLogWarn(@"[Navigation] Can't find a navigator that can handle action '%@'", action);
         callback(@[NSNull.null, @NO]);
         return;
     }

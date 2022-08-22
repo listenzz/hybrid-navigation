@@ -37,7 +37,7 @@ import java.util.Map;
 
 public class GardenModule extends ReactContextBaseJavaModule {
 
-    private static final String TAG = "Navigator";
+    private static final String TAG = "Navigation";
     private final ReactBridgeManager bridgeManager;
 
     public GardenModule(ReactApplicationContext reactContext, ReactBridgeManager bridgeManager) {

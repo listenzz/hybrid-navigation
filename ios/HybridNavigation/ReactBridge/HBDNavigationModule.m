@@ -28,7 +28,7 @@ RCT_EXPORT_MODULE(NavigationModule)
 }
 
 - (void)invalidate {
-    RCTLogInfo(@"[Navigator] NavigationModule#invalidate");
+    RCTLogInfo(@"[Navigation] NavigationModule#invalidate");
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [[HBDAnimationObserver sharedObserver] invalidate];
     [self.bridgeManager invalidate];
@@ -58,7 +58,7 @@ RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionar
 }
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *) sceneId) {
-    // RCTLogInfo(@"[Navigator] signalFirstRenderComplete sceneId:%@", sceneId);
+    // RCTLogInfo(@"[Navigation] signalFirstRenderComplete sceneId:%@", sceneId);
     UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     if ([vc isKindOfClass:[HBDReactViewController class]]) {
         [(HBDReactViewController *)vc signalFirstRenderComplete];
@@ -85,7 +85,7 @@ RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:
     UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     if (!vc) {
         callback(@[NSNull.null, @NO]);
-        RCTLogWarn(@"[Navigator] Can't find target scene for action: %@, maybe the scene is gone. \nextras: %@", action, extras);
+        RCTLogWarn(@"[Navigation] Can't find target scene for action: %@, maybe the scene is gone. \nextras: %@", action, extras);
         return;
     }
 
@@ -148,12 +148,12 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *)moduleName callback:(RCTRe
     
     NSString *sceneId = [self findSceneIdByModuleName:moduleName];
     if (sceneId == nil) {
-        RCTLogInfo(@"[Navigator] Can't find sceneId by : %@", moduleName);
+        RCTLogInfo(@"[Navigation] Can't find sceneId by : %@", moduleName);
         callback(@[NSNull.null, NSNull.null]);
         return;
     }
     
-    RCTLogInfo(@"[Navigator] The sceneId found by %@ : %@", moduleName, sceneId);
+    RCTLogInfo(@"[Navigation] The sceneId found by %@ : %@", moduleName, sceneId);
     callback(@[[NSNull null], sceneId]);
 }
 
@@ -165,7 +165,7 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *)moduleName callback:(RCTRe
         UIWindow *window = application.windows[i];
         NSString *sceneId = [self findSceneIdByModuleName:moduleName withViewController:window.rootViewController];
         if (sceneId != nil) {
-            RCTLogInfo(@"[Navigator] The sceneId found by %@ : %@", moduleName, sceneId);
+            RCTLogInfo(@"[Navigation] The sceneId found by %@ : %@", moduleName, sceneId);
             return sceneId;
         }
     }

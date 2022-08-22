@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class Garden {
 
-    private static final String TAG = "Navigator";
+    private static final String TAG = "Navigation";
 
     private static GlobalStyle globalStyle;
 

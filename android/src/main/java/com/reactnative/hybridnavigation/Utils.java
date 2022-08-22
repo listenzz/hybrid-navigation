@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Utils {
 
-    private static final String TAG = "Navigator";
+    private static final String TAG = "Navigation";
 
     public static Drawable createTabBarShadow(Context context, Bundle shadowImage) {
         Bundle image = shadowImage.getBundle("image");

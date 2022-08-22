@@ -60,7 +60,7 @@ RCT_EXPORT_MODULE(GardenModule)
 }
 
 - (void)handleStatusBarFrameChange {
-    RCTLogInfo(@"[Navigator] handleStatusBarFrameChange: %f", [self currentStatusBarHeight]);
+    RCTLogInfo(@"[Navigation] handleStatusBarFrameChange: %f", [self currentStatusBarHeight]);
     if ([self.bridge isValid]) {
         [self sendEventWithName:EVENT_STATUSBAR_FRAME_CHANGE body:@{
             @"statusBarHeight": @([self currentStatusBarHeight])
@@ -108,7 +108,7 @@ RCT_EXPORT_METHOD(setRightBarButtonItems:(NSString *)sceneId item:(NSArray *__nu
 }
 
 RCT_EXPORT_METHOD(updateOptions:(NSString *)sceneId item:(NSDictionary *)options) {
-    RCTLogInfo(@"[Navigator] updateNavigationBarOptions: %@", options);
+    RCTLogInfo(@"[Navigation] updateNavigationBarOptions: %@", options);
     HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
     if (vc) {
         [vc updateNavigationBarOptions:options];
@@ -116,7 +116,7 @@ RCT_EXPORT_METHOD(updateOptions:(NSString *)sceneId item:(NSDictionary *)options
 }
 
 RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
-    RCTLogInfo(@"[Navigator] updateTabBar: %@", item);
+    RCTLogInfo(@"[Navigation] updateTabBar: %@", item);
     UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     UITabBarController *tabBarVC = [self tabBarControllerWithViewController:vc];
     if (tabBarVC && [tabBarVC isKindOfClass:[HBDTabBarController class]]) {
@@ -125,7 +125,7 @@ RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
 }
 
 RCT_EXPORT_METHOD(setTabItem:(NSString *)sceneId options:(NSArray<NSDictionary *> *)options) {
-    RCTLogInfo(@"[Navigator] setTabItem: %@", options);
+    RCTLogInfo(@"[Navigation] setTabItem: %@", options);
     UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {

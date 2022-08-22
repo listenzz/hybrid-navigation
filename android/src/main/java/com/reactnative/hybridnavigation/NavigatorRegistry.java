@@ -7,8 +7,6 @@ import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
 import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.TabBarFragment;
-import com.reactnative.hybridnavigation.HybridFragment;
-import com.reactnative.hybridnavigation.Navigator;
 import com.reactnative.hybridnavigation.navigator.DrawerNavigator;
 import com.reactnative.hybridnavigation.navigator.ScreenNavigator;
 import com.reactnative.hybridnavigation.navigator.StackNavigator;

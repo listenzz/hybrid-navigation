@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
-import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
@@ -23,7 +22,7 @@ import java.util.List;
 
 public class ScreenNavigator implements Navigator {
 
-    final static String TAG = "Navigator";
+    final static String TAG = "Navigation";
 
     private final List<String> supportActions = Arrays.asList("present", "presentLayout", "dismiss", "showModal", "showModalLayout", "hideModal");
 

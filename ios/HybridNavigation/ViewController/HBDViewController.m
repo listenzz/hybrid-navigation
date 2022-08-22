@@ -18,7 +18,7 @@
 @implementation HBDViewController
 
 - (void)dealloc {
-    RCTLogInfo(@"[Navigator] %s", __FUNCTION__);
+    RCTLogInfo(@"[Navigation] %s", __FUNCTION__);
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {

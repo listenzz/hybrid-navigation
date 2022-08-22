@@ -41,7 +41,7 @@
     for (NSString *action in [navigator supportActions]) {
         id <HBDNavigator> duplicated = self.actionNavigatorPairs[action];
         if (duplicated) {
-            RCTLogError(@"[Navigator] The action %@ that %@ wants to register has been registered by %@", action, [navigator class], [duplicated class]);
+            RCTLogError(@"[Navigation] The action %@ that %@ wants to register has been registered by %@", action, [navigator class], [duplicated class]);
         }
         self.actionNavigatorPairs[action] = navigator;
     }
@@ -51,7 +51,7 @@
     
     id <HBDNavigator> duplicatedLayout = self.layoutNavigatorPairs[layout];
     if (duplicatedLayout) {
-        RCTLogError(@"[Navigator] The layout %@ that %@ wants to register has been registered by %@", layout, [navigator class], [duplicatedLayout class]);
+        RCTLogError(@"[Navigation] The layout %@ that %@ wants to register has been registered by %@", layout, [navigator class], [duplicatedLayout class]);
     }
     self.layoutNavigatorPairs[layout] = navigator;
     

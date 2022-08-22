@@ -85,7 +85,7 @@
         NSString *uri = json[@"uri"];
         if (uri && [uri hasPrefix:@"font:"]) {
             NSString *path = [self imagePathFromFontUri:uri];
-            // RCTLogInfo(@"[Navigator] font path:%@", path);
+            // RCTLogInfo(@"[Navigation] font path:%@", path);
             UIImage *image = [UIImage imageWithContentsOfFile:path];
             return image;
         } else {
@@ -105,7 +105,7 @@
 
 + (NSString *)imagePathFromFontUri:(NSString *)uri {
     uri = [uri substringFromIndex:7];
-    // RCTLogInfo(@"[Navigator] font uri:%@", uri);
+    // RCTLogInfo(@"[Navigation] font uri:%@", uri);
     NSArray *components = [uri componentsSeparatedByString:@"/"];
     if (components.count < 3) {
         return nil;
@@ -145,7 +145,7 @@
         NSData *imageData = UIImagePNGRepresentation(iconImage);
         BOOL success = [imageData writeToFile:filePath atomically:YES];
         if (!success) {
-            RCTLogInfo(@"[Navigator] can't save %@", fileName);
+            RCTLogInfo(@"[Navigation] can't save %@", fileName);
             return nil;
         }
     }

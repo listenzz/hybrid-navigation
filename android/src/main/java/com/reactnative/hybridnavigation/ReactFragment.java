@@ -31,7 +31,7 @@ import com.navigation.androidx.Style;
 
 public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver, ReactBridgeManager.ReactBridgeReloadListener {
 
-    protected static final String TAG = "Navigator";
+    protected static final String TAG = "Navigation";
 
     private ViewGroup containerLayout;
     private ReactRootViewHolder reactRootViewHolder;

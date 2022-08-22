@@ -33,7 +33,7 @@ import java.util.List;
 
 public class ReactTabBarProvider implements TabBarProvider, ReactBridgeManager.ReactBridgeReloadListener {
 
-    private static final String TAG = "Navigator";
+    private static final String TAG = "Navigation";
 
     private HBDReactRootView reactRootView;
     private ReactTabBarFragment tabBarFragment;

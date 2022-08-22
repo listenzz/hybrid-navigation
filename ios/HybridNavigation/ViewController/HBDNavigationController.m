@@ -327,7 +327,7 @@
 @dynamic navigationBar;
 
 - (void)dealloc {
-    RCTLogInfo(@"[Navigator] %s", __FUNCTION__);
+    RCTLogInfo(@"[Navigation] %s", __FUNCTION__);
 }
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController {
@@ -415,7 +415,7 @@
         UIEdgeInsets safeAreaInsets = self.view.safeAreaInsets;
         UIEdgeInsets additionalInsets = self.additionalSafeAreaInsets;
 
-        // RCTLogInfo(@"[Navigator] safeAreaInsets:%@, additionalInsets:%@", NSStringFromUIEdgeInsets(safeAreaInsets), NSStringFromUIEdgeInsets(additionalInsets));
+        // RCTLogInfo(@"[Navigation] safeAreaInsets:%@, additionalInsets:%@", NSStringFromUIEdgeInsets(safeAreaInsets), NSStringFromUIEdgeInsets(additionalInsets));
 
         BOOL statusBarHidden = [UIApplication sharedApplication].keyWindow.windowScene.statusBarManager.statusBarHidden;
 

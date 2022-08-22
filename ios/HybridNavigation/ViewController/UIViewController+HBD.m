@@ -50,7 +50,7 @@
 - (BOOL)canPresentViewController {
     UIViewController *presented = self.presentedViewController;
     if (presented && !presented.isBeingDismissed) {
-        RCTLogWarn(@"[Navigator] Can't present since the scene had present another scene already.");
+        RCTLogWarn(@"[Navigation] Can't present since the scene had present another scene already.");
         return NO;
     }
     return YES;
