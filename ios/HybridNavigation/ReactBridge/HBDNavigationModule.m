@@ -69,7 +69,7 @@ RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky callback:(R
     self.bridgeManager.viewHierarchyReady = NO;
     UIViewController *vc = [self.bridgeManager viewControllerWithLayout:layout];
     if (!vc) {
-        @throw [[NSException alloc] initWithName:@"IllegalArguments" reason:@"无法创建 ViewController" userInfo:@{ @"layout": layout }];
+        @throw [[NSException alloc] initWithName:@"IllegalArgumentsException" reason:@"无法创建 ViewController" userInfo:@{ @"layout": layout }];
     }
     
     if (self.bridgeManager.didSetRoot) {

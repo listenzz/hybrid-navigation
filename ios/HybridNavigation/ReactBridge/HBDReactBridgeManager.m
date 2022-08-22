@@ -188,12 +188,12 @@ const NSInteger ResultCancel = 0;
 }
 
 - (UIViewController *)viewControllerBySceneId:(NSString *)sceneId {
-    if (!self.viewHierarchyReady) {
-        return nil;
+    if (self.viewHierarchyReady) {
+        UIWindow *window = [self mainWindow];
+        return [self viewControllerWithSceneId:sceneId viewController:window.rootViewController];
     }
 
-    UIWindow *window = [self mainWindow];
-    return [self viewControllerWithSceneId:sceneId viewController:window.rootViewController];
+    return nil;
 }
 
 - (UIViewController *)viewControllerWithSceneId:(NSString *)sceneId viewController:(UIViewController *)vc {
@@ -286,11 +286,12 @@ const NSInteger ResultCancel = 0;
     }
 
     NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
-    if (!layout) {
-        return nil;
+    if (layout) {
+        id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
+        return [navigator primaryViewControllerWithViewController:vc];
     }
-    id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
-    return [navigator primaryViewControllerWithViewController:vc];
+    
+    return nil;
 }
 
 - (NSArray *)routeGraph {
@@ -300,13 +301,13 @@ const NSInteger ResultCancel = 0;
     NSMutableArray *root = [[NSMutableArray alloc] init];
     [root addObject:graph];
     [root addObjectsFromArray:[self presentedGraphsWithRootViewController:vc]];
-    
     return root;
 }
 
 - (NSArray *)presentedGraphsWithRootViewController:(UIViewController *)vc {
     NSMutableArray *graphs = [[NSMutableArray alloc] init];
     UIViewController *presented = vc.presentedViewController;
+    
     while (presented && !presented.beingDismissed && ![presented isKindOfClass:[UIAlertController class]]) {
         NSDictionary *graph = [self routeGraphWithViewController:presented];
         if (graph) {
@@ -320,11 +321,11 @@ const NSInteger ResultCancel = 0;
 
 - (NSDictionary *)routeGraphWithViewController:(UIViewController *)vc {
     NSString *layout = [self.navigatorRegistry layoutForViewController:vc];
-    if (!layout) {
-        return nil;
+    if (layout) {
+        id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
+        return [navigator routeGraphWithViewController:vc];
     }
-    id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForLayout:layout];
-    return [navigator routeGraphWithViewController:vc];
+    return nil;
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
