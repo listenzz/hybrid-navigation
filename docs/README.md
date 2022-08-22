@@ -29,9 +29,9 @@ cd hybrid-navigation
 然后在项目根目录下运行如下命令：
 
 ```sh
-npm install
+yarn install
 # &
-npm start
+yarn start
 ```
 
 ### 在 Android 上运行
@@ -42,7 +42,7 @@ npm start
 
 ```sh
 # 在项目根目录下运行
-npm run android
+yarn android
 ```
 
 你可能需要运行如下命令，才可以使用 Hot Reload 功能
@@ -71,7 +71,7 @@ cd -
 
 ```sh
 # 在项目根目录下运行
-npm run ios
+yarn ios
 ```
 
 ## 目录
