@@ -179,12 +179,12 @@ export class Navigator implements Navigator {
     return await Navigation.result<T>(this.sceneId, 0)
   }
 
-  pop = () => Navigation.dispatch(this.sceneId, 'pop')
+  pop = () => Navigation.dispatch(this.sceneId, 'pop', { from: this.moduleName })
 
   popTo = (moduleName: string, inclusive: boolean = false) =>
-    Navigation.dispatch(this.sceneId, 'popTo', { moduleName, inclusive })
+    Navigation.dispatch(this.sceneId, 'popTo', { moduleName, inclusive, from: this.moduleName })
 
-  popToRoot = () => Navigation.dispatch(this.sceneId, 'popToRoot')
+  popToRoot = () => Navigation.dispatch(this.sceneId, 'popToRoot', { from: this.moduleName })
 
   redirectTo = <P extends PropsType>(
     moduleName: string,
@@ -193,6 +193,8 @@ export class Navigator implements Navigator {
   ) =>
     Navigation.dispatch(this.sceneId, 'redirectTo', {
       moduleName,
+      from: this.moduleName,
+      to: moduleName,
       props,
       options,
     })
@@ -230,7 +232,7 @@ export class Navigator implements Navigator {
     return await Navigation.result<T>(this.sceneId, requestCode)
   }
 
-  dismiss = () => Navigation.dispatch(this.sceneId, 'dismiss')
+  dismiss = () => Navigation.dispatch(this.sceneId, 'dismiss', { from: this.moduleName })
 
   showModal = async <T extends ResultType, P extends PropsType = {}>(
     moduleName: string,
@@ -265,7 +267,7 @@ export class Navigator implements Navigator {
     return await Navigation.result<T>(this.sceneId, requestCode)
   }
 
-  hideModal = () => Navigation.dispatch(this.sceneId, 'hideModal')
+  hideModal = () => Navigation.dispatch(this.sceneId, 'hideModal', { from: this.moduleName })
 
   setResult = <T extends ResultType>(resultCode: number, data: T = null as any): void =>
     Navigation.setResult(this.sceneId, resultCode, data)
@@ -275,11 +277,11 @@ export class Navigator implements Navigator {
     return Navigation.dispatch(this.sceneId, 'switchTab', { from, to: index, popToRoot })
   }
 
-  toggleMenu = () => Navigation.dispatch(this.sceneId, 'toggleMenu')
+  toggleMenu = () => Navigation.dispatch(this.sceneId, 'toggleMenu', { from: this.moduleName })
 
-  openMenu = () => Navigation.dispatch(this.sceneId, 'openMenu')
+  openMenu = () => Navigation.dispatch(this.sceneId, 'openMenu', { from: this.moduleName })
 
-  closeMenu = () => Navigation.dispatch(this.sceneId, 'closeMenu')
+  closeMenu = () => Navigation.dispatch(this.sceneId, 'closeMenu', { from: this.moduleName })
 
   isStackRoot = () => Navigation.isStackRoot(this.sceneId)
 
