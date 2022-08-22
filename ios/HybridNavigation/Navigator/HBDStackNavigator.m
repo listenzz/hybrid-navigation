@@ -238,15 +238,19 @@
     }
     
     if ([drawer.contentController isKindOfClass:[UITabBarController class]]) {
-        UITabBarController *tabBar = (UITabBarController *) drawer.contentController;
-        if ([tabBar.selectedViewController isKindOfClass:[UINavigationController class]]) {
-            return (UINavigationController *)tabBar.selectedViewController;
+        UITabBarController *tabs = (UITabBarController *)drawer.contentController;
+        if ([tabs.selectedViewController isKindOfClass:[UINavigationController class]]) {
+            return (UINavigationController *)tabs.selectedViewController;
         }
         return nil;
     }
     
     if ([drawer.contentController isKindOfClass:[UINavigationController class]]) {
-        return (UINavigationController *) drawer.contentController;
+        return (UINavigationController *)drawer.contentController;
+    }
+    
+    if ([NSStringFromClass([drawer.contentController class]) isEqualToString:@"HBDDeckViewController"]) {
+        return drawer.contentController.navigationController;
     }
     
     return nil;
