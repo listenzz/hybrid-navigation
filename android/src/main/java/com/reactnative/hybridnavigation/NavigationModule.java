@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class NavigationModule extends ReactContextBaseJavaModule {
 
-    static final String TAG = "Navigator";
+    static final String TAG = "Navigation";
     private final ReactBridgeManager bridgeManager;
 
     NavigationModule(ReactApplicationContext reactContext, ReactBridgeManager bridgeManager) {
@@ -96,31 +96,30 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void setRoot(final ReadableMap layout, final boolean sticky, final int tag) {
+    public void setRoot(final ReadableMap layout, final boolean sticky, final Callback callback) {
         UiThreadUtil.runOnUiThread(() -> {
             ReactContext reactContext = getReactApplicationContext();
             if (reactContext == null || !reactContext.hasActiveReactInstance()) {
                 FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `setRoot`");
                 return;
             }
+            
+            if (bridgeManager.getPendingCallback() != null) {
+                bridgeManager.getPendingCallback().invoke(null, false);
+            }
 
             bridgeManager.setViewHierarchyReady(false);
             bridgeManager.setRootLayout(layout, sticky);
-            bridgeManager.setPendingLayout(layout, tag);
+            bridgeManager.setPendingLayout(layout, callback);
 
             if (!bridgeManager.isReactModuleRegisterCompleted()) {
                 return;
             }
-
-            AwesomeFragment fragment = bridgeManager.createFragment(layout);
-            if (fragment == null) {
-                return;
-            }
-
+            
             ReactAppCompatActivity activity = getActiveActivity();
-            if (activity != null) {
+            if (activity != null && !activity.getSupportFragmentManager().isStateSaved()) {
                 FLog.i(TAG, "Have active Activity and React module was registered, set root Fragment immediately.");
-                activity.setActivityRootFragment(fragment, tag);
+                activity.setActivityRootFragment(layout);
             }
         });
     }

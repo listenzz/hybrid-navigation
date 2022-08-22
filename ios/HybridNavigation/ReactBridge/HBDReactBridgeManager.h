@@ -23,6 +23,7 @@ extern const NSInteger ResultCancel;
 @property(nonatomic, assign, readonly, getter=isReactModuleRegisterCompleted) BOOL reactModuleRegisterCompleted;
 @property(nonatomic, assign, getter=isViewHierarchyReady) BOOL viewHierarchyReady;
 @property(nonatomic, assign) BOOL hasRootLayout;
+@property(nonatomic, copy) RCTResponseSenderBlock didSetRoot;
 
 - (void)installWithBridge:(RCTBridge *)bridge;
 
@@ -46,11 +47,9 @@ extern const NSInteger ResultCancel;
 
 - (UIViewController *)viewControllerWithLayout:(NSDictionary *)layout;
 
-- (UIViewController *)viewControllerWithSceneId:(NSString *)sceneId;
+- (UIViewController *)viewControllerBySceneId:(NSString *)sceneId;
 
 - (void)setRootViewController:(UIViewController *)rootViewController;
-
-- (void)setRootViewController:(UIViewController *)rootViewController withTag:(NSNumber *)tag;
 
 - (NSArray *)routeGraph;
 

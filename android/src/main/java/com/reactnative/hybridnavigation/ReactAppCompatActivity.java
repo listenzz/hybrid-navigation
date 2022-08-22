@@ -11,9 +11,9 @@ import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionAwareActivity;
 import com.facebook.react.modules.core.PermissionListener;
@@ -23,7 +23,7 @@ import com.navigation.androidx.Style;
 
 public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHardwareBackBtnHandler, PermissionAwareActivity, ReactBridgeManager.ReactModuleRegisterListener {
 
-    protected static final String TAG = "Navigator";
+    protected static final String TAG = "Navigation";
 
     private final ReactAppCompatActivityDelegate activityDelegate;
 
@@ -85,7 +85,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     public void onReactModuleRegisterCompleted() {
         FLog.i(TAG, "ReactAppCompatActivity#onReactModuleRegisterCompleted");
-        inflateStyle();
         createMainComponent();
     }
 
@@ -105,25 +104,19 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
         if (bridgeManager.hasPendingLayout()) {
             FLog.i(TAG, "Set root Fragment from pending layout when create main component");
-            setActivityRootFragment(bridgeManager);
+            setActivityRootFragment(bridgeManager.getPendingLayout());
             return;
         }
 
         if (bridgeManager.hasStickyLayout()) {
             FLog.i(TAG, "Set root Fragment from sticky layout when create main component");
-            AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getStickyLayout());
-            if (fragment != null) {
-                setActivityRootFragment(fragment);
-            }
+            setActivityRootFragment(bridgeManager.getStickyLayout());
             return;
         }
 
         if (bridgeManager.hasRootLayout()) {
             FLog.i(TAG, "Set root Fragment from last root layout when create main component");
-            AwesomeFragment fragment = bridgeManager.createFragment(bridgeManager.getRootLayout());
-            if (fragment != null) {
-                setActivityRootFragment(fragment);
-            }
+            setActivityRootFragment(bridgeManager.getRootLayout());
             return;
         }
 
@@ -134,69 +127,40 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         return null;
     }
 
+    protected void setActivityRootFragment(ReadableMap layout) {
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        AwesomeFragment fragment = bridgeManager.createFragment(layout);
+        if (fragment == null) {
+            throw new IllegalArgumentException("无法创建 Fragment. " + layout);
+        }
+        setActivityRootFragment(fragment);
+    }
+
     @Override
     public void setActivityRootFragment(@NonNull AwesomeFragment rootFragment) {
-        setActivityRootFragment(rootFragment, 0);
-    }
-
-    private void setActivityRootFragment(ReactBridgeManager bridgeManager) {
-        int pendingTag = bridgeManager.getPendingTag();
-        ReadableMap pendingLayout = bridgeManager.getPendingLayout();
-        if (pendingTag == 0 || pendingLayout == null) {
-            return;
-        }
-
-        AwesomeFragment fragment = bridgeManager.createFragment(pendingLayout);
-        if (fragment == null) {
-            FLog.e(TAG, "Could not create fragment from  pending layout.");
-            return;
-        }
-        setActivityRootFragment(fragment, pendingTag);
-    }
-
-    protected void setActivityRootFragment(@NonNull AwesomeFragment rootFragment, int tag) {
-        if (isFinishing()) {
-            return;
-        }
-
-        if (getSupportFragmentManager().isStateSaved()) {
-            FLog.i(TAG, "Schedule to set Activity root Fragment.");
-            scheduleTaskAtStarted(() -> setActivityRootFragmentSync(rootFragment, tag));
-            return;
-        }
-
-        FLog.i(TAG, "Set Activity root Fragment immediately.");
-        setActivityRootFragmentSync(rootFragment, tag);
-    }
-
-    protected void setActivityRootFragmentSync(AwesomeFragment fragment, int tag) {
         if (!styleInflated) {
             inflateStyle();
             if (!styleInflated) {
-                throw new IllegalStateException("Style hasn't inflated yet. Did you forgot to call `Garden.setStyle` before `Navigator.setRoot` ?");
+                throw new IllegalStateException("Style hasn't inflated yet. Did you forgot to call `Navigation.setDefaultOptions` before `Navigation.setRoot` ?");
             }
         }
-
-        ReactContext reactContext = getCurrentReactContext();
-        if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
-            return;
-        }
-
-        // will
-        HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());
-
-        // do
-        ReactBridgeManager bridgeManager = getReactBridgeManager();
-        bridgeManager.setPendingLayout(null, 0);
-        setActivityRootFragmentSync(fragment);
-        bridgeManager.setViewHierarchyReady(true);
-
-        // did
-        WritableMap map = Arguments.createMap();
-        map.putInt("tag", tag);
-        HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, map);
+        super.setActivityRootFragment(rootFragment);
     }
 
+    @Override
+    protected void setActivityRootFragmentSync(AwesomeFragment fragment) {
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());
+        super.setActivityRootFragmentSync(fragment);
+        bridgeManager.setViewHierarchyReady(true);
+        Callback callback = bridgeManager.getPendingCallback();
+        if (callback != null) {
+            callback.invoke(null, true);
+            bridgeManager.setPendingLayout(null, null);
+        }
+        HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, Arguments.createMap());
+    }
+    
     @Override
     protected void onPause() {
         activityDelegate.onPause();
@@ -206,10 +170,14 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     protected void onResume() {
         super.onResume();
-        setActivityRootFragment(getReactBridgeManager());
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        if (bridgeManager.hasPendingLayout()) {
+            FLog.i(TAG, "Set root Fragment from pending layout when resume.");
+            setActivityRootFragment(bridgeManager.getPendingLayout());
+        }
         activityDelegate.onResume();
     }
-
+    
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         activityDelegate.onActivityResult(requestCode, resultCode, data);

@@ -59,23 +59,30 @@ RCT_EXPORT_METHOD(registerReactComponent:(NSString *)appKey options:(NSDictionar
 
 RCT_EXPORT_METHOD(signalFirstRenderComplete:(NSString *) sceneId) {
     // RCTLogInfo(@"[Navigator] signalFirstRenderComplete sceneId:%@", sceneId);
-    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     if ([vc isKindOfClass:[HBDReactViewController class]]) {
         [(HBDReactViewController *)vc signalFirstRenderComplete];
     }
 }
 
-RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky tag:(NSNumber *__nonnull)tag) {
+RCT_EXPORT_METHOD(setRoot:(NSDictionary *)layout sticky:(BOOL)sticky callback:(RCTResponseSenderBlock)callback) {
     self.bridgeManager.viewHierarchyReady = NO;
     UIViewController *vc = [self.bridgeManager viewControllerWithLayout:layout];
-    if (vc) {
-        self.bridgeManager.hasRootLayout = YES;
-        [self.bridgeManager setRootViewController:vc withTag:tag];
+    if (!vc) {
+        @throw [[NSException alloc] initWithName:@"IllegalArguments" reason:@"无法创建 ViewController" userInfo:@{ @"layout": layout }];
     }
+    
+    if (self.bridgeManager.didSetRoot) {
+        self.bridgeManager.didSetRoot(@[NSNull.null, @NO]);
+    }
+    self.bridgeManager.didSetRoot = callback;
+    self.bridgeManager.hasRootLayout = YES;
+    
+    [self.bridgeManager setRootViewController:vc];
 }
 
 RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback) {
-    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     if (!vc) {
         callback(@[NSNull.null, @NO]);
         RCTLogWarn(@"[Navigator] Can't find target scene for action: %@, maybe the scene is gone. \nextras: %@", action, extras);
@@ -86,7 +93,7 @@ RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:
 }
 
 RCT_EXPORT_METHOD(currentTab:(NSString *)sceneId callback:(RCTResponseSenderBlock)callback) {
-    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     UITabBarController *tabs = vc.tabBarController;
     if (tabs) {
         callback(@[NSNull.null, @(tabs.selectedIndex)]);
@@ -96,7 +103,7 @@ RCT_EXPORT_METHOD(currentTab:(NSString *)sceneId callback:(RCTResponseSenderBloc
 }
 
 RCT_EXPORT_METHOD(isStackRoot:(NSString *)sceneId callback:(RCTResponseSenderBlock)callback) {
-    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     UINavigationController *nav = vc.navigationController;
     if (!nav) {
         callback(@[NSNull.null, @NO]);
@@ -119,7 +126,7 @@ RCT_EXPORT_METHOD(isStackRoot:(NSString *)sceneId callback:(RCTResponseSenderBlo
 }
 
 RCT_EXPORT_METHOD(setResult:(NSString *)sceneId resultCode:(NSInteger)resultCode data:(NSDictionary *)data) {
-    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     [vc setResultCode:resultCode resultData:data];
 }
 

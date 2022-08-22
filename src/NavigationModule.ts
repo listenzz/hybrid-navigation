@@ -13,7 +13,7 @@ interface NavigationModule {
   endRegisterReactComponent: () => void
   registerReactComponent: (appKey: string, options: object) => void
   signalFirstRenderComplete: (sceneId: string) => void
-  setRoot: (layout: object, sticky: boolean, tag: number) => void
+  setRoot: (layout: object, sticky: boolean, callback: Callback) => void
   setResult: (sceneId: string, resultCode: number, data: object | null) => void
   dispatch: (sceneId: string, action: string, params: object, callback: Callback) => void
   currentTab: (sceneId: string, callback: Callback) => void
@@ -49,8 +49,12 @@ function setResult(sceneId: string, resultCode: number, data: object | null) {
   NavigationModule.setResult(sceneId, resultCode, data)
 }
 
-function setRoot(layout: object, sticky: boolean, tag: number) {
-  NavigationModule.setRoot(layout, sticky, tag)
+function setRoot(layout: object, sticky: boolean) {
+  return new Promise<boolean>(resolve => {
+    NavigationModule.setRoot(layout, sticky, (_, success) => {
+      resolve(success)
+    })
+  })
 }
 
 function dispatch(sceneId: string, action: string, params: object) {

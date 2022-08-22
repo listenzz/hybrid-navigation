@@ -35,7 +35,7 @@ public class ReactBridgeManager {
         void onReload();
     }
 
-    private static final String TAG = "Navigator";
+    private static final String TAG = "Navigation";
 
     private final static ReactBridgeManager instance = new ReactBridgeManager();
 
@@ -52,7 +52,7 @@ public class ReactBridgeManager {
     private final CopyOnWriteArrayList<ReactBridgeReloadListener> reactBridgeReloadListeners = new CopyOnWriteArrayList<>();
 
     private ReadableMap rootLayout;
-    private int pendingTag;
+    private Callback pendingCallback;
     private ReadableMap stickyLayout;
     private ReadableMap pendingLayout;
     private boolean viewHierarchyReady;
@@ -69,7 +69,7 @@ public class ReactBridgeManager {
         reactInstanceManager.addReactInstanceEventListener(context -> {
             FLog.i(TAG, "React instance context initialized.");
             rootLayout = null;
-            pendingTag = 0;
+            pendingCallback = null;
             stickyLayout = null;
             pendingLayout = null;
             reactBridgeReloadListeners.clear();
@@ -178,7 +178,7 @@ public class ReactBridgeManager {
 
     public void invalidate() {
         invokeReloadListeners();
-        setPendingLayout(null, 0);
+        setPendingLayout(null, null);
         setReactModuleRegisterCompleted(false);
         setViewHierarchyReady(false);
     }
@@ -214,9 +214,9 @@ public class ReactBridgeManager {
         return stickyLayout != null;
     }
 
-    public void setPendingLayout(@Nullable ReadableMap pendingLayout, int tag) {
+    public void setPendingLayout(@Nullable ReadableMap pendingLayout, Callback callback) {
         this.pendingLayout = pendingLayout;
-        this.pendingTag = tag;
+        this.pendingCallback = callback;
     }
 
     @Nullable
@@ -224,8 +224,8 @@ public class ReactBridgeManager {
         return pendingLayout;
     }
 
-    public int getPendingTag() {
-        return pendingTag;
+    public Callback getPendingCallback() {
+        return pendingCallback;
     }
 
     public boolean hasPendingLayout() {

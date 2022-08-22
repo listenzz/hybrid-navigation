@@ -19,8 +19,8 @@ public class MainActivity extends ReactAppCompatActivity {
     }
 
     @Override
-    protected void setActivityRootFragmentSync(AwesomeFragment fragment, int tag) {
-        super.setActivityRootFragmentSync(fragment, tag);
+    public void setActivityRootFragment(@NonNull AwesomeFragment fragment) {
+        super.setActivityRootFragment(fragment);
         hideSplash();
     }
 

@@ -117,7 +117,7 @@ RCT_EXPORT_METHOD(updateOptions:(NSString *)sceneId item:(NSDictionary *)options
 
 RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
     RCTLogInfo(@"[Navigator] updateTabBar: %@", item);
-    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     UITabBarController *tabBarVC = [self tabBarControllerWithViewController:vc];
     if (tabBarVC && [tabBarVC isKindOfClass:[HBDTabBarController class]]) {
         [((HBDTabBarController *)tabBarVC) updateTabBar:item];
@@ -126,7 +126,7 @@ RCT_EXPORT_METHOD(updateTabBar:(NSString *)sceneId item:(NSDictionary *)item) {
 
 RCT_EXPORT_METHOD(setTabItem:(NSString *)sceneId options:(NSArray<NSDictionary *> *)options) {
     RCTLogInfo(@"[Navigator] setTabItem: %@", options);
-    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     UITabBarController *tabBarController = [self tabBarControllerWithViewController:vc];
     if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
         HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
@@ -135,7 +135,7 @@ RCT_EXPORT_METHOD(setTabItem:(NSString *)sceneId options:(NSArray<NSDictionary *
 }
 
 RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) {
-    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     HBDDrawerController *drawer = [vc drawerController];
     if (drawer) {
         drawer.menuInteractive = enabled;
@@ -143,7 +143,7 @@ RCT_EXPORT_METHOD(setMenuInteractive:(NSString *)sceneId enabled:(BOOL)enabled) 
 }
 
 - (HBDViewController *)viewControllerWithSceneId:(NSString *)sceneId {
-    UIViewController *vc = [self.bridgeManager viewControllerWithSceneId:sceneId];
+    UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     if ([vc isKindOfClass:[HBDViewController class]]) {
         return (HBDViewController *)vc;
     }

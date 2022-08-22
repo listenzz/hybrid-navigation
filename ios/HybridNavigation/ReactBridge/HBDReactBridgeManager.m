@@ -63,6 +63,7 @@ const NSInteger ResultCancel = 0;
 
     self.viewHierarchyReady = NO;
     self.reactModuleRegisterCompleted = NO;
+    self.didSetRoot = NULL;
 
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
@@ -186,7 +187,7 @@ const NSInteger ResultCancel = 0;
     }
 }
 
-- (UIViewController *)viewControllerWithSceneId:(NSString *)sceneId {
+- (UIViewController *)viewControllerBySceneId:(NSString *)sceneId {
     if (!self.viewHierarchyReady) {
         return nil;
     }
@@ -224,24 +225,19 @@ const NSInteger ResultCancel = 0;
 }
 
 - (void)setRootViewController:(UIViewController *)rootViewController {
-    [self setRootViewController:rootViewController withTag:@(0)];
-}
-
-- (void)setRootViewController:(UIViewController *)rootViewController withTag:(NSNumber *)tag {
-    [HBDEventEmitter sendEvent:EVENT_WILL_SET_ROOT data:@{}];
-    
     UIWindow *mainWindow = [self mainWindow];
     UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
     if (presentedViewController && !presentedViewController.isBeingDismissed) {
         [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
-            [self performSetRootViewController:rootViewController withTag:tag animated:NO];
+            [self performSetRootViewController:rootViewController animated:NO];
         }];
     } else {
-        [self performSetRootViewController:rootViewController withTag:tag animated:YES];
+        [self performSetRootViewController:rootViewController animated:YES];
     }
 }
 
-- (void)performSetRootViewController:(UIViewController *)rootViewController withTag:(NSNumber *)tag animated:(BOOL)animated {
+- (void)performSetRootViewController:(UIViewController *)rootViewController animated:(BOOL)animated {
+    [HBDEventEmitter sendEvent:EVENT_WILL_SET_ROOT data:@{}];
     UIWindow *mainWindow = [self mainWindow];
     if (animated) {
         [UIView transitionWithView:mainWindow duration:0.15f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
@@ -253,9 +249,13 @@ const NSInteger ResultCancel = 0;
                 [mainWindow makeKeyAndVisible];
             }
             [UIView setAnimationsEnabled:oldState];
+        } completion:^(BOOL finished) {
             self.viewHierarchyReady = YES;
-        }               completion:^(BOOL finished) {
-            [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{@"tag": tag}];
+            if (self.didSetRoot) {
+                self.didSetRoot(@[NSNull.null, @YES]);
+                self.didSetRoot = NULL;
+            }
+            [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
         }];
     } else {
         mainWindow.rootViewController = rootViewController;
@@ -263,8 +263,13 @@ const NSInteger ResultCancel = 0;
         if (!mainWindow.isKeyWindow) {
             [mainWindow makeKeyAndVisible];
         }
+        
         self.viewHierarchyReady = YES;
-        [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{@"tag": tag}];
+        if (self.didSetRoot) {
+            self.didSetRoot(@[NSNull.null, @YES]);
+            self.didSetRoot = NULL;
+        }
+        [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
     }
 }
 
