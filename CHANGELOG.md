@@ -1,3 +1,9 @@
+## 2.13.4 (2022-08-23)
+
+### iOS specific
+
+- 兼容 hybrid-navigation-deck
+
 ## 2.13.3 (2022-08-22)
 
 - 补全了因为重构而丢失的路由信息（from, to）
