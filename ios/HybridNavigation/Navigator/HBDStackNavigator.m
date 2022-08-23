@@ -249,11 +249,7 @@
         return (UINavigationController *)drawer.contentController;
     }
     
-    if ([NSStringFromClass([drawer.contentController class]) isEqualToString:@"HBDDeckViewController"]) {
-        return drawer.contentController.navigationController;
-    }
-    
-    return nil;
+    return drawer.contentController.navigationController;
 }
 
 -(void)handleNavigation:(NSDictionary *)params {
