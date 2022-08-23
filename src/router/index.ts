@@ -93,11 +93,19 @@ class Router {
   private async intercept(path: string) {
     for (let interceptor of this.interceptors.values()) {
       const result = interceptor(path)
-      if (result instanceof Promise) {
-        return await result
+      const intercepted = await this.resolveInterceptResult(result)
+      if (intercepted) {
+        return true
       }
+    }
+    return false
+  }
+
+  private resolveInterceptResult(result: boolean | Promise<boolean>) {
+    if (result instanceof Promise) {
       return result
     }
+    return Promise.resolve(result)
   }
 
   private pathToRoute(path: string, props: object, options: NavigationItem): RouteInfo | undefined {
