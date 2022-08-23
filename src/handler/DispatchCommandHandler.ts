@@ -30,26 +30,29 @@ export default class DispatchCommandHandler {
   private interceptor: NavigationInterceptor = () => false
 
   async dispatch(sceneId: string, action: string, params: DispatchParams): Promise<boolean> {
-    let intercepted = false
     const { from, to } = params
-    if (this.interceptor) {
-      const result = this.interceptor(action, {
-        sceneId,
-        from,
-        to,
-      })
-      if (result instanceof Promise) {
-        intercepted = await result
-      } else {
-        intercepted = result
-      }
+    const intercepted = await this.intercept(action, {
+      sceneId,
+      from,
+      to,
+    })
+
+    if (intercepted) {
+      return false
+    }
+    return NavigationModule.dispatch(sceneId, action, params)
+  }
+
+  private intercept(action: string, params: InterceptParams) {
+    if (!this.interceptor) {
+      return Promise.resolve(false)
     }
 
-    if (!intercepted) {
-      return NavigationModule.dispatch(sceneId, action, params)
+    const result = this.interceptor(action, params)
+    if (result instanceof Promise) {
+      return result
     }
-
-    return false
+    return Promise.resolve(result)
   }
 
   setInterceptor(interceptor: NavigationInterceptor) {
