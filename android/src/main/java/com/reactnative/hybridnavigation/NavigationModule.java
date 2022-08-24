@@ -46,7 +46,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             clearFragments();
         });
     }
-    
+
     private void clearFragments() {
         AwesomeActivity activity = getActiveActivity();
         if (activity != null) {
@@ -103,7 +103,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `setRoot`");
                 return;
             }
-            
+
             if (bridgeManager.getPendingCallback() != null) {
                 bridgeManager.getPendingCallback().invoke(null, false);
             }
@@ -115,7 +115,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
             if (!bridgeManager.isReactModuleRegisterCompleted()) {
                 return;
             }
-            
+
             ReactAppCompatActivity activity = getActiveActivity();
             if (activity != null && !activity.getSupportFragmentManager().isStateSaved()) {
                 FLog.i(TAG, "Have active Activity and React module was registered, set root Fragment immediately.");
@@ -157,7 +157,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 callback.invoke(null, -1);
                 return;
             }
-            
+
             callback.invoke(null, tabs.getSelectedIndex());
         });
     }
@@ -256,21 +256,19 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
+                
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
+                if (current == null) {
+                    UiThreadUtil.runOnUiThread(this, 16);
+                    return;
+                }
 
-                activity.scheduleTaskAtStarted(() -> {
-                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                    HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
-                    if (current == null) {
-                        UiThreadUtil.runOnUiThread(this, 16);
-                        return;
-                    }
-
-                    Bundle bundle = new Bundle();
-                    bundle.putString("moduleName", current.getModuleName());
-                    bundle.putString("sceneId", current.getSceneId());
-                    bundle.putString("mode", Navigator.Util.getMode(current));
-                    callback.invoke(null, Arguments.fromBundle(bundle));
-                });
+                Bundle bundle = new Bundle();
+                bundle.putString("moduleName", current.getModuleName());
+                bundle.putString("sceneId", current.getSceneId());
+                bundle.putString("mode", Navigator.Util.getMode(current));
+                callback.invoke(null, Arguments.fromBundle(bundle));
             }
         };
 
@@ -287,17 +285,15 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
+                
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                ArrayList<Bundle> graph = bridgeManager.buildRouteGraph(fragmentManager);
+                if (graph.size() == 0) {
+                    UiThreadUtil.runOnUiThread(this, 16);
+                    return;
+                }
 
-                activity.scheduleTaskAtStarted(() -> {
-                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                    ArrayList<Bundle> graph = bridgeManager.buildRouteGraph(fragmentManager);
-                    if (graph.size() == 0) {
-                        UiThreadUtil.runOnUiThread(this, 16);
-                        return;
-                    }
-                    
-                    callback.invoke(null, Arguments.fromList(graph));
-                });
+                callback.invoke(null, Arguments.fromList(graph));
             }
         };
 
