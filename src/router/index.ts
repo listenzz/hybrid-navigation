@@ -66,7 +66,7 @@ class Router {
   }
 
   private isRouteConfigInflated = false
-  private routeDatas = new Map<string, RouteData>()
+  private routeDataSet = new Map<string, RouteData>()
 
   private inflateRouteData() {
     if (this.isRouteConfigInflated) {
@@ -76,7 +76,7 @@ class Router {
     const routeConfigs = Navigation.routeConfigs()
     for (const [moduleName, config] of routeConfigs) {
       const data = this.convertConfigToData(moduleName, config)
-      this.routeDatas.set(moduleName, data)
+      this.routeDataSet.set(moduleName, data)
     }
   }
 
@@ -109,7 +109,7 @@ class Router {
   }
 
   private pathToRoute(path: string, props: object, options: NavigationItem): RouteInfo | undefined {
-    for (const data of this.routeDatas.values()) {
+    for (const data of this.routeDataSet.values()) {
       if (!data.regexp) {
         continue
       }
@@ -133,7 +133,7 @@ class Router {
     let data: RouteData | undefined = routeData
     while (data && data.dependency) {
       dependencies.push(data.dependency)
-      data = this.routeDatas.get(data.dependency)
+      data = this.routeDataSet.get(data.dependency)
     }
     return dependencies.reverse()
   }
