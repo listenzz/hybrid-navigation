@@ -194,19 +194,17 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
+                
+                FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
+                if (!(fragment instanceof AwesomeFragment)) {
+                    callback.invoke(null, null);
+                    return;
+                }
 
-                activity.scheduleTaskAtStarted(() -> {
-                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                    Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
-                    if (!(fragment instanceof AwesomeFragment)) {
-                        callback.invoke(null, null);
-                        return;
-                    }
-
-                    String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
-                    FLog.i(TAG, "The sceneId found by " + moduleName + " : " + sceneId);
-                    callback.invoke(null, sceneId);
-                });
+                String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
+                FLog.i(TAG, "The sceneId found by " + moduleName + " : " + sceneId);
+                callback.invoke(null, sceneId);
             }
         };
 
