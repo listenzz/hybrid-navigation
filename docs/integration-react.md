@@ -126,7 +126,7 @@ package com.myapp69;
 import com.reactnative.hybridnavigation.ReactAppCompatActivity;
 
 public class MainActivity extends ReactAppCompatActivity {
-
+    // 空空如也
 }
 ```
 
