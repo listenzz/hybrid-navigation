@@ -68,7 +68,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     public void inflateStyle() {
         Style style = getStyle();
         GlobalStyle globalStyle = Garden.getGlobalStyle();
-        if (style != null && globalStyle != null && !isFinishing()) {
+        if (style != null && !isFinishing()) {
             styleInflated = true;
             FLog.i(TAG, "ReactAppCompatActivity#inflateStyle");
             globalStyle.inflateStyle(this, style);
@@ -160,7 +160,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         }
         HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, Arguments.createMap());
     }
-    
+
     @Override
     protected void onPause() {
         activityDelegate.onPause();
@@ -177,7 +177,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         }
         activityDelegate.onResume();
     }
-    
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         activityDelegate.onActivityResult(requestCode, resultCode, data);

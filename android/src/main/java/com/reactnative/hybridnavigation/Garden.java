@@ -37,7 +37,11 @@ public class Garden {
         globalStyle = new GlobalStyle(options);
     }
 
+    @NonNull
     static GlobalStyle getGlobalStyle() {
+        if (globalStyle == null) {
+            globalStyle = new GlobalStyle(new Bundle());
+        }
         return globalStyle;
     }
 

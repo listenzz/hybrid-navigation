@@ -48,6 +48,9 @@ static GlobalStyle *globalStyle;
 }
 
 + (GlobalStyle *)globalStyle {
+    if (!globalStyle) {
+        [self createWithOptions:@{}];
+    }
     return globalStyle;
 }
 
