@@ -151,7 +151,7 @@ class Router {
     return consumed
   }
 
-  async open(path: string, props: object = {}, options: NavigationItem = {}) {
+  async open(path: string, props: IndexType = {}, options: NavigationItem = {}) {
     this.inflateRouteData()
 
     const intercepted = await this.intercept(path)

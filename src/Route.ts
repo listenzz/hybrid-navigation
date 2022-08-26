@@ -85,7 +85,7 @@ export interface RouteHandler {
   /**
    * @param graph - current RouteGraph to process
    * @param target - route may add to the graph
-   * @reurns [boolean, RouteGraph] - if the route is handled, return true and  childGraph for next Handler to process, [false, graph] otherwise
+   * @returns [boolean, RouteGraph] - if the route is handled, return true and  childGraph for next Handler to process, [false, graph] otherwise
    */
   process: (graph: RouteGraph, target: RouteInfo) => Promise<[boolean, RouteGraph | null]>
 }
