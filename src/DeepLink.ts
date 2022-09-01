@@ -46,7 +46,7 @@ class DeepLinkImpl {
     }
   }
 
-  private handleLinking(event: { url: string }): void {
+  private handleLinking = (event: { url: string }) => {
     console.info(`deeplink:${event.url}`)
     let path = event.url.replace(this.uriPrefix, '')
     if (!path.startsWith('/')) {
