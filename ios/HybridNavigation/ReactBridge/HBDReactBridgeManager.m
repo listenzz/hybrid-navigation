@@ -188,12 +188,8 @@ const NSInteger ResultCancel = 0;
 }
 
 - (UIViewController *)viewControllerBySceneId:(NSString *)sceneId {
-    if (self.viewHierarchyReady) {
-        UIWindow *window = [self mainWindow];
-        return [self viewControllerWithSceneId:sceneId viewController:window.rootViewController];
-    }
-
-    return nil;
+    UIWindow *window = [self mainWindow];
+    return [self viewControllerWithSceneId:sceneId viewController:window.rootViewController];
 }
 
 - (UIViewController *)viewControllerWithSceneId:(NSString *)sceneId viewController:(UIViewController *)vc {
