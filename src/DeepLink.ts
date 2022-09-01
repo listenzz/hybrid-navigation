@@ -1,60 +1,59 @@
 import { EmitterSubscription, Linking } from 'react-native'
 import { router } from './router'
 
-let _active = 0
-let _uriPrefix: string = ''
-let _hasHandleInitialURL = false
-let _linkingSubscription: EmitterSubscription | undefined
+class DeepLinkImpl {
+  private active = 0
+  private uriPrefix = ''
+  private hasHandleInitialURL = false
+  private subscription: EmitterSubscription | null = null
 
-function activate(uriPrefix: string) {
-  if (!uriPrefix) {
-    throw new Error('must pass `uriPrefix` when activate router.')
-  }
-  if (_active === 0) {
-    _uriPrefix = uriPrefix
-    if (!_hasHandleInitialURL) {
-      _hasHandleInitialURL = true
-      Linking.getInitialURL()
-        .then(url => {
-          if (url) {
-            console.info(`deeplink:${url}`)
-            const path = url.replace(_uriPrefix, '')
-            return router.open(path)
-          }
-        })
-        .catch(err => console.error('An error occurred', err))
+  activate(uriPrefix: string) {
+    if (!uriPrefix) {
+      throw new Error('must pass `uriPrefix` when activate router.')
     }
-    _linkingSubscription = Linking.addEventListener('url', handleLinking)
+    if (this.active === 0) {
+      this.uriPrefix = uriPrefix
+      if (!this.hasHandleInitialURL) {
+        this.hasHandleInitialURL = true
+        Linking.getInitialURL()
+          .then(url => {
+            if (url) {
+              console.info(`deeplink:${url}`)
+              const path = url.replace(this.uriPrefix, '')
+              return router.open(path)
+            }
+          })
+          .catch(err => console.error('An error occurred', err))
+      }
+      this.subscription = Linking.addEventListener('url', this.handleLinking)
+    }
+    this.active++
   }
-  _active++
-}
 
-function deactivate() {
-  _active--
-  if (_active === 0) {
-    if (_linkingSubscription) {
-      _linkingSubscription.remove()
-      _linkingSubscription = undefined
-    } else {
-      Linking.removeEventListener('url', handleLinking)
+  deactivate() {
+    this.active--
+    if (this.active === 0) {
+      if (this.subscription) {
+        this.subscription.remove()
+        this.subscription = null
+      } else {
+        Linking.removeEventListener('url', this.handleLinking)
+      }
+    }
+
+    if (this.active < 0) {
+      this.active = 0
     }
   }
 
-  if (_active < 0) {
-    _active = 0
+  private handleLinking(event: { url: string }): void {
+    console.info(`deeplink:${event.url}`)
+    let path = event.url.replace(this.uriPrefix, '')
+    if (!path.startsWith('/')) {
+      path = '/' + path
+    }
+    router.open(path)
   }
 }
 
-function handleLinking(event: { url: string }): void {
-  console.info(`deeplink:${event.url}`)
-  let path = event.url.replace(_uriPrefix, '')
-  if (!path.startsWith('/')) {
-    path = '/' + path
-  }
-  router.open(path)
-}
-
-export const DeepLink = {
-  activate,
-  deactivate,
-}
+export const DeepLink = new DeepLinkImpl()
