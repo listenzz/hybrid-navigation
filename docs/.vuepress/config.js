@@ -1,4 +1,4 @@
-const { defaultTheme } = require('@vuepress/theme-default')
+import { defaultTheme } from 'vuepress'
 
 module.exports = {
   title: 'Hybrid Navigation',
