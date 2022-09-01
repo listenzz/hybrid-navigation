@@ -1,3 +1,8 @@
+## 2.13.6 (2022-09-01)
+
+### iOS specific
+- 修复应用启动时通过 sceneId 找不到对应 UIViewController 的问题
+
 ## 2.13.5 (2022-08-24)
 
 ### Android specific
