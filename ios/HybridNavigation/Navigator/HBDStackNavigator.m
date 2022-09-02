@@ -5,6 +5,8 @@
 #import "UINavigationController+HBD.h"
 #import "HBDAnimationObserver.h"
 
+#import <React/RCTLog.h>
+
 @implementation HBDStackNavigator
 
 - (NSString *)name {
@@ -72,7 +74,10 @@
         [nav.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
             // empty
         } completion:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
-            [self handleNavigationWithViewController:vc action:action extras:extras callback:callback];
+            // 确保最后执行
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self handleNavigationWithViewController:vc action:action extras:extras callback:callback];
+            });
         }];
         return;
     }
@@ -124,7 +129,7 @@
         callback(@[NSNull.null, @NO]);
         return;
     }
-    
+
     vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
     [[HBDAnimationObserver sharedObserver] beginAnimation];
     [nav pushViewController:vc animated:YES];
