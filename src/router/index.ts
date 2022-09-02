@@ -8,11 +8,12 @@ import {
   RouteInterceptor,
 } from '../Route'
 import { NavigationItem } from '../Options'
-import Navigation from '../Navigation'
 import { StackRouteHandler } from './stack'
 import { ScreenRouteHandler } from './screen'
 import { TabsRouteHandler } from './tabs'
 import { DrawerRouteHandler } from './drawer'
+
+import Navigation from '../Navigation'
 
 interface IndexType {
   [index: string]: any
