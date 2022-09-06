@@ -139,15 +139,15 @@ class Router {
     return dependencies.reverse()
   }
 
-  private async processRoute(route: RouteInfo, graph: RouteGraph): Promise<boolean> {
+  private async processRoute(graph: RouteGraph, target: RouteInfo): Promise<boolean> {
     const handler = this.handlers.get(graph.layout)
     if (!handler) {
       return false
     }
 
-    const [consumed, childGraph] = await handler.process(graph, route)
+    const [consumed, childGraph] = await handler.process(graph, target)
     if (consumed && childGraph) {
-      return await this.processRoute(route, childGraph)
+      return await this.processRoute(childGraph, target)
     }
     return consumed
   }
@@ -182,7 +182,7 @@ class Router {
 
     const routeGraph = graphArray[0]
 
-    const consumed = await this.processRoute(route, routeGraph)
+    const consumed = await this.processRoute(routeGraph, route)
     if (consumed) {
       return
     }
