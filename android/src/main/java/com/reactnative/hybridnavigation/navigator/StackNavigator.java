@@ -165,16 +165,22 @@ public class StackNavigator implements Navigator {
             callback.invoke(null, false);
             return;
         }
-
-        boolean inclusive = extras.getBoolean("inclusive");
+        
         FragmentManager fragmentManager = stackFragment.getChildFragmentManager();
-        AwesomeFragment fragment = findFragmentForPopTo(moduleName, inclusive, fragmentManager);
+        AwesomeFragment fragment = findFragmentForPopTo(moduleName, inclusive(extras), fragmentManager);
         if (fragment == null) {
             callback.invoke(null, false);
             return;
         }
 
         stackFragment.popToFragment(fragment, () -> callback.invoke(null, true));
+    }
+    
+    private boolean inclusive(@NonNull ReadableMap extras) {
+        if (extras.hasKey("inclusive")) {
+            return extras.getBoolean("inclusive");
+        }
+        return false;
     }
 
     @Nullable
