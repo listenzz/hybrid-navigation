@@ -57,19 +57,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             getReactBridgeManager().setViewHierarchyReady(true);
         }
     }
-
-    private boolean styleInflated;
-
-    @Override
-    protected void onCustomStyle(@NonNull Style style) {
-        inflateStyle();
-    }
-
+    
     public void inflateStyle() {
         Style style = getStyle();
         GlobalStyle globalStyle = Garden.getGlobalStyle();
         if (style != null && !isFinishing()) {
-            styleInflated = true;
             FLog.i(TAG, "ReactAppCompatActivity#inflateStyle");
             globalStyle.inflateStyle(this, style);
         }
@@ -89,6 +81,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             isFirstCallResume = true;
             activityDelegate.onResume();
         }
+        inflateStyle();
         createMainComponent();
     }
 
@@ -141,17 +134,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     }
 
     @Override
-    public void setActivityRootFragment(@NonNull AwesomeFragment rootFragment) {
-        if (!styleInflated) {
-            inflateStyle();
-            if (!styleInflated) {
-                throw new IllegalStateException("Style hasn't inflated yet. Did you forgot to call `Navigation.setDefaultOptions` before `Navigation.setRoot` ?");
-            }
-        }
-        super.setActivityRootFragment(rootFragment);
-    }
-
-    @Override
     protected void setActivityRootFragmentSync(AwesomeFragment fragment) {
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_WILL_SET_ROOT, Arguments.createMap());
@@ -183,7 +165,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             isFirstCallResume = true;
             activityDelegate.onResume();
         }
-        
+
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         if (bridgeManager.hasPendingLayout()) {
             FLog.i(TAG, "Set root Fragment from pending layout when resume.");
