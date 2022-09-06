@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import type { Garden } from './Garden'
 import type { NavigationItem } from './Options'
 import { Navigator, NavigationContext } from './Navigator'
+import Navigation from './Navigation'
 
 export interface NavigationProps {
   navigator: Navigator
@@ -35,7 +36,7 @@ export function withNavigation(moduleName: string) {
       const garden = navigator.garden
 
       useEffect(() => {
-        navigator.signalFirstRenderComplete()
+        Navigation.signalFirstRenderComplete(navigator.sceneId)
         return () => {
           navigator.unmount()
         }

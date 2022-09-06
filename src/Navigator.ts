@@ -47,21 +47,16 @@ export class Navigator implements Navigator {
     return navigator
   }
 
-  static async current(): Promise<Navigator> {
-    const route = await Navigation.currentRoute()
-    return Navigator.of(route.sceneId)
-  }
-
-  /**
-   * @deprecated Garden is deprecated, use Navigation.findSceneIdByModuleName() instead.
-   * @param moduleName
-   * @returns
-   */
   static async find(moduleName: string) {
     const sceneId = await Navigation.findSceneIdByModuleName(moduleName)
     if (sceneId) {
       return Navigator.of(sceneId)
     }
+  }
+
+  static async current(): Promise<Navigator> {
+    const route = await Navigation.currentRoute()
+    return Navigator.of(route.sceneId)
   }
 
   /**
@@ -284,6 +279,4 @@ export class Navigator implements Navigator {
   closeMenu = () => Navigation.dispatch(this.sceneId, 'closeMenu', { from: this.moduleName })
 
   isStackRoot = () => Navigation.isStackRoot(this.sceneId)
-
-  signalFirstRenderComplete = () => Navigation.signalFirstRenderComplete(this.sceneId)
 }
