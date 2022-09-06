@@ -60,11 +60,15 @@ public class ReactBridgeManager {
     private ReactNativeHost reactNativeHost;
 
     public void install(@NonNull ReactNativeHost reactNativeHost) {
-        this.reactNativeHost = reactNativeHost;
-        this.setup();
+        this.setReactNativeHost(reactNativeHost);
+        this.initialize();
     }
 
-    private void setup() {
+    public void setReactNativeHost(@NonNull ReactNativeHost reactNativeHost) {
+        this.reactNativeHost = reactNativeHost;
+    }
+
+    public void initialize() {
         final ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         reactInstanceManager.addReactInstanceEventListener(context -> {
             FLog.i(TAG, "React instance context initialized.");
@@ -248,13 +252,13 @@ public class ReactBridgeManager {
             AwesomeFragment fragment = fragments.get(i);
             Bundle bundle = buildRouteGraph(fragment);
             if (bundle == null) {
-               continue;
+                continue;
             }
             root.add(bundle);
         }
         return root;
     }
-    
+
     @Nullable
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
         String layout = navigatorRegistry.layoutForFragment(fragment);
@@ -366,7 +370,7 @@ public class ReactBridgeManager {
         args.putBundle(Constants.ARG_PROPS, notNull(props));
         args.putBundle(Constants.ARG_OPTIONS, mergeOptions(moduleName, notNull(options)));
         args.putString(Constants.ARG_MODULE_NAME, moduleName);
-        
+
         fragment.setArguments(args);
 
         return fragment;
@@ -383,7 +387,7 @@ public class ReactBridgeManager {
         if (!hasReactModule(moduleName)) {
             return options;
         }
-        
+
         ReadableMap readableMap = reactModuleOptionsForKey(moduleName);
         WritableMap writableMap = Arguments.createMap();
         writableMap.merge(readableMap);

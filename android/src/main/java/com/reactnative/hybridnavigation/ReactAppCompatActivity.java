@@ -85,6 +85,10 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     public void onReactModuleRegisterCompleted() {
         FLog.i(TAG, "ReactAppCompatActivity#onReactModuleRegisterCompleted");
+        if (!isFirstCallResume) {
+            isFirstCallResume = true;
+            activityDelegate.onResume();
+        }
         createMainComponent();
     }
 
@@ -163,19 +167,28 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     protected void onPause() {
-        activityDelegate.onPause();
+        ReactContext reactContext = getCurrentReactContext();
+        if (reactContext != null) {
+            activityDelegate.onPause();
+        }
         super.onPause();
     }
+
+    private boolean isFirstCallResume;
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (getReactInstanceManager().hasStartedCreatingInitialContext()) {
+            isFirstCallResume = true;
+            activityDelegate.onResume();
+        }
+        
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         if (bridgeManager.hasPendingLayout()) {
             FLog.i(TAG, "Set root Fragment from pending layout when resume.");
             setActivityRootFragment(bridgeManager.getPendingLayout());
         }
-        activityDelegate.onResume();
     }
 
     @Override
