@@ -5,9 +5,10 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.facebook.common.logging.FLog;
+import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
@@ -39,25 +40,27 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityDelegate.onCreate(savedInstanceState);
-        getReactBridgeManager().addReactModuleRegisterListener(this);
-        ensureViewHierarchy(savedInstanceState);
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        bridgeManager.addReactModuleRegisterListener(this);
+        ensureViewHierarchy(bridgeManager, savedInstanceState);
     }
 
-    private void ensureViewHierarchy(Bundle savedInstanceState) {
+    private void ensureViewHierarchy(ReactBridgeManager bridgeManager, Bundle savedInstanceState) {
         if (!isReactModuleRegisterCompleted()) {
             return;
         }
 
         if (savedInstanceState == null) {
-            createMainComponent();
+            onReactModuleRegisterCompleted();
             return;
         }
 
-        if (getSupportFragmentManager().getFragments().size() > 0) {
-            getReactBridgeManager().setViewHierarchyReady(true);
+        Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
+        if (fragment instanceof AwesomeFragment) {
+            bridgeManager.setViewHierarchyReady(true);
         }
     }
-    
+
     public void inflateStyle() {
         Style style = getStyle();
         GlobalStyle globalStyle = Garden.getGlobalStyle();
@@ -77,8 +80,8 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     public void onReactModuleRegisterCompleted() {
         FLog.i(TAG, "ReactAppCompatActivity#onReactModuleRegisterCompleted");
-        if (!isFirstCallResume) {
-            isFirstCallResume = true;
+        ReactContext reactContext = Assertions.assertNotNull(getCurrentReactContext());
+        if (isResumed && reactContext.getCurrentActivity() == null) {
             activityDelegate.onResume();
         }
         inflateStyle();
@@ -147,22 +150,13 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         HBDEventEmitter.sendEvent(HBDEventEmitter.EVENT_DID_SET_ROOT, Arguments.createMap());
     }
 
-    @Override
-    protected void onPause() {
-        ReactContext reactContext = getCurrentReactContext();
-        if (reactContext != null) {
-            activityDelegate.onPause();
-        }
-        super.onPause();
-    }
-
-    private boolean isFirstCallResume;
+    boolean isResumed = false;
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (getReactInstanceManager().hasStartedCreatingInitialContext()) {
-            isFirstCallResume = true;
+        isResumed = true;
+        if (getCurrentReactContext() != null) {
             activityDelegate.onResume();
         }
 
@@ -171,6 +165,15 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             FLog.i(TAG, "Set root Fragment from pending layout when resume.");
             setActivityRootFragment(bridgeManager.getPendingLayout());
         }
+    }
+
+    @Override
+    protected void onPause() {
+        isResumed = false;
+        if (getCurrentReactContext() != null) {
+            activityDelegate.onPause();
+        }
+        super.onPause();
     }
 
     @Override
@@ -229,7 +232,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     }
 
     protected final ReactInstanceManager getReactInstanceManager() {
-        return activityDelegate.getReactInstanceManager();
+        return getReactNativeHost().getReactInstanceManager();
+    }
+
+    public ReactContext getCurrentReactContext() {
+        return getReactInstanceManager().getCurrentReactContext();
     }
 
     @NonNull
@@ -239,10 +246,5 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     protected boolean isReactModuleRegisterCompleted() {
         return getReactBridgeManager().isReactModuleRegisterCompleted();
-    }
-
-    @Nullable
-    public ReactContext getCurrentReactContext() {
-        return getReactBridgeManager().getCurrentReactContext();
     }
 }

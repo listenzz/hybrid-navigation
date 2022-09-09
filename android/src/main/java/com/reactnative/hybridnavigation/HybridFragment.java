@@ -35,6 +35,11 @@ public class HybridFragment extends AwesomeFragment {
     private Garden garden;
 
     @NonNull
+    public ReactBridgeManager getReactBridgeManager() {
+        return bridgeManager;
+    }
+
+    @NonNull
     public ReactNativeHost getReactNativeHost() {
         return bridgeManager.getReactNativeHost();
     }
@@ -43,12 +48,7 @@ public class HybridFragment extends AwesomeFragment {
     public ReactInstanceManager getReactInstanceManager() {
         return bridgeManager.getReactInstanceManager();
     }
-
-    @NonNull
-    public ReactBridgeManager getReactBridgeManager() {
-        return bridgeManager;
-    }
-
+    
     @Nullable
     public ReactContext getCurrentReactContext() {
         return bridgeManager.getCurrentReactContext();
