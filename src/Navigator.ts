@@ -160,7 +160,7 @@ export class Navigator implements Navigator {
     if (!success) {
       return [RESULT_CANCEL, null] as [number, T]
     }
-    return await Navigation.result<T>(this.sceneId, 0)
+    return Navigation.result<T>(this.sceneId, 0)
   }
 
   pushLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
@@ -171,7 +171,7 @@ export class Navigator implements Navigator {
     if (!success) {
       return [RESULT_CANCEL, null] as [number, T]
     }
-    return await Navigation.result<T>(this.sceneId, 0)
+    return Navigation.result<T>(this.sceneId, 0)
   }
 
   pop = () => Navigation.dispatch(this.sceneId, 'pop', { from: this.moduleName })
@@ -211,7 +211,7 @@ export class Navigator implements Navigator {
     if (!success) {
       return [RESULT_CANCEL, null] as [number, T]
     }
-    return await Navigation.result<T>(this.sceneId, requestCode)
+    return Navigation.result<T>(this.sceneId, requestCode)
   }
 
   presentLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
@@ -224,7 +224,7 @@ export class Navigator implements Navigator {
     if (!success) {
       return [RESULT_CANCEL, null] as [number, T]
     }
-    return await Navigation.result<T>(this.sceneId, requestCode)
+    return Navigation.result<T>(this.sceneId, requestCode)
   }
 
   dismiss = () => Navigation.dispatch(this.sceneId, 'dismiss', { from: this.moduleName })
@@ -246,7 +246,7 @@ export class Navigator implements Navigator {
     if (!success) {
       return [RESULT_CANCEL, null] as [number, T]
     }
-    return await Navigation.result<T>(this.sceneId, requestCode)
+    return Navigation.result<T>(this.sceneId, requestCode)
   }
 
   showModalLayout = async <T extends ResultType>(layout: BuildInLayout | Layout) => {
@@ -259,7 +259,7 @@ export class Navigator implements Navigator {
     if (!success) {
       return [RESULT_CANCEL, null] as [number, T]
     }
-    return await Navigation.result<T>(this.sceneId, requestCode)
+    return Navigation.result<T>(this.sceneId, requestCode)
   }
 
   hideModal = () => Navigation.dispatch(this.sceneId, 'hideModal', { from: this.moduleName })
