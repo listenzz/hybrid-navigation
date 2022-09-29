@@ -1,6 +1,27 @@
+## 2.13.9 (2022-09-29)
+
+- 仅仅优化代码，API 不变
+
+## 2.13.8 (2022-09-06)
+
+### Android specific
+
+- 支持延迟初始化 RN
+
+在 MainApplication 中作如下变更：
+
+```diff
+  ReactBridgeManager bridgeManager = ReactBridgeManager.get();
+- bridgeManager.install(getReactNativeHost());
++ bridgeManager.setReactNativeHost(getReactNativeHost());
+```
+
+然后在适当时机（譬如用户同意隐私政策后）调用 `bridgeManager.initialize()`
+
 ## 2.13.6 (2022-09-01)
 
 ### iOS specific
+
 - 修复应用启动时通过 sceneId 找不到对应 UIViewController 的问题
 
 ## 2.13.5 (2022-08-24)
