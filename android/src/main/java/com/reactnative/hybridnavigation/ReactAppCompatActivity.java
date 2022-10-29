@@ -42,21 +42,16 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         activityDelegate.onCreate(savedInstanceState);
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         bridgeManager.addReactModuleRegisterListener(this);
-        ensureViewHierarchy(bridgeManager, savedInstanceState);
+        if (isReactModuleRegisterCompleted()) {
+            inflateStyle();
+            ensureViewHierarchy(bridgeManager);
+        }
     }
 
-    private void ensureViewHierarchy(ReactBridgeManager bridgeManager, Bundle savedInstanceState) {
-        if (!isReactModuleRegisterCompleted()) {
-            return;
-        }
-
-        if (savedInstanceState == null) {
-            onReactModuleRegisterCompleted();
-            return;
-        }
-
+    private void ensureViewHierarchy(ReactBridgeManager bridgeManager) {
         Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
         if (fragment instanceof AwesomeFragment) {
+            FLog.i(TAG, "ReactAppCompatActivity#ensureViewHierarchy");
             bridgeManager.setViewHierarchyReady(true);
         }
     }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.UiThreadUtil;
 import com.navigation.androidx.AwesomeFragment;
@@ -34,10 +35,16 @@ public class MainActivity extends ReactAppCompatActivity {
             }
         }
         
+        if (splashFragment != null) {
+            splashFragment.hideAsDialog();
+            splashFragment = null;
+        }
+        
         // 当 Activity 销毁后重建，譬如旋转屏幕的时候，如果 React Native 已经启动完成，则不再显示闪屏
         ReactContext reactContext = getCurrentReactContext();
         if (splashFragment == null && reactContext == null) {
             splashFragment = new SplashFragment();
+            FLog.i(TAG, "MainActivity#launchSplash showAsDialog");
             showAsDialog(splashFragment, 0);
         }
     }
@@ -49,6 +56,7 @@ public class MainActivity extends ReactAppCompatActivity {
         // 如果发现有白屏，请调整 delayInMs 参数
         UiThreadUtil.runOnUiThread(() -> {
             if (splashFragment != null) {
+                FLog.i(TAG, "MainActivity#hideSplash hideAsDialog");
                 splashFragment.hideAsDialog();
                 splashFragment = null;
             }
@@ -59,6 +67,7 @@ public class MainActivity extends ReactAppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (splashFragment != null) {
+            FLog.i(TAG, "MainActivity#onSaveInstanceState");
             outState.putString("splash_tag", splashFragment.getSceneId());
         }
     }
