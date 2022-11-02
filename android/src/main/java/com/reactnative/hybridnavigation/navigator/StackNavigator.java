@@ -89,6 +89,8 @@ public class StackNavigator implements Navigator {
 
     @NonNull
     private ArrayList<Bundle> buildChildrenGraph(StackFragment stack) {
+        ensureChildFragments(stack);
+        
         ArrayList<Bundle> children = new ArrayList<>();
         List<AwesomeFragment> fragments = stack.getChildAwesomeFragments();
         for (int i = 0; i < fragments.size(); i++) {
@@ -107,7 +109,16 @@ public class StackNavigator implements Navigator {
             return null;
         }
         StackFragment stack = (StackFragment) fragment;
+        ensureChildFragments(stack);
         return getReactBridgeManager().primaryFragment(stack.getTopFragment());
+    }
+    
+    private void ensureChildFragments(@NonNull Fragment fragment) {
+        try {
+            fragment.getChildFragmentManager().executePendingTransactions();
+        } catch (Exception e) {
+            // ignore
+        }
     }
 
     @Override
