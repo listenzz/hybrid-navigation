@@ -134,7 +134,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 return;
             }
 
-            if (!target.isAdded()) {
+            if (!target.isAdded() || target.isRemoving()) {
                 callback.invoke(null, false);
                 return;
             }
