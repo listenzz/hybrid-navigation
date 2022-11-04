@@ -127,19 +127,27 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void dispatch(final String sceneId, final String action, final ReadableMap extras, Callback callback) {
         UiThreadUtil.runOnUiThread(() -> {
-            AwesomeFragment target = findFragmentBySceneId(sceneId);
-            if (target == null) {
-                callback.invoke(null, false);
-                FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
-                return;
-            }
-
-            if (!target.isAdded() || target.isRemoving()) {
+            AwesomeActivity activity = getActiveActivity();
+            if (activity == null) {
                 callback.invoke(null, false);
                 return;
             }
+            
+            activity.scheduleTaskAtStarted(() -> {
+                AwesomeFragment target = findFragmentBySceneId(sceneId);
+                if (target == null) {
+                    callback.invoke(null, false);
+                    FLog.w(TAG, "Can't find target scene for action:" + action + ", maybe the scene is gone.\nextras: " + extras);
+                    return;
+                }
 
-            bridgeManager.handleNavigation(target, action, extras, callback);
+                if (!target.isAdded() || target.isRemoving()) {
+                    callback.invoke(null, false);
+                    return;
+                }
+
+                bridgeManager.handleNavigation(target, action, extras, callback);
+            });
         });
     }
 
@@ -194,7 +202,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
-                
+
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
                 if (!(fragment instanceof AwesomeFragment)) {
@@ -254,7 +262,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
-                
+
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
                 if (current == null) {
@@ -283,7 +291,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
-                
+
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 ArrayList<Bundle> graph = bridgeManager.buildRouteGraph(fragmentManager);
                 if (graph.size() == 0) {
