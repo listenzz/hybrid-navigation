@@ -87,11 +87,18 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void signalFirstRenderComplete(final String sceneId) {
         UiThreadUtil.runOnUiThread(() -> {
-            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment instanceof ReactFragment) {
-                ReactFragment reactFragment = (ReactFragment) fragment;
-                reactFragment.signalFirstRenderComplete();
+            AwesomeActivity activity = getActiveActivity();
+            if (activity == null) {
+                return;
             }
+            
+            activity.scheduleTaskAtStarted(() -> {
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment instanceof ReactFragment) {
+                    ReactFragment reactFragment = (ReactFragment) fragment;
+                    reactFragment.signalFirstRenderComplete();
+                }
+            });
         });
     }
 
@@ -132,7 +139,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 callback.invoke(null, false);
                 return;
             }
-            
+
             activity.scheduleTaskAtStarted(() -> {
                 AwesomeFragment target = findFragmentBySceneId(sceneId);
                 if (target == null) {
@@ -141,7 +148,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     return;
                 }
 
-                if (!target.isAdded() || target.isRemoving()) {
+                if (!target.isAdded() || FragmentHelper.isRemoving(target)) {
                     callback.invoke(null, false);
                     return;
                 }
@@ -154,31 +161,47 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void currentTab(final String sceneId, final Callback callback) {
         UiThreadUtil.runOnUiThread(() -> {
-            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment == null) {
+            AwesomeActivity activity = getActiveActivity();
+            if (activity == null) {
                 callback.invoke(null, -1);
                 return;
             }
+            
+            activity.scheduleTaskAtStarted(() -> {
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment == null) {
+                    callback.invoke(null, -1);
+                    return;
+                }
 
-            TabBarFragment tabs = fragment.getTabBarFragment();
-            if (tabs == null) {
-                callback.invoke(null, -1);
-                return;
-            }
+                TabBarFragment tabs = fragment.getTabBarFragment();
+                if (tabs == null) {
+                    callback.invoke(null, -1);
+                    return;
+                }
 
-            callback.invoke(null, tabs.getSelectedIndex());
+                callback.invoke(null, tabs.getSelectedIndex());
+            });
         });
     }
 
     @ReactMethod
     public void isStackRoot(final String sceneId, final Callback callback) {
         UiThreadUtil.runOnUiThread(() -> {
-            AwesomeFragment fragment = findFragmentBySceneId(sceneId);
-            if (fragment == null) {
-                callback.invoke(null, false);
+            AwesomeActivity activity = getActiveActivity();
+            if (activity == null) {
+                callback.invoke(null, -1);
                 return;
             }
-            callback.invoke(null, fragment.isStackRoot());
+            
+            activity.scheduleTaskAtStarted(() -> {
+                AwesomeFragment fragment = findFragmentBySceneId(sceneId);
+                if (fragment == null) {
+                    callback.invoke(null, false);
+                    return;
+                }
+                callback.invoke(null, fragment.isStackRoot());
+            });
         });
     }
 
@@ -202,17 +225,19 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
+                
+                activity.scheduleTaskAtStarted(() -> {
+                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                    Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
+                    if (!(fragment instanceof AwesomeFragment)) {
+                        callback.invoke(null, null);
+                        return;
+                    }
 
-                FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
-                if (!(fragment instanceof AwesomeFragment)) {
-                    callback.invoke(null, null);
-                    return;
-                }
-
-                String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
-                FLog.i(TAG, "The sceneId found by " + moduleName + " : " + sceneId);
-                callback.invoke(null, sceneId);
+                    String sceneId = findSceneIdByModuleName(moduleName, (AwesomeFragment) fragment);
+                    FLog.i(TAG, "The sceneId found by " + moduleName + " : " + sceneId);
+                    callback.invoke(null, sceneId);
+                });
             }
         };
 
@@ -263,18 +288,20 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     return;
                 }
 
-                FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
-                if (current == null) {
-                    UiThreadUtil.runOnUiThread(this, 16);
-                    return;
-                }
+                activity.scheduleTaskAtStarted(() -> {
+                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                    HybridFragment current = bridgeManager.primaryFragment(fragmentManager);
+                    if (current == null) {
+                        UiThreadUtil.runOnUiThread(this, 16);
+                        return;
+                    }
 
-                Bundle bundle = new Bundle();
-                bundle.putString("moduleName", current.getModuleName());
-                bundle.putString("sceneId", current.getSceneId());
-                bundle.putString("mode", Navigator.Util.getMode(current));
-                callback.invoke(null, Arguments.fromBundle(bundle));
+                    Bundle bundle = new Bundle();
+                    bundle.putString("moduleName", current.getModuleName());
+                    bundle.putString("sceneId", current.getSceneId());
+                    bundle.putString("mode", Navigator.Util.getMode(current));
+                    callback.invoke(null, Arguments.fromBundle(bundle));
+                });
             }
         };
 
@@ -291,15 +318,17 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     UiThreadUtil.runOnUiThread(this, 16);
                     return;
                 }
+                
+                activity.scheduleTaskAtStarted(() -> {
+                    FragmentManager fragmentManager = activity.getSupportFragmentManager();
+                    ArrayList<Bundle> graph = bridgeManager.buildRouteGraph(fragmentManager);
+                    if (graph.size() == 0) {
+                        UiThreadUtil.runOnUiThread(this, 16);
+                        return;
+                    }
 
-                FragmentManager fragmentManager = activity.getSupportFragmentManager();
-                ArrayList<Bundle> graph = bridgeManager.buildRouteGraph(fragmentManager);
-                if (graph.size() == 0) {
-                    UiThreadUtil.runOnUiThread(this, 16);
-                    return;
-                }
-
-                callback.invoke(null, Arguments.fromList(graph));
+                    callback.invoke(null, Arguments.fromList(graph));
+                });
             }
         };
 

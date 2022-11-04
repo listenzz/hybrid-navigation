@@ -294,14 +294,14 @@ public class ReactBridgeManager {
         if (fragment == null) {
             return null;
         }
-
+        
         if (fragment.definesPresentationContext()) {
             AwesomeFragment presented = fragment.getPresentedFragment();
             if (presented != null) {
                 return primaryFragment(presented);
             }
         }
-
+        
         String layout = navigatorRegistry.layoutForFragment(fragment);
         if (layout == null) {
             return null;
@@ -314,7 +314,7 @@ public class ReactBridgeManager {
 
         return null;
     }
-
+    
     public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Callback callback) {
         Navigator navigator = navigatorRegistry.navigatorForAction(action);
         if (navigator != null) {

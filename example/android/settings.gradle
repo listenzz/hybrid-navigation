@@ -7,5 +7,5 @@ include ':app'
 include ':hybrid-navigation'
 project(':hybrid-navigation').projectDir = new File(rootProject.projectDir, '../../android')
 
-// include ':navigation'
-// project(':navigation').projectDir = new File(rootProject.projectDir, '../../../AndroidNavigation/navigation')
+//include ':navigation'
+//project(':navigation').projectDir = new File(rootProject.projectDir, '../../../AndroidNavigation/navigation')

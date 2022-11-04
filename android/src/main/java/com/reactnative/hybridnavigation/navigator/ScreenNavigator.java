@@ -83,10 +83,10 @@ public class ScreenNavigator implements Navigator {
         }
 
         AwesomeFragment presented = FragmentHelper.getFragmentAfter(fragment);
-        if (presented == null) {
-            return (HybridFragment) fragment;
+        if (presented != null) {
+            return (HybridFragment) presented;
         }
-        return (HybridFragment) presented;
+        return (HybridFragment) fragment;
     }
 
     @Override
