@@ -6,7 +6,6 @@ import Navigation, {
   Screen,
   Tabs,
   Stack,
-  Navigator,
 } from 'hybrid-navigation'
 import { Image, Platform } from 'react-native'
 import NavigationScreen from './Navigation'
@@ -32,8 +31,7 @@ import CustomTabBar from './CustomTabBar'
 import BulgeTabBar from './BulgeTabBar'
 import Toast from './Toast'
 import ZustandCounter from './ZustandCounter'
-
-import BackgroundTask, { EventEmitter } from './BackgroundTask'
+import BackgroundTaskDemo from './BackgroundTaskDemo'
 
 // import MessageQueue from 'react-native/Libraries/BatchedBridge/MessageQueue.js';
 // const spyFunction = msg => {
@@ -127,6 +125,7 @@ Navigation.registerComponent('ReactModal', () => ReactModal, { path: '/modal', m
 Navigation.registerComponent('CustomTabBar', () => CustomTabBar)
 Navigation.registerComponent('BulgeTabBar', () => BulgeTabBar)
 Navigation.registerComponent('Toast', () => Toast)
+Navigation.registerComponent('BackgroundTaskDemo', () => BackgroundTaskDemo)
 
 // 完成注册组件
 Navigation.endRegisterComponent()
@@ -195,12 +194,4 @@ Navigation.setInterceptor(async (action, extras) => {
   // }
   // // 不拦截任何操作
   return false
-})
-
-const { BACKGROUND_TASK_EVENT } = BackgroundTask.getConstants()
-
-EventEmitter.addListener(BACKGROUND_TASK_EVENT, async () => {
-  console.log('------------------------BACKGROUND_TASK_EVENT')
-  const { sceneId } = await Navigation.currentRoute()
-  Navigator.of(sceneId).redirectTo('Navigation')
 })

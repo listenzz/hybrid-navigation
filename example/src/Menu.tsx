@@ -25,6 +25,11 @@ export default function Menu({ navigator }: NavigationProps) {
     navigator.push('Toast')
   }
 
+  function backgroundTask() {
+    navigator.closeMenu()
+    navigator.push('BackgroundTaskDemo')
+  }
+
   useVisibleEffect(
     useCallback(() => {
       console.log(`Menu is visible`)
@@ -50,6 +55,9 @@ export default function Menu({ navigator }: NavigationProps) {
 
       <TouchableOpacity onPress={pushToToast} activeOpacity={0.2} style={styles.button}>
         <Text style={styles.buttonText}>Toast</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={backgroundTask} activeOpacity={0.2} style={styles.button}>
+        <Text style={styles.buttonText}>BackgroundTask</Text>
       </TouchableOpacity>
     </View>
   )

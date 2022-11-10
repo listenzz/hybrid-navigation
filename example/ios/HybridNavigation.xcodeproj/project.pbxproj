@@ -15,6 +15,7 @@
 		91887264236AD544003DC79E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 91887263236AD544003DC79E /* AppDelegate.m */; };
 		9188726F236AD545003DC79E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9188726E236AD545003DC79E /* Assets.xcassets */; };
 		91887275236AD545003DC79E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 91887274236AD545003DC79E /* main.m */; };
+		91C6017B291CAF520026ED85 /* BackgroundTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 91C6017A291CAF520026ED85 /* BackgroundTask.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,8 @@
 		9188726E236AD545003DC79E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		91887273236AD545003DC79E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		91887274236AD545003DC79E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		91C60179291CAF520026ED85 /* BackgroundTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BackgroundTask.h; sourceTree = "<group>"; };
+		91C6017A291CAF520026ED85 /* BackgroundTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BackgroundTask.m; sourceTree = "<group>"; };
 		9B06CECFB4465CF3AFD98B52 /* libPods-HybridNavigation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HybridNavigation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFBC64BE9BB0DF3F4F6EC449 /* Pods-HybridNavigation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HybridNavigation.debug.xcconfig"; path = "Target Support Files/Pods-HybridNavigation/Pods-HybridNavigation.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,6 +80,8 @@
 				9188726E236AD545003DC79E /* Assets.xcassets */,
 				91887273236AD545003DC79E /* Info.plist */,
 				91887274236AD545003DC79E /* main.m */,
+				91C60179291CAF520026ED85 /* BackgroundTask.h */,
+				91C6017A291CAF520026ED85 /* BackgroundTask.m */,
 			);
 			path = HybridNavigation;
 			sourceTree = "<group>";
@@ -234,6 +239,7 @@
 			files = (
 				9161397F25B1849F002B7901 /* NativeViewController.m in Sources */,
 				91887264236AD544003DC79E /* AppDelegate.m in Sources */,
+				91C6017B291CAF520026ED85 /* BackgroundTask.m in Sources */,
 				91887275236AD545003DC79E /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
