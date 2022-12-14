@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
@@ -42,20 +41,12 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         activityDelegate.onCreate(savedInstanceState);
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         bridgeManager.addReactModuleRegisterListener(this);
+        
         if (isReactModuleRegisterCompleted()) {
-            inflateStyle();
-            ensureViewHierarchy(bridgeManager);
+            onReactModuleRegisterCompleted();
         }
     }
-
-    private void ensureViewHierarchy(ReactBridgeManager bridgeManager) {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
-        if (fragment instanceof AwesomeFragment) {
-            FLog.i(TAG, "ReactAppCompatActivity#ensureViewHierarchy");
-            bridgeManager.setViewHierarchyReady(true);
-        }
-    }
-
+    
     public void inflateStyle() {
         Style style = getStyle();
         GlobalStyle globalStyle = Garden.getGlobalStyle();
