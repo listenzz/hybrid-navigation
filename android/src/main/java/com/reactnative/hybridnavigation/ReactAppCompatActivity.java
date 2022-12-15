@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
@@ -71,7 +72,11 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             activityDelegate.onResume();
         }
         inflateStyle();
-        createMainComponent();
+        // 部分手机，如三星，Activity 销毁后重建，不会重建 Fragment。
+        Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
+        if (fragment == null) {
+            createMainComponent();
+        }
     }
 
     private void createMainComponent() {
