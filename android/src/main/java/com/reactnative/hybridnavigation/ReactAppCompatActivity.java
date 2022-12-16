@@ -43,6 +43,10 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         bridgeManager.addReactModuleRegisterListener(this);
         
+        if (savedInstanceState != null) {
+            FLog.i(TAG, "ReactAppCompatActivity#re-create");
+        }
+        
         if (isReactModuleRegisterCompleted()) {
             onReactModuleRegisterCompleted();
         }
@@ -72,7 +76,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
             activityDelegate.onResume();
         }
         inflateStyle();
-        // 部分手机，如三星，Activity 销毁后重建，不会重建 Fragment。
         Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
         if (fragment == null) {
             createMainComponent();
