@@ -27,7 +27,7 @@
 		<activity
 			android:name=".MainActivity"
 			android:theme="@style/SplashTheme"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
+            android:configChanges="keyboard|keyboardHidden|screenSize|uiMode"
 			android:launchMode="singleTask"
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter>
