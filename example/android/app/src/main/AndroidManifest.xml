@@ -29,6 +29,7 @@
 			android:theme="@style/SplashTheme"
             android:configChanges="keyboard|keyboardHidden|screenSize|uiMode"
 			android:launchMode="singleTask"
+            android:exported="true"
 			android:windowSoftInputMode="adjustResize">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />

@@ -1,6 +1,7 @@
 package com.reactnative.hybridnavigation;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
@@ -26,10 +27,10 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     protected static final String TAG = "Navigation";
 
-    private final ReactAppCompatActivityDelegate activityDelegate;
+    private final ReactAppCompatActivityDelegate mDelegate;
 
     protected ReactAppCompatActivity() {
-        activityDelegate = createReactActivityDelegate();
+        mDelegate = createReactActivityDelegate();
     }
 
     protected ReactAppCompatActivityDelegate createReactActivityDelegate() {
@@ -39,19 +40,19 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityDelegate.onCreate(savedInstanceState);
+        mDelegate.onCreate(savedInstanceState);
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         bridgeManager.addReactModuleRegisterListener(this);
-        
+
         if (savedInstanceState != null) {
             FLog.i(TAG, "ReactAppCompatActivity#re-create");
         }
-        
+
         if (isReactModuleRegisterCompleted()) {
             onReactModuleRegisterCompleted();
         }
     }
-    
+
     public void inflateStyle() {
         Style style = getStyle();
         GlobalStyle globalStyle = Garden.getGlobalStyle();
@@ -65,7 +66,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     protected void onDestroy() {
         getReactBridgeManager().removeReactModuleRegisterListener(this);
         super.onDestroy();
-        activityDelegate.onDestroy();
+        mDelegate.onDestroy();
     }
 
     @Override
@@ -73,7 +74,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         FLog.i(TAG, "ReactAppCompatActivity#onReactModuleRegisterCompleted");
         ReactContext reactContext = Assertions.assertNotNull(getCurrentReactContext());
         if (isResumed && reactContext.getCurrentActivity() == null) {
-            activityDelegate.onResume();
+            mDelegate.onResume();
         }
         inflateStyle();
         Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
@@ -151,7 +152,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
         super.onResume();
         isResumed = true;
         if (getCurrentReactContext() != null) {
-            activityDelegate.onResume();
+            mDelegate.onResume();
         }
 
         ReactBridgeManager bridgeManager = getReactBridgeManager();
@@ -165,35 +166,35 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     protected void onPause() {
         isResumed = false;
         if (getCurrentReactContext() != null) {
-            activityDelegate.onPause();
+            mDelegate.onPause();
         }
         super.onPause();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        activityDelegate.onActivityResult(requestCode, resultCode, data);
+        mDelegate.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return activityDelegate.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event);
+        return mDelegate.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return activityDelegate.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event);
+        return mDelegate.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        return activityDelegate.onKeyLongPress(keyCode, event) || super.onKeyLongPress(keyCode, event);
+        return mDelegate.onKeyLongPress(keyCode, event) || super.onKeyLongPress(keyCode, event);
     }
 
     @Override
     public void onBackPressed() {
-        if (!activityDelegate.onBackPressed()) {
+        if (!mDelegate.onBackPressed()) {
             super.onBackPressed();
         }
     }
@@ -205,24 +206,34 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @Override
     public void onNewIntent(Intent intent) {
-        if (!activityDelegate.onNewIntent(intent)) {
+        if (!mDelegate.onNewIntent(intent)) {
             super.onNewIntent(intent);
         }
     }
 
     @Override
     public void requestPermissions(String[] permissions, int requestCode, PermissionListener listener) {
-        activityDelegate.requestPermissions(permissions, requestCode, listener);
+        mDelegate.requestPermissions(permissions, requestCode, listener);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        activityDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mDelegate.onRequestPermissionsResult(requestCode, permissions, grantResults);
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        this.mDelegate.onWindowFocusChanged(hasFocus);
+    }
+
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        this.mDelegate.onConfigurationChanged(newConfig);
+    }
+
     protected final ReactNativeHost getReactNativeHost() {
-        return activityDelegate.getReactNativeHost();
+        return mDelegate.getReactNativeHost();
     }
 
     protected final ReactInstanceManager getReactInstanceManager() {
@@ -235,7 +246,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 
     @NonNull
     protected ReactBridgeManager getReactBridgeManager() {
-        return activityDelegate.getReactBridgeManager();
+        return mDelegate.getReactBridgeManager();
     }
 
     protected boolean isReactModuleRegisterCompleted() {

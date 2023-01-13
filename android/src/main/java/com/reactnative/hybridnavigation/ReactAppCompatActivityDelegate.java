@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -129,9 +130,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (getReactNativeHost().hasInstance()
-            && getReactNativeHost().getUseDeveloperSupport()
-            && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+        if (getReactNativeHost().hasInstance() && getReactNativeHost().getUseDeveloperSupport() && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
             event.startTracking();
             return true;
         }
@@ -144,8 +143,8 @@ public class ReactAppCompatActivityDelegate {
                 getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
                 return true;
             }
-            boolean didDoubleTapR = Assertions.assertNotNull(mDoubleTapReloadRecognizer)
-                .didDoubleTapR(keyCode, getPlainActivity().getCurrentFocus());
+            
+            boolean didDoubleTapR = Assertions.assertNotNull(mDoubleTapReloadRecognizer).didDoubleTapR(keyCode, getPlainActivity().getCurrentFocus());
             if (didDoubleTapR) {
                 getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();
                 return true;
@@ -155,9 +154,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        if (getReactNativeHost().hasInstance()
-            && getReactNativeHost().getUseDeveloperSupport()
-            && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+        if (getReactNativeHost().hasInstance() && getReactNativeHost().getUseDeveloperSupport() && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
             getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
             return true;
         }
@@ -178,6 +175,18 @@ public class ReactAppCompatActivityDelegate {
             return true;
         }
         return false;
+    }
+
+    public void onWindowFocusChanged(boolean hasFocus) {
+        if (this.getReactNativeHost().hasInstance()) {
+            this.getReactNativeHost().getReactInstanceManager().onWindowFocusChange(hasFocus);
+        }
+    }
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        if (this.getReactNativeHost().hasInstance()) {
+            this.getReactInstanceManager().onConfigurationChanged(this.getContext(), newConfig);
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)

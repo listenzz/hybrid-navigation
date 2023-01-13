@@ -1,17 +1,13 @@
 apply plugin: 'com.android.application'
-project.ext.react = [
-        root           : "../../../",
-        entryFile      : "example/index.js",
-        cliPath        : "../../../node_modules/react-native/cli.js",
-        bundleInRelease: true,
-        bundleInDebug  : true,
-        enableHermes   : false,
-        hermesCommand  : "../../../node_modules/hermes-engine/%OS-BIN%/hermesc",
-]
+apply plugin: "com.facebook.react"
 
-apply from: "../../../node_modules/react-native/react.gradle"
+react {
+    root =  file("../../../")
+    entryFile =  file("example/index.js")
+//    cliPath =  "../../../node_modules/react-native/cli.js"
+    hermesCommand = "../../../node_modules/hermes-engine/%OS-BIN%/hermesc"
+}
 
-def enableHermes = project.ext.react.get("enableHermes", false)
 def enableSeparateBuildPerCPUArchitecture = true
 def enableProguardInReleaseBuilds = false
 def jscFlavor = 'org.webkit:android-jsc:+'
@@ -63,12 +59,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'com.facebook.react:react-native:+'
+    implementation("com.facebook.react:react-android")
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-    if (enableHermes) {
-        def hermesPath = "../../../node_modules/hermes-engine/android/"
-        debugImplementation files(hermesPath + "hermes-debug.aar")
-        releaseImplementation files(hermesPath + "hermes-release.aar")
+    if (hermesEnabled.toBoolean()) {
+        implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
     }

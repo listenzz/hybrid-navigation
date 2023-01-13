@@ -39,25 +39,25 @@ AppRegistry.registerComponent(appName, () => App)
 现在，你需要像下面那样
 
 ```js
-import { ReactRegistry, Garden, Navigator, BarStyleDarkContent } from 'hybrid-navigation'
+import Navigation, { BarStyleDarkContent } from 'hybrid-navigation'
 import App from './App'
 
 // 配置全局样式
-Garden.setStyle({
+Navigation.setDefaultOptions({
   topBarStyle: BarStyleDarkContent,
 })
 
 // 重要必须
-ReactRegistry.startRegisterComponent()
+Navigation.startRegisterComponent()
 
 // 注意，你的每一个页面都需要注册
-ReactRegistry.registerComponent('App', () => App)
+Navigation.registerComponent('App', () => App)
 
 // 重要必须
-ReactRegistry.endRegisterComponent()
+Navigation.endRegisterComponent()
 
 // 通过 `Navigator#setRoot` 来设置 UI 层级
-Navigator.setRoot({
+Navigation.setRoot({
   stack: {
     children: [{ screen: { moduleName: 'App' } }],
   },
@@ -162,37 +162,51 @@ public class MainActivity extends ReactAppCompatActivity {
 cd ios & pod install
 ```
 
-修改 AppDelegate.m 文件
+修改 AppDelegate.h 文件，修改后大概长下面这个样子
 
-```diff
-  #import <React/RCTBridge.h>
-  #import <React/RCTBundleURLProvider.h>
-- #import <React/RCTRootView.h>
-+ #import <HybridNavigation/HybridNavigation.h>
+```objc
+#import <UIKit/UIKit.h>
+#import <React/RCTBridgeDelegate.h>
 
-  @implementation AppDelegate
+@interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate>
 
-  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-  {
--    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
--                                                   moduleName:@"RN60"
--                                            initialProperties:nil];
--
--    rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
+@property (strong, nonatomic) UIWindow *window;
 
-+    [[HBDReactBridgeManager get] installWithBridge:bridge];
-+
-     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-+    self.window.windowLevel = UIWindowLevelStatusBar + 1;
-     UIViewController *rootViewController = [UIViewController new];
--    rootViewController.view = rootView;
-+    rootViewController.view.backgroundColor = UIColor.whiteColor;
-     self.window.rootViewController = rootViewController;
-     [self.window makeKeyAndVisible];
-     return YES;
- }
+@end
+```
 
- @end
+修改 AppDelegate.m 文件，修改后大概长下面这个样子
+
+```objc
+#import "AppDelegate.h"
+
+#import <React/RCTBundleURLProvider.h>
+#import <HybridNavigation/HybridNavigation.h>
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+    [[HBDReactBridgeManager get] installWithBridge:bridge];
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+    UIViewController *rootViewController = [storyboard instantiateInitialViewController];
+    self.window.windowLevel = UIWindowLevelStatusBar + 1;
+    self.window.rootViewController = rootViewController;
+    [self.window makeKeyAndVisible];
+
+    return YES;
+}
+
+- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
+#if DEBUG
+    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+#else
+    return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+#endif
+}
+
+@end
 ```
 
 修改 Info.plist 文件
