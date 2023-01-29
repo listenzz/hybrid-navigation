@@ -153,7 +153,7 @@ export class Navigation implements Navigation {
     data: T = null as T,
   ): void => NavigationModule.setResult(sceneId, resultCode, data)
 
-  result<T>(sceneId: string, resultCode: number) {
+  result<T extends ResultType>(sceneId: string, resultCode: number) {
     return this.resultHandler.waitResult<T>(sceneId, resultCode)
   }
 

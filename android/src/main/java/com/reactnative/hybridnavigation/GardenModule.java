@@ -8,6 +8,7 @@ import static com.reactnative.hybridnavigation.Parameters.toBundle;
 import static com.reactnative.hybridnavigation.Parameters.toList;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,6 @@ import com.facebook.react.uimanager.PixelUtil;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
 import com.navigation.androidx.FragmentHelper;
-import com.navigation.androidx.SystemUI;
 import com.navigation.androidx.TabBarFragment;
 
 import java.util.HashMap;
@@ -56,7 +56,9 @@ public class GardenModule extends ReactContextBaseJavaModule {
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
         constants.put("TOOLBAR_HEIGHT", 56);
-        float statusBarHeight = PixelUtil.toDIPFromPixel(SystemUI.getStatusBarHeight(getReactApplicationContext()));
+        Resources resources = getReactApplicationContextIfActiveOrWarn().getResources();
+        int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
+        float statusBarHeight = PixelUtil.toDIPFromPixel(resources.getDimensionPixelSize(resourceId));
         constants.put("STATUSBAR_HEIGHT", statusBarHeight);
         return constants;
     }

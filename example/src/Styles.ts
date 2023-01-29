@@ -54,6 +54,23 @@ export default StyleSheet.create({
     borderWidth: 1,
   },
 
+  input2: {
+    height: 40,
+    margin: 16,
+    paddingLeft: 8,
+    paddingRight: 8,
+    borderColor: '#cccccc',
+    borderWidth: 1,
+  },
+
+  keyboard: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#F8F8F8',
+  },
+
   welcome: {
     backgroundColor: 'transparent',
     lineHeight: 25,

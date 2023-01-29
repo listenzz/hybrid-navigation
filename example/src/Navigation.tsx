@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native'
+import { TouchableOpacity, Text, View, ScrollView, Image, TextInput } from 'react-native'
 
 import styles from './Styles'
 import Navigation, {
@@ -9,6 +9,8 @@ import Navigation, {
   NavigationProps,
   useVisibleEffect,
 } from 'hybrid-navigation'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
+import { KeyboardInsetsView } from 'react-native-keyboard-insets'
 
 export default withNavigationItem({
   //topBarStyle: 'light-content',
@@ -149,62 +151,84 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
     return <Text style={styles.result}>{error}</Text>
   }
 
+  const [input, setInput] = useState<string>()
+
+  function handleTextChanged(txt: string) {
+    setInput(txt)
+  }
+
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="never"
-      automaticallyAdjustContentInsets={false}
-      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
-      <View style={styles.container}>
-        <Text style={styles.welcome}>This's a React Native scene.</Text>
+    <SafeAreaProvider>
+      <ScrollView
+        contentInsetAdjustmentBehavior="never"
+        automaticallyAdjustContentInsets={false}
+        contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
+        <View style={styles.container}>
+          <Text style={styles.welcome}>This's a React Native scene.</Text>
 
-        <TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>push</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>push</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={pop} activeOpacity={0.2} style={styles.button} disabled={isRoot}>
-          <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={pop}
+            activeOpacity={0.2}
+            style={styles.button}
+            disabled={isRoot}>
+            <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={popTo}
-          activeOpacity={0.2}
-          style={styles.button}
-          disabled={popToId === undefined}>
-          <Text style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}>
-            popTo first
-          </Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={popTo}
+            activeOpacity={0.2}
+            style={styles.button}
+            disabled={popToId === undefined}>
+            <Text style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}>
+              popTo first
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={popToRoot}
-          activeOpacity={0.2}
-          style={styles.button}
-          disabled={isRoot}>
-          <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>popToRoot</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={popToRoot}
+            activeOpacity={0.2}
+            style={styles.button}
+            disabled={isRoot}>
+            <Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>popToRoot</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={redirectTo} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>redirectTo</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={redirectTo} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>redirectTo</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>present</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>present</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>switch to tab 'Options'</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>switch to tab 'Options'</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>show modal</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>show modal</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={printRouteGraph} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>printRouteGraph</Text>
-        </TouchableOpacity>
-        {renderResult()}
-        {renderError()}
-      </View>
-    </ScrollView>
+          <TouchableOpacity onPress={printRouteGraph} activeOpacity={0.2} style={styles.button}>
+            <Text style={styles.buttonText}>printRouteGraph</Text>
+          </TouchableOpacity>
+          {renderResult()}
+          {renderError()}
+        </View>
+      </ScrollView>
+      <KeyboardInsetsView extraHeight={16} style={styles.keyboard}>
+        <TextInput
+          style={styles.input2}
+          onChangeText={handleTextChanged}
+          value={input}
+          placeholder={'test keyboard instes'}
+          textAlignVertical="center"
+        />
+        <SafeAreaView edges={['bottom']} />
+      </KeyboardInsetsView>
+    </SafeAreaProvider>
   )
 }

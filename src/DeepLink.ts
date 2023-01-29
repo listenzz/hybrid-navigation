@@ -37,6 +37,7 @@ class DeepLinkImpl {
         this.subscription.remove()
         this.subscription = null
       } else {
+        //@ts-ignore
         Linking.removeEventListener('url', this.handleLinking)
       }
     }

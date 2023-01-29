@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { TouchableOpacity, Text, View, TextInput, Image } from 'react-native'
+import { TouchableOpacity, Text, TextInput, Image, ScrollView } from 'react-native'
 import styles from './Styles'
 
 import Navigation, {
@@ -8,8 +7,8 @@ import Navigation, {
   BarStyleLightContent,
   withNavigationItem,
   NavigationProps,
-  Navigator,
   useVisibleEffect,
+  KeyboardInsetsView,
 } from 'hybrid-navigation'
 
 export default withNavigationItem({
@@ -77,17 +76,15 @@ function Result({ navigator, sceneId }: NavigationProps) {
   }
 
   async function printRouteGraph() {
-    const graph = await Navigator.routeGraph()
+    const graph = await Navigation.routeGraph()
     console.log(JSON.stringify(graph, null, 2))
-    const route = await Navigator.currentRoute()
+    const route = await Navigation.currentRoute()
     console.log(JSON.stringify(route, null, 2))
   }
 
   return (
-    <KeyboardAwareScrollView
-      showsHorizontalScrollIndicator={false}
-      contentInsetAdjustmentBehavior="never">
-      <View style={styles.container}>
+    <KeyboardInsetsView extraHeight={16}>
+      <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.welcome}>This's a React Native scene.</Text>
 
         <TouchableOpacity onPress={pushToReact} activeOpacity={0.2} style={styles.button}>
@@ -126,7 +123,7 @@ function Result({ navigator, sceneId }: NavigationProps) {
         <TouchableOpacity onPress={printRouteGraph} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>printRouteGraph</Text>
         </TouchableOpacity>
-      </View>
-    </KeyboardAwareScrollView>
+      </ScrollView>
+    </KeyboardInsetsView>
   )
 }
