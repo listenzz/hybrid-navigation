@@ -1,3 +1,13 @@
+## 2.14.0 (2023-02-02)
+
+### Android specific
+
+- 支持 WindowInsets API
+
+  建议使用 [react-native-keyboard-insets](https://github.com/listenzz/react-native-keyboard-insets) 来处理键盘相关。
+
+  建议使用 [react-native-safe-area-context](https://github.com/th3rdwave/react-native-safe-area-context) 来规避系统 UI 的遮挡。
+
 ## 2.13.18 (2023-01-11)
 
 ### Android specific
