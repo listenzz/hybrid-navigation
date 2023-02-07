@@ -8,8 +8,8 @@ import Navigation, {
   withNavigationItem,
   NavigationProps,
   useVisibleEffect,
-  KeyboardInsetsView,
 } from 'hybrid-navigation'
+import { KeyboardInsetsView } from 'react-native-keyboard-insets'
 
 export default withNavigationItem({
   titleItem: {
@@ -83,7 +83,7 @@ function Result({ navigator, sceneId }: NavigationProps) {
   }
 
   return (
-    <KeyboardInsetsView extraHeight={16}>
+    <KeyboardInsetsView extraHeight={16} style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.welcome}>This's a React Native scene.</Text>
 
