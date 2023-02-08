@@ -7,7 +7,7 @@
 - 使用原生导航组件实现 React Native 页面间的导航，不仅具有更优的性能，而且使得 RN 页面具有原生质感
 - 原生页面和 RN 页面共享路由， 使得它们之间相互跳转和传值轻而易举
 - 内置 drawer, tabs, stack 标准容器，同时支持自定义容器和导航
-- 支持 deep link
+- 支持 Deep Link
 
 ![README-2021-10-19-15-39-45](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/README-2021-10-19-15-39-45.png)
 

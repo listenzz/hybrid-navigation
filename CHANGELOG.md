@@ -180,7 +180,7 @@ export default withBottomModal({ safeAreaColor: '#F3F3F3' })(
   ReactRegistry.startRegisterComponent(withNavigationItem({ topBarHidden: true }))
   ```
 
-  ⚠️ 实现 HOC 时，注意传递 props 给被包裹的组件，以及注意复制 `navigationItem` 这个静态属性，如
+  :exclamation: 实现 HOC 时，注意传递 props 给被包裹的组件，以及注意复制 `navigationItem` 这个静态属性，如
 
   ```ts
   export function withRedux(WrappedComponent: ComponentType<any>) {
