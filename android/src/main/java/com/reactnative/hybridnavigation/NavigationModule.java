@@ -106,7 +106,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     public void setRoot(final ReadableMap layout, final boolean sticky, final Callback callback) {
         UiThreadUtil.runOnUiThread(() -> {
             ReactContext reactContext = getReactApplicationContext();
-            if (reactContext == null || !reactContext.hasActiveReactInstance()) {
+            if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
                 FLog.w(TAG, "ReactContext hasn't active CatalystInstance, skip action `setRoot`");
                 return;
             }
@@ -353,7 +353,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
     @Nullable
     private ReactAppCompatActivity getActiveActivity() {
         ReactContext reactContext = getReactApplicationContext();
-        if (reactContext == null || !reactContext.hasActiveReactInstance()) {
+        if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
             return null;
         }
 
