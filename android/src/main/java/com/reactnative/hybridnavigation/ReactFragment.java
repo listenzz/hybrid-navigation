@@ -48,7 +48,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             reactRootViewHolder = (ReactRootViewHolder) containerLayout;
             reactRootViewHolder.setVisibilityObserver(this);
         }
-        
+
         if (!FragmentHelper.isHidden(this) || getShowsDialog()) {
             initReactRootView();
         }
@@ -197,7 +197,7 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
             return;
         }
         firstRenderCompleted = true;
-        
+
         if (isViewReady() && isResumed()) {
             sendViewAppearEvent(true);
             reactRootView.addOnGlobalLayoutListener();
@@ -296,5 +296,9 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         }
         return new Toolbar.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER);
     }
-    
+
+    @Override
+    public String getDebugTag() {
+        return "[" + getModuleName() + "]";
+    }
 }

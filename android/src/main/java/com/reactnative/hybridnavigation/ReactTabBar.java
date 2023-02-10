@@ -67,6 +67,14 @@ public class ReactTabBar extends FrameLayout {
         }
     }
 
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        mBackgroundView.setPadding(left, top, right, bottom);
+        if (mSizeIndeterminate) {
+            mReactHolder.setPadding(left, top, right, bottom);
+        }
+    }
+
     public void setRootView(View rootView) {
         mReactHolder.addView(rootView);
     }
