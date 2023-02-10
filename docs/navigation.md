@@ -37,7 +37,7 @@ Navigator.setRoot({
 })
 ```
 
-> :warning: **注意：stack 中 不可嵌套 stack**
+> :exclamation: **注意：stack 中 不可嵌套 stack**
 
 如果我们需要像微信那样，底部有几个 tab 可以切换，那么我们需要用到 tabs。
 
