@@ -1,3 +1,11 @@
+## 2.14.1 (2023-02-11)
+
+### Android specific
+
+- 修复了对 RN0.63 的兼容性问题
+
+- 修复了自定义 TabBar 未适配 WindowInsets API 的问题
+
 ## 2.14.0 (2023-02-02)
 
 ### Android specific
