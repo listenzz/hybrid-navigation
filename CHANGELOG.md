@@ -1,3 +1,9 @@
+## 2.14.3 (2023-02-15)
+
+### Android specific
+
+- 处理自定义容器 TabBar 边衬区的问题
+
 ## 2.14.2 (2023-02-13)
 
 ### Android specific
