@@ -1,3 +1,9 @@
+## 2.14.2 (2023-02-15)
+
+### Android specific
+
+- 处理 Android 11 状态栏和导航栏样式兼容性问题
+
 ## 2.14.3 (2023-02-15)
 
 ### Android specific
