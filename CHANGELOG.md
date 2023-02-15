@@ -1,4 +1,10 @@
-## 2.14.2 (2023-02-15)
+## 2.14.5 (2023-02-15)
+
+### Android specific
+
+- 处理 FragmentManager is already executing transactions 问题
+
+## 2.14.4 (2023-02-15)
 
 ### Android specific
 
