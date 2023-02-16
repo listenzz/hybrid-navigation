@@ -1,3 +1,9 @@
+## 2.14.6 (2023-02-16)
+
+### Android specific
+
+- 处理自定义 TabBar 兼容性问题
+
 ## 2.14.5 (2023-02-15)
 
 ### Android specific
