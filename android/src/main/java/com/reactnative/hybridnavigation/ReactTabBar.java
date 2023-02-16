@@ -12,15 +12,21 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
+import com.facebook.common.logging.FLog;
+
 public class ReactTabBar extends FrameLayout {
+
+    protected static final String TAG = "Navigation";
 
     private Drawable shadow = new ColorDrawable(Color.parseColor("#EEEEEE"));
     private Drawable background = new ColorDrawable(Color.WHITE);
 
-    private FrameLayout mReactHolder;
+    private FrameLayout mReactHolderView;
     private View mDivider;
     private boolean mSizeIndeterminate;
     private FrameLayout mBackgroundView;
+    
+    private ViewGroup mReactRootView;
 
     public ReactTabBar(Context context) {
         super(context);
@@ -55,7 +61,7 @@ public class ReactTabBar extends FrameLayout {
         View parentView = inflater.inflate(layout, this, true);
         mBackgroundView = parentView.findViewById(R.id.bottom_navigation_bar_background);
         mBackgroundView.setBackground(background);
-        mReactHolder = parentView.findViewById(R.id.bottom_navigation_bar_react_holder);
+        mReactHolderView = parentView.findViewById(R.id.bottom_navigation_bar_react_holder);
         mDivider = parentView.findViewById(R.id.bottom_navigation_bar_divider);
         mDivider.setBackground(shadow);
     }
@@ -71,18 +77,19 @@ public class ReactTabBar extends FrameLayout {
     public void setPadding(int left, int top, int right, int bottom) {
         mBackgroundView.setPadding(left, top, right, bottom);
         if (mSizeIndeterminate) {
-            mReactHolder.setPadding(left, top, right, bottom);
+            mReactHolderView.setPadding(left, top, right, bottom);
         }
     }
 
     public void setRootView(View rootView) {
-        mReactHolder.addView(rootView);
+        mReactHolderView.addView(rootView);
+        mReactRootView = (ViewGroup) rootView;
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mReactHolder.removeAllViews();
+        mReactHolderView.removeAllViews();
     }
 
     public void setTabBarBackground(Drawable drawable) {
@@ -91,4 +98,41 @@ public class ReactTabBar extends FrameLayout {
             mBackgroundView.setBackground(drawable);
         }
     }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        
+        ViewGroup.LayoutParams params = mReactRootView.getLayoutParams();
+        if (params.height > 0) {
+            return;
+        }
+        
+        int height = getReactIntrinsicHeight();
+        FLog.i(TAG, "[ReactTabBar] intrinsic height:" + height);
+        if (height > 0) {
+            params.height = height;
+            post(mReactRootView::requestLayout);
+        }
+    }
+    
+    private int getReactIntrinsicHeight() {
+        int rootViewHeight = mReactRootView.getMeasuredHeight();
+        if (mReactRootView.getChildCount() > 1 || mReactHolderView.getLayoutParams().height > 0) {
+            return rootViewHeight;
+        }
+        
+        ViewGroup group = mReactRootView;
+        while (group.getMeasuredHeight() == rootViewHeight) {
+            if (group.getChildCount() == 0) {
+                return 0;
+            }
+            group = (ViewGroup) group.getChildAt(0);
+            if (group.getMeasuredHeight() < rootViewHeight) {
+                return group.getMeasuredHeight();
+            }
+        }
+        return rootViewHeight;
+    }
+    
 }
