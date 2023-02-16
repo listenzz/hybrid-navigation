@@ -3,8 +3,7 @@ apply plugin: "com.facebook.react"
 
 react {
     root =  file("../../../")
-    entryFile =  file("example/index.js")
-//    cliPath =  "../../../node_modules/react-native/cli.js"
+    entryFile =  file("../../../example/index.js")
     hermesCommand = "../../../node_modules/hermes-engine/%OS-BIN%/hermesc"
 }
 
