@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, TouchableOpacity, ScrollView, Slider, Image } from 'react-native'
+import { Text, View, TouchableOpacity, ScrollView, Image } from 'react-native'
+import Slider from '@react-native-community/slider'
 import styles from './Styles'
 import Navigation, { withNavigationItem, NavigationProps, statusBarHeight } from 'hybrid-navigation'
 
