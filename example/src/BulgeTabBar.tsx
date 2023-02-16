@@ -11,10 +11,7 @@ import {
   ViewStyle,
 } from 'react-native'
 import TextBadge from './Badge'
-import FastImage from 'react-native-fast-image'
 import { Color, NavigationProps } from 'hybrid-navigation'
-
-const PlatformImage = Platform.OS === 'android' ? FastImage : Image
 
 interface Props extends NavigationProps {
   itemColor: Color
@@ -66,7 +63,7 @@ export default function BulgeTabBar({
         />
       </View>
       <TouchableOpacity onPress={() => handleTabClick(-1)} activeOpacity={0.8} style={styles.bulge}>
-        <FastImage source={require('./images/tabbar_add_yellow.png')} style={styles.bulgeImage} />
+        <Image source={require('./images/tabbar_add_yellow.png')} style={styles.bulgeImage} />
       </TouchableOpacity>
     </View>
   )
@@ -100,7 +97,7 @@ function Tab({
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       {icon ? (
-        <PlatformImage
+        <Image
           source={{
             uri: icon,
             width: 24,
@@ -108,7 +105,6 @@ function Tab({
           }}
           style={[styles.icon, { tintColor: selected ? itemColor : unselectedItemColor }]}
           resizeMode="contain"
-          tintColor={selected ? itemColor : unselectedItemColor}
         />
       ) : (
         <View style={styles.icon} />

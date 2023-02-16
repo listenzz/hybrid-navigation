@@ -14,8 +14,6 @@ import TextBadge from './Badge'
 import FastImage from 'react-native-fast-image'
 import { NavigationProps, Color } from 'hybrid-navigation'
 
-const PlatformImage = Platform.OS === 'android' ? FastImage : Image
-
 interface Props extends NavigationProps {
   itemColor: Color
   unselectedItemColor: Color
@@ -108,7 +106,7 @@ function Tab({
   return (
     <TouchableOpacity onPress={onTabClick} activeOpacity={0.8} style={styles.tab}>
       {icon ? (
-        <PlatformImage
+        <Image
           source={{
             uri: icon,
             width: 24,
@@ -116,7 +114,6 @@ function Tab({
           }}
           style={[styles.icon, { tintColor: selected ? itemColor : unselectedItemColor }]}
           resizeMode="contain"
-          tintColor={selected ? itemColor : unselectedItemColor}
         />
       ) : (
         <View style={styles.icon} />
