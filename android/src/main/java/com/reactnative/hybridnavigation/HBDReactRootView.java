@@ -72,11 +72,21 @@ public class HBDReactRootView extends ReactRootView {
             super.runApplication();
         }
     }
+    
+    private boolean hbd_isAttachedToReactInstance;
+
+    @Override
+    public void onAttachedToReactInstance() {
+        super.onAttachedToReactInstance();
+        hbd_isAttachedToReactInstance = true;
+    }
 
     @Override
     public void setAppProperties(@Nullable Bundle appProperties) {
-        shouldRunApplication = true;
-        super.setAppProperties(appProperties);
+        if (hbd_isAttachedToReactInstance) {
+            shouldRunApplication = true;
+            super.setAppProperties(appProperties);
+        }
     }
 
     @Override
