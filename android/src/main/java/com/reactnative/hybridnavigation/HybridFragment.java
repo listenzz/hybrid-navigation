@@ -152,6 +152,11 @@ public class HybridFragment extends AwesomeFragment {
         return garden.hidesBottomBarWhenPushed;
     }
 
+    @Override
+    protected boolean shouldFitsOpaqueNavigationBar() {
+        return garden.fitsOpaqueNavigationBar;
+    }
+
     protected boolean shouldPassThroughTouches() {
         Bundle options = getOptions();
         return options.getBoolean("passThroughTouches");
