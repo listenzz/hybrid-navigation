@@ -34,7 +34,7 @@ export interface NavigationOption {
   titleTextSize?: number // TopBar 标题字体大小
   navigationBarColorAndroid?: Color // Android 底部虚拟按钮背景颜色
   navigationBarHiddenAndroid?: boolean // 是否隐藏 Android 底部的虚拟导航栏
-  fitsOpaqueNavigationBarAndroid?: boolean // 是否将页面内容延伸至不透明的虚拟导航栏下方，默认为不延伸（true）
+  fitsOpaqueNavigationBarAndroid?: boolean // 不要将页面内容延伸至不透明的虚拟导航栏下方，默认为延伸（false）
   displayCutoutWhenLandscapeAndroid?: boolean // 横屏时，是否将界面延伸至刘海区域，默认 true
   homeIndicatorAutoHiddenIOS?: boolean // 是否隐藏 Home 指示器，默认 false
 

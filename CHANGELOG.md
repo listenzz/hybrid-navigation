@@ -1,8 +1,14 @@
-## 2.15.0 (2023-02-25)
+## 2.15.0 - 1.15.1 (2023-02-25)
 
 ### Android specific
 
 - 允许设置是否将页面内容延伸至不透明的虚拟导航栏下方
+  ```tsx
+  export default withNavigationItem({
+    // 默认是 false，这意味着开发者需要使用 SafeAreaView 来规避系统 UI 的遮挡
+    fitsOpaqueNavigationBarAndroid: false,
+  })
+  ```
 
 ## 2.14.6 (2023-02-16)
 

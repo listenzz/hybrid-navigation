@@ -81,7 +81,7 @@ public class Garden {
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush", true);
         this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
-        this.fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid", true);
+        this.fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid", false);
 
         String screenColor = options.getString("screenBackgroundColor");
         if (!TextUtils.isEmpty(screenColor)) {
