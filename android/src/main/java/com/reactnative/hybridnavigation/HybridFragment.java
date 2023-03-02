@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.ReactContext;
+import com.navigation.androidx.AppUtils;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.AwesomeToolbar;
 import com.navigation.androidx.BarStyle;
@@ -153,10 +154,22 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     @Override
-    protected boolean shouldFitsOpaqueNavigationBar() {
-        return garden.fitsOpaqueNavigationBar;
-    }
+    protected boolean shouldFitsNavigationBar() {
+        if (preferredNavigationBarHidden()) {
+            return false;
+        }
 
+        if (!preferredEdgeToEdge()) {
+            return false;
+        }
+
+        if (shouldFitsTabBar()) {
+            return true;
+        }
+
+        return AppUtils.isOpaque(preferredNavigationBarColor()) &&  garden.fitsOpaqueNavigationBar;
+    }
+    
     protected boolean shouldPassThroughTouches() {
         Bundle options = getOptions();
         return options.getBoolean("passThroughTouches");
