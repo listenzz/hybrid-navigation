@@ -209,6 +209,9 @@ export class Navigator implements Navigator {
       requestCode,
     })
     if (!success) {
+      console.warn(
+        `present from:${this.moduleName} to:${moduleName} failed. Maybe the screen (${this.moduleName}) already shows or present another screen.`,
+      )
       return [RESULT_CANCEL, null] as [number, T]
     }
     return Navigation.result<T>(this.sceneId, requestCode)
@@ -222,6 +225,9 @@ export class Navigator implements Navigator {
       requestCode,
     })
     if (!success) {
+      console.warn(
+        `presentLayout from:${this.moduleName} failed. Maybe the screen (${this.moduleName}) already shows or present another screen.`,
+      )
       return [RESULT_CANCEL, null] as [number, T]
     }
     return Navigation.result<T>(this.sceneId, requestCode)
@@ -244,6 +250,9 @@ export class Navigator implements Navigator {
       requestCode,
     })
     if (!success) {
+      console.warn(
+        `showModal from:${this.moduleName} to:${moduleName} failed. Maybe the screen (${this.moduleName}) already shows or present another screen.`,
+      )
       return [RESULT_CANCEL, null] as [number, T]
     }
     return Navigation.result<T>(this.sceneId, requestCode)
@@ -257,6 +266,9 @@ export class Navigator implements Navigator {
       requestCode,
     })
     if (!success) {
+      console.warn(
+        `showModal from:${this.moduleName} failed. Maybe the screen (${this.moduleName}) already shows or present another screen.`,
+      )
       return [RESULT_CANCEL, null] as [number, T]
     }
     return Navigation.result<T>(this.sceneId, requestCode)

@@ -115,8 +115,14 @@ public class ScreenNavigator implements Navigator {
     }
 
     private void handleShowModalLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Callback callback) {
+        AwesomeFragment presented = presenting.getPresentedFragment();
+        if (presented != null) {
+            callback.invoke(null, false);
+            return;
+        }
+        
         ReadableMap layout = extras.getMap("layout");
-        AwesomeFragment presented = getReactBridgeManager().createFragment(layout);
+        presented = getReactBridgeManager().createFragment(layout);
         if (presented == null) {
             callback.invoke(null, false);
             return;
@@ -127,8 +133,14 @@ public class ScreenNavigator implements Navigator {
     }
 
     private void handlePresentLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Callback callback) {
+        AwesomeFragment presented = presenting.getPresentedFragment();
+        if (presented != null) {
+            callback.invoke(null, false);
+            return;
+        }
+        
         ReadableMap layout = extras.getMap("layout");
-        AwesomeFragment presented = getReactBridgeManager().createFragment(layout);
+        presented = getReactBridgeManager().createFragment(layout);
         if (presented == null) {
             callback.invoke(null, false);
             return;
@@ -138,7 +150,13 @@ public class ScreenNavigator implements Navigator {
     }
 
     private void handleShowModal(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Callback callback) {
-        AwesomeFragment presented = createFragmentWithExtras(extras);
+        AwesomeFragment presented = presenting.getPresentedFragment();
+        if (presented != null) {
+            callback.invoke(null, false);
+            return;
+        }
+        
+        presented = createFragmentWithExtras(extras);
         if (presented == null) {
             callback.invoke(null, false);
             return;
@@ -156,16 +174,22 @@ public class ScreenNavigator implements Navigator {
         target.dismissFragment(() -> callback.invoke(null, true));
     }
 
-    private void handlePresent(@NonNull AwesomeFragment target, @NonNull ReadableMap extras, @NonNull Callback callback) {
-        AwesomeFragment fragment = createFragmentWithExtras(extras);
-        if (fragment == null) {
+    private void handlePresent(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Callback callback) {
+        AwesomeFragment presented = presenting.getPresentedFragment();
+        if (presented != null) {
+            callback.invoke(null, false);
+            return;
+        }
+
+        presented = createFragmentWithExtras(extras);
+        if (presented == null) {
             callback.invoke(null, false);
             return;
         }
         int requestCode = extras.getInt("requestCode");
         ReactStackFragment stackFragment = new ReactStackFragment();
-        stackFragment.setRootFragment(fragment);
-        target.presentFragment(stackFragment, requestCode, () -> callback.invoke(null, true));
+        stackFragment.setRootFragment(presented);
+        presenting.presentFragment(stackFragment, requestCode, () -> callback.invoke(null, true));
     }
 
     private AwesomeFragment createFragmentWithExtras(@NonNull ReadableMap extras) {
