@@ -1,8 +1,14 @@
+## 2.15.4 (2023-03-18)
+
+### Android specific
+
+- 处理 `Fragment not attached to an activity` 的问题
+
 ## 2.15.3 (2023-03-15)
 
 ### Android specific
 
-- 处理 Fragment did not return a View from onCreateView or this was called before onCreateView
+- 处理 `Fragment did not return a View from onCreateView or this was called before onCreateView` 的问题
 
 ## 2.15.0 - 1.15.2 (2023-02-25)
 
@@ -26,7 +32,7 @@
 
 ### Android specific
 
-- 处理 FragmentManager is already executing transactions 问题
+- 处理 `FragmentManager is already executing transactions` 问题
 
 ## 2.14.4 (2023-02-15)
 
