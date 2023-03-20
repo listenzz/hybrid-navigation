@@ -226,7 +226,7 @@ class Screen extends Component {
     statusBarColorAndroid: string, // 状态栏颜色，仅对 Android 生效
     navigationBarColorAndroid: string, // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
     navigationBarHiddenAndroid: boolean, // 是否隐藏 Android 底部的虚拟导航栏
-    fitsOpaqueNavigationBarAndroid: boolean // 不要将页面内容延伸至不透明的虚拟导航栏下方，默认为延伸（false）
+    fitsOpaqueNavigationBarAndroid: boolean // 适配不透明的导航栏边衬区，默认为 false
     displayCutoutWhenLandscapeAndroid: boolean, // 横屏时，是否将界面延伸至刘海区域，默认 true
     homeIndicatorAutoHiddenIOS: boolean // 是否隐藏 Home 指示器，默认 false
 

@@ -65,8 +65,6 @@ public class Garden {
 
     boolean forceTransparentDialogWindow;
     
-    boolean fitsOpaqueNavigationBar;
-
     Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
@@ -81,8 +79,12 @@ public class Garden {
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush", true);
         this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
-        this.fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid", false);
-
+        
+        if (options.get("fitsOpaqueNavigationBarAndroid") != null) {
+            boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid");
+            style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
+        }
+        
         String screenColor = options.getString("screenBackgroundColor");
         if (!TextUtils.isEmpty(screenColor)) {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));

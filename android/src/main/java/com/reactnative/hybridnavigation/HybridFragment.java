@@ -49,7 +49,7 @@ public class HybridFragment extends AwesomeFragment {
     public ReactInstanceManager getReactInstanceManager() {
         return bridgeManager.getReactInstanceManager();
     }
-    
+
     @Nullable
     public ReactContext getCurrentReactContext() {
         return bridgeManager.getCurrentReactContext();
@@ -167,9 +167,9 @@ public class HybridFragment extends AwesomeFragment {
             return true;
         }
 
-        return AppUtils.isOpaque(preferredNavigationBarColor()) &&  garden.fitsOpaqueNavigationBar;
+        return mStyle.shouldFitsOpaqueNavigationBar() && AppUtils.isOpaque(preferredNavigationBarColor());
     }
-    
+
     protected boolean shouldPassThroughTouches() {
         Bundle options = getOptions();
         return options.getBoolean("passThroughTouches");

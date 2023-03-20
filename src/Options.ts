@@ -34,7 +34,7 @@ export interface NavigationOption {
   titleTextSize?: number // TopBar 标题字体大小
   navigationBarColorAndroid?: Color // Android 底部虚拟按钮背景颜色
   navigationBarHiddenAndroid?: boolean // 是否隐藏 Android 底部的虚拟导航栏
-  fitsOpaqueNavigationBarAndroid?: boolean // 不要将页面内容延伸至不透明的虚拟导航栏下方，默认为延伸（false）
+  fitsOpaqueNavigationBarAndroid?: boolean // 适配不透明的导航栏边衬区，默认为 false
   displayCutoutWhenLandscapeAndroid?: boolean // 横屏时，是否将界面延伸至刘海区域，默认 true
   homeIndicatorAutoHiddenIOS?: boolean // 是否隐藏 Home 指示器，默认 false
 
@@ -114,6 +114,7 @@ export interface DefaultOptions {
   swipeBackEnabledAndroid?: boolean // Android 是否开启右滑返回，默认是 false
   splitTopBarTransitionIOS?: boolean // iOS 侧滑返回时，是否总是割裂导航栏背景
   scrimAlphaAndroid?: number // Android 侧滑返回遮罩效果 [0 - 255]
+  fitsOpaqueNavigationBarAndroid?: boolean // 适配不透明的导航栏边衬区，默认为 false
   displayCutoutWhenLandscapeAndroid?: boolean // 横屏时，是否将界面延伸至刘海区域，默认 true
 
   tabBarColor?: Color // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。

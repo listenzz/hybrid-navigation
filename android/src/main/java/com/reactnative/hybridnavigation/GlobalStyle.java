@@ -31,7 +31,7 @@ public class GlobalStyle {
     public GlobalStyle(Bundle options) {
         this.options = options;
     }
-
+    
     public void inflateStyle(Context context, Style style) {
         if (options == null) {
             FLog.w(TAG, "Style options is null");
@@ -210,6 +210,11 @@ public class GlobalStyle {
         if (scrimAlpha != -1) {
             style.setScrimAlpha((int) scrimAlpha);
         }
+        
+        // fitsOpaqueNavigationBarAndroid
+        boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid", false);
+        style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
+   
     }
 
     private void setBarBarShadowImage(@NonNull Context context, @NonNull Style style, @NonNull Bundle shadowImage) {
