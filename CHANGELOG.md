@@ -1,3 +1,16 @@
+## 2.15.5 (2023-03-20)
+
+### Android specific
+
+- 允许全局设置是否适配不透明的导航栏边衬区，默认为 false
+
+  ```tsx
+  Navigation.setDefaultOptions({
+    // 默认是 false，这意味着开发者需要使用 SafeAreaView 来规避系统 UI 的遮挡
+    fitsOpaqueNavigationBarAndroid: false,
+  })
+  ```
+
 ## 2.15.4 (2023-03-18)
 
 ### Android specific
@@ -14,7 +27,8 @@
 
 ### Android specific
 
-- 允许设置是否将页面内容延伸至不透明的虚拟导航栏下方
+- 允许通过 `fitsOpaqueNavigationBarAndroid` 设置是否适配不透明的导航栏边衬区，默认为 false
+
   ```tsx
   export default withNavigationItem({
     // 默认是 false，这意味着开发者需要使用 SafeAreaView 来规避系统 UI 的遮挡
