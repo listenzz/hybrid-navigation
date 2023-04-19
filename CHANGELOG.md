@@ -1,3 +1,9 @@
+## 2.15.6 (2023-04-19)
+
+### iOS specific
+
+- 处理 drawer menu 在快速切换时，未能释放前一个 dimming view 的问题
+
 ## 2.15.5 (2023-03-20)
 
 ### Android specific
