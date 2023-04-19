@@ -164,6 +164,7 @@
 }
 
 - (void)presentMenuView {
+    [self removeMenuView];
     [self addMenuView];
 
     UIViewController *menu = self.menuController;
@@ -211,13 +212,17 @@
         self.menuController.view.frame = rect;
         self.menuDimmingView.alpha = 0;
     }                completion:^(BOOL finished) {
-        [self.menuController.view removeFromSuperview];
-        [self.menuDimmingView removeFromSuperview];
-        self.menuDimmingView = nil;
-        [self.menuHolderView removeFromSuperview];
-        self.menuHolderView = nil;
+        [self removeMenuView];
         [self.menuController endAppearanceTransition];
     }];
+}
+
+- (void)removeMenuView {
+    [self.menuController.view removeFromSuperview];
+    [self.menuDimmingView removeFromSuperview];
+    self.menuDimmingView = nil;
+    [self.menuHolderView removeFromSuperview];
+    self.menuHolderView = nil;
 }
 
 - (void)settleMuneView {
