@@ -1,3 +1,11 @@
+## 2.15.8 (20230-04-20)
+
+### Android specific
+
+- 处理 Activity 销毁重建时，drawer 表现不正常的问题
+
+  > 设置系统字体大小等会导致 Activity 销毁重建
+
 ## 2.15.7 (2023-04-20)
 
 ### iOS specific
