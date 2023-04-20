@@ -69,6 +69,11 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     HBDNavigationController *nav = self.nav;
+    
+    if (nav.transitionCoordinator) {
+        return NO;
+    }
+    
     if (nav.viewControllers.count > 1) {
         UIViewController *topVC = nav.topViewController;
         return topVC.hbd_swipeBackEnabled && topVC.hbd_backInteractive;
