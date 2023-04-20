@@ -11,7 +11,7 @@ PODS:
     - ReactCommon/turbomodule/core (= 0.71.3)
   - fmt (6.2.1)
   - glog (0.3.5)
-  - HybridNavigation (2.15.6):
+  - HybridNavigation (2.15.7):
     - React-Core
   - libwebp (1.2.4):
     - libwebp/demux (= 1.2.4)
@@ -485,7 +485,7 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 5b217c2677f8edae343b6646dad608d5d3147fc0
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 85ecdd10ee8d8ec362ef519a6a45ff9aa27b2e85
-  HybridNavigation: 5659bf80e2a98d47adf2ffb2e436b2429f8e0e0c
+  HybridNavigation: 38e63c64f6e74357018b0e78a3b56b1053d52139
   libwebp: f62cb61d0a484ba548448a4bd52aabf150ff6eef
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: bec48f07daf7bcdc2655a0cde84e07d24d2a9e2a
@@ -523,6 +523,6 @@ SPEC CHECKSUMS:
   ToastHybrid: 1521bb12226096c709a2487484d854c4bb4e1f6a
   Yoga: 5ed1699acbba8863755998a4245daa200ff3817b
 
-PODFILE CHECKSUM: 429004cbe32a7f7bebb61025ad429b4e7dd3057c
+PODFILE CHECKSUM: e03f0caaffa0a78469d5b67c86d1a96ed32e0aae
 
 COCOAPODS: 1.11.3
