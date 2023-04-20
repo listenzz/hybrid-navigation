@@ -13,8 +13,12 @@ typedef void(^HBDButtonActionBlock)(void);
 @end
 
 
-@interface HBDBarButton : UIButton
+@interface HBDImageBarButton : UIButton
 
 @property(nonatomic) UIEdgeInsets alignmentRectInsetsOverride;
+
+@end
+
+@interface HBDTextBarButton : UIButton
 
 @end

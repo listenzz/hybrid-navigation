@@ -22,8 +22,8 @@
         
         UIBarButtonItem *buttonItem = [self createBarButtonItem:item];
         UIView *customView = buttonItem.customView;
-        if ([customView isKindOfClass:[HBDBarButton class]]) {
-            HBDBarButton *button = (HBDBarButton *)customView;
+        if ([customView isKindOfClass:[HBDImageBarButton class]]) {
+            HBDImageBarButton *button = (HBDImageBarButton *)customView;
             button.imageEdgeInsets = buttonItem.imageInsets;
             button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, 4, 0, -4);
         }
@@ -48,8 +48,8 @@
         
         UIBarButtonItem *buttonItem = [self createBarButtonItem:item];
         UIView *customView = buttonItem.customView;
-        if ([customView isKindOfClass:[HBDBarButton class]]) {
-            HBDBarButton *button = (HBDBarButton *)customView;
+        if ([customView isKindOfClass:[HBDImageBarButton class]]) {
+            HBDImageBarButton *button = (HBDImageBarButton *)customView;
             button.imageEdgeInsets = buttonItem.imageInsets;
             button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, -4, 0, 4);
         }
@@ -77,8 +77,8 @@
         for (NSUInteger i = 0; i < barButtonItems.count; i++) {
             UIBarButtonItem *buttonItem = barButtonItems[i];
             UIView *customView = buttonItem.customView;
-            if ([customView isKindOfClass:[HBDBarButton class]]) {
-                HBDBarButton *button = (HBDBarButton *)customView;
+            if ([customView isKindOfClass:[HBDImageBarButton class]]) {
+                HBDImageBarButton *button = (HBDImageBarButton *)customView;
                 button.imageEdgeInsets = buttonItem.imageInsets;
                 button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, 4, 0, -4);
             }
@@ -104,8 +104,8 @@
         for (NSUInteger i = 0; i < barButtonItems.count; i++) {
             UIBarButtonItem *buttonItem = barButtonItems[i];
             UIView *customView = buttonItem.customView;
-            if ([customView isKindOfClass:[HBDBarButton class]]) {
-                HBDBarButton *button = (HBDBarButton *)customView;
+            if ([customView isKindOfClass:[HBDImageBarButton class]]) {
+                HBDImageBarButton *button = (HBDImageBarButton *)customView;
                 button.imageEdgeInsets = buttonItem.imageInsets;
                 button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, -4, 0, 4);
             }
@@ -159,8 +159,8 @@
     if (tintColor) {
         barButtonItem.tintColor = [HBDUtils colorWithHexString:tintColor];
         UIView *customView = barButtonItem.customView;
-        if ([customView isKindOfClass:[HBDBarButton class]]) {
-            HBDBarButton *button = (HBDBarButton *) customView;
+        if ([customView isKindOfClass:[HBDImageBarButton class]] || [customView isKindOfClass:[HBDTextBarButton class]]) {
+            UIButton *button = (UIButton *)customView;
             button.tintColor = [HBDUtils colorWithHexString:tintColor];
         }
     }

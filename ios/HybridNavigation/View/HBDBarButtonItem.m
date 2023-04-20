@@ -1,6 +1,6 @@
 #import "HBDBarButtonItem.h"
 
-@implementation HBDBarButton
+@implementation HBDImageBarButton
 
 - (CGSize)intrinsicContentSize {
     return CGSizeMake(32, 32);
@@ -25,6 +25,10 @@
 
 @end
 
+@implementation HBDTextBarButton
+
+@end
+
 @interface HBDBarButtonItem ()
 
 @end
@@ -32,7 +36,7 @@
 @implementation HBDBarButtonItem
 
 - (instancetype)initWithImage:(UIImage *)image style:(UIBarButtonItemStyle)style {
-    HBDBarButton *button = [HBDBarButton buttonWithType:UIButtonTypeSystem];
+    HBDImageBarButton *button = [HBDImageBarButton buttonWithType:UIButtonTypeSystem];
     button.translatesAutoresizingMaskIntoConstraints = NO;
     [button setFrame:CGRectMake(0, 0, 32, 32)];
     [button setImage:image forState:UIControlStateNormal];
@@ -41,7 +45,11 @@
 }
 
 - (instancetype)initWithTitle:(NSString *)title style:(UIBarButtonItemStyle)style {
-    return [super initWithTitle:title style:style target:self action:@selector(didButtonClick)];
+    UIButton *button = [HBDTextBarButton buttonWithType:UIButtonTypeSystem];
+    button.translatesAutoresizingMaskIntoConstraints = NO;
+    [button setTitle:title forState:UIControlStateNormal];
+    [button addTarget:self action:@selector(didButtonClick) forControlEvents:UIControlEventTouchUpInside];
+    return [super initWithCustomView:button];
 }
 
 - (void)didButtonClick {
