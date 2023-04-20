@@ -1,3 +1,9 @@
+## 2.15.9 (20230-04-20)
+
+### Android specific
+
+- 优化 drawer 的 `menuInteractive` 实现
+
 ## 2.15.8 (20230-04-20)
 
 ### Android specific
