@@ -1,10 +1,16 @@
-## 2.15.9 (20230-04-20)
+## 2.15.10 (2023-05-09)
+
+### Android specific
+
+- 默认适配不透明导航栏的边衬区，即 `fitsOpaqueNavigationBarAndroid` 的默认值现在为 `true`。
+
+## 2.15.9 (2023-04-20)
 
 ### Android specific
 
 - 优化 drawer 的 `menuInteractive` 实现
 
-## 2.15.8 (20230-04-20)
+## 2.15.8 (2023-04-20)
 
 ### Android specific
 
