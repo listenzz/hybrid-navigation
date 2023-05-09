@@ -212,7 +212,7 @@ public class GlobalStyle {
         }
         
         // fitsOpaqueNavigationBarAndroid
-        boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid", false);
+        boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid", true);
         style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
    
     }
