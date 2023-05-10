@@ -1,3 +1,9 @@
+## 2.15.11 (2023-05-10)
+
+### Android specific
+
+- 优化了对 windowInsets 的处理，避免 ReactRootView 高度发生变化
+
 ## 2.15.10 (2023-05-09)
 
 ### Android specific
