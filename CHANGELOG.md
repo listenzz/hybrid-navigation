@@ -1,3 +1,9 @@
+## 2.15.13 (2023-05-11)
+
+### Android specific
+
+- 处理 drawer#menuInteractive 在某些情况下，表现不正常的问题
+
 ## 2.15.12 (2023-05-10)
 
 ### Android specific
