@@ -186,7 +186,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
                 return;
             }
 
-            drawerFragment.setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            drawerFragment.setMenuInteractive(enabled);
         });
     }
 
