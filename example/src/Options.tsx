@@ -277,10 +277,6 @@ function Options({ sceneId, navigator }: NavigationProps) {
         <TouchableOpacity onPress={changeTabBar} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>change TabBar</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity onPress={replaceTabIcon} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>replalce tab icon</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   )
