@@ -26,15 +26,14 @@ import androidx.appcompat.widget.Toolbar;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
-import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.Style;
 
-public class ReactFragment extends HybridFragment implements ReactRootViewHolder.VisibilityObserver, ReactBridgeManager.ReactBridgeReloadListener {
+public class ReactFragment extends HybridFragment implements ReactBridgeManager.ReactBridgeReloadListener {
 
     protected static final String TAG = "Navigation";
 
-    private ViewGroup containerLayout;
-    private ReactRootViewHolder reactRootViewHolder;
+    private ViewGroup reactViewHolder;
+
     private HBDReactRootView reactRootView;
     private HBDReactRootView reactTitleView;
     private boolean firstRenderCompleted;
@@ -43,16 +42,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.nav_fragment_react, container, false);
-        containerLayout = view.findViewById(R.id.react_content);
-        if (containerLayout instanceof ReactRootViewHolder) {
-            reactRootViewHolder = (ReactRootViewHolder) containerLayout;
-            reactRootViewHolder.setVisibilityObserver(this);
-        }
-
-        if (!FragmentHelper.isHidden(this) || getShowsDialog()) {
-            initReactRootView();
-        }
-
+        reactViewHolder = view.findViewById(R.id.react_content);
+        mountReactView();
         return view;
     }
 
@@ -76,24 +67,8 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     @Override
-    public void inspectVisibility(int visibility) {
-        if (visibility != View.VISIBLE) {
-            return;
-        }
-        if (reactRootView == null) {
-            initReactRootView();
-            initReactTitleView();
-        }
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-        if (reactRootView == null) {
-            initReactRootView();
-            initReactTitleView();
-        }
-
         if (isViewReady()) {
             reactRootView.addOnGlobalLayoutListener();
             sendViewAppearEvent(true);
@@ -142,26 +117,20 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (!FragmentHelper.isHidden(this)) {
-            initReactTitleView();
-        }
-        getReactBridgeManager().addReactBridgeReloadListener(this);
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (reactRootViewHolder != null) {
-            reactRootViewHolder.setVisibilityObserver(null);
-        }
         unmountReactView();
     }
 
     @Override
     public void onReload() {
         unmountReactView();
+    }
+
+    private void mountReactView() {
+        initReactRootView();
+        initReactTitleView();
+        getReactBridgeManager().addReactBridgeReloadListener(this);
     }
 
     private void unmountReactView() {
@@ -174,11 +143,15 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
 
         if (reactRootView != null) {
             reactRootView.unmountReactApplication();
+            ViewGroup parent = (ViewGroup) reactRootView.getParent();
+            parent.removeView(reactRootView);
             reactRootView = null;
         }
 
         if (reactTitleView != null) {
             reactTitleView.unmountReactApplication();
+            ViewGroup parent = (ViewGroup) reactTitleView.getParent();
+            parent.removeView(reactTitleView);
             reactTitleView = null;
         }
     }
@@ -233,14 +206,12 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
     }
 
     private void initReactRootView() {
-        if (reactRootView != null) {
-            return;
+        if (!isReactModuleRegisterCompleted()) {
+            throw new IllegalStateException("[Navigation] React Component 还没有注册完毕。");
         }
 
-        if (isReactModuleRegisterCompleted()) {
-            reactRootView = createReactRootView();
-            reactRootView.startReactApplication(getReactInstanceManager(), getModuleName(), getProps());
-        }
+        reactRootView = createReactRootView();
+        reactRootView.startReactApplication(getReactInstanceManager(), getModuleName(), getProps());
     }
 
     @NonNull
@@ -248,19 +219,11 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         HBDReactRootView reactRootView = new HBDReactRootView(getContext());
         reactRootView.setShouldConsumeTouchEvent(!shouldPassThroughTouches());
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        containerLayout.addView(reactRootView, layoutParams);
+        reactViewHolder.addView(reactRootView, layoutParams);
         return reactRootView;
     }
 
     private void initReactTitleView() {
-        if (reactTitleView != null) {
-            return;
-        }
-
-        if (!isReactModuleRegisterCompleted()) {
-            return;
-        }
-
         if (getToolbar() == null) {
             return;
         }
@@ -273,6 +236,10 @@ public class ReactFragment extends HybridFragment implements ReactRootViewHolder
         String moduleName = titleItem.getString("moduleName");
         if (moduleName == null) {
             return;
+        }
+
+        if (!isReactModuleRegisterCompleted()) {
+            throw new IllegalStateException("[Navigation] React Component 还没有注册完毕。");
         }
 
         String fitting = titleItem.getString("layoutFitting");
