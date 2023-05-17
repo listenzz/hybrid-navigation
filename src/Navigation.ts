@@ -42,9 +42,49 @@ export type NavigationSubscription = {
 
 export type HOC = (WrappedComponent: React.ComponentType<any>) => React.ComponentType<any>
 
-export interface Navigation {}
+export interface Navigation {
+  startRegisterComponent(hoc?: HOC): void
+  endRegisterComponent(): void
+  registerComponent(
+    appKey: string,
+    getComponentFunc: ComponentProvider,
+    routeConfig?: RouteConfig,
+  ): void
 
-export class Navigation implements Navigation {
+  routeConfigs(): Map<string, RouteConfig>
+  setNavigationComponentWrap(wrap: (moduleName: string) => HOC): void
+  addGlobalVisibilityEventListener(listener: GlobalVisibilityEventListener): NavigationSubscription
+  addVisibilityEventListener(
+    sceneId: string,
+    listener: VisibilityEventListener,
+  ): NavigationSubscription
+  dispatch(sceneId: string, action: string, params?: DispatchParams): Promise<boolean>
+  setInterceptor(interceptor: NavigationInterceptor): void
+  setResult<T extends ResultType>(sceneId: string, resultCode: number, data?: T): void
+  result<T extends ResultType>(sceneId: string, resultCode: number): Promise<[number, T]>
+  unmount(sceneId: string): void
+  setRoot(layout: BuildInLayout | Layout, sticky?: boolean): Promise<boolean>
+  setRootLayoutUpdateListener(willSetRoot?: () => void, didSetRoot?: () => void): void
+  currentTab(sceneId: string): Promise<number>
+  findSceneIdByModuleName(moduleName: string): Promise<string | null>
+  isStackRoot(sceneId: string): Promise<boolean>
+  signalFirstRenderComplete(sceneId: string): void
+  currentRoute(): Promise<Route>
+  routeGraph(): Promise<RouteGraph[]>
+  setDefaultOptions(options: DefaultOptions): void
+  setLeftBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null): void
+  setRightBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null): void
+  setLeftBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null): void
+  setRightBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null): void
+  setTitleItem(sceneId: string, titleItem: TitleItem): void
+  updateOptions(sceneId: string, options: NavigationOption): void
+  updateTabBar(sceneId: string, options: TabBarStyle): void
+  setTabItem(sceneId: string, item: TabItemInfo | TabItemInfo[]): void
+  setMenuInteractive(sceneId: string, enabled: boolean): void
+  setBarButtonClickEventListener(listener: BarButtonClickEventListener): void
+}
+
+class NavigationImpl implements Navigation {
   private dispatchHandler = new DispatchCommandHandler()
   private resultHandler = new ResultEventHandler()
   private buttonHandler = new BarButtonEventHandler()
@@ -250,4 +290,4 @@ export class Navigation implements Navigation {
   }
 }
 
-export default new Navigation()
+export default new NavigationImpl() as Navigation

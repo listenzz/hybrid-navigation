@@ -1,3 +1,8 @@
+## 2.16.0
+
+- 移除了弃用的 API
+- 延迟初始化 drawer#menu
+
 ## 2.15.15 (2023-05-15)
 
 ### Android specific
