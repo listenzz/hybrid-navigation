@@ -9,7 +9,7 @@
 @implementation HBDRootView
 
 - (instancetype)initWithRootView:(RCTRootView *)rootView {
-    if (self = [super initWithFrame:[UIScreen mainScreen].bounds]) {
+    if (self = [super initWithFrame:CGRectZero]) {
         _rootView = rootView;
     }
     return self;
