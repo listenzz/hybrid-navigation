@@ -31,10 +31,6 @@
     [self.view addSubview:self.contentController.view];
     [self.contentController didMoveToParentViewController:self];
 
-    [self addChildViewController:self.menuController];
-    self.menuController.view.frame = CGRectZero;
-    [self.menuController didMoveToParentViewController:self];
-
     UIScreenEdgePanGestureRecognizer *edgePanGestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handleEdgePanGestureRecognizer:)];
     edgePanGestureRecognizer.edges = UIRectEdgeLeft;
     edgePanGestureRecognizer.delegate = self;
@@ -184,6 +180,11 @@
     UIViewController *menu = self.menuController;
     CGFloat menuWidth = [self menuWidth];
     menu.view.frame = CGRectMake(-menuWidth, 0, menuWidth, CGRectGetHeight(self.view.bounds));
+    if (!menu.parentViewController) {
+        [self addChildViewController:menu];
+        [menu didMoveToParentViewController:self];
+    }
+    
     UIView *menuHolderView = [[UIView alloc] initWithFrame:self.view.bounds];
     self.menuHolderView = menuHolderView;
     UIView *dimmingView = [[UIView alloc] initWithFrame:self.view.bounds];
