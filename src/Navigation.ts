@@ -5,7 +5,6 @@ import type {
   BarButtonItem,
   DefaultOptions,
   NavigationOption,
-  Nullable,
   TabBarStyle,
   TabItemInfo,
   TitleItem,
@@ -30,6 +29,10 @@ import type { DispatchParams, NavigationInterceptor } from './handler/DispatchCo
 export type { DispatchParams, NavigationInterceptor } from './handler/DispatchCommandHandler'
 
 type BarButtonClickEventListener = (sceneId: string, value: Function) => void
+
+type Nullable<T> = {
+  [P in keyof T]: T[P] extends T[P] | undefined ? T[P] | null : T[P]
+}
 
 export const { RESULT_CANCEL, RESULT_OK } = NavigationModule.getConstants()
 
@@ -69,25 +72,10 @@ export interface Navigation {
   currentRoute(): Promise<Route>
   routeGraph(): Promise<RouteGraph[]>
   setDefaultOptions(options: DefaultOptions): void
-  /**
-   * @deprecated use `updateOptions` instead
-   */
   setLeftBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null): void
-  /**
-   * @deprecated use `updateOptions` instead
-   */
   setRightBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null): void
-  /**
-   * @deprecated use `updateOptions` instead
-   */
   setLeftBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null): void
-  /**
-   * @deprecated use `updateOptions` instead
-   */
   setRightBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null): void
-  /**
-   * @deprecated use `updateOptions` instead
-   */
   setTitleItem(sceneId: string, titleItem: TitleItem): void
   updateOptions(sceneId: string, options: NavigationOption): void
   updateTabBar(sceneId: string, options: TabBarStyle): void
@@ -251,33 +239,31 @@ class NavigationImpl implements Navigation {
   }
 
   setLeftBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null) {
-    console.warn(`setLeftBarButtonItem is deprecated, please use updateOptions instead`)
-    this.updateOptions(sceneId, { leftBarButtonItem: buttonItem })
+    const options = this.bindBarButtonClickEvent(sceneId, buttonItem)
+    GardenModule.setLeftBarButtonItem(sceneId, options)
   }
 
   setRightBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null) {
-    console.warn(`setRightBarButtonItem is deprecated, please use updateOptions instead`)
-    this.updateOptions(sceneId, { rightBarButtonItem: buttonItem })
+    const options = this.bindBarButtonClickEvent(sceneId, buttonItem)
+    GardenModule.setRightBarButtonItem(sceneId, options)
   }
 
   setLeftBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null) {
-    console.warn(`setLeftBarButtonItems is deprecated, please use updateOptions instead`)
-    this.updateOptions(sceneId, { leftBarButtonItems: buttonItems })
+    const options = this.bindBarButtonClickEvent(sceneId, buttonItems)
+    GardenModule.setLeftBarButtonItems(sceneId, options)
   }
 
   setRightBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null) {
-    console.warn(`setRightBarButtonItems is deprecated, please use updateOptions instead`)
-    this.updateOptions(sceneId, { rightBarButtonItems: buttonItems })
+    const options = this.bindBarButtonClickEvent(sceneId, buttonItems)
+    GardenModule.setRightBarButtonItems(sceneId, options)
   }
 
   setTitleItem(sceneId: string, titleItem: TitleItem) {
-    console.warn(`setTitleItem is deprecated, please use updateOptions instead`)
-    this.updateOptions(sceneId, { titleItem })
+    GardenModule.setTitleItem(sceneId, titleItem)
   }
 
   updateOptions(sceneId: string, options: NavigationOption) {
-    const object = this.bindBarButtonClickEvent(sceneId, options) || {}
-    GardenModule.updateOptions(sceneId, object)
+    GardenModule.updateOptions(sceneId, options)
   }
 
   updateTabBar(sceneId: string, options: TabBarStyle) {

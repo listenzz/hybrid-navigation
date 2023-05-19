@@ -66,7 +66,7 @@ function Options({ sceneId, navigator }: NavigationProps) {
     }
   }, [])
 
-  const [showsLeftBarButton, setShowsLeftBarButton] = useState(true)
+  const [showsLeftBarButton, setShowsLeftBarButton] = useState(false)
 
   function toggleLeftBarButton() {
     setShowsLeftBarButton(!showsLeftBarButton)
@@ -74,9 +74,9 @@ function Options({ sceneId, navigator }: NavigationProps) {
 
   useEffect(() => {
     if (showsLeftBarButton) {
-      Navigation.updateOptions(sceneId, { leftBarButtonItem })
+      Navigation.setLeftBarButtonItem(sceneId, null)
     } else {
-      Navigation.updateOptions(sceneId, { leftBarButtonItem: null })
+      Navigation.setLeftBarButtonItem(sceneId, leftBarButtonItem)
     }
   }, [showsLeftBarButton, sceneId])
 
@@ -87,10 +87,8 @@ function Options({ sceneId, navigator }: NavigationProps) {
   }
 
   useEffect(() => {
-    Navigation.updateOptions(sceneId, {
-      rightBarButtonItem: {
-        enabled: rightButtonEnabled,
-      },
+    Navigation.setRightBarButtonItem(sceneId, {
+      enabled: rightButtonEnabled,
     })
   }, [rightButtonEnabled, sceneId])
 
@@ -100,11 +98,7 @@ function Options({ sceneId, navigator }: NavigationProps) {
   }
 
   useEffect(() => {
-    Navigation.updateOptions(sceneId, {
-      titleItem: {
-        title: title,
-      },
-    })
+    Navigation.setTitleItem(sceneId, { title })
   }, [title, sceneId])
 
   function passOptions() {
