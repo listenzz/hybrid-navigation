@@ -13,11 +13,9 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 import com.facebook.common.logging.FLog;
-import com.facebook.react.bridge.JavaOnlyMap;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -25,7 +23,6 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UiThreadUtil;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.PixelUtil;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
@@ -75,32 +72,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
             }
         });
     }
-
-    @ReactMethod
-    public void setLeftBarButtonItem(final String sceneId, @Nullable final ReadableMap readableMap) {
-        updateOptions(sceneId, readableMap, "leftBarButtonItem");
-    }
-
-    @ReactMethod
-    public void setRightBarButtonItem(final String sceneId, @Nullable final ReadableMap readableMap) {
-        updateOptions(sceneId, readableMap, "rightBarButtonItem");
-    }
-
-    @ReactMethod
-    public void setLeftBarButtonItems(final String sceneId, @Nullable final ReadableArray readableArray) {
-        updateOptions(sceneId, readableArray, "leftBarButtonItems");
-    }
-
-    @ReactMethod
-    public void setRightBarButtonItems(final String sceneId, @Nullable final ReadableArray readableArray) {
-        updateOptions(sceneId, readableArray, "rightBarButtonItems");
-    }
-
-    @ReactMethod
-    public void setTitleItem(final String sceneId, final ReadableMap readableMap) {
-        updateOptions(sceneId, readableMap, "titleItem");
-    }
-
+    
     @ReactMethod
     public void updateOptions(final String sceneId, final ReadableMap readableMap) {
         FLog.i(TAG, "update options:" + readableMap);
@@ -111,27 +83,7 @@ public class GardenModule extends ReactContextBaseJavaModule {
             }
         });
     }
-
-    private void updateOptions(String sceneId, @Nullable ReadableMap readableMap, String key) {
-        WritableMap writableMap = new JavaOnlyMap();
-        if (readableMap == null) {
-            writableMap.putNull(key);
-        } else {
-            writableMap.putMap(key, readableMap);
-        }
-        updateOptions(sceneId, writableMap);
-    }
-
-    private void updateOptions(String sceneId, @Nullable ReadableArray readableArray, String key) {
-        WritableMap writableMap = new JavaOnlyMap();
-        if (readableArray == null) {
-            writableMap.putNull(key);
-        } else {
-            writableMap.putArray(key, readableArray);
-        }
-        updateOptions(sceneId, writableMap);
-    }
-
+    
     @ReactMethod
     public void updateTabBar(final String sceneId, final ReadableMap readableMap) {
         FLog.i(TAG, "updateTabBar:" + readableMap);
