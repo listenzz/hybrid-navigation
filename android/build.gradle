@@ -33,5 +33,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.facebook.react:react-native:+'
     // api project(':navigation')
-    api 'io.github.listenzz:AndroidNavigation:13.6.1'
+    api 'io.github.listenzz:AndroidNavigation:13.6.2'
 }

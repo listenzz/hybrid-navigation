@@ -286,6 +286,7 @@ public class HybridFragment extends AwesomeFragment {
         } else {
             Bundle args = FragmentHelper.getArguments(this);
             args.putBundle(ARG_PROPS, props);
+            setArguments(args);
         }
     }
 
