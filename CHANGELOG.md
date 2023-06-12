@@ -1,5 +1,11 @@
 ## 2.16.0 (2023-05-19)
 
+### Android specific
+
+- 处理 Fragment already added and state has been saved
+
+## 2.16.0 (2023-05-19)
+
 - 延迟初始化 drawer#menu
 
 ## 2.15.15 (2023-05-15)
