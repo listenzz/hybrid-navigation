@@ -1,12 +1,12 @@
 import { withNavigation } from './NavigationComponentWrap'
-import Navigation from './Navigation'
-
-Navigation.setNavigationComponentWrap(withNavigation)
-
+import navigation from './Navigation'
+navigation.setNavigationComponentWrap(withNavigation)
+const Navigation = navigation
 export default Navigation
 export { RESULT_OK, RESULT_CANCEL } from './Navigation'
 export { statusBarHeight, toolbarHeight, topBarHeight } from './GardenModule'
-export { withNavigationItem, NavigationProps, InjectedProps } from './NavigationComponentWrap'
+export { withNavigationItem } from './NavigationComponentWrap'
+export type { NavigationProps, InjectedProps } from './NavigationComponentWrap'
 
 export * from './Navigator'
 export * from './Garden'
