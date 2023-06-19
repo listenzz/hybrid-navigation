@@ -1,3 +1,9 @@
+## 2.16.3 (2023-06-19)
+
+### Android specific
+
+- 处理 `TabBar` 的 WindowInsets 相关问题
+
 ## 2.16.2 (2023-06-15)
 
 - 处理 `Navigation` 在 WebStorm 的 import 提示问题
