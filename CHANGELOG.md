@@ -1,3 +1,9 @@
+## 2.16.4 (2023-07-19)
+
+### Android specific
+
+- 修复自定义 TitleView 没有显示的问题
+
 ## 2.16.3 (2023-06-19)
 
 ### Android specific
