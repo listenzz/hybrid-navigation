@@ -48,6 +48,13 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // 这个时候 toolbar 才创建好
+        initReactTitleView();
+    }
+
+    @Override
     protected boolean extendedLayoutIncludesToolbar() {
         int color = mStyle.getToolbarBackgroundColor();
         float alpha = mStyle.getToolbarAlpha();
@@ -129,7 +136,6 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 
     private void mountReactView() {
         initReactRootView();
-        initReactTitleView();
         getReactBridgeManager().addReactBridgeReloadListener(this);
     }
 
