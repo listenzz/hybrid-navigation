@@ -68,8 +68,16 @@ public class ReactBridgeManager {
         this.reactNativeHost = reactNativeHost;
     }
 
+    private boolean reactInitialized;
+
     public void initialize() {
-        final ReactInstanceManager reactInstanceManager = getReactInstanceManager();
+        if (reactInitialized) {
+            return;
+        }
+        reactInitialized = true;
+
+        checkReactNativeHost();
+        final ReactInstanceManager reactInstanceManager = reactNativeHost.getReactInstanceManager();
         reactInstanceManager.addReactInstanceEventListener(context -> {
             FLog.i(TAG, "React instance context initialized.");
             rootLayout = null;
@@ -81,33 +89,36 @@ public class ReactBridgeManager {
             setViewHierarchyReady(false);
         });
 
-        if (!reactInstanceManager.hasStartedCreatingInitialContext()) {
-            FLog.i(TAG, "Create react context");
-            reactInstanceManager.createReactContextInBackground();
-        }
-    }
-
-    @NonNull
-    public ReactNativeHost getReactNativeHost() {
-        checkReactNativeHost();
-        return reactNativeHost;
-    }
-
-    @NonNull
-    public ReactInstanceManager getReactInstanceManager() {
-        checkReactNativeHost();
-        return reactNativeHost.getReactInstanceManager();
-    }
-
-    @Nullable
-    public ReactContext getCurrentReactContext() {
-        return getReactInstanceManager().getCurrentReactContext();
+        FLog.i(TAG, "Create react context in background.");
+        reactInstanceManager.createReactContextInBackground();
     }
 
     private void checkReactNativeHost() {
         if (reactNativeHost == null) {
             throw new IllegalStateException("Must call ReactBridgeManager#install first");
         }
+    }
+    
+    @Nullable
+    public ReactInstanceManager getReactInstanceManager() {
+        if (reactNativeHost != null && reactNativeHost.hasInstance()) {
+            return reactNativeHost.getReactInstanceManager();
+        }
+        return null;
+    }
+
+    @Nullable
+    public ReactContext getCurrentReactContext() {
+        ReactInstanceManager instanceManager = getReactInstanceManager();
+        if (instanceManager != null) {
+            return instanceManager.getCurrentReactContext();
+        }
+        return null;
+    }
+
+    public boolean getUseDeveloperSupport() {
+        ReactInstanceManager instanceManager = getReactInstanceManager();
+        return  instanceManager != null && reactNativeHost.getUseDeveloperSupport();
     }
 
     public void registerNativeModule(@NonNull String moduleName, @NonNull Class<? extends HybridFragment> clazz) {
@@ -294,14 +305,14 @@ public class ReactBridgeManager {
         if (fragment == null) {
             return null;
         }
-        
+
         if (fragment.definesPresentationContext()) {
             AwesomeFragment presented = fragment.getPresentedFragment();
             if (presented != null) {
                 return primaryFragment(presented);
             }
         }
-        
+
         String layout = navigatorRegistry.layoutForFragment(fragment);
         if (layout == null) {
             return null;
@@ -314,7 +325,7 @@ public class ReactBridgeManager {
 
         return null;
     }
-    
+
     public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Callback callback) {
         Navigator navigator = navigatorRegistry.navigatorForAction(action);
         if (navigator != null) {

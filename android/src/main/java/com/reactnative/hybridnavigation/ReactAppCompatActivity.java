@@ -9,9 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.facebook.common.logging.FLog;
-import com.facebook.infer.annotation.Assertions;
-import com.facebook.react.ReactInstanceManager;
-import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactContext;
@@ -72,8 +69,9 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     public void onReactModuleRegisterCompleted() {
         FLog.i(TAG, "ReactAppCompatActivity#onReactModuleRegisterCompleted");
-        ReactContext reactContext = Assertions.assertNotNull(getCurrentReactContext());
-        if (isResumed && reactContext.getCurrentActivity() == null) {
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        ReactContext reactContext = bridgeManager.getCurrentReactContext();
+        if (isResumed && reactContext != null && reactContext.getCurrentActivity() == null) {
             mDelegate.onResume();
         }
         inflateStyle();
@@ -151,10 +149,8 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     protected void onResume() {
         super.onResume();
         isResumed = true;
-        if (getCurrentReactContext() != null) {
-            mDelegate.onResume();
-        }
-
+        mDelegate.onResume();
+        
         ReactBridgeManager bridgeManager = getReactBridgeManager();
         if (bridgeManager.hasPendingLayout()) {
             FLog.i(TAG, "Set root Fragment from pending layout when resume.");
@@ -165,9 +161,7 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     @Override
     protected void onPause() {
         isResumed = false;
-        if (getCurrentReactContext() != null) {
-            mDelegate.onPause();
-        }
+        mDelegate.onPause();
         super.onPause();
     }
 
@@ -230,18 +224,6 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         this.mDelegate.onConfigurationChanged(newConfig);
-    }
-
-    protected final ReactNativeHost getReactNativeHost() {
-        return mDelegate.getReactNativeHost();
-    }
-
-    protected final ReactInstanceManager getReactInstanceManager() {
-        return getReactNativeHost().getReactInstanceManager();
-    }
-
-    public ReactContext getCurrentReactContext() {
-        return getReactInstanceManager().getCurrentReactContext();
     }
 
     @NonNull

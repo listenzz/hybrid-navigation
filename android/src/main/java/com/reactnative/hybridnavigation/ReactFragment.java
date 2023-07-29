@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
@@ -106,7 +107,8 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
         }
 
         // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
-        ReactContext reactContext = getCurrentReactContext();
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        ReactContext reactContext = bridgeManager.getCurrentReactContext();
         boolean isResumed = reactContext != null && reactContext.getLifecycleState() == LifecycleState.RESUMED;
         if (!isResumed) {
             return;
@@ -142,7 +144,8 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
     private void unmountReactView() {
         getReactBridgeManager().removeReactBridgeReloadListener(this);
 
-        ReactContext reactContext = getCurrentReactContext();
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        ReactContext reactContext = bridgeManager.getCurrentReactContext();
         if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
             return;
         }
@@ -164,8 +167,10 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 
     @Override
     protected boolean onBackPressed() {
-        if (getShowsDialog() && getReactNativeHost().hasInstance()) {
-            getReactInstanceManager().onBackPressed();
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        ReactInstanceManager reactInstanceManager = bridgeManager.getReactInstanceManager();
+        if (getShowsDialog() && reactInstanceManager != null) {
+            reactInstanceManager.onBackPressed();
             return true;
         }
         return super.onBackPressed();
@@ -215,9 +220,8 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
         if (!isReactModuleRegisterCompleted()) {
             throw new IllegalStateException("[Navigation] React Component 还没有注册完毕。");
         }
-
         reactRootView = createReactRootView();
-        reactRootView.startReactApplication(getReactInstanceManager(), getModuleName(), getProps());
+        reactRootView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), getModuleName(), getProps());
     }
 
     @NonNull
@@ -251,7 +255,7 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
         String fitting = titleItem.getString("layoutFitting");
         boolean expanded = "expanded".equals(fitting);
         reactTitleView = createReactTitleView(expanded);
-        reactTitleView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
+        reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
     }
 
     private HBDReactRootView createReactTitleView(boolean expanded) {

@@ -19,8 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.facebook.common.logging.FLog;
 import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.ReactInstanceManager;
-import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
@@ -52,7 +52,8 @@ public class ReactAppCompatActivityDelegate {
     }
 
     private void askPermission() {
-        if (getReactNativeHost().getUseDeveloperSupport() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        ReactBridgeManager bridgeManager = getReactBridgeManager();
+        if (bridgeManager.getUseDeveloperSupport() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             FLog.i(TAG, "Check overlay permission");
             // Get permission to show redbox in dev builds.
             if (!Settings.canDrawOverlays(getContext())) {
@@ -63,14 +64,6 @@ public class ReactAppCompatActivityDelegate {
                 ((Activity) getContext()).startActivityForResult(serviceIntent, REQUEST_OVERLAY_PERMISSION_CODE);
             }
         }
-    }
-
-    protected ReactNativeHost getReactNativeHost() {
-        return mBridgeManager.getReactNativeHost();
-    }
-
-    protected ReactInstanceManager getReactInstanceManager() {
-        return mBridgeManager.getReactInstanceManager();
     }
 
     protected ReactBridgeManager getReactBridgeManager() {
@@ -88,16 +81,19 @@ public class ReactAppCompatActivityDelegate {
 
     ReactBridgeManager.ReactModuleRegisterListener mReactModuleRegisterListener = this::askPermission;
 
-
     protected void onPause() {
-        if (getReactNativeHost().hasInstance()) {
-            getReactNativeHost().getReactInstanceManager().onHostPause(getPlainActivity());
+        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        ReactContext reactContext = mBridgeManager.getCurrentReactContext();
+        if (reactContext != null && reactInstanceManager != null) {
+            reactInstanceManager.onHostPause(getPlainActivity());
         }
     }
 
     protected void onResume() {
-        if (getReactNativeHost().hasInstance()) {
-            getReactNativeHost().getReactInstanceManager().onHostResume(
+        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        ReactContext reactContext = mBridgeManager.getCurrentReactContext();
+        if (reactContext != null && reactInstanceManager != null) {
+            reactInstanceManager.onHostResume(
                 getPlainActivity(),
                 (DefaultHardwareBackBtnHandler) getPlainActivity());
         }
@@ -110,14 +106,16 @@ public class ReactAppCompatActivityDelegate {
 
     protected void onDestroy() {
         mBridgeManager.removeReactModuleRegisterListener(mReactModuleRegisterListener);
-        if (getReactNativeHost().hasInstance()) {
-            getReactNativeHost().getReactInstanceManager().onHostDestroy(getPlainActivity());
+        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        if (reactInstanceManager != null) {
+            reactInstanceManager.onHostDestroy(getPlainActivity());
         }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (getReactNativeHost().hasInstance()) {
-            getReactNativeHost().getReactInstanceManager()
+        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        if (reactInstanceManager != null) {
+            reactInstanceManager
                 .onActivityResult(getPlainActivity(), requestCode, resultCode, data);
         } else {
             // Did we request overlay permissions?
@@ -130,7 +128,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (getReactNativeHost().hasInstance() && getReactNativeHost().getUseDeveloperSupport() && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+        if (mBridgeManager.getUseDeveloperSupport() && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
             event.startTracking();
             return true;
         }
@@ -138,15 +136,16 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (getReactNativeHost().hasInstance() && getReactNativeHost().getUseDeveloperSupport()) {
+        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        if (reactInstanceManager != null && mBridgeManager.getUseDeveloperSupport()) {
             if (keyCode == KeyEvent.KEYCODE_MENU) {
-                getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
+                reactInstanceManager.showDevOptionsDialog();
                 return true;
             }
-            
+
             boolean didDoubleTapR = Assertions.assertNotNull(mDoubleTapReloadRecognizer).didDoubleTapR(keyCode, getPlainActivity().getCurrentFocus());
             if (didDoubleTapR) {
-                getReactNativeHost().getReactInstanceManager().getDevSupportManager().handleReloadJS();
+                reactInstanceManager.getDevSupportManager().handleReloadJS();
                 return true;
             }
         }
@@ -154,38 +153,43 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        if (getReactNativeHost().hasInstance() && getReactNativeHost().getUseDeveloperSupport() && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
-            getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
+        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        if (reactInstanceManager != null && mBridgeManager.getUseDeveloperSupport() && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
+            reactInstanceManager.showDevOptionsDialog();
             return true;
         }
         return false;
     }
 
     public boolean onBackPressed() {
-        if (getReactNativeHost().hasInstance()) {
-            getReactNativeHost().getReactInstanceManager().onBackPressed();
+        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        if (reactInstanceManager != null) {
+            reactInstanceManager.onBackPressed();
             return true;
         }
         return false;
     }
 
     public boolean onNewIntent(Intent intent) {
-        if (getReactNativeHost().hasInstance()) {
-            getReactNativeHost().getReactInstanceManager().onNewIntent(intent);
+        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        if (reactInstanceManager != null) {
+            reactInstanceManager.onNewIntent(intent);
             return true;
         }
         return false;
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {
-        if (this.getReactNativeHost().hasInstance()) {
-            this.getReactNativeHost().getReactInstanceManager().onWindowFocusChange(hasFocus);
+        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        if (reactInstanceManager != null) {
+            reactInstanceManager.onWindowFocusChange(hasFocus);
         }
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
-        if (this.getReactNativeHost().hasInstance()) {
-            this.getReactInstanceManager().onConfigurationChanged(this.getContext(), newConfig);
+        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        if (reactInstanceManager != null) {
+            reactInstanceManager.onConfigurationChanged(this.getContext(), newConfig);
         }
     }
 

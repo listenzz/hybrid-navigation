@@ -41,7 +41,7 @@ public class MainActivity extends ReactAppCompatActivity {
         }
         
         // 当 Activity 销毁后重建，譬如旋转屏幕的时候，如果 React Native 已经启动完成，则不再显示闪屏
-        ReactContext reactContext = getCurrentReactContext();
+        ReactContext reactContext =  getReactBridgeManager().getCurrentReactContext();
         if (splashFragment == null && reactContext == null) {
             splashFragment = new SplashFragment();
             FLog.i(TAG, "MainActivity#launchSplash showAsDialog");
