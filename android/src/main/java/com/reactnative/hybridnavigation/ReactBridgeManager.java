@@ -67,15 +67,8 @@ public class ReactBridgeManager {
     public void setReactNativeHost(@NonNull ReactNativeHost reactNativeHost) {
         this.reactNativeHost = reactNativeHost;
     }
-
-    private boolean reactInitialized;
-
+    
     public void initialize() {
-        if (reactInitialized) {
-            return;
-        }
-        reactInitialized = true;
-
         checkReactNativeHost();
         final ReactInstanceManager reactInstanceManager = reactNativeHost.getReactInstanceManager();
         reactInstanceManager.addReactInstanceEventListener(context -> {
@@ -117,8 +110,10 @@ public class ReactBridgeManager {
     }
 
     public boolean getUseDeveloperSupport() {
-        ReactInstanceManager instanceManager = getReactInstanceManager();
-        return  instanceManager != null && reactNativeHost.getUseDeveloperSupport();
+        if (reactNativeHost != null && reactNativeHost.hasInstance()) {
+            return reactNativeHost.getUseDeveloperSupport();
+        }
+        return false;
     }
 
     public void registerNativeModule(@NonNull String moduleName, @NonNull Class<? extends HybridFragment> clazz) {
