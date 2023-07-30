@@ -69,6 +69,14 @@ public class ReactAppCompatActivityDelegate {
     protected ReactBridgeManager getReactBridgeManager() {
         return mBridgeManager;
     }
+    
+    public ReactInstanceManager getReactInstanceManager() {
+        return mBridgeManager.getReactInstanceManager();
+    }
+    
+    public ReactContext getCurrentReactContext() {
+        return mBridgeManager.getCurrentReactContext();
+    }
 
     protected void onCreate(Bundle savedInstanceState) {
         mDoubleTapReloadRecognizer = new DoubleTapReloadRecognizer();
@@ -106,14 +114,14 @@ public class ReactAppCompatActivityDelegate {
 
     protected void onDestroy() {
         mBridgeManager.removeReactModuleRegisterListener(mReactModuleRegisterListener);
-        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         if (reactInstanceManager != null) {
             reactInstanceManager.onHostDestroy(getPlainActivity());
         }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         if (reactInstanceManager != null) {
             reactInstanceManager
                 .onActivityResult(getPlainActivity(), requestCode, resultCode, data);
@@ -136,7 +144,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         if (reactInstanceManager != null && mBridgeManager.getUseDeveloperSupport()) {
             if (keyCode == KeyEvent.KEYCODE_MENU) {
                 reactInstanceManager.showDevOptionsDialog();
@@ -153,7 +161,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         if (reactInstanceManager != null && mBridgeManager.getUseDeveloperSupport() && keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
             reactInstanceManager.showDevOptionsDialog();
             return true;
@@ -162,7 +170,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public boolean onBackPressed() {
-        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         if (reactInstanceManager != null) {
             reactInstanceManager.onBackPressed();
             return true;
@@ -171,7 +179,7 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public boolean onNewIntent(Intent intent) {
-        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         if (reactInstanceManager != null) {
             reactInstanceManager.onNewIntent(intent);
             return true;
@@ -180,14 +188,14 @@ public class ReactAppCompatActivityDelegate {
     }
 
     public void onWindowFocusChanged(boolean hasFocus) {
-        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         if (reactInstanceManager != null) {
             reactInstanceManager.onWindowFocusChange(hasFocus);
         }
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
-        ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
+        ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         if (reactInstanceManager != null) {
             reactInstanceManager.onConfigurationChanged(this.getContext(), newConfig);
         }

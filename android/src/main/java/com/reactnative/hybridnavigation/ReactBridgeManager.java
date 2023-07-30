@@ -1,5 +1,6 @@
 package com.reactnative.hybridnavigation;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -100,6 +101,7 @@ public class ReactBridgeManager {
         return null;
     }
 
+    @SuppressLint("VisibleForTests")
     @Nullable
     public ReactContext getCurrentReactContext() {
         ReactInstanceManager instanceManager = getReactInstanceManager();

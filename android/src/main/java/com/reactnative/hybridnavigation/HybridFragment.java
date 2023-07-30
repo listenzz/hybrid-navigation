@@ -13,6 +13,8 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.bridge.ReactContext;
 import com.navigation.androidx.AppUtils;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.AwesomeToolbar;
@@ -39,6 +41,14 @@ public class HybridFragment extends AwesomeFragment {
     
     public boolean isReactModuleRegisterCompleted() {
         return bridgeManager.isReactModuleRegisterCompleted();
+    }
+
+    protected final ReactInstanceManager getReactInstanceManager() {
+        return bridgeManager.getReactInstanceManager();
+    }
+
+    protected final ReactContext getCurrentReactContext() {
+        return bridgeManager.getCurrentReactContext();
     }
 
     @Override

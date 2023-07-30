@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.facebook.common.logging.FLog;
+import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactContext;
@@ -230,7 +231,15 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
     protected ReactBridgeManager getReactBridgeManager() {
         return mDelegate.getReactBridgeManager();
     }
-
+    
+    protected final ReactInstanceManager getReactInstanceManager() {
+        return mDelegate.getReactInstanceManager();
+    }
+    
+    protected final ReactContext getCurrentReactContext() {
+        return mDelegate.getCurrentReactContext();
+    }
+    
     protected boolean isReactModuleRegisterCompleted() {
         return getReactBridgeManager().isReactModuleRegisterCompleted();
     }

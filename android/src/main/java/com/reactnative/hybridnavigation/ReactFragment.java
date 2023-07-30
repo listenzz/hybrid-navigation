@@ -107,8 +107,7 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
         }
 
         // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
-        ReactBridgeManager bridgeManager = getReactBridgeManager();
-        ReactContext reactContext = bridgeManager.getCurrentReactContext();
+        ReactContext reactContext = getCurrentReactContext();
         boolean isResumed = reactContext != null && reactContext.getLifecycleState() == LifecycleState.RESUMED;
         if (!isResumed) {
             return;
@@ -143,9 +142,8 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 
     private void unmountReactView() {
         getReactBridgeManager().removeReactBridgeReloadListener(this);
-
-        ReactBridgeManager bridgeManager = getReactBridgeManager();
-        ReactContext reactContext = bridgeManager.getCurrentReactContext();
+        
+        ReactContext reactContext = getCurrentReactContext();
         if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
             return;
         }
@@ -167,8 +165,7 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 
     @Override
     protected boolean onBackPressed() {
-        ReactBridgeManager bridgeManager = getReactBridgeManager();
-        ReactInstanceManager reactInstanceManager = bridgeManager.getReactInstanceManager();
+        ReactInstanceManager reactInstanceManager = getReactInstanceManager();
         if (getShowsDialog() && reactInstanceManager != null) {
             reactInstanceManager.onBackPressed();
             return true;
@@ -221,7 +218,7 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
             throw new IllegalStateException("[Navigation] React Component 还没有注册完毕。");
         }
         reactRootView = createReactRootView();
-        reactRootView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), getModuleName(), getProps());
+        reactRootView.startReactApplication(getReactInstanceManager(), getModuleName(), getProps());
     }
 
     @NonNull
@@ -255,7 +252,7 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
         String fitting = titleItem.getString("layoutFitting");
         boolean expanded = "expanded".equals(fitting);
         reactTitleView = createReactTitleView(expanded);
-        reactTitleView.startReactApplication(getReactBridgeManager().getReactInstanceManager(), moduleName, getProps());
+        reactTitleView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
     }
 
     private HBDReactRootView createReactTitleView(boolean expanded) {

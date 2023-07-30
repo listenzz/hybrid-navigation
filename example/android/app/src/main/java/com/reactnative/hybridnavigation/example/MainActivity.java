@@ -34,14 +34,14 @@ public class MainActivity extends ReactAppCompatActivity {
                 splashFragment = (SplashFragment) getSupportFragmentManager().findFragmentByTag(tag);
             }
         }
-        
+
         if (splashFragment != null) {
             splashFragment.hideAsDialog();
             splashFragment = null;
         }
-        
+
         // 当 Activity 销毁后重建，譬如旋转屏幕的时候，如果 React Native 已经启动完成，则不再显示闪屏
-        ReactContext reactContext =  getReactBridgeManager().getCurrentReactContext();
+        ReactContext reactContext = getCurrentReactContext();
         if (splashFragment == null && reactContext == null) {
             splashFragment = new SplashFragment();
             FLog.i(TAG, "MainActivity#launchSplash showAsDialog");
