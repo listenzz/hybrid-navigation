@@ -44,7 +44,9 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.nav_fragment_react, container, false);
         reactViewHolder = view.findViewById(R.id.react_content);
-        mountReactView();
+        if (isReactModuleRegisterCompleted()) {
+            mountReactView();
+        }
         return view;
     }
 
@@ -214,9 +216,6 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
     }
 
     private void initReactRootView() {
-        if (!isReactModuleRegisterCompleted()) {
-            throw new IllegalStateException("[Navigation] React Component 还没有注册完毕。");
-        }
         reactRootView = createReactRootView();
         reactRootView.startReactApplication(getReactInstanceManager(), getModuleName(), getProps());
     }
