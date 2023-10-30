@@ -9,7 +9,7 @@ import Navigation, {
   NavigationProps,
   useVisibleEffect,
 } from 'hybrid-navigation'
-import { KeyboardInsetsView } from 'react-native-keyboard-insets'
+import { KeyboardInsetsView } from '@sdcx/keyboard-insets'
 
 export default withNavigationItem({
   titleItem: {

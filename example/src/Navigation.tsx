@@ -10,7 +10,7 @@ import Navigation, {
   useVisibleEffect,
 } from 'hybrid-navigation'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
-import { KeyboardInsetsView } from 'react-native-keyboard-insets'
+import { KeyboardInsetsView } from '@sdcx/keyboard-insets'
 
 export default withNavigationItem({
   //topBarStyle: 'light-content',

@@ -2031,6 +2031,11 @@
   resolved "https://registry.yarnpkg.com/@react-native/polyfills/-/polyfills-2.0.0.tgz#4c40b74655c83982c8cf47530ee7dc13d957b6aa"
   integrity sha512-K0aGNn1TjalKj+65D7ycc1//H9roAQ51GJVk5ZJQFb2teECGmzd86bYDC0aYdbRf7gtovescq4Zt6FR0tgXiHQ==
 
+"@sdcx/keyboard-insets@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@sdcx/keyboard-insets/-/keyboard-insets-0.5.0.tgz#225dee1442d9dc70d82c24fe9d0ba2153b6ed903"
+  integrity sha512-8/9l09Vh/LdHdeYn8YVPatZ0/1Qj95mbcR415FhtyN+y55fND5Pnf5P5kDRqZPl4pF/fE4qrXSCXwFEkIXlgog==
+
 "@sideway/address@^4.1.3":
   version "4.1.4"
   resolved "https://registry.yarnpkg.com/@sideway/address/-/address-4.1.4.tgz#03dccebc6ea47fdc226f7d3d1ad512955d4783f0"
@@ -7229,11 +7234,6 @@ react-native-gradle-plugin@^0.71.19:
   version "0.71.19"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.19.tgz#3379e28341fcd189bc1f4691cefc84c1a4d7d232"
   integrity sha512-1dVk9NwhoyKHCSxcrM6vY6cxmojeATsBobDicX0ZKr7DgUF2cBQRTKsimQFvzH8XhOVXyH8p4HyDSZNIFI8OlQ==
-
-react-native-keyboard-insets@^1.3.3:
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/react-native-keyboard-insets/-/react-native-keyboard-insets-1.3.3.tgz#285be14320642d7605cf8245a044c4cd0440b15b"
-  integrity sha512-43V0xKMc2Zrr8Lpd4g/P5Wd5dAkOVy93go1+QqYqZtbdlAUnvrGdw+6pC5IEBfQq1i0ZfnW6VPnTcKcwPdH19w==
 
 react-native-safe-area-context@^4.7.1:
   version "4.7.1"

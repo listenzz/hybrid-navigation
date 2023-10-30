@@ -333,7 +333,7 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
-  - RNKeyboardInsets (1.3.3):
+  - RNKeyboardInsets (0.5.0):
     - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
@@ -383,7 +383,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../../node_modules/react-native/ReactCommon`)
   - RNFastImage (from `../../node_modules/react-native-fast-image`)
-  - RNKeyboardInsets (from `../../node_modules/react-native-keyboard-insets`)
+  - "RNKeyboardInsets (from `../../node_modules/@sdcx/keyboard-insets`)"
   - ToastHybrid (from `../../node_modules/react-native-toast-hybrid`)
   - Yoga (from `../../node_modules/react-native/ReactCommon/yoga`)
 
@@ -468,7 +468,7 @@ EXTERNAL SOURCES:
   RNFastImage:
     :path: "../../node_modules/react-native-fast-image"
   RNKeyboardInsets:
-    :path: "../../node_modules/react-native-keyboard-insets"
+    :path: "../../node_modules/@sdcx/keyboard-insets"
   ToastHybrid:
     :path: "../../node_modules/react-native-toast-hybrid"
   Yoga:
@@ -513,7 +513,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 7902246857a4ead4166869e6c42d4df329ff721d
   ReactCommon: 903ae47d52e4af9bd1d41d5c7c6004e828aa59a1
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
-  RNKeyboardInsets: 26d70d68eea990623cbdc83757e3c8f9e8648c78
+  RNKeyboardInsets: 30e7b7492c1f3993e3602f27953ceb7e85ac5cbf
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   ToastHybrid: 1521bb12226096c709a2487484d854c4bb4e1f6a
