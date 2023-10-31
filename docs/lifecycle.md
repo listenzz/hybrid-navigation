@@ -18,6 +18,28 @@ useVisibleEffect(
 
 如果需要获取页面可见状态，使用 `useVisible` 或者 `useVisibility`。
 
+```ts
+import React, { useEffect } from 'react'
+import { useVisible } from 'hybrid-navigation'
+
+const MyComponent = () => {
+  const visible = useVisible()
+
+  useEffect(() => {
+    if (!visible) {
+      return
+    }
+    console.info('页面可见')
+
+    return () => {
+      console.info('页面不可见')
+    }
+  }, [visible])
+
+  return <View />
+}
+```
+
 ## 类组件
 
 本项目中的例子几乎都是用函数组件示例的，因为这是趋势，历史的车轮滚滚向前，该忘掉的就忘掉，该丢弃的就丢弃。
