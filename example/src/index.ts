@@ -94,13 +94,13 @@ Navigation.setDefaultOptions({
 
 // 开始注册组件，即基本页面单元
 
-Navigation.startRegisterComponent(withRedux)
+Navigation.startRegisterComponent()
 
 Navigation.registerComponent('Navigation', () => NavigationScreen)
 Navigation.registerComponent('Result', () => Result, { path: '/result', mode: 'present' })
 Navigation.registerComponent('Options', () => Options, { path: '/options' })
 Navigation.registerComponent('Menu', () => Menu, { path: '/menu' })
-Navigation.registerComponent('ReduxCounter', () => ReduxCounter, { path: '/redux' })
+Navigation.registerComponent('ReduxCounter', () => withRedux(ReduxCounter), { path: '/redux' })
 Navigation.registerComponent('ZustandCounter', () => ZustandCounter)
 Navigation.registerComponent('PassOptions', () => PassOptions)
 Navigation.registerComponent('Lifecycle', () => Lifecycle)
