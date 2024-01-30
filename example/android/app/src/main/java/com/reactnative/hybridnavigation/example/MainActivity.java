@@ -1,5 +1,6 @@
 package com.reactnative.hybridnavigation.example;
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,13 @@ public class MainActivity extends ReactAppCompatActivity {
     private SplashFragment splashFragment;
 
     private void launchSplash(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            getSplashScreen().setOnExitAnimationListener(view -> {
+                view.remove(); // 移除 fade 动画
+                getSplashScreen().clearOnExitAnimationListener();
+            });
+        }
+        
         if (savedInstanceState != null) {
             String tag = savedInstanceState.getString("splash_tag");
             if (tag != null) {
