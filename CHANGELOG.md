@@ -1,3 +1,9 @@
+## 2.16.8 （2024-02-02）
+
+- 简化了 `useVisibleEffect` 的实现
+
+- 处理 Android12 系统 UI 兼容性问题
+
 ## 2.16.7 (2023-09-01)
 
 ### Android specific
