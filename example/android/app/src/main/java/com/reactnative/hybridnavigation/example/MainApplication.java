@@ -19,46 +19,46 @@ import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
 
-	private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-		@Override
-		public boolean getUseDeveloperSupport() {
-			return BuildConfig.DEBUG;
-		}
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+        @Override
+        public boolean getUseDeveloperSupport() {
+            return BuildConfig.DEBUG;
+        }
 
-		@Override
-		protected List<ReactPackage> getPackages() {
-			List<ReactPackage> packages = new PackageList(this).getPackages();
-			packages.add(new HybridNavigationPackage());
+        @Override
+        protected List<ReactPackage> getPackages() {
+            List<ReactPackage> packages = new PackageList(this).getPackages();
+            packages.add(new HybridNavigationPackage());
             packages.add(new ExamplePackage());
-			return packages;
-		}
+            return packages;
+        }
 
-		@Override
-		protected String getJSMainModuleName() {
-			return "example/index";
-		}
-	};
+        @Override
+        protected String getJSMainModuleName() {
+            return "example/index";
+        }
+    };
 
-	@Override
-	public ReactNativeHost getReactNativeHost() {
-		return mReactNativeHost;
-	}
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
+    }
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		SoLoader.init(this, false);
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        SoLoader.init(this, false);
 
-		ReactBridgeManager bridgeManager = ReactBridgeManager.get();
-		bridgeManager.install(getReactNativeHost());
+        ReactBridgeManager bridgeManager = ReactBridgeManager.get();
+        bridgeManager.install(getReactNativeHost());
 
-		// register native modules
-		bridgeManager.registerNativeModule("NativeModule", NativeFragment.class);
-        
-		DraweeView.setGlobalLegacyVisibilityHandlingEnabled(true);
-		FLog.setMinimumLoggingLevel(FLog.INFO);
+        // register native modules
+        bridgeManager.registerNativeModule("NativeModule", NativeFragment.class);
 
-		AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-	}
+        DraweeView.setGlobalLegacyVisibilityHandlingEnabled(true);
+        FLog.setMinimumLoggingLevel(FLog.INFO);
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+    }
 
 }

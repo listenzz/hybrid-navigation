@@ -103,7 +103,7 @@ public class HybridFragment extends AwesomeFragment {
     @Override
     protected BarStyle preferredStatusBarStyle() {
         if (forceTransparentDialogWindow()) {
-            return SystemUI.activityNavigationBarStyle(requireActivity());
+            return SystemUI.activityStatusBarStyle(requireActivity());
         }
 
         if (getPresentationStyle() == PresentationStyle.OverFullScreen) {
