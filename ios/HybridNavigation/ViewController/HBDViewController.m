@@ -47,7 +47,11 @@
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-    return self.hbd_barStyle == UIBarStyleBlack ? UIStatusBarStyleLightContent : UIStatusBarStyleDefault;
+    if (@available(iOS 13.0, *)) {
+        return self.hbd_barStyle == UIBarStyleDefault ? UIStatusBarStyleDarkContent : UIStatusBarStyleLightContent;
+    } else {
+        return self.hbd_barStyle == UIBarStyleDefault ? UIStatusBarStyleDefault : UIStatusBarStyleLightContent;
+    }
 }
 
 - (BOOL)prefersStatusBarHidden {
