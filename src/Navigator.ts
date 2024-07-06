@@ -1,15 +1,9 @@
 import { createContext } from 'react'
 
 import store from './store'
-import type { Visibility, Layout, BuildInLayout, Route, RouteGraph } from './Route'
+import type { Visibility, Layout, BuildInLayout } from './Route'
 import type { NavigationItem } from './Options'
-import { Garden } from './Garden'
-import Navigation, {
-  NavigationInterceptor,
-  DispatchParams,
-  ResultType,
-  RESULT_CANCEL,
-} from './Navigation'
+import Navigation, { ResultType, RESULT_CANCEL } from './Navigation'
 
 export const NavigationContext = createContext<any>(null)
 
@@ -59,76 +53,7 @@ export class Navigator implements Navigator {
     return Navigator.of(route.sceneId)
   }
 
-  /**
-   * @deprecated Use Navigation.currentRoute() instead
-   * @returns
-   */
-  static currentRoute(): Promise<Route> {
-    return Navigation.currentRoute()
-  }
-
-  /**
-   * @deprecated Use Navigation.routeGraph() instead
-   * @returns
-   */
-  static routeGraph(): Promise<RouteGraph[]> {
-    return Navigation.routeGraph()
-  }
-
-  /**
-   * @deprecated Use Navigation.setRoot() instead
-   * @param layout
-   * @param sticky
-   */
-  static setRoot(layout: BuildInLayout | Layout, sticky = false) {
-    Navigation.setRoot(layout, sticky)
-  }
-
-  /**
-   * @deprecated Use Navigation.setRootLayoutUpdateListener() instead
-   * @param willSetRoot
-   * @param didSetRoot
-   */
-  static setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {}) {
-    Navigation.setRootLayoutUpdateListener(willSetRoot, didSetRoot)
-  }
-
-  /**
-   * @deprecated Use Navigation.dispatch() instead
-   * @param sceneId
-   * @param action
-   * @param params
-   * @returns
-   */
-  static async dispatch(
-    sceneId: string,
-    action: string,
-    params: DispatchParams = {},
-  ): Promise<boolean> {
-    return Navigation.dispatch(sceneId, action, params)
-  }
-
-  /**
-   * @deprecated Use Navigation.setInterceptor() instead
-   * @param interceptor
-   */
-  static setInterceptor(interceptor: NavigationInterceptor) {
-    Navigation.setInterceptor(interceptor)
-  }
-
   constructor(public sceneId: string, public moduleName?: string) {}
-
-  private _garden?: Garden
-
-  /**
-   * @deprecated  Garden is deprecated, Use Navigation related methods instead.
-   */
-  get garden() {
-    if (!this._garden) {
-      this._garden = new Garden(this.sceneId)
-    }
-    return this._garden
-  }
 
   visibility: Visibility = 'pending'
 

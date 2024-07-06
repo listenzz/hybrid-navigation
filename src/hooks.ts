@@ -33,12 +33,3 @@ export function useVisibleEffect(effect: React.EffectCallback) {
     return () => destructor && destructor()
   }, [effect, visible])
 }
-
-/**
- * @deprecated Use Navigation related methods instead.
- * @returns
- */
-export function useGarden() {
-  const ctx = useContext<Navigator>(NavigationContext)
-  return ctx.garden
-}

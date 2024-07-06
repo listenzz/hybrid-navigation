@@ -6,11 +6,9 @@ export default Navigation
 export { RESULT_OK, RESULT_CANCEL } from './Navigation'
 export { statusBarHeight, toolbarHeight, topBarHeight } from './GardenModule'
 export { withNavigationItem } from './NavigationComponentWrap'
-export type { NavigationProps, InjectedProps } from './NavigationComponentWrap'
+export type { NavigationProps } from './NavigationComponentWrap'
 
 export * from './Navigator'
-export * from './Garden'
-export * from './ReactRegistry'
 export * from './hooks'
 export * from './router'
 export * from './DeepLink'

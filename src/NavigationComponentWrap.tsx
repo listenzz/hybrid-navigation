@@ -1,19 +1,12 @@
 import React, { useEffect } from 'react'
-import type { Garden } from './Garden'
 import type { NavigationItem } from './Options'
 import { Navigator, NavigationContext } from './Navigator'
 import Navigation from './Navigation'
 
 export interface NavigationProps {
   navigator: Navigator
-  garden: Garden
   sceneId: string
 }
-
-/**
- * @deprecated Use NavigationProps instead.
- */
-export type InjectedProps = NavigationProps
 
 interface NativeProps {
   sceneId: string
@@ -33,8 +26,6 @@ export function withNavigation(moduleName: string) {
         navigator.moduleName = moduleName
       }
 
-      const garden = navigator.garden
-
       useEffect(() => {
         Navigation.signalFirstRenderComplete(navigator.sceneId)
         return () => {
@@ -43,7 +34,6 @@ export function withNavigation(moduleName: string) {
       }, [navigator])
 
       const injected = {
-        garden,
         navigator,
       }
 
