@@ -4,6 +4,7 @@
 #import "HBDUtils.h"
 #import "HBDAnimationObserver.h"
 #import "GlobalStyle.h"
+#import "HBDBackBarButtonItem.h"
 
 #import <React/RCTLog.h>
 
@@ -205,17 +206,16 @@
     }
 
     if ([GlobalStyle globalStyle].isBackTitleHidden) {
+        UIBarButtonItem *buttonItem = [[HBDBackBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
+        self.navigationItem.backBarButtonItem = buttonItem;
         if (@available(iOS 14.0, *)) {
             self.navigationItem.backButtonDisplayMode = UINavigationItemBackButtonDisplayModeMinimal;
-        } else {
-            UIBarButtonItem *buttonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
-            self.navigationItem.backBarButtonItem = buttonItem;
         }
     }
 
     NSDictionary *backItem = options[@"backItemIOS"];
     if (backItem) {
-        UIBarButtonItem *backButton = [[UIBarButtonItem alloc] init];
+        UIBarButtonItem *backButton = [[HBDBackBarButtonItem alloc] init];
         backButton.title = backItem[@"title"];
         NSString *tintColor = backItem[@"tintColor"];
         if (tintColor) {
