@@ -94,16 +94,6 @@
         return;
     }
 
-    if (!drawer.hbd_viewAppeared) {
-        [self performSelector:@selector(handleNavigation:) withObject:@{
-            @"viewController": vc,
-            @"action": action,
-            @"extras": extras,
-            @"callback": callback,
-        } afterDelay:0.05];
-        return;
-    }
-    
     callback(@[NSNull.null, @YES]);
 
     if ([action isEqualToString:@"toggleMenu"]) {
@@ -122,12 +112,8 @@
     }
 }
 
--(void)handleNavigation:(NSDictionary *)params {
-    [self handleNavigationWithViewController:params[@"viewController"] action:params[@"action"] extras:params[@"extras"] callback:params[@"callback"]];
-}
-
 - (void)invalidate {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    // 
 }
 
 @end

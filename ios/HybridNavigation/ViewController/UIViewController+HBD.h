@@ -22,6 +22,7 @@
 - (void)hbd_setNeedsUpdateNavigationBar;
 
 @property(nonatomic, copy, readonly) NSString *sceneId;
+@property(nonatomic, copy) NSString *presentingSceneId;
 @property(nonatomic, assign) NSInteger resultCode;
 @property(nonatomic, assign) NSInteger requestCode;
 @property(nonatomic, copy) NSDictionary *resultData;

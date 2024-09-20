@@ -120,7 +120,7 @@ public class ScreenNavigator implements Navigator {
             callback.invoke(null, false);
             return;
         }
-        
+
         ReadableMap layout = extras.getMap("layout");
         presented = getReactBridgeManager().createFragment(layout);
         if (presented == null) {
@@ -138,7 +138,7 @@ public class ScreenNavigator implements Navigator {
             callback.invoke(null, false);
             return;
         }
-        
+
         ReadableMap layout = extras.getMap("layout");
         presented = getReactBridgeManager().createFragment(layout);
         if (presented == null) {
@@ -155,7 +155,7 @@ public class ScreenNavigator implements Navigator {
             callback.invoke(null, false);
             return;
         }
-        
+
         presented = createFragmentWithExtras(extras);
         if (presented == null) {
             callback.invoke(null, false);
@@ -163,15 +163,16 @@ public class ScreenNavigator implements Navigator {
         }
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
+
         presenting.presentFragment(presented, requestCode, () -> callback.invoke(null, true), TransitionAnimation.Fade);
     }
 
-    private void handleHideModal(@NonNull AwesomeFragment target, @NonNull Callback callback) {
-        target.dismissFragment(() -> callback.invoke(null, true), TransitionAnimation.Fade);
+    private void handleHideModal(@NonNull AwesomeFragment presented, @NonNull Callback callback) {
+        presented.dismissFragment(() -> callback.invoke(null, true), TransitionAnimation.Fade);
     }
 
-    private void handleDismiss(@NonNull AwesomeFragment target, @NonNull Callback callback) {
-        target.dismissFragment(() -> callback.invoke(null, true));
+    private void handleDismiss(@NonNull AwesomeFragment presented, @NonNull Callback callback) {
+        presented.dismissFragment(() -> callback.invoke(null, true));
     }
 
     private void handlePresent(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Callback callback) {

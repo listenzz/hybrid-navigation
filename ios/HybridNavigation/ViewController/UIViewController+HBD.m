@@ -36,7 +36,7 @@
     self.hbd_viewAppeared = NO;
 }
 
-- (void)hbd_presentViewController:(UIViewController *)viewController animated:(BOOL)flag completion:(void (^)(void))completion {
+- (void)hbd_presentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion {
     if (![self canPresentViewController]) {
         [self didReceiveResultCode:0 resultData:nil requestCode:viewController.requestCode];
         if (completion) {
@@ -44,7 +44,8 @@
         }
         return;
     }
-    [self hbd_presentViewController:viewController animated:flag completion:completion];
+    viewController.presentingSceneId = self.sceneId;
+    [self hbd_presentViewController:viewController animated:animated completion:completion];
 }
 
 - (BOOL)canPresentViewController {
@@ -66,7 +67,10 @@
 
     [self hbd_dismissViewControllerAnimated:animated completion:^{
         if (![presented isKindOfClass:[UIAlertController class]]) {
-            [presenting didReceiveResultCode:presented.resultCode resultData:presented.resultData requestCode:presented.requestCode];
+            BOOL consumed = presented.presentingSceneId && [UIViewController dispatchResult:presenting presented:presented sceneId:presented.presentingSceneId];
+            if (!consumed) {
+                [presenting didReceiveResultCode:presented.resultCode resultData:presented.resultData requestCode:presented.requestCode];
+            }
         }
 
         if (completion) {
@@ -74,6 +78,24 @@
         }
     }];
 }
+
++ (BOOL)dispatchResult:(UIViewController *)presenting presented:(UIViewController *)presented sceneId:(NSString *)sceneId {
+    if ([sceneId isEqualToString:presenting.sceneId]) {
+        [presenting didReceiveResultCode:presented.resultCode resultData:presented.resultData requestCode:presented.requestCode];
+        return YES;
+    }
+    
+    NSArray<UIViewController *> *children = presenting.childViewControllers;
+    for (UIViewController *vc in children) {
+        BOOL consumed = [self dispatchResult:vc presented:presented sceneId:sceneId];
+        if (consumed) {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
 
 - (NSString *)sceneId {
     id obj = objc_getAssociatedObject(self, _cmd);
@@ -300,6 +322,14 @@
 - (void)setResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data {
     self.resultCode = resultCode;
     self.resultData = data;
+}
+
+- (NSString *)presentingSceneId {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setPresentingSceneId:(NSString *)presentingSceneId {
+    objc_setAssociatedObject(self, @selector(presentingSceneId), presentingSceneId, OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
