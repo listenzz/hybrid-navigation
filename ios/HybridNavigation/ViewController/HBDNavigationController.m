@@ -587,8 +587,12 @@
 }
 
 - (CGRect)fakeBarFrameForViewController:(UIViewController *)vc {
-    CGRect frame = CGRectMake(0, 0, self.navigationBar.frame.size.width, UIApplication.sharedApplication.statusBarFrame.size.height + self.navigationBar.frame.size.height);
-    return frame;
+    CGFloat height = self.navigationBar.frame.size.height + self.navigationBar.frame.origin.y;
+    if (vc.view.frame.size.height == self.view.frame.size.height) {
+        return CGRectMake(0, 0, self.navigationBar.frame.size.width, height);
+    }else{
+        return CGRectMake(0, -height, self.navigationBar.frame.size.width, height);
+    }
 }
 
 - (CGRect)fakeShadowFrameWithBarFrame:(CGRect)frame {
