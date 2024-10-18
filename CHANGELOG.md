@@ -1,3 +1,9 @@
+## 2.17.2 （2024-10-18）
+
+### iOS specific
+
+- 修复 iOS 18 下，fake navigation bar 未能正确设置的问题
+
 ## 2.17.1 （2024-09-21）
 
 - 修复 present result 未能正确派发的问题
