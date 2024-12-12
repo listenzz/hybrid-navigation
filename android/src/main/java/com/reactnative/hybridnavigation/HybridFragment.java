@@ -98,7 +98,7 @@ public class HybridFragment extends AwesomeFragment {
         super.onViewCreated(view, savedInstanceState);
         garden.setupToolbar();
     }
-
+    
     @NonNull
     @Override
     protected BarStyle preferredStatusBarStyle() {
@@ -107,12 +107,25 @@ public class HybridFragment extends AwesomeFragment {
         }
 
         if (getPresentationStyle() == PresentationStyle.OverFullScreen) {
-            return BarStyle.LightContent;
+            return SystemUI.activityStatusBarStyle(requireActivity());
         }
 
         return super.preferredStatusBarStyle();
     }
 
+    @Override
+    protected boolean preferredStatusBarHidden() {
+        if (forceTransparentDialogWindow()) {
+            return SystemUI.isStatusBarHidden(requireActivity().getWindow());
+        }
+
+        if (getPresentationStyle() == PresentationStyle.OverFullScreen) {
+            return SystemUI.isStatusBarHidden(requireActivity().getWindow());
+        }
+
+        return super.preferredStatusBarHidden();
+    }
+    
     @Override
     protected boolean preferredNavigationBarHidden() {
         if (getPresentationStyle() == PresentationStyle.OverFullScreen) {

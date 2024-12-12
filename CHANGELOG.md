@@ -1,3 +1,9 @@
+## 2.17.5
+
+### Android specific
+
+- 处理 Modal 未能正确设置状态栏样式的问题
+
 ## 2.17.4
 
 ### Android specific
