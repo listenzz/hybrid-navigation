@@ -1,3 +1,9 @@
+## 2.17.4
+
+### Android specific
+
+- 修复 Modal 导致底下页面状态变为不可见的问题
+
 ## 2.17.3
 
 ### Android specific
