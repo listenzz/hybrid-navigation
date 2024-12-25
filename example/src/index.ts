@@ -32,6 +32,7 @@ import BulgeTabBar from './BulgeTabBar'
 import Toast from './Toast'
 import ZustandCounter from './ZustandCounter'
 import BackgroundTaskDemo from './BackgroundTaskDemo'
+import Landscape from './Landscape'
 
 // import MessageQueue from 'react-native/Libraries/BatchedBridge/MessageQueue.js';
 // const spyFunction = msg => {
@@ -126,6 +127,7 @@ Navigation.registerComponent('CustomTabBar', () => CustomTabBar)
 Navigation.registerComponent('BulgeTabBar', () => BulgeTabBar)
 Navigation.registerComponent('Toast', () => Toast)
 Navigation.registerComponent('BackgroundTaskDemo', () => BackgroundTaskDemo)
+Navigation.registerComponent('Landscape', () => Landscape)
 
 // 完成注册组件
 Navigation.endRegisterComponent()

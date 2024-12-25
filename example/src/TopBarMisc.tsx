@@ -46,6 +46,10 @@ function TopBarMisc({ navigator }: NavigationProps) {
     navigator.push('TopBarStyle')
   }
 
+  function landscape() {
+    navigator.push('Landscape')
+  }
+
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="never"
@@ -87,6 +91,10 @@ function TopBarMisc({ navigator }: NavigationProps) {
 
         <TouchableOpacity onPress={topBarStyle} activeOpacity={0.2} style={styles.button}>
           <Text style={styles.buttonText}>TopBarStyle</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={landscape} activeOpacity={0.2} style={styles.button}>
+          <Text style={styles.buttonText}>Landscape</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

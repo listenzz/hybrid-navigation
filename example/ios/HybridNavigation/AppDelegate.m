@@ -88,4 +88,8 @@
     return controller;
 }
 
+- (UIInterfaceOrientationMask)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window {
+    return [GlobalStyle globalStyle].interfaceOrientation;
+}
+
 @end
