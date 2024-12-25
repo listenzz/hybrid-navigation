@@ -88,7 +88,7 @@
     }
     
     if ([action isEqualToString:@"pop"]) {
-        [self handlePopWithNavigationController:nav callback:callback];
+        [self handlePopWithNavigationController:nav viewController:vc callback:callback];
         return;
     }
     
@@ -121,14 +121,37 @@
     }
 
     vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
-    [[HBDAnimationObserver sharedObserver] beginAnimation];
-    [nav pushViewController:vc animated:YES];
-    [self animateAlongsideTransition:nav callback:callback];
+    
+    BOOL animated = YES;
+    if ([vc isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hdbvc = (HBDViewController *)vc;
+        animated = hdbvc.animatedTransition;
+    }
+    
+    if (animated) {
+        [[HBDAnimationObserver sharedObserver] beginAnimation];
+        [nav pushViewController:vc animated:YES];
+        [self animateAlongsideTransition:nav callback:callback];
+    } else {
+        [nav pushViewController:vc animated:NO];
+        callback(@[NSNull.null, @YES]);
+    }
 }
 
-- (void)handlePopWithNavigationController:(UINavigationController *)nav callback:(RCTResponseSenderBlock)callback {
-    [nav popViewControllerAnimated:YES];
-    [self animateAlongsideTransition:nav callback:callback];
+- (void)handlePopWithNavigationController:(UINavigationController *)nav viewController:(UIViewController *)vc callback:(RCTResponseSenderBlock)callback {
+    BOOL animated = YES;
+    if ([vc isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hdbvc = (HBDViewController *)vc;
+        animated = hdbvc.animatedTransition;
+    }
+    
+    if (animated) {
+        [nav popViewControllerAnimated:YES];
+        [self animateAlongsideTransition:nav callback:callback];
+    } else {
+        [nav popViewControllerAnimated:NO];
+        callback(@[NSNull.null, @YES]);
+    }
 }
 
 - (void)handlePopToWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
@@ -138,8 +161,41 @@
         return;
     }
     
-    [nav popToViewController:vc animated:YES];
-    [self animateAlongsideTransition:nav callback:callback];
+    UIViewController *from_vc = [self findFromViewControllerWithNavigationController:nav extras:extras];
+    
+    BOOL animated = YES;
+    if ([from_vc isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hbdvc = (HBDViewController *)from_vc;
+        animated = hbdvc.animatedTransition;
+    }
+    
+    if (animated) {
+        [nav popToViewController:vc animated:YES];
+        [self animateAlongsideTransition:nav callback:callback];
+    }else {
+        [nav popToViewController:vc animated:NO];
+        callback(@[NSNull.null, @YES]);
+    }
+    
+}
+
+- (UIViewController *)findFromViewControllerWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras {
+    NSArray *children = nav.childViewControllers;
+    NSString *moduleName = extras[@"from"];
+    BOOL inclusive = [extras[@"inclusive"] boolValue];
+    
+    for (NSUInteger i = children.count; i > 0; i--) {
+        NSUInteger index = i - 1;
+        HBDViewController *vc = children[index];
+        if ([moduleName isEqualToString:vc.moduleName] || [moduleName isEqualToString:vc.sceneId]) {
+            if (inclusive && index > 0) {
+                return children[index - 1];
+            }
+            return vc;
+        }
+    }
+    
+    return nil;
 }
 
 - (UIViewController *)findViewControllerWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras {
@@ -162,8 +218,23 @@
 }
 
 - (void)handlePopToRootWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
-    [nav popToRootViewControllerAnimated:YES];
-    [self animateAlongsideTransition:nav callback:callback];
+    
+    UIViewController *from_vc = [self findFromViewControllerWithNavigationController:nav extras:extras];
+    
+    BOOL animated = YES;
+    
+    if ([from_vc isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hbdvc = (HBDViewController *)from_vc;
+        animated = hbdvc.animatedTransition;
+    }
+    
+    if (animated) {
+        [nav popToRootViewControllerAnimated:YES];
+        [self animateAlongsideTransition:nav callback:callback];
+    }else {
+        [nav popToRootViewControllerAnimated:NO];
+        callback(@[NSNull.null, @YES]);
+    }
 }
 
 - (void)handleRedirectToWithNavigationController:(UINavigationController *)nav target:(UIViewController *)target extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
@@ -177,10 +248,22 @@
         callback(@[NSNull.null, @NO]);
         return;
     }
+    BOOL animated = YES;
     
-    [[HBDAnimationObserver sharedObserver] beginAnimation];
-    [nav redirectToViewController:vc target:target animated:YES];
-    [self animateAlongsideTransition:nav callback:callback];
+    if ([vc isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hbdvc = (HBDViewController *)vc;
+        animated = hbdvc.animatedTransition;
+    }
+    
+    if (animated) {
+        [[HBDAnimationObserver sharedObserver] beginAnimation];
+        [nav redirectToViewController:vc target:target animated:YES];
+        [self animateAlongsideTransition:nav callback:callback];
+    }else {
+        [nav redirectToViewController:vc target:target animated:NO];
+        callback(@[NSNull.null, @YES]);
+    }
+    
 }
 
 - (void)handlePushLayoutWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {

@@ -15,6 +15,7 @@
 @property(nonatomic, copy) NSString *tabBarUnselectedItemColorHexString;
 @property(nonatomic, strong, readonly) UIColor *tabBarBackgroundColor;
 @property(nonatomic, assign, readonly) BOOL alwaysSplitNavigationBarTransition;
+@property(nonatomic, assign) UIInterfaceOrientationMask interfaceOrientation;
 
 - (instancetype)initWithOptions:(NSDictionary *)options;
 

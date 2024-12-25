@@ -57,6 +57,7 @@ static GlobalStyle *globalStyle;
 - (instancetype)initWithOptions:(NSDictionary *)options {
     if (self = [super init]) {
         _options = options;
+        _interfaceOrientation = UIInterfaceOrientationMaskPortrait;
 
         // screenBackgroundColor
         NSString *screenBackgroundColor = options[@"screenBackgroundColor"];

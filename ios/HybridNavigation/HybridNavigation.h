@@ -19,5 +19,6 @@
 #import "HBDDrawerNavigator.h"
 
 #import "HBDUtils.h"
+#import "GlobalStyle.h"
 
 #endif /* HybridNavigation_h */

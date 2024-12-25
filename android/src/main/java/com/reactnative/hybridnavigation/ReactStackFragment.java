@@ -42,6 +42,11 @@ public class ReactStackFragment extends StackFragment {
     protected void pushFragmentSync(AwesomeFragment fragment, @NonNull Runnable completion, @NonNull TransitionAnimation animation) {
         if (fragment instanceof ReactFragment) {
             ReactFragment reactFragment = (ReactFragment) fragment;
+            if (!reactFragment.shouldAnimatedTransition()) {
+                super.pushFragmentSync(fragment, completion, TransitionAnimation.None);
+                return;
+            }
+
             if (reactFragment.shouldPassThroughTouches()) {
                 super.pushFragmentSync(fragment, completion, BetterPush);
                 return;
@@ -55,6 +60,11 @@ public class ReactStackFragment extends StackFragment {
         AwesomeFragment topFragment = getTopFragment();
         if (topFragment instanceof ReactFragment) {
             ReactFragment reactFragment = (ReactFragment) topFragment;
+            if (!reactFragment.shouldAnimatedTransition()) {
+                super.popToFragmentSync(fragment, completion, TransitionAnimation.None);
+                return;
+            }
+
             if (reactFragment.shouldPassThroughTouches()) {
                 super.popToFragmentSync(fragment, completion, BetterPush);
                 return;
@@ -67,6 +77,11 @@ public class ReactStackFragment extends StackFragment {
     protected void redirectToFragmentSync(@NonNull AwesomeFragment fragment, @NonNull Runnable completion, @NonNull TransitionAnimation animation, @Nullable AwesomeFragment from) {
         if (fragment instanceof ReactFragment) {
             ReactFragment reactFragment = (ReactFragment) fragment;
+            if (!reactFragment.shouldAnimatedTransition()) {
+                super.redirectToFragmentSync(fragment, completion, TransitionAnimation.None, from);
+                return;
+            }
+
             if (reactFragment.shouldPassThroughTouches()) {
                 super.redirectToFragmentSync(fragment, completion, BetterRedirect, from);
                 return;

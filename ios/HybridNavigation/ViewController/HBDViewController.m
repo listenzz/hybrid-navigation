@@ -13,6 +13,8 @@
 @property(nonatomic, copy, readwrite) NSDictionary *props;
 @property(nonatomic, copy, readwrite) NSDictionary *options;
 @property(nonatomic, assign) BOOL forceTransparentDialogWindow;
+@property(nonatomic, assign) BOOL forceScreenLandscape;
+@property(nonatomic, assign, readwrite) BOOL animatedTransition;
 
 @end
 
@@ -35,8 +37,18 @@
         _moduleName = moduleName;
         _options = options;
         _props = props;
+        _animatedTransition = YES;
+        
+        if (options[@"animatedTransition"]) {
+            _animatedTransition = [options[@"animatedTransition"] boolValue];
+        }
+        
+        if (options[@"forceScreenLandscape"]) {
+            _forceScreenLandscape = [options[@"forceScreenLandscape"] boolValue];
+        }
         
         self.forceTransparentDialogWindow = [options[@"forceTransparentDialogWindow"] boolValue];
+        
         [self applyNavigationBarOptions:options];
         [self applyTabBarOptions:options];
     }
@@ -94,6 +106,50 @@
     if (![HBDUtils isIphoneX]) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     }
+}
+
+- (void)willMoveToParentViewController:(UIViewController *)parent {
+    if (self.forceScreenLandscape) {
+        if (parent) {
+            [self setScreenOrientation:UIInterfaceOrientationLandscapeRight usingMask:UIInterfaceOrientationMaskLandscapeRight];
+        } else {
+            [self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
+        }
+    }
+}
+
+- (void)setScreenOrientation:(UIInterfaceOrientation) orientation usingMask:(UIInterfaceOrientationMask) mask {
+    [GlobalStyle globalStyle].interfaceOrientation = mask;
+    
+    if (@available(iOS 16.0, *)) {
+            UIWindowScene *windowScene = [self getWindowScene];
+            if (windowScene != nil) {
+                UIWindowSceneGeometryPreferencesIOS *geometryPreferences = [[UIWindowSceneGeometryPreferencesIOS alloc] initWithInterfaceOrientations:mask];
+                [windowScene requestGeometryUpdateWithPreferences:geometryPreferences errorHandler:^(NSError * _Nonnull error) {
+    #if DEBUG
+                    if (error) {
+                        NSLog(@"Failed to update geometry with UIInterfaceOrientationMask: %@", error);
+                    }
+    #endif
+                }];
+            }
+    }  else {
+        UIDevice* currentDevice = [UIDevice currentDevice];
+        [currentDevice setValue:@(UIInterfaceOrientationUnknown) forKey:@"orientation"];
+        [currentDevice setValue:@(orientation) forKey:@"orientation"];
+    }
+    
+    [UIViewController attemptRotationToDeviceOrientation];
+}
+
+- (UIWindowScene *)getWindowScene  API_AVAILABLE(ios(13.0)){
+    NSArray *array = [[[UIApplication sharedApplication] connectedScenes] allObjects];
+    for (id connectedScene in array) {
+      if ([connectedScene isKindOfClass:[UIWindowScene class]]) {
+        return connectedScene;
+      }
+    }
+    return nil;
 }
 
 - (void)statusBarFrameWillChange:(NSNotification *)notification {

@@ -15,7 +15,7 @@
     if (children.count > 1) {
         controller.hidesBottomBarWhenPushed = self.hidesBottomBarWhenPushed;
     }
-    [self setViewControllers:children animated:YES];
+    [self setViewControllers:children animated:animated];
 }
 
 @end
