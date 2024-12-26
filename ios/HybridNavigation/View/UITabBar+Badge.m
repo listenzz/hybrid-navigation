@@ -11,10 +11,10 @@
     label.backgroundColor = [UITabBarItem appearance].badgeColor ?: [UIColor colorWithRed:1 green:58.0 / 255.0 blue:47. / 255. alpha:1];
 
     CGFloat percentX = (index + 0.5) / self.items.count;
-    CGFloat x = ceilf((float) (percentX * self.frame.size.width + 10));
-    CGFloat y = 5;
+    CGFloat x = ceilf((float) (percentX * self.frame.size.width + 8));
+    CGFloat y = 6;
     //10为小红点的高度和宽度
-    label.frame = CGRectMake(x, y, 10, 10);
+    label.frame = CGRectMake(x, y, 8, 8);
     [self addSubview:label];
     //把小红点移到最顶层
     [self bringSubviewToFront:label];
@@ -32,7 +32,7 @@
 
 - (void)styleLabel:(UILabel *)label {
     CGRect rect = label.bounds;
-    CGFloat radius = 5;
+    CGFloat radius = 4;
     UIBezierPath *maskPath = [UIBezierPath bezierPathWithRoundedRect:rect
                                                    byRoundingCorners:UIRectCornerAllCorners
                                                          cornerRadii:CGSizeMake(radius, radius)];
