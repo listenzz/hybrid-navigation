@@ -5,7 +5,6 @@ import static com.reactnative.hybridnavigation.Constants.ARG_OPTIONS;
 import static com.reactnative.hybridnavigation.Constants.ARG_PROPS;
 import static com.reactnative.hybridnavigation.Constants.ARG_SCENE_ID;
 
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -99,23 +98,7 @@ public class HybridFragment extends AwesomeFragment {
         super.onViewCreated(view, savedInstanceState);
         garden.setupToolbar();
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (forceScreenLandscape()) {
-            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (forceScreenLandscape() && isRemoving()) {
-            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
-    }
-
+    
     @NonNull
     @Override
     protected BarStyle preferredStatusBarStyle() {

@@ -12,6 +12,7 @@ import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_APPE
 import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_DISAPPEAR;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_RESULT;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -23,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
+import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
@@ -133,6 +135,23 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (forceScreenLandscape()) {
+            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (forceScreenLandscape() && isRemoving()) {
+            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+            unmountReactView();
+        }
+    }
+
+    @Override
     public void onReload() {
         unmountReactView();
     }
@@ -151,6 +170,7 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
         }
 
         if (reactRootView != null) {
+            FLog.w(TAG, "销毁页面：" + getModuleName());
             reactRootView.unmountReactApplication();
             ViewGroup parent = (ViewGroup) reactRootView.getParent();
             parent.removeView(reactRootView);
