@@ -19,6 +19,7 @@ interface InterceptParams {
   sceneId: string
   from?: number | string
   to?: number | string
+  props?: object
 }
 
 export type NavigationInterceptor = (
@@ -30,11 +31,12 @@ export default class DispatchCommandHandler {
   private interceptor: NavigationInterceptor = () => false
 
   async dispatch(sceneId: string, action: string, params: DispatchParams): Promise<boolean> {
-    const { from, to } = params
+    const { from, to, props } = params
     const intercepted = await this.intercept(action, {
       sceneId,
       from,
       to,
+      props,
     })
 
     if (intercepted) {
