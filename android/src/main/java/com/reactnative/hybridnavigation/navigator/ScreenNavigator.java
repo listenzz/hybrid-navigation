@@ -129,7 +129,7 @@ public class ScreenNavigator implements Navigator {
         }
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
-        presenting.presentFragment(presented, requestCode, () -> callback.invoke(null, true), TransitionAnimation.Fade);
+        presenting.presentFragment(presented, requestCode, () -> callback.invoke(null, true), TransitionAnimation.None);
     }
 
     private void handlePresentLayout(@NonNull AwesomeFragment presenting, @NonNull ReadableMap extras, @NonNull Callback callback) {
@@ -164,11 +164,11 @@ public class ScreenNavigator implements Navigator {
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
         int requestCode = extras.getInt("requestCode");
 
-        presenting.presentFragment(presented, requestCode, () -> callback.invoke(null, true), TransitionAnimation.Fade);
+        presenting.presentFragment(presented, requestCode, () -> callback.invoke(null, true), TransitionAnimation.None);
     }
 
     private void handleHideModal(@NonNull AwesomeFragment presented, @NonNull Callback callback) {
-        presented.dismissFragment(() -> callback.invoke(null, true), TransitionAnimation.Fade);
+        presented.dismissFragment(() -> callback.invoke(null, true), TransitionAnimation.None);
     }
 
     private void handleDismiss(@NonNull AwesomeFragment presented, @NonNull Callback callback) {

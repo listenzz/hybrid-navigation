@@ -12,6 +12,7 @@ import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_APPE
 import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_DISAPPEAR;
 import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_RESULT;
 
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -142,13 +143,13 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     public void onStop() {
-        super.onStop();
-        if (forceScreenLandscape() && isRemoving()) {
-            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-            unmountReactView();
+        if (isRemoving() && forceScreenLandscape()) {
+            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+        super.onStop();
     }
 
     @Override
@@ -163,14 +164,14 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 
     private void unmountReactView() {
         getReactBridgeManager().removeReactBridgeReloadListener(this);
-        
+
         ReactContext reactContext = getCurrentReactContext();
         if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
             return;
         }
 
         if (reactRootView != null) {
-            FLog.w(TAG, "销毁页面：" + getModuleName());
+            FLog.w(TAG, "销毁页面-：" + getModuleName());
             reactRootView.unmountReactApplication();
             ViewGroup parent = (ViewGroup) reactRootView.getParent();
             parent.removeView(reactRootView);
