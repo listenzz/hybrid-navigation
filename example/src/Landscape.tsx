@@ -6,11 +6,11 @@ import { withNavigationItem } from 'hybrid-navigation'
 
 export default withNavigationItem({
   topBarHidden: true,
+  statusBarHidden: true,
   backInteractive: false,
   forceScreenLandscape: true,
   animatedTransition: false,
   homeIndicatorAutoHiddenIOS: true,
-
   titleItem: {
     title: 'Landscape',
   },
