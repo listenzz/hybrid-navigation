@@ -16,7 +16,6 @@
 @property(nonatomic, assign, readonly) float hbd_barShadowAlpha;
 @property(nonatomic, assign) BOOL hbd_statusBarHidden;
 
-@property(nonatomic, assign) BOOL hbd_viewAppeared;
 @property(nonatomic, assign) BOOL hbd_inViewHierarchy;
 
 - (void)hbd_setNeedsUpdateNavigationBar;

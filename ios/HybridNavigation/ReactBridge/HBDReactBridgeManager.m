@@ -327,7 +327,7 @@ const NSInteger ResultCancel = 0;
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     id <HBDNavigator> navigator = [self.navigatorRegistry navigatorForAction:action];
     if (!navigator) {
-        RCTLogWarn(@"[Navigation] Can't find a navigator that can handle action '%@'", action);
+        RCTLogInfo(@"[Navigation] Can't find a navigator that can handle action '%@'", action);
         callback(@[NSNull.null, @NO]);
         return;
     }

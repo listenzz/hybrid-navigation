@@ -59,18 +59,21 @@
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
-    if (!vc.hbd_inViewHierarchy) {
+    UINavigationController *nav = [self navigationControllerForViewController:vc];
+    if (!nav) {
+        RCTLogInfo(@"[Navigation] 找不到对应的 UINavigationController from:%@", extras[@"from"]);
         callback(@[NSNull.null, @NO]);
         return;
     }
-    
-    UINavigationController *nav = [self navigationControllerForViewController:vc];
-    if (!nav) {
+
+    if (![nav.childViewControllers containsObject:vc]) {
+        RCTLogInfo(@"[Navigation] 找不到对应的 action target %@", extras[@"from"]);
         callback(@[NSNull.null, @NO]);
         return;
     }
     
     if (nav.transitionCoordinator) {
+        RCTLogInfo(@"[Navigation] 等待上个 action 执行完成 from:%@ %@ to:%@", extras[@"from"], action, extras[@"to"]);
         [nav.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
             // empty
         } completion:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
@@ -116,6 +119,7 @@
 - (void)handlePushWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     UIViewController *vc = [self viewControllerWithExtras:extras];
     if (!vc) {
+        RCTLogInfo(@"[Navigation] 无法创建对应的页面 %@", extras[@"moduleName"]);
         callback(@[NSNull.null, @NO]);
         return;
     }
@@ -157,6 +161,7 @@
 - (void)handlePopToWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
     UIViewController *vc = [self findViewControllerWithNavigationController:nav extras:extras];
     if (!vc) {
+        RCTLogInfo(@"[Navigation] 找不到要 popTo 的页面 %@", extras[@"moduleName"]);
         callback(@[NSNull.null, @NO]);
         return;
     }
@@ -238,13 +243,9 @@
 }
 
 - (void)handleRedirectToWithNavigationController:(UINavigationController *)nav target:(UIViewController *)target extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
-    if (![nav.childViewControllers containsObject:target]) {
-        callback(@[NSNull.null, @NO]);
-        return;
-    }
-    
     UIViewController *vc = [self viewControllerWithExtras:extras];
     if (!vc) {
+        RCTLogInfo(@"[Navigation] 无法创建对应的页面 %@", extras[@"moduleName"]);
         callback(@[NSNull.null, @NO]);
         return;
     }
@@ -270,6 +271,7 @@
     NSDictionary *layout = extras[@"layout"];
     UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
     if (!vc) {
+        RCTLogInfo(@"[Navigation] 无法创建对应的 vc");
         callback(@[NSNull.null, @NO]);
         return;
     }

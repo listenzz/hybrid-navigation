@@ -85,7 +85,7 @@ RCT_EXPORT_METHOD(dispatch:(NSString *)sceneId action:(NSString *)action extras:
     UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
     if (!vc) {
         callback(@[NSNull.null, @NO]);
-        RCTLogWarn(@"[Navigation] Can't find target scene for action: %@, maybe the scene is gone. \nextras: %@", action, extras);
+        RCTLogInfo(@"[Navigation] Can't find target scene for action: %@, maybe the scene is gone. \nextras: %@", action, extras);
         return;
     }
 

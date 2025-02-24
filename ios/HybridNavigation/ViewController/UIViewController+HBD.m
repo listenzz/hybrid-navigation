@@ -15,8 +15,6 @@
         Class clazz = [self class];
         hbd_exchangeImplementations(clazz, @selector(presentViewController:animated:completion:), @selector(hbd_presentViewController:animated:completion:));
         hbd_exchangeImplementations(clazz, @selector(dismissViewControllerAnimated:completion:), @selector(hbd_dismissViewControllerAnimated:completion:));
-        hbd_exchangeImplementations(clazz, @selector(viewDidAppear:), @selector(hbd_viewDidAppear:));
-        hbd_exchangeImplementations(clazz, @selector(viewDidDisappear:), @selector(hbd_viewDidDisappear:));
         hbd_exchangeImplementations(clazz, @selector(didMoveToParentViewController:), @selector(hbd_didMoveToParentViewController:));
     });
 }
@@ -24,16 +22,6 @@
 - (void)hbd_didMoveToParentViewController:(UIViewController *)parent {
     [self hbd_didMoveToParentViewController:parent];
     self.hbd_inViewHierarchy = parent != nil;
-}
-
-- (void)hbd_viewDidAppear:(BOOL)animated {
-    [self hbd_viewDidAppear:animated];
-    self.hbd_viewAppeared = YES;
-}
-
-- (void)hbd_viewDidDisappear:(BOOL)animated {
-    [self hbd_viewDidDisappear:animated];
-    self.hbd_viewAppeared = NO;
 }
 
 - (void)hbd_presentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion {
@@ -51,7 +39,7 @@
 - (BOOL)canPresentViewController {
     UIViewController *presented = self.presentedViewController;
     if (presented && !presented.isBeingDismissed) {
-        RCTLogWarn(@"[Navigation] Can't present since the scene had present another scene already.");
+        RCTLogInfo(@"[Navigation] Can't present since the scene had present another scene already.");
         return NO;
     }
     return YES;
@@ -258,14 +246,6 @@
     objc_setAssociatedObject(self, @selector(hbd_swipeBackEnabled), @(enabled), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (BOOL)hbd_viewAppeared {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    return obj ? [obj boolValue] : YES;
-}
-
-- (void)setHbd_viewAppeared:(BOOL)viewAppeared {
-    objc_setAssociatedObject(self, @selector(hbd_viewAppeared), @(viewAppeared), OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
 
 - (BOOL)hbd_inViewHierarchy {
     id obj = objc_getAssociatedObject(self, _cmd);
