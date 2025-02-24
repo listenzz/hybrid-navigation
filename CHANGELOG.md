@@ -1,3 +1,10 @@
+## 2.17.11
+
+### iOS specific
+
+- 完善日志
+- 微略优化 stack 的路由操作
+
 ## 2.17.7 - 2.17.10
 
 ### Android specific
