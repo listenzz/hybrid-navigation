@@ -15,13 +15,7 @@
         Class clazz = [self class];
         hbd_exchangeImplementations(clazz, @selector(presentViewController:animated:completion:), @selector(hbd_presentViewController:animated:completion:));
         hbd_exchangeImplementations(clazz, @selector(dismissViewControllerAnimated:completion:), @selector(hbd_dismissViewControllerAnimated:completion:));
-        hbd_exchangeImplementations(clazz, @selector(didMoveToParentViewController:), @selector(hbd_didMoveToParentViewController:));
     });
-}
-
-- (void)hbd_didMoveToParentViewController:(UIViewController *)parent {
-    [self hbd_didMoveToParentViewController:parent];
-    self.hbd_inViewHierarchy = parent != nil;
 }
 
 - (void)hbd_presentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion {
@@ -244,16 +238,6 @@
 
 - (void)setHbd_swipeBackEnabled:(BOOL)enabled {
     objc_setAssociatedObject(self, @selector(hbd_swipeBackEnabled), @(enabled), OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-
-- (BOOL)hbd_inViewHierarchy {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    return obj ? [obj boolValue] : YES;
-}
-
-- (void)setHbd_inViewHierarchy:(BOOL)inViewHierarchy {
-    objc_setAssociatedObject(self, @selector(hbd_inViewHierarchy), @(inViewHierarchy), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (void)hbd_setNeedsUpdateNavigationBar {

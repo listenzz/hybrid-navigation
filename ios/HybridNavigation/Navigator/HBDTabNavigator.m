@@ -175,11 +175,6 @@
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
-    if (!vc.hbd_inViewHierarchy) {
-        callback(@[NSNull.null, @NO]);
-        return;
-    }
-    
     UITabBarController *tabBarController = [self tabBarControllerForViewController:vc];
 
     if (!tabBarController) {

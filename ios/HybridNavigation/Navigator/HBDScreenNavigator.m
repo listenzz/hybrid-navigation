@@ -50,11 +50,6 @@
 }
 
 - (void)handleNavigationWithViewController:(UIViewController *)vc action:(NSString *)action extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
-    if (!vc.hbd_inViewHierarchy) {
-        callback(@[NSNull.null, @NO]);
-        return;
-    }
-    
     if ([action isEqualToString:@"present"]) {
         [self handlePresentWithViewController:vc extras:extras callback:callback];
         return;

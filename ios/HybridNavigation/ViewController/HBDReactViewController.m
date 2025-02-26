@@ -22,7 +22,7 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillReloadNotification object:nil];
-    RCTLogInfo(@"销毁页面 %@", self.moduleName);
+    RCTLogInfo(@"[Navigation] 销毁页面 %@", self.moduleName);
 }
 
 - (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options {
@@ -48,7 +48,7 @@
     self.view = [[HBDRootView alloc] initWithRootView:rootView];
     [self.view addSubview:rootView];
     [self updateReactViewConstraints];
-    RCTLogInfo(@"加载页面 %@", self.moduleName);
+    RCTLogInfo(@"[Navigation] 加载页面 %@", self.moduleName);
 }
 
 - (void)viewDidLoad {
