@@ -66,12 +66,6 @@
         return;
     }
 
-    if (![nav.childViewControllers containsObject:vc]) {
-        RCTLogInfo(@"[Navigation] 找不到对应的 action target %@", extras[@"from"]);
-        callback(@[NSNull.null, @NO]);
-        return;
-    }
-    
     if (nav.transitionCoordinator) {
         RCTLogInfo(@"[Navigation] 等待上个 action 执行完成 from:%@ %@ to:%@", extras[@"from"], action, extras[@"to"]);
         [nav.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
