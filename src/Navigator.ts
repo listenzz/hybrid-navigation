@@ -41,6 +41,11 @@ export class Navigator implements Navigator {
     return navigator
   }
 
+  static unmount = (sceneId: string) => {
+    store.removeNavigator(sceneId)
+    Navigation.unmount(sceneId)
+  }
+
   static async find(moduleName: string) {
     const sceneId = await Navigation.findSceneIdByModuleName(moduleName)
     if (sceneId) {
@@ -63,11 +68,6 @@ export class Navigator implements Navigator {
 
   setParams = (params: { [index: string]: any }) => {
     this.state.params = { ...this.state.params, ...params }
-  }
-
-  unmount = () => {
-    store.removeNavigator(this.sceneId)
-    Navigation.unmount(this.sceneId)
   }
 
   push = async <T extends ResultType, P extends PropsType = {}>(

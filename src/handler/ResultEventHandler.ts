@@ -1,5 +1,5 @@
 import Event from '../Event'
-import NavigationModule from '../NavigationModule'
+
 interface IndexType {
   [index: string]: any
 }
@@ -7,7 +7,6 @@ interface IndexType {
 export type ResultType = IndexType | null
 export type ResultEventListener<T extends ResultType> = (resultCode: number, data: T) => void
 
-const { RESULT_CANCEL } = NavigationModule.getConstants()
 export default class ResultEventHandler {
   private listenerRecords: Record<string, Record<number, Array<ResultEventListener<any>>>> = {}
 
@@ -48,15 +47,9 @@ export default class ResultEventHandler {
   }
 
   invalidateResultEventListener(sceneId: string) {
-    const listeners = this.listenerRecords[sceneId]
-    if (listeners) {
-      // Object.values(listeners).forEach(listener => listener(RESULT_CANCEL, null))
-      Object.values(listeners)
-        .reduce((acc, next) => [...acc, ...next], [])
-        .forEach(listener => listener(RESULT_CANCEL, null))
+    if (this.listenerRecords[sceneId]) {
+      delete this.listenerRecords[sceneId]
     }
-
-    delete this.listenerRecords[sceneId]
   }
 
   waitResult<T extends ResultType>(sceneId: string, requestCode: number): Promise<[number, T]> {

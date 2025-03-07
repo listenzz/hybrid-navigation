@@ -27,11 +27,11 @@ export function withNavigation(moduleName: string) {
       }
 
       useEffect(() => {
-        Navigation.signalFirstRenderComplete(navigator.sceneId)
+        Navigation.signalFirstRenderComplete(sceneId)
         return () => {
-          navigator.unmount()
+          Navigator.unmount(sceneId)
         }
-      }, [navigator])
+      }, [sceneId])
 
       const injected = {
         navigator,
