@@ -50,6 +50,7 @@ export interface Route {
   sceneId: string
   moduleName: string
   mode: LayoutMode
+  requestCode: number
 }
 
 export interface RouteGraph {

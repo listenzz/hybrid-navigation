@@ -214,11 +214,13 @@ RCT_EXPORT_METHOD(currentRoute:(RCTResponseSenderBlock)callback) {
     }
 
     HBDViewController *current = [self.bridgeManager primaryViewController];
+    
     if (current) {
         callback(@[[NSNull null], @{
             @"moduleName": RCTNullIfNil(current.moduleName),
             @"sceneId": current.sceneId,
-            @"mode": [current hbd_mode]
+            @"mode": [current hbd_mode],
+            @"requestCode": @(current.requestCode),
         }]);
     } else {
         [self performSelector:@selector(currentRouteWithCallback:) withObject:callback afterDelay:0.016];

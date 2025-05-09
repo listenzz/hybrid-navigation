@@ -3,6 +3,7 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDNavigationController.h"
 #import "HBDAnimationObserver.h"
+#import "UIViewController+HBD.h"
 
 #import <React/RCTLog.h>
 
@@ -82,6 +83,11 @@
 }
 
 - (void)handlePresentWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
+    if (![presenting canPresentViewController]) {
+        callback(@[NSNull.null, @NO]);
+        return;
+    }
+    
     UIViewController *vc = [self viewControllerWithExtras:extras];
     NSInteger requestCode = [extras[@"requestCode"] integerValue];
     HBDNavigationController *nav = [[HBDNavigationController alloc] initWithRootViewController:vc];
@@ -100,6 +106,11 @@
 }
 
 - (void)handleShowModalWithViewController:(UIViewController *)presenting extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
+    if (![presenting canPresentViewController]) {
+        callback(@[NSNull.null, @NO]);
+        return;
+    }
+    
     UIViewController *vc = [self viewControllerWithExtras:extras];
     NSInteger requestCode = [extras[@"requestCode"] integerValue];
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;

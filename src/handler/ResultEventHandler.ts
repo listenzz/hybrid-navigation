@@ -9,17 +9,17 @@ export type ResultEventListener<T extends ResultType> = (resultCode: number, dat
 
 const { RESULT_CANCEL } = NavigationModule.getConstants()
 export default class ResultEventHandler {
-  private listeners: Record<string, Record<number, ResultEventListener<any>>> = {}
+  private listenerRecords: Record<string, Record<number, Array<ResultEventListener<any>>>> = {}
 
   constructor() {}
 
   handleComponentResult() {
     Event.listenComponentResult(
       (sceneId: string, requestCode: number, resultCode: number, data: any) => {
-        const listener = this.listeners[sceneId]?.[requestCode]
-        if (listener) {
-          delete this.listeners[sceneId][requestCode]
-          listener(resultCode, data)
+        const listeners = this.listenerRecords[sceneId]?.[requestCode]
+        if (listeners) {
+          delete this.listenerRecords[sceneId][requestCode]
+          listeners.forEach(l => l(resultCode, data))
         }
       },
     )
@@ -30,29 +30,33 @@ export default class ResultEventHandler {
     requestCode: number,
     listener: ResultEventListener<any>,
   ) {
-    if (!this.listeners[sceneId]) {
-      this.listeners[sceneId] = {}
+    if (!this.listenerRecords[sceneId]) {
+      this.listenerRecords[sceneId] = {}
     }
-    const previousListener = this.listeners[sceneId][requestCode]
-    if (previousListener) {
-      previousListener(RESULT_CANCEL, null)
+
+    if (!this.listenerRecords[sceneId][requestCode]) {
+      this.listenerRecords[sceneId][requestCode] = []
     }
-    this.listeners[sceneId][requestCode] = listener
+
+    this.listenerRecords[sceneId][requestCode].push(listener)
   }
 
   private removeResultEventListener(sceneId: string, requestCode: number) {
-    if (this.listeners[sceneId]) {
-      delete this.listeners[sceneId][requestCode]
+    if (this.listenerRecords[sceneId]) {
+      delete this.listenerRecords[sceneId][requestCode]
     }
   }
 
   invalidateResultEventListener(sceneId: string) {
-    const listeners = this.listeners[sceneId]
+    const listeners = this.listenerRecords[sceneId]
     if (listeners) {
-      Object.values(listeners).forEach(listener => listener(RESULT_CANCEL, null))
+      // Object.values(listeners).forEach(listener => listener(RESULT_CANCEL, null))
+      Object.values(listeners)
+        .reduce((acc, next) => [...acc, ...next], [])
+        .forEach(listener => listener(RESULT_CANCEL, null))
     }
 
-    delete this.listeners[sceneId]
+    delete this.listenerRecords[sceneId]
   }
 
   waitResult<T extends ResultType>(sceneId: string, requestCode: number): Promise<[number, T]> {

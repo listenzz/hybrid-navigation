@@ -1,6 +1,7 @@
 #import "UIViewController+HBD.h"
 
 #import "HBDNavigationController.h"
+#import "HBDReactViewController.h"
 #import "HBDUtils.h"
 #import "GlobalStyle.h"
 #import "UITabBar+Badge.h"
@@ -20,10 +21,6 @@
 
 - (void)hbd_presentViewController:(UIViewController *)viewController animated:(BOOL)animated completion:(void (^)(void))completion {
     if (![self canPresentViewController]) {
-        [self didReceiveResultCode:0 resultData:nil requestCode:viewController.requestCode];
-        if (completion) {
-            completion();
-        }
         return;
     }
     viewController.presentingSceneId = self.sceneId;
@@ -33,7 +30,12 @@
 - (BOOL)canPresentViewController {
     UIViewController *presented = self.presentedViewController;
     if (presented && !presented.isBeingDismissed) {
-        RCTLogInfo(@"[Navigation] Can't present since the scene had present another scene already.");
+        if ([presented isKindOfClass:[HBDReactViewController class]]) {
+            HBDReactViewController *vc = (HBDReactViewController *)presented;
+            RCTLogInfo(@"[Navigation] Can't present since the scene had present another scene already. %@", vc.moduleName);
+        } else {
+            RCTLogInfo(@"[Navigation] Can't present since the scene had present another scene already. %@", NSStringFromClass([presented class]));
+        }
         return NO;
     }
     return YES;

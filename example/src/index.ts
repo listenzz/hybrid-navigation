@@ -7,7 +7,7 @@ import Navigation, {
   Tabs,
   Stack,
 } from 'hybrid-navigation'
-import { Image, Platform } from 'react-native'
+import { Image, LogBox, Platform } from 'react-native'
 import NavigationScreen from './Navigation'
 import Result from './Result'
 import Options from './Options'
@@ -33,6 +33,8 @@ import Toast from './Toast'
 import ZustandCounter from './ZustandCounter'
 import BackgroundTaskDemo from './BackgroundTaskDemo'
 import Landscape from './Landscape'
+
+LogBox.ignoreAllLogs()
 
 // import MessageQueue from 'react-native/Libraries/BatchedBridge/MessageQueue.js';
 // const spyFunction = msg => {
