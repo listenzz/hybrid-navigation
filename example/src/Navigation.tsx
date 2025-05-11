@@ -147,8 +147,8 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
       if (resultCode === RESULT_CANCEL) {
         const route = await Navigation.currentRoute()
         console.info('----testAwaitResult----', JSON.stringify(route))
-        if (route.mode === 'modal') {
-          await Navigation.result(navigator.sceneId, route.requestCode)
+        if (route.mode === 'modal' && route.presentingId) {
+          await Navigation.result(route.presentingId, route.requestCode)
           continue
         }
       }

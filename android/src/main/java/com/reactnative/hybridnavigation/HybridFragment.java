@@ -20,6 +20,7 @@ import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.AwesomeToolbar;
 import com.navigation.androidx.BarStyle;
 import com.navigation.androidx.FragmentHelper;
+import com.navigation.androidx.PresentableActivity;
 import com.navigation.androidx.PresentationStyle;
 import com.navigation.androidx.Style;
 import com.navigation.androidx.SystemUI;
@@ -309,5 +310,10 @@ public class HybridFragment extends AwesomeFragment {
         Bundle args = FragmentHelper.getArguments(this);
         return args.getString(ARG_MODULE_NAME);
     }
-
+    
+    public String getPresentingSceneId() {
+        Bundle args = FragmentHelper.getArguments(this);
+        return args.getString(PresentableActivity.ARG_PRESENTING_SCENE_ID);
+    }
+    
 }

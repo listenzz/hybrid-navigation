@@ -10,6 +10,7 @@ import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReadableMap;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
+import com.navigation.androidx.PresentableActivity;
 import com.navigation.androidx.PresentationStyle;
 import com.navigation.androidx.TransitionAnimation;
 import com.reactnative.hybridnavigation.HybridFragment;
@@ -161,9 +162,13 @@ public class ScreenNavigator implements Navigator {
             callback.invoke(null, false);
             return;
         }
+       
+        Bundle args = FragmentHelper.getArguments(presented);
+        args.putString(PresentableActivity.ARG_PRESENTING_SCENE_ID, presenting.getSceneId());
+        presented.setArguments(args);
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
+        
         int requestCode = extras.getInt("requestCode");
-
         presenting.presentFragment(presented, requestCode, () -> callback.invoke(null, true), TransitionAnimation.None);
     }
 
@@ -187,6 +192,11 @@ public class ScreenNavigator implements Navigator {
             callback.invoke(null, false);
             return;
         }
+        
+        Bundle args = FragmentHelper.getArguments(presented);
+        args.putString(PresentableActivity.ARG_PRESENTING_SCENE_ID, presenting.getSceneId());
+        presented.setArguments(args);
+        
         int requestCode = extras.getInt("requestCode");
         ReactStackFragment stackFragment = new ReactStackFragment();
         stackFragment.setRootFragment(presented);

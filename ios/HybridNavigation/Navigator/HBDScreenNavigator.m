@@ -93,6 +93,9 @@
     HBDNavigationController *nav = [[HBDNavigationController alloc] initWithRootViewController:vc];
     nav.modalPresentationStyle = UIModalPresentationCurrentContext;
     [nav setRequestCode:requestCode];
+    [vc setRequestCode:requestCode];
+    [vc setPresentingSceneId:presenting.sceneId];
+    
     [[HBDAnimationObserver sharedObserver] beginAnimation];
     [presenting presentViewController:nav animated:YES completion:^{
         callback(@[NSNull.null, @YES]);
@@ -116,6 +119,7 @@
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     vc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [vc setRequestCode:requestCode];
+    
     [[HBDAnimationObserver sharedObserver] beginAnimation];
     [presenting presentViewController:vc animated:YES completion:^{
         callback(@[NSNull.null, @YES]);

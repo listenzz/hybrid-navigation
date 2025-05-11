@@ -219,6 +219,7 @@ RCT_EXPORT_METHOD(currentRoute:(RCTResponseSenderBlock)callback) {
         callback(@[[NSNull null], @{
             @"moduleName": RCTNullIfNil(current.moduleName),
             @"sceneId": current.sceneId,
+            @"presentingId": RCTNullIfNil(current.presentingSceneId),
             @"mode": [current hbd_mode],
             @"requestCode": @(current.requestCode),
         }]);

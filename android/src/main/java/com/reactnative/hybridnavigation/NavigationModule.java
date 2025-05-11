@@ -300,6 +300,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                     bundle.putString("moduleName", current.getModuleName());
                     bundle.putString("sceneId", current.getSceneId());
                     bundle.putString("mode", Navigator.Util.getMode(current));
+                    bundle.putString("presentingId", current.getPresentingSceneId());
                     bundle.putInt("requestCode", current.getRequestCode());
                     callback.invoke(null, Arguments.fromBundle(bundle));
                 });
@@ -323,7 +324,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
                 activity.scheduleTaskAtStarted(() -> {
                     FragmentManager fragmentManager = activity.getSupportFragmentManager();
                     ArrayList<Bundle> graph = bridgeManager.buildRouteGraph(fragmentManager);
-                    if (graph.size() == 0) {
+                    if (graph.isEmpty()) {
                         UiThreadUtil.runOnUiThread(this, 16);
                         return;
                     }
