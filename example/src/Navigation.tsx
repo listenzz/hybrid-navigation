@@ -9,7 +9,6 @@ import Navigation, {
   NavigationProps,
   useVisibleEffect,
   RESULT_CANCEL,
-  Navigator,
 } from 'hybrid-navigation'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import { KeyboardInsetsView } from '@sdcx/keyboard-insets'
@@ -134,9 +133,12 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
     handleResult(resultCode, data)
   }
 
-  async function showModal() {
-    const [resultCode, data] = await navigator.showModal<{ text?: string }>('ReactModal')
-    handleResult(resultCode, data)
+  function showModal() {
+    ;(async function show() {
+      const [resultCode, data] = await navigator.showModal<{ text?: string }>('ReactModal')
+      handleResult(resultCode, data)
+    })()
+    testAwaitResult()
   }
 
   async function testAwaitResult() {
@@ -144,9 +146,9 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
       const [resultCode, data] = await navigator.present<{ text?: string }>('Result')
       if (resultCode === RESULT_CANCEL) {
         const route = await Navigation.currentRoute()
-        console.info('--------', JSON.stringify(route))
+        console.info('----testAwaitResult----', JSON.stringify(route))
         if (route.mode === 'modal') {
-          await Navigation.result(route.sceneId, route.requestCode)
+          await Navigation.result(navigator.sceneId, route.requestCode)
           continue
         }
       }

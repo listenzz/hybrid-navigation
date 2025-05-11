@@ -31,8 +31,6 @@ function ReactModal({ navigator, sceneId }: NavigationProps) {
       })
     }
     await navigator.hideModal()
-    const current = await Navigation.currentRoute()
-    console.log(JSON.stringify(current, null, 2))
   }
 
   async function showModal() {
