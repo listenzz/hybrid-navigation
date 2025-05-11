@@ -7,6 +7,7 @@ interface NavigationModule {
   getConstants: () => {
     RESULT_OK: number
     RESULT_CANCEL: number
+    RESULT_BLOCK: number
   }
 
   startRegisterReactComponent: () => void

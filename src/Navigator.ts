@@ -3,7 +3,7 @@ import { createContext } from 'react'
 import store from './store'
 import type { Visibility, Layout, BuildInLayout } from './Route'
 import type { NavigationItem } from './Options'
-import Navigation, { ResultType, RESULT_CANCEL } from './Navigation'
+import Navigation, { ResultType, RESULT_BLOCK } from './Navigation'
 
 export const NavigationContext = createContext<any>(null)
 
@@ -83,7 +83,7 @@ export class Navigator implements Navigator {
       options,
     })
     if (!success) {
-      return [RESULT_CANCEL, null] as [number, T]
+      return [RESULT_BLOCK, null] as [number, T]
     }
     return Navigation.result<T>(this.sceneId, 0)
   }
@@ -94,7 +94,7 @@ export class Navigator implements Navigator {
       layout,
     })
     if (!success) {
-      return [RESULT_CANCEL, null] as [number, T]
+      return [RESULT_BLOCK, null] as [number, T]
     }
     return Navigation.result<T>(this.sceneId, 0)
   }
@@ -137,7 +137,7 @@ export class Navigator implements Navigator {
       console.warn(
         `present from:${this.moduleName} to:${moduleName} failed. Maybe the screen (${this.moduleName}) already shows or present another screen.`,
       )
-      return [RESULT_CANCEL, null] as [number, T]
+      return [RESULT_BLOCK, null] as [number, T]
     }
     return Navigation.result<T>(this.sceneId, requestCode)
   }
@@ -153,7 +153,7 @@ export class Navigator implements Navigator {
       console.warn(
         `presentLayout from:${this.moduleName} failed. Maybe the screen (${this.moduleName}) already shows or present another screen.`,
       )
-      return [RESULT_CANCEL, null] as [number, T]
+      return [RESULT_BLOCK, null] as [number, T]
     }
     return Navigation.result<T>(this.sceneId, requestCode)
   }
@@ -178,7 +178,7 @@ export class Navigator implements Navigator {
       console.warn(
         `showModal from:${this.moduleName} to:${moduleName} failed. Maybe the screen (${this.moduleName}) already shows or present another screen.`,
       )
-      return [RESULT_CANCEL, null] as [number, T]
+      return [RESULT_BLOCK, null] as [number, T]
     }
     return Navigation.result<T>(this.sceneId, requestCode)
   }
@@ -194,7 +194,7 @@ export class Navigator implements Navigator {
       console.warn(
         `showModal from:${this.moduleName} failed. Maybe the screen (${this.moduleName}) already shows or present another screen.`,
       )
-      return [RESULT_CANCEL, null] as [number, T]
+      return [RESULT_BLOCK, null] as [number, T]
     }
     return Navigation.result<T>(this.sceneId, requestCode)
   }

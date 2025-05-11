@@ -34,7 +34,7 @@ type Nullable<T> = {
   [P in keyof T]: T[P] extends T[P] | undefined ? T[P] | null : T[P]
 }
 
-export const { RESULT_CANCEL, RESULT_OK } = NavigationModule.getConstants()
+export const { RESULT_CANCEL, RESULT_OK, RESULT_BLOCK } = NavigationModule.getConstants()
 
 export type NavigationSubscription = {
   remove: () => void
@@ -191,7 +191,14 @@ class NavigationImpl implements Navigation {
     sceneId: string,
     resultCode: number,
     data: T = null as T,
-  ): void => NavigationModule.setResult(sceneId, resultCode, data)
+  ): void => {
+    if (resultCode < RESULT_OK) {
+      console.warn(
+        '`resultCode` can only be `RESULT_OK`, `RESULT_CANCEL` or an integer greater than 0.',
+      )
+    }
+    NavigationModule.setResult(sceneId, resultCode, data)
+  }
 
   result<T extends ResultType>(sceneId: string, resultCode: number) {
     return this.resultHandler.waitResult<T>(sceneId, resultCode)

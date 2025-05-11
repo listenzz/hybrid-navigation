@@ -4,6 +4,7 @@
 extern NSString *const ReactModuleRegistryDidCompletedNotification;
 extern const NSInteger ResultOK;
 extern const NSInteger ResultCancel;
+extern const NSInteger ResultBlock;
 
 @class HBDReactBridgeManager;
 @class HBDViewController;

@@ -3,7 +3,7 @@ import navigation from './Navigation'
 navigation.setNavigationComponentWrap(withNavigation)
 const Navigation = navigation
 export default Navigation
-export { RESULT_OK, RESULT_CANCEL } from './Navigation'
+export { RESULT_OK, RESULT_CANCEL, RESULT_BLOCK } from './Navigation'
 export { statusBarHeight, toolbarHeight, topBarHeight } from './GardenModule'
 export { withNavigationItem } from './NavigationComponentWrap'
 export type { NavigationProps } from './NavigationComponentWrap'

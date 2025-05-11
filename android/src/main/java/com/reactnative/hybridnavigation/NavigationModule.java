@@ -66,6 +66,7 @@ public class NavigationModule extends ReactContextBaseJavaModule {
         HashMap<String, Object> constants = new HashMap<>();
         constants.put("RESULT_OK", Activity.RESULT_OK);
         constants.put("RESULT_CANCEL", Activity.RESULT_CANCELED);
+        constants.put("RESULT_BLOCK", -2);
         return constants;
     }
 

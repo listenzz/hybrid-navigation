@@ -41,7 +41,8 @@ RCT_EXPORT_MODULE(NavigationModule)
 - (NSDictionary *)constantsToExport {
     return @{
         @"RESULT_OK": @(ResultOK),
-        @"RESULT_CANCEL": @(ResultCancel)
+        @"RESULT_CANCEL": @(ResultCancel),
+        @"RESULT_BLOCK": @(ResultBlock)
     };
 }
 

@@ -10,6 +10,7 @@
 NSString *const ReactModuleRegistryDidCompletedNotification = @"ReactModuleRegistryDidCompletedNotification";
 const NSInteger ResultOK = -1;
 const NSInteger ResultCancel = 0;
+const NSInteger ResultBlock = -2;
 
 @interface HBDReactBridgeManager ()
 
