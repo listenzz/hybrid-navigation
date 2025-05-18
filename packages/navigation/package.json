@@ -1,0 +1,49 @@
+{
+  "name": "hybrid-navigation",
+  "description": "React Native Navigation that supports seamless navigation between Native and React.",
+  "version": "2.18.3",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "react-native": "src/index",
+  "nativePackage": true,
+  "files": [
+    "src",
+    "dist",
+    "android",
+    "ios",
+    "HybridNavigation.podspec",
+    "!android/build",
+    "!android/.gradle",
+    "!android/.idea",
+    "!android/local.properties",
+    "!ios/build",
+    "!**/__tests__"
+  ],
+  "repository": "https://github.com/listenzz/hybrid-navigation",
+  "homepage": "https://github.com/listenzz/hybrid-navigation#readme",
+  "author": "listen <listenzz@163.com> (https://github.com/listenzz)",
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "keywords": [
+    "react-native",
+    "navigation",
+    "navigator",
+    "router",
+    "hybrid"
+  ],
+  "scripts": {
+    "build": "rm -rf ./dist && tsc -p tsconfig.json",
+    "prepare": "npm run build",
+    "test": "jest",
+    "tsc": "tsc",
+    "lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx"
+  },
+  "peerDependencies": {
+    "react": ">=16.8",
+    "react-native": ">=0.60"
+  },
+  "dependencies": {
+    "path-to-regexp": "^6.1.0"
+  },
+  "devDependencies": {}
+}

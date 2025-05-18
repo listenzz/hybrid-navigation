@@ -1,39 +1,9 @@
 {
-  "name": "hybrid-navigation",
+  "name": "navigation-demo",
   "description": "React Native Navigation that supports seamless navigation between Native and React.",
   "version": "2.18.3",
-  "main": "./lib/index.js",
-  "typings": "./lib/index.d.ts",
-  "react-native": "src/index",
-  "nativePackage": true,
-  "files": [
-    "src",
-    "lib",
-    "android",
-    "ios",
-    "HybridNavigation.podspec",
-    "!android/build",
-    "!android/.gradle",
-    "!android/.idea",
-    "!android/local.properties",
-    "!ios/build",
-    "!**/__tests__"
-  ],
-  "repository": "https://github.com/listenzz/hybrid-navigation",
-  "homepage": "https://github.com/listenzz/hybrid-navigation#readme",
-  "author": "listen <listenzz@163.com> (https://github.com/listenzz)",
-  "license": "MIT",
-  "licenseFilename": "LICENSE",
-  "keywords": [
-    "react-native",
-    "navigation",
-    "navigator",
-    "router",
-    "hybrid"
-  ],
+  "private": "true",
   "scripts": {
-    "build": "rm -rf ./lib && tsc -p tsconfig.build.json",
-    "prepare": "npm run build",
     "start": "watchman watch-del-all && react-native start --reset-cache",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -43,38 +13,50 @@
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
   },
+  "workspaces": [
+    "packages/*"
+  ],
   "peerDependencies": {
     "react": ">=16.8",
     "react-native": ">=0.60"
   },
   "dependencies": {
-    "path-to-regexp": "^6.1.0"
+    "@react-native-community/hooks": "^2.8.0",
+    "@react-native-community/slider": "^4.5.6",
+    "@sdcx/keyboard-insets": "^0.5.0",
+    "hybrid-navigation": "*",
+    "react": "18.3.1",
+    "react-native": "0.77.2",
+    "react-native-fast-image": "^8.6.3",
+    "react-native-safe-area-context": "^5.4.0",
+    "react-native-toast-hybrid": "^2.6.0",
+    "react-redux": "^7.2.5",
+    "redux": "^4.1.1",
+    "zustand": "^3.7.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
-    "@babel/preset-env": "^7.20.0",
-    "@babel/runtime": "^7.20.0",
-    "@gfez/eslint-config-react-native": "^1.0.0",
-    "@react-native-community/hooks": "^2.8.0",
-    "@react-native-community/slider": "^4.4.2",
-    "@sdcx/keyboard-insets": "^0.5.0",
-    "@types/jest": "^29.2.1",
-    "@types/react": "^18.0.24",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/runtime": "^7.25.0",
+    "@react-native-community/cli": "15.0.1",
+    "@react-native-community/cli-platform-android": "15.0.1",
+    "@react-native-community/cli-platform-ios": "15.0.1",
+    "@react-native/babel-preset": "0.77.2",
+    "@react-native/eslint-config": "0.77.2",
+    "@react-native/metro-config": "0.77.2",
+    "@react-native/typescript-config": "0.77.2",
+    "@types/jest": "^29.5.13",
     "@types/react-redux": "^7.1.9",
     "@types/react-test-renderer": "^18.0.0",
-    "babel-jest": "^29.2.1",
-    "jest": "^29.2.1",
-    "metro-react-native-babel-preset": "0.73.7",
-    "react": "18.2.0",
-    "react-native": "^0.71.3",
-    "react-native-fast-image": "^8.5.11",
-    "react-native-safe-area-context": "^4.7.1",
-    "react-native-toast-hybrid": "^2.5.0",
-    "react-redux": "^7.2.5",
-    "react-test-renderer": "18.2.0",
-    "redux": "^4.1.1",
-    "typescript": "^4.6.4",
-    "vuepress": "2.0.0-beta.51",
-    "zustand": "^3.7.1"
+    "babel-plugin-module-resolver": "^5.0.2",
+    "eslint": "^8.19.0",
+    "jest": "^29.6.3",
+    "prettier": "2.8.8",
+    "react-test-renderer": "18.3.1",
+    "typescript": "5.0.4",
+    "vuepress": "2.0.0-beta.51"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
