@@ -2,7 +2,7 @@
 	"name": "navigation-demo",
 	"description": "React Native Navigation that supports seamless navigation between Native and React.",
 	"version": "2.18.3",
-	"private": "true",
+	"private": true,
 	"scripts": {
 		"start": "watchman watch-del-all && react-native start --reset-cache",
 		"android": "react-native run-android",
