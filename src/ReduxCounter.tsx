@@ -1,110 +1,113 @@
-import React, { useEffect, ComponentType, useCallback } from 'react';
-import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native';
+import React, {useEffect, ComponentType, useCallback} from 'react';
+import {TouchableOpacity, Text, View, ScrollView, Image} from 'react-native';
 import {
-  BarStyleLightContent,
-  withNavigationItem,
-  NavigationProps,
-  NavigationItem,
-  useVisibleEffect,
+	BarStyleLightContent,
+	withNavigationItem,
+	NavigationProps,
+	NavigationItem,
+	useVisibleEffect,
 } from 'hybrid-navigation';
-import { createStore } from 'redux';
-import { connect, Provider } from 'react-redux';
+import {createStore} from 'redux';
+import {connect, Provider} from 'react-redux';
 import styles from './Styles';
 
 interface Props extends NavigationProps {
-  value: number
-  onDecreaseClick: () => void
-  onIncreaseClick: () => void
+	value: number;
+	onDecreaseClick: () => void;
+	onIncreaseClick: () => void;
 }
 
 // React component
-function ReduxCounter({ navigator, value, onDecreaseClick, onIncreaseClick }: Props) {
-  useVisibleEffect(
-    useCallback(() => {
-      console.info('Page ReduxCounter is visible');
-      return () => console.info('Page ReduxCounter is invisible');
-    }, []),
-  );
+function ReduxCounter({navigator, value, onDecreaseClick, onIncreaseClick}: Props) {
+	useVisibleEffect(
+		useCallback(() => {
+			console.info('Page ReduxCounter is visible');
+			return () => console.info('Page ReduxCounter is invisible');
+		}, []),
+	);
 
-  useEffect(() => {
-    navigator.setParams({ onDecreaseClick });
-  });
+	useEffect(() => {
+		navigator.setParams({onDecreaseClick});
+	});
 
-  return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="never"
-      automaticallyAdjustContentInsets={false}
-      contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}>
-      <View style={styles.container}>
-        <Text style={styles.welcome}>{value}</Text>
+	return (
+		<ScrollView
+			contentInsetAdjustmentBehavior="never"
+			automaticallyAdjustContentInsets={false}
+			contentInset={{top: 0, left: 0, bottom: 0, right: 0}}>
+			<View style={styles.container}>
+				<Text style={styles.welcome}>{value}</Text>
 
-        <TouchableOpacity onPress={onIncreaseClick} activeOpacity={0.2} style={styles.button}>
-          <Text style={styles.buttonText}>Increase</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  );
+				<TouchableOpacity
+					onPress={onIncreaseClick}
+					activeOpacity={0.2}
+					style={styles.button}>
+					<Text style={styles.buttonText}>Increase</Text>
+				</TouchableOpacity>
+			</View>
+		</ScrollView>
+	);
 }
 
 // Action
 
 interface Action {
-  type: string
+	type: string;
 }
 
-const increaseAction: Action = { type: 'increase' };
-const decreaseAction: Action = { type: 'decrease' };
+const increaseAction: Action = {type: 'increase'};
+const decreaseAction: Action = {type: 'decrease'};
 
 interface State {
-  count: number
+	count: number;
 }
 
 // Reducer
-function counter(state: State = { count: 0 }, action: Action) {
-  const count = state.count;
-  switch (action.type) {
-    case 'increase':
-      return { count: count + 1 };
-    case 'decrease':
-      return { count: count - 1 };
-    default:
-      return state;
-  }
+function counter(state: State = {count: 0}, action: Action) {
+	const count = state.count;
+	switch (action.type) {
+		case 'increase':
+			return {count: count + 1};
+		case 'decrease':
+			return {count: count - 1};
+		default:
+			return state;
+	}
 }
 
 // Store
 const store = createStore(counter);
 
 // Map Redux state to component props
-function mapStateToProps(state: { count: number }) {
-  return {
-    value: state.count,
-  };
+function mapStateToProps(state: {count: number}) {
+	return {
+		value: state.count,
+	};
 }
 
 // Map Redux actions to component props
 function mapDispatchToProps(dispatch: (action: Action) => void) {
-  return {
-    onIncreaseClick: () => dispatch(increaseAction),
-    onDecreaseClick: () => dispatch(decreaseAction),
-  };
+	return {
+		onIncreaseClick: () => dispatch(increaseAction),
+		onDecreaseClick: () => dispatch(decreaseAction),
+	};
 }
 
 const navigationItem: NavigationItem = {
-  topBarStyle: BarStyleLightContent,
-  titleTextColor: '#FFFF00',
+	topBarStyle: BarStyleLightContent,
+	titleTextColor: '#FFFF00',
 
-  titleItem: {
-    title: 'Redux Counter',
-  },
+	titleItem: {
+		title: 'Redux Counter',
+	},
 
-  rightBarButtonItem: {
-    title: 'MINUS',
-    icon: Image.resolveAssetSource(require('./images/minus.png')),
-    action: navigator => {
-      navigator.state.params.onDecreaseClick();
-    },
-  },
+	rightBarButtonItem: {
+		title: 'MINUS',
+		icon: Image.resolveAssetSource(require('./images/minus.png')),
+		action: navigator => {
+			navigator.state.params.onDecreaseClick();
+		},
+	},
 };
 
 // Connected Component
@@ -113,24 +116,24 @@ const navigationItem: NavigationItem = {
 // )
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
+	mapStateToProps,
+	mapDispatchToProps,
 )(withNavigationItem(navigationItem)(ReduxCounter));
 
 export function withRedux(WrappedComponent: ComponentType<any>) {
-  return class ReduxProvider extends React.Component {
-    // 注意复制 navigationItem
-    static navigationItem = (WrappedComponent as any).navigationItem;
+	return class ReduxProvider extends React.Component {
+		// 注意复制 navigationItem
+		static navigationItem = (WrappedComponent as any).navigationItem;
 
-    static displayName = `withRedux(${WrappedComponent.displayName})`;
+		static displayName = `withRedux(${WrappedComponent.displayName})`;
 
-    render() {
-      return (
-        // @ts-ignore
-        <Provider store={store}>
-          <WrappedComponent {...this.props} />
-        </Provider>
-      );
-    }
-  };
+		render() {
+			return (
+				// @ts-ignore
+				<Provider store={store}>
+					<WrappedComponent {...this.props} />
+				</Provider>
+			);
+		}
+	};
 }

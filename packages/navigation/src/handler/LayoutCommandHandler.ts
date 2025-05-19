@@ -1,29 +1,29 @@
 import Event from '../Event';
 import NavigationModule from '../NavigationModule';
-import { BuildInLayout, Layout } from '../Route';
+import {BuildInLayout, Layout} from '../Route';
 
 export default class LayoutCommandHandler {
-  private willSetRoot = () => {};
-  private didSetRoot = () => {};
+	private willSetRoot = () => {};
+	private didSetRoot = () => {};
 
-  constructor() {}
+	constructor() {}
 
-  handleRootLayoutChange() {
-    Event.listenWillSetRoot(() => {
-      this.willSetRoot();
-    });
+	handleRootLayoutChange() {
+		Event.listenWillSetRoot(() => {
+			this.willSetRoot();
+		});
 
-    Event.listenDidSetRoot(() => {
-      this.didSetRoot();
-    });
-  }
+		Event.listenDidSetRoot(() => {
+			this.didSetRoot();
+		});
+	}
 
-  setRoot(layout: BuildInLayout | Layout, sticky = false) {
-    return NavigationModule.setRoot(layout, sticky);
-  }
+	setRoot(layout: BuildInLayout | Layout, sticky = false) {
+		return NavigationModule.setRoot(layout, sticky);
+	}
 
-  setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {}) {
-    this.willSetRoot = willSetRoot;
-    this.didSetRoot = didSetRoot;
-  }
+	setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {}) {
+		this.willSetRoot = willSetRoot;
+		this.didSetRoot = didSetRoot;
+	}
 }

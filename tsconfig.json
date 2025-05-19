@@ -1,9 +1,9 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "hybrid-navigation": ["./packages/navigation/src/index"]
-    }
-  }
+	"extends": "@react-native/typescript-config/tsconfig.json",
+	"compilerOptions": {
+		"baseUrl": "./",
+		"paths": {
+			"hybrid-navigation": ["./packages/navigation/src/index"]
+		}
+	}
 }
