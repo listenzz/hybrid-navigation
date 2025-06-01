@@ -159,17 +159,16 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *)moduleName callback:(RCTRe
 }
 
 - (NSString *)findSceneIdByModuleName:(NSString *)moduleName {
-    UIApplication *application = [[UIApplication class] performSelector:@selector(sharedApplication)];
-    NSUInteger count = application.windows.count;
-    
-    for (NSInteger i = count - 1; i > -1; i--) {
-        UIWindow *window = application.windows[i];
-        NSString *sceneId = [self findSceneIdByModuleName:moduleName withViewController:window.rootViewController];
-        if (sceneId != nil) {
-            RCTLogInfo(@"[Navigation] The sceneId found by %@ : %@", moduleName, sceneId);
-            return sceneId;
-        }
-    }
+	UIWindow *keyWindow = RCTKeyWindow();
+	if (keyWindow) {
+		NSString *sceneId = [self findSceneIdByModuleName:moduleName withViewController:keyWindow.rootViewController];
+		if (sceneId != nil) {
+			RCTLogInfo(@"[Navigation] The sceneId found by %@ : %@", moduleName, sceneId);
+			return sceneId;
+		}
+	}
+	
+	RCTLogInfo(@"[Navigation] KeyWindow NOT found.");
     
     return nil;
 }
@@ -182,7 +181,7 @@ RCT_EXPORT_METHOD(findSceneIdByModuleName:(NSString *)moduleName callback:(RCTRe
         }
     }
 
-    if (vc.presentedViewController && !vc.presentedViewController.isBeingDismissed) {
+	if (vc.presentedViewController && vc != vc.presentedViewController && !vc.presentedViewController.isBeingDismissed) {
         NSString *sceneId = [self findSceneIdByModuleName:moduleName withViewController:vc.presentedViewController];
         if (sceneId) {
             return sceneId;

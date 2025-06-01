@@ -52,7 +52,7 @@ RCT_EXPORT_MODULE(GardenModule)
 
 - (CGFloat)currentStatusBarHeight {
     if (@available(iOS 13.0, *)) {
-        UIStatusBarManager *statusBarManager = [UIApplication sharedApplication].keyWindow.windowScene.statusBarManager;
+		UIStatusBarManager *statusBarManager = RCTKeyWindow().windowScene.statusBarManager;
         return statusBarManager.statusBarFrame.size.height;
     } else {
         return [[UIApplication sharedApplication] statusBarFrame].size.height;

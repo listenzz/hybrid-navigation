@@ -166,14 +166,16 @@
 }
 
 + (BOOL)isIphoneX {
-    return UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom > 0.0;
+	UIWindow *window = RCTKeyWindow();
+    return window.safeAreaInsets.bottom > 0.0;
 }
 
 + (BOOL)isInCall {
     if ([HBDUtils isIphoneX]) {
         return NO;
     } else {
-        CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+		
+        CGFloat statusBarHeight = RCTSharedApplication().statusBarFrame.size.height;
         return statusBarHeight == 40;
     }
 }

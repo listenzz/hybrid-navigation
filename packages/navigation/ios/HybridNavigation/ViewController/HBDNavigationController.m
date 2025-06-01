@@ -422,7 +422,7 @@
 
         // RCTLogInfo(@"[Navigation] safeAreaInsets:%@, additionalInsets:%@", NSStringFromUIEdgeInsets(safeAreaInsets), NSStringFromUIEdgeInsets(additionalInsets));
 
-        BOOL statusBarHidden = [UIApplication sharedApplication].keyWindow.windowScene.statusBarManager.statusBarHidden;
+		BOOL statusBarHidden = RCTKeyWindow().windowScene.statusBarManager.statusBarHidden;
 
         if (statusBarHidden && safeAreaInsets.top == 0) {
             self.additionalSafeAreaInsets = UIEdgeInsetsMake(20, additionalInsets.left, additionalInsets.bottom, additionalInsets.right);
