@@ -1,15 +1,5 @@
 import React, {useEffect} from 'react';
-import {
-	Text,
-	View,
-	TouchableOpacity,
-	StyleSheet,
-	Dimensions,
-	Platform,
-	Image,
-	ViewStyle,
-	ViewProps,
-} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet, Image, ViewStyle, ViewProps} from 'react-native';
 import TextBadge from './Badge';
 import FastImage from 'react-native-fast-image';
 import {NavigationProps, Color} from 'hybrid-navigation';
@@ -140,10 +130,8 @@ function DotBadge({style}: ViewProps) {
 
 const styles = StyleSheet.create({
 	tabBar: {
-		height: Platform.OS === 'android' ? 56 : 48,
-		width: Dimensions.get('window').width,
+		flex: 1,
 		flexDirection: 'row',
-		justifyContent: 'center',
 		alignItems: 'stretch',
 	},
 	tab: {
