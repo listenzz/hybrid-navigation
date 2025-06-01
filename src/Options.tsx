@@ -214,16 +214,6 @@ function Options({sceneId, navigator}: NavigationProps) {
 		console.log('finish setRoot!!');
 	}
 
-	async function showModal() {
-		console.info('------------------showModal--------------------------');
-		const [resultCode, data] = await navigator.showModal<{text?: string}>('ReactModal');
-		console.info('------------------showModal--------------------------', resultCode, data);
-	}
-
-	function testResult() {
-		setTimeout(() => showModal(), 3000);
-	}
-
 	return (
 		<ScrollView
 			contentInsetAdjustmentBehavior="never"
@@ -304,10 +294,6 @@ function Options({sceneId, navigator}: NavigationProps) {
 
 				<TouchableOpacity onPress={changeTabBar} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>change TabBar</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity onPress={testResult} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>show modal</Text>
 				</TouchableOpacity>
 			</View>
 		</ScrollView>
