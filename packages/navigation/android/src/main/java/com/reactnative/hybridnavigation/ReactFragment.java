@@ -84,7 +84,6 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
     public void onResume() {
         super.onResume();
         if (isViewReady()) {
-            reactRootView.addOnGlobalLayoutListener();
             sendViewAppearEvent(true);
         }
     }
@@ -94,7 +93,6 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
         super.onPause();
         if (isViewReady()) {
             sendViewAppearEvent(false);
-            reactRootView.removeOnGlobalLayoutListener();
         }
     }
 
@@ -206,7 +204,6 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 
         if (isViewReady() && isResumed()) {
             sendViewAppearEvent(true);
-            reactRootView.addOnGlobalLayoutListener();
         }
     }
 
