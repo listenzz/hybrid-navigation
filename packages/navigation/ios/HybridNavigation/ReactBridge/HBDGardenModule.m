@@ -3,6 +3,7 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDTabBarController.h"
 #import "GlobalStyle.h"
+#import "HBDUtils.h"
 
 #import <React/RCTLog.h>
 
@@ -51,12 +52,7 @@ RCT_EXPORT_MODULE(GardenModule)
 }
 
 - (CGFloat)currentStatusBarHeight {
-    if (@available(iOS 13.0, *)) {
-		UIStatusBarManager *statusBarManager = RCTKeyWindow().windowScene.statusBarManager;
-        return statusBarManager.statusBarFrame.size.height;
-    } else {
-        return [[UIApplication sharedApplication] statusBarFrame].size.height;
-    }
+	return [HBDUtils statusBarHeight];
 }
 
 - (void)handleStatusBarFrameChange {

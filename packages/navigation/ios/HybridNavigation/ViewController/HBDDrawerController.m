@@ -84,7 +84,7 @@
 }
 
 - (void)statusBarFrameWillChange:(NSNotification *)notification {
-    CGFloat statusBarHeight = [UIApplication sharedApplication].statusBarFrame.size.height;
+	CGFloat statusBarHeight = [HBDUtils statusBarHeight];
     if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation) && statusBarHeight != 0) {
         if (self.menuOpened) {
             [UIView animateWithDuration:0.35 animations:^{

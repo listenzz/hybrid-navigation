@@ -174,10 +174,17 @@
     if ([HBDUtils isIphoneX]) {
         return NO;
     } else {
-		
-        CGFloat statusBarHeight = RCTSharedApplication().statusBarFrame.size.height;
-        return statusBarHeight == 40;
+		return [self statusBarHeight] == 40;
     }
+}
+
++ (CGFloat)statusBarHeight {
+	if (@available(iOS 13.0, *)) {
+		UIStatusBarManager *statusBarManager = RCTKeyWindow().windowScene.statusBarManager;
+		return statusBarManager.statusBarFrame.size.height;
+	} else {
+		return [[UIApplication sharedApplication] statusBarFrame].size.height;
+	}
 }
 
 + (void)printViewHierarchy:(UIView *)view withPrefix:(NSString *)prefix {

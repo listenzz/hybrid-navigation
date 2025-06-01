@@ -42,6 +42,8 @@ UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class clazz, SEL originalSe
 
 + (NSString *)iconUriFromUri:(NSString *)uri;
 
++ (CGFloat)statusBarHeight;
+
 + (BOOL)isIphoneX;
 
 + (BOOL)isInCall;
