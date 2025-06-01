@@ -10,6 +10,7 @@
 		"test": "jest",
 		"tsc": "tsc",
 		"lint": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
+		"postinstall": "patch-package",
 		"docs:dev": "vuepress dev docs",
 		"docs:build": "vuepress build docs"
 	},
@@ -21,7 +22,7 @@
 		"react-native": ">=0.60"
 	},
 	"dependencies": {
-		"@react-native-community/hooks": "^2.8.0",
+		"@react-native-community/hooks": "^3.1.0",
 		"@react-native-community/slider": "^4.5.6",
 		"@sdcx/keyboard-insets": "^0.5.0",
 		"hybrid-navigation": "*",
@@ -51,6 +52,8 @@
 		"babel-plugin-module-resolver": "^5.0.2",
 		"eslint": "^8.19.0",
 		"jest": "^29.6.3",
+		"patch-package": "^8.0.0",
+		"postinstall-postinstall": "^2.1.0",
 		"prettier": "2.8.8",
 		"react-test-renderer": "18.3.1",
 		"typescript": "5.0.4",
