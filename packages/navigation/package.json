@@ -15,6 +15,7 @@
 		"!android/build",
 		"!android/.gradle",
 		"!android/.idea",
+		"!android/.kotlin",
 		"!android/local.properties",
 		"!ios/build",
 		"!**/__tests__"
