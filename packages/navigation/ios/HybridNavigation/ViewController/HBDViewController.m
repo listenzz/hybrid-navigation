@@ -114,7 +114,7 @@
 - (void)willMoveToParentViewController:(UIViewController *)parent {
     if (self.forceScreenLandscape) {
         if (parent) {
-            [self setScreenOrientation:UIInterfaceOrientationLandscapeRight usingMask:UIInterfaceOrientationMaskLandscapeRight];
+            [self setScreenOrientation:UIInterfaceOrientationLandscapeRight usingMask:UIInterfaceOrientationMaskLandscape];
         } else {
             [self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
         }
