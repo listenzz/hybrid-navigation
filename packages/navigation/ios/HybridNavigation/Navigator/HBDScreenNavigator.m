@@ -103,7 +103,13 @@
 }
 
 - (void)handleDismissWithViewController:(UIViewController *) vc callback:(RCTResponseSenderBlock)callback {
-    [vc dismissViewControllerAnimated:YES completion:^{
+	BOOL animated = YES;
+	if ([vc isKindOfClass:[HBDViewController class]]) {
+		HBDViewController *hbdvc = (HBDViewController *)vc;
+		animated = hbdvc.animatedTransition;
+	}
+	
+    [vc dismissViewControllerAnimated:animated completion:^{
         callback(@[NSNull.null, @YES]);
     }];
 }
@@ -119,9 +125,18 @@
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     vc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [vc setRequestCode:requestCode];
+	
+	BOOL animated = YES;
+	if ([vc isKindOfClass:[HBDViewController class]]) {
+		HBDViewController *hbdvc = (HBDViewController *)vc;
+		animated = hbdvc.animatedTransition;
+	}
+	
+	if (animated) {
+		[[HBDAnimationObserver sharedObserver] beginAnimation];
+	}
     
-    [[HBDAnimationObserver sharedObserver] beginAnimation];
-    [presenting presentViewController:vc animated:YES completion:^{
+    [presenting presentViewController:vc animated:animated completion:^{
         callback(@[NSNull.null, @YES]);
     }];
 }

@@ -48,6 +48,9 @@
         }
         
         self.forceTransparentDialogWindow = [options[@"forceTransparentDialogWindow"] boolValue];
+		if (self.forceTransparentDialogWindow) {
+			_animatedTransition = NO;
+		}
         
         [self applyNavigationBarOptions:options];
         [self applyTabBarOptions:options];

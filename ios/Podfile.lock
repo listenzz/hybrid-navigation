@@ -8,7 +8,7 @@ PODS:
   - hermes-engine (0.77.2):
     - hermes-engine/Pre-built (= 0.77.2)
   - hermes-engine/Pre-built (0.77.2)
-  - HybridNavigation (2.18.3):
+  - HybridNavigation (2.18.5):
     - React-Core
   - libwebp (1.5.0):
     - libwebp/demux (= 1.5.0)
@@ -1791,7 +1791,7 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
   hermes-engine: 8eb265241fa1d7095d3a40d51fd90f7dce68217c
-  HybridNavigation: 2c8b299487f73d0e4c1a23c59424abb66aa3a1c4
+  HybridNavigation: fff5509cdd17c2600759884a6d93a48131240b8c
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: 85b72250b63cfb54f29ca96ceb108cb9ef3c2079
