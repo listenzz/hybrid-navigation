@@ -1915,10 +1915,10 @@
     invariant "^2.2.4"
     nullthrows "^1.1.1"
 
-"@sdcx/keyboard-insets@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@sdcx/keyboard-insets/-/keyboard-insets-0.5.0.tgz#225dee1442d9dc70d82c24fe9d0ba2153b6ed903"
-  integrity sha512-8/9l09Vh/LdHdeYn8YVPatZ0/1Qj95mbcR415FhtyN+y55fND5Pnf5P5kDRqZPl4pF/fE4qrXSCXwFEkIXlgog==
+"@sdcx/keyboard-insets@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@sdcx/keyboard-insets/-/keyboard-insets-0.8.0.tgz#21948010e7cb2eeb31e14af24ff3a67a0d238afb"
+  integrity sha512-itwcuKRSHUsk17AITH3L7zeWaCtGQH2boMNJ5b6QIbd97gOnwPGQnmiuXzyzWWeMu+fBwjbyMNh64k9v+36DGg==
 
 "@sideway/address@^4.1.5":
   version "4.1.5"

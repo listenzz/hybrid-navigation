@@ -24,7 +24,7 @@
 	"dependencies": {
 		"@react-native-community/hooks": "^3.1.0",
 		"@react-native-community/slider": "^4.5.6",
-		"@sdcx/keyboard-insets": "^0.5.0",
+		"@sdcx/keyboard-insets": "^0.8.0",
 		"hybrid-navigation": "*",
 		"react": "18.3.1",
 		"react-native": "0.77.2",
