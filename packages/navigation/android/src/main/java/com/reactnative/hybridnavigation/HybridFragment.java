@@ -99,7 +99,7 @@ public class HybridFragment extends AwesomeFragment {
         super.onViewCreated(view, savedInstanceState);
         garden.setupToolbar();
     }
-    
+
     @NonNull
     @Override
     protected BarStyle preferredStatusBarStyle() {
@@ -162,10 +162,6 @@ public class HybridFragment extends AwesomeFragment {
     @Override
     protected boolean shouldFitsNavigationBar() {
         if (preferredNavigationBarHidden()) {
-            return false;
-        }
-
-        if (!preferredEdgeToEdge()) {
             return false;
         }
 
@@ -310,10 +306,10 @@ public class HybridFragment extends AwesomeFragment {
         Bundle args = FragmentHelper.getArguments(this);
         return args.getString(ARG_MODULE_NAME);
     }
-    
+
     public String getPresentingSceneId() {
         Bundle args = FragmentHelper.getArguments(this);
         return args.getString(PresentableActivity.ARG_PRESENTING_SCENE_ID);
     }
-    
+
 }
