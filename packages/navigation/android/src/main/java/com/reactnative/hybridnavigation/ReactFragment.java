@@ -35,263 +35,268 @@ import com.navigation.androidx.Style;
 
 public class ReactFragment extends HybridFragment implements ReactBridgeManager.ReactBridgeReloadListener {
 
-    protected static final String TAG = "Navigation";
+	protected static final String TAG = "Navigation";
 
-    private ViewGroup reactViewHolder;
+	private ViewGroup reactViewHolder;
 
-    private HBDReactRootView reactRootView;
-    private HBDReactRootView reactTitleView;
-    private boolean firstRenderCompleted;
+	private HBDReactRootView reactRootView;
+	private HBDReactRootView reactTitleView;
+	private boolean firstRenderCompleted;
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.nav_fragment_react, container, false);
-        reactViewHolder = view.findViewById(R.id.react_content);
-        if (isReactModuleRegisterCompleted()) {
-            mountReactView();
-        }
-        return view;
-    }
+	@Nullable
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.nav_fragment_react, container, false);
+		reactViewHolder = view.findViewById(R.id.react_content);
+		if (isReactModuleRegisterCompleted()) {
+			mountReactView();
+		}
+		return view;
+	}
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // 这个时候 toolbar 才创建好
-        initReactTitleView();
-    }
+	@Override
+	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		// 这个时候 toolbar 才创建好
+		initReactTitleView();
+	}
 
-    @Override
-    protected boolean extendedLayoutIncludesToolbar() {
-        int color = mStyle.getToolbarBackgroundColor();
-        float alpha = mStyle.getToolbarAlpha();
-        Garden garden = getGarden();
-        return Color.alpha(color) < 255
-            || alpha < 1.0
-            || garden.toolbarHidden
-            || garden.extendedLayoutIncludesTopBar;
-    }
+	@Override
+	protected boolean extendedLayoutIncludesToolbar() {
+		int color = mStyle.getToolbarBackgroundColor();
+		float alpha = mStyle.getToolbarAlpha();
+		Garden garden = getGarden();
+		return Color.alpha(color) < 255 || alpha < 1.0 || garden.toolbarHidden || garden.extendedLayoutIncludesTopBar;
+	}
 
-    @Override
-    protected void onCustomStyle(@NonNull Style style) {
-        super.onCustomStyle(style);
-        if (shouldPassThroughTouches()) {
-            style.setScrimAlpha(0);
-        }
-    }
+	@Override
+	protected void onCustomStyle(@NonNull Style style) {
+		super.onCustomStyle(style);
+		if (shouldPassThroughTouches()) {
+			style.setScrimAlpha(0);
+		}
+	}
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (isViewReady()) {
-            sendViewAppearEvent(true);
-        }
-    }
+	@SuppressLint("SourceLockedOrientationActivity")
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (isViewReady()) {
+			sendViewAppearEvent(true);
+		}
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (isViewReady()) {
-            sendViewAppearEvent(false);
-        }
-    }
+		if (!forceScreenLandscape() &&
+			!Navigator.MODE_MODAL.equals(Navigator.Util.getMode(this)) &&
+			requireActivity().getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+			requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		}
+	}
 
-    private boolean isViewReady() {
-        if (reactRootView == null) {
-            return false;
-        }
-        return firstRenderCompleted;
-    }
+	@Override
+	public void onPause() {
+		super.onPause();
+		if (isViewReady()) {
+			sendViewAppearEvent(false);
+		}
+	}
 
-    private boolean reactViewAppeared = false;
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (forceScreenLandscape()) {
+			requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+		}
+	}
 
-    private void sendViewAppearEvent(boolean appear) {
-        if (!isReactModuleRegisterCompleted()) {
-            return;
-        }
+	@SuppressLint("SourceLockedOrientationActivity")
+	@Override
+	public void onStop() {
+		if (isRemoving() && forceScreenLandscape()) {
+			Activity activity = requireActivity();
+			activity.getWindow().getDecorView().postDelayed(() ->
+				activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT), 16);
+		}
+		super.onStop();
+	}
 
-        // 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
-        ReactContext reactContext = getCurrentReactContext();
-        boolean isResumed = reactContext != null && reactContext.getLifecycleState() == LifecycleState.RESUMED;
-        if (!isResumed) {
-            return;
-        }
+	private boolean isViewReady() {
+		if (reactRootView == null) {
+			return false;
+		}
+		return firstRenderCompleted;
+	}
 
-        if (reactViewAppeared == appear) {
-            return;
-        }
-        reactViewAppeared = appear;
+	private boolean reactViewAppeared = false;
 
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_SCENE_ID, getSceneId());
-        bundle.putString(KEY_ON, appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR);
-        HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
-    }
+	private void sendViewAppearEvent(boolean appear) {
+		if (!isReactModuleRegisterCompleted()) {
+			return;
+		}
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unmountReactView();
-    }
+		// 当从前台进入后台时，不会触发 disappear, 这和 iOS 保持一致
+		ReactContext reactContext = getCurrentReactContext();
+		boolean isResumed = reactContext != null && reactContext.getLifecycleState() == LifecycleState.RESUMED;
+		if (!isResumed) {
+			return;
+		}
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (forceScreenLandscape()) {
-            requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        }
-    }
+		if (reactViewAppeared == appear) {
+			return;
+		}
+		reactViewAppeared = appear;
 
-    @SuppressLint("SourceLockedOrientationActivity")
-    @Override
-    public void onStop() {
-        if (isRemoving() && forceScreenLandscape()) {
-            Activity activity = requireActivity();
-            activity.getWindow().getDecorView().postDelayed(() -> activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT), 10);
-        }
-        super.onStop();
-    }
+		Bundle bundle = new Bundle();
+		bundle.putString(KEY_SCENE_ID, getSceneId());
+		bundle.putString(KEY_ON, appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR);
+		HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
+	}
 
-    @Override
-    public void onReload() {
-        unmountReactView();
-    }
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		unmountReactView();
+	}
 
-    private void mountReactView() {
-        initReactRootView();
-        getReactBridgeManager().addReactBridgeReloadListener(this);
-    }
+	@Override
+	public void onReload() {
+		unmountReactView();
+	}
 
-    private void unmountReactView() {
-        getReactBridgeManager().removeReactBridgeReloadListener(this);
+	private void mountReactView() {
+		initReactRootView();
+		getReactBridgeManager().addReactBridgeReloadListener(this);
+	}
 
-        ReactContext reactContext = getCurrentReactContext();
-        if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
-            return;
-        }
+	private void unmountReactView() {
+		getReactBridgeManager().removeReactBridgeReloadListener(this);
 
-        if (reactRootView != null) {
-            FLog.w(TAG, "销毁页面-：" + getModuleName());
-            reactRootView.unmountReactApplication();
-            ViewGroup parent = (ViewGroup) reactRootView.getParent();
-            parent.removeView(reactRootView);
-            reactRootView = null;
-        }
+		ReactContext reactContext = getCurrentReactContext();
+		if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
+			return;
+		}
 
-        if (reactTitleView != null) {
-            reactTitleView.unmountReactApplication();
-            ViewGroup parent = (ViewGroup) reactTitleView.getParent();
-            parent.removeView(reactTitleView);
-            reactTitleView = null;
-        }
-    }
+		if (reactRootView != null) {
+			FLog.w(TAG, "销毁页面-：" + getModuleName());
+			reactRootView.unmountReactApplication();
+			ViewGroup parent = (ViewGroup) reactRootView.getParent();
+			parent.removeView(reactRootView);
+			reactRootView = null;
+		}
 
-    @Override
-    protected boolean onBackPressed() {
-        ReactInstanceManager reactInstanceManager = getReactInstanceManager();
-        if (getShowsDialog() && reactInstanceManager != null) {
-            reactInstanceManager.onBackPressed();
-            return true;
-        }
-        return super.onBackPressed();
-    }
+		if (reactTitleView != null) {
+			reactTitleView.unmountReactApplication();
+			ViewGroup parent = (ViewGroup) reactTitleView.getParent();
+			parent.removeView(reactTitleView);
+			reactTitleView = null;
+		}
+	}
 
-    public void signalFirstRenderComplete() {
-        if (firstRenderCompleted) {
-            return;
-        }
-        firstRenderCompleted = true;
+	@Override
+	protected boolean onBackPressed() {
+		ReactInstanceManager reactInstanceManager = getReactInstanceManager();
+		if (getShowsDialog() && reactInstanceManager != null) {
+			reactInstanceManager.onBackPressed();
+			return true;
+		}
+		return super.onBackPressed();
+	}
 
-        if (isViewReady() && isResumed()) {
-            sendViewAppearEvent(true);
-        }
-    }
+	public void signalFirstRenderComplete() {
+		if (firstRenderCompleted) {
+			return;
+		}
+		firstRenderCompleted = true;
 
-    public boolean isFirstRenderCompleted() {
-        return firstRenderCompleted;
-    }
+		if (isViewReady() && isResumed()) {
+			sendViewAppearEvent(true);
+		}
+	}
 
-    @Override
-    public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
-        super.onFragmentResult(requestCode, resultCode, data);
-        Bundle result = new Bundle();
-        result.putInt(KEY_REQUEST_CODE, requestCode);
-        result.putInt(KEY_RESULT_CODE, resultCode);
-        result.putBundle(KEY_RESULT_DATA, data);
-        result.putString(KEY_SCENE_ID, getSceneId());
-        result.putString(KEY_ON, ON_COMPONENT_RESULT);
-        HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(result));
-    }
+	public boolean isFirstRenderCompleted() {
+		return firstRenderCompleted;
+	}
 
-    @Override
-    public void setAppProperties(@NonNull Bundle props) {
-        super.setAppProperties(props);
-        if (reactRootView == null) {
-            return;
-        }
+	@Override
+	public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
+		super.onFragmentResult(requestCode, resultCode, data);
+		Bundle result = new Bundle();
+		result.putInt(KEY_REQUEST_CODE, requestCode);
+		result.putInt(KEY_RESULT_CODE, resultCode);
+		result.putBundle(KEY_RESULT_DATA, data);
+		result.putString(KEY_SCENE_ID, getSceneId());
+		result.putString(KEY_ON, ON_COMPONENT_RESULT);
+		HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(result));
+	}
 
-        if (isReactModuleRegisterCompleted()) {
-            reactRootView.setAppProperties(getProps());
-        }
-    }
+	@Override
+	public void setAppProperties(@NonNull Bundle props) {
+		super.setAppProperties(props);
+		if (reactRootView == null) {
+			return;
+		}
 
-    private void initReactRootView() {
-        reactRootView = createReactRootView();
-        reactRootView.startReactApplication(getReactInstanceManager(), getModuleName(), getProps());
-    }
+		if (isReactModuleRegisterCompleted()) {
+			reactRootView.setAppProperties(getProps());
+		}
+	}
 
-    @NonNull
-    private HBDReactRootView createReactRootView() {
-        HBDReactRootView reactRootView = new HBDReactRootView(getContext());
-        reactRootView.setShouldConsumeTouchEvent(!shouldPassThroughTouches());
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-        reactViewHolder.addView(reactRootView, layoutParams);
-        return reactRootView;
-    }
+	private void initReactRootView() {
+		reactRootView = createReactRootView();
+		reactRootView.startReactApplication(getReactInstanceManager(), getModuleName(), getProps());
+	}
 
-    private void initReactTitleView() {
-        if (getToolbar() == null) {
-            return;
-        }
+	@NonNull
+	private HBDReactRootView createReactRootView() {
+		HBDReactRootView reactRootView = new HBDReactRootView(getContext());
+		reactRootView.setShouldConsumeTouchEvent(!shouldPassThroughTouches());
+		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
+		reactViewHolder.addView(reactRootView, layoutParams);
+		return reactRootView;
+	}
 
-        Bundle titleItem = getOptions().getBundle("titleItem");
-        if (titleItem == null) {
-            return;
-        }
+	private void initReactTitleView() {
+		if (getToolbar() == null) {
+			return;
+		}
 
-        String moduleName = titleItem.getString("moduleName");
-        if (moduleName == null) {
-            return;
-        }
+		Bundle titleItem = getOptions().getBundle("titleItem");
+		if (titleItem == null) {
+			return;
+		}
 
-        if (!isReactModuleRegisterCompleted()) {
-            throw new IllegalStateException("[Navigation] React Component 还没有注册完毕。");
-        }
+		String moduleName = titleItem.getString("moduleName");
+		if (moduleName == null) {
+			return;
+		}
 
-        String fitting = titleItem.getString("layoutFitting");
-        boolean expanded = "expanded".equals(fitting);
-        reactTitleView = createReactTitleView(expanded);
-        reactTitleView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
-    }
+		if (!isReactModuleRegisterCompleted()) {
+			throw new IllegalStateException("[Navigation] React Component 还没有注册完毕。");
+		}
 
-    private HBDReactRootView createReactTitleView(boolean expanded) {
-        Toolbar.LayoutParams layoutParams = createTitleLayoutParams(expanded);
-        HBDReactRootView reactTitleView = new HBDReactRootView(getContext());
-        Toolbar toolbar = getToolbar();
-        toolbar.addView(reactTitleView, layoutParams);
-        return reactTitleView;
-    }
+		String fitting = titleItem.getString("layoutFitting");
+		boolean expanded = "expanded".equals(fitting);
+		reactTitleView = createReactTitleView(expanded);
+		reactTitleView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
+	}
 
-    @NonNull
-    private Toolbar.LayoutParams createTitleLayoutParams(boolean expanded) {
-        if (expanded) {
-            return new Toolbar.LayoutParams(MATCH_PARENT, MATCH_PARENT, Gravity.CENTER);
-        }
-        return new Toolbar.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER);
-    }
+	private HBDReactRootView createReactTitleView(boolean expanded) {
+		Toolbar.LayoutParams layoutParams = createTitleLayoutParams(expanded);
+		HBDReactRootView reactTitleView = new HBDReactRootView(getContext());
+		Toolbar toolbar = getToolbar();
+		toolbar.addView(reactTitleView, layoutParams);
+		return reactTitleView;
+	}
 
-    @Override
-    public String getDebugTag() {
-        return "[" + getModuleName() + "]";
-    }
+	@NonNull
+	private Toolbar.LayoutParams createTitleLayoutParams(boolean expanded) {
+		if (expanded) {
+			return new Toolbar.LayoutParams(MATCH_PARENT, MATCH_PARENT, Gravity.CENTER);
+		}
+		return new Toolbar.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER);
+	}
+
+	@Override
+	public String getDebugTag() {
+		return "[" + getModuleName() + "]";
+	}
 }

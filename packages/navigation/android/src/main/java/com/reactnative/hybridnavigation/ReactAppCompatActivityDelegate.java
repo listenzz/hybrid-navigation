@@ -21,6 +21,7 @@ import com.facebook.infer.annotation.Assertions;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.common.ReactConstants;
 import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
@@ -69,11 +70,11 @@ public class ReactAppCompatActivityDelegate {
     protected ReactBridgeManager getReactBridgeManager() {
         return mBridgeManager;
     }
-    
+
     public ReactInstanceManager getReactInstanceManager() {
         return mBridgeManager.getReactInstanceManager();
     }
-    
+
     public ReactContext getCurrentReactContext() {
         return mBridgeManager.getCurrentReactContext();
     }
@@ -92,7 +93,7 @@ public class ReactAppCompatActivityDelegate {
     protected void onPause() {
         ReactInstanceManager reactInstanceManager = mBridgeManager.getReactInstanceManager();
         ReactContext reactContext = mBridgeManager.getCurrentReactContext();
-        if (reactContext != null && reactInstanceManager != null) {
+        if (reactContext != null && reactInstanceManager != null && UiThreadUtil.isOnUiThread()) {
             reactInstanceManager.onHostPause(getPlainActivity());
         }
     }

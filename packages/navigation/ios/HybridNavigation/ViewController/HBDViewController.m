@@ -102,6 +102,17 @@
     if (![HBDUtils isIphoneX]) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     }
+	
+	if (@available(iOS 15.0, *)) {
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.016 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+			UIWindowScene *windowScene = [self getWindowScene];
+			if (windowScene != nil) {
+				if (!self.forceScreenLandscape && windowScene.interfaceOrientation != UIInterfaceOrientationPortrait && ![[self hbd_mode] isEqual:@"modal"]) {
+					[self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
+				}
+			}
+		});
+	}
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -123,7 +134,6 @@
 
 - (void)setScreenOrientation:(UIInterfaceOrientation) orientation usingMask:(UIInterfaceOrientationMask) mask {
     [GlobalStyle globalStyle].interfaceOrientation = mask;
-    
     if (@available(iOS 16.0, *)) {
             UIWindowScene *windowScene = [self getWindowScene];
             if (windowScene != nil) {
@@ -145,7 +155,7 @@
     [UIViewController attemptRotationToDeviceOrientation];
 }
 
-- (UIWindowScene *)getWindowScene  API_AVAILABLE(ios(13.0)){
+- (UIWindowScene *)getWindowScene API_AVAILABLE(ios(13.0)){
     NSArray *array = [[[UIApplication sharedApplication] connectedScenes] allObjects];
     for (id connectedScene in array) {
       if ([connectedScene isKindOfClass:[UIWindowScene class]]) {

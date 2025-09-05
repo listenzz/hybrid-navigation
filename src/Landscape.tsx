@@ -23,6 +23,10 @@ function Landscape() {
 		navigator.pop();
 	};
 
+	const showModal = () => {
+		navigator.showModal('ReactModal');
+	};
+
 	return (
 		<ScrollView
 			contentInsetAdjustmentBehavior="never"
@@ -31,6 +35,9 @@ function Landscape() {
 			<View style={[styles.container, {paddingTop: 64}]}>
 				<TouchableOpacity onPress={back} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>Back</Text>
+				</TouchableOpacity>
+				<TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>showModal</Text>
 				</TouchableOpacity>
 			</View>
 		</ScrollView>
