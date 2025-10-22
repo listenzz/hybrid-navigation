@@ -88,7 +88,13 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 		if (!forceScreenLandscape() &&
 			!Navigator.MODE_MODAL.equals(Navigator.Util.getMode(this)) &&
 			requireActivity().getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+			requireView().clearAnimation();
 			requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		}
+
+		if (forceScreenLandscape()) {
+			requireView().clearAnimation();
+			requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 		}
 	}
 
@@ -104,6 +110,7 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 	public void onStart() {
 		super.onStart();
 		if (forceScreenLandscape()) {
+			requireView().clearAnimation();
 			requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 		}
 	}

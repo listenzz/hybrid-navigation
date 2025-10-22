@@ -96,6 +96,13 @@
     return NO;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	if (!self.navigationController.transitionCoordinator.interactive) {
+		[self adjustScreenOrientation];
+	}
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[HBDAnimationObserver sharedObserver] endAnimation];
@@ -103,16 +110,7 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     }
 	
-	if (@available(iOS 15.0, *)) {
-		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.016 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-			UIWindowScene *windowScene = [self getWindowScene];
-			if (windowScene != nil) {
-				if (!self.forceScreenLandscape && windowScene.interfaceOrientation != UIInterfaceOrientationPortrait && ![[self hbd_mode] isEqual:@"modal"]) {
-					[self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
-				}
-			}
-		});
-	}
+	[self adjustScreenOrientation];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
@@ -120,6 +118,19 @@
     if (![HBDUtils isIphoneX]) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
     }
+}
+
+- (void)adjustScreenOrientation {
+	if (@available(iOS 15.0, *)) {
+		UIWindowScene *windowScene = [self getWindowScene];
+		if (!self.forceScreenLandscape  && windowScene != nil && windowScene.interfaceOrientation != UIInterfaceOrientationPortrait && ![[self hbd_mode] isEqual:@"modal"]) {
+			[self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
+		}
+		
+		if (self.forceScreenLandscape) {
+			[self setScreenOrientation:UIInterfaceOrientationLandscapeRight usingMask:UIInterfaceOrientationMaskLandscape];
+		}
+	}
 }
 
 - (void)willMoveToParentViewController:(UIViewController *)parent {

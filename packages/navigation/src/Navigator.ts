@@ -106,6 +106,7 @@ export class Navigator implements Navigator {
 			moduleName,
 			inclusive,
 			from: this.moduleName,
+			to: moduleName,
 		});
 
 	popToRoot = () => Navigation.dispatch(this.sceneId, 'popToRoot', {from: this.moduleName});

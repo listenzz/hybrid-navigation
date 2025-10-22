@@ -27,6 +27,10 @@ function Landscape() {
 		navigator.showModal('ReactModal');
 	};
 
+	function topBarMisc() {
+		navigator.push('TopBarMisc');
+	}
+
 	return (
 		<ScrollView
 			contentInsetAdjustmentBehavior="never"
@@ -38,6 +42,9 @@ function Landscape() {
 				</TouchableOpacity>
 				<TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>showModal</Text>
+				</TouchableOpacity>
+				<TouchableOpacity onPress={topBarMisc} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>topBar options</Text>
 				</TouchableOpacity>
 			</View>
 		</ScrollView>
