@@ -15,6 +15,7 @@ import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_RESU
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -93,7 +94,6 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 		}
 
 		if (forceScreenLandscape()) {
-			requireView().clearAnimation();
 			requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 		}
 	}
@@ -107,23 +107,10 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 	}
 
 	@Override
-	public void onStart() {
-		super.onStart();
-		if (forceScreenLandscape()) {
-			requireView().clearAnimation();
-			requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-		}
-	}
-
-	@SuppressLint("SourceLockedOrientationActivity")
-	@Override
-	public void onStop() {
-		if (isRemoving() && forceScreenLandscape()) {
-			Activity activity = requireActivity();
-			activity.getWindow().getDecorView().postDelayed(() ->
-				activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT), 16);
-		}
-		super.onStop();
+	public void onConfigurationChanged(@NonNull Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		// 避免屏幕旋转时状态栏样式不更新的问题
+		setNeedsStatusBarAppearanceUpdate();
 	}
 
 	private boolean isViewReady() {

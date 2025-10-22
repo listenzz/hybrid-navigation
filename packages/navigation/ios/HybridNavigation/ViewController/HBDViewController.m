@@ -123,7 +123,7 @@
 - (void)adjustScreenOrientation {
 	if (@available(iOS 15.0, *)) {
 		UIWindowScene *windowScene = [self getWindowScene];
-		if (!self.forceScreenLandscape  && windowScene != nil && windowScene.interfaceOrientation != UIInterfaceOrientationPortrait && ![[self hbd_mode] isEqual:@"modal"]) {
+		if (!self.forceScreenLandscape && windowScene != nil && windowScene.interfaceOrientation != UIInterfaceOrientationPortrait && ![[self hbd_mode] isEqual:@"modal"]) {
 			[self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
 		}
 		
@@ -131,16 +131,6 @@
 			[self setScreenOrientation:UIInterfaceOrientationLandscapeRight usingMask:UIInterfaceOrientationMaskLandscape];
 		}
 	}
-}
-
-- (void)willMoveToParentViewController:(UIViewController *)parent {
-    if (self.forceScreenLandscape) {
-        if (parent) {
-            [self setScreenOrientation:UIInterfaceOrientationLandscapeRight usingMask:UIInterfaceOrientationMaskLandscape];
-        } else {
-            [self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
-        }
-    }
 }
 
 - (void)setScreenOrientation:(UIInterfaceOrientation) orientation usingMask:(UIInterfaceOrientationMask) mask {
