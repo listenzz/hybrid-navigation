@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {TouchableOpacity, Text, View, Image, ScrollView, PixelRatio} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native';
 import Navigation, {
 	withNavigationItem,
 	NavigationProps,
@@ -11,7 +11,6 @@ import Navigation, {
 } from 'hybrid-navigation';
 
 import styles from './Styles';
-import getLayout from './layout';
 
 const leftBarButtonItem: BarButtonItem = {
 	icon: Image.resolveAssetSource(require('./images/menu.png')),
@@ -43,7 +42,7 @@ export default withNavigationItem({
 	},
 })(Options);
 
-function Options({sceneId, navigator}: NavigationProps) {
+function Options({ sceneId, navigator }: NavigationProps) {
 	const visible = useVisible();
 
 	useEffect(() => {
@@ -60,9 +59,9 @@ function Options({sceneId, navigator}: NavigationProps) {
 	}, [visible, sceneId]);
 
 	useEffect(() => {
-		console.info('Page Options componentDidMount');
+		console.info('Page Options mounted');
 		return () => {
-			console.info('Page Options componentWillUnmount');
+			console.info('Page Options unmounted');
 		};
 	}, []);
 
@@ -98,11 +97,11 @@ function Options({sceneId, navigator}: NavigationProps) {
 	}
 
 	useEffect(() => {
-		Navigation.setTitleItem(sceneId, {title});
+		Navigation.setTitleItem(sceneId, { title });
 	}, [title, sceneId]);
 
 	function passOptions() {
-		navigator.push('PassOptions', {}, {titleItem: {title: 'The Passing Title'}});
+		navigator.push('PassOptions', {}, { titleItem: { title: 'The Passing Title' } });
 	}
 
 	function switchTab() {
@@ -114,13 +113,13 @@ function Options({sceneId, navigator}: NavigationProps) {
 	function toggleTabBadge() {
 		if (badges && badges[0].badge?.dot) {
 			setBadges([
-				{index: 0, badge: {hidden: true}},
-				{index: 1, badge: {hidden: true}},
+				{ index: 0, badge: { hidden: true } },
+				{ index: 1, badge: { hidden: true } },
 			]);
 		} else {
 			setBadges([
-				{index: 0, badge: {hidden: false, dot: true}},
-				{index: 1, badge: {hidden: false, text: '99'}},
+				{ index: 0, badge: { hidden: false, dot: true } },
+				{ index: 1, badge: { hidden: false, text: '99' } },
 			]);
 		}
 	}
@@ -135,17 +134,13 @@ function Options({sceneId, navigator}: NavigationProps) {
 		navigator.push('TopBarMisc');
 	}
 
-	function lifecycle() {
-		navigator.push('Lifecycle');
-	}
-
 	const [icon, setIcon] = useState<ImageSource>();
 
 	function replaceTabIcon() {
 		if (icon && icon.uri === 'flower') {
 			setIcon(Image.resolveAssetSource(require('./images/flower_1.png')));
 		} else {
-			setIcon({uri: 'flower', scale: PixelRatio.get()});
+			setIcon({ uri: 'flower', scale: PixelRatio.get() });
 		}
 	}
 
@@ -209,25 +204,17 @@ function Options({sceneId, navigator}: NavigationProps) {
 		}
 	}, [tabBarColor, sceneId]);
 
-	async function changeTabBar() {
-		await Navigation.setRoot(getLayout());
-		console.log('finish setRoot!!');
-	}
-
 	return (
 		<ScrollView
 			contentInsetAdjustmentBehavior="never"
 			automaticallyAdjustContentInsets={false}
-			contentInset={{top: 0, left: 0, bottom: 0, right: 0}}>
+			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+		>
 			<View style={styles.container}>
 				<Text style={styles.welcome}>This's a React Native scene.</Text>
 
 				<TouchableOpacity onPress={topBarMisc} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>topBar options</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity onPress={lifecycle} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>Lifecycle</Text>
 				</TouchableOpacity>
 
 				<TouchableOpacity onPress={passOptions} activeOpacity={0.2} style={styles.button}>
@@ -237,7 +224,8 @@ function Options({sceneId, navigator}: NavigationProps) {
 				<TouchableOpacity
 					onPress={toggleLeftBarButton}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>
 						{showsLeftBarButton ? 'show left bar button' : 'hide left bar button'}
 					</Text>
@@ -246,7 +234,8 @@ function Options({sceneId, navigator}: NavigationProps) {
 				<TouchableOpacity
 					onPress={changeRightButton}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>
 						{rightButtonEnabled ? 'disable right button' : 'enable right button'}
 					</Text>
@@ -265,7 +254,8 @@ function Options({sceneId, navigator}: NavigationProps) {
 				<TouchableOpacity
 					onPress={toggleTabBadge}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>
 						{badges && badges[0].badge?.dot ? 'hide tab badge' : 'show tab badge'}
 					</Text>
@@ -274,26 +264,25 @@ function Options({sceneId, navigator}: NavigationProps) {
 				<TouchableOpacity
 					onPress={replaceTabIcon}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>replalce tab icon</Text>
 				</TouchableOpacity>
 
 				<TouchableOpacity
 					onPress={replaceTabItemColor}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>replalce tab item color</Text>
 				</TouchableOpacity>
 
 				<TouchableOpacity
 					onPress={updateTabBarColor}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>change tab bar color</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity onPress={changeTabBar} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>change TabBar</Text>
 				</TouchableOpacity>
 			</View>
 		</ScrollView>

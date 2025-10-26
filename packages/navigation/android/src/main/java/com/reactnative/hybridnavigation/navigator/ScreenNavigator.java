@@ -15,11 +15,12 @@ import com.navigation.androidx.PresentationStyle;
 import com.navigation.androidx.TransitionAnimation;
 import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.Navigator;
-import com.reactnative.hybridnavigation.ReactBridgeManager;
+import com.reactnative.hybridnavigation.ReactManager;
 import com.reactnative.hybridnavigation.ReactStackFragment;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ScreenNavigator implements Navigator {
 
@@ -59,20 +60,19 @@ public class ScreenNavigator implements Navigator {
         Bundle props = buildProps(screen);
         Bundle options = buildOptions(screen);
 
-        return getReactBridgeManager().createFragment(moduleName, props, options);
+        return getReactManager().createFragment(moduleName, props, options);
     }
 
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof HybridFragment) || !fragment.isAdded()) {
+        if (!(fragment instanceof HybridFragment hybridFragment) || !fragment.isAdded()) {
             return null;
         }
 
-        HybridFragment screen = (HybridFragment) fragment;
-        Bundle route = new Bundle();
+		Bundle route = new Bundle();
         route.putString("layout", name());
-        route.putString("sceneId", screen.getSceneId());
-        route.putString("moduleName", screen.getModuleName());
+        route.putString("sceneId", hybridFragment.getSceneId());
+        route.putString("moduleName", hybridFragment.getModuleName());
         route.putString("mode", Navigator.Util.getMode(fragment));
         return route;
     }
@@ -84,11 +84,8 @@ public class ScreenNavigator implements Navigator {
         }
 
         AwesomeFragment presented = FragmentHelper.getFragmentAfter(fragment);
-        if (presented != null) {
-            return (HybridFragment) presented;
-        }
-        return (HybridFragment) fragment;
-    }
+		return (HybridFragment) Objects.requireNonNullElse(presented, fragment);
+	}
 
     @Override
     public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Callback callback) {
@@ -123,7 +120,7 @@ public class ScreenNavigator implements Navigator {
         }
 
         ReadableMap layout = extras.getMap("layout");
-        presented = getReactBridgeManager().createFragment(layout);
+        presented = getReactManager().createFragment(layout);
         if (presented == null) {
             callback.invoke(null, false);
             return;
@@ -141,7 +138,7 @@ public class ScreenNavigator implements Navigator {
         }
 
         ReadableMap layout = extras.getMap("layout");
-        presented = getReactBridgeManager().createFragment(layout);
+        presented = getReactManager().createFragment(layout);
         if (presented == null) {
             callback.invoke(null, false);
             return;
@@ -162,12 +159,12 @@ public class ScreenNavigator implements Navigator {
             callback.invoke(null, false);
             return;
         }
-       
+
         Bundle args = FragmentHelper.getArguments(presented);
         args.putString(PresentableActivity.ARG_PRESENTING_SCENE_ID, presenting.getSceneId());
         presented.setArguments(args);
         presented.setPresentationStyle(PresentationStyle.OverFullScreen);
-        
+
         int requestCode = extras.getInt("requestCode");
         presenting.presentFragment(presented, requestCode, () -> callback.invoke(null, true), TransitionAnimation.None);
     }
@@ -192,11 +189,11 @@ public class ScreenNavigator implements Navigator {
             callback.invoke(null, false);
             return;
         }
-        
+
         Bundle args = FragmentHelper.getArguments(presented);
         args.putString(PresentableActivity.ARG_PRESENTING_SCENE_ID, presenting.getSceneId());
         presented.setArguments(args);
-        
+
         int requestCode = extras.getInt("requestCode");
         ReactStackFragment stackFragment = new ReactStackFragment();
         stackFragment.setRootFragment(presented);
@@ -215,7 +212,7 @@ public class ScreenNavigator implements Navigator {
 
         Bundle props = buildProps(extras);
         Bundle options = buildOptions(extras);
-        return getReactBridgeManager().createFragment(moduleName, props, options);
+        return getReactManager().createFragment(moduleName, props, options);
     }
 
     @Nullable
@@ -234,7 +231,7 @@ public class ScreenNavigator implements Navigator {
         return null;
     }
 
-    private ReactBridgeManager getReactBridgeManager() {
-        return ReactBridgeManager.get();
+    private ReactManager getReactManager() {
+        return ReactManager.get();
     }
 }

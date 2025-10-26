@@ -12,8 +12,8 @@ import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
 import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.Navigator;
-import com.reactnative.hybridnavigation.ReactBridgeManager;
 import com.reactnative.hybridnavigation.ReactDrawerFragment;
+import com.reactnative.hybridnavigation.ReactManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,11 +50,11 @@ public class DrawerNavigator implements Navigator {
         ReadableMap content = children.getMap(0);
         ReadableMap menu = children.getMap(1);
 
-        AwesomeFragment contentFragment = getReactBridgeManager().createFragment(content);
+        AwesomeFragment contentFragment = getReactManager().createFragment(content);
         if (contentFragment == null) {
             throw new IllegalArgumentException("can't create drawer content component with " + content);
         }
-        AwesomeFragment menuFragment = getReactBridgeManager().createFragment(menu);
+        AwesomeFragment menuFragment = getReactManager().createFragment(menu);
         if (menuFragment == null) {
             throw new IllegalArgumentException("can't create drawer menu component with " + menu);
         }
@@ -95,12 +95,11 @@ public class DrawerNavigator implements Navigator {
     @Nullable
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof DrawerFragment) || !fragment.isAdded()) {
+        if (!(fragment instanceof DrawerFragment drawerFragment) || !fragment.isAdded()) {
             return null;
         }
 
-        DrawerFragment drawer = (DrawerFragment) fragment;
-        ArrayList<Bundle> children = buildChildrenGraph(drawer);
+		ArrayList<Bundle> children = buildChildrenGraph(drawerFragment);
         Bundle graph = new Bundle();
         graph.putString("layout", name());
         graph.putString("sceneId", fragment.getSceneId());
@@ -115,7 +114,7 @@ public class DrawerNavigator implements Navigator {
         List<AwesomeFragment> fragments = drawer.getChildAwesomeFragments();
         for (int i = 0; i < fragments.size(); i++) {
             AwesomeFragment child = fragments.get(i);
-            Bundle graph = getReactBridgeManager().buildRouteGraph(child);
+            Bundle graph = getReactManager().buildRouteGraph(child);
             if (graph != null) {
                 children.add(graph);
             }
@@ -125,15 +124,14 @@ public class DrawerNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof DrawerFragment) || !fragment.isAdded()) {
+        if (!(fragment instanceof DrawerFragment drawerFragment) || !fragment.isAdded()) {
             return null;
         }
 
-        DrawerFragment drawer = (DrawerFragment) fragment;
-        if (drawer.isMenuPrimary()) {
-            return getReactBridgeManager().primaryFragment(drawer.getMenuFragment());
+		if (drawerFragment.isMenuPrimary()) {
+            return getReactManager().primaryFragment(drawerFragment.getMenuFragment());
         }
-        return getReactBridgeManager().primaryFragment(drawer.getContentFragment());
+        return getReactManager().primaryFragment(drawerFragment.getContentFragment());
     }
 
     @Override
@@ -163,7 +161,7 @@ public class DrawerNavigator implements Navigator {
         }
     }
 
-    private ReactBridgeManager getReactBridgeManager() {
-        return ReactBridgeManager.get();
+    private ReactManager getReactManager() {
+        return ReactManager.get();
     }
 }

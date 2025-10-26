@@ -1,5 +1,5 @@
 import type React from 'react';
-import {AppRegistry, ComponentProvider} from 'react-native';
+import { AppRegistry, ComponentProvider } from 'react-native';
 
 import type {
 	BarButtonItem,
@@ -9,24 +9,24 @@ import type {
 	TabItemInfo,
 	TitleItem,
 } from './Options';
-import type {BuildInLayout, Layout, Route, RouteGraph, RouteConfig} from './Route';
+import type { BuildInLayout, Layout, Route, RouteGraph, RouteConfig } from './Route';
 
 import BarButtonEventHandler from './handler/BarButtonEventHandler';
 import LayoutCommandHandler from './handler/LayoutCommandHandler';
 import DispatchCommandHandler from './handler/DispatchCommandHandler';
-import ResultEventHandler, {ResultType} from './handler/ResultEventHandler';
+import ResultEventHandler, { ResultType } from './handler/ResultEventHandler';
 import VisibilityEventHandler, {
 	GlobalVisibilityEventListener,
 	VisibilityEventListener,
 } from './handler/VisibilityEventHandler';
 
-import Event from './Event';
-import GardenModule from './GardenModule';
+import NativeEvent from './NativeEvent';
 import NavigationModule from './NavigationModule';
+import GardenModule from './NativeGarden';
 
-export type {ResultType} from './handler/ResultEventHandler';
-import type {DispatchParams, NavigationInterceptor} from './handler/DispatchCommandHandler';
-export type {DispatchParams, NavigationInterceptor} from './handler/DispatchCommandHandler';
+export type { ResultType } from './handler/ResultEventHandler';
+import type { DispatchParams, NavigationInterceptor } from './handler/DispatchCommandHandler';
+export type { DispatchParams, NavigationInterceptor } from './handler/DispatchCommandHandler';
 
 type BarButtonClickEventListener = (sceneId: string, value: Function) => void;
 
@@ -34,7 +34,7 @@ type Nullable<T> = {
 	[P in keyof T]: T[P] extends T[P] | undefined ? T[P] | null : T[P];
 };
 
-export const {RESULT_CANCEL, RESULT_OK, RESULT_BLOCK} = NavigationModule.getConstants();
+export const { RESULT_CANCEL, RESULT_OK, RESULT_BLOCK } = NavigationModule.getConstants();
 
 export type NavigationSubscription = {
 	remove: () => void;
@@ -187,8 +187,8 @@ class NavigationImpl implements Navigation {
 	}
 
 	private handleTabSwitch() {
-		Event.listenTabSwitch((sceneId: string, from: number, to: number) => {
-			this.dispatch(sceneId, 'switchTab', {from, to});
+		NativeEvent.onSwitchTab(({ sceneId, from, to }) => {
+			this.dispatch(sceneId, 'switchTab', { from, to });
 		});
 	}
 
@@ -265,12 +265,12 @@ class NavigationImpl implements Navigation {
 	}
 
 	setLeftBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null) {
-		const options = this.bindBarButtonClickEvent(sceneId, buttonItems);
+		const options = this.bindBarButtonClickEvent(sceneId, buttonItems) as Array<{}> | null;
 		GardenModule.setLeftBarButtonItems(sceneId, options);
 	}
 
 	setRightBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null) {
-		const options = this.bindBarButtonClickEvent(sceneId, buttonItems);
+		const options = this.bindBarButtonClickEvent(sceneId, buttonItems) as Array<{}> | null;
 		GardenModule.setRightBarButtonItems(sceneId, options);
 	}
 

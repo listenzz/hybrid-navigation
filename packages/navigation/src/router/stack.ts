@@ -1,5 +1,5 @@
-import {ScreenGraph, isScreenGraph, isTargetLocateIn} from './screen';
-import {LayoutMode, RouteGraph, RouteHandler, RouteInfo} from '../Route';
+import { ScreenGraph, isScreenGraph, isTargetLocateIn } from './screen';
+import { LayoutMode, RouteGraph, RouteHandler, RouteInfo } from '../Route';
 import Navigation from '../Navigation';
 
 export interface StackGraph extends RouteGraph {
@@ -19,7 +19,7 @@ export class StackRouteHandler implements RouteHandler {
 			throw new Error(`${graph} is Not a StackGraph`);
 		}
 
-		const {children} = graph;
+		const { children } = graph;
 
 		for (let i = children.length - 1; i > -1; i--) {
 			const childGraph = children[i];
@@ -46,7 +46,7 @@ export class StackRouteHandler implements RouteHandler {
 	}
 
 	private navigateTo(childGraph: ScreenGraph, target: RouteInfo) {
-		const {moduleName, dependencies, props} = target;
+		const { moduleName, dependencies, props } = target;
 		const expectations = [...dependencies, moduleName];
 		const index = expectations.findIndex(name => name === childGraph.moduleName);
 		const pendings = expectations.slice(index + 1);

@@ -1,4 +1,4 @@
-import {LayoutMode, RouteGraph, RouteHandler, RouteInfo} from '../Route';
+import { LayoutMode, RouteGraph, RouteHandler, RouteInfo } from '../Route';
 
 export interface ScreenGraph extends RouteGraph {
 	layout: 'screen';
@@ -25,7 +25,7 @@ function extractModuleNames(graph: RouteGraph, set: string[]) {
 export function isTargetLocateIn(graph: RouteGraph, target: RouteInfo) {
 	const existings: string[] = [];
 	extractModuleNames(graph, existings);
-	const {dependencies, moduleName} = target;
+	const { dependencies, moduleName } = target;
 	const expectations = [...dependencies, moduleName];
 	return expectations.some(name => existings.includes(name));
 }

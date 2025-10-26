@@ -1,5 +1,5 @@
-import {ScreenGraph, isTargetLocateIn} from './screen';
-import {LayoutMode, RouteGraph, RouteHandler, RouteInfo} from '../Route';
+import { ScreenGraph, isTargetLocateIn } from './screen';
+import { LayoutMode, RouteGraph, RouteHandler, RouteInfo } from '../Route';
 import Navigation from '../Navigation';
 
 export interface DrawerGraph extends RouteGraph {
@@ -19,16 +19,16 @@ export class DrawerRouteHandler implements RouteHandler {
 			throw new Error(`${graph} is Not a DrawerGraph`);
 		}
 
-		const {children} = graph;
+		const { children } = graph;
 
-		const {moduleName, sceneId} = children[1];
+		const { moduleName, sceneId } = children[1];
 		if (moduleName === target.moduleName) {
 			await Navigation.dispatch(sceneId, 'openMenu');
 			return [true, null];
 		}
 
 		if (isTargetLocateIn(children[0], target)) {
-			Navigation.dispatch(sceneId, 'closeMenu', {from: moduleName});
+			Navigation.dispatch(sceneId, 'closeMenu', { from: moduleName });
 			return [true, children[0]];
 		}
 

@@ -1,6 +1,6 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Navigation from './Navigation';
-import {Navigator, NavigationContext} from './Navigator';
+import { Navigator, NavigationContext } from './Navigator';
 
 export function useNavigator(): Navigator {
 	return useContext<Navigator>(NavigationContext);

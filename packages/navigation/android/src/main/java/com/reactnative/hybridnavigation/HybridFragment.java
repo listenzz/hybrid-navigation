@@ -13,7 +13,6 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.bridge.ReactContext;
 import com.navigation.androidx.AppUtils;
 import com.navigation.androidx.AwesomeFragment;
@@ -31,25 +30,21 @@ public class HybridFragment extends AwesomeFragment {
     private static final String SAVED_OPTIONS = "hybrid_options";
     private static final String SAVED_PROPS = "hybrid_props";
 
-    private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
+    private final ReactManager reactManager = ReactManager.get();
 
     private Garden garden;
 
     @NonNull
-    public ReactBridgeManager getReactBridgeManager() {
-        return bridgeManager;
+    public ReactManager getReactManager() {
+        return reactManager;
     }
 
     public boolean isReactModuleRegisterCompleted() {
-        return bridgeManager.isReactModuleRegisterCompleted();
-    }
-
-    protected final ReactInstanceManager getReactInstanceManager() {
-        return bridgeManager.getReactInstanceManager();
+        return reactManager.isReactModuleRegisterCompleted();
     }
 
     protected final ReactContext getCurrentReactContext() {
-        return bridgeManager.getCurrentReactContext();
+        return reactManager.getCurrentReactContext();
     }
 
     @Override
@@ -64,7 +59,7 @@ public class HybridFragment extends AwesomeFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        bridgeManager.watchMemory(this);
+        reactManager.watchMemory(this);
     }
 
     @Override

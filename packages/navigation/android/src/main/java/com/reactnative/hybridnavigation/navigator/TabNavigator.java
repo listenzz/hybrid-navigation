@@ -14,7 +14,7 @@ import com.navigation.androidx.TabBarFragment;
 import com.navigation.androidx.TransitionAnimation;
 import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.Navigator;
-import com.reactnative.hybridnavigation.ReactBridgeManager;
+import com.reactnative.hybridnavigation.ReactManager;
 import com.reactnative.hybridnavigation.ReactTabBarFragment;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public class TabNavigator implements Navigator {
 
         List<AwesomeFragment> fragments = createChildrenFragment(children);
 
-        if (fragments.size() == 0) {
+        if (fragments.isEmpty()) {
             throw new IllegalArgumentException("tabs layout should has a child at least");
         }
 
@@ -82,16 +82,6 @@ public class TabNavigator implements Navigator {
             bundle.putInt("selectedIndex", selectedIndex);
         }
 
-        if (options.hasKey("tabBarModuleName")) {
-            String tabBarModuleName = options.getString("tabBarModuleName");
-            bundle.putString("tabBarModuleName", tabBarModuleName);
-        }
-
-        if (options.hasKey("sizeIndeterminate")) {
-            boolean sizeIndeterminate = options.getBoolean("sizeIndeterminate");
-            bundle.putBoolean("sizeIndeterminate", sizeIndeterminate);
-        }
-
         tabBarFragment.setOptions(bundle);
     }
 
@@ -100,7 +90,7 @@ public class TabNavigator implements Navigator {
         List<AwesomeFragment> fragments = new ArrayList<>();
         for (int i = 0, size = children.size(); i < size; i++) {
             ReadableMap child = children.getMap(i);
-            AwesomeFragment awesomeFragment = getReactBridgeManager().createFragment(child);
+            AwesomeFragment awesomeFragment = getReactManager().createFragment(child);
             if (awesomeFragment != null) {
                 fragments.add(awesomeFragment);
             }
@@ -111,18 +101,17 @@ public class TabNavigator implements Navigator {
     @Nullable
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof TabBarFragment) || !fragment.isAdded()) {
+        if (!(fragment instanceof TabBarFragment tabBarFragment) || !fragment.isAdded()) {
             return null;
         }
 
-        TabBarFragment tabs = (TabBarFragment) fragment;
-        ArrayList<Bundle> children = buildChildrenGraph(tabs);
+		ArrayList<Bundle> children = buildChildrenGraph(tabBarFragment);
         Bundle graph = new Bundle();
         graph.putString("layout", name());
         graph.putString("sceneId", fragment.getSceneId());
         graph.putParcelableArrayList("children", children);
         graph.putString("mode", Navigator.Util.getMode(fragment));
-        graph.putInt("selectedIndex", tabs.getSelectedIndex());
+        graph.putInt("selectedIndex", tabBarFragment.getSelectedIndex());
         return graph;
     }
 
@@ -132,7 +121,7 @@ public class TabNavigator implements Navigator {
         List<AwesomeFragment> fragments = tabs.getChildAwesomeFragments();
         for (int i = 0; i < fragments.size(); i++) {
             AwesomeFragment child = fragments.get(i);
-            Bundle graph = getReactBridgeManager().buildRouteGraph(child);
+            Bundle graph = getReactManager().buildRouteGraph(child);
             if (graph != null) {
                 children.add(graph);
             }
@@ -142,12 +131,11 @@ public class TabNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof TabBarFragment) || !fragment.isAdded()) {
+        if (!(fragment instanceof TabBarFragment tabBarFragment) || !fragment.isAdded()) {
             return null;
         }
 
-        TabBarFragment tabs = (TabBarFragment) fragment;
-        return getReactBridgeManager().primaryFragment(tabs.getSelectedFragment());
+		return getReactManager().primaryFragment(tabBarFragment.getSelectedFragment());
     }
 
     @Override
@@ -172,13 +160,12 @@ public class TabNavigator implements Navigator {
 
         popToStackRootIfNeeded(extras, tabBarFragment);
 
-        if (!(tabBarFragment instanceof ReactTabBarFragment)) {
+        if (!(tabBarFragment instanceof ReactTabBarFragment reactTabBarFragment)) {
             tabBarFragment.setSelectedIndex(to, () -> callback.invoke(null, true));
             return;
         }
 
-        ReactTabBarFragment reactTabBarFragment = (ReactTabBarFragment) tabBarFragment;
-        reactTabBarFragment.setIntercepted(false);
+		reactTabBarFragment.setIntercepted(false);
         reactTabBarFragment.setSelectedIndex(to, () -> callback.invoke(null, true));
         reactTabBarFragment.setIntercepted(true);
     }
@@ -204,8 +191,8 @@ public class TabNavigator implements Navigator {
         }
     }
 
-    private ReactBridgeManager getReactBridgeManager() {
-        return ReactBridgeManager.get();
+    private ReactManager getReactManager() {
+        return ReactManager.get();
     }
 
 }

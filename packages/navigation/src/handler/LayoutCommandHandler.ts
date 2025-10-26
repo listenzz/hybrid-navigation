@@ -1,6 +1,6 @@
-import Event from '../Event';
 import NavigationModule from '../NavigationModule';
-import {BuildInLayout, Layout} from '../Route';
+import { BuildInLayout, Layout } from '../Route';
+import NativeEvent from '../NativeEvent';
 
 export default class LayoutCommandHandler {
 	private willSetRoot = () => {};
@@ -9,11 +9,10 @@ export default class LayoutCommandHandler {
 	constructor() {}
 
 	handleRootLayoutChange() {
-		Event.listenWillSetRoot(() => {
+		NativeEvent.willSetRoot(() => {
 			this.willSetRoot();
 		});
-
-		Event.listenDidSetRoot(() => {
+		NativeEvent.didSetRoot(() => {
 			this.didSetRoot();
 		});
 	}

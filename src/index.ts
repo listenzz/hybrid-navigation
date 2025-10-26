@@ -7,14 +7,12 @@ import Navigation, {
 	Tabs,
 	Stack,
 } from 'hybrid-navigation';
-import {Image, LogBox, Platform} from 'react-native';
+import { Image, LogBox, Platform } from 'react-native';
 import NavigationScreen from './Navigation';
 import Result from './Result';
 import Options from './Options';
 import Menu from './Menu';
 import PassOptions from './PassOptions';
-import ReduxCounter, {withRedux} from './ReduxCounter';
-import Lifecycle from './Lifecycle';
 
 import TopBarMisc from './TopBarMisc';
 import Noninteractive from './Noninteractive';
@@ -22,17 +20,12 @@ import TopBarShadowHidden from './TopBarShadowHidden';
 import TopBarHidden from './TopBarHidden';
 import TopBarColor from './TopBarColor';
 import TopBarAlpha from './TopBarAlpha';
-import TopBarTitleView, {CustomTitleView} from './TopBarTitleView';
+import TopBarTitleView, { CustomTitleView } from './TopBarTitleView';
 import TopBarStyle from './TopBarStyle';
-import StatusBarColor from './StatusBarColor';
 import ReactModal from './ReactModal';
 import StatusBarHidden from './StatusBarHidden';
-import CustomTabBar from './CustomTabBar';
-import BulgeTabBar from './BulgeTabBar';
-import Toast from './Toast';
-import ZustandCounter from './ZustandCounter';
-import BackgroundTaskDemo from './BackgroundTaskDemo';
 import Landscape from './Landscape';
+import SafeAreaContextHOC from './SafeAreaContextHOC';
 
 LogBox.ignoreAllLogs();
 
@@ -70,9 +63,6 @@ Navigation.setDefaultOptions({
 	swipeBackEnabledAndroid: true,
 	// splitTopBarTransitionIOS: true,
 	// badgeColor: '#00FFFF',
-
-	statusBarColorAndroid:
-		Platform.OS === 'android' && Platform.Version < 23 ? '#4A4A4A' : undefined,
 	titleAlignmentAndroid: TitleAlignmentCenter,
 	navigationBarColorAndroid: '#FFFFFF',
 	// scrimAlphaAndroid: 50,
@@ -100,21 +90,16 @@ Navigation.setDefaultOptions({
 
 // 开始注册组件，即基本页面单元
 
-Navigation.startRegisterComponent();
+Navigation.startRegisterComponent(SafeAreaContextHOC);
 
 Navigation.registerComponent('Navigation', () => NavigationScreen);
 Navigation.registerComponent('Result', () => Result, {
 	path: '/result',
 	mode: 'present',
 });
-Navigation.registerComponent('Options', () => Options, {path: '/options'});
-Navigation.registerComponent('Menu', () => Menu, {path: '/menu'});
-Navigation.registerComponent('ReduxCounter', () => withRedux(ReduxCounter), {
-	path: '/redux',
-});
-Navigation.registerComponent('ZustandCounter', () => ZustandCounter);
+Navigation.registerComponent('Options', () => Options, { path: '/options' });
+Navigation.registerComponent('Menu', () => Menu, { path: '/menu' });
 Navigation.registerComponent('PassOptions', () => PassOptions);
-Navigation.registerComponent('Lifecycle', () => Lifecycle);
 
 Navigation.registerComponent('TopBarMisc', () => TopBarMisc, {
 	dependency: 'Options',
@@ -126,7 +111,6 @@ Navigation.registerComponent('TopBarAlpha', () => TopBarAlpha);
 Navigation.registerComponent('TopBarColor', () => TopBarColor);
 Navigation.registerComponent('TopBarTitleView', () => TopBarTitleView);
 Navigation.registerComponent('CustomTitleView', () => CustomTitleView);
-Navigation.registerComponent('StatusBarColor', () => StatusBarColor);
 Navigation.registerComponent('StatusBarHidden', () => StatusBarHidden);
 Navigation.registerComponent('TopBarStyle', () => TopBarStyle, {
 	path: '/topBarStyle/:who',
@@ -138,10 +122,6 @@ Navigation.registerComponent('ReactModal', () => ReactModal, {
 	mode: 'modal',
 });
 
-Navigation.registerComponent('CustomTabBar', () => CustomTabBar);
-Navigation.registerComponent('BulgeTabBar', () => BulgeTabBar);
-Navigation.registerComponent('Toast', () => Toast);
-Navigation.registerComponent('BackgroundTaskDemo', () => BackgroundTaskDemo);
 Navigation.registerComponent('Landscape', () => Landscape);
 
 // 完成注册组件
@@ -149,13 +129,13 @@ Navigation.endRegisterComponent();
 
 const navigationStack: Stack = {
 	stack: {
-		children: [{screen: {moduleName: 'Navigation'}}],
+		children: [{ screen: { moduleName: 'Navigation' } }],
 	},
 };
 
 const optionsStack: Stack = {
 	stack: {
-		children: [{screen: {moduleName: 'Options'}}],
+		children: [{ screen: { moduleName: 'Options' } }],
 	},
 };
 
@@ -163,16 +143,12 @@ const tabs: Tabs = {
 	tabs: {
 		children: [navigationStack, optionsStack],
 		options: {
-			//tabBarModuleName: 'BulgeTabBar',
-			//sizeIndeterminate: true,
-			//tabBarModuleName: 'CustomTabBar',
-			//sizeIndeterminate: false,
-			//selectedIndex: 1,
+			// selectedIndex: 1,
 		},
 	},
 };
 
-const menu: Screen = {screen: {moduleName: 'Menu'}};
+const menu: Screen = { screen: { moduleName: 'Menu' } };
 
 const drawer: Drawer = {
 	drawer: {

@@ -43,9 +43,8 @@ public class Utils {
         }
 
         Drawable drawable = DrawableUtils.fromUri(context, uri);
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
+        if (drawable instanceof BitmapDrawable bitmapDrawable) {
+			bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
         }
         return drawable;
     }

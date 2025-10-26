@@ -18,6 +18,8 @@ import com.navigation.androidx.BarStyle;
 import com.navigation.androidx.DrawableUtils;
 import com.navigation.androidx.Style;
 
+import java.util.Objects;
+
 public class GlobalStyle {
 
     private static final String TAG = "Navigation";
@@ -31,7 +33,7 @@ public class GlobalStyle {
     public GlobalStyle(Bundle options) {
         this.options = options;
     }
-    
+
     public void inflateStyle(Context context, Style style) {
         if (options == null) {
             FLog.w(TAG, "Style options is null");
@@ -68,7 +70,7 @@ public class GlobalStyle {
             } else {
                 style.setToolbarBackgroundColor(Color.WHITE);
             }
-        }
+		}
 
         String topBarColorDarkContent = options.getString("topBarColorDarkContent");
         if (topBarColorDarkContent != null) {
@@ -80,15 +82,7 @@ public class GlobalStyle {
             style.setToolbarBackgroundColorLightContent(Color.parseColor(topBarColorLightContent));
         }
 
-        // statusBarColor
-        String statusBarColor = options.getString("statusBarColorAndroid");
-        if (statusBarColor != null) {
-            style.setStatusBarColor(Color.parseColor(statusBarColor));
-        } else {
-            style.setStatusBarColor(Color.TRANSPARENT);
-        }
-
-        // 
+        //
         boolean displayCutout = options.getBoolean("displayCutoutWhenLandscapeAndroid", true);
         style.setDisplayCutoutWhenLandscape(displayCutout);
 
@@ -176,18 +170,10 @@ public class GlobalStyle {
         }
 
         String tabBarItemColor = options.getString("tabBarItemColor");
-        if (tabBarItemColor != null) {
-            style.setTabBarItemColor(tabBarItemColor);
-        } else {
-            style.setTabBarItemColor("#FF5722");
-        }
+		style.setTabBarItemColor(Objects.requireNonNullElse(tabBarItemColor, "#FF5722"));
 
         String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
-        if (tabBarUnselectedItemColor != null) {
-            style.setTabBarUnselectedItemColor(tabBarUnselectedItemColor);
-        } else {
-            style.setTabBarUnselectedItemColor("#BDBDBD");
-        }
+		style.setTabBarUnselectedItemColor(Objects.requireNonNullElse(tabBarUnselectedItemColor, "#BDBDBD"));
 
         // tabBarShadowImage
         Bundle shadowImage = options.getBundle("tabBarShadowImage");
@@ -210,11 +196,11 @@ public class GlobalStyle {
         if (scrimAlpha != -1) {
             style.setScrimAlpha((int) scrimAlpha);
         }
-        
+
         // fitsOpaqueNavigationBarAndroid
         boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid", true);
         style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
-   
+
     }
 
     private void setBarBarShadowImage(@NonNull Context context, @NonNull Style style, @NonNull Bundle shadowImage) {
@@ -238,9 +224,8 @@ public class GlobalStyle {
         }
 
         Drawable drawable = DrawableUtils.fromUri(context, uri);
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
+        if (drawable instanceof BitmapDrawable bitmapDrawable) {
+			bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
         }
         return drawable;
     }

@@ -1,38 +1,25 @@
-import Event from '../Event';
+import NativeEvent from '../NativeEvent';
 
 interface IndexType {
 	[index: string]: any;
 }
 
 export type ResultType = IndexType | null;
-export type ResultEventListener<T extends ResultType> = (
-	resultCode: number,
-	data: T,
-) => void;
+export type ResultEventListener<T extends ResultType> = (resultCode: number, data: T) => void;
 
 export default class ResultEventHandler {
-	private listenerRecords: Record<
-		string,
-		Record<number, Array<ResultEventListener<any>>>
-	> = {};
+	private listenerRecords: Record<string, Record<number, Array<ResultEventListener<any>>>> = {};
 
 	constructor() {}
 
 	handleComponentResult() {
-		Event.listenComponentResult(
-			(
-				sceneId: string,
-				requestCode: number,
-				resultCode: number,
-				data: any,
-			) => {
-				const listeners = this.listenerRecords[sceneId]?.[requestCode];
-				if (listeners) {
-					delete this.listenerRecords[sceneId][requestCode];
-					listeners.forEach(l => l(resultCode, data));
-				}
-			},
-		);
+		NativeEvent.onResult(({ sceneId, requestCode, resultCode, resultData }) => {
+			const listeners = this.listenerRecords[sceneId]?.[requestCode];
+			if (listeners) {
+				delete this.listenerRecords[sceneId][requestCode];
+				listeners.forEach(l => l(resultCode, resultData));
+			}
+		});
 	}
 
 	private addResultEventListener(
@@ -63,10 +50,7 @@ export default class ResultEventHandler {
 		}
 	}
 
-	waitResult<T extends ResultType>(
-		sceneId: string,
-		requestCode: number,
-	): Promise<[number, T]> {
+	waitResult<T extends ResultType>(sceneId: string, requestCode: number): Promise<[number, T]> {
 		return new Promise<[number, T]>(resolve => {
 			const listener = (resultCode: number, data: T) => {
 				this.removeResultEventListener(sceneId, requestCode);

@@ -46,5 +46,13 @@
 	"dependencies": {
 		"path-to-regexp": "^6.1.0"
 	},
-	"devDependencies": {}
+	"devDependencies": {},
+	"codegenConfig": {
+		"name": "navigation",
+		"type": "modules",
+		"jsSrcsDir": "src",
+		"android": {
+			"javaPackageName": "com.reactnative.hybridnavigation"
+		}
+	}
 }

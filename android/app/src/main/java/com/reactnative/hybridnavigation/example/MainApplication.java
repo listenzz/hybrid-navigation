@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.facebook.common.logging.FLog;
-import com.facebook.drawee.view.DraweeView;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactHost;
@@ -17,22 +16,21 @@ import com.facebook.react.defaults.DefaultReactHost;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.react.soloader.OpenSourceMergedSoMapping;
 import com.facebook.soloader.SoLoader;
-import com.reactnative.hybridnavigation.ReactBridgeManager;
+import com.reactnative.hybridnavigation.ReactManager;
 
 import java.io.IOException;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
-
     private final ReactNativeHost reactNativeHost = new DefaultReactNativeHost(this) {
         @Override
         public List<ReactPackage> getPackages() {
             List<ReactPackage> packages = new PackageList(this).getPackages();
             // Packages that cannot be autolinked yet can be added manually here, for example:
-            packages.add(new ExamplePackage());
             return packages;
         }
 
+		@NonNull
         @Override
         public String getJSMainModuleName() {
             return "index";
@@ -49,20 +47,15 @@ public class MainApplication extends Application implements ReactApplication {
         }
 
         @Override
-        public Boolean isHermesEnabled() {
+        public boolean isHermesEnabled() {
             return BuildConfig.IS_HERMES_ENABLED;
         }
     };
 
-    @NonNull
-    @Override
-    public ReactNativeHost getReactNativeHost() {
-        return reactNativeHost;
-    }
-
+	@NonNull
     @Override
     public ReactHost getReactHost() {
-        return DefaultReactHost.getDefaultReactHost(getApplicationContext(), reactNativeHost);
+        return DefaultReactHost.getDefaultReactHost(getApplicationContext(), reactNativeHost, null);
     }
 
     @Override
@@ -78,13 +71,11 @@ public class MainApplication extends Application implements ReactApplication {
             DefaultNewArchitectureEntryPoint.load();
         }
 
-        ReactBridgeManager bridgeManager = ReactBridgeManager.get();
-        bridgeManager.install(getReactNativeHost());
+        ReactManager reactManager = ReactManager.get();
+        reactManager.install(getReactHost());
 
         // register native modules
-        bridgeManager.registerNativeModule("NativeModule", NativeFragment.class);
-        
-        DraweeView.setGlobalLegacyVisibilityHandlingEnabled(true);
+        reactManager.registerNativeModule("NativeModule", NativeFragment.class);
         FLog.setMinimumLoggingLevel(FLog.INFO);
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);

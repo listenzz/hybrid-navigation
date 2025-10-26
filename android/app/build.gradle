@@ -8,15 +8,15 @@ react {
 }
 
 def enableProguardInReleaseBuilds = false
-def jscFlavor = 'org.webkit:android-jsc:+'
+def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
-    
+
     namespace "com.reactnative.hybridnavigation.example"
-    
+
 	defaultConfig {
 		applicationId "com.reactnative.hybridnavigation.example"
 		minSdkVersion rootProject.ext.minSdkVersion
@@ -49,7 +49,7 @@ android {
 dependencies {
 	implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation("com.facebook.react:react-android")
-    
+
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
     } else {

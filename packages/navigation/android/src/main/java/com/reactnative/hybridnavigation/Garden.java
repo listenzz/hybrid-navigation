@@ -1,10 +1,5 @@
 package com.reactnative.hybridnavigation;
 
-import static com.reactnative.hybridnavigation.HBDEventEmitter.EVENT_NAVIGATION;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_ACTION;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_ON;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_SCENE_ID;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_BAR_BUTTON_ITEM_CLICK;
 import static com.reactnative.hybridnavigation.Parameters.mergeOptions;
 import static com.reactnative.hybridnavigation.Parameters.toBundle;
 
@@ -29,338 +24,332 @@ import java.util.ArrayList;
 
 public class Garden {
 
-    private static final String TAG = "Navigation";
+	private static final String TAG = "Navigation";
 
-    private static GlobalStyle globalStyle;
+	private static GlobalStyle globalStyle;
 
-    static void createGlobalStyle(Bundle options) {
-        globalStyle = new GlobalStyle(options);
-    }
+	static void createGlobalStyle(Bundle options) {
+		globalStyle = new GlobalStyle(options);
+	}
 
-    @NonNull
-    static GlobalStyle getGlobalStyle() {
-        if (globalStyle == null) {
-            globalStyle = new GlobalStyle(new Bundle());
-        }
-        return globalStyle;
-    }
+	@NonNull
+	static GlobalStyle getGlobalStyle() {
+		if (globalStyle == null) {
+			globalStyle = new GlobalStyle(new Bundle());
+		}
+		return globalStyle;
+	}
 
-    private final HybridFragment fragment;
+	private final HybridFragment fragment;
 
-    private final Style style;
+	private final Style style;
 
-    private final Bundle options;
+	private final Bundle options;
 
-    boolean backButtonHidden = false;
+	boolean backButtonHidden = false;
 
-    boolean backInteractive = true;
+	boolean backInteractive = true;
 
-    boolean swipeBackEnabled;
+	boolean swipeBackEnabled;
 
-    boolean hidesBottomBarWhenPushed;
+	boolean hidesBottomBarWhenPushed;
 
-    boolean toolbarHidden;
+	boolean toolbarHidden;
 
-    boolean extendedLayoutIncludesTopBar;
+	boolean extendedLayoutIncludesTopBar;
 
-    boolean forceTransparentDialogWindow;
-    
-    Garden(@NonNull HybridFragment fragment, Style style) {
-        // 构造 garden 实例时，Toolbar 还没有被创建
+	boolean forceTransparentDialogWindow;
 
-        this.fragment = fragment;
-        this.style = style;
+	Garden(@NonNull HybridFragment fragment, Style style) {
+		// 构造 garden 实例时，Toolbar 还没有被创建
 
-        Bundle options = fragment.getOptions();
-        this.options = options;
+		this.fragment = fragment;
+		this.style = style;
 
-        this.swipeBackEnabled = options.getBoolean("swipeBackEnabled", true);
-        this.toolbarHidden = options.getBoolean("topBarHidden", false);
-        Bundle tabItem = options.getBundle("tabItem");
-        this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush", true);
-        this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
-        
-        if (options.get("fitsOpaqueNavigationBarAndroid") != null) {
-            boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid");
-            style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
-        }
-        
-        String screenColor = options.getString("screenBackgroundColor");
-        if (!TextUtils.isEmpty(screenColor)) {
-            style.setScreenBackgroundColor(Color.parseColor(screenColor));
-        }
+		Bundle options = fragment.getOptions();
+		this.options = options;
 
-        this.forceTransparentDialogWindow = options.getBoolean("forceTransparentDialogWindow");
+		this.swipeBackEnabled = options.getBoolean("swipeBackEnabled", true);
+		this.toolbarHidden = options.getBoolean("topBarHidden", false);
+		Bundle tabItem = options.getBundle("tabItem");
+		this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush", true);
+		this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
 
-        applyOptions(options);
-    }
+		if (options.get("fitsOpaqueNavigationBarAndroid") != null) {
+			boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid");
+			style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
+		}
 
-    void setupToolbar() {
-        AwesomeToolbar toolbar = fragment.getToolbar();
-        if (toolbar == null) {
-            return;
-        }
+		String screenColor = options.getString("screenBackgroundColor");
+		if (!TextUtils.isEmpty(screenColor)) {
+			style.setScreenBackgroundColor(Color.parseColor(screenColor));
+		}
 
-        Bundle titleItem = options.getBundle("titleItem");
-        if (titleItem != null) {
-            setTitleItem(titleItem);
-        }
+		this.forceTransparentDialogWindow = options.getBoolean("forceTransparentDialogWindow");
 
-        Bundle rightBarButtonItem = options.getBundle("rightBarButtonItem");
-        ArrayList<Bundle> rightBarButtonItems = options.getParcelableArrayList("rightBarButtonItems");
-        if (rightBarButtonItems != null) {
-            setRightBarButtonItems(rightBarButtonItems);
-        } else if (rightBarButtonItem != null) {
-            setRightBarButtonItem(rightBarButtonItem);
-        }
+		applyOptions(options);
+	}
 
-        Bundle leftBarButtonItem = options.getBundle("leftBarButtonItem");
-        ArrayList<Bundle> leftBarButtonItems = options.getParcelableArrayList("leftBarButtonItems");
-        if (leftBarButtonItems != null) {
-            setLeftBarButtonItems(leftBarButtonItems);
-        } else if (leftBarButtonItem != null) {
-            setLeftBarButtonItem(leftBarButtonItem);
-        }
-    }
+	void setupToolbar() {
+		AwesomeToolbar toolbar = fragment.getToolbar();
+		if (toolbar == null) {
+			return;
+		}
 
-    void setTitleItem(@NonNull Bundle titleItem) {
-        String moduleName = titleItem.getString("moduleName");
-        if (moduleName == null) {
-            String title = titleItem.getString("title");
-            fragment.setTitle(title);
-        }
-    }
+		Bundle titleItem = options.getBundle("titleItem");
+		if (titleItem != null) {
+			setTitleItem(titleItem);
+		}
 
-    void setLeftBarButtonItems(ArrayList<Bundle> items) {
-        if (items == null) {
-            fragment.setLeftBarButtonItems(null);
-        } else {
-            fragment.setLeftBarButtonItems(barButtonItemsFromBundle(items));
-        }
-    }
+		Bundle rightBarButtonItem = options.getBundle("rightBarButtonItem");
+		ArrayList<Bundle> rightBarButtonItems = options.getParcelableArrayList("rightBarButtonItems");
+		if (rightBarButtonItems != null) {
+			setRightBarButtonItems(rightBarButtonItems);
+		} else if (rightBarButtonItem != null) {
+			setRightBarButtonItem(rightBarButtonItem);
+		}
 
-    void setRightBarButtonItems(ArrayList<Bundle> items) {
-        if (items == null) {
-            fragment.setRightBarButtonItems(null);
-        } else {
-            fragment.setRightBarButtonItems(barButtonItemsFromBundle(items));
-        }
-    }
+		Bundle leftBarButtonItem = options.getBundle("leftBarButtonItem");
+		ArrayList<Bundle> leftBarButtonItems = options.getParcelableArrayList("leftBarButtonItems");
+		if (leftBarButtonItems != null) {
+			setLeftBarButtonItems(leftBarButtonItems);
+		} else if (leftBarButtonItem != null) {
+			setLeftBarButtonItem(leftBarButtonItem);
+		}
+	}
 
-    private ToolbarButtonItem[] barButtonItemsFromBundle(ArrayList<Bundle> items) {
-        ArrayList<ToolbarButtonItem> buttonItems = new ArrayList<>();
-        for (int i = 0; i < items.size(); i++) {
-            Bundle item = items.get(i);
-            buttonItems.add(barButtonItemFromBundle(item));
-        }
-        return buttonItems.toArray(new ToolbarButtonItem[0]);
-    }
+	void setTitleItem(@NonNull Bundle titleItem) {
+		String moduleName = titleItem.getString("moduleName");
+		if (moduleName == null) {
+			String title = titleItem.getString("title");
+			fragment.setTitle(title);
+		}
+	}
 
-    void setLeftBarButtonItem(@Nullable Bundle item) {
-        if (item == null) {
-            fragment.setLeftBarButtonItem(null);
-        } else {
-            fragment.setLeftBarButtonItem(barButtonItemFromBundle(item));
-        }
-    }
+	void setLeftBarButtonItems(ArrayList<Bundle> items) {
+		if (items == null) {
+			fragment.setLeftBarButtonItems(null);
+		} else {
+			fragment.setLeftBarButtonItems(barButtonItemsFromBundle(items));
+		}
+	}
 
-    void setRightBarButtonItem(@Nullable Bundle item) {
-        if (item == null) {
-            fragment.setRightBarButtonItem(null);
-        } else {
-            fragment.setRightBarButtonItem(barButtonItemFromBundle(item));
-        }
-    }
+	void setRightBarButtonItems(ArrayList<Bundle> items) {
+		if (items == null) {
+			fragment.setRightBarButtonItems(null);
+		} else {
+			fragment.setRightBarButtonItems(barButtonItemsFromBundle(items));
+		}
+	}
 
-    private ToolbarButtonItem barButtonItemFromBundle(@NonNull Bundle item) {
-        Context context = fragment.getContext();
-        if (context == null) return null;
-        String title = item.getString("title");
-        boolean enabled = item.getBoolean("enabled", true);
-        String uri = uri(item);
-        String action = item.getString("action");
-        int tintColor = tintColor(item);
-        boolean renderOriginal = item.getBoolean("renderOriginal", false);
-        return new ToolbarButtonItem(uri, 0, renderOriginal, title, tintColor, enabled, view -> {
-            Bundle bundle = new Bundle();
-            bundle.putString(KEY_ACTION, action);
-            bundle.putString(KEY_SCENE_ID, fragment.getSceneId());
-            bundle.putString(KEY_ON, ON_BAR_BUTTON_ITEM_CLICK);
-            HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
-        });
-    }
+	private ToolbarButtonItem[] barButtonItemsFromBundle(ArrayList<Bundle> items) {
+		ArrayList<ToolbarButtonItem> buttonItems = new ArrayList<>();
+		for (int i = 0; i < items.size(); i++) {
+			Bundle item = items.get(i);
+			buttonItems.add(barButtonItemFromBundle(item));
+		}
+		return buttonItems.toArray(new ToolbarButtonItem[0]);
+	}
 
-    private int tintColor(@NonNull Bundle item) {
-        String tintColor = item.getString("tintColor");
-        if (tintColor != null) {
-            return Color.parseColor(tintColor);
-        }
-        return 0;
-    }
+	void setLeftBarButtonItem(@Nullable Bundle item) {
+		if (item == null) {
+			fragment.setLeftBarButtonItem(null);
+		} else {
+			fragment.setLeftBarButtonItem(barButtonItemFromBundle(item));
+		}
+	}
 
-    @Nullable
-    private String uri(@NonNull Bundle item) {
-        Bundle icon = item.getBundle("icon");
-        if (icon != null) {
-            return icon.getString("uri");
-        }
-        return null;
-    }
+	void setRightBarButtonItem(@Nullable Bundle item) {
+		if (item == null) {
+			fragment.setRightBarButtonItem(null);
+		} else {
+			fragment.setRightBarButtonItem(barButtonItemFromBundle(item));
+		}
+	}
 
-    private void applyOptions(@NonNull Bundle options) {
-        String barStyle = options.getString("topBarStyle");
-        if (barStyle != null) {
-            if (barStyle.equals("dark-content")) {
-                style.setStatusBarStyle(BarStyle.DarkContent);
-            } else {
-                style.setStatusBarStyle(BarStyle.LightContent);
-            }
-        }
+	private ToolbarButtonItem barButtonItemFromBundle(@NonNull Bundle item) {
+		Context context = fragment.getContext();
+		if (context == null) return null;
+		String title = item.getString("title");
+		boolean enabled = item.getBoolean("enabled", true);
+		String uri = uri(item);
+		String action = item.getString("action");
+		int tintColor = tintColor(item);
+		boolean renderOriginal = item.getBoolean("renderOriginal", false);
+		return new ToolbarButtonItem(uri, 0, renderOriginal, title, tintColor, enabled, view -> {
+			Bundle bundle = new Bundle();
+			bundle.putString("action", action);
+			bundle.putString("sceneId", fragment.getSceneId());
+			NativeEvent.getInstance().emitOnBarButtonItemClick(Arguments.fromBundle(bundle));
+		});
+	}
 
-        String statusBarColor = options.getString("statusBarColorAndroid");
-        if (!TextUtils.isEmpty(statusBarColor)) {
-            style.setStatusBarColor(Color.parseColor(statusBarColor));
-        }
+	private int tintColor(@NonNull Bundle item) {
+		String tintColor = item.getString("tintColor");
+		if (tintColor != null) {
+			return Color.parseColor(tintColor);
+		}
+		return 0;
+	}
 
-        String navigationBarColor = options.getString("navigationBarColorAndroid");
-        if (!TextUtils.isEmpty(navigationBarColor)) {
-            style.setNavigationBarColor(Color.parseColor(navigationBarColor));
-        }
+	@Nullable
+	private String uri(@NonNull Bundle item) {
+		Bundle icon = item.getBundle("icon");
+		if (icon != null) {
+			return icon.getString("uri");
+		}
+		return null;
+	}
 
-        if (options.get("navigationBarHiddenAndroid") != null) {
-            style.setNavigationBarHidden(options.getBoolean("navigationBarHiddenAndroid"));
-        }
+	private void applyOptions(@NonNull Bundle options) {
+		String barStyle = options.getString("topBarStyle");
+		if (barStyle != null) {
+			if (barStyle.equals("dark-content")) {
+				style.setStatusBarStyle(BarStyle.DarkContent);
+			} else {
+				style.setStatusBarStyle(BarStyle.LightContent);
+			}
+		}
 
-        if (options.get("displayCutoutWhenLandscapeAndroid") != null) {
-            style.setDisplayCutoutWhenLandscape(options.getBoolean("displayCutoutWhenLandscapeAndroid"));
-        }
+		String navigationBarColor = options.getString("navigationBarColorAndroid");
+		if (!TextUtils.isEmpty(navigationBarColor)) {
+			style.setNavigationBarColor(Color.parseColor(navigationBarColor));
+		}
 
-        boolean statusBarHidden = options.getBoolean("statusBarHidden");
-        style.setStatusBarHidden(statusBarHidden);
+		if (options.get("navigationBarHiddenAndroid") != null) {
+			style.setNavigationBarHidden(options.getBoolean("navigationBarHiddenAndroid"));
+		}
 
-        String topBarTintColor = options.getString("topBarTintColor");
-        if (!TextUtils.isEmpty(topBarTintColor)) {
-            style.setToolbarTintColor(Color.parseColor(topBarTintColor));
-        }
+		if (options.get("displayCutoutWhenLandscapeAndroid") != null) {
+			style.setDisplayCutoutWhenLandscape(options.getBoolean("displayCutoutWhenLandscapeAndroid"));
+		}
 
-        String titleTextColor = options.getString("titleTextColor");
-        if (!TextUtils.isEmpty(titleTextColor)) {
-            style.setTitleTextColor(Color.parseColor(titleTextColor));
-        }
+		boolean statusBarHidden = options.getBoolean("statusBarHidden");
+		style.setStatusBarHidden(statusBarHidden);
 
-        double titleTextSize = options.getDouble("titleTextSize", -1);
-        if (titleTextSize != -1) {
-            style.setTitleTextSize((int) titleTextSize);
-        }
+		String topBarTintColor = options.getString("topBarTintColor");
+		if (!TextUtils.isEmpty(topBarTintColor)) {
+			style.setToolbarTintColor(Color.parseColor(topBarTintColor));
+		}
 
-        String topBarColor = options.getString("topBarColor");
-        if (!TextUtils.isEmpty(topBarColor)) {
-            int color = Color.parseColor(topBarColor);
-            style.setToolbarBackgroundColor(color);
-        }
+		String titleTextColor = options.getString("titleTextColor");
+		if (!TextUtils.isEmpty(titleTextColor)) {
+			style.setTitleTextColor(Color.parseColor(titleTextColor));
+		}
 
-        double topBarAlpha = options.getDouble("topBarAlpha", -1);
-        if (topBarAlpha != -1) {
-            style.setToolbarAlpha((float) topBarAlpha);
-        }
+		double titleTextSize = options.getDouble("titleTextSize", -1);
+		if (titleTextSize != -1) {
+			style.setTitleTextSize((int) titleTextSize);
+		}
 
-        boolean topBarShadowHidden = options.getBoolean("topBarShadowHidden", false);
-        style.setToolbarShadowHidden(topBarShadowHidden);
+		String topBarColor = options.getString("topBarColor");
+		if (!TextUtils.isEmpty(topBarColor)) {
+			int color = Color.parseColor(topBarColor);
+			style.setToolbarBackgroundColor(color);
+		}
 
-        if (options.get("backInteractive") != null) {
-            this.backInteractive = options.getBoolean("backInteractive");
-        }
+		double topBarAlpha = options.getDouble("topBarAlpha", -1);
+		if (topBarAlpha != -1) {
+			style.setToolbarAlpha((float) topBarAlpha);
+		}
 
-        if (options.get("backButtonHidden") != null) {
-            this.backButtonHidden = options.getBoolean("backButtonHidden");
-        }
-    }
+		boolean topBarShadowHidden = options.getBoolean("topBarShadowHidden", false);
+		style.setToolbarShadowHidden(topBarShadowHidden);
 
-    void updateOptions(@NonNull ReadableMap readableMap) {
-        Bundle patches = toBundle(readableMap);
-        applyOptions(patches);
+		if (options.get("backInteractive") != null) {
+			this.backInteractive = options.getBoolean("backInteractive");
+		}
 
-        if (readableMap.hasKey("screenBackgroundColor")) {
-            String color = readableMap.getString("screenBackgroundColor");
-            style.setScreenBackgroundColor(Color.parseColor(color));
-            View root = fragment.requireView();
-            root.setBackground(new ColorDrawable(Color.parseColor(color)));
-        }
+		if (options.get("backButtonHidden") != null) {
+			this.backButtonHidden = options.getBoolean("backButtonHidden");
+		}
+	}
 
-        if (shouldUpdateStatusBar(readableMap)) {
-            fragment.setNeedsStatusBarAppearanceUpdate();
-        }
+	void updateOptions(@NonNull ReadableMap readableMap) {
+		Bundle patches = toBundle(readableMap);
+		applyOptions(patches);
 
-        if (shouldUpdateToolbar(readableMap)) {
-            fragment.setNeedsToolbarAppearanceUpdate();
-        }
+		if (readableMap.hasKey("screenBackgroundColor")) {
+			String color = readableMap.getString("screenBackgroundColor");
+			style.setScreenBackgroundColor(Color.parseColor(color));
+			View root = fragment.requireView();
+			root.setBackground(new ColorDrawable(Color.parseColor(color)));
+		}
 
-        if (shouldUpdateNavigationBar(readableMap)) {
-            fragment.setNeedsNavigationBarAppearanceUpdate();
-        }
+		if (shouldUpdateStatusBar(readableMap)) {
+			fragment.setNeedsStatusBarAppearanceUpdate();
+		}
 
-        Bundle options = mergeOptions(fragment.getOptions(), patches);
-        fragment.setOptions(options);
+		if (shouldUpdateToolbar(readableMap)) {
+			fragment.setNeedsToolbarAppearanceUpdate();
+		}
 
-        if (readableMap.hasKey("leftBarButtonItem")) {
-            Bundle bundle = options.getBundle("leftBarButtonItem");
-            setLeftBarButtonItem(bundle);
-        }
+		if (shouldUpdateNavigationBar(readableMap)) {
+			fragment.setNeedsNavigationBarAppearanceUpdate();
+		}
 
-        if (readableMap.hasKey("rightBarButtonItem")) {
-            Bundle bundle = options.getBundle("rightBarButtonItem");
-            setRightBarButtonItem(bundle);
-        }
+		Bundle options = mergeOptions(fragment.getOptions(), patches);
+		fragment.setOptions(options);
 
-        if (readableMap.hasKey("leftBarButtonItems")) {
-            ArrayList<Bundle> items = options.getParcelableArrayList("leftBarButtonItems");
-            setLeftBarButtonItems(items);
-        }
+		if (readableMap.hasKey("leftBarButtonItem")) {
+			Bundle bundle = options.getBundle("leftBarButtonItem");
+			setLeftBarButtonItem(bundle);
+		}
 
-        if (readableMap.hasKey("rightBarButtonItems")) {
-            ArrayList<Bundle> items = options.getParcelableArrayList("rightBarButtonItems");
-            setRightBarButtonItems(items);
-        }
+		if (readableMap.hasKey("rightBarButtonItem")) {
+			Bundle bundle = options.getBundle("rightBarButtonItem");
+			setRightBarButtonItem(bundle);
+		}
 
-        if (readableMap.hasKey("titleItem")) {
-            Bundle titleItem = options.getBundle("titleItem");
-            setTitleItem(titleItem);
-        }
-    }
+		if (readableMap.hasKey("leftBarButtonItems")) {
+			ArrayList<Bundle> items = options.getParcelableArrayList("leftBarButtonItems");
+			setLeftBarButtonItems(items);
+		}
 
-    private boolean shouldUpdateStatusBar(@NonNull ReadableMap readableMap) {
-        String[] keys = new String[]{"topBarStyle", "statusBarColorAndroid", "statusBarHidden", "topBarColor", "displayCutoutWhenLandscapeAndroid"};
-        for (String key : keys) {
-            if (readableMap.hasKey(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
+		if (readableMap.hasKey("rightBarButtonItems")) {
+			ArrayList<Bundle> items = options.getParcelableArrayList("rightBarButtonItems");
+			setRightBarButtonItems(items);
+		}
 
-    private boolean shouldUpdateToolbar(@NonNull ReadableMap readableMap) {
-        String[] keys = new String[]{
-            "topBarStyle",
-            "topBarColor", "topBarAlpha", "topBarShadowHidden", "topBarTintColor",
-            "titleTextSize", "titleTextColor", "backButtonHidden"
-        };
+		if (readableMap.hasKey("titleItem")) {
+			Bundle titleItem = options.getBundle("titleItem");
+			setTitleItem(titleItem);
+		}
+	}
 
-        for (String key : keys) {
-            if (readableMap.hasKey(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	private boolean shouldUpdateStatusBar(@NonNull ReadableMap readableMap) {
+		String[] keys = new String[]{"topBarStyle", "statusBarHidden", "topBarColor", "displayCutoutWhenLandscapeAndroid"};
+		for (String key : keys) {
+			if (readableMap.hasKey(key)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    private boolean shouldUpdateNavigationBar(@NonNull ReadableMap readableMap) {
-        String[] keys = new String[]{"navigationBarColorAndroid", "navigationBarHiddenAndroid", "screenBackgroundColor"};
-        for (String key : keys) {
-            if (readableMap.hasKey(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	private boolean shouldUpdateToolbar(@NonNull ReadableMap readableMap) {
+		String[] keys = new String[]{
+			"topBarStyle",
+			"topBarColor", "topBarAlpha", "topBarShadowHidden", "topBarTintColor",
+			"titleTextSize", "titleTextColor", "backButtonHidden"
+		};
+
+		for (String key : keys) {
+			if (readableMap.hasKey(key)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean shouldUpdateNavigationBar(@NonNull ReadableMap readableMap) {
+		String[] keys = new String[]{"navigationBarColorAndroid", "navigationBarHiddenAndroid", "screenBackgroundColor"};
+		for (String key : keys) {
+			if (readableMap.hasKey(key)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

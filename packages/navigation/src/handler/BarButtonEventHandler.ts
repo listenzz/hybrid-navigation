@@ -1,4 +1,4 @@
-import Event from '../Event';
+import NativeEvent from '../NativeEvent';
 
 type BarButtonClickEventListener = (sceneId: string, value: Function) => void;
 
@@ -7,10 +7,7 @@ export default class BarButtonEventHandler {
 	private keyPairs: Record<string, string[]> = {};
 	private actionIdGenerator = 0;
 
-	bindBarButtonClickEvent(
-		sceneId: string,
-		item: object | null | undefined,
-	): object | null {
+	bindBarButtonClickEvent(sceneId: string, item: object | null | undefined): object | null {
 		if (item === null || item === undefined) {
 			return null;
 		}
@@ -21,8 +18,7 @@ export default class BarButtonEventHandler {
 					return value;
 				}
 
-				const actionKey =
-					'ON_BAR_BUTTON_ITEM_CLICK_' + this.actionIdGenerator++;
+				const actionKey = 'ON_BAR_BUTTON_ITEM_CLICK_' + this.actionIdGenerator++;
 
 				if (!this.keyPairs[sceneId]) {
 					this.keyPairs[sceneId] = [];
@@ -44,7 +40,7 @@ export default class BarButtonEventHandler {
 	}
 
 	setBarButtonClickEventListener(handler: BarButtonClickEventListener) {
-		Event.listenBarButtonItemClick((sceneId: string, action: string) => {
+		NativeEvent.onBarButtonItemClick(({ sceneId, action }) => {
 			const listeners = this.actions;
 			if (listeners[action]) {
 				handler(sceneId, listeners[action]);
