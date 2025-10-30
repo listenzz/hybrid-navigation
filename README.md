@@ -38,7 +38,7 @@ yarn start
 
 首先，确保你有一个模拟器或设备
 
-如果熟悉原生开发，使用 Android Studio 打开 example/android，像运行原生应用那样运行它，也可以使用命令行：
+如果熟悉原生开发，使用 Android Studio 打开 android，像运行原生应用那样运行它，也可以使用命令行：
 
 ```sh
 # 在项目根目录下运行
@@ -62,12 +62,12 @@ adb reverse tcp:8081 tcp:8081
 首先安装 cocoapods 依赖，在项目根目录下运行如下命令：
 
 ```sh
-cd example/ios && pod install
+cd ios && pod install
 # 成功安装依赖后，回到根目录
 cd -
 ```
 
-如果熟悉原生开发，使用 Xcode 打开 example/ios，像运行原生应用那样运行它，或者使用命令行：
+如果熟悉原生开发，使用 Xcode 打开 ios，像运行原生应用那样运行它，或者使用命令行：
 
 ```sh
 # 在项目根目录下运行
