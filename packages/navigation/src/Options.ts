@@ -29,7 +29,6 @@ export type LayoutFitting = LayoutFittingExpanded | LayoutFittingCompressed;
 export interface NavigationOption {
 	screenBackgroundColor?: Color; // 页面背景，默认是白色
 	statusBarHidden?: boolean; // 是否隐藏状态栏
-	statusBarColorAndroid?: Color; // 状态栏背景颜色
 	topBarStyle?: BarStyle; // TopBar 样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
 	topBarColor?: Color; // TopBar 背景颜色
 	topBarShadowHidden?: boolean; // 是否隐藏 TopBar 的阴影
@@ -103,7 +102,6 @@ export interface DefaultOptions {
 	topBarColor?: Color; // TopBar 背景颜色，默认根据 topBarStyle 来计算
 	topBarColorDarkContent?: Color; // TopBar 背景颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 topBarColor 的值
 	topBarColorLightContent?: Color; // TopBar 背景颜色，当 topBarStyle 的值为 BarStyleLightContent 时生效，覆盖 topBarColor 的值
-	statusBarColorAndroid?: Color; // 状态栏背景颜色，默认取 topBarColor 的值
 	navigationBarColorAndroid?: Color; // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
 	hideBackTitleIOS?: boolean; // 是否隐藏返回按钮旁边的文字，默认是 false, 仅对 iOS 生效
 	elevationAndroid?: number; // TopBar 阴影高度，默认值为 4 dp
@@ -133,10 +131,7 @@ export interface DefaultOptions {
 
 export type TabBarStyle = Pick<
 	DefaultOptions,
-	| 'tabBarColor'
-	| 'tabBarShadowImage'
-	| 'tabBarItemColor'
-	| 'tabBarUnselectedItemColor'
+	'tabBarColor' | 'tabBarShadowImage' | 'tabBarItemColor' | 'tabBarUnselectedItemColor'
 >;
 
 export interface TabItemInfo {

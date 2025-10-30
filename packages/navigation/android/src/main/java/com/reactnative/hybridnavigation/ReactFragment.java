@@ -13,7 +13,6 @@ import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_DISA
 import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_RESULT;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -60,6 +59,14 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 		super.onViewCreated(view, savedInstanceState);
 		// 这个时候 toolbar 才创建好
 		initReactTitleView();
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		if (isRemoving() && forceScreenLandscape()) {
+			unmountReactView();
+		}
 	}
 
 	@Override

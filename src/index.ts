@@ -24,7 +24,6 @@ import TopBarColor from './TopBarColor';
 import TopBarAlpha from './TopBarAlpha';
 import TopBarTitleView, {CustomTitleView} from './TopBarTitleView';
 import TopBarStyle from './TopBarStyle';
-import StatusBarColor from './StatusBarColor';
 import ReactModal from './ReactModal';
 import StatusBarHidden from './StatusBarHidden';
 import CustomTabBar from './CustomTabBar';
@@ -71,8 +70,6 @@ Navigation.setDefaultOptions({
 	// splitTopBarTransitionIOS: true,
 	// badgeColor: '#00FFFF',
 
-	statusBarColorAndroid:
-		Platform.OS === 'android' && Platform.Version < 23 ? '#4A4A4A' : undefined,
 	titleAlignmentAndroid: TitleAlignmentCenter,
 	navigationBarColorAndroid: '#FFFFFF',
 	// scrimAlphaAndroid: 50,
@@ -126,7 +123,6 @@ Navigation.registerComponent('TopBarAlpha', () => TopBarAlpha);
 Navigation.registerComponent('TopBarColor', () => TopBarColor);
 Navigation.registerComponent('TopBarTitleView', () => TopBarTitleView);
 Navigation.registerComponent('CustomTitleView', () => CustomTitleView);
-Navigation.registerComponent('StatusBarColor', () => StatusBarColor);
 Navigation.registerComponent('StatusBarHidden', () => StatusBarHidden);
 Navigation.registerComponent('TopBarStyle', () => TopBarStyle, {
 	path: '/topBarStyle/:who',

@@ -64,7 +64,7 @@ public class Garden {
     boolean extendedLayoutIncludesTopBar;
 
     boolean forceTransparentDialogWindow;
-    
+
     Garden(@NonNull HybridFragment fragment, Style style) {
         // 构造 garden 实例时，Toolbar 还没有被创建
 
@@ -79,12 +79,12 @@ public class Garden {
         Bundle tabItem = options.getBundle("tabItem");
         this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush", true);
         this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
-        
+
         if (options.get("fitsOpaqueNavigationBarAndroid") != null) {
             boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid");
             style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
         }
-        
+
         String screenColor = options.getString("screenBackgroundColor");
         if (!TextUtils.isEmpty(screenColor)) {
             style.setScreenBackgroundColor(Color.parseColor(screenColor));
@@ -217,11 +217,6 @@ public class Garden {
             }
         }
 
-        String statusBarColor = options.getString("statusBarColorAndroid");
-        if (!TextUtils.isEmpty(statusBarColor)) {
-            style.setStatusBarColor(Color.parseColor(statusBarColor));
-        }
-
         String navigationBarColor = options.getString("navigationBarColorAndroid");
         if (!TextUtils.isEmpty(navigationBarColor)) {
             style.setNavigationBarColor(Color.parseColor(navigationBarColor));
@@ -329,7 +324,7 @@ public class Garden {
     }
 
     private boolean shouldUpdateStatusBar(@NonNull ReadableMap readableMap) {
-        String[] keys = new String[]{"topBarStyle", "statusBarColorAndroid", "statusBarHidden", "topBarColor", "displayCutoutWhenLandscapeAndroid"};
+        String[] keys = new String[]{"topBarStyle", "statusBarHidden", "topBarColor", "displayCutoutWhenLandscapeAndroid"};
         for (String key : keys) {
             if (readableMap.hasKey(key)) {
                 return true;

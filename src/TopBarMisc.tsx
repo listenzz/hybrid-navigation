@@ -34,10 +34,6 @@ function TopBarMisc({navigator}: NavigationProps) {
 		navigator.push('TopBarTitleView');
 	}
 
-	function statusBarColor() {
-		navigator.push('StatusBarColor');
-	}
-
 	function statusBarHidden() {
 		navigator.push('StatusBarHidden');
 	}
@@ -88,13 +84,6 @@ function TopBarMisc({navigator}: NavigationProps) {
 					activeOpacity={0.2}
 					style={styles.button}>
 					<Text style={styles.buttonText}>Noninteractive</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity
-					onPress={statusBarColor}
-					activeOpacity={0.2}
-					style={styles.button}>
-					<Text style={styles.buttonText}>StatusBarColor</Text>
 				</TouchableOpacity>
 
 				<TouchableOpacity

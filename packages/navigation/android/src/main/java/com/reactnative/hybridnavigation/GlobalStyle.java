@@ -31,7 +31,7 @@ public class GlobalStyle {
     public GlobalStyle(Bundle options) {
         this.options = options;
     }
-    
+
     public void inflateStyle(Context context, Style style) {
         if (options == null) {
             FLog.w(TAG, "Style options is null");
@@ -80,15 +80,7 @@ public class GlobalStyle {
             style.setToolbarBackgroundColorLightContent(Color.parseColor(topBarColorLightContent));
         }
 
-        // statusBarColor
-        String statusBarColor = options.getString("statusBarColorAndroid");
-        if (statusBarColor != null) {
-            style.setStatusBarColor(Color.parseColor(statusBarColor));
-        } else {
-            style.setStatusBarColor(Color.TRANSPARENT);
-        }
-
-        // 
+        //
         boolean displayCutout = options.getBoolean("displayCutoutWhenLandscapeAndroid", true);
         style.setDisplayCutoutWhenLandscape(displayCutout);
 
@@ -210,11 +202,11 @@ public class GlobalStyle {
         if (scrimAlpha != -1) {
             style.setScrimAlpha((int) scrimAlpha);
         }
-        
+
         // fitsOpaqueNavigationBarAndroid
         boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid", true);
         style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
-   
+
     }
 
     private void setBarBarShadowImage(@NonNull Context context, @NonNull Style style, @NonNull Bundle shadowImage) {
