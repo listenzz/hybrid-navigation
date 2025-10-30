@@ -8,7 +8,7 @@ PODS:
   - hermes-engine (0.77.2):
     - hermes-engine/Pre-built (= 0.77.2)
   - hermes-engine/Pre-built (0.77.2)
-  - HybridNavigation (2.18.5):
+  - HybridNavigation (2.20.0):
     - React-Core
   - libwebp (1.5.0):
     - libwebp/demux (= 1.5.0)
@@ -1540,7 +1540,7 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
-  - RNKeyboardInsets (0.5.0):
+  - RNKeyboardInsets (0.8.0):
     - React-Core
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
@@ -1791,7 +1791,7 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: eb93e2f488219332457c3c4eafd2738ddc7e80b8
   hermes-engine: 8eb265241fa1d7095d3a40d51fd90f7dce68217c
-  HybridNavigation: fff5509cdd17c2600759884a6d93a48131240b8c
+  HybridNavigation: 837f3e9614610655c4be063788600b6924cd2d3a
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   RCT-Folly: e78785aa9ba2ed998ea4151e314036f6c49e6d82
   RCTDeprecation: 85b72250b63cfb54f29ca96ceb108cb9ef3c2079
@@ -1854,7 +1854,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 6f764a42662ad6379fd3fbb9c09baff6e4797b20
   ReactCommon: 7763e59534d58e15f8f22121cdfe319040e08888
   RNFastImage: 462a183c4b0b6b26fdfd639e1ed6ba37536c3b87
-  RNKeyboardInsets: d478c02d6eeb695b100501f4d674191ed751c71f
+  RNKeyboardInsets: 7fec3cdf6cacde07176353ba7387fcbec171b30a
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
@@ -1863,4 +1863,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 23ff901a2381fd26c7d4cd737e6493d217c6b06b
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

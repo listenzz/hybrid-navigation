@@ -36,20 +36,28 @@
 @implementation HBDBarButtonItem
 
 - (instancetype)initWithImage:(UIImage *)image style:(UIBarButtonItemStyle)style {
-    HBDImageBarButton *button = [HBDImageBarButton buttonWithType:UIButtonTypeSystem];
-    button.translatesAutoresizingMaskIntoConstraints = NO;
-    [button setFrame:CGRectMake(0, 0, 32, 32)];
-    [button setImage:image forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(didButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    return [super initWithCustomView:button];
+	if (@available(iOS 26.0, *)) {
+		return [super initWithImage:image style:style target:self action:@selector(didButtonClick)];
+	} else {
+		HBDImageBarButton *button = [HBDImageBarButton buttonWithType:UIButtonTypeSystem];
+		button.translatesAutoresizingMaskIntoConstraints = NO;
+		[button setFrame:CGRectMake(0, 0, 32, 32)];
+		[button setImage:image forState:UIControlStateNormal];
+		[button addTarget:self action:@selector(didButtonClick) forControlEvents:UIControlEventTouchUpInside];
+		return [super initWithCustomView:button];
+	}
 }
 
 - (instancetype)initWithTitle:(NSString *)title style:(UIBarButtonItemStyle)style {
-    UIButton *button = [HBDTextBarButton buttonWithType:UIButtonTypeSystem];
-    button.translatesAutoresizingMaskIntoConstraints = NO;
-    [button setTitle:title forState:UIControlStateNormal];
-    [button addTarget:self action:@selector(didButtonClick) forControlEvents:UIControlEventTouchUpInside];
-    return [super initWithCustomView:button];
+	if (@available(iOS 26.0, *)) {
+		return [super initWithTitle:title style:style target:self action:@selector(didButtonClick)];
+	} else {
+		UIButton *button = [HBDTextBarButton buttonWithType:UIButtonTypeSystem];
+		button.translatesAutoresizingMaskIntoConstraints = NO;
+		[button setTitle:title forState:UIControlStateNormal];
+		[button addTarget:self action:@selector(didButtonClick) forControlEvents:UIControlEventTouchUpInside];
+		return [super initWithCustomView:button];
+	}
 }
 
 - (void)didButtonClick {
