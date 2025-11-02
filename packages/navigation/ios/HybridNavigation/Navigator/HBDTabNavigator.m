@@ -31,8 +31,7 @@
     }
     
     NSDictionary *options = model[@"options"];
-    NSArray *tabModels = [self tabModelsWithViewControllers:viewControllers];
-    HBDTabBarController *tabBarController = [self createTabBarControllerWithTabModels:tabModels options:options];
+    HBDTabBarController *tabBarController = [[HBDTabBarController alloc] init];
     [tabBarController setViewControllers:viewControllers];
 
     if (options) {
@@ -45,59 +44,6 @@
     }
 
     return tabBarController;
-}
-
-- (HBDTabBarController *)createTabBarControllerWithTabModels:(NSArray *)tabModels options:(NSDictionary *)options  {
-    NSString *moduleName = options[@"tabBarModuleName"];
-    BOOL hasCustomTabBar = moduleName.length > 0;
-    
-    if (!hasCustomTabBar) {
-        return [[HBDTabBarController alloc] init];
-    }
-    
-    GlobalStyle *style = [GlobalStyle globalStyle];
-    
-    NSDictionary *tabBarOptions = @{
-        @"tabs":                      tabModels,
-        @"tabBarModuleName":          moduleName,
-        @"sizeIndeterminate":         options[@"sizeIndeterminate"],
-        @"selectedIndex":             options[@"selectedIndex"] ?: @(0),
-        @"tabBarItemColor":           style.tabBarItemColorHexString,
-        @"tabBarUnselectedItemColor": style.tabBarUnselectedItemColorHexString,
-        @"badgeColor":                style.badgeColorHexString,
-    };
-
-    return [[HBDTabBarController alloc] initWithTabBarOptions:tabBarOptions];
-}
-
-- (NSArray<NSDictionary *> *)tabModelsWithViewControllers:(NSArray<UIViewController *> *)children {
-    NSUInteger count = children.count;
-    NSMutableArray *tabModels = [[NSMutableArray alloc] initWithCapacity:4];
-    
-    for (NSUInteger i = 0; i < count; i++) {
-        UIViewController *vc = children[i];
-        if ([vc isKindOfClass:[UINavigationController class]]) {
-            UINavigationController *nav = (UINavigationController *) vc;
-            vc = nav.childViewControllers[0];
-        }
-        if ([vc isKindOfClass:[HBDViewController class]]) {
-            HBDViewController *hbdVC = (HBDViewController *) vc;
-            NSDictionary *tabItem = hbdVC.options[@"tabItem"];
-            if (tabItem) {
-                NSDictionary *tab = @{
-                        @"index": @(i),
-                        @"sceneId": hbdVC.sceneId,
-                        @"moduleName": RCTNullIfNil(hbdVC.moduleName),
-                        @"icon": RCTNullIfNil([HBDUtils iconUriFromUri:tabItem[@"icon"][@"uri"]]),
-                        @"unselectedIcon": RCTNullIfNil([HBDUtils iconUriFromUri:tabItem[@"unselectedIcon"][@"uri"]]),
-                        @"title": RCTNullIfNil(tabItem[@"title"]),
-                };
-                [tabModels addObject:tab];
-            }
-        }
-    }
-    
-    return [tabModels copy];
 }
 
 - (NSDictionary *)routeGraphWithViewController:(UIViewController *)vc {

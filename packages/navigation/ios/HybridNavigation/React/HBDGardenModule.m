@@ -7,8 +7,6 @@
 
 #import <React/RCTLog.h>
 
-static NSString *const EVENT_STATUSBAR_FRAME_CHANGE = @"EVENT_STATUSBAR_FRAME_CHANGE";
-
 @interface HBDGardenModule ()
 
 @property(nonatomic, strong, readonly) HBDReactBridgeManager *bridgeManager;
@@ -30,38 +28,18 @@ RCT_EXPORT_MODULE(GardenModule)
 - (instancetype)init {
     if (self = [super init]) {
         _bridgeManager = [HBDReactBridgeManager get];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleStatusBarFrameChange) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
     }
     return self;
-}
-
-- (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
 }
 
 - (NSDictionary *)constantsToExport {
     return @{
         @"TOOLBAR_HEIGHT": @(44),
-        @"STATUSBAR_HEIGHT": @([self currentStatusBarHeight]),
-        @"EVENT_STATUSBAR_FRAME_CHANGE": EVENT_STATUSBAR_FRAME_CHANGE,
     };
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[EVENT_STATUSBAR_FRAME_CHANGE];
-}
-
-- (CGFloat)currentStatusBarHeight {
-	return [HBDUtils statusBarHeight];
-}
-
-- (void)handleStatusBarFrameChange {
-    RCTLogInfo(@"[Navigation] handleStatusBarFrameChange: %f", [self currentStatusBarHeight]);
-    if ([self.bridge isValid]) {
-        [self sendEventWithName:EVENT_STATUSBAR_FRAME_CHANGE body:@{
-            @"statusBarHeight": @([self currentStatusBarHeight])
-        }];
-    }
+    return @[];
 }
 
 RCT_EXPORT_METHOD(setStyle:(NSDictionary *) style) {

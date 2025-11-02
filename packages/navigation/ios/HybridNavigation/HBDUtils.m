@@ -170,23 +170,6 @@
     return window.safeAreaInsets.bottom > 0.0;
 }
 
-+ (BOOL)isInCall {
-    if ([HBDUtils isIphoneX]) {
-        return NO;
-    } else {
-		return [self statusBarHeight] == 40;
-    }
-}
-
-+ (CGFloat)statusBarHeight {
-	if (@available(iOS 13.0, *)) {
-		UIStatusBarManager *statusBarManager = RCTKeyWindow().windowScene.statusBarManager;
-		return statusBarManager.statusBarFrame.size.height;
-	} else {
-		return [[UIApplication sharedApplication] statusBarFrame].size.height;
-	}
-}
-
 + (void)printViewHierarchy:(UIView *)view withPrefix:(NSString *)prefix {
     NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
     NSLog(@"%@%@ %@", prefix, viewName, NSStringFromCGRect(view.frame));

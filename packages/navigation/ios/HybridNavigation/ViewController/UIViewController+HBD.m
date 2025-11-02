@@ -4,7 +4,6 @@
 #import "HBDReactViewController.h"
 #import "HBDUtils.h"
 #import "GlobalStyle.h"
-#import "UITabBar+Badge.h"
 
 #import <React/RCTLog.h>
 
@@ -336,46 +335,6 @@
     }
 
     return nil;
-}
-
-- (void)hbd_updateTabBarItem:(NSDictionary *)option {
-    UITabBarItem *tabBarItem = self.tabBarItem;
-    NSUInteger index = option[@"index"] ? [option[@"index"] integerValue] : 0;
-
-    // title
-    NSString *title = option[@"title"];
-    if (title != nil) {
-        tabBarItem.title = title;
-    }
-
-    // icon
-    NSDictionary *icon = option[@"icon"];
-    if (icon != nil) {
-        NSDictionary *unselected = icon[@"unselected"];
-        NSDictionary *selected = icon[@"selected"];
-        if (unselected) {
-            tabBarItem.selectedImage = [[HBDUtils UIImage:selected] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            tabBarItem.image = [[HBDUtils UIImage:unselected] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        } else {
-            tabBarItem.image = [HBDUtils UIImage:selected];
-        }
-    }
-
-    // badge
-    NSDictionary *badge = option[@"badge"];
-    if (badge != nil) {
-        BOOL hidden = badge[@"hidden"] ? [badge[@"hidden"] boolValue] : YES;
-        NSString *text = hidden ? nil : (badge[@"text"] ? badge[@"text"] : nil);
-        BOOL dot = hidden ? NO : (badge[@"dot"] ? [badge[@"dot"] boolValue] : NO);
-
-        tabBarItem.badgeValue = text;
-        UITabBar *tabBar = self.tabBarController.tabBar;
-        if (dot) {
-            [tabBar showDotBadgeAtIndex:index];
-        } else {
-            [tabBar hideDotBadgeAtIndex:index];
-        }
-    }
 }
 
 - (NSString *)hbd_mode {

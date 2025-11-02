@@ -84,8 +84,8 @@ Navigation.setDefaultOptions({
 		color: '#F0F0F0',
 		// image: Image.resolveAssetSource(require('./src/images/divider.png')),
 	},
-	//tabBarItemColor: '#CCCCCC',
-	//tabBarSelectedItemColor: '#00ff00',
+	tabBarItemColor: '#FF5722',
+	tabBarUnselectedItemColor: '#BDBDBD',
 });
 
 // 开始注册组件，即基本页面单元

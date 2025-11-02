@@ -73,30 +73,6 @@
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
-}
-
-- (void)statusBarFrameWillChange:(NSNotification *)notification {
-	CGFloat statusBarHeight = [HBDUtils statusBarHeight];
-    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation) && statusBarHeight != 0) {
-        if (self.menuOpened) {
-            [UIView animateWithDuration:0.35 animations:^{
-                CGFloat dy = [HBDUtils isInCall] ? -20 : 20;
-                self.menuHolderView.frame = CGRectMake(0, 0, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds) + dy);
-                self.menuDimmingView.frame = self.menuHolderView.bounds;
-                self.menuController.view.frame = CGRectMake(0, 0, [self menuWidth], self.menuHolderView.bounds.size.height);
-            }];
-        }
-    }
-}
-
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
@@ -105,7 +81,8 @@
             self.menuDimmingView.frame = self.menuHolderView.bounds;
             self.menuController.view.frame = CGRectMake(0, 0, [self menuWidth], size.height);
         }
-    }                            completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+    } completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+		
     }];
 }
 

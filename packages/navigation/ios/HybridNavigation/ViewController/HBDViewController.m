@@ -5,6 +5,7 @@
 #import "HBDAnimationObserver.h"
 #import "GlobalStyle.h"
 #import "HBDBackBarButtonItem.h"
+#import "UIImage+WithBadge.h"
 
 #import <React/RCTLog.h>
 
@@ -71,22 +72,7 @@
 }
 
 - (BOOL)prefersStatusBarHidden {
-    if (@available(iOS 13.0, *)) {
-        return [self hbd_statusBarHidden] && ![HBDUtils isInCall];
-    }
-
-    if ([HBDUtils isIphoneX]) {
-        return [self hbd_statusBarHidden] && ![HBDUtils isInCall];
-    } else {
-        UIView *statusBar = [[UIApplication sharedApplication] valueForKey:@"statusBarWindow"];
-        BOOL hidden = [self hbd_statusBarHidden] && ![HBDUtils isInCall];
-		CGFloat statusBarHeight = [HBDUtils statusBarHeight];
-        [UIView animateWithDuration:0.2 animations:^{
-            statusBar.transform = hidden ? CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -statusBarHeight) : CGAffineTransformIdentity;
-            statusBar.alpha = hidden ? 0 : 1.0;
-        }];
-        return NO;
-    }
+	return [self hbd_statusBarHidden];
 }
 
 - (BOOL)prefersHomeIndicatorAutoHidden {
@@ -106,18 +92,7 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [[HBDAnimationObserver sharedObserver] endAnimation];
-    if (![HBDUtils isIphoneX]) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(statusBarFrameWillChange:) name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
-    }
-	
 	[self adjustScreenOrientation];
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    [super viewDidDisappear:animated];
-    if (![HBDUtils isIphoneX]) {
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillChangeStatusBarFrameNotification object:nil];
-    }
 }
 
 - (void)adjustScreenOrientation {
@@ -166,10 +141,6 @@
     return nil;
 }
 
-- (void)statusBarFrameWillChange:(NSNotification *)notification {
-    [self setNeedsStatusBarAppearanceUpdate];
-}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setScreenBackgroundColor];
@@ -212,17 +183,80 @@
 - (void)applyTabBarOptions:(NSDictionary *)options {
     NSDictionary *tabItem = options[@"tabItem"];
     if (tabItem) {
-        UITabBarItem *tabBarItem = [[UITabBarItem alloc] init];
+		UITabBarItem *tabBarItem = self.tabBarItem;
+		// title
         tabBarItem.title = tabItem[@"title"];
-        NSDictionary *unselectedIcon = tabItem[@"unselectedIcon"];
-        if (unselectedIcon) {
-            tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        } else {
-            tabBarItem.image = [HBDUtils UIImage:tabItem[@"icon"]];
-        }
+		
+		// badge
+		NSDictionary *badge = tabItem[@"badge"];
+		tabBarItem.badgeValue = [self badgeText:badge];
+		tabBarItem.badgeColor = [UITabBarItem appearance].badgeColor;
+		
+		
+		NSDictionary *unselectedIcon = tabItem[@"unselectedIcon"];
+		UITabBar *bar = [UITabBar appearance];
+
+		if ([self showDotBadge:badge]) {
+			if (unselectedIcon) {
+				tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.tintColor badgeColor:tabBarItem.badgeColor];
+				tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] withIconColor:bar.unselectedItemTintColor badgeColor:tabBarItem.badgeColor];
+			} else {
+				tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.tintColor badgeColor:tabBarItem.badgeColor];
+				tabBarItem.image = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.unselectedItemTintColor badgeColor:tabBarItem.badgeColor];
+			}
+		} else {
+			if (unselectedIcon) {
+				tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.tintColor badgeColor:UIColor.clearColor];
+				tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] withIconColor:bar.unselectedItemTintColor badgeColor:UIColor.clearColor];
+			} else {
+				tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.tintColor badgeColor:UIColor.clearColor];
+				tabBarItem.image = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.unselectedItemTintColor badgeColor:UIColor.clearColor];
+			}
+		}
         self.tabBarItem = tabBarItem;
     }
+}
+
+
+- (void)updateTabBarItem:(NSDictionary *)option {
+	// title
+	NSString *title = option[@"title"];
+	if (title != nil) {
+		self.options[@"tabItem"][@"title"] = title;
+	}
+
+	// badge
+	NSDictionary *badge = option[@"badge"];
+	self.options[@"tabItem"][@"badge"] = badge;
+	
+	// icon
+	NSDictionary *icon = option[@"icon"];
+	if (icon != nil) {
+		self.options[@"tabItem"][@"icon"] = icon[@"selected"];
+		self.options[@"tabItem"][@"unselectedIcon"] = icon[@"unselected"];
+	}
+	
+	[self applyTabBarOptions:self.options];
+	
+	if (self.navigationController) {
+		self.navigationController.tabBarItem = self.tabBarItem;
+	}
+}
+
+- (BOOL)showDotBadge:(NSDictionary *)badge {
+	if (badge) {
+		BOOL hidden = badge[@"hidden"] ? [badge[@"hidden"] boolValue] : YES;
+		return hidden ? NO : (badge[@"dot"] ? [badge[@"dot"] boolValue] : NO);
+	}
+	return NO;
+}
+
+- (NSString *)badgeText:(NSDictionary *)badge {
+	if (badge) {
+		BOOL hidden = badge[@"hidden"] ? [badge[@"hidden"] boolValue] : YES;
+		return hidden ? nil : (badge[@"text"] ? badge[@"text"] : nil);
+	}
+	return nil;
 }
 
 - (void)applyNavigationBarOptions:(NSDictionary *)options {

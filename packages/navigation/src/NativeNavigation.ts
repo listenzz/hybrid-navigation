@@ -1,4 +1,5 @@
-import { TurboModuleRegistry, type TurboModule } from 'react-native';
+import { TurboModuleRegistry } from 'react-native';
+import type { CodegenTypes, TurboModule } from 'react-native';
 
 type Error = {
 	code: string;
@@ -41,18 +42,18 @@ export interface Spec extends TurboModule {
 
 	startRegisterReactComponent: () => void;
 	endRegisterReactComponent: () => void;
-	registerReactComponent: (appKey: string, options: RouteConfig) => void;
+	registerReactComponent: (appKey: string, options: CodegenTypes.UnsafeObject) => void;
 	signalFirstRenderComplete: (sceneId: string) => void;
 	setRoot: (
-		layout: {},
+		layout: CodegenTypes.UnsafeObject,
 		sticky: boolean,
 		callback: (error: Error | null, result: boolean) => void,
 	) => void;
-	setResult: (sceneId: string, resultCode: number, data: ResultType) => void;
+	setResult: (sceneId: string, resultCode: number, data: CodegenTypes.UnsafeObject) => void;
 	dispatch: (
 		sceneId: string,
 		action: string,
-		params: {},
+		params: CodegenTypes.UnsafeObject,
 		callback: (error: Error | null, result: boolean) => void,
 	) => void;
 	currentTab: (sceneId: string, callback: (error: Error | null, index: number) => void) => void;

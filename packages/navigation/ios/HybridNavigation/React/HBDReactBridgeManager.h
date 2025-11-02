@@ -1,5 +1,6 @@
 #import <React/RCTBridge.h>
 #import "HBDNavigator.h"
+#import <React-RuntimeApple/ReactCommon/RCTHost.h>
 
 extern NSString *const ReactModuleRegistryDidCompletedNotification;
 extern const NSInteger ResultOK;
@@ -20,6 +21,7 @@ extern const NSInteger ResultBlock;
 + (instancetype)get;
 
 @property(nonatomic, strong, readonly) RCTBridge *bridge;
+@property(nonatomic, strong, readonly) RCTHost *rctHost;
 @property(nonatomic, weak) id <HBDReactBridgeManagerDelegate> delegate;
 @property(nonatomic, assign, readonly, getter=isReactModuleRegisterCompleted) BOOL reactModuleRegisterCompleted;
 @property(nonatomic, assign, getter=isViewHierarchyReady) BOOL viewHierarchyReady;
@@ -27,6 +29,8 @@ extern const NSInteger ResultBlock;
 @property(nonatomic, copy) RCTResponseSenderBlock didSetRoot;
 
 - (void)installWithBridge:(RCTBridge *)bridge;
+
+- (void)installWithReactHost:(RCTHost *)rctHost;
 
 - (void)registerNativeModule:(NSString *)moduleName forViewController:(Class)clazz;
 

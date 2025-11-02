@@ -148,7 +148,7 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 			}>('ReactModal');
 			handleResult(resultCode, data);
 		})();
-		testAwaitResult();
+		// testAwaitResult();
 	}
 
 	async function testAwaitResult() {

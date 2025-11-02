@@ -208,6 +208,9 @@ static GlobalStyle *globalStyle;
         }
 
         NSString *badgeColor = self.options[@"tabBarBadgeColor"];
+		if (!badgeColor) {
+			badgeColor = @"#FF3B30";
+		}
         self.badgeColorHexString = @"#FF3B30";
         if (badgeColor) {
             [UITabBarItem appearance].badgeColor = [HBDUtils colorWithHexString:badgeColor];
