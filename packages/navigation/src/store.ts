@@ -1,4 +1,4 @@
-import {Navigator} from './Navigator';
+import { Navigator } from './Navigator';
 
 const navigators = new Map<string, Navigator>();
 

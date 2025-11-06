@@ -24,4 +24,4 @@ export interface Spec extends TurboModule {
 	setMenuInteractive: (sceneId: string, enabled: boolean) => void;
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>('NativeGarden');
+export default TurboModuleRegistry.getEnforcing<Spec>('HBDNativeGarden');

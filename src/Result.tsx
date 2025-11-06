@@ -39,7 +39,6 @@ function Result({ navigator, sceneId }: NavigationProps) {
 			Navigation.setLeftBarButtonItem(sceneId, {
 				title: 'Cancel',
 				icon: Image.resolveAssetSource(require('./images/cancel.png')),
-				insetsIOS: { top: -1, left: -8, bottom: 0, right: 8 },
 				action: navigator => {
 					navigator.dismiss();
 				},
@@ -107,7 +106,7 @@ function Result({ navigator, sceneId }: NavigationProps) {
 					value={text}
 					placeholder={'enter your text'}
 					textAlignVertical="center"
-					autoFocus={false}
+					autoFocus={true}
 				/>
 
 				<TouchableOpacity onPress={sendResult} activeOpacity={0.2} style={styles.button}>

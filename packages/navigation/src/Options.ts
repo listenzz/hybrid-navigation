@@ -1,4 +1,3 @@
-import type { Insets } from 'react-native';
 import type { Navigator } from './Navigator';
 
 export type Color = string;
@@ -66,7 +65,6 @@ export interface NavigationItem extends NavigationOption {
 export interface BarButtonItem {
 	title?: string;
 	icon?: ImageSource;
-	insetsIOS?: Insets;
 	action?: (navigator: Navigator) => void;
 	enabled?: boolean;
 	tintColor?: Color;

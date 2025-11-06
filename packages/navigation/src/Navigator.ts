@@ -1,14 +1,14 @@
-import {createContext} from 'react';
+import { createContext } from 'react';
 
 import store from './store';
-import type {Visibility, Layout, BuildInLayout} from './Route';
-import type {NavigationItem} from './Options';
-import Navigation, {ResultType, RESULT_BLOCK} from './Navigation';
+import type { Visibility, Layout, BuildInLayout } from './Route';
+import type { NavigationItem } from './Options';
+import Navigation, { ResultType, RESULT_BLOCK } from './Navigation';
 
 export const NavigationContext = createContext<any>(null);
 
 interface NavigationState {
-	params: {readonly [index: string]: any};
+	params: { readonly [index: string]: any };
 }
 
 interface PropsType {
@@ -66,8 +66,8 @@ export class Navigator implements Navigator {
 		params: {},
 	};
 
-	setParams = (params: {[index: string]: any}) => {
-		this.state.params = {...this.state.params, ...params};
+	setParams = (params: { [index: string]: any }) => {
+		this.state.params = { ...this.state.params, ...params };
 	};
 
 	push = async <T extends ResultType, P extends PropsType = {}>(
@@ -99,7 +99,7 @@ export class Navigator implements Navigator {
 		return Navigation.result<T>(this.sceneId, 0);
 	};
 
-	pop = () => Navigation.dispatch(this.sceneId, 'pop', {from: this.moduleName});
+	pop = () => Navigation.dispatch(this.sceneId, 'pop', { from: this.moduleName });
 
 	popTo = (moduleName: string, inclusive: boolean = false) =>
 		Navigation.dispatch(this.sceneId, 'popTo', {
@@ -109,7 +109,7 @@ export class Navigator implements Navigator {
 			to: moduleName,
 		});
 
-	popToRoot = () => Navigation.dispatch(this.sceneId, 'popToRoot', {from: this.moduleName});
+	popToRoot = () => Navigation.dispatch(this.sceneId, 'popToRoot', { from: this.moduleName });
 
 	redirectTo = <P extends PropsType>(
 		moduleName: string,
@@ -163,7 +163,7 @@ export class Navigator implements Navigator {
 		return Navigation.result<T>(this.sceneId, requestCode);
 	};
 
-	dismiss = () => Navigation.dispatch(this.sceneId, 'dismiss', {from: this.moduleName});
+	dismiss = () => Navigation.dispatch(this.sceneId, 'dismiss', { from: this.moduleName });
 
 	showModal = async <T extends ResultType, P extends PropsType = {}>(
 		moduleName: string,
@@ -204,7 +204,7 @@ export class Navigator implements Navigator {
 		return Navigation.result<T>(this.sceneId, requestCode);
 	};
 
-	hideModal = () => Navigation.dispatch(this.sceneId, 'hideModal', {from: this.moduleName});
+	hideModal = () => Navigation.dispatch(this.sceneId, 'hideModal', { from: this.moduleName });
 
 	setResult = <T extends ResultType>(resultCode: number, data: T = null as any): void =>
 		Navigation.setResult(this.sceneId, resultCode, data);
@@ -223,9 +223,9 @@ export class Navigator implements Navigator {
 			from: this.moduleName,
 		});
 
-	openMenu = () => Navigation.dispatch(this.sceneId, 'openMenu', {from: this.moduleName});
+	openMenu = () => Navigation.dispatch(this.sceneId, 'openMenu', { from: this.moduleName });
 
-	closeMenu = () => Navigation.dispatch(this.sceneId, 'closeMenu', {from: this.moduleName});
+	closeMenu = () => Navigation.dispatch(this.sceneId, 'closeMenu', { from: this.moduleName });
 
 	isStackRoot = () => Navigation.isStackRoot(this.sceneId);
 }

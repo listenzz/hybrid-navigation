@@ -10,6 +10,7 @@ import static com.reactnative.hybridnavigation.Parameters.toList;
 import android.app.Activity;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
@@ -33,11 +34,18 @@ import java.util.Map;
 @ReactModule(name = NativeGarden.NAME)
 public class NativeGarden extends NativeGardenSpec {
 	private static final String TAG = "Navigation";
+	public static final String NAME = "HBDNativeGarden";
 	private final ReactManager reactManager;
 
-	NativeGarden(ReactApplicationContext reactContext, ReactManager reactManager) {
+	public NativeGarden(ReactApplicationContext reactContext, ReactManager reactManager) {
 		super(reactContext);
 		this.reactManager = reactManager;
+	}
+
+	@Override
+	@NonNull
+	public String getName() {
+		return NAME;
 	}
 
 	@Override

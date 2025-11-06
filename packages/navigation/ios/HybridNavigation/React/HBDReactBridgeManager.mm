@@ -3,7 +3,7 @@
 #import "HBDUtils.h"
 #import "HBDReactViewController.h"
 #import "HBDNavigatorRegistry.h"
-#import "HBDEventEmitter.h"
+#import "HBDNativeEvent.h"
 
 #import <React/RCTLog.h>
 
@@ -56,7 +56,7 @@ const NSInteger ResultBlock = -2;
 - (void)invalidate {
     RCTLogInfo(@"[Navigation] HBDReactBridgeManager#invalidate");
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    
+	
     NSArray<id <HBDNavigator>> *navigators = [self.navigatorRegistry allNavigators];
     for (id<HBDNavigator> navigator in navigators) {
         [navigator invalidate];
@@ -90,8 +90,8 @@ const NSInteger ResultBlock = -2;
     mainWindow.rootViewController = vc;
 }
 
-- (void)installWithBridge:(RCTBridge *)bridge {
-    _bridge = bridge;
+- (void)installWithReactHost:(RCTHost *)rctHost {
+	_rctHost = rctHost;
 }
 
 - (void)registerNativeModule:(NSString *)moduleName forViewController:(Class)clazz {
@@ -234,7 +234,7 @@ const NSInteger ResultBlock = -2;
 }
 
 - (void)performSetRootViewController:(UIViewController *)rootViewController animated:(BOOL)animated {
-    [HBDEventEmitter sendEvent:EVENT_WILL_SET_ROOT data:@{}];
+	[[HBDNativeEvent getInstance] emitWillSetRoot];
     UIWindow *mainWindow = [self mainWindow];
     if (animated) {
         [UIView transitionWithView:mainWindow duration:0.15f options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
@@ -252,7 +252,7 @@ const NSInteger ResultBlock = -2;
                 self.didSetRoot(@[NSNull.null, @YES]);
                 self.didSetRoot = NULL;
             }
-            [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
+			[[HBDNativeEvent getInstance] emitDidSetRoot];
         }];
     } else {
         mainWindow.rootViewController = rootViewController;
@@ -266,7 +266,7 @@ const NSInteger ResultBlock = -2;
             self.didSetRoot(@[NSNull.null, @YES]);
             self.didSetRoot = NULL;
         }
-        [HBDEventEmitter sendEvent:EVENT_DID_SET_ROOT data:@{}];
+		[[HBDNativeEvent getInstance] emitDidSetRoot];
     }
 }
 

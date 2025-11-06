@@ -2,13 +2,13 @@
 
 @interface HBDRootView ()
 
-@property (nonatomic, strong, readonly) RCTRootView *rootView;
+@property (nonatomic, strong, readonly) RCTSurfaceHostingProxyRootView *rootView;
 
 @end
 
 @implementation HBDRootView
 
-- (instancetype)initWithRootView:(RCTRootView *)rootView {
+- (instancetype)initWithRootView:(RCTSurfaceHostingProxyRootView *)rootView {
     if (self = [super initWithFrame:CGRectZero]) {
         _rootView = rootView;
     }

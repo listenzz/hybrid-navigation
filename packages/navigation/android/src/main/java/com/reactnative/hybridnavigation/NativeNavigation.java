@@ -29,12 +29,19 @@ import java.util.Map;
 @ReactModule(name = NativeNavigation.NAME)
 public class NativeNavigation extends NativeNavigationSpec {
 	static final String TAG = "Navigation";
+	public static final String NAME = "HBDNativeNavigation";
 	private final ReactManager reactManager;
 
-	NativeNavigation(ReactApplicationContext reactContext, ReactManager reactManager) {
+	public NativeNavigation(ReactApplicationContext reactContext, ReactManager reactManager) {
 		super(reactContext);
 		this.reactManager = reactManager;
 		FLog.i(TAG, "NavigationModule#onCreate");
+	}
+
+	@Override
+	@NonNull
+	public String getName() {
+		return NAME;
 	}
 
 	@Override

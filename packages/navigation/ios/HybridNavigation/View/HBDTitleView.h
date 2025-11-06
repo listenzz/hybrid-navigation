@@ -1,7 +1,7 @@
-#import <React/RCTRootView.h>
+#import <React/RCTSurfaceHostingProxyRootView.h>
 
 @interface HBDTitleView : UIView
 
-- (instancetype)initWithRootView:(RCTRootView *)rootView layoutFittingSize:(CGSize)fittingSize navigationBarBounds:(CGRect)bounds;
+- (instancetype)initWithRootView:(RCTSurfaceHostingProxyRootView *)rootView layoutFittingSize:(CGSize)fittingSize navigationBarBounds:(CGRect)bounds;
 
 @end

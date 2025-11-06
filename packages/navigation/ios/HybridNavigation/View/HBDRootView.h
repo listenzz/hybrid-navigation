@@ -1,7 +1,7 @@
-#import <React/RCTRootView.h>
+#import <React/RCTSurfaceHostingProxyRootView.h>
 
 @interface HBDRootView : UIView
 
-- (instancetype)initWithRootView:(RCTRootView *)rootView;
+- (instancetype)initWithRootView:(RCTSurfaceHostingProxyRootView *)rootView;
 
 @end

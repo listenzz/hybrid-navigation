@@ -92,7 +92,7 @@
 - (UIBarStyle)hbd_barStyle {
     id obj = objc_getAssociatedObject(self, _cmd);
     if (obj) {
-        return [obj integerValue];
+		return (UIBarStyle)[obj integerValue];
     }
     return [UINavigationBar appearance].barStyle;
 }

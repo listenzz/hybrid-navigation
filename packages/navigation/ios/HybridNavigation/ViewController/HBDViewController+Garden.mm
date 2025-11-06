@@ -2,10 +2,9 @@
 
 #import "HBDBarButtonItem.h"
 #import "HBDUtils.h"
-#import "HBDEventEmitter.h"
+#import "HBDNativeEvent.h"
 
 #import <React/RCTConvert.h>
-#import <React/RCTRootView.h>
 
 @implementation HBDViewController (Garden)
 
@@ -126,25 +125,16 @@
 
 - (HBDBarButtonItem *)createBarButtonItem:(NSDictionary *)item {
     HBDBarButtonItem *barButtonItem;
-    NSDictionary *insetsOption = item[@"insetsIOS"];
-    UIEdgeInsets insets = UIEdgeInsetsZero;
-    if (insetsOption) {
-        insets = [RCTConvert UIEdgeInsets:insetsOption];
-    }
-
     NSDictionary *icon = item[@"icon"];
     if (RCTNilIfNull(icon)) {
         UIImage *iconImage = [HBDUtils UIImage:icon];
         if (item[@"renderOriginal"] && [item[@"renderOriginal"] boolValue]) {
             iconImage = [iconImage imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         }
-
         barButtonItem = [[HBDBarButtonItem alloc] initWithImage:iconImage style:UIBarButtonItemStylePlain];
-        barButtonItem.imageInsets = insets;
     } else {
         NSString *title = item[@"title"];
         barButtonItem = [[HBDBarButtonItem alloc] initWithTitle:title style:UIBarButtonItemStylePlain];
-        [barButtonItem setTitlePositionAdjustment:UIOffsetMake(insets.left, 0) forBarMetrics:UIBarMetricsDefault];
     }
 
     NSNumber *enabled = item[@"enabled"];
@@ -152,8 +142,6 @@
         barButtonItem.enabled = [enabled boolValue];
     }
 
-    NSString *action = item[@"action"];
-    NSString *sceneId = self.sceneId;
 
     NSString *tintColor = item[@"tintColor"];
     if (tintColor) {
@@ -164,24 +152,18 @@
             button.tintColor = [HBDUtils colorWithHexString:tintColor];
         }
     }
-
+	
+	NSString *action = item[@"action"];
+	NSString *sceneId = self.sceneId;
     if (action) {
         barButtonItem.actionBlock = ^{
-            [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                    KEY_ON: ON_BAR_BUTTON_ITEM_CLICK,
-                    KEY_ACTION: action,
-                    KEY_SCENE_ID: sceneId,
-            }];
+			[[HBDNativeEvent getInstance] emitOnBarButtonItemClick:@{
+				@"action": action,
+				@"sceneId": sceneId,
+			}];
         };
     }
     return barButtonItem;
-}
-
-- (void)setPassThroughTouches:(BOOL)passThrough {
-    if ([self.view isKindOfClass:[RCTRootView class]]) {
-        RCTRootView *rootView = (RCTRootView *) self.view;
-        rootView.passThroughTouches = passThrough;
-    }
 }
 
 @end

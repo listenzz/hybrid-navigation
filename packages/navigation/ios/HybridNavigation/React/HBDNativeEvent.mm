@@ -12,7 +12,7 @@
 @implementation HBDNativeEvent
 
 + (NSString *)moduleName { 
-	return @"NativeEvent";
+	return @"HBDNativeEvent";
 }
 
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params { 

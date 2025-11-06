@@ -28,8 +28,6 @@ extern const NSInteger ResultBlock;
 @property(nonatomic, assign) BOOL hasRootLayout;
 @property(nonatomic, copy) RCTResponseSenderBlock didSetRoot;
 
-- (void)installWithBridge:(RCTBridge *)bridge;
-
 - (void)installWithReactHost:(RCTHost *)rctHost;
 
 - (void)registerNativeModule:(NSString *)moduleName forViewController:(Class)clazz;

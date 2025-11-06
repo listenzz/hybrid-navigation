@@ -12,8 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setRightBarButtonItems:(NSArray *)items;
 
-- (void)setPassThroughTouches:(BOOL)passThrough;
-
 @end
 
 NS_ASSUME_NONNULL_END

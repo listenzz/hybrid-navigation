@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface HBDNativeEvent : NativeEventSpecBase <NativeEventSpec>
 
++ (instancetype)getInstance;
+
 @end
 
 NS_ASSUME_NONNULL_END

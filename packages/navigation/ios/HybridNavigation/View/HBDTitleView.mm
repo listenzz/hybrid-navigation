@@ -5,14 +5,14 @@
 @interface HBDTitleView () <RCTRootViewDelegate>
 
 @property(nonatomic, assign) CGSize fittingSize;
-@property(nonatomic, strong) RCTRootView *rootView;
+@property(nonatomic, strong) RCTSurfaceHostingProxyRootView *rootView;
 @property(nonatomic, assign) CGRect barBounds;
 
 @end
 
 @implementation HBDTitleView
 
-- (instancetype)initWithRootView:(RCTRootView *)rootView layoutFittingSize:(CGSize)fittingSize navigationBarBounds:(CGRect)bounds {
+- (instancetype)initWithRootView:(RCTSurfaceHostingProxyRootView *)rootView layoutFittingSize:(CGSize)fittingSize navigationBarBounds:(CGRect)bounds {
     if (self = [super init]) {
         rootView.backgroundColor = [UIColor clearColor];
         _rootView = rootView;
@@ -45,7 +45,7 @@
     }
 }
 
-- (void)rootViewDidChangeIntrinsicSize:(RCTRootView *)rootView {
+- (void)rootViewDidChangeIntrinsicSize:(RCTSurfaceHostingProxyRootView *)rootView {
     CGPoint center = self.center;
     self.bounds = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);
     self.rootView.frame = CGRectMake(0, 0, rootView.intrinsicContentSize.width, rootView.intrinsicContentSize.height);

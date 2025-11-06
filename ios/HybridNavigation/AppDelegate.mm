@@ -11,10 +11,6 @@
 #import <HybridNavigation/HybridNavigation.h>
 #import "NativeViewController.h"
 
-#if RCT_DEV
-#import <React/RCTDevLoadingView.h>
-#endif
-
 
 @interface ReactNativeDelegate : RCTDefaultReactNativeFactoryDelegate
 @end
@@ -46,9 +42,11 @@
     RCTSetLogThreshold(RCTLogLevelInfo);
 	
 	ReactNativeDelegate *delegate = [[ReactNativeDelegate alloc] init];
-	delegate.dependencyProvider = [[RCTAppDependencyProvider alloc] init];
-	self.reactNativeDelegate = delegate;
 	RCTReactNativeFactory *factory = [[RCTReactNativeFactory alloc] initWithDelegate:delegate];
+	delegate.dependencyProvider = [[RCTAppDependencyProvider alloc] init];
+	
+	
+	self.reactNativeDelegate = delegate;
 	self.reactNativeFactory = factory;
 	self.rootViewFactory = factory.rootViewFactory;
 	
@@ -58,10 +56,6 @@
     // register native modules
     [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[NativeViewController class]];
    
-#if RCT_DEV
-    [[HBDReactBridgeManager get].bridge moduleForClass:[RCTDevLoadingView class]];
-#endif
-
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
     self.window.windowLevel = UIWindowLevelStatusBar + 1;

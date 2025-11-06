@@ -3,16 +3,17 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDTitleView.h"
 #import "HBDRootView.h"
-#import "HBDEventEmitter.h"
 #import "HBDUtils.h"
+#import "HBDNativeEvent.h"
 
 #import <React/RCTConvert.h>
+#import <React/RCTSurfaceHostingProxyRootView.h>
 
 @interface HBDReactViewController ()
 
 @property(nonatomic, assign) BOOL firstRenderCompleted;
 @property(nonatomic, assign) BOOL viewAppeared;
-@property(nonatomic, strong, readwrite) RCTRootView *rootView;
+@property(nonatomic, strong, readwrite) RCTSurfaceHostingProxyRootView *rootView;
 
 @end
 
@@ -38,7 +39,9 @@
 }
 
 - (void)loadView {
-    RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:self.moduleName initialProperties:[self propsWithSceneId]];
+	RCTHost *host = [HBDReactBridgeManager get].rctHost;
+	RCTFabricSurface *surface = [host createSurfaceWithModuleName:self.moduleName initialProperties:[self propsWithSceneId]];
+	RCTSurfaceHostingProxyRootView *rootView = [[RCTSurfaceHostingProxyRootView alloc] initWithSurface:(id)surface];
     self.rootView = rootView;
 
     BOOL passThroughTouches = [self.options[@"passThroughTouches"] boolValue];
@@ -67,7 +70,10 @@
             } else {
                 size = UILayoutFittingCompressedSize;
             }
-            RCTRootView *titleRootView = [[RCTRootView alloc] initWithBridge:[HBDReactBridgeManager get].bridge moduleName:moduleName initialProperties:[self propsWithSceneId]];
+			
+			RCTHost *host = [HBDReactBridgeManager get].rctHost;
+			RCTFabricSurface *surface = [host createSurfaceWithModuleName:moduleName initialProperties:[self propsWithSceneId]];
+			RCTSurfaceHostingProxyRootView *titleRootView = [[RCTSurfaceHostingProxyRootView alloc] initWithSurface:(id)surface];
             HBDTitleView *titleView = [[HBDTitleView alloc] initWithRootView:titleRootView layoutFittingSize:size navigationBarBounds:self.navigationController.navigationBar.bounds];
             self.navigationItem.titleView = titleView;
         }
@@ -131,10 +137,9 @@
         if (!self.viewAppeared) {
             self.viewAppeared = YES;
             if (self.firstRenderCompleted) {
-                [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                    KEY_SCENE_ID: self.sceneId,
-                    KEY_ON: ON_COMPONENT_APPEAR
-                }];
+				[[HBDNativeEvent getInstance] emitOnComponentAppear:@{
+					@"sceneId": self.sceneId,
+				}];
             }
         }
     }
@@ -145,10 +150,9 @@
     if (!self.viewAppeared) {
         self.viewAppeared = YES;
         if (self.firstRenderCompleted) {
-            [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                KEY_SCENE_ID: self.sceneId,
-                KEY_ON: ON_COMPONENT_APPEAR
-            }];
+			[[HBDNativeEvent getInstance] emitOnComponentAppear:@{
+				@"sceneId": self.sceneId,
+			}];
         }
     }
 }
@@ -160,10 +164,9 @@
         if (self.viewAppeared) {
             self.viewAppeared = NO;
             if (self.firstRenderCompleted) {
-                [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                    KEY_SCENE_ID: self.sceneId,
-                    KEY_ON: ON_COMPONENT_DISAPPEAR
-                }];
+				[[HBDNativeEvent getInstance] emitOnComponentDisappear:@{
+					@"sceneId": self.sceneId,
+				}];
             }
         }
     }
@@ -174,10 +177,9 @@
     if (self.viewAppeared) {
         self.viewAppeared = NO;
         if (self.firstRenderCompleted) {
-            [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-                KEY_SCENE_ID: self.sceneId,
-                KEY_ON: ON_COMPONENT_DISAPPEAR
-            }];
+			[[HBDNativeEvent getInstance] emitOnComponentDisappear:@{
+				@"sceneId": self.sceneId,
+			}];
         }
     }
 }
@@ -188,22 +190,22 @@
     }
     self.firstRenderCompleted = YES;
     if (self.viewAppeared) {
-        [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-            KEY_SCENE_ID: self.sceneId,
-            KEY_ON: ON_COMPONENT_APPEAR
-        }];
+		if (self.firstRenderCompleted) {
+			[[HBDNativeEvent getInstance] emitOnComponentAppear:@{
+				@"sceneId": self.sceneId,
+			}];
+		}
     }
 }
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {
     [super didReceiveResultCode:resultCode resultData:data requestCode:requestCode];
-    [HBDEventEmitter sendEvent:EVENT_NAVIGATION data:@{
-        KEY_ON: ON_COMPONENT_RESULT,
-        KEY_REQUEST_CODE: @(requestCode),
-        KEY_RESULT_CODE: @(resultCode),
-        KEY_RESULT_DATA: RCTNullIfNil(data),
-        KEY_SCENE_ID: self.sceneId,
-    }];
+	[[HBDNativeEvent getInstance] emitOnResult:@{
+		@"requestCode": @(requestCode),
+		@"resultCode": @(resultCode),
+		@"resultData": RCTNullIfNil(data),
+		@"sceneId": self.sceneId,
+	}];
 }
 
 

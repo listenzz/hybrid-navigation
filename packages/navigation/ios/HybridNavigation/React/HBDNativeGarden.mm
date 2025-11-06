@@ -23,7 +23,7 @@
 @implementation HBDNativeGarden
 
 + (NSString *)moduleName { 
-	return @"NativeGarden";
+	return @"HBDNativeGarden";
 }
 
 + (BOOL)requiresMainQueueSetup {

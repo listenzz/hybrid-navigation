@@ -433,11 +433,6 @@
         [self setNeedsUpdateOfHomeIndicatorAutoHidden];
     }
 
-    NSNumber *passThroughTouches = options[@"passThroughTouches"];
-    if (passThroughTouches) {
-        [self setPassThroughTouches:[passThroughTouches boolValue]];
-    }
-
     if ([self shouldUpdateNavigationBar:options compareTo:previous]) {
         [self hbd_setNeedsUpdateNavigationBar];
     }

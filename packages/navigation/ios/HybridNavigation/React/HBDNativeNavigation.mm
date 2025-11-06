@@ -23,7 +23,7 @@
 @implementation HBDNativeNavigation
 
 + (NSString *)moduleName { 
-	return @"NativeNavigation";
+	return @"HBDNativeNavigation";
 }
 
 + (BOOL)requiresMainQueueSetup {

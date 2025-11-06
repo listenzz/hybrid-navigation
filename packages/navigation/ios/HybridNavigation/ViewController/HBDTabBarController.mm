@@ -3,12 +3,9 @@
 #import "HBDReactViewController.h"
 #import "HBDReactBridgeManager.h"
 #import "HBDUtils.h"
-#import "HBDEventEmitter.h"
-#import "HBDReactTabBar.h"
 #import "HBDFadeAnimation.h"
+#import "HBDNativeEvent.h"
 
-#import <React/RCTRootView.h>
-#import <React/RCTRootViewDelegate.h>
 #import <React/RCTLog.h>
 
 
@@ -99,20 +96,15 @@
     [self setSelectedViewController:self.viewControllers[selectedIndex]];
 }
 
-- (void)setSelectedViewController:(__kindof UIViewController *)selectedViewController {
-    NSUInteger index = [self.viewControllers indexOfObject:selectedViewController];
-    [super setSelectedViewController:selectedViewController];
-}
-
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
     if ([[HBDReactBridgeManager get] hasRootLayout] && self.intercepted) {
         long from = self.selectedIndex;
         long to = [self.childViewControllers indexOfObject:viewController];
-
-        [HBDEventEmitter sendEvent:EVENT_SWITCH_TAB data:@{
-                KEY_SCENE_ID: self.sceneId,
-                KEY_INDEX: [NSString stringWithFormat:@"%ld-%ld", from, to],
-        }];
+		[[HBDNativeEvent getInstance] emitOnSwitchTab:@{
+			@"sceneId": self.sceneId,
+			@"from": @(from),
+			@"to": @(to),
+		}];
         return NO;
     }
     return YES;

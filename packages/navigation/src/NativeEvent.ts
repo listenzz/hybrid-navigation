@@ -37,4 +37,4 @@ export interface Spec extends TurboModule {
 	readonly onComponentDisappear: CodegenTypes.EventEmitter<ComponentDisappearEvent>;
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>('NativeEvent');
+export default TurboModuleRegistry.getEnforcing<Spec>('HBDNativeEvent');

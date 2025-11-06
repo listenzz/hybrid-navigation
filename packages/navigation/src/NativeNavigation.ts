@@ -69,4 +69,4 @@ export interface Spec extends TurboModule {
 	routeGraph: (callback: (error: Error | null, graph: RouteGraph[]) => void) => void;
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>('NativeNavigation');
+export default TurboModuleRegistry.getEnforcing<Spec>('HBDNativeNavigation');

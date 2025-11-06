@@ -27,7 +27,7 @@ import StatusBarHidden from './StatusBarHidden';
 import Landscape from './Landscape';
 import SafeAreaContextHOC from './SafeAreaContextHOC';
 
-LogBox.ignoreAllLogs();
+// LogBox.ignoreAllLogs();
 
 // import MessageQueue from 'react-native/Libraries/BatchedBridge/MessageQueue.js';
 // const spyFunction = msg => {
@@ -73,7 +73,7 @@ Navigation.setDefaultOptions({
 			: undefined,
 	shadowImage: {
 		color: '#DDDDDD',
-		// image: Image.resolveAssetSource(require('./images/divider.png')),
+		image: Image.resolveAssetSource(require('./images/divider.png')),
 	},
 	// hideBackTitleIOS: true,
 	elevationAndroid: 1,
@@ -81,8 +81,8 @@ Navigation.setDefaultOptions({
 	tabBarColor: '#FFFFFF',
 
 	tabBarShadowImage: {
-		color: '#F0F0F0',
-		// image: Image.resolveAssetSource(require('./src/images/divider.png')),
+		// color: '#F0F0F0',
+		// image: Image.resolveAssetSource(require('./images/divider.png')),
 	},
 	tabBarItemColor: '#FF5722',
 	tabBarUnselectedItemColor: '#BDBDBD',
