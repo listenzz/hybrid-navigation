@@ -65,29 +65,6 @@ const NSInteger ResultBlock = -2;
     self.viewHierarchyReady = NO;
     self.reactModuleRegisterCompleted = NO;
     self.didSetRoot = NULL;
-
-    UIWindow *mainWindow = [self mainWindow];
-    UIViewController *presentedViewController = mainWindow.rootViewController.presentedViewController;
-    if (presentedViewController && !presentedViewController.isBeingDismissed) {
-        [mainWindow.rootViewController dismissViewControllerAnimated:NO completion:^{
-            [self setLoadingViewController];
-        }];
-    } else {
-        [self setLoadingViewController];
-    }
-}
-
-- (void)setLoadingViewController {
-    UIWindow *mainWindow = [self mainWindow];
-    UIViewController *vc;
-    @try {
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
-        vc = [storyboard instantiateInitialViewController];
-    } @catch (NSException * e){
-        vc = [UIViewController new];
-        vc.view.backgroundColor = UIColor.whiteColor;
-    }
-    mainWindow.rootViewController = vc;
 }
 
 - (void)installWithReactHost:(RCTHost *)rctHost {

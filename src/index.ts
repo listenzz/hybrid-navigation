@@ -39,7 +39,7 @@ async function graph() {
 	console.log(JSON.stringify(await Navigation.routeGraph(), null, 2));
 }
 
-graph();
+// graph();
 
 // 设置全局样式
 Navigation.setDefaultOptions({

@@ -1,10 +1,3 @@
-//
-//  HBDNativeGarden.m
-//  HybridNavigation
-//
-//  Created by 李生 on 2025/11/2.
-//
-
 #import "HBDNativeGarden.h"
 
 #import "HBDReactBridgeManager.h"

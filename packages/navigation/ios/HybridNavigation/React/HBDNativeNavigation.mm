@@ -1,10 +1,3 @@
-//
-//  HBDNativeNavigation.m
-//  HybridNavigation
-//
-//  Created by 李生 on 2025/11/2.
-//
-
 #import "HBDNativeNavigation.h"
 
 #import "HBDReactBridgeManager.h"
@@ -13,7 +6,7 @@
 #import <React/RCTLog.h>
 #import <ReactCommon/RCTTurboModule.h>
 
-@interface HBDNativeNavigation () <RCTInvalidating>
+@interface HBDNativeNavigation ()
 
 @property(nonatomic, strong, readonly) HBDReactBridgeManager *bridgeManager;
 
@@ -40,8 +33,12 @@
 	return self;
 }
 
+- (void)initialize {
+	RCTLogInfo(@"[Navigation] HBDNativeNavigation#initialize");
+}
+
 - (void)invalidate {
-	RCTLogInfo(@"[Navigation] NavigationModule#invalidate");
+	RCTLogInfo(@"[Navigation] HBDNativeNavigation#invalidate");
 	[NSObject cancelPreviousPerformRequestsWithTarget:self];
 	[self.bridgeManager invalidate];
 }

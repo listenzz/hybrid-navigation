@@ -106,7 +106,6 @@ function Result({ navigator, sceneId }: NavigationProps) {
 					value={text}
 					placeholder={'enter your text'}
 					textAlignVertical="center"
-					autoFocus={true}
 				/>
 
 				<TouchableOpacity onPress={sendResult} activeOpacity={0.2} style={styles.button}>

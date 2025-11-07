@@ -22,7 +22,7 @@ function signalFirstRenderComplete(sceneId: string) {
 }
 
 function setResult<T extends ResultType>(sceneId: string, resultCode: number, data: T) {
-	NativeNavigation.setResult(sceneId, resultCode, data);
+	NativeNavigation.setResult(sceneId, resultCode, data as object);
 }
 
 function setRoot(layout: object, sticky: boolean) {
