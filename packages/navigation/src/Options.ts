@@ -58,7 +58,6 @@ export interface NavigationItem extends NavigationOption {
 	rightBarButtonItem?: BarButtonItem;
 	leftBarButtonItems?: BarButtonItem[];
 	rightBarButtonItems?: BarButtonItem[];
-	backItemIOS?: BackItem;
 	tabItem?: TabItem;
 }
 
@@ -120,16 +119,19 @@ export interface DefaultOptions {
 	fitsOpaqueNavigationBarAndroid?: boolean; // 适配不透明的导航栏边衬区，默认为 true
 	displayCutoutWhenLandscapeAndroid?: boolean; // 横屏时，是否将界面延伸至刘海区域，默认 true
 
-	tabBarColor?: Color; // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
-	tabBarShadowImage?: ShadowImage; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarColor 才会生效
-	tabBarItemColor?: Color; // 底部 TabBarItem icon 选中颜色
-	tabBarUnselectedItemColor?: Color; // 底部 TabBarItem icon 未选中颜色，默认为 #BDBDBD
+	tabBarBackgroundColor?: Color; // 底部 TabBar 背景颜色，请勿使用带透明度的颜色。
+	tabBarShadowImage?: ShadowImage; // 底部 TabBar 阴影图片。对于 iOS, 只有同时设置了 tabBarBackgroundColor 才会生效
+	tabBarItemSelectedColor?: Color; // 底部 TabBarItem icon 选中颜色
+	tabBarItemNormalColor?: Color; // 底部 TabBarItem icon 未选中颜色，默认为 #666666
 	tabBarBadgeColor?: Color; //  Tab badge 颜色
 }
 
 export type TabBarStyle = Pick<
 	DefaultOptions,
-	'tabBarColor' | 'tabBarShadowImage' | 'tabBarItemColor' | 'tabBarUnselectedItemColor'
+	| 'tabBarBackgroundColor'
+	| 'tabBarShadowImage'
+	| 'tabBarItemSelectedColor'
+	| 'tabBarItemNormalColor'
 >;
 
 export interface TabItemInfo {

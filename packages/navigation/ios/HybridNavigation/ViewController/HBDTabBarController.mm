@@ -39,7 +39,6 @@
     }
 }
 
-
 - (HBDViewController *)tabViewController:(UIViewController *)vc {
 	if ([vc isKindOfClass:[UINavigationController class]]) {
 		UINavigationController *nav = (UINavigationController *)vc;
@@ -53,13 +52,16 @@
 
 - (void)updateTabBar:(NSDictionary *)options {
     UITabBar *tabBar = self.tabBar;
-    NSString *tabBarColor = options[@"tabBarColor"];
-    if (tabBarColor) {
+    NSString *tabBarBackgroundColor = options[@"tabBarBackgroundColor"];
+    if (tabBarBackgroundColor) {
+		if (@available(iOS 26.0, *)) {
+			// [tabBar setBackgroundColor: [HBDUtils colorWithHexString:tabBarBackgroundColor]];
+		} else
         if (@available(iOS 15.0, *)) {
-            [tabBar standardAppearance].backgroundImage = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]];
-            [tabBar scrollEdgeAppearance].backgroundImage = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]];
+            [tabBar standardAppearance].backgroundImage = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarBackgroundColor]];
+            [tabBar scrollEdgeAppearance].backgroundImage = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarBackgroundColor]];
         } else {
-            [tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarColor]]];
+            [tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarBackgroundColor]]];
         }
     }
 
@@ -75,17 +77,33 @@
         }
         tabBar.shadowImage = image;
     }
-
-    NSString *tabBarItemColor = options[@"tabBarItemColor"];
-    NSString *tabBarUnselectedItemColor = options[@"tabBarUnselectedItemColor"];
-    if (tabBarItemColor) {
-		tabBar.tintColor = [HBDUtils colorWithHexString:tabBarItemColor];
-		[UITabBar appearance].tintColor = tabBar.tintColor;
-		if (tabBarUnselectedItemColor) {
-			tabBar.unselectedItemTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
-			[UITabBar appearance].unselectedItemTintColor = tabBar.unselectedItemTintColor;
+	
+    NSString *tabBarItemSelectedColor = options[@"tabBarItemSelectedColor"];
+    NSString *tabBarItemNormalColor = options[@"tabBarItemNormalColor"];
+	
+	if (tabBarItemSelectedColor) {
+		if (!tabBarItemNormalColor) {
+			tabBarItemNormalColor = @"#666666";
 		}
-    }
+		UITabBarItemAppearance *tabBarItem = [UITabBarItemAppearance new];
+		tabBarItem.normal.titleTextAttributes = @{
+			NSForegroundColorAttributeName: [HBDUtils colorWithHexString:tabBarItemNormalColor],
+		};
+		tabBarItem.normal.iconColor = [HBDUtils colorWithHexString:tabBarItemNormalColor];
+		tabBarItem.selected.titleTextAttributes = @{
+			NSForegroundColorAttributeName: [HBDUtils colorWithHexString:tabBarItemSelectedColor],
+		};
+		tabBarItem.selected.iconColor =  [HBDUtils colorWithHexString:tabBarItemSelectedColor];
+		tabBar.standardAppearance.stackedLayoutAppearance = tabBarItem;
+		tabBar.scrollEdgeAppearance.stackedLayoutAppearance = tabBarItem;
+		[UITabBar appearance].standardAppearance.stackedLayoutAppearance = tabBarItem;
+		[UITabBar appearance].scrollEdgeAppearance.stackedLayoutAppearance = tabBarItem;
+	}
+	
+	for (UIViewController *tab in self.childViewControllers) {
+		HBDViewController *hbdvc = [self tabViewController:tab];
+		[hbdvc updateTabBarItem:hbdvc.options];
+	}
 }
 
 - (void)didReceiveResultCode:(NSInteger)resultCode resultData:(NSDictionary *)data requestCode:(NSInteger)requestCode {

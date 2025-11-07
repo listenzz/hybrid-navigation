@@ -25,8 +25,8 @@
 
 @property(nonatomic, strong) UIColor *tabBarBackgroundColor;
 @property(nonatomic, strong) UIImage *tabBarShadowImage;
-@property(nonatomic, strong) UIColor *tabBarTintColor;
-@property(nonatomic, strong) UIColor *tabBarUnselectedTintColor;
+@property(nonatomic, strong) UIColor *tabBarItemSelectedColor;
+@property(nonatomic, strong) UIColor *tabBarItemNormalColor;
 
 @property(nonatomic, assign, readwrite) BOOL alwaysSplitNavigationBarTransition;
 
@@ -171,13 +171,12 @@ static GlobalStyle *globalStyle;
             self.barButtonItemTextSize = 15;
         }
 
-        // tabBarColor
-        NSString *tabBarColor = self.options[@"tabBarColor"];
-        if (tabBarColor) {
-            self.tabBarBackgroundColor = [HBDUtils colorWithHexString:tabBarColor];
-        } else {
-            self.tabBarBackgroundColor = [HBDUtils colorWithHexString:@"#FFFFFF"];
+        // tabBarBackgroundColor
+        NSString *tabBarBackgroundColor = self.options[@"tabBarBackgroundColor"];
+        if (!tabBarBackgroundColor) {
+			tabBarBackgroundColor = @"#FFFFFF";
         }
+		self.tabBarBackgroundColor = [HBDUtils colorWithHexString:tabBarBackgroundColor];
 
         // shadowImage
         NSDictionary *tabBarShadowImage = self.options[@"tabBarShadowImage"];
@@ -194,27 +193,24 @@ static GlobalStyle *globalStyle;
         }
 
         // tabBar tintColor
-        NSString *tabBarItemColor = self.options[@"tabBarItemColor"];
-        self.tabBarUnselectedItemColorHexString = @"#BDBDBD";
-        self.tabBarItemColorHexString = @"#FF5722";
-        if (tabBarItemColor) {
-            self.tabBarTintColor = [HBDUtils colorWithHexString:tabBarItemColor];
-            self.tabBarItemColorHexString = tabBarItemColor;
-            NSString *tabBarUnselectedItemColor = self.options[@"tabBarUnselectedItemColor"];
-            if (tabBarUnselectedItemColor) {
-                self.tabBarUnselectedTintColor = [HBDUtils colorWithHexString:tabBarUnselectedItemColor];
-                self.tabBarUnselectedItemColorHexString = tabBarUnselectedItemColor;
-            }
-        }
-
-        NSString *badgeColor = self.options[@"tabBarBadgeColor"];
-		if (!badgeColor) {
-			badgeColor = @"#FF3B30";
+        NSString *tabBarItemSelectedColor = self.options[@"tabBarItemSelectedColor"];
+		NSString *tabBarItemNormalColor = self.options[@"tabBarItemNormalColor"];
+		if (!tabBarItemSelectedColor) {
+			tabBarItemSelectedColor = @"#FF5722";
 		}
-        self.badgeColorHexString = @"#FF3B30";
-        if (badgeColor) {
-            [UITabBarItem appearance].badgeColor = [HBDUtils colorWithHexString:badgeColor];
-            self.badgeColorHexString = badgeColor;
+		if (!tabBarItemNormalColor) {
+			tabBarItemNormalColor = @"#666666";
+		}
+		self.tabBarItemSelectedColor = [HBDUtils colorWithHexString:tabBarItemSelectedColor];
+		self.tabBarItemNormalColor = [HBDUtils colorWithHexString:tabBarItemNormalColor];
+		
+
+        NSString *tabBarBadgeColor = self.options[@"tabBarBadgeColor"];
+		if (!tabBarBadgeColor) {
+			tabBarBadgeColor = @"#FF3B30";
+		}
+        if (tabBarBadgeColor) {
+            [UITabBarItem appearance].badgeColor = [HBDUtils colorWithHexString:tabBarBadgeColor];
         }
     }
     return self;
@@ -258,30 +254,41 @@ static GlobalStyle *globalStyle;
 }
 
 - (void)inflateTabBar:(UITabBar *)tabBar {
-    if (@available(iOS 15.0, *)) {
-        UITabBarAppearance *appearance = [UITabBarAppearance new];
-        [appearance configureWithDefaultBackground];
-        appearance.backgroundImage = [HBDUtils imageWithColor:self.tabBarBackgroundColor];
-        appearance.shadowImage = self.tabBarShadowImage;
-        tabBar.scrollEdgeAppearance = appearance;
-        tabBar.standardAppearance = appearance;
-    }
-
+	if (@available(iOS 15.0, *)) {
+		UITabBarItemAppearance *tabBarItem = [UITabBarItemAppearance new];
+		tabBarItem.normal.titleTextAttributes = @{
+			NSForegroundColorAttributeName: self.tabBarItemNormalColor,
+		};
+		tabBarItem.normal.iconColor = self.tabBarItemNormalColor;
+		tabBarItem.selected.titleTextAttributes = @{
+			NSForegroundColorAttributeName: self.tabBarItemSelectedColor,
+		};
+		tabBarItem.selected.iconColor = self.tabBarItemSelectedColor;
+		
+		UITabBarAppearance *tabBarAppearance = [UITabBarAppearance new];
+		[tabBarAppearance configureWithDefaultBackground];
+		
+		tabBarAppearance.shadowImage = self.tabBarShadowImage;
+		tabBarAppearance.stackedLayoutAppearance = tabBarItem;
+		
+		tabBar.scrollEdgeAppearance = tabBarAppearance;
+		tabBar.standardAppearance = tabBarAppearance;
+	}
+	
     if (self.tabBarBackgroundColor) {
-        [tabBar setBackgroundImage:[HBDUtils imageWithColor:self.tabBarBackgroundColor]];
+		if (@available(iOS 26.0, *)) {
+			//
+		} else if (@available(iOS 15.0, *)) {
+			tabBar.standardAppearance.backgroundImage = [HBDUtils imageWithColor:self.tabBarBackgroundColor];
+		} else {
+			[tabBar setBackgroundImage:[HBDUtils imageWithColor:self.tabBarBackgroundColor]];
+		}
     }
 
     if (self.tabBarShadowImage) {
         [tabBar setShadowImage:self.tabBarShadowImage];
     }
-
-    if (self.tabBarTintColor) {
-        [tabBar setTintColor:self.tabBarTintColor];
-    }
-
-    if (self.tabBarUnselectedTintColor) {
-        [tabBar setUnselectedItemTintColor:self.tabBarUnselectedTintColor];
-    }
+	
 }
 
 - (void)setBarTintColor:(UIColor *)barTintColor {

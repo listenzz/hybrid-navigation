@@ -108,6 +108,13 @@
     return isTranslucent || self.extendedLayoutIncludesOpaqueBars;
 }
 
+- (BOOL)shouldFitSafeAreaLayoutBottom {
+	if (self.navigationController && self.tabBarController) {
+		return self == [self.navigationController.viewControllers firstObject];
+	}
+	return NO;
+}
+
 - (NSDictionary *)propsWithSceneId {
     NSMutableDictionary *props;
     if (self.props) {

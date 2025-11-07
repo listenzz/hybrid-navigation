@@ -75,20 +75,20 @@ public class ReactTabBarFragment extends TabBarFragment {
 	protected void onCustomStyle(@NonNull Style style) {
 		super.onCustomStyle(style);
 		Bundle options = getOptions();
-		String tabBarColor = options.getString("tabBarColor");
-		if (tabBarColor != null) {
-			style.setTabBarBackgroundColor(tabBarColor);
+		String tabBarBackgroundColor = options.getString("tabBarBackgroundColor");
+		if (tabBarBackgroundColor != null) {
+			style.setTabBarBackgroundColor(tabBarBackgroundColor);
 		}
 
-		String tabBarItemColor = options.getString("tabBarItemColor");
-		String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
+		String tabBarItemColor = options.getString("tabBarItemSelectedColor");
+		String tabBarUnselectedItemColor = options.getString("tabBarItemNormalColor");
 
 		if (tabBarItemColor != null) {
 			style.setTabBarItemColor(tabBarItemColor);
 			style.setTabBarUnselectedItemColor(tabBarUnselectedItemColor);
 		} else {
-			options.putString("tabBarItemColor", style.getTabBarItemColor());
-			options.putString("tabBarUnselectedItemColor", style.getTabBarUnselectedItemColor());
+			options.putString("tabBarItemSelectedColor", style.getTabBarItemColor());
+			options.putString("tabBarItemNormalColor", style.getTabBarUnselectedItemColor());
 			options.putString("tabBarBadgeColor", style.getTabBarBadgeColor());
 		}
 

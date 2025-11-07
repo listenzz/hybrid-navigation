@@ -159,15 +159,15 @@ function Options({ sceneId, navigator }: NavigationProps) {
 	const [tabItemColor, setTabItemColor] = useState<TabBarStyle>();
 
 	function replaceTabItemColor() {
-		if (tabItemColor && tabItemColor.tabBarItemColor === '#8BC34A') {
+		if (tabItemColor && tabItemColor.tabBarItemSelectedColor === '#8BC34A') {
 			setTabItemColor({
-				tabBarItemColor: '#FF5722',
-				tabBarUnselectedItemColor: '#BDBDBD',
+				tabBarItemSelectedColor: '#FF5722',
+				tabBarItemNormalColor: '#666666',
 			});
 		} else {
 			setTabItemColor({
-				tabBarItemColor: '#8BC34A',
-				tabBarUnselectedItemColor: '#BDBDBD',
+				tabBarItemSelectedColor: '#8BC34A',
+				tabBarItemNormalColor: '#666666',
 			});
 		}
 	}
@@ -181,16 +181,16 @@ function Options({ sceneId, navigator }: NavigationProps) {
 	const [tabBarColor, setTabBarColor] = useState<TabBarStyle>();
 
 	function updateTabBarColor() {
-		if (tabBarColor && tabBarColor.tabBarColor === '#EEEEEE') {
+		if (tabBarColor && tabBarColor.tabBarBackgroundColor === '#EEEEEE') {
 			setTabBarColor({
-				tabBarColor: '#FFFFFF',
+				tabBarBackgroundColor: '#FFFFFF',
 				tabBarShadowImage: {
 					color: '#F0F0F0',
 				},
 			});
 		} else {
 			setTabBarColor({
-				tabBarColor: '#EEEEEE',
+				tabBarBackgroundColor: '#EEEEEE',
 				tabBarShadowImage: {
 					image: Image.resolveAssetSource(require('./images/divider.png')),
 				},

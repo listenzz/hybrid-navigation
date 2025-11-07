@@ -8,8 +8,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (UIImage *)withIconColor:(UIColor *)iconColor badgeColor:(UIColor *)badgeColor;
 
-- (UIImage *)withBadgeColor:(UIColor *)badgeColor;
-
 @end
 
 NS_ASSUME_NONNULL_END

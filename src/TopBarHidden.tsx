@@ -23,7 +23,7 @@ function TopBarHidden({ navigator }: NavigationProps) {
 }
 
 export default withNavigationItem({
-	screenBackgroundColor: '#FF0000',
+	screenBackgroundColor: '#555566',
 	topBarHidden: true,
 	titleItem: {
 		title: 'You can not see me',

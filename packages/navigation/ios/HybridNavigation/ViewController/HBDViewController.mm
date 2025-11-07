@@ -184,37 +184,29 @@
 		UITabBarItem *tabBarItem = self.tabBarItem;
 		// title
         tabBarItem.title = tabItem[@"title"];
-		
+
 		// badge
 		NSDictionary *badge = tabItem[@"badge"];
 		tabBarItem.badgeValue = [self badgeText:badge];
 		tabBarItem.badgeColor = [UITabBarItem appearance].badgeColor;
 		
-		
 		NSDictionary *unselectedIcon = tabItem[@"unselectedIcon"];
-		UITabBar *bar = [UITabBar appearance];
-
-		if ([self showDotBadge:badge]) {
-			if (unselectedIcon) {
-				tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.tintColor badgeColor:tabBarItem.badgeColor];
-				tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] withIconColor:bar.unselectedItemTintColor badgeColor:tabBarItem.badgeColor];
-			} else {
-				tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.tintColor badgeColor:tabBarItem.badgeColor];
-				tabBarItem.image = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.unselectedItemTintColor badgeColor:tabBarItem.badgeColor];
-			}
+		NSDictionary *icon = tabItem[@"icon"];
+		UITabBar *appearance = [UITabBar appearance];
+		BOOL dot = [self showDotBadge:badge];
+		
+		UITabBarItemAppearance *itemAppearance = appearance.standardAppearance.stackedLayoutAppearance;
+		if (unselectedIcon) {
+			tabBarItem.selectedImage = [[HBDUtils UIImage:icon] withIconColor:itemAppearance.selected.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
+			tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] withIconColor:itemAppearance.normal.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
 		} else {
-			if (unselectedIcon) {
-				tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.tintColor badgeColor:UIColor.clearColor];
-				tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] withIconColor:bar.unselectedItemTintColor badgeColor:UIColor.clearColor];
-			} else {
-				tabBarItem.selectedImage = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.tintColor badgeColor:UIColor.clearColor];
-				tabBarItem.image = [[HBDUtils UIImage:tabItem[@"icon"]] withIconColor:bar.unselectedItemTintColor badgeColor:UIColor.clearColor];
-			}
+			tabBarItem.selectedImage = [[HBDUtils UIImage:icon] withIconColor:itemAppearance.selected.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
+			tabBarItem.image = [[HBDUtils UIImage:icon] withIconColor:itemAppearance.normal.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
 		}
+		
         self.tabBarItem = tabBarItem;
     }
 }
-
 
 - (void)updateTabBarItem:(NSDictionary *)option {
 	// title
@@ -225,7 +217,9 @@
 
 	// badge
 	NSDictionary *badge = option[@"badge"];
-	self.options[@"tabItem"][@"badge"] = badge;
+	if (badge != nil) {
+		self.options[@"tabItem"][@"badge"] = badge;
+	}
 	
 	// icon
 	NSDictionary *icon = option[@"icon"];
@@ -315,17 +309,6 @@
         }
     }
 
-    NSDictionary *backItem = options[@"backItemIOS"];
-    if (backItem) {
-        UIBarButtonItem *backButton = [[HBDBackBarButtonItem alloc] init];
-        backButton.title = backItem[@"title"];
-        NSString *tintColor = backItem[@"tintColor"];
-        if (tintColor) {
-            backButton.tintColor = [HBDUtils colorWithHexString:tintColor];
-        }
-        self.navigationItem.backBarButtonItem = backButton;
-    }
-    
     NSNumber *swipeBackEnabled = options[@"swipeBackEnabled"];
     if (swipeBackEnabled) {
         self.hbd_swipeBackEnabled = [swipeBackEnabled boolValue];

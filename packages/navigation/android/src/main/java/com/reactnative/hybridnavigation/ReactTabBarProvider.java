@@ -112,16 +112,16 @@ public class ReactTabBarProvider extends com.navigation.androidx.DefaultTabBarPr
         tabBarFragment.setOptions(mergeOptions(tabBarFragment.getOptions(), options));
         TabBar tabBar = tabBarFragment.getTabBar();
 
-        String tabBarColor = options.getString("tabBarColor");
+        String tabBarBackgroundColor = options.getString("tabBarBackgroundColor");
         Bundle shadowImage = options.getBundle("tabBarShadowImage");
-        String tabBarItemColor = options.getString("tabBarItemColor");
-        String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
+        String tabBarItemSelectedColor = options.getString("tabBarItemSelectedColor");
+        String tabBarItemNormalColor = options.getString("tabBarItemNormalColor");
 
-        if (tabBarColor != null) {
-            tabBar.setBarBackgroundColor(tabBarColor);
+        if (tabBarBackgroundColor != null) {
+            tabBar.setBarBackgroundColor(tabBarBackgroundColor);
 
             Style style = tabBarFragment.getStyle();
-            style.setTabBarBackgroundColor(tabBarColor);
+            style.setTabBarBackgroundColor(tabBarBackgroundColor);
             tabBarFragment.setNeedsNavigationBarAppearanceUpdate();
         }
 
@@ -129,12 +129,12 @@ public class ReactTabBarProvider extends com.navigation.androidx.DefaultTabBarPr
             tabBar.setShadowDrawable(Utils.createTabBarShadow(tabBarFragment.requireContext(), shadowImage));
         }
 
-        if (tabBarItemColor != null) {
-            tabBar.setSelectedItemColor(tabBarItemColor);
+        if (tabBarItemSelectedColor != null) {
+            tabBar.setSelectedItemColor(tabBarItemSelectedColor);
         }
 
-        if (tabBarUnselectedItemColor != null) {
-            tabBar.setUnselectedItemColor(tabBarUnselectedItemColor);
+        if (tabBarItemNormalColor != null) {
+            tabBar.setUnselectedItemColor(tabBarItemNormalColor);
         }
 
         tabBar.initialise(tabBar.getCurrentSelectedPosition());

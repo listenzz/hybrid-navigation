@@ -78,14 +78,14 @@ Navigation.setDefaultOptions({
 	// hideBackTitleIOS: true,
 	elevationAndroid: 1,
 
-	tabBarColor: '#FFFFFF',
+	tabBarBackgroundColor: '#FFFFFF',
 
 	tabBarShadowImage: {
 		// color: '#F0F0F0',
 		// image: Image.resolveAssetSource(require('./images/divider.png')),
 	},
-	tabBarItemColor: '#FF5722',
-	tabBarUnselectedItemColor: '#BDBDBD',
+	tabBarItemNormalColor: '#666666',
+	tabBarItemSelectedColor: '#FF5722',
 });
 
 // 开始注册组件，即基本页面单元
