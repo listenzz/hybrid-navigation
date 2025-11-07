@@ -1,6 +1,5 @@
 #import "HBDUtils.h"
 
-#import "HBDAnimationObserver.h"
 #import <React/RCTConvert.h>
 
 @implementation HBDUtils
@@ -179,28 +178,5 @@
         }
     }
 }
-
-//static void (*__SWZ_didMoveToWindow_orig)(id self, SEL _cmd);
-//
-//static void __HBD_didMoveToWindow(UIView *self, SEL _cmd) {
-//    if (![[HBDAnimationObserver sharedObserver] isAnimating] || !self.window) {
-//        __SWZ_didMoveToWindow_orig(self, _cmd);
-//    } else {
-//        [[HBDAnimationObserver sharedObserver] registerAnimationEndedBlock:^{
-//          __SWZ_didMoveToWindow_orig(self, _cmd);
-//        }];
-//    }
-//}
-//
-//+ (void)load {
-//    Class clazz = NSClassFromString(@"RCTBaseTextInputView");
-//    if (clazz == NULL) {
-//        return;
-//    }
-//    Method method = class_getInstanceMethod(clazz, NSSelectorFromString(@"didMoveToWindow"));
-//    __SWZ_didMoveToWindow_orig = (void *)method_getImplementation(method);
-//    method_setImplementation(method, (IMP)__HBD_didMoveToWindow);
-//}
-
 
 @end

@@ -3,7 +3,6 @@
 #import "HBDReactBridgeManager.h"
 #import "HBDNavigationController.h"
 #import "UINavigationController+HBD.h"
-#import "HBDAnimationObserver.h"
 
 #import <React/RCTLog.h>
 
@@ -127,7 +126,6 @@
     }
     
     if (animated) {
-        [[HBDAnimationObserver sharedObserver] beginAnimation];
         [nav pushViewController:vc animated:YES];
         [self animateAlongsideTransition:nav callback:callback];
     } else {
@@ -251,7 +249,6 @@
     }
     
     if (animated) {
-        [[HBDAnimationObserver sharedObserver] beginAnimation];
         [nav redirectToViewController:vc target:target animated:YES];
         [self animateAlongsideTransition:nav callback:callback];
     }else {
@@ -271,7 +268,6 @@
     }
     
     vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
-    [[HBDAnimationObserver sharedObserver] beginAnimation];
     [nav pushViewController:vc animated:YES];
     [self animateAlongsideTransition:nav callback:callback];
 }

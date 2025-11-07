@@ -2,7 +2,6 @@
 
 #import "HBDViewController+Garden.h"
 #import "HBDUtils.h"
-#import "HBDAnimationObserver.h"
 #import "GlobalStyle.h"
 #import "HBDBackBarButtonItem.h"
 #import "UIImage+WithBadge.h"
@@ -91,7 +90,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [[HBDAnimationObserver sharedObserver] endAnimation];
 	[self adjustScreenOrientation];
 }
 

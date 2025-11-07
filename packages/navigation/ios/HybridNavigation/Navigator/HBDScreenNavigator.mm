@@ -2,7 +2,6 @@
 
 #import "HBDReactBridgeManager.h"
 #import "HBDNavigationController.h"
-#import "HBDAnimationObserver.h"
 #import "UIViewController+HBD.h"
 
 #import <React/RCTLog.h>
@@ -95,8 +94,7 @@
     [nav setRequestCode:requestCode];
     [vc setRequestCode:requestCode];
     [vc setPresentingSceneId:presenting.sceneId];
-    
-    [[HBDAnimationObserver sharedObserver] beginAnimation];
+
     [presenting presentViewController:nav animated:YES completion:^{
         callback(@[NSNull.null, @YES]);
     }];
@@ -132,10 +130,6 @@
 		animated = hbdvc.animatedTransition;
 	}
 	
-	if (animated) {
-		[[HBDAnimationObserver sharedObserver] beginAnimation];
-	}
-    
     [presenting presentViewController:vc animated:animated completion:^{
         callback(@[NSNull.null, @YES]);
     }];
@@ -147,7 +141,7 @@
     UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
     [vc setRequestCode:requestCode];
     vc.modalPresentationStyle = UIModalPresentationCurrentContext;
-    [[HBDAnimationObserver sharedObserver] beginAnimation];
+
     [presenting presentViewController:vc animated:YES completion:^{
         callback(@[NSNull.null, @YES]);
     }];
@@ -160,7 +154,7 @@
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     vc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [vc setRequestCode:requestCode];
-    [[HBDAnimationObserver sharedObserver] beginAnimation];
+
     [presenting presentViewController:vc animated:YES completion:^{
         callback(@[NSNull.null, @YES]);
     }];
