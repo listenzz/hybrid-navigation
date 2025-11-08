@@ -5,5 +5,5 @@ rootProject.name = 'HybridNavigation'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
 
-include ':navigation'
-project(':navigation').projectDir = new File(rootProject.projectDir, '../../AndroidNavigation/navigation')
+// include ':navigation'
+// project(':navigation').projectDir = new File(rootProject.projectDir, '../../AndroidNavigation/navigation')

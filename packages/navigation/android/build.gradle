@@ -69,6 +69,6 @@ repositories {
 
 dependencies {
     implementation "com.facebook.react:react-android"
-	api project(':navigation')
-	// api 'io.github.listenzz:AndroidNavigation:13.10.0'
+	// api project(':navigation')
+	api 'io.github.listenzz:AndroidNavigation:13.10.0'
 }

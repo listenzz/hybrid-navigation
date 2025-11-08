@@ -1,7 +1,7 @@
 {
 	"name": "hybrid-navigation",
 	"description": "React Native Navigation that supports seamless navigation between Native and React.",
-	"version": "2.18.14",
+	"version": "3.0.0",
 	"main": "./dist/index.js",
 	"typings": "./dist/index.d.ts",
 	"react-native": "src/index",
@@ -12,6 +12,7 @@
 		"android",
 		"ios",
 		"HybridNavigation.podspec",
+		"README.md",
 		"!android/build",
 		"!android/.gradle",
 		"!android/.idea",
