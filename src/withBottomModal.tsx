@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useRef, ComponentType} from 'react';
+import React, { useEffect, useCallback, useRef, ComponentType } from 'react';
 import {
 	StyleSheet,
 	Animated,
@@ -7,9 +7,9 @@ import {
 	View,
 	TouchableWithoutFeedback,
 } from 'react-native';
-import {useLayout, useBackHandler} from '@react-native-community/hooks';
-import {NavigationProps} from 'hybrid-navigation';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import { useLayout, useBackHandler } from '@react-native-community/hooks';
+import { NavigationProps } from 'hybrid-navigation';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 export default function withBottomModal({
 	cancelable = true,
@@ -19,7 +19,7 @@ export default function withBottomModal({
 	return function (WrappedComponent: ComponentType<any>) {
 		function BottomModal(props: NavigationProps, ref: React.Ref<ComponentType<any>>) {
 			const animatedHeight = useRef(new Animated.Value(Dimensions.get('screen').height));
-			const {onLayout, height} = useLayout();
+			const { onLayout, height } = useLayout();
 
 			const realHideModal = useRef(props.navigator.hideModal);
 
@@ -63,12 +63,14 @@ export default function withBottomModal({
 						style={[
 							styles.container,
 							{
-								transform: [{translateY: animatedHeight.current}],
+								transform: [{ translateY: animatedHeight.current }],
 							},
-						]}>
+						]}
+					>
 						<TouchableWithoutFeedback
 							onPress={handleHardwareBackPress}
-							style={styles.flex1}>
+							style={styles.flex1}
+						>
 							<View style={styles.flex1} />
 						</TouchableWithoutFeedback>
 
@@ -76,7 +78,7 @@ export default function withBottomModal({
 							<WrappedComponent {...props} ref={ref} />
 							<SafeAreaView
 								edges={['bottom']}
-								style={{backgroundColor: safeAreaColor}}
+								style={{ backgroundColor: safeAreaColor }}
 							/>
 						</View>
 					</Animated.View>

@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default withNavigationItem({
 	statusBarHidden: true,
-	topBarHidden: true,
 	titleItem: {
 		title: 'StatusBar Hidden',
 	},

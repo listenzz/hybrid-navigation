@@ -1,6 +1,7 @@
 #import "HBDNavigationBar.h"
 
 #import "HBDUtils.h"
+#import <React/RCTLog.h>
 
 #define hairlineWidth (1.f/[UIScreen mainScreen].scale)
 
@@ -14,39 +15,18 @@
 @implementation HBDNavigationBar
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-    if (!self.isUserInteractionEnabled || self.isHidden || self.alpha <= 0.01) {
+    if (!self.isUserInteractionEnabled || self.isHidden || self.alpha < 0.01) {
         return nil;
     }
 
     UIView *view = [super hitTest:point withEvent:event];
     NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-
-    if (view && [viewName isEqualToString:@"HBDNavigationBar"]) {
-        for (UIView *subview in self.subviews) {
-            NSString *viewName = [[[subview classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-			NSArray *array = @[@"UINavigationItemButtonView", @"UIKit.NavigationBarContentView", @"UIButtonBarButton"];
-            if ([array containsObject:viewName]) {
-                CGPoint convertedPoint = [self convertPoint:point toView:subview];
-                CGRect bounds = subview.bounds;
-                if (bounds.size.width < 80) {
-                    bounds = CGRectInset(bounds, bounds.size.width - 80, 0);
-                }
-                if (CGRectContainsPoint(bounds, convertedPoint)) {
-                    return view;
-                }
-            }
-        }
-    }
-
-	NSArray *array = @[@"UINavigationBarContentView", @"UIButtonBarStackView", @"UIKit.NavigationBarContentView", @"UIButtonBarButton", NSStringFromClass([self class])];
-    if ([array containsObject:viewName]) {
-        if (self.fakeBackgroundView.alpha < 0.01) {
-            return nil;
-        }
-    }
-
-    if (CGRectEqualToRect(view.bounds, CGRectZero)) {
-        return nil;
+	
+	// RCTLogInfo(@"viewName:%@", viewName);
+	
+	NSArray *array = @[@"UINavigationBarContentView", @"UIButtonBarStackView", @"UIKit.NavigationBarContentView",  NSStringFromClass([self class])];
+	if ([array containsObject:viewName] && self.fakeBackgroundView.alpha < 0.01) {
+		return nil;
     }
 
     return view;

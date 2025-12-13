@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {TouchableOpacity, Text, View, ScrollView} from 'react-native';
-import Navigation, {withNavigationItem, NavigationProps} from 'hybrid-navigation';
+import React, { useState } from 'react';
+import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
+import Navigation, { withNavigationItem, NavigationProps } from 'hybrid-navigation';
 import styles from './Styles';
 
 export default withNavigationItem({
@@ -12,7 +12,7 @@ export default withNavigationItem({
 	},
 })(Noninteractive);
 
-function Noninteractive({navigator, sceneId}: NavigationProps) {
+function Noninteractive({ navigator, sceneId }: NavigationProps) {
 	const [backInteractive, setBackInteractive] = useState(false);
 
 	function handleBackClick() {
@@ -44,7 +44,8 @@ function Noninteractive({navigator, sceneId}: NavigationProps) {
 				<TouchableOpacity
 					onPress={disableBackInteractive}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>disable back interactive</Text>
 				</TouchableOpacity>
 			</>
@@ -56,13 +57,15 @@ function Noninteractive({navigator, sceneId}: NavigationProps) {
 				<TouchableOpacity
 					onPress={handleBackClick}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>back</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
 					onPress={enableBackInteractive}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>enable back interactive</Text>
 				</TouchableOpacity>
 			</>
@@ -73,7 +76,8 @@ function Noninteractive({navigator, sceneId}: NavigationProps) {
 		<ScrollView
 			contentInsetAdjustmentBehavior="never"
 			automaticallyAdjustContentInsets={false}
-			contentInset={{top: 0, left: 0, bottom: 0, right: 0}}>
+			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+		>
 			<View style={styles.container}>{component}</View>
 		</ScrollView>
 	);
