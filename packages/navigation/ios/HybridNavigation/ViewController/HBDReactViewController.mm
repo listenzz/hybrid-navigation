@@ -2,7 +2,6 @@
 
 #import "HBDReactBridgeManager.h"
 #import "HBDTitleView.h"
-#import "HBDRootView.h"
 #import "HBDUtils.h"
 #import "HBDNativeEvent.h"
 
@@ -47,8 +46,10 @@
     BOOL passThroughTouches = [self.options[@"passThroughTouches"] boolValue];
     rootView.passThroughTouches = passThroughTouches;
     rootView.backgroundColor = UIColor.clearColor;
-    rootView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.view = [[HBDRootView alloc] initWithRootView:rootView];
+	rootView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+
+	self.view = [[UIView alloc] initWithFrame:UIScreen.mainScreen.bounds];
+	[rootView setFrame:self.view.frame];
     [self.view addSubview:rootView];
     [self updateReactViewConstraints];
     RCTLogInfo(@"[Navigation] 加载页面 %@", self.moduleName);
@@ -70,7 +71,7 @@
             } else {
                 size = UILayoutFittingCompressedSize;
             }
-			
+
 			RCTHost *host = [HBDReactBridgeManager get].rctHost;
 			RCTFabricSurface *surface = [host createSurfaceWithModuleName:moduleName initialProperties:[self propsWithSceneId]];
 			RCTSurfaceHostingProxyRootView *titleRootView = [[RCTSurfaceHostingProxyRootView alloc] initWithSurface:(id)surface];
@@ -87,20 +88,18 @@
 
 - (void)updateReactViewConstraints {
     if (self.isViewLoaded && self.rootView) {
-        [NSLayoutConstraint deactivateConstraints:_reactViewConstraints];
-        _reactViewConstraints = @[
-            [self.rootView.topAnchor
-             constraintEqualToAnchor:self.shouldFitWindowInsetTop ? self.view.topAnchor : self.view.safeAreaLayoutGuide.topAnchor],
-            [self.rootView.bottomAnchor
-                constraintEqualToAnchor:self.view.bottomAnchor],
-            [self.rootView.leftAnchor constraintEqualToAnchor:self.view.leftAnchor],
-            [self.rootView.rightAnchor constraintEqualToAnchor:self.view.rightAnchor]
-        ];
-        [NSLayoutConstraint activateConstraints:_reactViewConstraints];
+		CGFloat bottomInset = self.shouldFitWindowInsetsBottom ?  0: self.view.safeAreaInsets.bottom;
+		CGFloat topInset = self.shouldFitWindowInsetsTop ? 0 : self.view.safeAreaInsets.top;
+		[self.rootView setFrame:CGRectMake(
+			0,
+			topInset,
+			self.view.frame.size.width,
+			self.view.frame.size.height - topInset - bottomInset
+		)];
     }
 }
 
-- (BOOL)shouldFitWindowInsetTop {
+- (BOOL)shouldFitWindowInsetsTop {
     if (![self.parentViewController isKindOfClass:UINavigationController.class]) {
         return YES;
     }
@@ -108,11 +107,11 @@
     return isTranslucent || self.extendedLayoutIncludesOpaqueBars;
 }
 
-- (BOOL)shouldFitSafeAreaLayoutBottom {
+- (BOOL)shouldFitWindowInsetsBottom {
 	if (self.navigationController && self.tabBarController) {
-		return self == [self.navigationController.viewControllers firstObject];
+		return self != [self.navigationController.viewControllers firstObject];
 	}
-	return NO;
+	return YES;
 }
 
 - (NSDictionary *)propsWithSceneId {
