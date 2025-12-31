@@ -1,5 +1,5 @@
-import {isTargetLocateIn} from './screen';
-import {LayoutMode, RouteGraph, RouteHandler, RouteInfo} from '../Route';
+import { isTargetLocateIn } from './screen';
+import { LayoutMode, RouteGraph, RouteHandler, RouteInfo } from '../Route';
 import Navigation from '../Navigation';
 
 export interface TabsGraph extends RouteGraph {
@@ -19,7 +19,7 @@ export class TabsRouteHandler implements RouteHandler {
 			throw new Error(`${graph} is NOT a TabsGraph`);
 		}
 
-		const {children, selectedIndex} = graph;
+		const { children, selectedIndex } = graph;
 
 		for (let i = 0; i < children.length; i++) {
 			if (isTargetLocateIn(children[i], target)) {

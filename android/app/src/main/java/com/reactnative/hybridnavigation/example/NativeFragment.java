@@ -14,6 +14,8 @@ import com.navigation.androidx.StackFragment;
 import com.navigation.androidx.Style;
 import com.reactnative.hybridnavigation.HybridFragment;
 
+import java.util.Objects;
+
 /**
  * Created by Listen on 2018/1/30.
  */
@@ -34,7 +36,7 @@ public class NativeFragment extends HybridFragment {
                 }
                 Bundle props = new Bundle();
                 props.putString("popToId", popToId);
-                AwesomeFragment fragment = getReactBridgeManager().createFragment("Navigation", props, null);
+                AwesomeFragment fragment = getReactManager().createFragment("Navigation", props, null);
                 stackFragment.pushFragment(fragment);
             }
 
@@ -74,10 +76,6 @@ public class NativeFragment extends HybridFragment {
         super.onViewCreated(view, savedInstanceState);
         Bundle props = getProps();
         String greeting = props.getString("greeting");
-        if (greeting != null) {
-            setTitle(greeting);
-        } else {
-            setTitle("Native");
-        }
+		setTitle(Objects.requireNonNullElse(greeting, "Native"));
     }
 }

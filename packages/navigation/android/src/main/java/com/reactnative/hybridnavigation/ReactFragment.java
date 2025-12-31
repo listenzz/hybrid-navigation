@@ -2,19 +2,9 @@ package com.reactnative.hybridnavigation;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.EVENT_NAVIGATION;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_ON;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_REQUEST_CODE;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_RESULT_CODE;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_RESULT_DATA;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.KEY_SCENE_ID;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_APPEAR;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_DISAPPEAR;
-import static com.reactnative.hybridnavigation.HBDEventEmitter.ON_COMPONENT_RESULT;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -27,20 +17,21 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import com.facebook.common.logging.FLog;
-import com.facebook.react.ReactInstanceManager;
+import com.facebook.react.ReactHost;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
+import com.facebook.react.interfaces.fabric.ReactSurface;
 import com.navigation.androidx.Style;
 
-public class ReactFragment extends HybridFragment implements ReactBridgeManager.ReactBridgeReloadListener {
+public class ReactFragment extends HybridFragment implements ReactManager.ReactBridgeReloadListener {
 
 	protected static final String TAG = "Navigation";
 
 	private ViewGroup reactViewHolder;
 
-	private HBDReactRootView reactRootView;
-	private HBDReactRootView reactTitleView;
+	private ReactSurface reactRootView;
+	private ReactSurface reactTitleView;
 	private boolean firstRenderCompleted;
 
 	@Nullable
@@ -59,6 +50,12 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 		super.onViewCreated(view, savedInstanceState);
 		// 这个时候 toolbar 才创建好
 		initReactTitleView();
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		unmountReactView();
 	}
 
 	@Override
@@ -113,13 +110,6 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 		}
 	}
 
-	@Override
-	public void onConfigurationChanged(@NonNull Configuration newConfig) {
-		super.onConfigurationChanged(newConfig);
-		// 避免屏幕旋转时状态栏样式不更新的问题
-		setNeedsStatusBarAppearanceUpdate();
-	}
-
 	private boolean isViewReady() {
 		if (reactRootView == null) {
 			return false;
@@ -147,15 +137,13 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 		reactViewAppeared = appear;
 
 		Bundle bundle = new Bundle();
-		bundle.putString(KEY_SCENE_ID, getSceneId());
-		bundle.putString(KEY_ON, appear ? ON_COMPONENT_APPEAR : ON_COMPONENT_DISAPPEAR);
-		HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(bundle));
-	}
-
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-		unmountReactView();
+		bundle.putString("sceneId", getSceneId());
+		NativeEvent nativeEvent = NativeEvent.getInstance();
+		if (appear) {
+			nativeEvent.emitOnComponentAppear(Arguments.fromBundle(bundle));
+		} else {
+			nativeEvent.emitOnComponentDisappear(Arguments.fromBundle(bundle));
+		}
 	}
 
 	@Override
@@ -165,38 +153,34 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 
 	private void mountReactView() {
 		initReactRootView();
-		getReactBridgeManager().addReactBridgeReloadListener(this);
+		getReactManager().addReactBridgeReloadListener(this);
 	}
 
 	private void unmountReactView() {
-		getReactBridgeManager().removeReactBridgeReloadListener(this);
+		getReactManager().removeReactBridgeReloadListener(this);
 
 		ReactContext reactContext = getCurrentReactContext();
-		if (reactContext == null || !reactContext.hasActiveCatalystInstance()) {
+		if (reactContext == null || !reactContext.hasActiveReactInstance()) {
 			return;
 		}
 
 		if (reactRootView != null) {
 			FLog.w(TAG, "销毁页面-：" + getModuleName());
-			reactRootView.unmountReactApplication();
-			ViewGroup parent = (ViewGroup) reactRootView.getParent();
-			parent.removeView(reactRootView);
+			reactRootView.stop();
 			reactRootView = null;
 		}
 
 		if (reactTitleView != null) {
-			reactTitleView.unmountReactApplication();
-			ViewGroup parent = (ViewGroup) reactTitleView.getParent();
-			parent.removeView(reactTitleView);
+			reactTitleView.stop();
 			reactTitleView = null;
 		}
 	}
 
 	@Override
 	protected boolean onBackPressed() {
-		ReactInstanceManager reactInstanceManager = getReactInstanceManager();
-		if (getShowsDialog() && reactInstanceManager != null) {
-			reactInstanceManager.onBackPressed();
+		ReactHost reactHost = getReactManager().getReactHost();
+		if (getShowsDialog()) {
+			reactHost.onBackPressed();
 			return true;
 		}
 		return super.onBackPressed();
@@ -221,38 +205,20 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 	public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
 		super.onFragmentResult(requestCode, resultCode, data);
 		Bundle result = new Bundle();
-		result.putInt(KEY_REQUEST_CODE, requestCode);
-		result.putInt(KEY_RESULT_CODE, resultCode);
-		result.putBundle(KEY_RESULT_DATA, data);
-		result.putString(KEY_SCENE_ID, getSceneId());
-		result.putString(KEY_ON, ON_COMPONENT_RESULT);
-		HBDEventEmitter.sendEvent(EVENT_NAVIGATION, Arguments.fromBundle(result));
-	}
-
-	@Override
-	public void setAppProperties(@NonNull Bundle props) {
-		super.setAppProperties(props);
-		if (reactRootView == null) {
-			return;
-		}
-
-		if (isReactModuleRegisterCompleted()) {
-			reactRootView.setAppProperties(getProps());
-		}
+		result.putInt("requestCode", requestCode);
+		result.putInt("resultCode", resultCode);
+		result.putBundle("resultData", data);
+		result.putString("sceneId", getSceneId());
+		NativeEvent.getInstance().emitOnResult(Arguments.fromBundle(result));
 	}
 
 	private void initReactRootView() {
-		reactRootView = createReactRootView();
-		reactRootView.startReactApplication(getReactInstanceManager(), getModuleName(), getProps());
-	}
-
-	@NonNull
-	private HBDReactRootView createReactRootView() {
-		HBDReactRootView reactRootView = new HBDReactRootView(getContext());
-		reactRootView.setShouldConsumeTouchEvent(!shouldPassThroughTouches());
+		ReactHost reactHost = getReactManager().getReactHost();
+		ReactSurface reactSurface = reactHost.createSurface(requireContext(), getModuleName(), getProps());
+		reactRootView = reactSurface;
 		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-		reactViewHolder.addView(reactRootView, layoutParams);
-		return reactRootView;
+		reactViewHolder.addView(reactSurface.getView(), layoutParams);
+		reactSurface.start();
 	}
 
 	private void initReactTitleView() {
@@ -276,16 +242,12 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 
 		String fitting = titleItem.getString("layoutFitting");
 		boolean expanded = "expanded".equals(fitting);
-		reactTitleView = createReactTitleView(expanded);
-		reactTitleView.startReactApplication(getReactInstanceManager(), moduleName, getProps());
-	}
-
-	private HBDReactRootView createReactTitleView(boolean expanded) {
+		ReactHost reactHost = getReactManager().getReactHost();
+		ReactSurface reactSurface = reactHost.createSurface(requireContext(), moduleName, getProps());
 		Toolbar.LayoutParams layoutParams = createTitleLayoutParams(expanded);
-		HBDReactRootView reactTitleView = new HBDReactRootView(getContext());
 		Toolbar toolbar = getToolbar();
-		toolbar.addView(reactTitleView, layoutParams);
-		return reactTitleView;
+		toolbar.addView(reactSurface.getView(), layoutParams);
+		reactSurface.start();
 	}
 
 	@NonNull
@@ -300,4 +262,5 @@ public class ReactFragment extends HybridFragment implements ReactBridgeManager.
 	public String getDebugTag() {
 		return "[" + getModuleName() + "]";
 	}
+
 }

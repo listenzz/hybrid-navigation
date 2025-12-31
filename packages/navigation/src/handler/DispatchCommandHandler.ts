@@ -1,6 +1,6 @@
 import NavigationModule from '../NavigationModule';
-import {NavigationItem} from '../Options';
-import {BuildInLayout, Layout} from '../Route';
+import { NavigationItem } from '../Options';
+import { BuildInLayout, Layout } from '../Route';
 
 export interface DispatchParams {
 	animated?: boolean;
@@ -30,12 +30,8 @@ export type NavigationInterceptor = (
 export default class DispatchCommandHandler {
 	private interceptor: NavigationInterceptor = () => false;
 
-	async dispatch(
-		sceneId: string,
-		action: string,
-		params: DispatchParams,
-	): Promise<boolean> {
-		const {from, to, props} = params;
+	async dispatch(sceneId: string, action: string, params: DispatchParams): Promise<boolean> {
+		const { from, to, props } = params;
 		const intercepted = await this.intercept(action, {
 			sceneId,
 			from,

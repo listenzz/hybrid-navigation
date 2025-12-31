@@ -1,12 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {Text, View, TouchableOpacity, ScrollView, Alert, Image} from 'react-native';
-import {LayoutFittingExpanded, NavigationProps, NavigationItem} from 'hybrid-navigation';
+import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
+import { LayoutFittingExpanded, NavigationProps, NavigationItem } from 'hybrid-navigation';
 import styles from './Styles';
-import {Lifecycle, withLifecycle} from './withLifecycle';
 
 function CustomTitleView(props: NavigationProps) {
-	let {params} = props.navigator.state;
+	let { params } = props.navigator.state;
 	return (
 		<View
 			style={{
@@ -14,11 +13,12 @@ function CustomTitleView(props: NavigationProps) {
 				flexDirection: 'row',
 				justifyContent: 'center',
 				alignItems: 'center',
-			}}>
-			<Text style={{fontSize: 17, fontWeight: 'bold'}}>--Custom Title--</Text>
+			}}
+		>
+			<Text style={{ fontSize: 17, fontWeight: 'bold' }}>--Custom Title--</Text>
 			<TouchableOpacity onPress={params.onFackbookButtonClick}>
 				<Image
-					style={{width: 24, height: 24}}
+					style={{ width: 24, height: 24 }}
 					source={{
 						uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
 					}}
@@ -28,9 +28,9 @@ function CustomTitleView(props: NavigationProps) {
 	);
 }
 
-export {CustomTitleView};
+export { CustomTitleView };
 
-class TopBarTitleView extends React.Component<NavigationProps> implements Lifecycle {
+class TopBarTitleView extends React.Component<NavigationProps> {
 	static navigationItem: NavigationItem = {
 		backButtonHidden: true,
 		titleItem: {
@@ -61,7 +61,7 @@ class TopBarTitleView extends React.Component<NavigationProps> implements Lifecy
 		Alert.alert(
 			'Hello!',
 			'React button is clicked.',
-			[{text: 'OK', onPress: () => console.log('OK Pressed')}],
+			[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
 			{
 				cancelable: false,
 			},
@@ -77,14 +77,16 @@ class TopBarTitleView extends React.Component<NavigationProps> implements Lifecy
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
 				automaticallyAdjustContentInsets={false}
-				contentInset={{top: 0, left: 0, bottom: 0, right: 0}}>
+				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+			>
 				<View style={styles.container}>
 					<Text style={styles.welcome}> Custom title bar </Text>
 
 					<TouchableOpacity
 						onPress={this.topBarTitleView}
 						activeOpacity={0.2}
-						style={styles.button}>
+						style={styles.button}
+					>
 						<Text style={styles.buttonText}>TopBarTitleView</Text>
 					</TouchableOpacity>
 				</View>
@@ -93,4 +95,4 @@ class TopBarTitleView extends React.Component<NavigationProps> implements Lifecy
 	}
 }
 
-export default withLifecycle(TopBarTitleView);
+export default TopBarTitleView;

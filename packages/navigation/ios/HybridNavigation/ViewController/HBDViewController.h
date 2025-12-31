@@ -15,4 +15,6 @@
 
 - (void)updateNavigationBarOptions:(NSDictionary *)options;
 
+- (void)updateTabBarItem:(NSDictionary *)options;
+
 @end

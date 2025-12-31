@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
-import type {NavigationItem} from './Options';
-import {Navigator, NavigationContext} from './Navigator';
+import React, { useEffect } from 'react';
+import type { NavigationItem } from './Options';
+import { Navigator, NavigationContext } from './Navigator';
 import Navigation from './Navigation';
 
 export interface NavigationProps {
@@ -20,7 +20,7 @@ export function withNavigation(moduleName: string) {
 	return function (WrappedComponent: React.ComponentType<any>) {
 		const FC = React.forwardRef(
 			(props: NativeProps, ref: React.Ref<React.ComponentType<any>>) => {
-				const {sceneId} = props;
+				const { sceneId } = props;
 
 				const navigator = Navigator.of(sceneId);
 				if (navigator.moduleName === undefined) {

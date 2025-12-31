@@ -10,19 +10,13 @@ import com.navigation.androidx.TransitionAnimation;
 
 public class ReactStackFragment extends StackFragment {
 
-    private final ReactBridgeManager bridgeManager = ReactBridgeManager.get();
-
-    @NonNull
-    public ReactBridgeManager getReactBridgeManager() {
-        return bridgeManager;
-    }
+    private final ReactManager reactManager = ReactManager.get();
 
     @Override
     public void setRootFragment(@NonNull AwesomeFragment fragment) {
         super.setRootFragment(fragment);
-        if (fragment instanceof HybridFragment) {
-            HybridFragment hybridFragment = (HybridFragment) fragment;
-            TabBarItem tabBarItem = hybridFragment.getTabBarItem();
+        if (fragment instanceof HybridFragment hybridFragment) {
+			TabBarItem tabBarItem = hybridFragment.getTabBarItem();
             if (tabBarItem != null) {
                 setTabBarItem(tabBarItem);
             }
@@ -32,7 +26,7 @@ public class ReactStackFragment extends StackFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        bridgeManager.watchMemory(this);
+        reactManager.watchMemory(this);
     }
 
     private final static TransitionAnimation BetterPush = new TransitionAnimation(R.anim.nav_push_translucent_enter, R.anim.nav_push_translucent_exit, R.anim.nav_pop_translucent_enter, R.anim.nav_pop_translucent_exit);
@@ -40,9 +34,8 @@ public class ReactStackFragment extends StackFragment {
 
     @Override
     protected void pushFragmentSync(AwesomeFragment fragment, @NonNull Runnable completion, @NonNull TransitionAnimation animation) {
-        if (fragment instanceof ReactFragment) {
-            ReactFragment reactFragment = (ReactFragment) fragment;
-            if (!reactFragment.shouldAnimatedTransition()) {
+        if (fragment instanceof ReactFragment reactFragment) {
+			if (!reactFragment.shouldAnimatedTransition()) {
                 super.pushFragmentSync(fragment, completion, TransitionAnimation.None);
                 return;
             }
@@ -58,9 +51,8 @@ public class ReactStackFragment extends StackFragment {
     @Override
     protected void popToFragmentSync(AwesomeFragment fragment, @NonNull Runnable completion, @NonNull TransitionAnimation animation) {
         AwesomeFragment topFragment = getTopFragment();
-        if (topFragment instanceof ReactFragment) {
-            ReactFragment reactFragment = (ReactFragment) topFragment;
-            if (!reactFragment.shouldAnimatedTransition()) {
+        if (topFragment instanceof ReactFragment reactFragment) {
+			if (!reactFragment.shouldAnimatedTransition()) {
                 super.popToFragmentSync(fragment, completion, TransitionAnimation.None);
                 return;
             }
@@ -75,9 +67,8 @@ public class ReactStackFragment extends StackFragment {
 
     @Override
     protected void redirectToFragmentSync(@NonNull AwesomeFragment fragment, @NonNull Runnable completion, @NonNull TransitionAnimation animation, @Nullable AwesomeFragment from) {
-        if (fragment instanceof ReactFragment) {
-            ReactFragment reactFragment = (ReactFragment) fragment;
-            if (!reactFragment.shouldAnimatedTransition()) {
+        if (fragment instanceof ReactFragment reactFragment) {
+			if (!reactFragment.shouldAnimatedTransition()) {
                 super.redirectToFragmentSync(fragment, completion, TransitionAnimation.None, from);
                 return;
             }

@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {TouchableOpacity, Text, View, ScrollView, Image} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, Text, View, ScrollView, Image } from 'react-native';
 import Navigation, {
 	BarStyleLightContent,
 	BarStyleDarkContent,
@@ -7,7 +7,7 @@ import Navigation, {
 	NavigationOption,
 } from 'hybrid-navigation';
 import styles from './Styles';
-import {withNavigationItem} from 'hybrid-navigation';
+import { withNavigationItem } from 'hybrid-navigation';
 
 export default withNavigationItem({
 	topBarStyle: BarStyleLightContent,
@@ -60,7 +60,8 @@ function TopBarStyle() {
 		<ScrollView
 			contentInsetAdjustmentBehavior="never"
 			automaticallyAdjustContentInsets={false}
-			contentInset={{top: 0, left: 0, bottom: 0, right: 0}}>
+			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+		>
 			<View style={styles.container}>
 				<Text style={styles.text}>
 					1. Status bar text can only be white on Android below 6.0
@@ -74,7 +75,8 @@ function TopBarStyle() {
 				<TouchableOpacity
 					onPress={switchTopBarStyle}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>
 						switch to{' '}
 						{options && options.topBarStyle === BarStyleDarkContent

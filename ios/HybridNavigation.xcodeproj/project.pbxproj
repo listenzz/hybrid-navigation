@@ -9,13 +9,12 @@
 /* Begin PBXBuildFile section */
 		0C80B921A6F3F58F76C31292 /* libPods-HybridNavigation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-HybridNavigation.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		91BC8EB42DDA3F4C006BB85A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 91BC8EAE2DDA3F4C006BB85A /* AppDelegate.m */; };
-		91BC8EB52DDA3F4C006BB85A /* BackgroundTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 91BC8EB02DDA3F4C006BB85A /* BackgroundTask.m */; };
-		91BC8EB62DDA3F4C006BB85A /* NativeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 91BC8EB22DDA3F4C006BB85A /* NativeViewController.m */; };
+		911810E82EBA477500B1AC0D /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 911810E72EBA477500B1AC0D /* AppDelegate.mm */; };
 		91BC8EB72DDA3F4C006BB85A /* NativeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 91BC8EB32DDA3F4C006BB85A /* NativeViewController.xib */; };
 		91BC8EBC2DDA4577006BB85A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 91BC8EBB2DDA4577006BB85A /* main.m */; };
 		91BC8EBE2DDA4607006BB85A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91BC8EBD2DDA4607006BB85A /* Assets.xcassets */; };
 		91BC8EC02DDA48A1006BB85A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91BC8EBF2DDA48A1006BB85A /* Main.storyboard */; };
+		91ECC9522EBCDFE3001965F7 /* NativeViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 91ECC9512EBCDFE3001965F7 /* NativeViewController.mm */; };
 		F097C25E01CCB6DC8930D97B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
@@ -27,16 +26,14 @@
 		5709B34CF0A7D63546082F79 /* Pods-HybridNavigation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HybridNavigation.release.xcconfig"; path = "Target Support Files/Pods-HybridNavigation/Pods-HybridNavigation.release.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-HybridNavigation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HybridNavigation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = HybridNavigation/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		911810E72EBA477500B1AC0D /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = HybridNavigation/AppDelegate.mm; sourceTree = "<group>"; };
 		91BC8EAD2DDA3F4C006BB85A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = HybridNavigation/AppDelegate.h; sourceTree = "<group>"; };
-		91BC8EAE2DDA3F4C006BB85A /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = HybridNavigation/AppDelegate.m; sourceTree = "<group>"; };
-		91BC8EAF2DDA3F4C006BB85A /* BackgroundTask.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BackgroundTask.h; path = HybridNavigation/BackgroundTask.h; sourceTree = "<group>"; };
-		91BC8EB02DDA3F4C006BB85A /* BackgroundTask.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BackgroundTask.m; path = HybridNavigation/BackgroundTask.m; sourceTree = "<group>"; };
 		91BC8EB12DDA3F4C006BB85A /* NativeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NativeViewController.h; path = HybridNavigation/NativeViewController.h; sourceTree = "<group>"; };
-		91BC8EB22DDA3F4C006BB85A /* NativeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NativeViewController.m; path = HybridNavigation/NativeViewController.m; sourceTree = "<group>"; };
 		91BC8EB32DDA3F4C006BB85A /* NativeViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = NativeViewController.xib; path = HybridNavigation/NativeViewController.xib; sourceTree = "<group>"; };
 		91BC8EBB2DDA4577006BB85A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = HybridNavigation/main.m; sourceTree = "<group>"; };
 		91BC8EBD2DDA4607006BB85A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = HybridNavigation/Assets.xcassets; sourceTree = "<group>"; };
 		91BC8EBF2DDA48A1006BB85A /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Main.storyboard; path = HybridNavigation/Main.storyboard; sourceTree = "<group>"; };
+		91ECC9512EBCDFE3001965F7 /* NativeViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = NativeViewController.mm; path = HybridNavigation/NativeViewController.mm; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -59,11 +56,9 @@
 				91BC8EBD2DDA4607006BB85A /* Assets.xcassets */,
 				91BC8EBB2DDA4577006BB85A /* main.m */,
 				91BC8EAD2DDA3F4C006BB85A /* AppDelegate.h */,
-				91BC8EAE2DDA3F4C006BB85A /* AppDelegate.m */,
-				91BC8EAF2DDA3F4C006BB85A /* BackgroundTask.h */,
-				91BC8EB02DDA3F4C006BB85A /* BackgroundTask.m */,
+				911810E72EBA477500B1AC0D /* AppDelegate.mm */,
 				91BC8EB12DDA3F4C006BB85A /* NativeViewController.h */,
-				91BC8EB22DDA3F4C006BB85A /* NativeViewController.m */,
+				91ECC9512EBCDFE3001965F7 /* NativeViewController.mm */,
 				91BC8EB32DDA3F4C006BB85A /* NativeViewController.xib */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
@@ -269,10 +264,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				91BC8EB42DDA3F4C006BB85A /* AppDelegate.m in Sources */,
-				91BC8EB52DDA3F4C006BB85A /* BackgroundTask.m in Sources */,
 				91BC8EBC2DDA4577006BB85A /* main.m in Sources */,
-				91BC8EB62DDA3F4C006BB85A /* NativeViewController.m in Sources */,
+				91ECC9522EBCDFE3001965F7 /* NativeViewController.mm in Sources */,
+				911810E82EBA477500B1AC0D /* AppDelegate.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,6 +390,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DFOLLY_NO_CONFIG",
@@ -468,6 +463,7 @@
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "$(inherited)";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DFOLLY_NO_CONFIG",

@@ -19,13 +19,13 @@ public class ReactTabBar extends FrameLayout {
     protected static final String TAG = "Navigation";
 
     private Drawable shadow = new ColorDrawable(Color.parseColor("#EEEEEE"));
-    private Drawable background = new ColorDrawable(Color.WHITE);
+    private final Drawable background = new ColorDrawable(Color.WHITE);
 
     private FrameLayout mReactHolderView;
     private View mDivider;
     private boolean mSizeIndeterminate;
     private FrameLayout mBackgroundView;
-    
+
     private ViewGroup mReactRootView;
 
     public ReactTabBar(Context context) {
@@ -60,7 +60,6 @@ public class ReactTabBar extends FrameLayout {
         int layout = mSizeIndeterminate ? R.layout.nav_tab_bar_react_indeterminate : R.layout.nav_tab_bar_react;
         View parentView = inflater.inflate(layout, this, true);
         mBackgroundView = parentView.findViewById(R.id.bottom_navigation_bar_background);
-        mBackgroundView.setBackground(background);
         mReactHolderView = parentView.findViewById(R.id.bottom_navigation_bar_react_holder);
         mDivider = parentView.findViewById(R.id.bottom_navigation_bar_divider);
         mDivider.setBackground(shadow);
@@ -92,22 +91,15 @@ public class ReactTabBar extends FrameLayout {
         mReactHolderView.removeAllViews();
     }
 
-    public void setTabBarBackground(Drawable drawable) {
-        background = drawable;
-        if (mBackgroundView != null) {
-            mBackgroundView.setBackground(drawable);
-        }
-    }
-
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        
+
         ViewGroup.LayoutParams params = mReactRootView.getLayoutParams();
         if (params.height > 0) {
             return;
         }
-        
+
         int height = getReactIntrinsicHeight();
         FLog.i(TAG, "[ReactTabBar] intrinsic height:" + height);
         if (height > 0) {
@@ -115,13 +107,13 @@ public class ReactTabBar extends FrameLayout {
             post(mReactRootView::requestLayout);
         }
     }
-    
+
     private int getReactIntrinsicHeight() {
         int rootViewHeight = mReactRootView.getMeasuredHeight();
         if (mReactRootView.getChildCount() > 1 || mReactHolderView.getLayoutParams().height > 0) {
             return rootViewHeight;
         }
-        
+
         ViewGroup group = mReactRootView;
         while (group.getMeasuredHeight() == rootViewHeight) {
             if (group.getChildCount() == 0) {
@@ -134,5 +126,5 @@ public class ReactTabBar extends FrameLayout {
         }
         return rootViewHeight;
     }
-    
+
 }

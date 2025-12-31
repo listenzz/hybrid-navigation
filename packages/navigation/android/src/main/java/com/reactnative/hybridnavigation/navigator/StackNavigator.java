@@ -19,7 +19,7 @@ import com.navigation.androidx.TabBarFragment;
 import com.navigation.androidx.TransitionAnimation;
 import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.Navigator;
-import com.reactnative.hybridnavigation.ReactBridgeManager;
+import com.reactnative.hybridnavigation.ReactManager;
 import com.reactnative.hybridnavigation.ReactStackFragment;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class StackNavigator implements Navigator {
         }
 
         ReadableMap root = children.getMap(0);
-        AwesomeFragment rootFragment = getReactBridgeManager().createFragment(root);
+        AwesomeFragment rootFragment = getReactManager().createFragment(root);
         if (rootFragment == null) {
             throw new IllegalArgumentException("can't create stack component with " + layout);
         }
@@ -73,15 +73,14 @@ public class StackNavigator implements Navigator {
     @Nullable
     @Override
     public Bundle buildRouteGraph(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof StackFragment) || !fragment.isAdded()) {
+        if (!(fragment instanceof StackFragment stackFragment) || !fragment.isAdded()) {
             return null;
         }
 
-        StackFragment stack = (StackFragment) fragment;
-        ArrayList<Bundle> children = buildChildrenGraph(stack);
+		ArrayList<Bundle> children = buildChildrenGraph(stackFragment);
         Bundle graph = new Bundle();
         graph.putString("layout", name());
-        graph.putString("sceneId", stack.getSceneId());
+        graph.putString("sceneId", stackFragment.getSceneId());
         graph.putParcelableArrayList("children", children);
         graph.putString("mode", Navigator.Util.getMode(fragment));
         return graph;
@@ -93,7 +92,7 @@ public class StackNavigator implements Navigator {
         List<AwesomeFragment> fragments = stack.getChildAwesomeFragments();
         for (int i = 0; i < fragments.size(); i++) {
             AwesomeFragment child = fragments.get(i);
-            Bundle graph = getReactBridgeManager().buildRouteGraph(child);
+            Bundle graph = getReactManager().buildRouteGraph(child);
             if (graph != null) {
                 children.add(graph);
             }
@@ -103,13 +102,12 @@ public class StackNavigator implements Navigator {
 
     @Override
     public HybridFragment primaryFragment(@NonNull AwesomeFragment fragment) {
-        if (!(fragment instanceof StackFragment) || !fragment.isAdded()) {
+        if (!(fragment instanceof StackFragment stackFragment) || !fragment.isAdded()) {
             return null;
         }
-        StackFragment stack = (StackFragment) fragment;
-        return getReactBridgeManager().primaryFragment(stack.getTopFragment());
+		return getReactManager().primaryFragment(stackFragment.getTopFragment());
     }
-    
+
     @Override
     public void handleNavigation(@NonNull AwesomeFragment target, @NonNull String action, @NonNull ReadableMap extras, @NonNull Callback callback) {
         StackFragment stackFragment = getStackFragment(target);
@@ -142,7 +140,7 @@ public class StackNavigator implements Navigator {
 
     private void handlePushLayout(@NonNull StackFragment stackFragment, @NonNull ReadableMap extras, @NonNull Callback callback) {
         ReadableMap layout = extras.getMap("layout");
-        AwesomeFragment fragment = getReactBridgeManager().createFragment(layout);
+        AwesomeFragment fragment = getReactManager().createFragment(layout);
         if (fragment == null) {
             callback.invoke(null, false);
             return;
@@ -165,7 +163,7 @@ public class StackNavigator implements Navigator {
             callback.invoke(null, false);
             return;
         }
-        
+
         FragmentManager fragmentManager = stackFragment.getChildFragmentManager();
         AwesomeFragment fragment = findFragmentForPopTo(moduleName, inclusive(extras), fragmentManager);
         if (fragment == null) {
@@ -175,7 +173,7 @@ public class StackNavigator implements Navigator {
 
         stackFragment.popToFragment(fragment, () -> callback.invoke(null, true));
     }
-    
+
     private boolean inclusive(@NonNull ReadableMap extras) {
         if (extras.hasKey("inclusive")) {
             return extras.getBoolean("inclusive");
@@ -193,12 +191,11 @@ public class StackNavigator implements Navigator {
             }
 
             Fragment fragment = fragmentManager.findFragmentByTag(entry.getName());
-            if (!(fragment instanceof HybridFragment)) {
+            if (!(fragment instanceof HybridFragment hybridFragment)) {
                 continue;
             }
 
-            HybridFragment hybridFragment = (HybridFragment) fragment;
-            boolean match = moduleName.equals(hybridFragment.getModuleName()) || moduleName.equals(hybridFragment.getSceneId());
+			boolean match = moduleName.equals(hybridFragment.getModuleName()) || moduleName.equals(hybridFragment.getSceneId());
             if (!match) {
                 continue;
             }
@@ -234,7 +231,7 @@ public class StackNavigator implements Navigator {
 
         Bundle props = buildProps(extras);
         Bundle options = buildOptions(extras);
-        return getReactBridgeManager().createFragment(moduleName, props, options);
+        return getReactManager().createFragment(moduleName, props, options);
     }
 
     @Nullable
@@ -281,7 +278,7 @@ public class StackNavigator implements Navigator {
         return drawerFragment.requireContentFragment().getStackFragment();
     }
 
-    private ReactBridgeManager getReactBridgeManager() {
-        return ReactBridgeManager.get();
+    private ReactManager getReactManager() {
+        return ReactManager.get();
     }
 }

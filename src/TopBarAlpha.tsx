@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {Text, View, TouchableOpacity, ScrollView, Image} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, TouchableOpacity, ScrollView, Image } from 'react-native';
 import Slider from '@react-native-community/slider';
 import styles from './Styles';
-import Navigation, {withNavigationItem, NavigationProps, statusBarHeight} from 'hybrid-navigation';
+import Navigation, { withNavigationItem, NavigationProps } from 'hybrid-navigation';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default withNavigationItem({
 	topBarAlpha: 0.5,
@@ -21,8 +22,9 @@ interface Props extends NavigationProps {
 	alpha: number;
 }
 
-function TopBarAlpha({sceneId, navigator, alpha}: Props) {
+function TopBarAlpha({ sceneId, navigator, alpha }: Props) {
 	const [topBarAlpha, setTopBarAlpha] = useState(alpha ? Number(alpha) : 0.5);
+	const inset = useSafeAreaInsets();
 
 	useEffect(() => {
 		Navigation.updateOptions(sceneId, {
@@ -35,15 +37,16 @@ function TopBarAlpha({sceneId, navigator, alpha}: Props) {
 	}
 
 	function handleAlphaChange(value: number) {
+		console.log('value', value);
 		setTopBarAlpha(Number(value.toFixed(2)));
 	}
 
 	return (
 		<ScrollView>
-			<View style={[styles.container, {paddingTop: statusBarHeight()}]}>
+			<View style={[styles.container, { paddingTop: inset.top }]}>
 				<Text style={styles.welcome}>Try to slide</Text>
 				<Slider
-					style={{marginLeft: 32, marginRight: 32, marginTop: 40}}
+					style={{ marginLeft: 32, marginRight: 32, marginTop: 40 }}
 					onValueChange={handleAlphaChange}
 					step={0.01}
 					value={topBarAlpha}
@@ -54,7 +57,8 @@ function TopBarAlpha({sceneId, navigator, alpha}: Props) {
 				<TouchableOpacity
 					onPress={pushToTopBarAlpha}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>TopBarAlpha</Text>
 				</TouchableOpacity>
 			</View>

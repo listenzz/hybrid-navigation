@@ -20,8 +20,6 @@ export interface Tabs extends Layout {
 		children: Array<BuildInLayout | Layout>;
 		options?: {
 			selectedIndex?: number;
-			tabBarModuleName?: string;
-			sizeIndeterminate?: boolean;
 		};
 	};
 }

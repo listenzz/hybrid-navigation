@@ -18,6 +18,8 @@ import com.navigation.androidx.BarStyle;
 import com.navigation.androidx.DrawableUtils;
 import com.navigation.androidx.Style;
 
+import java.util.Objects;
+
 public class GlobalStyle {
 
     private static final String TAG = "Navigation";
@@ -68,7 +70,7 @@ public class GlobalStyle {
             } else {
                 style.setToolbarBackgroundColor(Color.WHITE);
             }
-        }
+		}
 
         String topBarColorDarkContent = options.getString("topBarColorDarkContent");
         if (topBarColorDarkContent != null) {
@@ -161,25 +163,17 @@ public class GlobalStyle {
         // --------- tabBar ------------
         // -----------------------------
 
-        // tabBarColor
-        String tabBarColor = options.getString("tabBarColor");
-        if (tabBarColor != null) {
-            style.setTabBarBackgroundColor(tabBarColor);
+        // tabBarBackgroundColor
+        String tabBarBackgroundColor = options.getString("tabBarBackgroundColor");
+        if (tabBarBackgroundColor != null) {
+            style.setTabBarBackgroundColor(tabBarBackgroundColor);
         }
 
-        String tabBarItemColor = options.getString("tabBarItemColor");
-        if (tabBarItemColor != null) {
-            style.setTabBarItemColor(tabBarItemColor);
-        } else {
-            style.setTabBarItemColor("#FF5722");
-        }
+        String tabBarItemSelectedColor = options.getString("tabBarItemSelectedColor");
+		style.setTabBarItemColor(Objects.requireNonNullElse(tabBarItemSelectedColor, "#FF5722"));
 
-        String tabBarUnselectedItemColor = options.getString("tabBarUnselectedItemColor");
-        if (tabBarUnselectedItemColor != null) {
-            style.setTabBarUnselectedItemColor(tabBarUnselectedItemColor);
-        } else {
-            style.setTabBarUnselectedItemColor("#BDBDBD");
-        }
+        String tabBarItemNormalColor = options.getString("tabBarItemNormalColor");
+		style.setTabBarUnselectedItemColor(Objects.requireNonNullElse(tabBarItemNormalColor, "#666666"));
 
         // tabBarShadowImage
         Bundle shadowImage = options.getBundle("tabBarShadowImage");
@@ -230,9 +224,8 @@ public class GlobalStyle {
         }
 
         Drawable drawable = DrawableUtils.fromUri(context, uri);
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
+        if (drawable instanceof BitmapDrawable bitmapDrawable) {
+			bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
         }
         return drawable;
     }

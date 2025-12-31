@@ -1,37 +1,74 @@
-// android/build.gradle
+buildscript {
+    ext.getExtOrDefault = { name ->
+        return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['Navigation_' + name]
+    }
 
-def safeExtGet(prop, fallback) {
-    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:8.7.2"
+    }
 }
 
-apply plugin: 'com.android.library'
+apply plugin: "com.android.library"
+apply plugin: "com.facebook.react"
+
+def getExtOrIntegerDefault(name) {
+    return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["Navigation_" + name]).toInteger()
+}
 
 android {
+    namespace "com.reactnative.hybridnavigation"
+
+    compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
+
+    defaultConfig {
+        minSdkVersion getExtOrIntegerDefault("minSdkVersion")
+        targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    buildTypes {
+		debug {
+			debuggable true
+		}
+        release {
+            minifyEnabled false
+        }
+    }
+
+    lintOptions {
+        disable "GradleCompatible"
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    compileSdkVersion safeExtGet('compileSdkVersion', 30)
-    buildToolsVersion safeExtGet('buildToolsVersion', '30.0.2')
-
-    defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 21)
-        targetSdkVersion safeExtGet('targetSdkVersion', 30)
-        versionCode 1
-        versionName "1.0.0"
-    }
-
-    buildTypes {
-        release {
-            consumerProguardFiles 'proguard-rules.pro'
+    sourceSets {
+        main {
+            java.srcDirs += [
+                    "generated/java",
+                    "generated/jni"
+            ]
         }
     }
 }
 
+repositories {
+    mavenCentral()
+    google()
+}
+
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.facebook.react:react-native:+'
-    // api project(':navigation')
-    api 'io.github.listenzz:AndroidNavigation:13.10.0'
+    implementation "com.facebook.react:react-android"
+	// api project(':navigation')
+	api 'io.github.listenzz:AndroidNavigation:13.10.0'
 }

@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {TouchableOpacity, Text, TextInput, Image, ScrollView} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { TouchableOpacity, Text, TextInput, Image, ScrollView, View } from 'react-native';
 import styles from './Styles';
 
 import Navigation, {
@@ -9,7 +9,6 @@ import Navigation, {
 	NavigationProps,
 	useVisibleEffect,
 } from 'hybrid-navigation';
-import {KeyboardInsetsView} from '@sdcx/keyboard-insets';
 
 export default withNavigationItem({
 	titleItem: {
@@ -18,7 +17,7 @@ export default withNavigationItem({
 	topBarStyle: BarStyleLightContent,
 })(Result);
 
-function Result({navigator, sceneId}: NavigationProps) {
+function Result({ navigator, sceneId }: NavigationProps) {
 	const [text, setText] = useState('');
 	const [isRoot, setIsRoot] = useState(false);
 
@@ -28,19 +27,16 @@ function Result({navigator, sceneId}: NavigationProps) {
 		});
 	}, [navigator]);
 
-	useVisibleEffect(
-		useCallback(() => {
-			console.info(`Page Result is visible [${sceneId}]`);
-			return () => console.info(`Page Result is invisible [${sceneId}]`);
-		}, [sceneId]),
-	);
+	useVisibleEffect(() => {
+		console.info(`Page Result is visible [${sceneId}]`);
+		return () => console.info(`Page Result is invisible [${sceneId}]`);
+	});
 
 	useEffect(() => {
 		if (isRoot) {
 			Navigation.setLeftBarButtonItem(sceneId, {
 				title: 'Cancel',
 				icon: Image.resolveAssetSource(require('./images/cancel.png')),
-				insetsIOS: {top: -1, left: -8, bottom: 0, right: 8},
 				action: navigator => {
 					navigator.dismiss();
 				},
@@ -83,7 +79,7 @@ function Result({navigator, sceneId}: NavigationProps) {
 	}
 
 	return (
-		<KeyboardInsetsView extraHeight={16} style={{flex: 1}}>
+		<View style={{ flex: 1 }}>
 			<ScrollView contentContainerStyle={styles.container}>
 				<Text style={styles.welcome}>This's a React Native scene.</Text>
 
@@ -95,7 +91,8 @@ function Result({navigator, sceneId}: NavigationProps) {
 					onPress={popToRoot}
 					activeOpacity={0.2}
 					style={styles.button}
-					disabled={isRoot}>
+					disabled={isRoot}
+				>
 					<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
 						pop to home
 					</Text>
@@ -107,7 +104,6 @@ function Result({navigator, sceneId}: NavigationProps) {
 					value={text}
 					placeholder={'enter your text'}
 					textAlignVertical="center"
-					autoFocus={false}
 				/>
 
 				<TouchableOpacity onPress={sendResult} activeOpacity={0.2} style={styles.button}>
@@ -125,10 +121,11 @@ function Result({navigator, sceneId}: NavigationProps) {
 				<TouchableOpacity
 					onPress={printRouteGraph}
 					activeOpacity={0.2}
-					style={styles.button}>
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>printRouteGraph</Text>
 				</TouchableOpacity>
 			</ScrollView>
-		</KeyboardInsetsView>
+		</View>
 	);
 }

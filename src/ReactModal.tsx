@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect} from 'react';
-import {View, Text, StyleSheet, TouchableHighlight} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import withBottomModal from './withBottomModal';
 import Navigation, {
 	RESULT_OK,
@@ -8,7 +8,7 @@ import Navigation, {
 	withNavigationItem,
 } from 'hybrid-navigation';
 
-function ReactModal({navigator, sceneId}: NavigationProps) {
+function ReactModal({ navigator, sceneId }: NavigationProps) {
 	useEffect(() => {
 		navigator.setResult(RESULT_OK, {
 			text: 'Are you male or female?',
@@ -16,12 +16,10 @@ function ReactModal({navigator, sceneId}: NavigationProps) {
 		});
 	}, [navigator, sceneId]);
 
-	useVisibleEffect(
-		useCallback(() => {
-			console.info(`Page ReactModal is visible [${sceneId}]`);
-			return () => console.info(`Page ReactModal is invisible [${sceneId}]`);
-		}, [sceneId]),
-	);
+	useVisibleEffect(() => {
+		console.info(`Page ReactModal is visible [${sceneId}]`);
+		return () => console.info(`Page ReactModal is invisible [${sceneId}]`);
+	});
 
 	async function hideModal(gender?: string) {
 		if (gender) {
@@ -87,7 +85,7 @@ function ReactModal({navigator, sceneId}: NavigationProps) {
 
 	return (
 		<View style={styles.container}>
-			{actionSheets.map(({text, onPress}, index) => {
+			{actionSheets.map(({ text, onPress }, index) => {
 				const isLast = index === actionSheets.length - 1;
 				return (
 					<View key={text} style={!isLast && styles.divider}>
@@ -100,7 +98,7 @@ function ReactModal({navigator, sceneId}: NavigationProps) {
 	);
 }
 
-export default withBottomModal({safeAreaColor: '#F3F3F3'})(
+export default withBottomModal({ safeAreaColor: '#F3F3F3' })(
 	withNavigationItem({
 		// forceTransparentDialogWindow: true,
 		// screenBackgroundColor: '#33000000',

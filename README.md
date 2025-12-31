@@ -11,11 +11,12 @@ React Native Navigation that supports seamless navigation between Native and Rea
 
 ![navigation-android](./screenshot/android.png)
 
-## Support
+## 版本兼容
 
-| version | react-native version |
-| ------- | -------------------- |
-| 1.0.0+  | 0.60.0+              |
+| 版本 | RN 版本 | RN 架构 |
+| ---- | ------- | ------- |
+| 2.x  | < 0.82  | 旧架构  |
+| 3.x  | >= 0.83 | 新架构  |
 
 ## 运行 example 项目
 
@@ -38,7 +39,15 @@ yarn start
 
 首先，确保你有一个模拟器或设备
 
-如果熟悉原生开发，使用 Android Studio 打开 android，像运行原生应用那样运行它，也可以使用命令行：
+如果熟悉原生开发，使用 Android Studio 打开 android 目录，像运行原生应用那样运行它。
+
+注意修改 Gradle JDK 版本为 17，否则会报错。
+
+```error
+Cause: error=2, No such file or directory
+```
+
+也可以使用命令行：
 
 ```sh
 # 在项目根目录下运行
@@ -67,7 +76,7 @@ cd ios && pod install
 cd -
 ```
 
-如果熟悉原生开发，使用 Xcode 打开 ios，像运行原生应用那样运行它，或者使用命令行：
+如果熟悉原生开发，使用 Xcode 打开 ios 目录，像运行原生应用那样运行它，或者使用命令行：
 
 ```sh
 # 在项目根目录下运行

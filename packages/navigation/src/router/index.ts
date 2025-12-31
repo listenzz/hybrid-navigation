@@ -1,4 +1,4 @@
-import {pathToRegexp, match} from 'path-to-regexp';
+import { pathToRegexp, match } from 'path-to-regexp';
 import {
 	RouteConfig,
 	RouteData,
@@ -7,11 +7,11 @@ import {
 	RouteInfo,
 	RouteInterceptor,
 } from '../Route';
-import {NavigationItem} from '../Options';
-import {StackRouteHandler} from './stack';
-import {ScreenRouteHandler} from './screen';
-import {TabsRouteHandler} from './tabs';
-import {DrawerRouteHandler} from './drawer';
+import { NavigationItem } from '../Options';
+import { StackRouteHandler } from './stack';
+import { ScreenRouteHandler } from './screen';
+import { TabsRouteHandler } from './tabs';
+import { DrawerRouteHandler } from './drawer';
 
 import Navigation from '../Navigation';
 
@@ -54,7 +54,7 @@ class Router {
 	}
 
 	private convertConfigToData(moduleName: string, route: RouteConfig) {
-		let {path, dependency, mode} = route;
+		let { path, dependency, mode } = route;
 		let regexp: RegExp | undefined;
 		if (path) {
 			if (!path.startsWith('/')) {
@@ -63,7 +63,7 @@ class Router {
 			regexp = pathToRegexp(path);
 		}
 		mode = mode || 'push';
-		return {moduleName, mode, path, regexp, dependency};
+		return { moduleName, mode, path, regexp, dependency };
 	}
 
 	private isRouteConfigInflated = false;
@@ -125,10 +125,10 @@ class Router {
 				const moduleName = data.moduleName;
 				const params = pathParams(pathName);
 				const query = queryParams(queryString);
-				props = {...query, ...params, ...props};
+				props = { ...query, ...params, ...props };
 				const dependencies = this.routeDependencies(data);
 				const mode = data.mode;
-				return {moduleName, props, dependencies, mode, options};
+				return { moduleName, props, dependencies, mode, options };
 			}
 		}
 	}
@@ -172,8 +172,8 @@ class Router {
 		const graphArray = await Navigation.routeGraph();
 		if (graphArray.length > 1) {
 			for (let index = graphArray.length - 1; index > 0; index--) {
-				const {mode: layoutMode} = graphArray[index];
-				const {sceneId, moduleName} = await Navigation.currentRoute();
+				const { mode: layoutMode } = graphArray[index];
+				const { sceneId, moduleName } = await Navigation.currentRoute();
 				if (layoutMode === 'present') {
 					await Navigation.dispatch(sceneId, 'dismiss', {
 						from: moduleName,
@@ -195,9 +195,9 @@ class Router {
 			return;
 		}
 
-		const {sceneId, moduleName: from} = await Navigation.currentRoute();
-		Navigation.dispatch(sceneId, 'closeMenu', {from});
-		const {moduleName, mode: routeMode, props: initialProps} = route;
+		const { sceneId, moduleName: from } = await Navigation.currentRoute();
+		Navigation.dispatch(sceneId, 'closeMenu', { from });
+		const { moduleName, mode: routeMode, props: initialProps } = route;
 		let action = 'push';
 		if (routeMode === 'present') {
 			action = 'present';

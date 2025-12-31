@@ -1,5 +1,5 @@
-import {EmitterSubscription, Linking} from 'react-native';
-import {router} from './router';
+import { EmitterSubscription, Linking } from 'react-native';
+import { router } from './router';
 
 class DeepLinkImpl {
 	private active = 0;
@@ -47,7 +47,7 @@ class DeepLinkImpl {
 		}
 	}
 
-	private handleLinking = (event: {url: string}) => {
+	private handleLinking = (event: { url: string }) => {
 		console.info(`deeplink:${event.url}`);
 		let path = event.url.replace(this.uriPrefix, '');
 		if (!path.startsWith('/')) {
