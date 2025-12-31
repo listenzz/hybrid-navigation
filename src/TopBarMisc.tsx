@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { withNavigationItem, NavigationProps, useVisibleEffect } from 'hybrid-navigation';
 import styles from './Styles';
@@ -17,12 +17,10 @@ function TopBarMisc({ navigator }: NavigationProps) {
 		};
 	}, []);
 
-	useVisibleEffect(
-		useCallback(() => {
-			console.info(`Page TopBarMisc is visible`);
-			return () => console.info(`Page TopBarMisc is invisible`);
-		}, []),
-	);
+	useVisibleEffect(() => {
+		console.info(`Page TopBarMisc is visible`);
+		return () => console.info(`Page TopBarMisc is invisible`);
+	});
 
 	function noninteractive() {
 		navigator.push('Noninteractive');

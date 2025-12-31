@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
 import { useNavigator, useVisibleEffect } from 'hybrid-navigation';
 import styles from './Styles';
@@ -24,12 +24,10 @@ function Landscape() {
 		};
 	}, []);
 
-	useVisibleEffect(
-		useCallback(() => {
-			console.info(`Page Landscape is visible`);
-			return () => console.info(`Page Landscape is invisible`);
-		}, []),
-	);
+	useVisibleEffect(() => {
+		console.info(`Page Landscape is visible`);
+		return () => console.info(`Page Landscape is invisible`);
+	});
 
 	const navigator = useNavigator();
 

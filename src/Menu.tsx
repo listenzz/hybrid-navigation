@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { TouchableOpacity, Text, View } from 'react-native';
 import { NavigationProps, useVisibleEffect } from 'hybrid-navigation';
 
@@ -13,12 +13,10 @@ export default function Menu({ navigator }: NavigationProps) {
 		navigator.push('NativeModule');
 	};
 
-	useVisibleEffect(
-		useCallback(() => {
-			console.log('Menu is visible');
-			return () => console.log('Menu is invisible');
-		}, []),
-	);
+	useVisibleEffect(() => {
+		console.log('Menu is visible');
+		return () => console.log('Menu is invisible');
+	});
 
 	return (
 		<View style={[styles.container, { paddingTop: inset.top }]}>

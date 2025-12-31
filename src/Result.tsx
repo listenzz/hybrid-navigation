@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, TextInput, Image, ScrollView, View } from 'react-native';
 import styles from './Styles';
 
@@ -27,12 +27,10 @@ function Result({ navigator, sceneId }: NavigationProps) {
 		});
 	}, [navigator]);
 
-	useVisibleEffect(
-		useCallback(() => {
-			console.info(`Page Result is visible [${sceneId}]`);
-			return () => console.info(`Page Result is invisible [${sceneId}]`);
-		}, [sceneId]),
-	);
+	useVisibleEffect(() => {
+		console.info(`Page Result is visible [${sceneId}]`);
+		return () => console.info(`Page Result is invisible [${sceneId}]`);
+	});
 
 	useEffect(() => {
 		if (isRoot) {

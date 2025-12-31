@@ -6,8 +6,8 @@ import Navigation, {
 	ImageSource,
 	TabBarStyle,
 	BarButtonItem,
-	useVisible,
 	TabItemInfo,
+	useVisibleEffect,
 } from 'hybrid-navigation';
 
 import styles from './Styles';
@@ -43,20 +43,12 @@ export default withNavigationItem({
 })(Options);
 
 function Options({ sceneId, navigator }: NavigationProps) {
-	const visible = useVisible();
-
-	useEffect(() => {
-		if (!visible) {
-			return;
-		}
-
+	useVisibleEffect(() => {
 		console.info('Page Options is visible');
-		Navigation.setMenuInteractive(sceneId, true);
 		return () => {
 			console.info('Page Options is invisible');
-			Navigation.setMenuInteractive(sceneId, false);
 		};
-	}, [visible, sceneId]);
+	});
 
 	useEffect(() => {
 		console.info('Page Options mounted');
@@ -204,6 +196,7 @@ function Options({ sceneId, navigator }: NavigationProps) {
 		}
 	}, [tabBarColor, sceneId]);
 
+	console.log('Options render ', sceneId);
 	return (
 		<ScrollView
 			contentInsetAdjustmentBehavior="never"

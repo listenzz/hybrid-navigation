@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import withBottomModal from './withBottomModal';
 import Navigation, {
@@ -16,12 +16,10 @@ function ReactModal({ navigator, sceneId }: NavigationProps) {
 		});
 	}, [navigator, sceneId]);
 
-	useVisibleEffect(
-		useCallback(() => {
-			console.info(`Page ReactModal is visible [${sceneId}]`);
-			return () => console.info(`Page ReactModal is invisible [${sceneId}]`);
-		}, [sceneId]),
-	);
+	useVisibleEffect(() => {
+		console.info(`Page ReactModal is visible [${sceneId}]`);
+		return () => console.info(`Page ReactModal is invisible [${sceneId}]`);
+	});
 
 	async function hideModal(gender?: string) {
 		if (gender) {

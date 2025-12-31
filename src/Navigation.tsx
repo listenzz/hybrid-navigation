@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TouchableOpacity, Text, View, ScrollView, Image, TextInput } from 'react-native';
 
 import styles from './Styles';
 import Navigation, {
 	RESULT_OK,
 	withNavigationItem,
-	useVisible,
 	NavigationProps,
 	useVisibleEffect,
 	RESULT_BLOCK,
@@ -45,17 +44,15 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 	}, [navigator]);
 
 	const inputRef = useRef<TextInput>(null);
-	useVisibleEffect(
-		useCallback(() => {
-			console.log('----blur input----');
-			inputRef.current?.blur();
-		}, []),
-	);
+	useVisibleEffect(() => {
+		console.log('----blur input----');
+		inputRef.current?.blur();
+	});
 
-	const visible = useVisible();
-	useEffect(() => {
-		Navigation.setMenuInteractive(sceneId, isRoot && visible);
-	}, [visible, isRoot, sceneId]);
+	useVisibleEffect(() => {
+		console.info(`Page Navigation is visible [${sceneId}]`);
+		return () => console.info(`Page Navigation is invisible [${sceneId}]`);
+	});
 
 	useEffect(() => {
 		console.info(`Page Navigation mounted [${sceneId}]`);
@@ -63,13 +60,6 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 			console.info(`Page Navigation unmounted [${sceneId}]`);
 		};
 	}, [sceneId]);
-
-	useVisibleEffect(
-		useCallback(() => {
-			console.info(`Page Navigation is visible [${sceneId}]`);
-			return () => console.info(`Page Navigation is invisible [${sceneId}]`);
-		}, [sceneId]),
-	);
 
 	useEffect(() => {
 		navigator.setResult(RESULT_OK, { backId: sceneId });
@@ -86,7 +76,7 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 		}
 		const [_, data] = await navigator.push('Navigation', props);
 		if (data) {
-			setText(data.backId || undefined);
+			// setText(data.backId || undefined);
 		}
 	}
 
@@ -186,6 +176,8 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 	function handleTextChanged(txt: string) {
 		setInput(txt);
 	}
+
+	console.log('Navigation render ', sceneId);
 
 	return (
 		<ScrollView
