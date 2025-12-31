@@ -7,6 +7,7 @@
 #import <React/RCTLinkingManager.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLog.h>
+#import <React/RCTDevMenu.h>
 
 #import <HybridNavigation/HybridNavigation.h>
 #import "NativeViewController.h"
@@ -50,7 +51,7 @@
 	self.reactNativeFactory = factory;
 	self.rootViewFactory = factory.rootViewFactory;
 	
-	[self.rootViewFactory initializeReactHostWithLaunchOptions:launchOptions];
+	[self.rootViewFactory initializeReactHostWithLaunchOptions:launchOptions devMenuConfiguration:[RCTDevMenuConfiguration defaultConfiguration]];
 	[[HBDReactBridgeManager get] installWithReactHost:self.rootViewFactory.reactHost];
     
     // register native modules
