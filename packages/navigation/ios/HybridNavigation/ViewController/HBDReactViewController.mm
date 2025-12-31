@@ -1,6 +1,7 @@
 #import "HBDReactViewController.h"
 
 #import "HBDReactBridgeManager.h"
+#import "HBDRootView.h"
 #import "HBDTitleView.h"
 #import "HBDUtils.h"
 #import "HBDNativeEvent.h"
@@ -12,7 +13,7 @@
 
 @property(nonatomic, assign) BOOL firstRenderCompleted;
 @property(nonatomic, assign) BOOL viewAppeared;
-@property(nonatomic, strong, readwrite) RCTSurfaceHostingProxyRootView *rootView;
+@property(nonatomic, strong, readwrite) HBDRootView *rootView;
 
 @end
 
@@ -38,9 +39,9 @@
 }
 
 - (void)loadView {
-	RCTHost *host = [HBDReactBridgeManager get].rctHost;
-	RCTFabricSurface *surface = [host createSurfaceWithModuleName:self.moduleName initialProperties:[self propsWithSceneId]];
-	RCTSurfaceHostingProxyRootView *rootView = [[RCTSurfaceHostingProxyRootView alloc] initWithSurface:(id)surface];
+	RCTHost *rctHost = [HBDReactBridgeManager get].rctHost;
+	RCTFabricSurface *surface = [rctHost createSurfaceWithModuleName:self.moduleName initialProperties:[self propsWithSceneId]];
+	HBDRootView *rootView = [[HBDRootView alloc] initWithSurface:(id)surface];
     self.rootView = rootView;
 
     BOOL passThroughTouches = [self.options[@"passThroughTouches"] boolValue];
