@@ -11,12 +11,12 @@ React Native Navigation that supports seamless navigation between Native and Rea
 
 ![navigation-android](./screenshot/android.png)
 
-## Support
+## 版本兼容
 
-| version | react-native version | 架构 |
-| ------- | -------------------- | ---- |
-| 1.0.0+  | 0.60.0+              | 旧   |
-| 2.18.0+ | 0.72.0+              | 旧   |
+| 版本 | RN 版本 | RN 架构 |
+| ---- | ------- | ------- |
+| 2.x  | < 0.82  | 旧架构  |
+| 3.x  | >= 0.83 | 新架构  |
 
 ## 运行 example 项目
 

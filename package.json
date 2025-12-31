@@ -17,10 +17,6 @@
 	"workspaces": [
 		"packages/*"
 	],
-	"peerDependencies": {
-		"react": ">=16.8",
-		"react-native": ">=0.60"
-	},
 	"dependencies": {
 		"@react-native-community/hooks": "^3.1.0",
 		"@react-native-community/slider": "^5.1.0",
