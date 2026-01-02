@@ -7,7 +7,7 @@ import Navigation, {
 	Tabs,
 	Stack,
 } from 'hybrid-navigation';
-import { Image, LogBox, Platform } from 'react-native';
+import { Image, Platform } from 'react-native';
 import NavigationScreen from './Navigation';
 import Result from './Result';
 import Options from './Options';
@@ -39,7 +39,7 @@ async function graph() {
 	console.log(JSON.stringify(await Navigation.routeGraph(), null, 2));
 }
 
-// graph();
+graph();
 
 // 设置全局样式
 Navigation.setDefaultOptions({

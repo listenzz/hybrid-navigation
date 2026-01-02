@@ -21,7 +21,6 @@ interface IndexType {
 
 function pathParams(path: string) {
 	const pathMatch = match<IndexType>(path, {
-		encode: encodeURI,
 		decode: decodeURIComponent,
 	})(path);
 	return pathMatch ? pathMatch.params : {};
@@ -60,7 +59,7 @@ class Router {
 			if (!path.startsWith('/')) {
 				route.path = '/' + route.path;
 			}
-			regexp = pathToRegexp(path);
+			regexp = pathToRegexp(path).regexp;
 		}
 		mode = mode || 'push';
 		return { moduleName, mode, path, regexp, dependency };
