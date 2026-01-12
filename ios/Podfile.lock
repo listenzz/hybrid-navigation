@@ -8,7 +8,7 @@ PODS:
   - hermes-engine (0.14.0):
     - hermes-engine/Pre-built (= 0.14.0)
   - hermes-engine/Pre-built (0.14.0)
-  - HybridNavigation (3.0.3):
+  - HybridNavigation (3.0.4):
     - boost
     - DoubleConversion
     - fast_float
@@ -2883,7 +2883,7 @@ SPEC CHECKSUMS:
   fmt: a40bb5bd0294ea969aaaba240a927bd33d878cdd
   glog: 5683914934d5b6e4240e497e0f4a3b42d1854183
   hermes-engine: 57974faa79af85c21d71163c6dcb385bc98a0cc5
-  HybridNavigation: f10ad0930dc90c52d206b6b37dfe1ab660e71fd1
+  HybridNavigation: 5e5d78368293abb639c840ce801bf1aba763c6be
   RCT-Folly: 846fda9475e61ec7bcbf8a3fe81edfcaeb090669
   RCTDeprecation: a41bbdd9af30bf2e5715796b313e44ec43eefff1
   RCTRequired: 7be34aabb0b77c3cefe644528df0fa0afad4e4d0
