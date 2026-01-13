@@ -1,74 +1,48 @@
-buildscript {
-    ext.getExtOrDefault = { name ->
-        return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['Navigation_' + name]
-    }
+apply plugin: 'com.android.library'
+apply plugin: 'com.facebook.react'
 
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "com.android.tools.build:gradle:8.7.2"
-    }
-}
-
-apply plugin: "com.android.library"
-apply plugin: "com.facebook.react"
-
-def getExtOrIntegerDefault(name) {
-    return rootProject.ext.has(name) ? rootProject.ext.get(name) : (project.properties["Navigation_" + name]).toInteger()
+def safeExtGet(prop, fallback) {
+	rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
 }
 
 android {
-    namespace "com.reactnative.hybridnavigation"
 
-    compileSdkVersion getExtOrIntegerDefault("compileSdkVersion")
-
-    defaultConfig {
-        minSdkVersion getExtOrIntegerDefault("minSdkVersion")
-        targetSdkVersion getExtOrIntegerDefault("targetSdkVersion")
-    }
-
-    buildFeatures {
-        buildConfig true
-    }
-
-    buildTypes {
-		debug {
-			debuggable true
+	def agpVersion = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')
+	// Check AGP version for backward compatibility w/react-native versions still on gradle plugin 6
+	def major = agpVersion[0].toInteger()
+	def minor = agpVersion[1].toInteger()
+	if ((major == 7 && minor >= 3) || major >= 8) {
+		namespace "com.reactnative.hybridnavigation"
+		buildFeatures {
+			buildConfig true
 		}
-        release {
-            minifyEnabled false
-        }
-    }
+	}
 
-    lintOptions {
-        disable "GradleCompatible"
-    }
+	compileSdkVersion safeExtGet('compileSdkVersion', 35)
+	buildToolsVersion safeExtGet('buildToolsVersion', '35.0.0')
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+	defaultConfig {
+		minSdkVersion safeExtGet('minSdkVersion', 24)
+		targetSdkVersion safeExtGet('targetSdkVersion', 35)
+	}
 
-    sourceSets {
-        main {
-            java.srcDirs += [
-                    "generated/java",
-                    "generated/jni"
-            ]
-        }
-    }
+	sourceSets {
+		main {
+			java.srcDirs += [
+				"generated/java",
+				"generated/jni"
+			]
+		}
+	}
 }
 
 repositories {
-    mavenCentral()
-    google()
+	google()
+	mavenCentral()
 }
 
 dependencies {
-    implementation "com.facebook.react:react-android"
+	implementation "com.facebook.react:react-android"
 	// api project(':navigation')
 	api 'io.github.listenzz:AndroidNavigation:13.10.0'
 }
