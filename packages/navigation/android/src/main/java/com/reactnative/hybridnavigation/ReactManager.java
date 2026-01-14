@@ -108,6 +108,9 @@ public class ReactManager {
 	@Nullable
 	public DevSupportManager getDevSupportManager() {
 		checkReactHost();
+		if (!BuildConfig.DEBUG) {
+			return null;
+		}
 		return reactHost.getDevSupportManager();
 	}
 
