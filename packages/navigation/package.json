@@ -1,10 +1,12 @@
 {
 	"name": "hybrid-navigation",
 	"description": "React Native Navigation that supports seamless navigation between Native and React.",
-	"version": "3.0.6",
-	"main": "./dist/index.js",
-	"typings": "./dist/index.d.ts",
+	"version": "3.0.8",
+	"main": "./dist/index",
+	"module": "./dist/index",
+	"types": "./dist/index.d.ts",
 	"react-native": "src/index",
+	"source": "src/index",
 	"nativePackage": true,
 	"files": [
 		"src",
