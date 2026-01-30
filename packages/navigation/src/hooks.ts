@@ -12,6 +12,9 @@ export function useVisibleEffect<T extends Function>(callback: T) {
 
 	useEffect(() => {
 		let destructor: (() => void) | undefined;
+		if (navigator.visibility === 'visible') {
+			destructor = event();
+		}
 		const subscription = Navigation.addVisibilityEventListener(navigator.sceneId, v => {
 			if (v === 'visible') {
 				destructor = event();
