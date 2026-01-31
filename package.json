@@ -20,6 +20,7 @@
 	"dependencies": {
 		"@react-native-community/hooks": "^3.1.0",
 		"@react-native-community/slider": "^5.1.0",
+		"@sdcx/keyboard-insets": "^1.0.2",
 		"hybrid-navigation": "*",
 		"react": "19.2.3",
 		"react-native": "0.83.1",

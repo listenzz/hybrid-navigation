@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView, Platform } from 'react-native';
 import { withNavigationItem, NavigationProps } from 'hybrid-navigation';
 import styles from './Styles';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,7 +12,7 @@ function TopBarHidden({ navigator }: NavigationProps) {
 
 	return (
 		<ScrollView>
-			<View style={[styles.container, { paddingTop: inset.top }]}>
+			<View style={[styles.container, { paddingTop: Platform.OS === 'ios' ? inset.top - 44: inset.top }]}>
 				<Text style={styles.welcome}>TopBar is hidden</Text>
 				<TouchableOpacity onPress={topBarHidden} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>TopBarHidden</Text>

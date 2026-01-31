@@ -1038,7 +1038,20 @@
     "@babel/parser" "^7.27.2"
     "@babel/types" "^7.27.1"
 
-"@babel/traverse--for-generate-function-map@npm:@babel/traverse@^7.25.3", "@babel/traverse@^7.25.3", "@babel/traverse@^7.27.1":
+"@babel/traverse--for-generate-function-map@npm:@babel/traverse@^7.25.3":
+  version "7.27.1"
+  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.27.1.tgz#4db772902b133bbddd1c4f7a7ee47761c1b9f291"
+  integrity sha512-ZCYtZciz1IWJB4U61UPu4KEaqyfj+r5T1Q5mqPo+IBpcG9kHv30Z0aD8LXPgC1trYa6rK0orRyAhqUgk4MjmEg==
+  dependencies:
+    "@babel/code-frame" "^7.27.1"
+    "@babel/generator" "^7.27.1"
+    "@babel/parser" "^7.27.1"
+    "@babel/template" "^7.27.1"
+    "@babel/types" "^7.27.1"
+    debug "^4.3.1"
+    globals "^11.1.0"
+
+"@babel/traverse@^7.25.3", "@babel/traverse@^7.27.1":
   version "7.27.1"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.27.1.tgz#4db772902b133bbddd1c4f7a7ee47761c1b9f291"
   integrity sha512-ZCYtZciz1IWJB4U61UPu4KEaqyfj+r5T1Q5mqPo+IBpcG9kHv30Z0aD8LXPgC1trYa6rK0orRyAhqUgk4MjmEg==
@@ -1995,6 +2008,11 @@
   dependencies:
     invariant "^2.2.4"
     nullthrows "^1.1.1"
+
+"@sdcx/keyboard-insets@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/@sdcx/keyboard-insets/-/keyboard-insets-1.0.2.tgz#058b8399550a813003356bbd7827b6c38b432b0d"
+  integrity sha512-vqW7zNuTiqh6Nlc4S9wLtQ0TPLhtT8aISalBI7V0g8GtqYf/TaC24DqD14WXU/GR5+hxY6oyEFe+yWDBPH8BtQ==
 
 "@sideway/address@^4.1.5":
   version "4.1.5"

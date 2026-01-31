@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TouchableOpacity, Text, View, ScrollView, Image, TextInput } from 'react-native';
+import { KeyboardInsetsView } from '@sdcx/keyboard-insets';
 
 import styles from './Styles';
 import Navigation, {
@@ -250,15 +251,17 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 				{renderResult()}
 				{renderError()}
 			</View>
-			<TextInput
-				ref={inputRef}
-				style={[styles.input2, { marginBottom: insets.bottom || 16 }]}
-				onChangeText={handleTextChanged}
-				autoFocus={false}
-				value={input}
-				placeholder={'test keyboard instes'}
-				textAlignVertical="center"
-			/>
+			<KeyboardInsetsView extraHeight={16} style={styles.keyboard}>
+				<TextInput
+					ref={inputRef}
+					style={[styles.input2, { marginBottom: insets.bottom || 16 }]}
+					onChangeText={handleTextChanged}
+					autoFocus={false}
+					value={input}
+					placeholder={'test keyboard instes'}
+					textAlignVertical="center"
+				/>
+			</KeyboardInsetsView>
 		</ScrollView>
 	);
 }
