@@ -1,8 +1,10 @@
 import { withNavigation } from './NavigationComponentWrap';
 import navigation from './Navigation';
+
 navigation.setNavigationComponentWrap(withNavigation);
 const Navigation = navigation;
 export default Navigation;
+
 export { RESULT_OK, RESULT_CANCEL, RESULT_BLOCK } from './Navigation';
 export { withNavigationItem } from './NavigationComponentWrap';
 export type { NavigationProps } from './NavigationComponentWrap';

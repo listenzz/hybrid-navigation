@@ -21,8 +21,8 @@ import VisibilityEventHandler, {
 } from './handler/VisibilityEventHandler';
 
 import NativeEvent from './NativeEvent';
-import NavigationModule from './NavigationModule';
-import GardenModule from './NativeGarden';
+import NativeNavigation from './NativeNavigation';
+import NativeGarden from './NativeGarden';
 
 export type { ResultType } from './handler/ResultEventHandler';
 import type { DispatchParams, NavigationInterceptor } from './handler/DispatchCommandHandler';
@@ -34,7 +34,7 @@ type Nullable<T> = {
 	[P in keyof T]: T[P] extends T[P] | undefined ? T[P] | null : T[P];
 };
 
-export const { RESULT_CANCEL, RESULT_OK, RESULT_BLOCK } = NavigationModule.getConstants();
+export const { RESULT_CANCEL, RESULT_OK, RESULT_BLOCK } = NativeNavigation.getConstants();
 
 export type NavigationSubscription = {
 	remove: () => void;
@@ -113,7 +113,7 @@ class NavigationImpl implements Navigation {
 	startRegisterComponent(hoc?: HOC) {
 		this.hoc = hoc;
 		this.registerEnded = false;
-		NavigationModule.startRegisterReactComponent();
+		NativeNavigation.startRegisterReactComponent();
 	}
 
 	endRegisterComponent() {
@@ -122,7 +122,7 @@ class NavigationImpl implements Navigation {
 			return;
 		}
 		this.registerEnded = true;
-		NavigationModule.endRegisterReactComponent();
+		NativeNavigation.endRegisterReactComponent();
 	}
 
 	registerComponent(
@@ -143,7 +143,7 @@ class NavigationImpl implements Navigation {
 		let options: object =
 			this.bindBarButtonClickEvent('permanent', (WrappedComponent as any).navigationItem) ||
 			{};
-		NavigationModule.registerReactComponent(appKey, options);
+		NativeNavigation.registerReactComponent(appKey, options);
 
 		let RootComponent = this.wrap!(appKey)(WrappedComponent);
 		AppRegistry.registerComponent(appKey, () => RootComponent);
@@ -206,7 +206,7 @@ class NavigationImpl implements Navigation {
 				'`resultCode` can only be `RESULT_OK`, `RESULT_CANCEL` or an integer greater than 0.',
 			);
 		}
-		NavigationModule.setResult(sceneId, resultCode, data);
+		NativeNavigation.setResult(sceneId, resultCode, data as object);
 	};
 
 	result<T extends ResultType>(sceneId: string, resultCode: number) {
@@ -227,74 +227,94 @@ class NavigationImpl implements Navigation {
 	}
 
 	currentTab(sceneId: string) {
-		return NavigationModule.currentTab(sceneId);
+		return new Promise<number>(resolve => {
+			NativeNavigation.currentTab(sceneId, (_, index) => {
+				resolve(index);
+			});
+		});
 	}
 
 	findSceneIdByModuleName(moduleName: string) {
-		return NavigationModule.findSceneIdByModuleName(moduleName);
+		return new Promise<string | null>(resolve => {
+			NativeNavigation.findSceneIdByModuleName(moduleName, (_, sceneId) => {
+				resolve(sceneId);
+			});
+		});
 	}
 
 	isStackRoot(sceneId: string) {
-		return NavigationModule.isStackRoot(sceneId);
+		return new Promise<boolean>(resolve => {
+			NativeNavigation.isStackRoot(sceneId, (_, result) => {
+				resolve(result);
+			});
+		});
 	}
 
 	signalFirstRenderComplete(sceneId: string) {
-		NavigationModule.signalFirstRenderComplete(sceneId);
+		NativeNavigation.signalFirstRenderComplete(sceneId);
 	}
 
 	currentRoute(): Promise<Route> {
-		return NavigationModule.currentRoute();
+		return new Promise<Route>(resolve => {
+			NativeNavigation.currentRoute((_, route) => {
+				resolve(route);
+			});
+		});
 	}
 
 	routeGraph(): Promise<RouteGraph[]> {
-		return NavigationModule.routeGraph();
+		return new Promise<RouteGraph[]>(resolve => {
+			NativeNavigation.routeGraph((_, graph) => {
+				resolve(graph);
+			});
+		});
 	}
 
 	setDefaultOptions(options: DefaultOptions) {
-		GardenModule.setStyle(options);
+		NativeGarden.setStyle(options);
 	}
 
 	setLeftBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null) {
 		const options = this.bindBarButtonClickEvent(sceneId, buttonItem);
-		GardenModule.setLeftBarButtonItem(sceneId, options);
+		NativeGarden.setLeftBarButtonItem(sceneId, options);
 	}
 
 	setRightBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null) {
 		const options = this.bindBarButtonClickEvent(sceneId, buttonItem);
-		GardenModule.setRightBarButtonItem(sceneId, options);
+		NativeGarden.setRightBarButtonItem(sceneId, options);
 	}
 
 	setLeftBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null) {
 		const options = this.bindBarButtonClickEvent(sceneId, buttonItems) as Array<{}> | null;
-		GardenModule.setLeftBarButtonItems(sceneId, options);
+		NativeGarden.setLeftBarButtonItems(sceneId, options);
 	}
 
 	setRightBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null) {
 		const options = this.bindBarButtonClickEvent(sceneId, buttonItems) as Array<{}> | null;
-		GardenModule.setRightBarButtonItems(sceneId, options);
+		NativeGarden.setRightBarButtonItems(sceneId, options);
 	}
 
 	setTitleItem(sceneId: string, titleItem: TitleItem) {
-		GardenModule.setTitleItem(sceneId, titleItem);
+		NativeGarden.setTitleItem(sceneId, titleItem);
 	}
 
 	updateOptions(sceneId: string, options: NavigationOption) {
-		GardenModule.updateOptions(sceneId, options);
+		NativeGarden.updateOptions(sceneId, options);
 	}
 
 	updateTabBar(sceneId: string, options: TabBarStyle) {
-		GardenModule.updateTabBar(sceneId, options);
+		NativeGarden.updateTabBar(sceneId, options);
 	}
 
 	setTabItem(sceneId: string, item: TabItemInfo | TabItemInfo[]) {
 		if (!Array.isArray(item)) {
 			item = [item];
 		}
-		GardenModule.setTabItem(sceneId, item);
+		NativeGarden.setTabItem(sceneId, item);
 	}
 
 	setMenuInteractive(sceneId: string, enabled: boolean) {
-		GardenModule.setMenuInteractive(sceneId, enabled);
+		NativeGarden.setMenuInteractive(sceneId, enabled);
 	}
 
 	setBarButtonClickEventListener(listener: BarButtonClickEventListener) {

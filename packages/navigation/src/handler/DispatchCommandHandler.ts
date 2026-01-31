@@ -1,4 +1,4 @@
-import NavigationModule from '../NavigationModule';
+import NativeNavigation from '../NativeNavigation';
 import { NavigationItem } from '../Options';
 import { BuildInLayout, Layout } from '../Route';
 
@@ -42,7 +42,11 @@ export default class DispatchCommandHandler {
 		if (intercepted) {
 			return false;
 		}
-		return NavigationModule.dispatch(sceneId, action, params);
+		return new Promise<boolean>(resolve => {
+			NativeNavigation.dispatch(sceneId, action, params, (_, result) => {
+				resolve(result);
+			});
+		});
 	}
 
 	private intercept(action: string, params: InterceptParams) {

@@ -1,6 +1,6 @@
-import NavigationModule from '../NavigationModule';
 import { BuildInLayout, Layout } from '../Route';
 import NativeEvent from '../NativeEvent';
+import NativeNavigation from '../NativeNavigation';
 
 export default class LayoutCommandHandler {
 	private willSetRoot = () => {};
@@ -18,7 +18,11 @@ export default class LayoutCommandHandler {
 	}
 
 	setRoot(layout: BuildInLayout | Layout, sticky = false) {
-		return NavigationModule.setRoot(layout, sticky);
+		return new Promise<boolean>(resolve => {
+			NativeNavigation.setRoot(layout, sticky, (_, success) => {
+				resolve(success);
+			});
+		});
 	}
 
 	setRootLayoutUpdateListener(willSetRoot = () => {}, didSetRoot = () => {}) {
