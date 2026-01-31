@@ -122,7 +122,7 @@
     BOOL animated = YES;
     if ([vc isKindOfClass:[HBDViewController class]]) {
         HBDViewController *hdbvc = (HBDViewController *)vc;
-        animated = hdbvc.animatedTransition;
+		animated = hdbvc.animatedTransition || hdbvc.forceScreenLandscape;
     }
     
     if (animated) {
@@ -138,7 +138,7 @@
     BOOL animated = YES;
     if ([vc isKindOfClass:[HBDViewController class]]) {
         HBDViewController *hdbvc = (HBDViewController *)vc;
-        animated = hdbvc.animatedTransition;
+		animated = hdbvc.animatedTransition || hdbvc.forceScreenLandscape;
     }
     
     if (animated) {

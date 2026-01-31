@@ -8,6 +8,7 @@
 @property(nonatomic, copy, readonly) NSDictionary *props;
 @property(nonatomic, copy, readonly) NSDictionary *options;
 @property(nonatomic, assign, readonly) BOOL animatedTransition;
+@property(nonatomic, assign, readonly) BOOL forceScreenLandscape;
 
 - (instancetype)initWithModuleName:(NSString *)moduleName props:(NSDictionary *)props options:(NSDictionary *)options NS_DESIGNATED_INITIALIZER;
 

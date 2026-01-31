@@ -5,6 +5,7 @@
 #import "HBDUtils.h"
 #import "HBDPushAnimation.h"
 #import "HBDPopAnimation.h"
+#import "HBDFadeAnimation.h"
 #import "GlobalStyle.h"
 
 #import <React/RCTLog.h>
@@ -69,11 +70,11 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     HBDNavigationController *nav = self.nav;
-    
+
     if (nav.transitionCoordinator) {
         return NO;
     }
-    
+
     if (nav.viewControllers.count > 1) {
         UIViewController *topVC = nav.topViewController;
         return topVC.hbd_swipeBackEnabled && topVC.hbd_backInteractive;
@@ -196,6 +197,28 @@
     if (self.proxyDelegate && [self.proxyDelegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)]) {
         return [self.proxyDelegate navigationController:navigationController animationControllerForOperation:operation fromViewController:fromVC toViewController:toVC];
     } else {
+        // 检查是否需要使用淡入淡出动画（横屏页面）
+        BOOL shouldUseFadeAnimation = NO;
+        if (operation == UINavigationControllerOperationPush) {
+            if ([toVC isKindOfClass:[HBDViewController class]]) {
+                HBDViewController *hbdVC = (HBDViewController *)toVC;
+                if (hbdVC.forceScreenLandscape) {
+                    shouldUseFadeAnimation = YES;
+                }
+            }
+        } else if (operation == UINavigationControllerOperationPop) {
+            if ([fromVC isKindOfClass:[HBDViewController class]]) {
+                HBDViewController *hbdVC = (HBDViewController *)fromVC;
+                if (hbdVC.forceScreenLandscape) {
+                    shouldUseFadeAnimation = YES;
+                }
+            }
+        }
+
+        if (shouldUseFadeAnimation) {
+            return [HBDFadeAnimation new];
+        }
+
         if (operation == UINavigationControllerOperationPush) {
             if ([self shouldBetterTransitionWithViewController:toVC]) {
                 return [HBDPushAnimation new];

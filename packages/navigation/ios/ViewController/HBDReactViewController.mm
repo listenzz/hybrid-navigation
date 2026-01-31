@@ -48,16 +48,16 @@
     rootView.passThroughTouches = passThroughTouches;
     rootView.backgroundColor = UIColor.clearColor;
 	rootView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
-	self.view = [[UIView alloc] initWithFrame:UIScreen.mainScreen.bounds];
-	[rootView setFrame:self.view.frame];
+	self.view = [[UIView alloc] init];
+	self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view addSubview:rootView];
-    [self updateReactViewConstraints];
     RCTLogInfo(@"[Navigation] 加载页面 %@", self.moduleName);
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self updateReactViewConstraints];
+    
     NSDictionary *titleItem = self.options[@"titleItem"];
     if (titleItem && self.navigationController) {
         if (self.hbd_barHidden) {
@@ -84,6 +84,11 @@
 
 - (void)viewSafeAreaInsetsDidChange {
     [super viewSafeAreaInsetsDidChange];
+    [self updateReactViewConstraints];
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
     [self updateReactViewConstraints];
 }
 
