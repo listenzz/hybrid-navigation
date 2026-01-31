@@ -29,42 +29,42 @@ yarn add hybrid-navigation
 以前，你是这么注册 React 组件
 
 ```js
-import { AppRegistry } from 'react-native'
-import App from './App'
-import { name as appName } from './app.json'
+import { AppRegistry } from 'react-native';
+import App from './App';
+import { name as appName } from './app.json';
 
-AppRegistry.registerComponent(appName, () => App)
+AppRegistry.registerComponent(appName, () => App);
 ```
 
 现在，你需要像下面那样
 
 ```js
-import Navigation, { BarStyleDarkContent } from 'hybrid-navigation'
-import App from './App'
+import Navigation, { BarStyleDarkContent } from 'hybrid-navigation';
+import App from './App';
 
 // 配置全局样式
 Navigation.setDefaultOptions({
   topBarStyle: BarStyleDarkContent,
-})
+});
 
 // 重要必须
-Navigation.startRegisterComponent()
+Navigation.startRegisterComponent();
 
 // 注意，你的每一个页面都需要注册
-Navigation.registerComponent('App', () => App)
+Navigation.registerComponent('App', () => App);
 
 // 重要必须
-Navigation.endRegisterComponent()
+Navigation.endRegisterComponent();
 
 // 通过 `Navigator#setRoot` 来设置 UI 层级
 Navigation.setRoot({
   stack: {
     children: [{ screen: { moduleName: 'App' } }],
   },
-})
+});
 ```
 
-`setRoot` 具体用法请查看 [Navigator#setRoot](./navigation.md#setroot)
+`setRoot` 具体用法请查看 [Navigation.setRoot](./navigation.md#setroot)
 
 另外有一个需要注意的地方，hybrid-navigation 接管了状态栏，如果代码里面有使用 `<StatusBar />` 组件，需要移除。
 
@@ -74,7 +74,7 @@ Navigation.setRoot({
 
 ### 支持 Redux
 
-想要为每个页面都注入相同的属性，可以利用 `ReactRegistry.startRegisterComponent()` 这个方法，它接受一个 [HOC](https://reactjs.org/docs/higher-order-components.html) 作为参数。
+想要为每个页面都注入相同的属性，可以利用 `Navigation.startRegisterComponent()` 这个方法，它接受一个 [HOC](https://reactjs.org/docs/higher-order-components.html) 作为参数。
 
 想要支持 Redux，像下面这样配置即可
 
@@ -96,7 +96,7 @@ function withRedux(WrappedComponent) {
   }
 }
 
-ReactRegistry.startRegisterComponent(withRedux)
+Navigation.startRegisterComponent(withRedux)
 ```
 
 其中 `withRedux` 就是一个 [HOC](https://reactjs.org/docs/higher-order-components.html)
@@ -134,22 +134,15 @@ public class MainActivity extends ReactAppCompatActivity {
 
 ```diff
   import com.facebook.react.ReactNativeHost;
-+ import com.reactnative.hybridnavigation.ReactBridgeManager;
++ import com.reactnative.hybridnavigation.ReactManager;
 
   public void onCreate() {
       super.onCreate();
-      SoLoader.init(this, /* native exopackage */ false);
+      ReactNativeApplicationEntryPoint.loadReactNative(this);
 
-+     ReactBridgeManager bridgeManager = ReactBridgeManager.get();
-+     bridgeManager.install(getReactNativeHost());
++     ReactManager bridgeManager = ReactManager.get();
++     reactManager.install(getReactNativeHost());
   }
-```
-
-如果你的 RN 版本 >=0.60 && < 0.62，修改 android/app/build.gradle 文件，添加依赖
-
-```diff
-  implementation "com.facebook.react:react-native:+"  // From node_modules
-+ implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 ```
 
 运行项目，如果发现 TopBar 的高度不正常，记得移除所有 `<StatusBar />` 组件
@@ -166,9 +159,8 @@ cd ios & pod install
 
 ```objc
 #import <UIKit/UIKit.h>
-#import <React/RCTBridgeDelegate.h>
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, RCTBridgeDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
@@ -180,30 +172,71 @@ cd ios & pod install
 ```objc
 #import "AppDelegate.h"
 
+#import <React-RCTAppDelegate/RCTDefaultReactNativeFactoryDelegate.h>
+#import <React-RCTAppDelegate/RCTReactNativeFactory.h>
+#import <ReactAppDependencyProvider/RCTAppDependencyProvider.h>
+
+#import <React/RCTLinkingManager.h>
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTLog.h>
+#import <React/RCTDevMenu.h>
+
 #import <HybridNavigation/HybridNavigation.h>
+
+@interface ReactNativeDelegate : RCTDefaultReactNativeFactoryDelegate
+
+@end
+
+@implementation ReactNativeDelegate
+
+- (NSURL *)bundleURL {
+#if DEBUG
+	return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+#else
+	return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
+#endif
+}
+
+@end
+
+
+@interface AppDelegate () <HBDReactBridgeManagerDelegate>
+
+@property (strong, nonatomic) RCTRootViewFactory *rootViewFactory;
+@property (strong, nonatomic) id<RCTReactNativeFactoryDelegate> reactNativeDelegate;
+@property (strong, nonatomic) RCTReactNativeFactory *reactNativeFactory;
+
+@end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-    [[HBDReactBridgeManager get] installWithBridge:bridge];
+    RCTSetLogThreshold(RCTLogLevelInfo);
+
+	ReactNativeDelegate *delegate = [[ReactNativeDelegate alloc] init];
+	RCTReactNativeFactory *factory = [[RCTReactNativeFactory alloc] initWithDelegate:delegate];
+	delegate.dependencyProvider = [[RCTAppDependencyProvider alloc] init];
+
+	self.reactNativeDelegate = delegate;
+	self.reactNativeFactory = factory;
+	self.rootViewFactory = factory.rootViewFactory;
+
+	[self.rootViewFactory initializeReactHostWithLaunchOptions:launchOptions devMenuConfiguration:[RCTDevMenuConfiguration defaultConfiguration]];
+	[[HBDReactBridgeManager get] installWithReactHost:self.rootViewFactory.reactHost];
+
+    // register native modules
+    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[NativeViewController class]];
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
     self.window.windowLevel = UIWindowLevelStatusBar + 1;
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
-
     return YES;
 }
 
-- (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
-#if DEBUG
-    return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
-#else
-    return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
-#endif
+- (void)reactModuleRegisterDidCompleted:(HBDReactBridgeManager *)manager {
+
 }
 
 @end
@@ -218,7 +251,3 @@ cd ios & pod install
 ## 关于闪屏
 
 请参考[如何在 React Native 中设置闪屏](https://todoit.tech/splash-screen.html)一文。
-
-## 参考
-
-[一行命令创建 RN 项目并集成本库](https://github.com/listenzz/react-native-create-app)

@@ -15,11 +15,12 @@ tabs 容器有一个默认的 TabBar， 支持未读消息数，小红点提示�
 TabBar 组件和普通页面组件一样，需要注册
 
 ```js
-import CustomTabBar from './src/CustomTabBar'
-import BulgeTabBar from './src/BulgeTabBar'
+import Navigation from 'hybrid-navigation';
+import CustomTabBar from './src/CustomTabBar';
+import BulgeTabBar from './src/BulgeTabBar';
 
-ReactRegistry.registerComponent('CustomTabBar', () => CustomTabBar)
-ReactRegistry.registerComponent('BulgeTabBar', () => BulgeTabBar)
+Navigation.registerComponent('CustomTabBar', () => CustomTabBar);
+Navigation.registerComponent('BulgeTabBar', () => BulgeTabBar);
 ```
 
 ## 启用
@@ -29,7 +30,9 @@ ReactRegistry.registerComponent('BulgeTabBar', () => BulgeTabBar)
 如果**不需要**中间按钮凸起效果，`sizeIndeterminate` 需要设置为 `false`，同时指定 TabBar 的宽高。
 
 ```js
-Navigator.setRoot({
+import Navigation from 'hybrid-navigation';
+
+Navigation.setRoot({
   tabs: {
     children: [],
     options: {
@@ -37,7 +40,7 @@ Navigator.setRoot({
       sizeIndeterminate: false,
     },
   },
-})
+});
 ```
 
 ```js
@@ -54,7 +57,9 @@ tabBar: {
 如果**需要**实现中间按钮凸起效果，`sizeIndeterminate` 需要设置为 `true`，同时指定 TabBar 期待的（包含凸起按钮后的）宽高，以及 TabBar 的实际宽高。
 
 ```js
-Navigator.setRoot({
+import Navigation from 'hybrid-navigation';
+
+Navigation.setRoot({
   tabs: {
     children: [],
     options: {
@@ -62,7 +67,7 @@ Navigator.setRoot({
       sizeIndeterminate: true,
     },
   },
-})
+});
 ```
 
 ```js
@@ -138,7 +143,7 @@ tabBar: {
 其中 sceneId 是 tabs 容器的 sceneId，navigator 是 tabs 容器的 navigator，如果你希望获取某个 tab 页面的 navigator，可以通过如下方式：
 
 ```js
-const navigator = Navigator.of(this.props.tabs[0].sceneId)
+const navigator = Navigator.of(this.props.tabs[0].sceneId);
 ```
 
 > TabBar 的背景颜色，分割线，仍然由原生控制。

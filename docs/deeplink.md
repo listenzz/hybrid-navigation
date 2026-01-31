@@ -5,10 +5,12 @@
 需要支持 DeepLink 的页面，在注册时需要传入第三个参数
 
 ```javascript
-ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle, {
+import Navigation from 'hybrid-navigation';
+
+Navigation.registerComponent('TopBarStyle', () => TopBarStyle, {
   path: '/topBarStyle/:who',
   dependency: 'TopBarMisc',
-})
+});
 ```
 
 这个参数是个对象，一共有三个可选项
@@ -18,12 +20,12 @@ path 表示路径，其中冒号开头的片段表示参数，这些参数将会
 dependency 表示前置页面，譬如一个详情页可能会依赖一个列表页，当点击返回按钮时，会回到列表页。这个选项可以确定依赖链。看 example 中的例子：
 
 ```javascript
-ReactRegistry.registerComponent('Options', () => Options)
-ReactRegistry.registerComponent('TopBarMisc', () => TopBarMisc, { dependency: 'Options' })
-ReactRegistry.registerComponent('TopBarStyle', () => TopBarStyle, {
+Navigation.registerComponent('Options', () => Options);
+Navigation.registerComponent('TopBarMisc', () => TopBarMisc, { dependency: 'Options' });
+Navigation.registerComponent('TopBarStyle', () => TopBarStyle, {
   path: '/topBarStyle/:who',
   dependency: 'TopBarMisc',
-})
+});
 ```
 
 TopBarStyle 依赖 TopBarMisc, TopBarMisc 依赖 Options, 当我们通过 `hbd://topBarStyle/xxxx?greeting=yyyy` 这样的 url 打开 TopBarStyle 这个页面时，会检查 app 当前的路由图，以决定是否切换到 tab Options, 在打开 TopBarStyle 之前是否需要创建 TopBarMisc。
@@ -54,19 +56,21 @@ componentWillUnmount() {
 也可以通过以下方式激活
 
 ```javascript
-// 激活 DeepLink，在 Navigator.setRoot 之前
-Navigator.setRootLayoutUpdateListener(
+import Navigation from 'hybrid-navigation';
+
+// 激活 DeepLink，在 Navigation.setRoot 之前
+Navigation.setRootLayoutUpdateListener(
   () => {
-    DeepLink.deactivate()
+    DeepLink.deactivate();
   },
   () => {
-    const prefix = 'hbd://'
-    DeepLink.activate(prefix)
+    const prefix = 'hbd://';
+    DeepLink.activate(prefix);
   },
-)
+);
 
 // 设置 UI 层级
-Navigator.setRoot(drawer, true)
+Navigation.setRoot(drawer, true);
 ```
 
 ## 拦截
@@ -76,9 +80,9 @@ Navigator.setRoot(drawer, true)
 router 对象为我们提供了注册和移除拦截器的一对方法
 
 ```javascript
-import { router } from 'hybrid-navigation'
-router.addInterceptor(func)
-router.removeInterceptor(func)
+import { router } from 'hybrid-navigation';
+router.addInterceptor(func);
+router.removeInterceptor(func);
 ```
 
 func 是一个接收 path 为参数，返回 boolen 的函数，返回 true 表示拦截。

@@ -38,7 +38,7 @@ module.exports = {
       },
     ],
   },
-}
+};
 ```
 
 ## 如何拦截 Android 物理返回键
@@ -47,15 +47,15 @@ module.exports = {
 useVisibleEffect(
   useCallback(() => {
     const handleBackPress = () => {
-      console.log('---------------')
+      console.log('---------------');
       // true 表示拦截，false 表示不拦截
-      return false
-    }
+      return false;
+    };
 
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress)
-    return () => BackHandler.removeEventListener('hardwareBackPress', handleBackPress)
+    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+    return () => BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
   }, []),
-)
+);
 ```
 
 ## 如何实现 HOC
@@ -66,9 +66,9 @@ useVisibleEffect(
 export function withRedux(WrappedComponent: ComponentType<any>) {
   return class ReduxProvider extends React.Component {
     // 注意复制 navigationItem
-    static navigationItem = (WrappedComponent as any).navigationItem
+    static navigationItem = (WrappedComponent as any).navigationItem;
 
-    static displayName = `withRedux(${WrappedComponent.displayName})`
+    static displayName = `withRedux(${WrappedComponent.displayName})`;
 
     render() {
       return (
@@ -76,8 +76,8 @@ export function withRedux(WrappedComponent: ComponentType<any>) {
           // 注意传递 props 属性
           <WrappedComponent {...this.props} />
         </Provider>
-      )
+      );
     }
-  }
+  };
 }
 ```
