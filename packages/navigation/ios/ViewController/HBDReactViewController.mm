@@ -87,6 +87,11 @@
     [self updateReactViewConstraints];
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+	[self updateReactViewConstraints];
+}
+
 - (void)updateReactViewConstraints {
     if (self.isViewLoaded && self.rootView) {
 		CGFloat bottomInset = self.shouldFitWindowInsetsBottom ?  0: self.view.safeAreaInsets.bottom;

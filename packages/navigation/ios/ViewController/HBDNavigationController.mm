@@ -17,8 +17,14 @@
 @property(nonatomic, weak) id <UINavigationControllerDelegate> proxyDelegate;
 @property(nonatomic, weak, readonly) HBDNavigationController *nav;
 @property(nonatomic, strong) UIPercentDrivenInteractiveTransition *interactiveTransition;
+@property(nonatomic, assign) UIEdgeInsets hbd_savedAdditionalSafeAreaInsetsForTo;
+@property(nonatomic, assign) BOOL hbd_didCompensateSafeAreaForTo;
+@property(nonatomic, assign) UIEdgeInsets hbd_savedAdditionalSafeAreaInsetsForFrom;
+@property(nonatomic, assign) BOOL hbd_didCompensateSafeAreaForFrom;
 
 - (instancetype)initWithNavigationController:(HBDNavigationController *)navigationController;
+- (void)hbd_compensateSafeAreaForViewController:(UIViewController *)vc expectedTopInset:(CGFloat)expectedTopInset isToVC:(BOOL)isToVC;
+- (void)hbd_restoreCompensatedSafeAreaForFrom:(UIViewController *)from to:(UIViewController *)to viewController:(UIViewController *)viewController;
 
 @end
 
@@ -198,20 +204,22 @@
         return [self.proxyDelegate navigationController:navigationController animationControllerForOperation:operation fromViewController:fromVC toViewController:toVC];
     } else {
         // 检查是否需要使用淡入淡出动画（横屏页面）
+        // 只要 from 或 to 页面有一个是横屏，就采用 fade 动画
         BOOL shouldUseFadeAnimation = NO;
-        if (operation == UINavigationControllerOperationPush) {
-            if ([toVC isKindOfClass:[HBDViewController class]]) {
-                HBDViewController *hbdVC = (HBDViewController *)toVC;
-                if (hbdVC.forceScreenLandscape) {
-                    shouldUseFadeAnimation = YES;
-                }
+
+        // 检查 fromVC 是否是横屏
+        if ([fromVC isKindOfClass:[HBDViewController class]]) {
+            HBDViewController *hbdFromVC = (HBDViewController *)fromVC;
+            if (hbdFromVC.forceScreenLandscape) {
+                shouldUseFadeAnimation = YES;
             }
-        } else if (operation == UINavigationControllerOperationPop) {
-            if ([fromVC isKindOfClass:[HBDViewController class]]) {
-                HBDViewController *hbdVC = (HBDViewController *)fromVC;
-                if (hbdVC.forceScreenLandscape) {
-                    shouldUseFadeAnimation = YES;
-                }
+        }
+
+        // 检查 toVC 是否是横屏
+        if (!shouldUseFadeAnimation && [toVC isKindOfClass:[HBDViewController class]]) {
+            HBDViewController *hbdToVC = (HBDViewController *)toVC;
+            if (hbdToVC.forceScreenLandscape) {
+                shouldUseFadeAnimation = YES;
             }
         }
 
@@ -242,6 +250,36 @@
     return shouldBetter;
 }
 
+- (void)hbd_compensateSafeAreaForViewController:(UIViewController *)vc expectedTopInset:(CGFloat)expectedTopInset isToVC:(BOOL)isToVC {
+    if (vc.isViewLoaded) {
+        [vc.view layoutIfNeeded];
+    }
+    CGFloat systemTop = vc.isViewLoaded ? vc.view.safeAreaInsets.top : 0;
+    CGFloat compensate = expectedTopInset > systemTop ? (expectedTopInset - systemTop) : 0;
+    if (isToVC) {
+        self.hbd_savedAdditionalSafeAreaInsetsForTo = vc.additionalSafeAreaInsets;
+        self.hbd_didCompensateSafeAreaForTo = (compensate > 0);
+    } else {
+        self.hbd_savedAdditionalSafeAreaInsetsForFrom = vc.additionalSafeAreaInsets;
+        self.hbd_didCompensateSafeAreaForFrom = (compensate > 0);
+    }
+    if (compensate > 0) {
+        UIEdgeInsets o = vc.additionalSafeAreaInsets;
+        vc.additionalSafeAreaInsets = UIEdgeInsetsMake(o.top + compensate, o.left, o.bottom, o.right);
+    }
+}
+
+- (void)hbd_restoreCompensatedSafeAreaForFrom:(UIViewController *)from to:(UIViewController *)to viewController:(UIViewController *)viewController {
+    if (self.hbd_didCompensateSafeAreaForTo && to == viewController) {
+        viewController.additionalSafeAreaInsets = self.hbd_savedAdditionalSafeAreaInsetsForTo;
+        self.hbd_didCompensateSafeAreaForTo = NO;
+    }
+    if (self.hbd_didCompensateSafeAreaForFrom) {
+        from.additionalSafeAreaInsets = self.hbd_savedAdditionalSafeAreaInsetsForFrom;
+        self.hbd_didCompensateSafeAreaForFrom = NO;
+    }
+}
+
 - (void)showViewController:(UIViewController *_Nonnull)viewController withCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
     UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
@@ -259,8 +297,7 @@
         }
 
         [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
-
-        }                            completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
+        } completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
             backButtonLabel.hbd_specifiedTextColor = nil;
         }];
     }
@@ -270,10 +307,16 @@
     [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         BOOL shouldFake = [self shouldShowFakeBarFrom:from to:to viewController:viewController];
         if (shouldFake) {
-            // title attributes, button tint color, barStyle
             [self.nav updateNavigationBarTintColorForViewController:viewController];
-            // background alpha, background color, shadow image alpha
             [self.nav showFakeBarFrom:from to:to];
+
+            // 转场涉及旋转时不应用 safe area 补偿，避免布局错乱
+            BOOL noRotation = CGAffineTransformIsIdentity(context.targetTransform);
+            if (noRotation) {
+                CGFloat expectedTopInset = CGRectGetMaxY(self.nav.navigationBar.frame);
+                [self hbd_compensateSafeAreaForViewController:to expectedTopInset:expectedTopInset isToVC:YES];
+                [self hbd_compensateSafeAreaForViewController:from expectedTopInset:expectedTopInset isToVC:NO];
+            }
         } else {
             [self.nav updateNavigationBarForViewController:viewController];
             if (@available(iOS 13.0, *)) {
@@ -285,22 +328,24 @@
         }
     } completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         self.nav.poppingViewController = nil;
-        if (@available(iOS 13.0, *)) {
-            self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = UIColor.clearColor;
-            self.nav.navigationBar.standardAppearance.backgroundColor = UIColor.clearColor;
-        }
+        [self hbd_restoreCompensatedSafeAreaForFrom:from to:to viewController:viewController];
 
+        // Restore navigation bar state first, before clearing appearance.
         if (context.isCancelled) {
             if (to == viewController) {
                 [self.nav updateNavigationBarForViewController:from];
             }
         } else {
-            // `to` != `viewController` when present
             [self.nav updateNavigationBarForViewController:viewController];
             UIViewController *poppingVC = self.nav.poppingViewController;
             if (poppingVC && [poppingVC isKindOfClass:[HBDViewController class]]) {
                 [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
             }
+        }
+
+        if (@available(iOS 13.0, *)) {
+            self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = UIColor.clearColor;
+            self.nav.navigationBar.standardAppearance.backgroundColor = UIColor.clearColor;
         }
 
         if (to == viewController) {
@@ -332,6 +377,7 @@
     }
 }
 
+// Fake bar: hide real bar (alpha=0) and add fromFakeBar/toFakeBar on each VC's view for smooth bar color change.
 - (BOOL)shouldShowFakeBarFrom:(UIViewController *)from to:(UIViewController *)to viewController:(UIViewController *_Nonnull)viewController {
     if ([GlobalStyle globalStyle].alwaysSplitNavigationBarTransition && to == viewController) {
         return YES;
@@ -442,8 +488,6 @@
     if (@available(iOS 13.0, *)) {
         UIEdgeInsets safeAreaInsets = self.view.safeAreaInsets;
         UIEdgeInsets additionalInsets = self.additionalSafeAreaInsets;
-
-        // RCTLogInfo(@"[Navigation] safeAreaInsets:%@, additionalInsets:%@", NSStringFromUIEdgeInsets(safeAreaInsets), NSStringFromUIEdgeInsets(additionalInsets));
 
 		BOOL statusBarHidden = RCTKeyWindow().windowScene.statusBarManager.statusBarHidden;
 
