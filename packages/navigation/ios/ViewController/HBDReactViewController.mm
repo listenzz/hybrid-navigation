@@ -5,6 +5,7 @@
 #import "HBDTitleView.h"
 #import "HBDUtils.h"
 #import "HBDNativeEvent.h"
+#import "GlobalStyle.h"
 
 #import <React/RCTConvert.h>
 #import <React/RCTSurfaceHostingProxyRootView.h>
@@ -57,7 +58,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self updateReactViewConstraints];
-    
+
     NSDictionary *titleItem = self.options[@"titleItem"];
     if (titleItem && self.navigationController) {
         if (self.hbd_barHidden) {
@@ -84,6 +85,15 @@
 
 - (void)viewSafeAreaInsetsDidChange {
     [super viewSafeAreaInsetsDidChange];
+	if (self.hbd_shouldCorrectSafeAreaTopToStatusBar) {
+		CGFloat statusBarHeight = [self hbd_statusBarHeight];
+		CGFloat currentEffectiveTop = self.view.safeAreaInsets.top;
+		if (fabs(currentEffectiveTop - statusBarHeight) > 0.5) {
+			CGFloat systemTop = currentEffectiveTop - self.additionalSafeAreaInsets.top;
+			UIEdgeInsets o = self.additionalSafeAreaInsets;
+			self.additionalSafeAreaInsets = UIEdgeInsetsMake(statusBarHeight - systemTop, o.left, o.bottom, o.right);
+		}
+	}
     [self updateReactViewConstraints];
 }
 
@@ -92,10 +102,36 @@
 	[self updateReactViewConstraints];
 }
 
+- (CGFloat)hbd_statusBarHeight {
+	if (@available(iOS 13.0, *)) {
+		UIWindowScene *scene = self.view.window.windowScene;
+		if (scene) {
+			return scene.statusBarManager.statusBarFrame.size.height;
+		}
+	}
+	return [UIApplication sharedApplication].statusBarFrame.size.height;
+}
+
+/// 局部隐藏 topBar 或局部透明 topBar（非全局隐藏）时，需将 SafeArea 顶部修正为状态栏高度
+- (BOOL)hbd_shouldCorrectSafeAreaTopToStatusBar {
+	if ([GlobalStyle globalStyle].topBarHidden) {
+		return NO;
+	}
+	if (![self.parentViewController isKindOfClass:UINavigationController.class]) {
+		return NO;
+	}
+	return self.hbd_barHidden || self.hbd_barAlpha < 1.0 || colorHasAlphaComponent(self.hbd_barTintColor);
+}
+
 - (void)updateReactViewConstraints {
     if (self.isViewLoaded && self.rootView) {
 		CGFloat bottomInset = self.shouldFitWindowInsetsBottom ?  0: self.tabBarController.tabBar.frame.size.height;
-		CGFloat topInset = self.shouldFitWindowInsetsTop ? 0 : self.view.safeAreaInsets.top;
+		CGFloat topInset;
+		if (self.shouldFitWindowInsetsTop) {
+			topInset = self.hbd_shouldCorrectSafeAreaTopToStatusBar ? [self hbd_statusBarHeight] : 0;
+		} else {
+			topInset = self.view.safeAreaInsets.top;
+		}
 		[self.rootView setFrame:CGRectMake(
 			0,
 			topInset,
