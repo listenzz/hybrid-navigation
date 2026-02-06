@@ -558,10 +558,9 @@
 }
 
 - (void)updateNavigationBarForViewController:(UIViewController *)vc {
-    // topBarHidden 时直接隐藏 UINavigationBar，而非透明
-    BOOL barHidden = vc.hbd_barHidden;
-    [self setNavigationBarHidden:barHidden animated:NO];
-    if (barHidden) {
+    // 仅全局 topBarHidden 时直接隐藏 UINavigationBar
+    if ([GlobalStyle globalStyle].topBarHidden) {
+        [self setNavigationBarHidden:YES animated:NO];
         return;
     }
     [self updateNavigationBarStyleForViewController:vc];
