@@ -173,6 +173,9 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     protected boolean shouldAnimatedTransition() {
+		if (forceScreenLandscape()) {
+			return false;
+		}
         Bundle options = getOptions();
         return options.getBoolean("animatedTransition", true);
     }

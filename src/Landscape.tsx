@@ -10,7 +10,6 @@ export default withNavigationItem({
 	statusBarHidden: true,
 	backInteractive: false,
 	forceScreenLandscape: true,
-	animatedTransition: false,
 	homeIndicatorAutoHiddenIOS: true,
 	titleItem: {
 		title: 'Landscape',
@@ -32,6 +31,8 @@ function Landscape() {
 
 	const navigator = useNavigator();
 	const insets = useSafeAreaInsets();
+
+	console.log('insets', insets);
 
 	const back = () => {
 		navigator.pop();
