@@ -296,9 +296,11 @@
         self.hbd_barAlpha = [topBarAlpha floatValue];
     }
 
-    NSNumber *topBarHidden = options[@"topBarHidden"];
-    if ([topBarHidden boolValue]) {
+    // 全局 topBarHidden 优先，一旦设置则局部开启无效
+    if ([GlobalStyle globalStyle].topBarHidden) {
         self.hbd_barHidden = YES;
+    } else if (options[@"topBarHidden"] != nil) {
+        self.hbd_barHidden = [options[@"topBarHidden"] boolValue];
     }
 
     if ([GlobalStyle globalStyle].isBackTitleHidden) {

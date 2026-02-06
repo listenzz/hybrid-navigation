@@ -8,6 +8,7 @@
 
 @property(nonatomic, strong, readonly) UIColor *screenBackgroundColor;
 @property(nonatomic, assign, readonly, getter=isBackTitleHidden) BOOL backTitleHidden;
+@property(nonatomic, assign, readonly, getter=isTopBarHidden) BOOL topBarHidden;
 @property(nonatomic, assign, readonly) BOOL alwaysSplitNavigationBarTransition;
 @property(nonatomic, assign) UIInterfaceOrientationMask interfaceOrientation;
 

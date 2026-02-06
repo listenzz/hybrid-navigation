@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import { withNavigationItem, NavigationProps, useVisibleEffect } from 'hybrid-navigation';
 import styles from './Styles';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default withNavigationItem({
 	titleItem: {
@@ -58,13 +59,15 @@ function TopBarMisc({ navigator }: NavigationProps) {
 		navigator.push('Landscape');
 	}
 
+	const insets = useSafeAreaInsets();
+
 	return (
 		<ScrollView
 			contentInsetAdjustmentBehavior="never"
 			automaticallyAdjustContentInsets={true}
 			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
 		>
-			<View style={styles.container}>
+			<View style={[styles.container, { paddingTop: insets.top }]}>
 				<Text style={styles.welcome}>About TopBar</Text>
 				<TouchableOpacity
 					onPress={topBarShadowHidden}

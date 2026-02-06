@@ -71,6 +71,10 @@ public class Garden {
 
 		this.swipeBackEnabled = options.getBoolean("swipeBackEnabled", true);
 		this.toolbarHidden = options.getBoolean("topBarHidden", false);
+		// 全局 topBarHidden 优先，一旦设置则局部开启无效
+		if (getGlobalStyle().isTopBarHidden()) {
+			this.toolbarHidden = true;
+		}
 		Bundle tabItem = options.getBundle("tabItem");
 		this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush", true);
 		this.extendedLayoutIncludesTopBar = options.getBoolean("extendedLayoutIncludesTopBar", false);
@@ -290,6 +294,12 @@ public class Garden {
 
 		Bundle options = mergeOptions(fragment.getOptions(), patches);
 		fragment.setOptions(options);
+		// 全局 topBarHidden 优先，一旦设置则局部开启无效
+		if (getGlobalStyle().isTopBarHidden()) {
+			this.toolbarHidden = true;
+		} else if (readableMap.hasKey("topBarHidden")) {
+			this.toolbarHidden = options.getBoolean("topBarHidden", false);
+		}
 
 		if (readableMap.hasKey("leftBarButtonItem")) {
 			Bundle bundle = options.getBundle("leftBarButtonItem");

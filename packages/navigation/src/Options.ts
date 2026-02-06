@@ -124,6 +124,7 @@ export interface DefaultOptions {
 	tabBarItemSelectedColor?: Color; // 底部 TabBarItem icon 选中颜色
 	tabBarItemNormalColor?: Color; // 底部 TabBarItem icon 未选中颜色，默认为 #666666
 	tabBarBadgeColor?: Color; //  Tab badge 颜色
+	topBarHidden?: boolean; // 全局隐藏 TopBar，一旦设置则局部 topBarHidden: false 无效
 }
 
 export type TabBarStyle = Pick<

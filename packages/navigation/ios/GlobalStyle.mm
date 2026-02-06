@@ -29,6 +29,7 @@
 @property(nonatomic, strong) UIColor *tabBarItemNormalColor;
 
 @property(nonatomic, assign, readwrite) BOOL alwaysSplitNavigationBarTransition;
+@property(nonatomic, assign, readwrite, getter=isTopBarHidden) BOOL topBarHidden;
 
 @end
 
@@ -83,6 +84,11 @@ static GlobalStyle *globalStyle;
         NSNumber *splitTopBarTransitionIOS = self.options[@"splitTopBarTransitionIOS"];
         if (splitTopBarTransitionIOS) {
             self.alwaysSplitNavigationBarTransition = [splitTopBarTransitionIOS boolValue];
+        }
+
+        NSNumber *topBarHidden = self.options[@"topBarHidden"];
+        if (topBarHidden) {
+            self.topBarHidden = [topBarHidden boolValue];
         }
 
         NSString *topBarColorDarkContent = self.options[@"topBarColorDarkContent"];

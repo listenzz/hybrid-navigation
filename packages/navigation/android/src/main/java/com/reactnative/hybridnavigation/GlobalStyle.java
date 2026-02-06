@@ -25,13 +25,19 @@ public class GlobalStyle {
     private static final String TAG = "Navigation";
 
     private final Bundle options;
+    private final boolean topBarHidden;
 
     public Bundle getOptions() {
         return options;
     }
 
+    public boolean isTopBarHidden() {
+        return topBarHidden;
+    }
+
     public GlobalStyle(Bundle options) {
         this.options = options;
+        this.topBarHidden = options != null && options.getBoolean("topBarHidden", false);
     }
 
     public void inflateStyle(Context context, Style style) {
