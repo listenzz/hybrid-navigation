@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, ScrollView, Image, Platform } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView, Image } from 'react-native';
 import Slider from '@react-native-community/slider';
 import styles from './Styles';
 import Navigation, { withNavigationItem, NavigationProps } from 'hybrid-navigation';
@@ -24,7 +24,7 @@ interface Props extends NavigationProps {
 
 function TopBarAlpha({ sceneId, navigator, alpha }: Props) {
 	const [topBarAlpha, setTopBarAlpha] = useState(alpha ? Number(alpha) : 0.5);
-	const inset = useSafeAreaInsets();
+	const insets = useSafeAreaInsets();
 
 	useEffect(() => {
 		Navigation.updateOptions(sceneId, {
@@ -43,7 +43,7 @@ function TopBarAlpha({ sceneId, navigator, alpha }: Props) {
 
 	return (
 		<ScrollView>
-			<View style={[styles.container, { paddingTop: Platform.OS === 'ios' ? inset.top - 44: inset.top }]}>
+			<View style={[styles.container, { paddingTop: insets.top }]}>
 				<Text style={styles.welcome}>Try to slide</Text>
 				<Slider
 					style={{ marginLeft: 32, marginRight: 32, marginTop: 40 }}

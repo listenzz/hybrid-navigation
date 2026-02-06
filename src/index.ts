@@ -45,6 +45,7 @@ graph();
 Navigation.setDefaultOptions({
 	screenBackgroundColor: '#F8F8F8',
 	topBarStyle: BarStyleDarkContent,
+	topBarHidden: true,
 
 	topBarColor: '#FFFFFF',
 	...Platform.select({

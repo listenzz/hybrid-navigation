@@ -3,6 +3,7 @@ import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
 import { useNavigator, useVisibleEffect } from 'hybrid-navigation';
 import styles from './Styles';
 import { withNavigationItem } from 'hybrid-navigation';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default withNavigationItem({
 	topBarHidden: true,
@@ -30,6 +31,7 @@ function Landscape() {
 	});
 
 	const navigator = useNavigator();
+	const insets = useSafeAreaInsets();
 
 	const back = () => {
 		navigator.pop();
@@ -49,7 +51,7 @@ function Landscape() {
 			automaticallyAdjustContentInsets={false}
 			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
 		>
-			<View style={[styles.container, { paddingTop: 64 }]}>
+			<View style={[styles.container, { paddingTop: insets.top }]}>
 				<TouchableOpacity onPress={back} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>Back</Text>
 				</TouchableOpacity>

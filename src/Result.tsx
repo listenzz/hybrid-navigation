@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, TextInput, Image, ScrollView, View } from 'react-native';
 import styles from './Styles';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Navigation, {
 	RESULT_OK,
@@ -20,6 +21,7 @@ export default withNavigationItem({
 function Result({ navigator, sceneId }: NavigationProps) {
 	const [text, setText] = useState('');
 	const [isRoot, setIsRoot] = useState(false);
+	const insets = useSafeAreaInsets();
 
 	useEffect(() => {
 		navigator.isStackRoot().then(root => {
@@ -80,7 +82,12 @@ function Result({ navigator, sceneId }: NavigationProps) {
 
 	return (
 		<View style={{ flex: 1 }}>
-			<ScrollView contentContainerStyle={styles.container}>
+			<ScrollView
+				contentInsetAdjustmentBehavior="never"
+				automaticallyAdjustContentInsets={true}
+				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+				contentContainerStyle={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
+			>
 				<Text style={styles.welcome}>This's a React Native scene.</Text>
 
 				<TouchableOpacity onPress={pushToReact} activeOpacity={0.2} style={styles.button}>

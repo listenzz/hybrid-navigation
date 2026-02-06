@@ -8,6 +8,7 @@ import Navigation, {
 } from 'hybrid-navigation';
 import styles from './Styles';
 import { withNavigationItem } from 'hybrid-navigation';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default withNavigationItem({
 	topBarStyle: BarStyleLightContent,
@@ -27,6 +28,7 @@ export default withNavigationItem({
 function TopBarStyle() {
 	const [options, setOptions] = useState<NavigationOption>();
 	const navigator = useNavigator();
+	const insets = useSafeAreaInsets();
 
 	useEffect(() => {
 		if (options) {
@@ -59,10 +61,10 @@ function TopBarStyle() {
 	return (
 		<ScrollView
 			contentInsetAdjustmentBehavior="never"
-			automaticallyAdjustContentInsets={false}
+			automaticallyAdjustContentInsets={true}
 			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
 		>
-			<View style={styles.container}>
+			<View style={[styles.container, { paddingTop: insets.top }]}>
 				<Text style={styles.text}>
 					1. Status bar text can only be white on Android below 6.0
 				</Text>

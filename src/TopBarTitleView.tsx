@@ -2,6 +2,7 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
 import { LayoutFittingExpanded, NavigationProps, NavigationItem } from 'hybrid-navigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './Styles';
 
 function CustomTitleView(props: NavigationProps) {
@@ -76,10 +77,10 @@ class TopBarTitleView extends React.Component<NavigationProps> {
 		return (
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
-				automaticallyAdjustContentInsets={false}
+				automaticallyAdjustContentInsets={true}
 				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
 			>
-				<View style={styles.container}>
+				<SafeAreaView edges={['top']} style={styles.container}>
 					<Text style={styles.welcome}> Custom title bar </Text>
 
 					<TouchableOpacity
@@ -89,7 +90,7 @@ class TopBarTitleView extends React.Component<NavigationProps> {
 					>
 						<Text style={styles.buttonText}>TopBarTitleView</Text>
 					</TouchableOpacity>
-				</View>
+				</SafeAreaView>
 			</ScrollView>
 		);
 	}

@@ -12,7 +12,7 @@ export default withNavigationItem({
 })(StatusBarHidden);
 
 function StatusBarHidden({ navigator, sceneId }: NavigationProps) {
-	const inset = useSafeAreaInsets();
+	const insets = useSafeAreaInsets();
 
 	function statusBarHidden() {
 		navigator.push('StatusBarHidden');
@@ -27,7 +27,7 @@ function StatusBarHidden({ navigator, sceneId }: NavigationProps) {
 	}
 
 	return (
-		<View style={[styles.container, { paddingTop: inset.top }]}>
+		<View style={[styles.container, { paddingTop: insets.top }]}>
 			<Text style={styles.welcome}> StatusBar Hidden</Text>
 			<TouchableOpacity onPress={showStatusBar} activeOpacity={0.2} style={styles.button}>
 				<Text style={styles.buttonText}>show status bar</Text>

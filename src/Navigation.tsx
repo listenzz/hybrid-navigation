@@ -187,7 +187,7 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
 			contentContainerStyle={{ flexGrow: 1 }}
 		>
-			<View style={styles.container}>
+			<View style={[styles.container, { paddingTop: insets.top }]}>
 				<Text style={styles.welcome}>This's a React Native scene.</Text>
 				<TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>push</Text>
