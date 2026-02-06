@@ -94,7 +94,7 @@
 
 - (void)updateReactViewConstraints {
     if (self.isViewLoaded && self.rootView) {
-		CGFloat bottomInset = self.shouldFitWindowInsetsBottom ?  0: self.view.safeAreaInsets.bottom;
+		CGFloat bottomInset = self.shouldFitWindowInsetsBottom ?  0: self.tabBarController.tabBar.frame.size.height;
 		CGFloat topInset = self.shouldFitWindowInsetsTop ? 0 : self.view.safeAreaInsets.top;
 		[self.rootView setFrame:CGRectMake(
 			0,
