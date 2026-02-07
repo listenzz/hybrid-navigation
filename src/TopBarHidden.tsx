@@ -10,12 +10,19 @@ function TopBarHidden({ navigator }: NavigationProps) {
 		navigator.push('TopBarHidden');
 	}
 
+	function options() {
+		navigator.push('Options');
+	}
+
 	return (
 		<ScrollView>
 			<View style={[styles.container, { paddingTop: insets.top }]}>
 				<Text style={styles.welcome}>TopBar is hidden</Text>
 				<TouchableOpacity onPress={topBarHidden} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>TopBarHidden</Text>
+				</TouchableOpacity>
+				<TouchableOpacity onPress={options} activeOpacity={0.2} style={styles.button}>
+					<Text style={styles.buttonText}>Options</Text>
 				</TouchableOpacity>
 			</View>
 		</ScrollView>

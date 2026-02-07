@@ -379,22 +379,26 @@
 
 // Fake bar: hide real bar (alpha=0) and add fromFakeBar/toFakeBar on each VC's view for smooth bar color change.
 - (BOOL)shouldShowFakeBarFrom:(UIViewController *)from to:(UIViewController *)to viewController:(UIViewController *_Nonnull)viewController {
+	if ([GlobalStyle globalStyle].topBarHidden) {
+		return NO;
+	}
+	
+	if ([GlobalStyle globalStyle].alwaysSplitNavigationBarTransition && to == viewController) {
+		return YES;
+	}
+	
     if (to != viewController) {
         return NO;
     }
-    // toVC 的 bar 为 hidden 时直接隐藏 UINavigationBar，不使用 fake bar
-    if (to.hbd_barHidden) {
-        return NO;
-    }
-    if ([GlobalStyle globalStyle].alwaysSplitNavigationBarTransition && to == viewController) {
-        return YES;
-    }
-
+	
     if (![from.hbd_barTintColor.description isEqual:to.hbd_barTintColor.description]) {
+		RCTLogInfo(@"from:%@, to:%@",
+				   from.hbd_barTintColor.description,
+				   to.hbd_barTintColor.description);
         return YES;
     }
 
-    return from.hbd_barAlpha < 1.0 || to.hbd_barAlpha < 1.0;
+	return from.hbd_barAlpha < 1.0 || to.hbd_barAlpha < 1.0;
 }
 
 @end
