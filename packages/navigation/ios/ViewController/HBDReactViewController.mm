@@ -85,7 +85,7 @@
 
 - (void)viewSafeAreaInsetsDidChange {
     [super viewSafeAreaInsetsDidChange];
-	if (self.hbd_shouldCorrectSafeAreaTopToStatusBar) {
+	if (self.shouldAdjustSafeAreaTopToStatusBar) {
 		CGFloat statusBarHeight = [self hbd_statusBarHeight];
 		CGFloat currentEffectiveTop = self.view.safeAreaInsets.top;
 		if (fabs(currentEffectiveTop - statusBarHeight) > 0.5) {
@@ -95,11 +95,6 @@
 		}
 	}
     [self updateReactViewConstraints];
-}
-
-- (void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-	[self updateReactViewConstraints];
 }
 
 - (CGFloat)hbd_statusBarHeight {
@@ -113,7 +108,7 @@
 }
 
 /// 局部隐藏 topBar 或局部透明 topBar（非全局隐藏）时，需将 SafeArea 顶部修正为状态栏高度
-- (BOOL)hbd_shouldCorrectSafeAreaTopToStatusBar {
+- (BOOL)shouldAdjustSafeAreaTopToStatusBar {
 	if ([GlobalStyle globalStyle].topBarHidden) {
 		return NO;
 	}
@@ -123,15 +118,15 @@
 	return self.hbd_barHidden || self.hbd_barAlpha < 1.0 || colorHasAlphaComponent(self.hbd_barTintColor);
 }
 
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+	[self updateReactViewConstraints];
+}
+
 - (void)updateReactViewConstraints {
     if (self.isViewLoaded && self.rootView) {
 		CGFloat bottomInset = self.shouldFitWindowInsetsBottom ?  0: self.tabBarController.tabBar.frame.size.height;
-		CGFloat topInset;
-		if (self.shouldFitWindowInsetsTop) {
-			topInset = self.hbd_shouldCorrectSafeAreaTopToStatusBar ? [self hbd_statusBarHeight] : 0;
-		} else {
-			topInset = self.view.safeAreaInsets.top;
-		}
+		CGFloat topInset = self.shouldFitWindowInsetsTop ? 0 : self.view.safeAreaInsets.top;
 		[self.rootView setFrame:CGRectMake(
 			0,
 			topInset,
