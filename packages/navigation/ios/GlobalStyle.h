@@ -14,12 +14,6 @@
 
 - (instancetype)initWithOptions:(NSDictionary *)options;
 
-- (void)inflateNavigationBar:(UINavigationBar *)navigationBar;
-
-- (void)inflateBarButtonItem:(UIBarButtonItem *)barButtonItem;
-
-- (void)inflateTabBar:(UITabBar *)tabBar;
-
 - (UIColor *)titleTextColorWithBarStyle:(UIBarStyle)barStyle;
 
 - (UIColor *)tintColorWithBarStyle:(UIBarStyle)barStyle;
