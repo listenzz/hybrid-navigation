@@ -14,6 +14,10 @@ MyApp/
 ├─ package.json
 ```
 
+> 也可以通过 `npx react-native-create-app <AppName>` 命令来创建
+
+[react-native-create-app](https://www.npmjs.com/package/react-native-create-app?activeTab=readme) 会自动创建一个 RN 项目， 并集成 hybrid-navigation。
+
 ## 添加依赖
 
 ```sh
