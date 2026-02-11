@@ -36,42 +36,23 @@ mode 表示跳转模式，present 表示使用 `navigator.present` 打开目标�
 
 ## 激活
 
-我们需要在一个稳定的页面（通常是主页面）激活 DeepLink 功能。
+需要在应用内稳定时机激活 DeepLink（例如根布局设置完成后），并在根布局被替换时反激活。
 
-譬如 example 项目，在 Navigation.js 激活了路由功能
-
-```javascript
-import { DeepLink } from 'hybrid-navigation';
-
-componentDidMount() {
-  const prefix = 'hbd://';
-  DeepLink.activate(prefix);
-}
-
-componentWillUnmount() {
-  DeepLink.deactivate();
-}
-```
-
-也可以通过以下方式激活
+**方式一（推荐）**：在 `Navigation.setRoot` 之前通过 `setRootLayoutUpdateListener` 统一处理，避免在页面生命周期里重复激活/反激活。
 
 ```javascript
-import Navigation from 'hybrid-navigation';
+import Navigation, { DeepLink } from 'hybrid-navigation';
 
-// 激活 DeepLink，在 Navigation.setRoot 之前
+// 在 setRoot 之前注册：willSetRoot 时反激活，didSetRoot 时激活
 Navigation.setRootLayoutUpdateListener(
-  () => {
-    DeepLink.deactivate();
-  },
-  () => {
-    const prefix = 'hbd://';
-    DeepLink.activate(prefix);
-  },
+  () => DeepLink.deactivate(),
+  () => DeepLink.activate('hbd://'),
 );
 
-// 设置 UI 层级
 Navigation.setRoot(drawer, true);
 ```
+
+**方式二**：在入口页面的生命周期中激活（如 example 中 Navigation 页面在挂载时激活、卸载时反激活）。若使用该方式，需确保只在一处调用，且与 setRoot 时机协调。
 
 ## 拦截
 
@@ -85,9 +66,7 @@ router.addInterceptor(func);
 router.removeInterceptor(func);
 ```
 
-func 是一个接收 path 为参数，返回 boolen 的函数，返回 true 表示拦截。
-
-可以通过 `router.pathToRoute(path)` 来获取路由信息
+func 是一个接收 path 为参数，返回 boolean 的函数，返回 true 表示拦截。
 
 ## iOS 配置
 

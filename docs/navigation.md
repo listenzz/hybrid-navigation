@@ -120,29 +120,99 @@ Navigation.setRoot 还接受第二个参数，是个 boolean，用来决定 Andr
 大多数导航操作，譬如 `push`、`pop` 都是转发给该方法完成，也可以直接使用，尤其是自定义了容器和导航之后。
 
 ```js
-// 以下两行代码的效果是等同的
-Navigation.dispatch(this.props.sceneId, 'push', { moduleName: 'Profile' });
-this.props.navigator.push('Profile');
+// 以下两种写法效果等同（sceneId 来自当前页面的 props）
+Navigation.dispatch(sceneId, 'push', { moduleName: 'Profile' });
+navigator.push('Profile');
 ```
 
 ### setInterceptor
 
-`Navigation.setInterceptor((action, from, to, extras) => {})` 拦截 `dispatch` 的操作，可以插入一些横切面逻辑。
+`Navigation.setInterceptor(interceptor)` 拦截 `dispatch` 的操作，可插入登录校验、埋点等横切面逻辑。
+
+**类型：**
+
+```ts
+type NavigationInterceptor = (
+  action: string,
+  params: { sceneId: string; from?: string | number; to?: string | number; props?: object },
+) => boolean | Promise<boolean>;
+```
+
+- 回调返回 `true` 表示拦截该操作，不再执行默认导航；返回 `false` 表示不拦截。
+- `params.sceneId`：发起操作的页面 ID，可用 `Navigator.of(params.sceneId)` 获取其 navigator。
+- `params.from` / `params.to`：多数情况下为模块名（moduleName）；当 `action === 'switchTab'` 时，`from` 为当前 tab 索引，`to` 为将要切换到的 tab 索引（从 0 开始）。
+- `params.props`：跳转时携带的 props（如 push/present 的第二个参数）。
 
 ```js
-Navigation.setInterceptor((action, from, to, extras) => {
-  console.info(`action:${action} from:${from} to:${to}`);
-  // 当返回 true 时，表示你要拦截该操作
-  // 譬如用户想要跳到的页面需要登录，你可以在这里验证用户是否已经登录，否则就重定向到登录页面
+Navigation.setInterceptor((action, params) => {
+  console.info(`action:${action}`, params);
+  // 例如：目标页需登录时重定向到登录页
+  // if (params.to === 'Profile' && !isLoggedIn()) {
+  //   Navigation.dispatch(params.sceneId, 'push', { moduleName: 'Login', ... });
+  //   return true;
+  // }
   return false;
 });
 ```
 
-`extras` 中有我们需要的额外信息。譬如 `sceneId`，它表示动作发出的页面， 通过 `Navigator.of(sceneId)` 可以获取该页面的 `navigator`。如果 action 是 switchTab，我们还可以从 `extras` 中获取 `index` 这个属性，它表示将要切换到的 tab 的位置，从 0 开始。
+### currentRoute
+
+`Navigation.currentRoute(): Promise<Route>` 获取当前路由信息（当前可见页面的 sceneId、moduleName、mode 等）。
+
+```js
+import Navigation, { Navigator } from 'hybrid-navigation';
+
+const route = await Navigation.currentRoute();
+
+// {
+//   sceneId: 'xxxxxxxx',
+//   moduleName: 'Name',
+//   mode: 'modal',       // 'modal' | 'present' | 'normal'
+//   presentingId: null,   // 若由 present/showModal 打开，则为发起方的 sceneId
+//   requestCode: 0
+// }
+
+const navigator = Navigator.of(route.sceneId);
+```
+
+等价于先取路由再拿 navigator：`const navigator = await Navigator.current()`。
+
+### routeGraph
+
+`Navigation.routeGraph(): Promise<RouteGraph[]>` 获取当前整棵 UI 层级（路由图），用于 DeepLink、调试等。
+
+```js
+import Navigation, { Navigator } from 'hybrid-navigation';
+
+const graph = await Navigation.routeGraph();
+console.info(graph);
+
+const sceneId = // 通过 graph 抽取出我们想要的 sceneId
+const navigator = Navigator.of(sceneId);
+```
+
+`graph` 是一个数组，结构示例：
+
+```js
+[
+  { layout: 'drawer', sceneId: '', children: [], mode: '' },
+  { layout: 'tabs', sceneId: '', children: [], mode: '', state: { selectedIndex: 1 } },
+  { layout: 'stack', sceneId: '', children: [], mode: '' },
+  { layout: 'screen', sceneId: '36d60707-...', moduleName: 'Navigation', mode: '' },
+];
+```
+
+本库的 [DeepLink](./deeplink.md) 默认实现即基于 `Navigation.routeGraph`。
 
 ## Navigator
 
-Navigator 是一个主管导航的类，它有一些静态（类）方法和实例方法：
+**Navigation** 是应用级单例：负责 setRoot、setDefaultOptions、registerComponent 等全局配置，以及 currentRoute、routeGraph、setTitleItem(sceneId, ...)、updateOptions(sceneId, ...) 等按 sceneId 的查询与更新。
+
+**Navigator** 则是与**单个页面**绑定的导航对象，负责该页面的 push、pop、present
+
+每个注册页面会收到自己的 `navigator`（通过 props 或 `useNavigator()`），也可通过 `Navigator.of(sceneId)`、`Navigator.current()` 根据 sceneId 或当前页获取。
+
+Navigator 有以下静态（类）方法和实例方法：
 
 ### of
 
@@ -161,89 +231,12 @@ this.props.navigator === Navigator.of(this.props.sceneId);
 
 ### current
 
-`Navigator.current(): Promise<Navigator>` 返回当前有效的 navigator，通常是用户当前可见的那个页面的 navigator
+`Navigator.current(): Promise<Navigator>` 返回当前有效的 navigator，即用户当前可见页面对应的 navigator。
 
 ```js
 const navigator = await Navigator.current();
-this.props.navigator === navigator;
-// true
+this.props.navigator === navigator; // true
 ```
-
-### currentRoute
-
-`Navigation.currentRoute(): Promise<Route>` 获取当前路由信息
-
-```js
-import Navigation, { Navigator } from 'hybrid-navigation';
-
-const route = await Navigation.currentRoute();
-
-// {
-//   sceneId: 'xxxxxxxx',
-//   moduleName: 'Name'
-//   mode: 'modal'
-// }
-
-const navigator = Navigator.of(route.sceneId);
-```
-
-以上操作等同于
-
-```js
-const navigator = await Navigator.current();
-```
-
-### routeGraph
-
-`Navigation.routeGraph(): Promise<RouteGraph[]>` 有时，我们不光需要知道当前正处于哪个页面，还需要知道当前整个 UI 层级或者说路由图
-
-```js
-import Navigation, { Navigator } from 'hybrid-navigation';
-
-const graph = await Navigation.routeGraph();
-console.info(graph);
-
-const sceneId = // 通过 graph 抽取出我们想要的 sceneId
-
-const navigator = Navigator.of(sceneId);
-```
-
-`graph` 是一个数组，它长下面这个样子
-
-```js
-[
-  {
-    layout: 'drawer',
-    sceneId: '',
-    children: [], // 又是一个 graph 数组
-    mode: '', // modal, nornal, present，表示该页面是通过 prensent、showModal 或者其它方式显示
-  },
-
-  {
-    layout: 'tabs',
-    sceneId: '',
-    children: [],
-    mode: '',
-    state: { selectedIndex: 1 },
-  },
-
-  {
-    layout: 'stack',
-    sceneId: '',
-    children: [],
-    mode: '',
-  },
-
-  {
-    layout: 'screen',
-    sceneId: '36d60707-354e-4f87-a790-20590261500b',
-    moduleName: 'Navigation',
-    mode: '', // modal, present, normal
-  },
-];
-```
-
-`Navigation.routeGraph` 帮助我们获得整张路由图，它是实现 DeepLink 的基础。本库已经提供了 [DeepLink](./deeplink.md) 的默认实现。
 
 下面，我们开始介绍实例方法：
 
@@ -253,7 +246,7 @@ screen 是最基本的页面，它用来表示通过 `Navigation.registerCompone
 
 ### present
 
-`present(moduleName, prop, options): Promise<[number, Result]>` 是一种模态交互方式，类似于 Android 的 `startActivityForResult`，要求被 present 的页面返回结果给发起 present 的页面。在 iOS 中，present 表现为从底往上弹出界面。
+`present(moduleName, props, options): Promise<[number, Result]>` 是一种模态交互方式，类似于 Android 的 `startActivityForResult`，要求被 present 的页面返回结果给发起 present 的页面。在 iOS 中，present 表现为从底往上弹出界面。
 
 比如 A 页面 `present` 出 B 页面
 
@@ -343,7 +336,7 @@ navigator.presentLayout({
 navigator.present('B');
 ```
 
-也就是说，present 出来的组件，默认会嵌套在 stack 里面，因为当使用 present 时，把目标页面嵌套在 stack
+也就是说，`present(moduleName)` 等价于 present 一个以该页面为根的子 stack，目标组件会嵌套在 stack 中。
 
 ### setResult
 
@@ -515,14 +508,16 @@ if (navigator) {
 `isStackRoot(): Promise<boolean>` 判断一个页面是否所在 stack 的根页面，返回值是一个 Promise.
 
 ```js
-componentDidMount() {
-  navigator.isStackRoot().then((isRoot) => {
-    if(isRoot) {
-      garden.setLeftBarButtonItem({title: '取消', action: 'cancel'});
-      this.setState({isRoot});
+useEffect(() => {
+  navigator.isStackRoot().then(isRoot => {
+    if (isRoot) {
+      Navigation.setLeftBarButtonItem(sceneId, {
+        title: '取消',
+        action: nav => nav.dismiss(),
+      });
     }
-  })
-}
+  });
+}, [navigator, sceneId]);
 ```
 
 ### setParams
@@ -578,7 +573,7 @@ navigator.closeMenu();
 
 ## 注意事项
 
-- **永远不可能 pesent 一个页面在 modal 之上**
+- **永远不可能在 modal 之上再 present 一个页面**
 
   譬如 A 是个 modal，那么不可能在它上面执行 `navigator.present` 操作。
 

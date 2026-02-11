@@ -2,9 +2,9 @@
 
 一个 APP 中的风格通常是一致的，使用 `Navigation.setDefaultOptions` 可以全局设置 APP 的主题。
 
-我们提供了三种设置图片的方式
+我们提供了多种设置图片的方式：
 
-1.  加载静态图片
+1. 加载静态图片
 
 ```ts
 import { Image } from 'react-native';
@@ -36,7 +36,7 @@ icon: {
 icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
 ```
 
-如果项目中使用了 react-native-vector-icons 这样的库，请参考 example 中 Options.js 这个文件
+如果项目中使用了 react-native-vector-icons 等图标库，请参考 example 中的 Options 组件。
 
 ## 设置全局主题
 
@@ -45,6 +45,7 @@ icon: { uri: fontUri('FontAwesome', 'navicon', 24)},
 ```ts
 export interface DefaultOptions {
   screenBackgroundColor?: Color; // 页面背景，默认是白色
+  topBarHidden?: boolean; // 全局隐藏 TopBar；一旦设置，单页的 topBarHidden: false 无法覆盖
   topBarStyle?: BarStyle; // TopBar 样式，决定了状态栏的颜色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
   topBarColor?: Color; // TopBar 背景颜色，默认根据 topBarStyle 来计算
   topBarColorDarkContent?: Color; // TopBar 背景颜色，当 topBarStyle 的值为 BarStyleDarkContent 时生效，覆盖 topBarColor 的值
@@ -220,6 +221,9 @@ UITabBar(iOS)、BottomNavigationBar(Android) 的阴影图片。对于 iOS, 只�
 class Screen extends Component {
   static navigationItem: NavigationItem = {
     passThroughTouches: false, // 触摸事件是否可以穿透到下一层页面，很少用。
+    forceTransparentDialogWindow: false, // 当页面以 Dialog 形式展示时，是否强制背景透明
+    animatedTransition: true, // 是否使用转场动画
+    forceScreenLandscape: false, // 是否强制横屏
     screenBackgroundColor: '#FFFFFF', // 当前页面背景
     topBarStyle: string, // 状态栏和导航栏前景色，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
     topBarColor: '#FDFF0000', // 当前页面顶部导航栏背景颜色，如果颜色带有透明度，则页面会延伸到 topBar 底下。
@@ -315,7 +319,7 @@ class Screen extends Component {
 
 ### extendedLayoutIncludesTopBar
 
-默认情况下，这个值根据 `topBarColor` 的初始值计算得出，如果 `topBarColor` 含有透明度，那么这个值为 true，否则为 false。通常用于需要动态改变 `topBarAlpha` 的场合。参看 [example/TopBarAlpha](https://github.com/listenzz/hybrid-navigation/blob/master/example/src/TopBarAlpha.js) 这个例子。
+默认情况下，这个值根据 `topBarColor` 的初始值计算得出，如果 `topBarColor` 含有透明度，那么这个值为 true，否则为 false。通常用于需要动态改变 `topBarAlpha` 的场合。可参考 [example 中的 TopBarAlpha](https://github.com/listenzz/hybrid-navigation/blob/master/src/TopBarAlpha.tsx)。
 
 ### titleItem
 
@@ -331,7 +335,7 @@ layoutFitting 配合 moduleName 使用，自定义标题栏的布局模式，有
 navigator.setParams({});
 ```
 
-详情请参考 example 中 TopBarTitleView.js 这个文件。
+详情请参考 example 中的 TopBarTitleView 组件。
 
 ### tabItem
 
@@ -341,9 +345,9 @@ hideTabBarWhenPush 表示当 stack 嵌套在 tabs 的时候，push 到另一个�
 
 ### navigationBarColorAndroid
 
-用于修改当前页面对应的虚拟键的背景颜色，对 Andriod 8.0 以上版本生效。
+用于修改当前页面对应的虚拟键的背景颜色，对 Android 8.0 以上版本生效。
 
-某些页面，比如从底部往上滑的 modal, 需要开发者使用 navigationBarColorAndroid 自行适配，请参考 example/src/ReactModal.js 这个文件
+某些页面（如从底部弹出的 modal）需使用 `navigationBarColorAndroid` 自行适配，可参考 example 中的 ReactModal 组件。
 
 ## 动态配置页面
 
@@ -396,7 +400,7 @@ this.props.navigator.push(
 
 ### 动态配置
 
-Garden 提供了一些实例方法，来帮助我们动态改变这些项目。
+`Navigation` 提供了一系列静态方法，用于根据 `sceneId` 动态修改当前页的导航栏、TabBar 等。
 
 #### updateOptions
 
@@ -483,6 +487,10 @@ Navigation.setRightBarButtonItem(sceneId, {
 });
 ```
 
+#### setLeftBarButtonItems / setRightBarButtonItems
+
+`Navigation.setLeftBarButtonItems(sceneId, buttonItems)` 与 `Navigation.setRightBarButtonItems(sceneId, buttonItems)` 可一次设置多个左侧或右侧按钮，传入 `BarButtonItem[]` 或 `null` 清空。
+
 #### updateTabBar
 
 动态改变 tabBar 样式, 可配置项如下
@@ -541,15 +549,12 @@ Navigation.setTabItem(sceneId, {
 ```ts
 import { useVisibleEffect, useNavigator } from 'hybrid-navigation';
 import Navigation from 'hybrid-navigation';
-import { useCallback } from 'react';
 
 const navigator = useNavigator();
-useVisibleEffect(
-  useCallback(() => {
-    Navigation.setMenuInteractive(navigator.sceneId, true);
-    return () => {
-      Navigation.setMenuInteractive(navigator.sceneId, false);
-    };
-  }, [navigator]),
-);
+useVisibleEffect(() => {
+  Navigation.setMenuInteractive(navigator.sceneId, true);
+  return () => {
+    Navigation.setMenuInteractive(navigator.sceneId, false);
+  };
+});
 ```

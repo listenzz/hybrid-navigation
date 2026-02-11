@@ -19,7 +19,7 @@ MyApp
 运行如下命令，创建一个 RN 项目：
 
 ```sh
-npx react-native init <AppName>
+npx @react-native-community/cli init <AppName>
 ```
 
 > 也可以使用 `npx react-native-create-app <AppName>` 命令来创建
@@ -63,6 +63,8 @@ Navigation.registerComponent('Home', () => Home);
 Navigation.registerComponent('Profile', () => Profile);
 
 Navigation.endRegisterComponent();
+
+// UI 层级由原生决定时，不要在 JS 里调用 Navigation.setRoot，由原生在适当时机设置根界面。
 ```
 
 ## Android 项目配置
@@ -301,29 +303,39 @@ public class ReactEntryActivity extends ReactAppCompatActivity {
 }
 ```
 
-如果希望 UI 层级由原生这边决定，则需要实现 `onCreateMainComponent` 方法：
+如果希望 UI 层级由原生这边决定，则重写 `onCreateMainComponent`，用 `getReactManager().createFragment(moduleName, props, options)` 创建 RN/原生页面并组装成 Tab、Stack 等，最后调用 `setActivityRootFragment`。此时 **index.js 中不要调用 `Navigation.setRoot`**（可参考 [react-native-toast-hybrid](https://github.com/listenzz/react-native-toast-hybrid) 的 [index.ts](https://github.com/listenzz/react-native-toast-hybrid/blob/master/index.ts)）。
 
 ```java
 import com.navigation.androidx.StackFragment;
-import com.reactnative.hybridnavigation.ReactManager;
-import com.reactnative.hybridnavigation.ReactStackFragment;
+import com.navigation.androidx.TabBarItem;
+import com.reactnative.hybridnavigation.HybridFragment;
 import com.reactnative.hybridnavigation.ReactTabBarFragment;
 
 @Override
 protected void onCreateMainComponent() {
-    // 注意不要调用下面这行代码
-    // super.onCreateMainComponent();
-    ReactManager reactManager = ReactManager.get();
+    // 不要调用 super.onCreateMainComponent()
+    Bundle options1 = new Bundle();
+    Bundle titleItem1 = new Bundle();
+    titleItem1.putString("title", "React");
+    options1.putBundle("titleItem", titleItem1);
+    HybridFragment f1 = getReactManager().createFragment("Tab1", null, options1);
 
-    ReactStackFragment navigation = new ReactStackFragment();
-    navigation.setRootFragment(reactManager.createFragment("Navigation", null, null));
-    ReactStackFragment options = new ReactStackFragment();
-    options.setRootFragment(reactManager.createFragment("Options", null, null));
+    Bundle options2 = new Bundle();
+    Bundle titleItem2 = new Bundle();
+    titleItem2.putString("title", "Native");
+    options2.putBundle("titleItem", titleItem2);
+    HybridFragment f2 = getReactManager().createFragment("Tab2", null, options2);
 
-    ReactTabBarFragment tabBarFragment = new ReactTabBarFragment();
-    tabBarFragment.setChildFragments(navigation, options);
+    StackFragment nav1 = new StackFragment();
+    nav1.setTabBarItem(new TabBarItem("React"));
+    nav1.setRootFragment(f1);
+    StackFragment nav2 = new StackFragment();
+    nav2.setTabBarItem(new TabBarItem("Native"));
+    nav2.setRootFragment(f2);
 
-    setActivityRootFragment(tabBarFragment);
+    ReactTabBarFragment tabs = new ReactTabBarFragment();
+    tabs.setChildFragments(nav1, nav2);
+    setActivityRootFragment(tabs);
 }
 ```
 
@@ -509,12 +521,18 @@ end
 }
 
 - (void)reactModuleRegisterDidCompleted:(HBDReactBridgeManager *)manager {
-    // 如果需要由原生决定 UI 层级，可以在这里设置
-    // HBDTabBarController *tabs = [[HBDTabBarController alloc] init];
-    // HBDNavigationController *navigation = [[HBDNavigationController alloc] initWithRootViewController:[manager viewControllerWithModuleName:@"Navigation" props:nil options:nil]];
-    // HBDNavigationController *options = [[HBDNavigationController alloc] initWithRootViewController:[manager viewControllerWithModuleName:@"Options" props:nil options:nil]];
-    // [tabs setViewControllers:@[ navigation, options ]];
-    // [manager setRootViewController:tabs];
+    // 由原生决定 UI 层级时在此设置根界面；此时 index.js 中不要调用 Navigation.setRoot（可参考 [react-native-toast-hybrid](https://github.com/listenzz/react-native-toast-hybrid) 的 [AppDelegate.mm](https://github.com/listenzz/react-native-toast-hybrid/blob/master/ios/ToastHybrid/AppDelegate.mm)）
+    HBDViewController *vc1 = [manager viewControllerWithModuleName:@"Tab1" props:nil options:@{@"titleItem": @{@"title": @"React"}}];
+    HBDViewController *vc2 = [manager viewControllerWithModuleName:@"Tab2" props:nil options:@{@"titleItem": @{@"title": @"Native"}}];
+
+    HBDNavigationController *nav1 = [[HBDNavigationController alloc] initWithRootViewController:vc1];
+    nav1.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"React" image:nil selectedImage:nil];
+    HBDNavigationController *nav2 = [[HBDNavigationController alloc] initWithRootViewController:vc2];
+    nav2.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Native" image:nil selectedImage:nil];
+
+    HBDTabBarController *tabs = [[HBDTabBarController alloc] init];
+    [tabs setViewControllers:@[nav1, nav2]];
+    [manager setRootViewController:tabs];
 }
 
 // iOS 9.x or newer

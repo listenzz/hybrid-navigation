@@ -4,6 +4,31 @@
 
 RN 页面如何跳转和传值，我们 [容器与导航](./navigation.md) 一章已经提及，你不需要理会目标页面是原生的还是 RN 的，只要当前页面是 RN 的，处理方式都一样。
 
+## 结果码（resultCode）
+
+在 `present`、`showModal` 或 `pop`/`popTo`/`popToRoot` 返回结果时，会携带一个整型结果码和可选数据。推荐使用库提供的常量：
+
+| 常量 | 含义 |
+|------|------|
+| `RESULT_OK` | 用户确认、操作成功 |
+| `RESULT_CANCEL` | 用户取消、关闭而未确认 |
+| `RESULT_BLOCK` | 操作被拦截（如被 `setInterceptor` 拦截）或未真正执行 |
+
+```ts
+import Navigation, { RESULT_OK, RESULT_CANCEL, RESULT_BLOCK } from 'hybrid-navigation';
+
+const [resultCode, data] = await navigator.present('Picker');
+if (resultCode === RESULT_OK) {
+  // 用户选择了内容，使用 data
+} else if (resultCode === RESULT_CANCEL) {
+  // 用户取消
+} else if (resultCode === RESULT_BLOCK) {
+  // 跳转被拦截
+}
+```
+
+仅支持返回可序列化为 JSON 的对象，不能返回函数。
+
 下面我们来说原生页面的跳转和传值方式：
 
 ## 创建原生页面
@@ -32,40 +57,22 @@ iOS 需要继承 `HBDViewController`，具体可以参考 example 项目中 `Nat
 
 ## 注册原生页面
 
-Android 注册方式如下
+完整 Android/iOS 工程配置请参考 [为原生项目添加 RN 模块](./integration-native.md) 或 [集成到以 RN 为主的项目](./integration-react.md)。以下仅列出与「注册原生模块」相关的片段。
+
+**Android**：在 `MainApplication#onCreate` 中，在 `ReactManager.install(...)` 之后调用：
 
 ```java
-public class MainApplication extends Application implements ReactApplication{
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        SoLoader.init(this, false);
+ReactManager reactManager = ReactManager.get();
+reactManager.install(getReactHost()); // 或 getReactNativeHost()，视 RN 版本而定
 
-        ReactBridgeManager bridgeManager = ReactBridgeManager.get();
-        bridgeManager.install(getReactNativeHost());
-
-        // 注册原生模块
-        bridgeManager.registerNativeModule("NativeModule", NativeFragment.class);
-    }
-}
+// 注册原生模块
+reactManager.registerNativeModule("NativeModule", NativeFragment.class);
 ```
 
-iOS 注册方式如下
+**iOS**：在 `AppDelegate` 中，在 `[[HBDReactBridgeManager get] installWithReactHost:...]` 之后调用：
 
 ```objc
-@implementation AppDelegate
-
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-    [[HBDReactBridgeManager get] installWithBridge:bridge];
-
-    // 注册原生模块
-    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forController:[NativeViewController class]];
-
-    return YES;
-}
-
-@end
+[[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[NativeViewController class]];
 ```
 
 > 如果 RN 和原生都注册了同样的模块，即模块名相同，会优先采用 RN 模块。一个应用场景是，如果线上原生模块有严重 BUG，可以通过热更新用 RN 模块临时替换，并指引用户升级版本。

@@ -4,7 +4,7 @@
 
 你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
 
-假设你是通过 `react-native init MyApp` 创建的项目，目录结构是这样的：
+假设你是通过 `npx @react-native-community/cli init MyApp` 创建的项目，目录结构是这样的：
 
 ```
 MyApp/
@@ -56,7 +56,7 @@ Navigation.registerComponent('App', () => App);
 // 重要必须
 Navigation.endRegisterComponent();
 
-// 通过 `Navigator#setRoot` 来设置 UI 层级
+// 通过 Navigation.setRoot 设置 UI 层级
 Navigation.setRoot({
   stack: {
     children: [{ screen: { moduleName: 'App' } }],
@@ -140,8 +140,8 @@ public class MainActivity extends ReactAppCompatActivity {
       super.onCreate();
       ReactNativeApplicationEntryPoint.loadReactNative(this);
 
-+     ReactManager bridgeManager = ReactManager.get();
-+     reactManager.install(getReactNativeHost());
++     ReactManager reactManager = ReactManager.get();
++     reactManager.install(getReactHost());
   }
 ```
 

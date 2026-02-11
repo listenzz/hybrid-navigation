@@ -1,5 +1,14 @@
 # 常见问题
 
+## 如何查看当前路由 / 路由图（调试用）
+
+需要排查「当前在哪个页面」或「整棵 UI 层级」时，可使用：
+
+- `Navigation.currentRoute(): Promise<Route>` — 返回当前可见页面的路由信息（sceneId、moduleName、mode 等），见 [容器与导航 - currentRoute](./navigation.md#currentroute)。
+- `Navigation.routeGraph(): Promise<RouteGraph[]>` — 返回整棵路由树（drawer/tabs/stack/screen 结构），见 [容器与导航 - routeGraph](./navigation.md#routegraph)。
+
+在控制台打印或配合开发工具即可用于调试。
+
 ## 如何和 `React.Context` 一起使用
 
 `React.Context` 使得具有相同根组件的所有子组件共享上下文。可是 hybrid-navigation 的每一个页面都是独立的，它们没有共同的根组件，那么，如何才能在 hybrid-navigation 环境下使用 `React.Context` 呢？
@@ -44,18 +53,17 @@ module.exports = {
 ## 如何拦截 Android 物理返回键
 
 ```ts
-useVisibleEffect(
-  useCallback(() => {
-    const handleBackPress = () => {
-      console.log('---------------');
-      // true 表示拦截，false 表示不拦截
-      return false;
-    };
+import { BackHandler } from 'react-native';
+import { useVisibleEffect } from 'hybrid-navigation';
 
-    BackHandler.addEventListener('hardwareBackPress', handleBackPress);
-    return () => BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
-  }, []),
-);
+useVisibleEffect(() => {
+  const handleBackPress = () => {
+    // true 表示拦截，false 表示不拦截
+    return false;
+  };
+  BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+  return () => BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+});
 ```
 
 ## 如何实现 HOC

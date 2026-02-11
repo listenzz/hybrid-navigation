@@ -1,13 +1,39 @@
 # Hybrid Navigation
 
-[Hybrid Navigation](https://github.com/listenzz/hybrid-navigation)是一款 React Native 导航组件，支持在 react 页面和原生页面之间无缝导航。
+[Hybrid Navigation](https://github.com/listenzz/hybrid-navigation)是一款 React Native 导航组件，支持在 React 页面和原生页面之间无缝导航。
 
 ## 特性
 
 - 使用原生导航组件实现 React Native 页面间的导航，不仅具有更优的性能，而且使得 RN 页面具有原生质感
-- 原生页面和 RN 页面共享路由， 使得它们之间相互跳转和传值轻而易举
-- 内置 drawer, tabs, stack 标准容器，同时支持自定义容器和导航
+- 原生页面和 RN 页面共享路由，使得它们之间相互跳转和传值轻而易举
+- 内置 drawer、tabs、stack 标准容器，同时支持自定义容器和导航
 - 支持 Deep Link
+
+## 快速开始
+
+在以 RN 为主的项目中，在应用入口（如 `index.js`）需完成三件事：**注册页面**、**设置全局样式**（可选）、**设置根布局**。
+
+```js
+import Navigation, { BarStyleDarkContent } from 'hybrid-navigation';
+import Home from './Home';
+
+// 设置全局样式
+Navigation.setDefaultOptions({ topBarStyle: BarStyleDarkContent });
+
+// 注册页面
+Navigation.startRegisterComponent();
+Navigation.registerComponent('Home', () => Home);
+Navigation.endRegisterComponent();
+
+// 设置根布局
+Navigation.setRoot({
+  stack: {
+    children: [{ screen: { moduleName: 'Home' } }],
+  },
+});
+```
+
+详细集成步骤见 [集成到以 RN 为主的项目](./integration-react.md)。
 
 ![README-2021-10-19-15-39-45](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/README-2021-10-19-15-39-45.png)
 
@@ -17,6 +43,8 @@
 | ---- | ------- | ------- |
 | 2.x  | < 0.82  | 旧架构  |
 | 3.x  | >= 0.83 | 新架构  |
+
+版本变更与升级说明见仓库 [CHANGELOG](https://github.com/listenzz/hybrid-navigation/blob/master/CHANGELOG.md)。
 
 ## 运行 example 项目
 
