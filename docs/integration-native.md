@@ -2,8 +2,6 @@
 
 你的大部分业务已经用原生代码实现，你想添加一些 RN 业务模块。
 
-官方文档[Integration with Existing Apps](https://reactnative.dev/docs/0.67/integration-with-existing-apps)，有比较详细的介绍，本文讲述的过程和官方文档大同小异。
-
 为了确保流畅的体验，使用如下目录结构：
 
 ```
@@ -13,6 +11,8 @@ MyApp
 ├─ node_modules/
 ├─ package.json
 ```
+
+> 也可以使用其它目录结构，此时需要配置 RN 项目的 react-native.config.js 文件，将 android 和 ios 文件夹添加到 project 中。
 
 ## 创建 RN 项目
 
@@ -24,7 +24,7 @@ npx @react-native-community/cli init <AppName>
 
 > 也可以使用 `npx react-native-create-app <AppName>` 命令来创建
 
-创建成功后，打开该目录，**删除里面的 andriod 和 ios 文件夹**。
+创建成功后，打开该目录，**删除里面的 android 和 ios 文件夹**。
 
 cd 到 RN 项目，执行如下命令添加依赖：
 
