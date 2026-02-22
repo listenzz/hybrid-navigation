@@ -498,16 +498,16 @@ end
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     RCTSetLogThreshold(RCTLogLevelInfo);
 
-    ReactNativeDelegate *delegate = [[ReactNativeDelegate alloc] init];
-    RCTReactNativeFactory *factory = [[RCTReactNativeFactory alloc] initWithDelegate:delegate];
-    delegate.dependencyProvider = [[RCTAppDependencyProvider alloc] init];
+	ReactNativeDelegate *delegate = [[ReactNativeDelegate alloc] init];
+	RCTReactNativeFactory *factory = [[RCTReactNativeFactory alloc] initWithDelegate:delegate];
+	delegate.dependencyProvider = [[RCTAppDependencyProvider alloc] init];
 
-    self.reactNativeDelegate = delegate;
-    self.reactNativeFactory = factory;
-    self.rootViewFactory = factory.rootViewFactory;
+	self.reactNativeDelegate = delegate;
+	self.reactNativeFactory = factory;
+	self.rootViewFactory = factory.rootViewFactory;
 
-    [self.rootViewFactory initializeReactHostWithLaunchOptions:launchOptions devMenuConfiguration:[RCTDevMenuConfiguration defaultConfiguration]];
-    [[HBDReactBridgeManager get] installWithReactHost:self.rootViewFactory.reactHost];
+	[self.rootViewFactory initializeReactHostWithLaunchOptions:launchOptions bundleConfiguration:[RCTBundleConfiguration defaultConfiguration] devMenuConfiguration:[RCTDevMenuConfiguration defaultConfiguration]];
+	[[HBDReactBridgeManager get] installWithReactHost:self.rootViewFactory.reactHost];
 
     // register native modules
     [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[NativeViewController class]];
