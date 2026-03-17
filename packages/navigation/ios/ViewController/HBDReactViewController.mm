@@ -22,6 +22,15 @@
     NSArray *_reactViewConstraints;
 }
 
+- (void)syncRootViewBackgroundColor {
+    if (!self.rootView) {
+        return;
+    }
+
+    UIColor *backgroundColor = self.view.backgroundColor ?: UIColor.clearColor;
+    self.rootView.backgroundColor = backgroundColor;
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RCTBridgeWillReloadNotification object:nil];
     RCTLogInfo(@"[Navigation] 销毁页面 %@", self.moduleName);
@@ -47,16 +56,18 @@
 
     BOOL passThroughTouches = [self.options[@"passThroughTouches"] boolValue];
     rootView.passThroughTouches = passThroughTouches;
-    rootView.backgroundColor = UIColor.clearColor;
 	rootView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	self.view = [[UIView alloc] init];
+	self.view.backgroundColor = [GlobalStyle globalStyle].screenBackgroundColor;
 	self.view.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    [self syncRootViewBackgroundColor];
     [self.view addSubview:rootView];
     RCTLogInfo(@"[Navigation] 加载页面 %@", self.moduleName);
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self syncRootViewBackgroundColor];
     [self updateReactViewConstraints];
 
     NSDictionary *titleItem = self.options[@"titleItem"];

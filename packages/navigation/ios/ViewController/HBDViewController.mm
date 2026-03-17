@@ -94,15 +94,17 @@
 }
 
 - (void)adjustScreenOrientation {
-	if (@available(iOS 15.0, *)) {
-		UIWindowScene *windowScene = [self getWindowScene];
-		if (!self.forceScreenLandscape && windowScene != nil && windowScene.interfaceOrientation != UIInterfaceOrientationPortrait && ![[self hbd_mode] isEqual:@"modal"]) {
-			[self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
-		}
-		
-		if (self.forceScreenLandscape) {
-			[self setScreenOrientation:UIInterfaceOrientationLandscapeRight usingMask:UIInterfaceOrientationMaskLandscape];
-		}
+	UIWindowScene *windowScene = nil;
+	if (@available(iOS 13.0, *)) {
+		windowScene = [self getWindowScene];
+	}
+
+	if (!self.forceScreenLandscape && windowScene != nil && windowScene.interfaceOrientation != UIInterfaceOrientationPortrait && ![[self hbd_mode] isEqual:@"modal"]) {
+		[self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
+	}
+
+	if (self.forceScreenLandscape) {
+		[self setScreenOrientation:UIInterfaceOrientationLandscapeRight usingMask:UIInterfaceOrientationMaskLandscape];
 	}
 }
 
@@ -130,11 +132,19 @@
 }
 
 - (UIWindowScene *)getWindowScene API_AVAILABLE(ios(13.0)){
+    UIWindow *window = self.view.window ?: self.navigationController.view.window;
+    if ([window.windowScene isKindOfClass:[UIWindowScene class]]) {
+        return window.windowScene;
+    }
+
     NSArray *array = [[[UIApplication sharedApplication] connectedScenes] allObjects];
     for (id connectedScene in array) {
-      if ([connectedScene isKindOfClass:[UIWindowScene class]]) {
-        return connectedScene;
-      }
+        if ([connectedScene isKindOfClass:[UIWindowScene class]]) {
+            UIWindowScene *scene = (UIWindowScene *)connectedScene;
+            if (scene.activationState == UISceneActivationStateForegroundActive) {
+                return scene;
+            }
+        }
     }
     return nil;
 }

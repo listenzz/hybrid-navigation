@@ -173,12 +173,19 @@
     if (self.proxyDelegate && [self.proxyDelegate respondsToSelector:@selector(navigationControllerSupportedInterfaceOrientations:)]) {
         return [self.proxyDelegate navigationControllerSupportedInterfaceOrientations:navigationController];
     }
-    return UIInterfaceOrientationMaskPortrait;
+    return [GlobalStyle globalStyle].interfaceOrientation;
 }
 
 - (UIInterfaceOrientation)navigationControllerPreferredInterfaceOrientationForPresentation:(UINavigationController *)navigationController {
     if (self.proxyDelegate && [self.proxyDelegate respondsToSelector:@selector(navigationControllerPreferredInterfaceOrientationForPresentation:)]) {
         return [self.proxyDelegate navigationControllerPreferredInterfaceOrientationForPresentation:navigationController];
+    }
+    UIInterfaceOrientationMask mask = [GlobalStyle globalStyle].interfaceOrientation;
+    if (mask & UIInterfaceOrientationMaskLandscapeRight) {
+        return UIInterfaceOrientationLandscapeRight;
+    }
+    if (mask & UIInterfaceOrientationMaskLandscapeLeft) {
+        return UIInterfaceOrientationLandscapeLeft;
     }
     return UIInterfaceOrientationPortrait;
 }
