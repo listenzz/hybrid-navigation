@@ -25,6 +25,12 @@
 - (instancetype)initWithNavigationController:(HBDNavigationController *)navigationController;
 - (void)hbd_compensateSafeAreaForViewController:(UIViewController *)vc expectedTopInset:(CGFloat)expectedTopInset isToVC:(BOOL)isToVC;
 - (void)hbd_restoreCompensatedSafeAreaForFrom:(UIViewController *)from to:(UIViewController *)to viewController:(UIViewController *)viewController;
+- (BOOL)shouldAnimateTabBarFrom:(UIViewController *)from to:(UIViewController *)to;
+- (void)prepareTabBarForTransitionFrom:(UIViewController *)from to:(UIViewController *)to;
+- (void)animateTabBarForTransitionFrom:(UIViewController *)from to:(UIViewController *)to;
+- (void)completeTabBarTransitionFrom:(UIViewController *)from
+                                  to:(UIViewController *)to
+                          cancelled:(BOOL)cancelled;
 
 @end
 
@@ -311,6 +317,11 @@
 
     [self.nav updateNavigationBarStyleForViewController:viewController];
 
+    BOOL shouldAnimateTabBar = [self shouldAnimateTabBarFrom:from to:to];
+    if (shouldAnimateTabBar) {
+        [self prepareTabBarForTransitionFrom:from to:to];
+    }
+
     [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         BOOL shouldFake = [self shouldShowFakeBarFrom:from to:to viewController:viewController];
         if (shouldFake) {
@@ -332,6 +343,10 @@
                     self.nav.navigationBar.standardAppearance.backgroundColor = viewController.hbd_barTintColor;
                 }
             }
+        }
+
+        if (shouldAnimateTabBar) {
+            [self animateTabBarForTransitionFrom:from to:to];
         }
     } completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         self.nav.poppingViewController = nil;
@@ -355,10 +370,60 @@
             self.nav.navigationBar.standardAppearance.backgroundColor = UIColor.clearColor;
         }
 
+        if (shouldAnimateTabBar) {
+            [self completeTabBarTransitionFrom:from to:to cancelled:context.isCancelled];
+        }
+
         if (to == viewController) {
             [self.nav clearFake];
         }
     }];
+}
+
+- (BOOL)shouldAnimateTabBarFrom:(UIViewController *)from to:(UIViewController *)to {
+    UITabBarController *tabBarController = self.nav.tabBarController;
+    if (!tabBarController) {
+        return NO;
+    }
+
+    return from.hidesBottomBarWhenPushed != to.hidesBottomBarWhenPushed;
+}
+
+- (void)prepareTabBarForTransitionFrom:(UIViewController *)from to:(UIViewController *)to {
+    UITabBar *tabBar = self.nav.tabBarController.tabBar;
+    [tabBar.layer removeAllAnimations];
+    tabBar.hidden = NO;
+
+    if (from.hidesBottomBarWhenPushed && !to.hidesBottomBarWhenPushed) {
+        // iOS 26 首次交互返回时，系统会过早让 TabBar 现身；先把初始 alpha 固定住，交给 coordinator 渐变。
+        tabBar.alpha = 0.0;
+    } else if (!from.hidesBottomBarWhenPushed && to.hidesBottomBarWhenPushed) {
+        tabBar.alpha = 1.0;
+    }
+}
+
+- (void)animateTabBarForTransitionFrom:(UIViewController *)from to:(UIViewController *)to {
+    UITabBar *tabBar = self.nav.tabBarController.tabBar;
+    if (from.hidesBottomBarWhenPushed && !to.hidesBottomBarWhenPushed) {
+        tabBar.alpha = 1.0;
+    } else if (!from.hidesBottomBarWhenPushed && to.hidesBottomBarWhenPushed) {
+        tabBar.alpha = 0.0;
+    }
+}
+
+- (void)completeTabBarTransitionFrom:(UIViewController *)from
+                                  to:(UIViewController *)to
+                          cancelled:(BOOL)cancelled {
+    UITabBar *tabBar = self.nav.tabBarController.tabBar;
+    [tabBar.layer removeAllAnimations];
+
+    UIViewController *visibleViewController = cancelled ? from : to;
+    if (visibleViewController.hidesBottomBarWhenPushed) {
+        tabBar.alpha = 0.0;
+    } else {
+        tabBar.hidden = NO;
+        tabBar.alpha = 1.0;
+    }
 }
 
 - (void)resetButtonLabelInNavBar:(UINavigationBar *)navBar {
