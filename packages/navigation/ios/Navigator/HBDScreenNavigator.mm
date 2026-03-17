@@ -140,6 +140,7 @@
     NSInteger requestCode = [extras[@"requestCode"] integerValue];
     UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:layout];
     [vc setRequestCode:requestCode];
+    [vc setPresentingSceneId:presenting.sceneId];
     vc.modalPresentationStyle = UIModalPresentationCurrentContext;
 
     [presenting presentViewController:vc animated:YES completion:^{
@@ -154,6 +155,7 @@
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     vc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [vc setRequestCode:requestCode];
+    [vc setPresentingSceneId:presenting.sceneId];
 
     [presenting presentViewController:vc animated:YES completion:^{
         callback(@[NSNull.null, @YES]);
