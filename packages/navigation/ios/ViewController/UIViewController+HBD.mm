@@ -49,6 +49,14 @@
     }
 
     [self hbd_dismissViewControllerAnimated:animated completion:^{
+        if (!presented || !presenting) {
+            RCTLogWarn(@"[Navigation] dismiss completed without a valid presenting/presented controller pair.");
+            if (completion) {
+                completion();
+            }
+            return;
+        }
+
         if (![presented isKindOfClass:[UIAlertController class]]) {
             BOOL consumed = presented.presentingSceneId && [UIViewController dispatchResult:presenting presented:presented sceneId:presented.presentingSceneId];
             if (!consumed) {
@@ -355,4 +363,3 @@
 }
 
 @end
-
