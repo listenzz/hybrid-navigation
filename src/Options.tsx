@@ -270,7 +270,7 @@ function Options({ sceneId, navigator }: NavigationProps) {
 					activeOpacity={0.2}
 					style={styles.button}
 				>
-					<Text style={styles.buttonText}>replalce tab item color</Text>
+					<Text style={styles.buttonText}>replace tab item color</Text>
 				</TouchableOpacity>
 
 				<TouchableOpacity
