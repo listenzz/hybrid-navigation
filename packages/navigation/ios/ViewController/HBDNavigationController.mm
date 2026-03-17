@@ -31,6 +31,8 @@
 - (void)completeTabBarTransitionFrom:(UIViewController *)from
                                   to:(UIViewController *)to
                           cancelled:(BOOL)cancelled;
+- (BOOL)shouldUseFadeAnimationFrom:(UIViewController *)from to:(UIViewController *)to;
+- (BOOL)shouldHandleInteractiveTransitionWithNavigationController:(HBDNavigationController *)nav;
 
 @end
 
@@ -105,9 +107,12 @@
     HBDNavigationController *nav = self.nav;
 
     id <UIViewControllerTransitionCoordinator> coordinator = nav.transitionCoordinator;
+    BOOL shouldHandleInteractiveTransition =
+        [self shouldBetterTransitionWithViewController:nav.topViewController] ||
+        [self shouldHandleInteractiveTransitionWithNavigationController:nav];
 
     if (![self.proxyDelegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)]) {
-        if (self.interactiveTransition || (!coordinator && [self shouldBetterTransitionWithViewController:nav.topViewController])) {
+        if (self.interactiveTransition || (!coordinator && shouldHandleInteractiveTransition)) {
             CGFloat process = [pan translationInView:nav.view].x / nav.view.bounds.size.width;
             process = MIN(1.0, (MAX(0.0, process)));
             if (pan.state == UIGestureRecognizerStateBegan) {
@@ -202,7 +207,8 @@
         return [self.proxyDelegate navigationController:navigationController interactionControllerForAnimationController:animationController];
     }
 
-    if ([animationController isKindOfClass:[HBDPopAnimation class]]) {
+    if ([animationController isKindOfClass:[HBDPopAnimation class]] ||
+        [animationController isKindOfClass:[HBDFadeAnimation class]]) {
         return self.interactiveTransition;
     }
 
@@ -261,6 +267,34 @@
         shouldBetter = [hbd.options[@"passThroughTouches"] boolValue];
     }
     return shouldBetter;
+}
+
+- (BOOL)shouldUseFadeAnimationFrom:(UIViewController *)from to:(UIViewController *)to {
+    if ([from isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hbdFromVC = (HBDViewController *)from;
+        if (hbdFromVC.forceScreenLandscape) {
+            return YES;
+        }
+    }
+
+    if ([to isKindOfClass:[HBDViewController class]]) {
+        HBDViewController *hbdToVC = (HBDViewController *)to;
+        if (hbdToVC.forceScreenLandscape) {
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
+- (BOOL)shouldHandleInteractiveTransitionWithNavigationController:(HBDNavigationController *)nav {
+    if (nav.viewControllers.count < 2) {
+        return NO;
+    }
+
+    UIViewController *from = nav.topViewController;
+    UIViewController *to = nav.viewControllers[nav.viewControllers.count - 2];
+    return [self shouldUseFadeAnimationFrom:from to:to];
 }
 
 - (void)hbd_compensateSafeAreaForViewController:(UIViewController *)vc expectedTopInset:(CGFloat)expectedTopInset isToVC:(BOOL)isToVC {
