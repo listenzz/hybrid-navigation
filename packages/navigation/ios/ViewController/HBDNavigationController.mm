@@ -453,7 +453,8 @@
 
     UIViewController *visibleViewController = cancelled ? from : to;
     if (visibleViewController.hidesBottomBarWhenPushed) {
-        tabBar.alpha = 0.0;
+        tabBar.alpha = 1.0;
+        tabBar.hidden = YES;
     } else {
         tabBar.hidden = NO;
         tabBar.alpha = 1.0;
