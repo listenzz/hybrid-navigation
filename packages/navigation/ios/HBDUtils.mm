@@ -2,7 +2,31 @@
 
 #import <React/RCTConvert.h>
 
+@implementation UIScrollView (HBDEdgeEffect)
+
+- (void)hbd_didMoveToWindow {
+    [self hbd_didMoveToWindow];
+
+    if (@available(iOS 26.0, *)) {
+        self.topEdgeEffect.hidden = YES;
+        self.leftEdgeEffect.hidden = YES;
+        self.bottomEdgeEffect.hidden = YES;
+        self.rightEdgeEffect.hidden = YES;
+    }
+}
+
+@end
+
 @implementation HBDUtils
+
++ (void)load {
+    if (@available(iOS 26.0, *)) {
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            hbd_exchangeImplementations([UIScrollView class], @selector(didMoveToWindow), @selector(hbd_didMoveToWindow));
+        });
+    }
+}
 
 + (NSDictionary *)mergeItem:(NSDictionary *)item withTarget:(NSDictionary *)target {
     NSMutableDictionary *mutableTarget = [target mutableCopy];
