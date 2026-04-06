@@ -28,9 +28,9 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 
 	protected static final String TAG = "Navigation";
 
-	private ViewGroup reactViewHolder;
+	private HBDRootView reactRootView;
 
-	private ReactSurface reactRootView;
+	private ReactSurface reactSurface;
 	private ReactSurface reactTitleView;
 	private boolean firstRenderCompleted;
 
@@ -38,7 +38,7 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.nav_fragment_react, container, false);
-		reactViewHolder = view.findViewById(R.id.react_content);
+		reactRootView = view.findViewById(R.id.react_content);
 		if (isReactModuleRegisterCompleted()) {
 			mountReactView();
 		}
@@ -56,6 +56,7 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 	public void onDestroyView() {
 		super.onDestroyView();
 		unmountReactView();
+		reactRootView = null;
 	}
 
 	@Override
@@ -111,7 +112,7 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 	}
 
 	private boolean isViewReady() {
-		if (reactRootView == null) {
+		if (reactSurface == null) {
 			return false;
 		}
 		return firstRenderCompleted;
@@ -159,19 +160,25 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 	private void unmountReactView() {
 		getReactManager().removeReactBridgeReloadListener(this);
 
+		boolean canStopSurface = false;
 		ReactContext reactContext = getCurrentReactContext();
-		if (reactContext == null || !reactContext.hasActiveReactInstance()) {
-			return;
+		if (reactContext != null && reactContext.hasActiveReactInstance()) {
+			canStopSurface = true;
+		}
+
+		if (reactSurface != null) {
+			FLog.w(TAG, "销毁页面-：" + getModuleName());
+			reactSurface = null;
 		}
 
 		if (reactRootView != null) {
-			FLog.w(TAG, "销毁页面-：" + getModuleName());
-			reactRootView.stop();
-			reactRootView = null;
+			reactRootView.clearSurface(canStopSurface);
 		}
 
 		if (reactTitleView != null) {
-			reactTitleView.stop();
+			if (canStopSurface) {
+				reactTitleView.stop();
+			}
 			reactTitleView = null;
 		}
 	}
@@ -215,10 +222,15 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 	private void initReactRootView() {
 		ReactHost reactHost = getReactManager().getReactHost();
 		ReactSurface reactSurface = reactHost.createSurface(requireContext(), getModuleName(), getProps());
-		reactRootView = reactSurface;
-		ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT);
-		reactViewHolder.addView(reactSurface.getView(), layoutParams);
-		reactSurface.start();
+		this.reactSurface = reactSurface;
+
+		HBDRootView rootView = reactRootView;
+		if (rootView == null) {
+			throw new IllegalStateException("[Navigation] HBDRootView 还没有创建。");
+		}
+		rootView.setPassThroughTouches(shouldPassThroughTouches());
+		rootView.setAppProperties(getProps());
+		rootView.setSurface(reactSurface);
 	}
 
 	private void initReactTitleView() {
@@ -244,10 +256,19 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 		boolean expanded = "expanded".equals(fitting);
 		ReactHost reactHost = getReactManager().getReactHost();
 		ReactSurface reactSurface = reactHost.createSurface(requireContext(), moduleName, getProps());
+		reactTitleView = reactSurface;
 		Toolbar.LayoutParams layoutParams = createTitleLayoutParams(expanded);
 		Toolbar toolbar = getToolbar();
 		toolbar.addView(reactSurface.getView(), layoutParams);
 		reactSurface.start();
+	}
+
+	@Override
+	public void setAppProperties(@NonNull Bundle props) {
+		super.setAppProperties(props);
+		if (isReactModuleRegisterCompleted() && reactRootView != null) {
+			reactRootView.setAppProperties(getProps());
+		}
 	}
 
 	@NonNull
