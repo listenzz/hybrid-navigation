@@ -1,6 +1,5 @@
 package com.reactnative.hybridnavigation;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -12,6 +11,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.UIManager;
 import com.facebook.react.interfaces.fabric.ReactSurface;
 import com.facebook.react.runtime.ReactSurfaceView;
@@ -100,17 +100,7 @@ public class HBDRootView extends FrameLayout {
         return super.dispatchTouchEvent(ev);
     }
 
-	@SuppressLint("ClickableViewAccessibility")
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		ReactSurfaceView surfaceView = getReactSurfaceView();
-		if (surfaceView != null) {
-			surfaceView.onChildStartedNativeGesture(surfaceView, event);
-		}
-		return true;
-	}
-
-	private boolean shouldPassTouches(@NonNull MotionEvent ev) {
+    private boolean shouldPassTouches(@NonNull MotionEvent ev) {
         if (!passThroughTouches) {
             return false;
         }
@@ -128,7 +118,12 @@ public class HBDRootView extends FrameLayout {
         ViewGroup rootViewGroup = surfaceView.getRootViewGroup();
 
         int tag = TouchTargetHelper.findTargetTagForTouch(ev.getX(), ev.getY(), rootViewGroup);
-        UIManager uiManager = UIManagerHelper.getUIManager(surfaceView.getCurrentReactContext(), UIManagerType.FABRIC);
+        ReactContext reactContext = surfaceView.getCurrentReactContext();
+        if (reactContext == null) {
+            return false;
+        }
+
+        UIManager uiManager = UIManagerHelper.getUIManager(reactContext, UIManagerType.FABRIC);
         if (uiManager == null) {
             return false;
         }
@@ -139,10 +134,7 @@ public class HBDRootView extends FrameLayout {
         }
 
         if (view == surfaceView || view == surfaceView.getChildAt(0)) {
-            if (view.getWidth() == surfaceView.getWidth() && view.getHeight() == surfaceView.getHeight()) {
-                surfaceView.onChildStartedNativeGesture(surfaceView, ev);
-                return true;
-            }
+            return view.getWidth() == surfaceView.getWidth() && view.getHeight() == surfaceView.getHeight();
         }
 
         return false;
