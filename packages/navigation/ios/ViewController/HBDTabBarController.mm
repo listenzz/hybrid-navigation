@@ -56,12 +56,9 @@
     if (tabBarBackgroundColor) {
 		if (@available(iOS 26.0, *)) {
 			// [tabBar setBackgroundColor: [HBDUtils colorWithHexString:tabBarBackgroundColor]];
-		} else
-        if (@available(iOS 15.0, *)) {
+		} else {
             [tabBar standardAppearance].backgroundImage = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarBackgroundColor]];
             [tabBar scrollEdgeAppearance].backgroundImage = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarBackgroundColor]];
-        } else {
-            [tabBar setBackgroundImage:[HBDUtils imageWithColor:[HBDUtils colorWithHexString:tabBarBackgroundColor]]];
         }
     }
 

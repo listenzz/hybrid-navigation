@@ -292,7 +292,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
-					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.todoit.navigation;
 				PRODUCT_NAME = HybridNavigation;
@@ -321,7 +320,6 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
-					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = tech.todoit.navigation;
 				PRODUCT_NAME = HybridNavigation;

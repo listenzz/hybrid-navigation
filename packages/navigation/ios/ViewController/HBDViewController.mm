@@ -63,11 +63,7 @@
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
-    if (@available(iOS 13.0, *)) {
-        return self.hbd_barStyle == UIBarStyleDefault ? UIStatusBarStyleDarkContent : UIStatusBarStyleLightContent;
-    } else {
-        return self.hbd_barStyle == UIBarStyleDefault ? UIStatusBarStyleDefault : UIStatusBarStyleLightContent;
-    }
+    return self.hbd_barStyle == UIBarStyleDefault ? UIStatusBarStyleDarkContent : UIStatusBarStyleLightContent;
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -94,10 +90,7 @@
 }
 
 - (void)adjustScreenOrientation {
-	UIWindowScene *windowScene = nil;
-	if (@available(iOS 13.0, *)) {
-		windowScene = [self getWindowScene];
-	}
+	UIWindowScene *windowScene = [self getWindowScene];
 
 	if (!self.forceScreenLandscape && windowScene != nil && windowScene.interfaceOrientation != UIInterfaceOrientationPortrait && ![[self hbd_mode] isEqual:@"modal"]) {
 		[self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
@@ -131,7 +124,7 @@
     [UIViewController attemptRotationToDeviceOrientation];
 }
 
-- (UIWindowScene *)getWindowScene API_AVAILABLE(ios(13.0)){
+- (UIWindowScene *)getWindowScene {
     UIWindow *window = self.view.window ?: self.navigationController.view.window;
     if ([window.windowScene isKindOfClass:[UIWindowScene class]]) {
         return window.windowScene;
@@ -313,9 +306,7 @@
     if ([GlobalStyle globalStyle].isBackTitleHidden) {
         UIBarButtonItem *buttonItem = [[HBDBackBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
         self.navigationItem.backBarButtonItem = buttonItem;
-        if (@available(iOS 14.0, *)) {
-            self.navigationItem.backButtonDisplayMode = UINavigationItemBackButtonDisplayModeMinimal;
-        }
+        self.navigationItem.backButtonDisplayMode = UINavigationItemBackButtonDisplayModeMinimal;
     }
 
     NSNumber *swipeBackEnabled = options[@"swipeBackEnabled"];

@@ -109,13 +109,21 @@
 }
 
 - (CGFloat)hbd_statusBarHeight {
-	if (@available(iOS 13.0, *)) {
-		UIWindowScene *scene = self.view.window.windowScene;
-		if (scene) {
-			return scene.statusBarManager.statusBarFrame.size.height;
+	UIWindow *window = self.view.window ?: self.navigationController.view.window;
+	UIWindowScene *scene = window.windowScene;
+	if (!scene) {
+		NSArray *connectedScenes = [[UIApplication sharedApplication].connectedScenes allObjects];
+		for (id connectedScene in connectedScenes) {
+			if ([connectedScene isKindOfClass:[UIWindowScene class]]) {
+				UIWindowScene *windowScene = (UIWindowScene *)connectedScene;
+				if (windowScene.activationState == UISceneActivationStateForegroundActive) {
+					scene = windowScene;
+					break;
+				}
+			}
 		}
 	}
-	return [UIApplication sharedApplication].statusBarFrame.size.height;
+	return scene ? scene.statusBarManager.statusBarFrame.size.height : 0;
 }
 
 /// 局部隐藏 topBar 或局部透明 topBar（非全局隐藏）时，需将 SafeArea 顶部修正为状态栏高度

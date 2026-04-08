@@ -8,6 +8,24 @@
 
 @implementation HBDViewController (Garden)
 
+- (void)applyImageInsetsForButtonItem:(UIBarButtonItem *)buttonItem
+							 button:(HBDImageBarButton *)button
+			  alignmentRectInsets:(UIEdgeInsets)alignmentRectInsets {
+	UIEdgeInsets imageInsets = buttonItem.imageInsets;
+	if (!UIEdgeInsetsEqualToEdgeInsets(imageInsets, UIEdgeInsetsZero)) {
+		UIButtonConfiguration *configuration = button.configuration ? [button.configuration copy] : [UIButtonConfiguration plainButtonConfiguration];
+		if (!configuration.image) {
+			UIImage *currentImage = [button imageForState:UIControlStateNormal];
+			if (currentImage) {
+				configuration.image = currentImage;
+			}
+		}
+		configuration.contentInsets = NSDirectionalEdgeInsetsMake(imageInsets.top, imageInsets.left, imageInsets.bottom, imageInsets.right);
+		button.configuration = configuration;
+	}
+	button.alignmentRectInsetsOverride = alignmentRectInsets;
+}
+
 - (void)setLeftBarButtonItem:(NSDictionary *)item {
     if (self.hbd_barHidden) {
         return;
@@ -23,8 +41,7 @@
         UIView *customView = buttonItem.customView;
         if ([customView isKindOfClass:[HBDImageBarButton class]]) {
             HBDImageBarButton *button = (HBDImageBarButton *)customView;
-            button.imageEdgeInsets = buttonItem.imageInsets;
-            button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, 4, 0, -4);
+			[self applyImageInsetsForButtonItem:buttonItem button:button alignmentRectInsets:UIEdgeInsetsMake(0, 4, 0, -4)];
         }
         [array addObject:buttonItem];
 
@@ -49,8 +66,7 @@
         UIView *customView = buttonItem.customView;
         if ([customView isKindOfClass:[HBDImageBarButton class]]) {
             HBDImageBarButton *button = (HBDImageBarButton *)customView;
-            button.imageEdgeInsets = buttonItem.imageInsets;
-            button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, -4, 0, 4);
+			[self applyImageInsetsForButtonItem:buttonItem button:button alignmentRectInsets:UIEdgeInsetsMake(0, -4, 0, 4)];
         }
         [array addObject:buttonItem];
 
@@ -78,8 +94,7 @@
             UIView *customView = buttonItem.customView;
             if ([customView isKindOfClass:[HBDImageBarButton class]]) {
                 HBDImageBarButton *button = (HBDImageBarButton *)customView;
-                button.imageEdgeInsets = buttonItem.imageInsets;
-                button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, 4, 0, -4);
+				[self applyImageInsetsForButtonItem:buttonItem button:button alignmentRectInsets:UIEdgeInsetsMake(0, 4, 0, -4)];
             }
         }
 
@@ -105,8 +120,7 @@
             UIView *customView = buttonItem.customView;
             if ([customView isKindOfClass:[HBDImageBarButton class]]) {
                 HBDImageBarButton *button = (HBDImageBarButton *)customView;
-                button.imageEdgeInsets = buttonItem.imageInsets;
-                button.alignmentRectInsetsOverride = UIEdgeInsetsMake(0, -4, 0, 4);
+				[self applyImageInsetsForButtonItem:buttonItem button:button alignmentRectInsets:UIEdgeInsetsMake(0, -4, 0, 4)];
             }
         }
 

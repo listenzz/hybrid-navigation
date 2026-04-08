@@ -331,10 +331,8 @@
     UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
 
-    if (@available(iOS 12.0, *)) {
-        // Fix a system bug https://github.com/listenzz/HBDNavigationBar/issues/35
-        [self resetButtonLabelInNavBar:self.nav.navigationBar];
-    }
+    // Fix a system bug https://github.com/listenzz/HBDNavigationBar/issues/35
+    [self resetButtonLabelInNavBar:self.nav.navigationBar];
 
     if (self.nav.poppingViewController) {
         // Inspired by QMUI
@@ -371,11 +369,9 @@
             }
         } else {
             [self.nav updateNavigationBarForViewController:viewController];
-            if (@available(iOS 13.0, *)) {
-                if (to == viewController) {
-                    self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = viewController.hbd_barTintColor;
-                    self.nav.navigationBar.standardAppearance.backgroundColor = viewController.hbd_barTintColor;
-                }
+            if (to == viewController) {
+                self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = viewController.hbd_barTintColor;
+                self.nav.navigationBar.standardAppearance.backgroundColor = viewController.hbd_barTintColor;
             }
         }
 
@@ -399,10 +395,8 @@
             }
         }
 
-        if (@available(iOS 13.0, *)) {
-            self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = UIColor.clearColor;
-            self.nav.navigationBar.standardAppearance.backgroundColor = UIColor.clearColor;
-        }
+        self.nav.navigationBar.scrollEdgeAppearance.backgroundColor = UIColor.clearColor;
+        self.nav.navigationBar.standardAppearance.backgroundColor = UIColor.clearColor;
 
         if (shouldAnimateTabBar) {
             [self completeTabBarTransitionFrom:from to:to cancelled:context.isCancelled];
@@ -462,13 +456,11 @@
 }
 
 - (void)resetButtonLabelInNavBar:(UINavigationBar *)navBar {
-    if (@available(iOS 12.0, *)) {
-        for (UIView *view in navBar.subviews) {
-            NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
-            if ([viewName isEqualToString:@"UINavigationBarContentView"]) {
-                [self resetButtonLabelInView:view];
-                break;
-            }
+    for (UIView *view in navBar.subviews) {
+        NSString *viewName = [[[view classForCoder] description] stringByReplacingOccurrencesOfString:@"_" withString:@""];
+        if ([viewName isEqualToString:@"UINavigationBarContentView"]) {
+            [self resetButtonLabelInView:view];
+            break;
         }
     }
 }
@@ -562,15 +554,13 @@
     [self.navigationBar setTranslucent:YES];
     [self.navigationBar setShadowImage:[UINavigationBar appearance].shadowImage];
 
-    if (@available(iOS 13.0, *)) {
-        UINavigationBarAppearance *scrollEdgeAppearance = [[UINavigationBarAppearance alloc] init];
-        [scrollEdgeAppearance configureWithTransparentBackground];
-        scrollEdgeAppearance.shadowColor = UIColor.clearColor;
-        scrollEdgeAppearance.backgroundColor = UIColor.clearColor;
-        [scrollEdgeAppearance setBackIndicatorImage:[UINavigationBar appearance].backIndicatorImage transitionMaskImage:[UINavigationBar appearance].backIndicatorTransitionMaskImage];
-        self.navigationBar.scrollEdgeAppearance = scrollEdgeAppearance;
-        self.navigationBar.standardAppearance = [scrollEdgeAppearance copy];
-    }
+    UINavigationBarAppearance *scrollEdgeAppearance = [[UINavigationBarAppearance alloc] init];
+    [scrollEdgeAppearance configureWithTransparentBackground];
+    scrollEdgeAppearance.shadowColor = UIColor.clearColor;
+    scrollEdgeAppearance.backgroundColor = UIColor.clearColor;
+    [scrollEdgeAppearance setBackIndicatorImage:[UINavigationBar appearance].backIndicatorImage transitionMaskImage:[UINavigationBar appearance].backIndicatorTransitionMaskImage];
+    self.navigationBar.scrollEdgeAppearance = scrollEdgeAppearance;
+    self.navigationBar.standardAppearance = [scrollEdgeAppearance copy];
 
     self.navigationDelegate = [[HBDNavigationControllerDelegate alloc] initWithNavigationController:self];
     self.navigationDelegate.proxyDelegate = self.delegate;
@@ -593,7 +583,7 @@
     }
 }
 
-/// 修正非 iPhone X 机型在 iOS 13+ 上，随 hbd_statusBarHidden 切换时系统 safe area 不准确的问题。
+/// 修正非 iPhone X 机型在 iOS 15+ 上，随 hbd_statusBarHidden 切换时系统 safe area 不准确的问题。
 /// 刘海屏由系统处理即可；非刘海屏状态栏高度 20pt，系统有时报 0 或 40，需用 additionalSafeAreaInsets 补偿。
 - (void)viewSafeAreaInsetsDidChange {
     [super viewSafeAreaInsetsDidChange];
@@ -601,21 +591,19 @@
         return;
     }
 
-    if (@available(iOS 13.0, *)) {
-        UIEdgeInsets safeAreaInsets = self.view.safeAreaInsets;
-        UIEdgeInsets additionalInsets = self.additionalSafeAreaInsets;
+    UIEdgeInsets safeAreaInsets = self.view.safeAreaInsets;
+    UIEdgeInsets additionalInsets = self.additionalSafeAreaInsets;
 
-        BOOL statusBarHidden = RCTKeyWindow().windowScene.statusBarManager.statusBarHidden;
+    BOOL statusBarHidden = RCTKeyWindow().windowScene.statusBarManager.statusBarHidden;
 
-        // 状态栏隐藏时系统可能把 top 算成 0，补 20pt 避免内容贴顶
-        if (statusBarHidden && safeAreaInsets.top == 0) {
-            self.additionalSafeAreaInsets = UIEdgeInsetsMake(20, additionalInsets.left, additionalInsets.bottom, additionalInsets.right);
-        }
+    // 状态栏隐藏时系统可能把 top 算成 0，补 20pt 避免内容贴顶
+    if (statusBarHidden && safeAreaInsets.top == 0) {
+        self.additionalSafeAreaInsets = UIEdgeInsetsMake(20, additionalInsets.left, additionalInsets.bottom, additionalInsets.right);
+    }
 
-        // 状态栏显示时系统有时把 top 算成 40（多算 20pt），减 20pt 使有效 top 为状态栏高度
-        if (!statusBarHidden && safeAreaInsets.top == 40) {
-            self.additionalSafeAreaInsets = UIEdgeInsetsMake(-20, additionalInsets.left, additionalInsets.bottom, additionalInsets.right);
-        }
+    // 状态栏显示时系统有时把 top 算成 40（多算 20pt），减 20pt 使有效 top 为状态栏高度
+    if (!statusBarHidden && safeAreaInsets.top == 40) {
+        self.additionalSafeAreaInsets = UIEdgeInsetsMake(-20, additionalInsets.left, additionalInsets.bottom, additionalInsets.right);
     }
 }
 
@@ -633,10 +621,7 @@
         self.poppingViewController = self.topViewController;
     }
 
-    UIViewController *vc = [super popViewControllerAnimated:animated];
-    // vc != self.topViewController
-    [self fixClickBackIssue];
-    return vc;
+    return [super popViewControllerAnimated:animated];
 }
 
 - (NSArray<UIViewController *> *)popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
@@ -644,9 +629,7 @@
         self.poppingViewController = self.topViewController;
     }
 
-    NSArray *array = [super popToViewController:viewController animated:animated];
-    [self fixClickBackIssue];
-    return array;
+    return [super popToViewController:viewController animated:animated];
 }
 
 - (NSArray<UIViewController *> *)popToRootViewControllerAnimated:(BOOL)animated {
@@ -654,22 +637,7 @@
         self.poppingViewController = self.topViewController;
     }
 
-    NSArray *array = [super popToRootViewControllerAnimated:animated];
-    [self fixClickBackIssue];
-    return array;
-}
-
-- (void)fixClickBackIssue {
-    if (@available(iOS 13.0, *)) {
-        return;
-    }
-
-    // fix：ios 11，12，当前后两个页面的 barStyle 不一样时，点击返回按钮返回，前一个页面的标题颜色响应迟缓或不响应
-    id <UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
-    if (!(coordinator && coordinator.interactive)) {
-        self.navigationBar.barStyle = self.topViewController.hbd_barStyle;
-        self.navigationBar.titleTextAttributes = self.topViewController.hbd_titleTextAttributes;
-    }
+    return [super popToRootViewControllerAnimated:animated];
 }
 
 - (void)updateNavigationBarForViewController:(UIViewController *)vc {
@@ -691,10 +659,8 @@
 - (void)updateNavigationBarTintColorForViewController:(UIViewController *)vc {
     self.navigationBar.tintColor = vc.hbd_tintColor;
     self.navigationBar.titleTextAttributes = vc.hbd_titleTextAttributes;
-    if (@available(iOS 13.0, *)) {
-        self.navigationBar.scrollEdgeAppearance.titleTextAttributes = vc.hbd_titleTextAttributes;
-        self.navigationBar.standardAppearance.titleTextAttributes = vc.hbd_titleTextAttributes;
-    }
+    self.navigationBar.scrollEdgeAppearance.titleTextAttributes = vc.hbd_titleTextAttributes;
+    self.navigationBar.standardAppearance.titleTextAttributes = vc.hbd_titleTextAttributes;
 }
 
 - (void)updateNavigationBarAlphaForViewController:(UIViewController *)vc {

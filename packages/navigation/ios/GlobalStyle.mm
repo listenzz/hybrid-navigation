@@ -260,34 +260,30 @@ static GlobalStyle *globalStyle;
 }
 
 - (void)inflateTabBar:(UITabBar *)tabBar {
-	if (@available(iOS 15.0, *)) {
-		UITabBarItemAppearance *tabBarItem = [UITabBarItemAppearance new];
-		tabBarItem.normal.titleTextAttributes = @{
-			NSForegroundColorAttributeName: self.tabBarItemNormalColor,
-		};
-		tabBarItem.normal.iconColor = self.tabBarItemNormalColor;
-		tabBarItem.selected.titleTextAttributes = @{
-			NSForegroundColorAttributeName: self.tabBarItemSelectedColor,
-		};
-		tabBarItem.selected.iconColor = self.tabBarItemSelectedColor;
-		
-		UITabBarAppearance *tabBarAppearance = [UITabBarAppearance new];
-		[tabBarAppearance configureWithDefaultBackground];
-		
-		tabBarAppearance.shadowImage = self.tabBarShadowImage;
-		tabBarAppearance.stackedLayoutAppearance = tabBarItem;
-		
-		tabBar.scrollEdgeAppearance = tabBarAppearance;
-		tabBar.standardAppearance = tabBarAppearance;
-	}
+	UITabBarItemAppearance *tabBarItem = [UITabBarItemAppearance new];
+	tabBarItem.normal.titleTextAttributes = @{
+		NSForegroundColorAttributeName: self.tabBarItemNormalColor,
+	};
+	tabBarItem.normal.iconColor = self.tabBarItemNormalColor;
+	tabBarItem.selected.titleTextAttributes = @{
+		NSForegroundColorAttributeName: self.tabBarItemSelectedColor,
+	};
+	tabBarItem.selected.iconColor = self.tabBarItemSelectedColor;
+
+	UITabBarAppearance *tabBarAppearance = [UITabBarAppearance new];
+	[tabBarAppearance configureWithDefaultBackground];
+
+	tabBarAppearance.shadowImage = self.tabBarShadowImage;
+	tabBarAppearance.stackedLayoutAppearance = tabBarItem;
+
+	tabBar.scrollEdgeAppearance = tabBarAppearance;
+	tabBar.standardAppearance = tabBarAppearance;
 	
     if (self.tabBarBackgroundColor) {
 		if (@available(iOS 26.0, *)) {
 			//
-		} else if (@available(iOS 15.0, *)) {
-			tabBar.standardAppearance.backgroundImage = [HBDUtils imageWithColor:self.tabBarBackgroundColor];
 		} else {
-			[tabBar setBackgroundImage:[HBDUtils imageWithColor:self.tabBarBackgroundColor]];
+			tabBar.standardAppearance.backgroundImage = [HBDUtils imageWithColor:self.tabBarBackgroundColor];
 		}
     }
 
