@@ -9,7 +9,6 @@ import Navigation, {
 	TabItemInfo,
 	useVisibleEffect,
 } from 'hybrid-navigation';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import styles from './Styles';
 
@@ -44,8 +43,6 @@ export default withNavigationItem({
 })(Options);
 
 function Options({ sceneId, navigator }: NavigationProps) {
-	const insets = useSafeAreaInsets();
-
 	useVisibleEffect(() => {
 		console.info('Page Options is visible');
 		return () => {
@@ -203,10 +200,10 @@ function Options({ sceneId, navigator }: NavigationProps) {
 	return (
 		<ScrollView
 			contentInsetAdjustmentBehavior="never"
-			automaticallyAdjustContentInsets={true}
+			automaticallyAdjustContentInsets={false}
 			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
 		>
-			<View style={[styles.container, { paddingTop: insets.top }]}>
+			<View style={styles.container}>
 				<Text style={styles.welcome}>This's a React Native scene.</Text>
 
 				<TouchableOpacity onPress={topBarMisc} activeOpacity={0.2} style={styles.button}>
