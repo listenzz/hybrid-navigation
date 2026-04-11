@@ -24,10 +24,6 @@ public class GlobalStyle {
 
     private final Bundle options;
 
-    public Bundle getOptions() {
-        return options;
-    }
-
     public GlobalStyle(Bundle options) {
         this.options = options;
     }
@@ -72,7 +68,7 @@ public class GlobalStyle {
 
         Bundle shadowImage = options.getBundle("tabBarShadowImage");
         if (shadowImage != null) {
-            setBarBarShadowImage(context, style, shadowImage);
+            setTabBarShadowImage(context, style, shadowImage);
         }
 
         String badgeColor = options.getString("tabBarBadgeColor");
@@ -81,7 +77,7 @@ public class GlobalStyle {
         }
     }
 
-    private void setBarBarShadowImage(@NonNull Context context, @NonNull Style style, @NonNull Bundle shadowImage) {
+    private void setTabBarShadowImage(@NonNull Context context, @NonNull Style style, @NonNull Bundle shadowImage) {
         Bundle image = shadowImage.getBundle("image");
         if (image != null) {
             style.setTabBarShadow(buildDrawableFromImageBundle(context, image));

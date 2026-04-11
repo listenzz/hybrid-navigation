@@ -94,7 +94,7 @@ public class Parameters {
     }
 
     @NonNull
-    public static WritableMap fromBundle(@NonNull Bundle bundle) {
+    private static WritableMap fromBundle(@NonNull Bundle bundle) {
         WritableMap map = new JavaOnlyMap();
         for (String key : bundle.keySet()) {
             Object value = bundle.get(key);
@@ -124,7 +124,7 @@ public class Parameters {
     }
 
     @NonNull
-    public static WritableArray fromArray(@NonNull Object array) {
+    private static WritableArray fromArray(@NonNull Object array) {
         WritableArray catalystArray = new JavaOnlyArray();
         if (array instanceof String[]) {
             for (String v : (String[]) array) {
@@ -165,7 +165,7 @@ public class Parameters {
     }
 
     @NonNull
-    public static WritableArray fromList(@NonNull List list) {
+    private static WritableArray fromList(@NonNull List list) {
         WritableArray catalystArray = new JavaOnlyArray();
         for (Object obj : list) {
             if (obj == null) {

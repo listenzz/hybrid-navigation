@@ -8,14 +8,6 @@ UIKIT_STATIC_INLINE BOOL colorHasAlphaComponent(UIColor *color) {
     return CGColorGetAlpha(color.CGColor) < 1.0;
 }
 
-UIKIT_STATIC_INLINE BOOL imageHasAlphaChannel(UIImage *image) {
-    CGImageAlphaInfo alpha = CGImageGetAlphaInfo(image.CGImage);
-    return (alpha == kCGImageAlphaFirst ||
-            alpha == kCGImageAlphaLast ||
-            alpha == kCGImageAlphaPremultipliedFirst ||
-            alpha == kCGImageAlphaPremultipliedLast);
-}
-
 UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class clazz, SEL originalSelector, SEL swizzledSelector) {
     Method originalMethod = class_getInstanceMethod(clazz, originalSelector);
     Method swizzledMethod = class_getInstanceMethod(clazz, swizzledSelector);
@@ -39,7 +31,5 @@ UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class clazz, SEL originalSe
 + (UIImage *)imageWithColor:(UIColor *)color;
 
 + (BOOL)isIphoneX;
-
-+ (void)printViewHierarchy:(UIView *)view withPrefix:(NSString *)prefix;
 
 @end

@@ -113,18 +113,6 @@ public class SystemUI {
         return (window.getDecorView().getSystemUiVisibility() & View.SYSTEM_UI_FLAG_FULLSCREEN) != 0;
     }
 
-    public static int statusBarHeight(@NonNull Window window) {
-        WindowInsetsCompat windowInsets = ViewCompat.getRootWindowInsets(window.getDecorView());
-        assert windowInsets != null;
-        return windowInsets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.statusBars()).top;
-    }
-
-    public static int navigationBarHeight(@NonNull Window window) {
-        WindowInsetsCompat windowInsets = ViewCompat.getRootWindowInsets(window.getDecorView());
-        assert windowInsets != null;
-        return windowInsets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.navigationBars()).bottom;
-    }
-
     // 是否刘海屏
     public static boolean isCutout(@NonNull Window window) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
@@ -231,12 +219,6 @@ public class SystemUI {
             return false;
         }
         return insetsCompat.isVisible(WindowInsetsCompat.Type.ime());
-    }
-
-    public static int imeHeight(@NonNull View view) {
-        WindowInsetsCompat insetsCompat = ViewCompat.getRootWindowInsets(view.getRootView());
-        assert insetsCompat != null;
-        return insetsCompat.getInsets(WindowInsetsCompat.Type.ime()).bottom;
     }
 
     public static void showIme(@NonNull Window window) {

@@ -84,11 +84,6 @@ public class HybridFragment extends AwesomeFragment {
         }
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
     @NonNull
     @Override
     protected BarStyle preferredStatusBarStyle() {

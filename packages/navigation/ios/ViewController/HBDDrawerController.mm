@@ -82,16 +82,8 @@
             self.menuController.view.frame = CGRectMake(0, 0, [self menuWidth], size.height);
         }
     } completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
-		
+
     }];
-}
-
-- (void)setContentViewController:(UIViewController *)contentViewController {
-    _contentController = contentViewController;
-}
-
-- (void)setMenuViewController:(UIViewController *)menuViewController {
-    _menuController = menuViewController;
 }
 
 - (void)openMenu {
@@ -105,7 +97,7 @@
         [self dismissMenuView];
     }
 }
- 
+
 - (void)toggleMenu {
     if (self.isMenuOpened) {
         [self closeMenu];
@@ -161,7 +153,7 @@
         [self addChildViewController:menu];
         [menu didMoveToParentViewController:self];
     }
-    
+
     UIView *menuHolderView = [[UIView alloc] initWithFrame:self.view.bounds];
     self.menuHolderView = menuHolderView;
     UIView *dimmingView = [[UIView alloc] initWithFrame:self.view.bounds];

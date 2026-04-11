@@ -205,14 +205,6 @@ public class TabBar extends FrameLayout {
         return this;
     }
 
-    public void clearAll() {
-        tabContainer.removeAllViews();
-        tabs.clear();
-        tabBarItems.clear();
-        container.setBackgroundColor(Color.TRANSPARENT);
-        selectedPosition = DEFAULT_SELECTED_POSITION;
-    }
-
     public void selectTab(int newPosition) {
         selectTab(newPosition, true);
     }
