@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ReactContext;
-import com.navigation.androidx.AppUtils;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.BarStyle;
 import com.navigation.androidx.FragmentHelper;
@@ -22,6 +21,7 @@ import com.navigation.androidx.PresentableActivity;
 import com.navigation.androidx.PresentationStyle;
 import com.navigation.androidx.Style;
 import com.navigation.androidx.SystemUI;
+import com.navigation.androidx.TabBarFragment;
 import com.navigation.androidx.TabBarItem;
 
 public class HybridFragment extends AwesomeFragment {
@@ -130,19 +130,6 @@ public class HybridFragment extends AwesomeFragment {
         return garden.backInteractive;
     }
 
-    @Override
-    protected boolean shouldFitsNavigationBar() {
-        if (preferredNavigationBarHidden()) {
-            return false;
-        }
-
-        if (shouldFitsTabBar()) {
-            return true;
-        }
-
-        return mStyle.shouldFitsOpaqueNavigationBar() && AppUtils.isOpaque(preferredNavigationBarColor());
-    }
-
     protected boolean shouldAnimatedTransition() {
 		if (forceScreenLandscape()) {
 			return false;
@@ -243,8 +230,18 @@ public class HybridFragment extends AwesomeFragment {
                 props = new Bundle();
             }
             props.putString(ARG_SCENE_ID, getSceneId());
+            injectTabBarInset(props);
         }
         return props;
+    }
+
+    private void injectTabBarInset(@NonNull Bundle props) {
+        TabBarFragment tabBarFragment = getTabBarFragment();
+        if (tabBarFragment != null) {
+            float tabBarHeightDp = getResources().getDimension(R.dimen.nav_tab_bar_height)
+                    / getResources().getDisplayMetrics().density;
+            props.putDouble("tabBarInset", tabBarHeightDp);
+        }
     }
 
     @CallSuper

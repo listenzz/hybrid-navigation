@@ -43,11 +43,6 @@ public class Garden {
 
 		Bundle options = fragment.getOptions();
 
-		if (options.get("fitsOpaqueNavigationBarAndroid") != null) {
-			boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid");
-			style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
-		}
-
 		String screenColor = options.getString("screenBackgroundColor");
 		if (!TextUtils.isEmpty(screenColor)) {
 			style.setScreenBackgroundColor(Color.parseColor(screenColor));

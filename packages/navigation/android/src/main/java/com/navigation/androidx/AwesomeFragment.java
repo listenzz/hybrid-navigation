@@ -21,9 +21,6 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -135,85 +132,6 @@ public abstract class AwesomeFragment extends InternalFragment {
         if (isLeafAwesomeFragment()) {
             setBackgroundDrawable();
         }
-
-        applyWindowInsets();
-    }
-
-    private void applyWindowInsets() {
-        View rootView = getView();
-        if (rootView == null) {
-            return;
-        }
-
-        ViewUtils.applyWindowInsets(getWindow(), rootView, (v) -> {
-            applyEdgeToEdge();
-        });
-    }
-
-    private void applyEdgeToEdge() {
-        View root = getView();
-        if (root == null) {
-            return;
-        }
-
-        if (!isLeafAwesomeFragment()) {
-            return;
-        }
-
-        WindowInsetsCompat windowInsets = ViewCompat.getRootWindowInsets(getWindow().getDecorView());
-        assert windowInsets != null;
-        Insets navigationBarInsets = windowInsets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.navigationBars());
-        Insets statusBarInsets = windowInsets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.statusBars());
-        Insets displayCutoutInsets = windowInsets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.displayCutout());
-
-        EdgeInsets edge = new EdgeInsets();
-
-        if (mStackDelegate.shouldFitsTabBar()) {
-            edge.bottom = (int) getResources().getDimension(R.dimen.nav_tab_bar_height);
-        }
-
-        EdgeInsets rootEdge = SystemUI.getEdgeInsetsForView(root);
-
-        if (shouldFitsNavigationBar() && rootEdge.bottom == 0) {
-            edge.plus(navigationBarInsets);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                if (displayCutoutInsets.left > 0) {
-                    edge.left -= navigationBarInsets.left;
-                }
-                if (displayCutoutInsets.right > 0) {
-                    edge.right -= navigationBarInsets.right;
-                }
-            }
-        }
-
-        if (root.getFitsSystemWindows() && rootEdge.top == 0) {
-            edge.top += statusBarInsets.top;
-        }
-
-        if (!AppUtils.isPaddingEquals(root, edge)) {
-            root.setPadding(edge.left, edge.top, edge.right, edge.bottom);
-            root.requestLayout();
-        }
-    }
-
-    protected boolean shouldFitsTabBar() {
-        return mStackDelegate.shouldFitsTabBar();
-    }
-
-    protected boolean shouldFitsNavigationBar() {
-        if (preferredNavigationBarHidden()) {
-            return false;
-        }
-
-        if (shouldFitsTabBar()) {
-            return true;
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return true;
-        }
-
-        return mStyle.shouldFitsOpaqueNavigationBar() && AppUtils.isOpaque(preferredNavigationBarColor());
     }
 
     public boolean isLeafAwesomeFragment() {

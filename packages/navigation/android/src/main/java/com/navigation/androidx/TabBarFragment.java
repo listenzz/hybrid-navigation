@@ -55,16 +55,6 @@ public class TabBarFragment extends AwesomeFragment {
         ensureTabBarProvider(savedInstanceState);
 
         mTabBar = createTabBar(root, savedInstanceState);
-
-        ViewUtils.applyWindowInsets(getWindow(), root, view -> fitsTabBar());
-    }
-
-    private void fitsTabBar() {
-        if (shouldFitsNavigationBar()) {
-            mTabBar.setPadding(0, 0, 0, SystemUI.navigationBarHeight(getWindow()));
-        } else {
-            mTabBar.setPadding(0, 0, 0, 0);
-        }
     }
 
     private void ensureChildFragments(@Nullable Bundle savedInstanceState) {
@@ -179,15 +169,6 @@ public class TabBarFragment extends AwesomeFragment {
         }
 
         return Color.parseColor(mStyle.getTabBarBackgroundColor());
-    }
-
-    @Override
-    protected boolean shouldFitsNavigationBar() {
-        if (preferredNavigationBarHidden()) {
-            return false;
-        }
-
-        return SystemUI.isGestureNavigationEnabled(getContentResolver()) || AppUtils.isOpaque(preferredNavigationBarColor());
     }
 
     public void setChildFragments(AwesomeFragment... fragments) {

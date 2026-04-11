@@ -56,20 +56,6 @@ public class StackDelegate {
         return (parent instanceof StackFragment);
     }
 
-    public boolean shouldFitsTabBar() {
-        if (!hasStackParent()) {
-            return false;
-        }
-
-        StackFragment stackFragment = mFragment.requireStackFragment();
-        TabBarFragment tabBarFragment = stackFragment.getTabBarFragment();
-        if (tabBarFragment == null) {
-            return false;
-        }
-
-        return mFragment == stackFragment.getRootFragment();
-    }
-
     void drawScrimIfNeeded(int transit, boolean enter, Animation anim) {
         if (!hasStackParent()) {
             return;

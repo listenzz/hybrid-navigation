@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
 
@@ -77,6 +78,12 @@ public class TabBar extends FrameLayout {
         this.setOutlineProvider(ViewOutlineProvider.BOUNDS);
         ViewCompat.setElevation(this, 0);
         setClipToPadding(false);
+
+        ViewCompat.setOnApplyWindowInsetsListener(this, (v, insets) -> {
+            int bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), bottom);
+            return insets;
+        });
     }
 
     @Override

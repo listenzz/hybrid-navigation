@@ -183,7 +183,9 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 						style={styles.button}
 						disabled={isRoot}
 					>
-						<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop</Text>
+						<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
+							pop
+						</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity
@@ -192,7 +194,11 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 						style={styles.button}
 						disabled={popToId === undefined}
 					>
-						<Text style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}>
+						<Text
+							style={
+								popToId === undefined ? styles.buttonTextDisable : styles.buttonText
+							}
+						>
 							popTo first
 						</Text>
 					</TouchableOpacity>
@@ -208,7 +214,11 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 						</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity onPress={redirectTo} activeOpacity={0.2} style={styles.button}>
+					<TouchableOpacity
+						onPress={redirectTo}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
 						<Text style={styles.buttonText}>redirectTo</Text>
 					</TouchableOpacity>
 
@@ -234,17 +244,17 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 					{renderResult()}
 					{renderError()}
 				</View>
+				<KeyboardInsetsView extraHeight={16} style={styles.keyboard}>
+					<TextInput
+						ref={inputRef}
+						style={[styles.input2, { marginBottom: insets.bottom + 16 }]}
+						onChangeText={handleTextChanged}
+						autoFocus={false}
+						value={input}
+						placeholder={'input testing'}
+					/>
+				</KeyboardInsetsView>
 			</ScrollView>
-			<KeyboardInsetsView extraHeight={16} style={styles.keyboard}>
-				<TextInput
-					ref={inputRef}
-					style={[styles.input2, { marginBottom: insets.bottom || 16 }]}
-					onChangeText={handleTextChanged}
-					autoFocus={false}
-					value={input}
-					placeholder={'input testing'}
-				/>
-			</KeyboardInsetsView>
 		</View>
 	);
 }

@@ -79,9 +79,6 @@ public class GlobalStyle {
         if (badgeColor != null) {
             style.setTabBarBadgeColor(badgeColor);
         }
-
-        boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid", true);
-        style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
     }
 
     private void setBarBarShadowImage(@NonNull Context context, @NonNull Style style, @NonNull Bundle shadowImage) {

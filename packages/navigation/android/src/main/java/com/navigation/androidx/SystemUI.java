@@ -2,12 +2,10 @@ package com.navigation.androidx;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.graphics.Rect;
 import android.os.Build;
 import android.provider.Settings;
 import android.view.DisplayCutout;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -255,47 +253,6 @@ public class SystemUI {
         WindowInsetsControllerCompat controller = ViewCompat.getWindowInsetsController(view.getRootView());
         assert controller != null;
         controller.hide(WindowInsetsCompat.Type.ime());
-    }
-
-    public static EdgeInsets getEdgeInsetsForView(@NonNull View view) {
-        EdgeInsets insets = new EdgeInsets();
-        ViewGroup root = (ViewGroup) view.getRootView();
-        int windowHeight = root.getHeight();
-        int windowWidth = root.getWidth();
-
-        Rect offset = new Rect();
-        view.getDrawingRect(offset);
-
-        // Log.i("Navigation", "getEdgeInsetsForView: offset=" + offset + ", windowWidth=" + windowWidth + ", windowHeight=" + windowHeight);
-
-        if (offset.top == 0 && offset.left == 0 && offset.bottom == 0 && offset.right == 0) {
-            return insets;
-        }
-
-        try {
-            root.offsetDescendantRectToMyCoords(view, offset);
-        } catch (Exception e) {
-            return insets; // 如果发生异常，返回空的 EdgeInsets
-        }
-
-        int leftMargin = 0;
-        int topMargin = 0;
-        int rightMargin = 0;
-        int bottomMargin = 0;
-
-        if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-            leftMargin = lp.leftMargin;
-            topMargin = lp.topMargin;
-            rightMargin = lp.rightMargin;
-            bottomMargin = lp.bottomMargin;
-        }
-
-        insets.left = Math.max(offset.left - leftMargin, 0);
-        insets.top = Math.max(offset.top - topMargin, 0);
-        insets.right = Math.max(windowWidth - offset.right - rightMargin, 0);
-        insets.bottom = Math.max(windowHeight - offset.bottom - bottomMargin, 0);
-        return insets;
     }
 
 }

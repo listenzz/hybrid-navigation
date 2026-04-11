@@ -63,77 +63,21 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self syncRootViewBackgroundColor];
-    [self updateReactViewConstraints];
-}
-
-- (void)viewSafeAreaInsetsDidChange {
-    [super viewSafeAreaInsetsDidChange];
-	if (self.shouldAdjustSafeAreaTopToStatusBar) {
-		CGFloat statusBarHeight = [self hbd_statusBarHeight];
-		CGFloat currentEffectiveTop = self.view.safeAreaInsets.top;
-		if (fabs(currentEffectiveTop - statusBarHeight) > 0.5) {
-			CGFloat systemTop = currentEffectiveTop - self.additionalSafeAreaInsets.top;
-			UIEdgeInsets o = self.additionalSafeAreaInsets;
-			self.additionalSafeAreaInsets = UIEdgeInsetsMake(statusBarHeight - systemTop, o.left, o.bottom, o.right);
-		}
-	}
-    [self updateReactViewConstraints];
-}
-
-- (CGFloat)hbd_statusBarHeight {
-	UIWindow *window = self.view.window ?: self.navigationController.view.window;
-	UIWindowScene *scene = window.windowScene;
-	if (!scene) {
-		NSArray *connectedScenes = [[UIApplication sharedApplication].connectedScenes allObjects];
-		for (id connectedScene in connectedScenes) {
-			if ([connectedScene isKindOfClass:[UIWindowScene class]]) {
-				UIWindowScene *windowScene = (UIWindowScene *)connectedScene;
-				if (windowScene.activationState == UISceneActivationStateForegroundActive) {
-					scene = windowScene;
-					break;
-				}
-			}
-		}
-	}
-	return scene ? scene.statusBarManager.statusBarFrame.size.height : 0;
-}
-
-/// 原生导航栏移除后，SafeArea 顶部交给 RN 层自行处理
-- (BOOL)shouldAdjustSafeAreaTopToStatusBar {
-	return NO;
+    [self updateReactViewFrame];
 }
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-	[self updateReactViewConstraints];
+    [self updateReactViewFrame];
 }
 
-- (void)updateReactViewConstraints {
+- (void)updateReactViewFrame {
     if (self.isViewLoaded && self.rootView) {
-		CGFloat bottomInset = self.shouldFitWindowInsetsBottom ? 0 : self.tabBarController.tabBar.frame.size.height;
-		CGFloat topInset = self.shouldFitWindowInsetsTop ? 0 : self.view.safeAreaInsets.top;
-		CGRect targetFrame = CGRectMake(
-			0,
-			topInset,
-			self.view.frame.size.width,
-			self.view.frame.size.height - topInset - bottomInset
-		);
-		// Avoid redundant frame writes to reduce layout churn during transitions.
-		if (!CGRectEqualToRect(self.rootView.frame, targetFrame)) {
-			[self.rootView setFrame:targetFrame];
-		}
+        CGRect targetFrame = self.view.bounds;
+        if (!CGRectEqualToRect(self.rootView.frame, targetFrame)) {
+            [self.rootView setFrame:targetFrame];
+        }
     }
-}
-
-- (BOOL)shouldFitWindowInsetsTop {
-    return YES;
-}
-
-- (BOOL)shouldFitWindowInsetsBottom {
-	if (self.navigationController && self.tabBarController) {
-		return self != [self.navigationController.viewControllers firstObject];
-	}
-	return YES;
 }
 
 - (NSDictionary *)propsWithSceneId {
@@ -156,10 +100,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    self.automaticallyAdjustsScrollViewInsets = NO;
-#pragma clang diagnostic pop
     id <UIViewControllerTransitionCoordinator> coordinator = self.transitionCoordinator;
     if (coordinator && !coordinator.interactive) {
         if (!self.viewAppeared) {

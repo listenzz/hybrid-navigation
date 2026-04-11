@@ -1,19 +1,47 @@
 import React, { ComponentType } from 'react';
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import { Platform } from 'react-native';
+import {
+	SafeAreaProvider,
+	SafeAreaInsetsContext,
+	useSafeAreaInsets,
+	initialWindowMetrics,
+} from 'react-native-safe-area-context';
 
-const zeroInsets = { top: 0, bottom: 0, left: 0, right: 0 };
-const initialMetrics = initialWindowMetrics
-	? { ...initialWindowMetrics, insets: zeroInsets }
-	: undefined;
+function TabBarInsetAdjuster({
+	tabBarInset,
+	children,
+}: {
+	tabBarInset: number;
+	children: React.ReactNode;
+}) {
+	const insets = useSafeAreaInsets();
+	const adjusted = React.useMemo(
+		() => ({ ...insets, bottom: insets.bottom + tabBarInset }),
+		[insets, tabBarInset],
+	);
+	return (
+		<SafeAreaInsetsContext.Provider value={adjusted}>{children}</SafeAreaInsetsContext.Provider>
+	);
+}
 
 export default function SafeAreaContextHOC(WrappedComponent: ComponentType<any>) {
-	return class SafeAreaContextProvider extends React.Component {
+	return class SafeAreaContextProvider extends React.Component<any> {
 		static navigationItem = (WrappedComponent as any).navigationItem;
 
 		render() {
+			const { tabBarInset, ...rest } = this.props;
+			const needsAdjust =
+				Platform.OS === 'android' && typeof tabBarInset === 'number' && tabBarInset > 0;
+
 			return (
-				<SafeAreaProvider initialMetrics={initialMetrics}>
-					<WrappedComponent {...this.props} />
+				<SafeAreaProvider initialMetrics={initialWindowMetrics ?? undefined}>
+					{needsAdjust ? (
+						<TabBarInsetAdjuster tabBarInset={tabBarInset}>
+							<WrappedComponent {...rest} />
+						</TabBarInsetAdjuster>
+					) : (
+						<WrappedComponent {...rest} />
+					)}
 				</SafeAreaProvider>
 			);
 		}

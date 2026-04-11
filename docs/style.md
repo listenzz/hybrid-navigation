@@ -14,7 +14,6 @@ Navigation.setDefaultOptions({
   statusBarStyle: BarStyleDarkContent,
   navigationBarColorAndroid: '#FFFFFF',
   swipeBackEnabledAndroid: true,
-  fitsOpaqueNavigationBarAndroid: true,
   displayCutoutWhenLandscapeAndroid: true,
   tabBarBackgroundColor: '#FFFFFF',
   tabBarItemNormalColor: '#666666',
@@ -31,7 +30,6 @@ interface DefaultOptions {
   navigationBarColorAndroid?: string;
   swipeBackEnabledAndroid?: boolean;
   scrimAlphaAndroid?: number;
-  fitsOpaqueNavigationBarAndroid?: boolean;
   displayCutoutWhenLandscapeAndroid?: boolean;
 
   tabBarBackgroundColor?: string;
@@ -61,7 +59,6 @@ interface NavigationOption {
   statusBarStyle?: 'light-content' | 'dark-content';
   navigationBarColorAndroid?: string;
   navigationBarHiddenAndroid?: boolean;
-  fitsOpaqueNavigationBarAndroid?: boolean;
   displayCutoutWhenLandscapeAndroid?: boolean;
   homeIndicatorAutoHiddenIOS?: boolean;
   backInteractive?: boolean;
