@@ -39,16 +39,12 @@ public class Garden {
 
 	boolean swipeBackEnabled;
 
-	boolean hidesBottomBarWhenPushed;
-
 	Garden(@NonNull HybridFragment fragment, Style style) {
 		this.fragment = fragment;
 		this.style = style;
 
 		Bundle options = fragment.getOptions();
 		this.swipeBackEnabled = options.getBoolean("swipeBackEnabled", true);
-		Bundle tabItem = options.getBundle("tabItem");
-		this.hidesBottomBarWhenPushed = tabItem == null || tabItem.getBoolean("hideTabBarWhenPush", true);
 
 		if (options.get("fitsOpaqueNavigationBarAndroid") != null) {
 			boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid");

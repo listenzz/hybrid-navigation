@@ -310,9 +310,7 @@ public abstract class AwesomeFragment extends InternalFragment {
 
         Animation anim = createOurAnimation(transit, enter, nextAnim);
 
-        if (!mStackDelegate.drawTabBarIfNeeded(transit, enter, anim)) {
-            mStackDelegate.drawScrimIfNeeded(transit, enter, anim);
-        }
+        mStackDelegate.drawScrimIfNeeded(transit, enter, anim);
 
         return anim;
     }
@@ -702,10 +700,6 @@ public abstract class AwesomeFragment extends InternalFragment {
     }
 
     protected boolean isSwipeBackEnabled() {
-        return true;
-    }
-
-    protected boolean hideTabBarWhenPushed() {
         return true;
     }
 

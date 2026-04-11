@@ -15,12 +15,6 @@
 @property(nonatomic, strong) UIPercentDrivenInteractiveTransition *interactiveTransition;
 
 - (instancetype)initWithNavigationController:(HBDNavigationController *)navigationController;
-- (BOOL)shouldAnimateTabBarFrom:(UIViewController *)from to:(UIViewController *)to;
-- (void)prepareTabBarForTransitionFrom:(UIViewController *)from to:(UIViewController *)to;
-- (void)animateTabBarForTransitionFrom:(UIViewController *)from to:(UIViewController *)to;
-- (void)completeTabBarTransitionFrom:(UIViewController *)from
-                                  to:(UIViewController *)to
-                          cancelled:(BOOL)cancelled;
 - (BOOL)shouldUseFadeAnimationFrom:(UIViewController *)from to:(UIViewController *)to;
 - (BOOL)shouldHandleInteractiveTransitionWithNavigationController:(HBDNavigationController *)nav;
 
@@ -238,74 +232,15 @@
     UIViewController *from = [coordinator viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *to = [coordinator viewControllerForKey:UITransitionContextToViewControllerKey];
 
-    BOOL shouldAnimateTabBar = [self shouldAnimateTabBarFrom:from to:to];
-    if (shouldAnimateTabBar) {
-        [self prepareTabBarForTransitionFrom:from to:to];
-    }
-
     [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         [self.nav updateNavigationBarForViewController:viewController];
-
-        if (shouldAnimateTabBar) {
-            [self animateTabBarForTransitionFrom:from to:to];
-        }
     } completion:^(id <UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         if (context.isCancelled) {
             [self.nav updateNavigationBarForViewController:from];
         } else {
             [self.nav updateNavigationBarForViewController:viewController];
         }
-
-        if (shouldAnimateTabBar) {
-            [self completeTabBarTransitionFrom:from to:to cancelled:context.isCancelled];
-        }
     }];
-}
-
-- (BOOL)shouldAnimateTabBarFrom:(UIViewController *)from to:(UIViewController *)to {
-    UITabBarController *tabBarController = self.nav.tabBarController;
-    if (!tabBarController) {
-        return NO;
-    }
-
-    return from.hidesBottomBarWhenPushed != to.hidesBottomBarWhenPushed;
-}
-
-- (void)prepareTabBarForTransitionFrom:(UIViewController *)from to:(UIViewController *)to {
-    UITabBar *tabBar = self.nav.tabBarController.tabBar;
-    [tabBar.layer removeAllAnimations];
-    tabBar.hidden = NO;
-
-    if (from.hidesBottomBarWhenPushed && !to.hidesBottomBarWhenPushed) {
-        tabBar.alpha = 0.0;
-    } else if (!from.hidesBottomBarWhenPushed && to.hidesBottomBarWhenPushed) {
-        tabBar.alpha = 1.0;
-    }
-}
-
-- (void)animateTabBarForTransitionFrom:(UIViewController *)from to:(UIViewController *)to {
-    UITabBar *tabBar = self.nav.tabBarController.tabBar;
-    if (from.hidesBottomBarWhenPushed && !to.hidesBottomBarWhenPushed) {
-        tabBar.alpha = 1.0;
-    } else if (!from.hidesBottomBarWhenPushed && to.hidesBottomBarWhenPushed) {
-        tabBar.alpha = 0.0;
-    }
-}
-
-- (void)completeTabBarTransitionFrom:(UIViewController *)from
-                                  to:(UIViewController *)to
-                          cancelled:(BOOL)cancelled {
-    UITabBar *tabBar = self.nav.tabBarController.tabBar;
-    [tabBar.layer removeAllAnimations];
-
-    UIViewController *visibleViewController = cancelled ? from : to;
-    if (visibleViewController.hidesBottomBarWhenPushed) {
-        tabBar.alpha = 1.0;
-        tabBar.hidden = YES;
-    } else {
-        tabBar.hidden = NO;
-        tabBar.alpha = 1.0;
-    }
 }
 
 @end
@@ -322,12 +257,6 @@
             HBDViewController *root = (HBDViewController *) rootViewController;
             self.tabBarItem = root.tabBarItem;
             root.tabBarItem = nil;
-            NSDictionary *tabItem = root.options[@"tabItem"];
-            if (tabItem && tabItem[@"hideTabBarWhenPush"]) {
-                self.hidesBottomBarWhenPushed = [tabItem[@"hideTabBarWhenPush"] boolValue];
-            } else {
-                self.hidesBottomBarWhenPushed = YES;
-            }
         }
         self.viewControllers = @[rootViewController];
     }

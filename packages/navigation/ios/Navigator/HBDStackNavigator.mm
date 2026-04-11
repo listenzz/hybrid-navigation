@@ -21,7 +21,7 @@
     if (!model) {
         return nil;
     }
-    
+
     NSArray *children = model[@"children"];
     UIViewController *vc = [[HBDReactBridgeManager get] viewControllerWithLayout:children.firstObject];
     return [[HBDNavigationController alloc] initWithRootViewController:vc];
@@ -31,9 +31,9 @@
     if (![vc isKindOfClass:[HBDNavigationController class]]) {
         return nil;
     }
-    
+
     HBDNavigationController *nav = (HBDNavigationController *) vc;
-    
+
     NSMutableArray *children = [[NSMutableArray alloc] init];
     for (NSUInteger i = 0; i < nav.childViewControllers.count; i++) {
         UIViewController *child = nav.childViewControllers[i];
@@ -82,27 +82,27 @@
         [self handlePushWithNavigationController:nav extras:extras callback:callback];
         return;
     }
-    
+
     if ([action isEqualToString:@"pop"]) {
         [self handlePopWithNavigationController:nav viewController:vc callback:callback];
         return;
     }
-    
+
     if ([action isEqualToString:@"popTo"]) {
         [self handlePopToWithNavigationController:nav extras:extras callback:callback];
         return;
     }
-    
+
     if ([action isEqualToString:@"popToRoot"]) {
         [self handlePopToRootWithNavigationController:nav extras:extras callback:callback];
         return;
     }
-    
+
     if ([action isEqualToString:@"redirectTo"]) {
         [self handleRedirectToWithNavigationController:nav target:vc extras:extras callback:callback];
         return;
     }
-    
+
     if ([action isEqualToString:@"pushLayout"]) {
         [self handlePushLayoutWithNavigationController:nav extras:extras callback:callback];
         return;
@@ -117,14 +117,12 @@
         return;
     }
 
-    vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
-    
     BOOL animated = YES;
     if ([vc isKindOfClass:[HBDViewController class]]) {
         HBDViewController *hdbvc = (HBDViewController *)vc;
 		animated = hdbvc.animatedTransition || hdbvc.forceScreenLandscape;
     }
-    
+
     if (animated) {
         [nav pushViewController:vc animated:YES];
         [self animateAlongsideTransition:nav callback:callback];
@@ -140,7 +138,7 @@
         HBDViewController *hdbvc = (HBDViewController *)vc;
 		animated = hdbvc.animatedTransition || hdbvc.forceScreenLandscape;
     }
-    
+
     if (animated) {
         [nav popViewControllerAnimated:YES];
         [self animateAlongsideTransition:nav callback:callback];
@@ -157,15 +155,15 @@
         callback(@[NSNull.null, @NO]);
         return;
     }
-    
+
     UIViewController *from_vc = [self findFromViewControllerWithNavigationController:nav extras:extras];
-    
+
     BOOL animated = YES;
     if ([from_vc isKindOfClass:[HBDViewController class]]) {
         HBDViewController *hbdvc = (HBDViewController *)from_vc;
         animated = hbdvc.animatedTransition;
     }
-    
+
     if (animated) {
         [nav popToViewController:vc animated:YES];
         [self animateAlongsideTransition:nav callback:callback];
@@ -173,14 +171,14 @@
         [nav popToViewController:vc animated:NO];
         callback(@[NSNull.null, @YES]);
     }
-    
+
 }
 
 - (UIViewController *)findFromViewControllerWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras {
     NSArray *children = nav.childViewControllers;
     NSString *moduleName = extras[@"from"];
     BOOL inclusive = [extras[@"inclusive"] boolValue];
-    
+
     for (NSUInteger i = children.count; i > 0; i--) {
         NSUInteger index = i - 1;
         HBDViewController *vc = children[index];
@@ -191,7 +189,7 @@
             return vc;
         }
     }
-    
+
     return nil;
 }
 
@@ -199,7 +197,7 @@
     NSArray *children = nav.childViewControllers;
     NSString *moduleName = extras[@"moduleName"];
     BOOL inclusive = [extras[@"inclusive"] boolValue];
-    
+
     for (NSUInteger i = children.count; i > 0; i--) {
         NSUInteger index = i - 1;
         HBDViewController *vc = children[index];
@@ -210,21 +208,21 @@
             return vc;
         }
     }
-    
+
     return nil;
 }
 
 - (void)handlePopToRootWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
-    
+
     UIViewController *from_vc = [self findFromViewControllerWithNavigationController:nav extras:extras];
-    
+
     BOOL animated = YES;
-    
+
     if ([from_vc isKindOfClass:[HBDViewController class]]) {
         HBDViewController *hbdvc = (HBDViewController *)from_vc;
         animated = hbdvc.animatedTransition;
     }
-    
+
     if (animated) {
         [nav popToRootViewControllerAnimated:YES];
         [self animateAlongsideTransition:nav callback:callback];
@@ -242,12 +240,12 @@
         return;
     }
     BOOL animated = YES;
-    
+
     if ([vc isKindOfClass:[HBDViewController class]]) {
         HBDViewController *hbdvc = (HBDViewController *)vc;
         animated = hbdvc.animatedTransition;
     }
-    
+
     if (animated) {
         [nav redirectToViewController:vc target:target animated:YES];
         [self animateAlongsideTransition:nav callback:callback];
@@ -255,7 +253,7 @@
         [nav redirectToViewController:vc target:target animated:NO];
         callback(@[NSNull.null, @YES]);
     }
-    
+
 }
 
 - (void)handlePushLayoutWithNavigationController:(UINavigationController *)nav extras:(NSDictionary *)extras callback:(RCTResponseSenderBlock)callback {
@@ -266,8 +264,7 @@
         callback(@[NSNull.null, @NO]);
         return;
     }
-    
-    vc.hidesBottomBarWhenPushed = nav.hidesBottomBarWhenPushed;
+
     [nav pushViewController:vc animated:YES];
     [self animateAlongsideTransition:nav callback:callback];
 }
@@ -277,7 +274,7 @@
         callback(@[NSNull.null, @YES]);
         return;
     }
-    
+
     [nav.transitionCoordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
         // empty
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> _Nonnull context) {
@@ -296,17 +293,17 @@
     if ([vc isKindOfClass:[UINavigationController class]]) {
         return (UINavigationController *)vc;
     }
-    
+
     UINavigationController *nav = vc.navigationController;
     if (nav) {
         return  nav;
     }
-    
+
     HBDDrawerController *drawer = vc.drawerController;
     if (!drawer) {
         return nil;
     }
-    
+
     if ([drawer.contentController isKindOfClass:[UITabBarController class]]) {
         UITabBarController *tabs = (UITabBarController *)drawer.contentController;
         if ([tabs.selectedViewController isKindOfClass:[UINavigationController class]]) {
@@ -314,16 +311,16 @@
         }
         return nil;
     }
-    
+
     if ([drawer.contentController isKindOfClass:[UINavigationController class]]) {
         return (UINavigationController *)drawer.contentController;
     }
-    
+
     return drawer.contentController.navigationController;
 }
 
 - (void)invalidate {
-     // 
+     //
 }
 
 @end

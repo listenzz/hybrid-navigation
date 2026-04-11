@@ -2,8 +2,6 @@ package com.navigation.androidx;
 
 import com.reactnative.hybridnavigation.R;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -333,38 +331,9 @@ public class StackFragment extends AwesomeFragment implements SwipeBackLayout.Sw
         AwesomeFragment precursor = FragmentHelper.getFragmentBefore(topFragment);
         assert precursor != null;
         precursor.requireView().setVisibility(View.VISIBLE);
-        drawTabBarIfNeeded(precursor);
-    }
-
-    private void drawTabBarIfNeeded(AwesomeFragment precursor) {
-        TabBarFragment tabBarFragment = getTabBarFragment();
-        if (tabBarFragment == null) {
-            return;
-        }
-
-        if (precursor != getRootFragment() || shouldShowTabBarWhenPushed()) {
-            return;
-        }
-
-        View tabBar = tabBarFragment.getTabBar();
-
-        int vWidth = tabBarFragment.requireView().getWidth();
-        int vHeight = tabBarFragment.requireView().getHeight();
-
-        if (tabBar.getMeasuredWidth() == 0) {
-            tabBar.measure(View.MeasureSpec.makeMeasureSpec(vWidth, View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-            tabBar.layout(0, 0, tabBar.getMeasuredWidth(), tabBar.getMeasuredHeight());
-        }
-        Bitmap bitmap = AppUtils.createBitmapFromView(tabBar);
-        BitmapDrawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
-        bitmapDrawable.setBounds(0, vHeight - tabBar.getHeight(),
-                tabBar.getMeasuredWidth(), vHeight);
-        mSwipeBackLayout.setTabBar(bitmapDrawable);
     }
 
     private void handleIdleState(float scrollPercent, AwesomeFragment topFragment) {
-        mSwipeBackLayout.setTabBar(null);
         mDragging = false;
 
         AwesomeFragment precursor = FragmentHelper.getFragmentBefore(topFragment);
@@ -374,14 +343,6 @@ public class StackFragment extends AwesomeFragment implements SwipeBackLayout.Sw
         if (scrollPercent >= 1.0f) {
             popFragmentSync(() -> {/*empty*/}, TransitionAnimation.None);
         }
-    }
-
-    protected boolean shouldShowTabBarWhenPushed() {
-        AwesomeFragment root = getRootFragment();
-        if (root != null) {
-            return !root.hideTabBarWhenPushed();
-        }
-        return false;
     }
 
     @Override

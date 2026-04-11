@@ -2,8 +2,6 @@ package com.navigation.androidx;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -77,10 +75,6 @@ public class SwipeBackLayout extends FrameLayout {
      */
     private SwipeListener mListener;
 
-    private Drawable mTabBar;
-
-    private Rect mTabBarOriginBounds;
-
     private float mScrimOpacity;
 
     private int mScrimColor = DEFAULT_SCRIM_COLOR;
@@ -102,13 +96,6 @@ public class SwipeBackLayout extends FrameLayout {
         final float minVelocity = MIN_FLING_VELOCITY * density;
         mDragHelper.setMinVelocity(minVelocity);
         mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT);
-    }
-
-    public void setTabBar(Drawable drawable) {
-        this.mTabBar = drawable;
-        if (drawable != null) {
-            mTabBarOriginBounds = drawable.copyBounds();
-        }
     }
 
     public void setParallaxOffset(float offset) {
@@ -194,10 +181,6 @@ public class SwipeBackLayout extends FrameLayout {
             canvas.restore();
         }
 
-        if (mTabBar != null && drawContent) {
-            drawTabBar(canvas, child);
-        }
-
         if (mScrimOpacity > 0 && drawContent
                 && mDragHelper.getViewDragState() != ViewDragHelper.STATE_IDLE) {
             drawScrim(canvas, child);
@@ -211,15 +194,6 @@ public class SwipeBackLayout extends FrameLayout {
         final int color = alpha << 24 | (mScrimColor & 0xffffff);
         canvas.clipRect(0, 0, child.getLeft(), getHeight());
         canvas.drawColor(color);
-    }
-
-    private void drawTabBar(Canvas canvas, View child) {
-        canvas.save();
-        canvas.clipRect(0, 0, child.getLeft(), getHeight());
-        int leftOffset = (int) ((mCapturedView.getLeft() - getWidth()) * mParallaxOffset * mScrimOpacity);
-        mTabBar.setBounds(leftOffset, mTabBarOriginBounds.top, mTabBarOriginBounds.right + leftOffset, mTabBarOriginBounds.bottom);
-        mTabBar.draw(canvas);
-        canvas.restore();
     }
 
     public void setScrimColor(int color) {

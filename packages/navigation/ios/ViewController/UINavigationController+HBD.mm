@@ -24,9 +24,6 @@
     NSUInteger count = self.childViewControllers.count;
     [children removeObjectsInRange:NSMakeRange(index, count - index)];
     [children addObject:controller];
-    if (children.count > 1) {
-        controller.hidesBottomBarWhenPushed = self.hidesBottomBarWhenPushed;
-    }
     [self setViewControllers:children animated:animated];
 }
 

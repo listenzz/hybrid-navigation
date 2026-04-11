@@ -136,11 +136,6 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     @Override
-    protected boolean hideTabBarWhenPushed() {
-        return garden.hidesBottomBarWhenPushed;
-    }
-
-    @Override
     protected boolean shouldFitsNavigationBar() {
         if (preferredNavigationBarHidden()) {
             return false;

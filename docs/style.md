@@ -79,7 +79,6 @@ interface NavigationItem extends NavigationOption {
     title: string;
     icon?: { uri: string; scale?: number; height?: number; width?: number };
     unselectedIcon?: { uri: string; scale?: number; height?: number; width?: number };
-    hideTabBarWhenPush?: boolean;
   };
 }
 ```

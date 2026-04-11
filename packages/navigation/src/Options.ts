@@ -40,7 +40,6 @@ export interface TabItem {
 	title: string;
 	icon?: ImageSource;
 	unselectedIcon?: ImageSource;
-	hideTabBarWhenPush?: boolean;
 }
 
 export interface ShadowImage {

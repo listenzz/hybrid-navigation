@@ -11,7 +11,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -28,14 +27,12 @@ public class TabBarFragment extends AwesomeFragment {
 
     private static final String SAVED_FRAGMENT_TAGS = "nav_fragment_tags";
     private static final String SAVED_SELECTED_INDEX = "nav_selected_index";
-    private static final String SAVED_BOTTOM_BAR_HIDDEN = "nav_tab_bar_hidden";
     private static final String SAVED_TAB_BAR_PROVIDER_CLASS_NAME = "nav_tab_bar_provider_class_name";
 
     private List<AwesomeFragment> mFragments = new ArrayList<>();
     private ArrayList<String> mFragmentTags = new ArrayList<>();
 
     private int mSelectedIndex;
-    private boolean mTabBarHidden;
 
     private TabBarProvider mTabBarProvider;
 
@@ -52,7 +49,6 @@ public class TabBarFragment extends AwesomeFragment {
         super.onViewCreated(root, savedInstanceState);
         if (savedInstanceState != null) {
             mSelectedIndex = savedInstanceState.getInt(SAVED_SELECTED_INDEX);
-            mTabBarHidden = savedInstanceState.getBoolean(SAVED_BOTTOM_BAR_HIDDEN, false);
         }
 
         ensureChildFragments(savedInstanceState);
@@ -61,10 +57,6 @@ public class TabBarFragment extends AwesomeFragment {
         mTabBar = createTabBar(root, savedInstanceState);
 
         ViewUtils.applyWindowInsets(getWindow(), root, view -> fitsTabBar());
-
-        if (mTabBarHidden) {
-            hideTabBar();
-        }
     }
 
     private void fitsTabBar() {
@@ -151,7 +143,6 @@ public class TabBarFragment extends AwesomeFragment {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList(SAVED_FRAGMENT_TAGS, mFragmentTags);
         outState.putInt(SAVED_SELECTED_INDEX, mSelectedIndex);
-        outState.putBoolean(SAVED_BOTTOM_BAR_HIDDEN, mTabBarHidden);
         if (mTabBarProvider != null) {
             outState.putString(SAVED_TAB_BAR_PROVIDER_CLASS_NAME, mTabBarProvider.getClass().getName());
             mTabBarProvider.onSaveInstanceState(outState);
@@ -179,10 +170,6 @@ public class TabBarFragment extends AwesomeFragment {
 
     @Override
     protected int preferredNavigationBarColor() {
-        if (mTabBarHidden) {
-            return super.preferredNavigationBarColor();
-        }
-
         if (SystemUI.isGestureNavigationEnabled(getContentResolver())) {
             return Color.TRANSPARENT;
         }
@@ -293,27 +280,7 @@ public class TabBarFragment extends AwesomeFragment {
         } else {
             mSelectedIndex = index;
             AwesomeFragment current = switchChildFragment(index, completion);
-            setTabBarVisibility(current);
         }
-    }
-
-    private void setTabBarVisibility(AwesomeFragment current) {
-        StackFragment stackFragment = current.getStackFragment();
-        if (stackFragment == null || stackFragment.getTabBarFragment() != this) {
-            return;
-        }
-
-        if (stackFragment.shouldShowTabBarWhenPushed()) {
-            showTabBar();
-            return;
-        }
-
-        if (stackFragment.getTopFragment() == stackFragment.getRootFragment()) {
-            showTabBar();
-            return;
-        }
-
-        hideTabBar();
     }
 
     @NonNull
@@ -361,48 +328,5 @@ public class TabBarFragment extends AwesomeFragment {
         if (mTabBarProvider != null && options != null) {
             mTabBarProvider.updateTabBar(options);
         }
-    }
-
-    void showTabBarAnimated(Animation anim) {
-        if (anim == null) {
-            showTabBar();
-            return;
-        }
-
-        mTabBarHidden = false;
-        mTabBar.setVisibility(View.GONE);
-        handleTabBarVisibilityAnimated(anim);
-    }
-
-    void hideTabBarAnimated(Animation anim) {
-        if (anim == null) {
-            hideTabBar();
-            return;
-        }
-
-        mTabBarHidden = true;
-        mTabBar.setVisibility(View.GONE);
-        handleTabBarVisibilityAnimated(anim);
-    }
-
-    private void handleTabBarVisibilityAnimated(@NonNull Animation animation) {
-        setNeedsNavigationBarAppearanceUpdate();
-        mTabBar.postDelayed(() -> {
-            if (isAdded()) {
-                mTabBar.setVisibility(mTabBarHidden ? View.GONE : View.VISIBLE);
-            }
-        }, animation.getDuration());
-    }
-
-    private void showTabBar() {
-        mTabBarHidden = false;
-        mTabBar.setVisibility(View.VISIBLE);
-        setNeedsNavigationBarAppearanceUpdate();
-    }
-
-    private void hideTabBar() {
-        mTabBarHidden = true;
-        mTabBar.setVisibility(View.GONE);
-        setNeedsNavigationBarAppearanceUpdate();
     }
 }
