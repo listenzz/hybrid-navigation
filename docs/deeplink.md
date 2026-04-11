@@ -70,43 +70,52 @@ func 是一个接收 path 为参数，返回 boolean 的函数，返回 true 表
 
 ## iOS 配置
 
-Let's configure the native iOS app to open based on the mychat:// URI scheme.
-
-In SimpleApp/ios/SimpleApp/AppDelegate.m:
+在 iOS 工程（例如 `ios/<AppName>/AppDelegate.mm`）中，先引入：
 
 ```objc
-// Add the header at the top of the file:
 #import <React/RCTLinkingManager.h>
+```
 
-// Add this above the `@end`:
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
-  sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
-  return [RCTLinkingManager application:application openURL:url
-                      sourceApplication:sourceApplication annotation:annotation];
+并实现 URL Scheme 回调：
+
+```objc
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+  return [RCTLinkingManager application:application openURL:url options:options];
 }
 ```
 
-In Xcode, open the project at SimpleApp/ios/SimpleApp.xcodeproj. Select the project in sidebar and navigate to the info tab. Scroll down to "URL Types" and add one. In the new URL type, set the identifier and the url scheme to your desired url scheme.
+如果需要支持 Universal Links，再补充如下方法：
+
+```objc
+- (BOOL)application:(UIApplication *)application
+continueUserActivity:(NSUserActivity *)userActivity
+  restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
+  return [RCTLinkingManager application:application
+                   continueUserActivity:userActivity
+                     restorationHandler:restorationHandler];
+}
+```
+
+然后在 Xcode 中打开工程，进入 `Target -> Info -> URL Types`，新增一条 URL Type，并把 Scheme 设置为你的协议头（例如 `hbd`）。
 
 ![deeplink-2021-10-19-15-37-05](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/deeplink-2021-10-19-15-37-05.png)
 
 ## Android 配置
 
-To configure the external linking in Android, you can create a new intent in the manifest.
-
-In SimpleApp/android/app/src/main/AndroidManifest.xml, add the new intent-filter inside the MainActivity entry with a VIEW type action:
+在 Android 工程的 `android/app/src/main/AndroidManifest.xml` 中，给 `MainActivity` 增加如下 `intent-filter`：
 
 ```xml
 <intent-filter>
     <action android:name="android.intent.action.VIEW" />
     <category android:name="android.intent.category.DEFAULT" />
     <category android:name="android.intent.category.BROWSABLE" />
-    <data android:scheme="mychat" />
+    <data android:scheme="hbd" />
 </intent-filter>
 ```
 
-> MainActivity 的 launchMode 需要设置为 singleTask
+> MainActivity 的 `launchMode` 需要设置为 `singleTask`。
 
 ## 测试
 

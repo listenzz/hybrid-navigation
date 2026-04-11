@@ -11,7 +11,7 @@ React Native Navigation that supports seamless navigation between Native and Rea
 
 ## Support
 
-| version | RN version  | RN 架构 |
-| ------- | ----------- | ------- |
-| 2.20+   | 0.72 - 0.81 | 旧      |
-| 3.0+    | 0.82+       | 新      |
+| version | RN version | RN 架构 |
+| ------- | ---------- | ------- |
+| 2.x     | < 0.82     | 旧      |
+| 3.x     | >= 0.83    | 新      |

@@ -18,6 +18,8 @@ React Native Navigation that supports seamless navigation between Native and Rea
 | 2.x  | < 0.82  | 旧架构  |
 | 3.x  | >= 0.83 | 新架构  |
 
+> 当前仓库 example 使用 React Native 0.84.0，Node.js 版本需 >= 20。
+
 ## 运行 example 项目
 
 首先 clone 本项目
@@ -31,7 +33,6 @@ cd hybrid-navigation
 
 ```shell
 yarn install
-# &
 yarn start
 ```
 
@@ -85,4 +86,4 @@ yarn ios
 
 ## 文档
 
-[从这里开始](https://todoit.tech/rn/hybrid-navigation/)
+[从这里开始](./docs/README.md)

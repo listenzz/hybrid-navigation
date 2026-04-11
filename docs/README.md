@@ -44,6 +44,8 @@ Navigation.setRoot({
 | 2.x  | < 0.82  | 旧架构  |
 | 3.x  | >= 0.83 | 新架构  |
 
+> 当前仓库 example 使用 React Native 0.84.0，Node.js 版本需 >= 20。
+
 版本变更与升级说明见仓库 [CHANGELOG](https://github.com/listenzz/hybrid-navigation/blob/master/CHANGELOG.md)。
 
 ## 运行 example 项目
@@ -59,7 +61,6 @@ cd hybrid-navigation
 
 ```shell
 yarn install
-# &
 yarn start
 ```
 
@@ -124,6 +125,8 @@ yarn ios
 - [**可见性监听**](./lifecycle.md)
 
 - [**设置样式**](./style.md)
+
+- [**自定义 TabBar**](./custom-tabbar.md)
 
 - [**DeepLink**](./deeplink.md)
 

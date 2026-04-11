@@ -1,5 +1,7 @@
 # 为原生项目添加 RN 模块
 
+> 本文档适用于 hybrid-navigation 3.x（React Native >= 0.83，新架构）。
+
 你的大部分业务已经用原生代码实现，你想添加一些 RN 业务模块。
 
 为了确保流畅的体验，使用如下目录结构：
@@ -21,8 +23,6 @@ MyApp
 ```sh
 npx @react-native-community/cli init <AppName>
 ```
-
-> 也可以使用 `npx react-native-create-app <AppName>` 命令来创建
 
 创建成功后，打开该目录，**删除里面的 android 和 ios 文件夹**。
 
@@ -447,7 +447,7 @@ end
 @end
 ```
 
-像下面那样更改 AppDelegate.m 文件
+像下面那样更改 AppDelegate.mm 文件
 
 ```objc
 #import "AppDelegate.h"

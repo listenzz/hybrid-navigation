@@ -1,6 +1,6 @@
 # 集成到以 RN 为主的项目
 
-> 本文档仅适用于 RN0.60 以上版本
+> 本文档适用于 hybrid-navigation 3.x（React Native >= 0.83，新架构）。
 
 你想用 React Native 实现大部分业务，原生代码主要起到搭桥的作用。
 
@@ -13,10 +13,6 @@ MyApp/
 ├─ node_modules/
 ├─ package.json
 ```
-
-> 也可以通过 `npx react-native-create-app <AppName>` 命令来创建
-
-[react-native-create-app](https://www.npmjs.com/package/react-native-create-app?activeTab=readme) 会自动创建一个 RN 项目， 并集成 hybrid-navigation。
 
 ## 添加依赖
 
@@ -156,7 +152,7 @@ public class MainActivity extends ReactAppCompatActivity {
 更新 pod 依赖
 
 ```sh
-cd ios & pod install
+cd ios && pod install
 ```
 
 修改 AppDelegate.h 文件，修改后大概长下面这个样子
@@ -171,7 +167,7 @@ cd ios & pod install
 @end
 ```
 
-修改 AppDelegate.m 文件，修改后大概长下面这个样子
+修改 AppDelegate.mm 文件，修改后大概长下面这个样子
 
 ```objc
 #import "AppDelegate.h"
@@ -254,4 +250,7 @@ cd ios & pod install
 
 ## 关于闪屏
 
-请参考[如何在 React Native 中设置闪屏](https://todoit.tech/splash-screen.html)一文。
+可参考 example 项目中的两处配置：
+
+- Android: `android/app/src/main/java/com/reactnative/hybridnavigation/example/MainActivity.java`
+- iOS: `ios/HybridNavigation/LaunchScreen.storyboard`
