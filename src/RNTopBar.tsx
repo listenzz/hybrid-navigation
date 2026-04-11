@@ -1,10 +1,21 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
+import {
+	TouchableOpacity,
+	Text,
+	View,
+	StyleSheet,
+	Image,
+	ImageSourcePropType,
+} from 'react-native';
 import type { Navigator } from 'hybrid-navigation';
 import { initialWindowMetrics, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type Action = {
-	label: string;
+	label?: string;
+	accessibilityLabel?: string;
+	icon?: ImageSourcePropType;
+	iconWidth?: number;
+	iconHeight?: number;
 	onPress: () => void;
 	disabled?: boolean;
 };
@@ -24,6 +35,8 @@ interface Props {
 }
 
 const SIDE_WIDTH = 88;
+const BACK_ICON = require('./images/icon_back.png');
+const DEFAULT_TINT_COLOR = '#FF5722';
 let cachedTopInset = initialWindowMetrics?.insets.top ?? 0;
 
 export default function RNTopBar({
@@ -36,7 +49,7 @@ export default function RNTopBar({
 	backgroundColor = '#FFFFFF',
 	alpha = 1,
 	shadowHidden = false,
-	tintColor = '#1F4FCC',
+	tintColor = DEFAULT_TINT_COLOR,
 	titleColor = '#111111',
 }: Props) {
 	const insets = useSafeAreaInsets();
@@ -71,6 +84,10 @@ export default function RNTopBar({
 		if (showBackWhenPossible && !isRoot) {
 			return {
 				label: 'Back',
+				accessibilityLabel: 'Back',
+				icon: BACK_ICON,
+				iconWidth: 12,
+				iconHeight: 20,
 				onPress: () => {
 					navigator.pop();
 				},
@@ -123,10 +140,26 @@ function Side({
 			onPress={action.onPress}
 			activeOpacity={0.7}
 			style={[styles.side, alignRight && styles.sideRight]}
+			accessibilityRole="button"
+			accessibilityLabel={action.accessibilityLabel || action.label}
 		>
-			<Text style={[styles.actionText, { color: action.disabled ? '#BDBDBD' : tintColor }]}>
-				{action.label}
-			</Text>
+			{action.icon ? (
+				<Image
+					source={action.icon}
+					style={[
+						styles.actionIcon,
+						{
+							tintColor: action.disabled ? '#BDBDBD' : tintColor,
+							width: action.iconWidth ?? 20,
+							height: action.iconHeight ?? 20,
+						},
+					]}
+				/>
+			) : (
+				<Text style={[styles.actionText, { color: action.disabled ? '#BDBDBD' : tintColor }]}>
+					{action.label}
+				</Text>
+			)}
 		</TouchableOpacity>
 	);
 }
@@ -161,6 +194,9 @@ const styles = StyleSheet.create({
 	},
 	actionText: {
 		fontSize: 16,
+	},
+	actionIcon: {
+		resizeMode: 'contain',
 	},
 	shadow: {
 		height: StyleSheet.hairlineWidth,

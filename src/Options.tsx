@@ -162,6 +162,8 @@ function Options({ sceneId, navigator }: NavigationProps) {
 					showsLeftAction
 						? {
 								label: 'Menu',
+								accessibilityLabel: 'Menu',
+								icon: require('./images/menu.png'),
 								onPress: () => {
 									navigator.toggleMenu();
 								},
@@ -169,7 +171,9 @@ function Options({ sceneId, navigator }: NavigationProps) {
 						: undefined
 				}
 				rightAction={{
-					label: 'TopBar',
+					label: 'TopBar demos',
+					accessibilityLabel: 'TopBar demos',
+					icon: require('./images/settings.png'),
 					onPress: topBarMisc,
 					disabled: !rightActionEnabled,
 				}}

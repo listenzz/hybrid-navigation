@@ -75,6 +75,8 @@ function Result({ navigator, sceneId }: NavigationProps) {
 					isRoot
 						? {
 								label: 'Cancel',
+								accessibilityLabel: 'Cancel',
+								icon: require('./images/cancel.png'),
 								onPress: () => {
 									navigator.dismiss();
 								},

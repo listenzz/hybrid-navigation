@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
 import { NavigationProps } from 'hybrid-navigation';
 import styles from './Styles';
 import RNTopBar from './RNTopBar';
@@ -14,8 +14,11 @@ function CustomTitleView({ onPress }: { onPress: () => void }) {
 			}}
 		>
 			<Text style={{ fontSize: 17, fontWeight: 'bold', marginRight: 12 }}>--Custom Title--</Text>
-			<TouchableOpacity onPress={onPress}>
-				<Text style={{ color: '#1F4FCC', fontSize: 16 }}>Click</Text>
+			<TouchableOpacity onPress={onPress} accessibilityRole="button" accessibilityLabel="Title action">
+				<Image
+					source={require('./images/settings.png')}
+					style={{ width: 18, height: 18, tintColor: '#FF5722', resizeMode: 'contain' }}
+				/>
 			</TouchableOpacity>
 		</View>
 	);
