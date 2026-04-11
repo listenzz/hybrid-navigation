@@ -94,24 +94,18 @@ Navigation.registerComponent('Landscape', () => Landscape);
 // 完成注册组件
 Navigation.endRegisterComponent();
 
-const navigationStack: Stack = {
-	stack: {
-		children: [{ screen: { moduleName: 'Navigation' } }],
-	},
-};
-
-const optionsStack: Stack = {
-	stack: {
-		children: [{ screen: { moduleName: 'Options' } }],
-	},
-};
-
 const tabs: Tabs = {
 	tabs: {
-		children: [navigationStack, optionsStack],
+		children: [{ screen: { moduleName: 'Navigation' } }, { screen: { moduleName: 'Options' } }],
 		options: {
 			// selectedIndex: 1,
 		},
+	},
+};
+
+const rootStack: Stack = {
+	stack: {
+		children: [tabs],
 	},
 };
 
@@ -119,7 +113,7 @@ const menu: Screen = { screen: { moduleName: 'Menu' } };
 
 const drawer: Drawer = {
 	drawer: {
-		children: [tabs, menu],
+		children: [rootStack, menu],
 		options: {
 			maxDrawerWidth: 280,
 			minDrawerMargin: 64,
