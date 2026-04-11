@@ -226,9 +226,11 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 						<Text style={styles.buttonText}>present</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>switch to tab 'Options'</Text>
-					</TouchableOpacity>
+					{isRoot && (
+						<TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
+							<Text style={styles.buttonText}>switch to tab 'Options'</Text>
+						</TouchableOpacity>
+					)}
 
 					<TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
 						<Text style={styles.buttonText}>show modal</Text>
