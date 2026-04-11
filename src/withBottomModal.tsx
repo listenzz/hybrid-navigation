@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useLayout, useBackHandler } from '@react-native-community/hooks';
 import { NavigationProps } from 'hybrid-navigation';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function withBottomModal({
 	cancelable = true,
@@ -58,31 +58,29 @@ export default function withBottomModal({
 			useBackHandler(handleHardwareBackPress);
 
 			return (
-				<SafeAreaProvider>
-					<Animated.View
-						style={[
-							styles.container,
-							{
-								transform: [{ translateY: animatedHeight.current }],
-							},
-						]}
+				<Animated.View
+					style={[
+						styles.container,
+						{
+							transform: [{ translateY: animatedHeight.current }],
+						},
+					]}
+				>
+					<TouchableWithoutFeedback
+						onPress={handleHardwareBackPress}
+						style={styles.flex1}
 					>
-						<TouchableWithoutFeedback
-							onPress={handleHardwareBackPress}
-							style={styles.flex1}
-						>
-							<View style={styles.flex1} />
-						</TouchableWithoutFeedback>
+						<View style={styles.flex1} />
+					</TouchableWithoutFeedback>
 
-						<View onLayout={onLayout}>
-							<WrappedComponent {...props} ref={ref} />
-							<SafeAreaView
-								edges={['bottom']}
-								style={{ backgroundColor: safeAreaColor }}
-							/>
-						</View>
-					</Animated.View>
-				</SafeAreaProvider>
+					<View onLayout={onLayout}>
+						<WrappedComponent {...props} ref={ref} />
+						<SafeAreaView
+							edges={['bottom']}
+							style={{ backgroundColor: safeAreaColor }}
+						/>
+					</View>
+				</Animated.View>
 			);
 		}
 

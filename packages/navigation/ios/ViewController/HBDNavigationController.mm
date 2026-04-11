@@ -583,27 +583,41 @@
     }
 }
 
+- (CGFloat)hbd_statusBarHeight {
+    UIWindow *window = self.view.window ?: RCTKeyWindow();
+    UIWindowScene *scene = window.windowScene;
+    if (!scene) {
+        NSArray *connectedScenes = [[UIApplication sharedApplication].connectedScenes allObjects];
+        for (id connectedScene in connectedScenes) {
+            if ([connectedScene isKindOfClass:[UIWindowScene class]]) {
+                UIWindowScene *windowScene = (UIWindowScene *)connectedScene;
+                if (windowScene.activationState == UISceneActivationStateForegroundActive) {
+                    scene = windowScene;
+                    break;
+                }
+            }
+        }
+    }
+    return scene ? scene.statusBarManager.statusBarFrame.size.height : 0;
+}
+
 /// 修正非 iPhone X 机型在 iOS 15+ 上，随 hbd_statusBarHidden 切换时系统 safe area 不准确的问题。
-/// 刘海屏由系统处理即可；非刘海屏状态栏高度 20pt，系统有时报 0 或 40，需用 additionalSafeAreaInsets 补偿。
+/// 刘海屏由系统处理即可；非刘海屏目标 top inset 为 20pt，系统偶发 0 或 40 时用 additionalSafeAreaInsets 补偿。
 - (void)viewSafeAreaInsetsDidChange {
     [super viewSafeAreaInsetsDidChange];
     if ([HBDUtils isIphoneX]) {
         return;
     }
 
-    UIEdgeInsets safeAreaInsets = self.view.safeAreaInsets;
-    UIEdgeInsets additionalInsets = self.additionalSafeAreaInsets;
-
-    BOOL statusBarHidden = RCTKeyWindow().windowScene.statusBarManager.statusBarHidden;
-
-    // 状态栏隐藏时系统可能把 top 算成 0，补 20pt 避免内容贴顶
-    if (statusBarHidden && safeAreaInsets.top == 0) {
-        self.additionalSafeAreaInsets = UIEdgeInsetsMake(20, additionalInsets.left, additionalInsets.bottom, additionalInsets.right);
-    }
-
-    // 状态栏显示时系统有时把 top 算成 40（多算 20pt），减 20pt 使有效 top 为状态栏高度
-    if (!statusBarHidden && safeAreaInsets.top == 40) {
-        self.additionalSafeAreaInsets = UIEdgeInsetsMake(-20, additionalInsets.left, additionalInsets.bottom, additionalInsets.right);
+    // Non-notch iPhone status bar height is 20pt; when hidden, system may report 0.
+    CGFloat expectedTopInset = MAX([self hbd_statusBarHeight], 20.0);
+    CGFloat currentEffectiveTop = self.view.safeAreaInsets.top;
+    CGFloat systemTop = currentEffectiveTop - self.additionalSafeAreaInsets.top;
+    CGFloat targetAdditionalTop = expectedTopInset - systemTop;
+    if (targetAdditionalTop - self.additionalSafeAreaInsets.top > 0.5 ||
+        self.additionalSafeAreaInsets.top - targetAdditionalTop > 0.5) {
+        UIEdgeInsets additionalInsets = self.additionalSafeAreaInsets;
+        self.additionalSafeAreaInsets = UIEdgeInsetsMake(targetAdditionalTop, additionalInsets.left, additionalInsets.bottom, additionalInsets.right);
     }
 }
 

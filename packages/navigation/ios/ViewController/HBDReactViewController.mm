@@ -144,14 +144,18 @@
 
 - (void)updateReactViewConstraints {
     if (self.isViewLoaded && self.rootView) {
-		CGFloat bottomInset = self.shouldFitWindowInsetsBottom ?  0: self.tabBarController.tabBar.frame.size.height;
+		CGFloat bottomInset = self.shouldFitWindowInsetsBottom ? 0 : self.tabBarController.tabBar.frame.size.height;
 		CGFloat topInset = self.shouldFitWindowInsetsTop ? 0 : self.view.safeAreaInsets.top;
-		[self.rootView setFrame:CGRectMake(
+		CGRect targetFrame = CGRectMake(
 			0,
 			topInset,
 			self.view.frame.size.width,
 			self.view.frame.size.height - topInset - bottomInset
-		)];
+		);
+		// Avoid redundant frame writes to reduce layout churn during transitions.
+		if (!CGRectEqualToRect(self.rootView.frame, targetFrame)) {
+			[self.rootView setFrame:targetFrame];
+		}
     }
 }
 
