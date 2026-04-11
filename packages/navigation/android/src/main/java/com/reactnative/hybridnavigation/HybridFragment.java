@@ -153,11 +153,6 @@ public class HybridFragment extends AwesomeFragment {
         return mStyle.shouldFitsOpaqueNavigationBar() && AppUtils.isOpaque(preferredNavigationBarColor());
     }
 
-    protected boolean shouldPassThroughTouches() {
-        Bundle options = getOptions();
-        return options.getBoolean("passThroughTouches");
-    }
-
     protected boolean shouldAnimatedTransition() {
 		if (forceScreenLandscape()) {
 			return false;

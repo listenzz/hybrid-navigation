@@ -15,8 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly) id<RCTSurfaceProtocol> surface;
 
-@property (nonatomic, assign) BOOL passThroughTouches;
-
 @property (nonatomic, copy, readwrite) NSDictionary *appProperties;
 
 

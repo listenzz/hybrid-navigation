@@ -16,7 +16,6 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.interfaces.fabric.ReactSurface;
-import com.navigation.androidx.Style;
 
 public class ReactFragment extends HybridFragment implements ReactManager.ReactBridgeReloadListener {
 
@@ -50,14 +49,6 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 		super.onStop();
 		if (isRemoving() && forceScreenLandscape()) {
 			unmountReactView();
-		}
-	}
-
-	@Override
-	protected void onCustomStyle(@NonNull Style style) {
-		super.onCustomStyle(style);
-		if (shouldPassThroughTouches()) {
-			style.setScrimAlpha(0);
 		}
 	}
 
@@ -195,7 +186,6 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 		if (rootView == null) {
 			throw new IllegalStateException("[Navigation] HBDRootView 还没有创建。");
 		}
-		rootView.setPassThroughTouches(shouldPassThroughTouches());
 		rootView.setAppProperties(getProps());
 		rootView.setSurface(reactSurface);
 	}

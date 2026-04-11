@@ -12,13 +12,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.facebook.react.bridge.ReactContext;
-import com.facebook.react.bridge.UIManager;
 import com.facebook.react.interfaces.fabric.ReactSurface;
 import com.facebook.react.runtime.ReactSurfaceView;
-import com.facebook.react.uimanager.TouchTargetHelper;
-import com.facebook.react.uimanager.UIManagerHelper;
-import com.facebook.react.uimanager.common.UIManagerType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,8 +26,6 @@ public class HBDRootView extends FrameLayout {
 
 	@Nullable
 	private ReactSurfaceView reactSurfaceView;
-
-	private boolean passThroughTouches;
 
 	@Nullable
 	private Bundle appProperties;
@@ -47,10 +40,6 @@ public class HBDRootView extends FrameLayout {
 
 	public HBDRootView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
-	}
-
-	public void setPassThroughTouches(boolean passThroughTouches) {
-		this.passThroughTouches = passThroughTouches;
 	}
 
 	public void setSurface(@NonNull ReactSurface reactSurface) {
@@ -108,62 +97,6 @@ public class HBDRootView extends FrameLayout {
 	public void setAppProperties(@Nullable Bundle appProperties) {
 		this.appProperties = appProperties == null ? null : new Bundle(appProperties);
 		applyAppProperties(this.appProperties);
-	}
-
-	@Override
-	public boolean dispatchTouchEvent(MotionEvent ev) {
-		if (shouldPassTouches(ev)) {
-			return false;
-		}
-		return super.dispatchTouchEvent(ev);
-	}
-
-	private boolean shouldPassTouches(@NonNull MotionEvent ev) {
-		if (!passThroughTouches) {
-			return false;
-		}
-
-		int action = ev.getAction() & MotionEvent.ACTION_MASK;
-		if (action != MotionEvent.ACTION_DOWN) {
-			return false;
-		}
-
-		ReactSurfaceView surfaceView = getReactSurfaceView();
-		if (surfaceView == null) {
-			return false;
-		}
-
-		ViewGroup rootViewGroup = surfaceView.getRootViewGroup();
-
-		int tag = TouchTargetHelper.findTargetTagForTouch(ev.getX(), ev.getY(), rootViewGroup);
-		ReactContext reactContext = surfaceView.getCurrentReactContext();
-		if (reactContext == null) {
-			return false;
-		}
-
-		UIManager uiManager = UIManagerHelper.getUIManager(reactContext, UIManagerType.FABRIC);
-		if (uiManager == null) {
-			return false;
-		}
-
-		View view = uiManager.resolveView(tag);
-		if (view == null) {
-			return false;
-		}
-
-		if (view == surfaceView || view == surfaceView.getChildAt(0)) {
-			return view.getWidth() == surfaceView.getWidth() && view.getHeight() == surfaceView.getHeight();
-		}
-
-		return false;
-	}
-
-	@Nullable
-	private ReactSurfaceView getReactSurfaceView() {
-		if (reactSurfaceView == null) {
-			reactSurfaceView = findReactSurfaceView(this);
-		}
-		return reactSurfaceView;
 	}
 
 	@Nullable

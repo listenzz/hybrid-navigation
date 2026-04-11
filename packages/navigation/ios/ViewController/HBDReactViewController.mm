@@ -51,9 +51,6 @@
 	RCTFabricSurface *surface = [rctHost createSurfaceWithModuleName:self.moduleName initialProperties:[self propsWithSceneId]];
 	HBDRootView *rootView = [[HBDRootView alloc] initWithSurface:(id)surface];
     self.rootView = rootView;
-
-    BOOL passThroughTouches = [self.options[@"passThroughTouches"] boolValue];
-    rootView.passThroughTouches = passThroughTouches;
 	rootView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	self.view = [[UIView alloc] init];
 	self.view.backgroundColor = [GlobalStyle globalStyle].screenBackgroundColor;

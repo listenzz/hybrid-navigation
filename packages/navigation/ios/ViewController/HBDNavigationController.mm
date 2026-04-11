@@ -2,8 +2,6 @@
 
 #import "HBDViewController.h"
 #import "HBDUtils.h"
-#import "HBDPushAnimation.h"
-#import "HBDPopAnimation.h"
 #import "HBDFadeAnimation.h"
 #import "GlobalStyle.h"
 
@@ -82,9 +80,7 @@
     HBDNavigationController *nav = self.nav;
 
     id <UIViewControllerTransitionCoordinator> coordinator = nav.transitionCoordinator;
-    BOOL shouldHandleInteractiveTransition =
-        [self shouldBetterTransitionWithViewController:nav.topViewController] ||
-        [self shouldHandleInteractiveTransitionWithNavigationController:nav];
+    BOOL shouldHandleInteractiveTransition = [self shouldHandleInteractiveTransitionWithNavigationController:nav];
 
     if (![self.proxyDelegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)]) {
         if (self.interactiveTransition || (!coordinator && shouldHandleInteractiveTransition)) {
@@ -172,8 +168,7 @@
         return [self.proxyDelegate navigationController:navigationController interactionControllerForAnimationController:animationController];
     }
 
-    if ([animationController isKindOfClass:[HBDPopAnimation class]] ||
-        [animationController isKindOfClass:[HBDFadeAnimation class]]) {
+    if ([animationController isKindOfClass:[HBDFadeAnimation class]]) {
         return self.interactiveTransition;
     }
 
@@ -208,26 +203,7 @@
         return [HBDFadeAnimation new];
     }
 
-    if (operation == UINavigationControllerOperationPush) {
-        if ([self shouldBetterTransitionWithViewController:toVC]) {
-            return [HBDPushAnimation new];
-        }
-    } else if (operation == UINavigationControllerOperationPop) {
-        if ([self shouldBetterTransitionWithViewController:fromVC]) {
-            return [HBDPopAnimation new];
-        }
-    }
-
     return nil;
-}
-
-- (BOOL)shouldBetterTransitionWithViewController:(UIViewController *)vc {
-    BOOL shouldBetter = NO;
-    if ([vc isKindOfClass:[HBDViewController class]]) {
-        HBDViewController *hbd = (HBDViewController *) vc;
-        shouldBetter = [hbd.options[@"passThroughTouches"] boolValue];
-    }
-    return shouldBetter;
 }
 
 - (BOOL)shouldUseFadeAnimationFrom:(UIViewController *)from to:(UIViewController *)to {

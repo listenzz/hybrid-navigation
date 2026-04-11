@@ -44,27 +44,6 @@ RCT_NOT_IMPLEMENTED(-(nullable instancetype)initWithCoder : (NSCoder *)coder)
 	[_surface stop];
 }
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
-	UIView *hitView = [super hitTest:point withEvent:event];
-	if (self.passThroughTouches && [self shouldPassTouches:hitView]) {
-		return nil;
-	}
-	return hitView;
-}
-
-- (BOOL)shouldPassTouches:(UIView *)hitView {
-	if (!hitView) {
-		return true;
-	}
-
-	// RCTRootComponentView
-	if (hitView == _surfaceView || hitView == [_surfaceView.subviews firstObject]) {
-		return true;
-	}
-
-	return false;
-}
-
 - (NSDictionary *)appProperties {
 	return _surface.properties;
 }

@@ -29,19 +29,11 @@ public class ReactStackFragment extends StackFragment {
         reactManager.watchMemory(this);
     }
 
-    private final static TransitionAnimation BetterPush = new TransitionAnimation(R.anim.nav_push_translucent_enter, R.anim.nav_push_translucent_exit, R.anim.nav_pop_translucent_enter, R.anim.nav_pop_translucent_exit);
-    private final static TransitionAnimation BetterRedirect = new TransitionAnimation(R.anim.nav_push_translucent_enter, R.anim.nav_gone, R.anim.nav_none, R.anim.nav_push_translucent_exit);
-
     @Override
     protected void pushFragmentSync(AwesomeFragment fragment, @NonNull Runnable completion, @NonNull TransitionAnimation animation) {
         if (fragment instanceof ReactFragment reactFragment) {
 			if (!reactFragment.shouldAnimatedTransition()) {
                 super.pushFragmentSync(fragment, completion, TransitionAnimation.None);
-                return;
-            }
-
-            if (reactFragment.shouldPassThroughTouches()) {
-                super.pushFragmentSync(fragment, completion, BetterPush);
                 return;
             }
         }
@@ -56,11 +48,6 @@ public class ReactStackFragment extends StackFragment {
                 super.popToFragmentSync(fragment, completion, TransitionAnimation.None);
                 return;
             }
-
-            if (reactFragment.shouldPassThroughTouches()) {
-                super.popToFragmentSync(fragment, completion, BetterPush);
-                return;
-            }
         }
         super.popToFragmentSync(fragment, completion, animation);
     }
@@ -70,11 +57,6 @@ public class ReactStackFragment extends StackFragment {
         if (fragment instanceof ReactFragment reactFragment) {
 			if (!reactFragment.shouldAnimatedTransition()) {
                 super.redirectToFragmentSync(fragment, completion, TransitionAnimation.None, from);
-                return;
-            }
-
-            if (reactFragment.shouldPassThroughTouches()) {
-                super.redirectToFragmentSync(fragment, completion, BetterRedirect, from);
                 return;
             }
         }

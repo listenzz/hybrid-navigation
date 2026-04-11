@@ -72,7 +72,6 @@ interface NavigationOption {
 
 ```ts
 interface NavigationItem extends NavigationOption {
-  passThroughTouches?: boolean;
   animatedTransition?: boolean;
   forceScreenLandscape?: boolean;
   swipeBackEnabled?: boolean;
@@ -145,3 +144,7 @@ Navigation.setTabItem(sceneId, {
 1. 页面内引入统一 RN TopBar 组件。
 2. 标题、左右按钮、背景色、透明度、阴影改为 RN 组件本地状态控制。
 3. 状态栏样式改用 `statusBarStyle`。
+
+## 迁移说明（passThroughTouches 移除）
+
+`passThroughTouches` 已从 `NavigationItem` 中移除，且不再提供兼容占位行为（no-op）。
