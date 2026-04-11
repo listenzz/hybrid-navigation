@@ -41,8 +41,6 @@ public class Garden {
 
 	boolean hidesBottomBarWhenPushed;
 
-	boolean forceTransparentDialogWindow;
-
 	Garden(@NonNull HybridFragment fragment, Style style) {
 		this.fragment = fragment;
 		this.style = style;
@@ -62,7 +60,6 @@ public class Garden {
 			style.setScreenBackgroundColor(Color.parseColor(screenColor));
 		}
 
-		this.forceTransparentDialogWindow = options.getBoolean("forceTransparentDialogWindow");
 		applyOptions(options);
 	}
 

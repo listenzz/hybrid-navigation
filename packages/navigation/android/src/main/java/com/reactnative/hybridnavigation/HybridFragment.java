@@ -78,10 +78,6 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     private void setBackgroundForModal(@NonNull Style style) {
-        if (forceTransparentDialogWindow()) {
-            style.setScreenBackgroundColor(Color.TRANSPARENT);
-            return;
-        }
         int color = mStyle.getScreenBackgroundColor();
         if (Color.alpha(color) == 255) {
             style.setScreenBackgroundColor(Color.parseColor("#77000000"));
@@ -96,10 +92,6 @@ public class HybridFragment extends AwesomeFragment {
     @NonNull
     @Override
     protected BarStyle preferredStatusBarStyle() {
-        if (forceTransparentDialogWindow()) {
-            return SystemUI.activityStatusBarStyle(requireActivity());
-        }
-
         if (getPresentationStyle() == PresentationStyle.OverFullScreen) {
             return SystemUI.activityStatusBarStyle(requireActivity());
         }
@@ -109,10 +101,6 @@ public class HybridFragment extends AwesomeFragment {
 
     @Override
     protected boolean preferredStatusBarHidden() {
-        if (forceTransparentDialogWindow()) {
-            return SystemUI.isStatusBarHidden(requireActivity().getWindow());
-        }
-
         if (getPresentationStyle() == PresentationStyle.OverFullScreen) {
             return SystemUI.isStatusBarHidden(requireActivity().getWindow());
         }
@@ -181,11 +169,6 @@ public class HybridFragment extends AwesomeFragment {
     protected boolean forceScreenLandscape() {
         Bundle options = getOptions();
         return options.getBoolean("forceScreenLandscape", false);
-    }
-
-    protected boolean forceTransparentDialogWindow() {
-        // Keep compatibility with existing JS option name; applies to modal overlay background.
-        return garden.forceTransparentDialogWindow;
     }
 
     private Bundle options;

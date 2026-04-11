@@ -10,7 +10,6 @@
 
 @property(nonatomic, copy, readwrite) NSDictionary *props;
 @property(nonatomic, copy, readwrite) NSDictionary *options;
-@property(nonatomic, assign) BOOL forceTransparentDialogWindow;
 @property(nonatomic, assign) BOOL forceScreenLandscape;
 @property(nonatomic, assign, readwrite) BOOL animatedTransition;
 
@@ -44,11 +43,6 @@
         if (options[@"forceScreenLandscape"]) {
             _forceScreenLandscape = [options[@"forceScreenLandscape"] boolValue];
         }
-        
-        self.forceTransparentDialogWindow = [options[@"forceTransparentDialogWindow"] boolValue];
-		if (self.forceTransparentDialogWindow) {
-			_animatedTransition = NO;
-		}
         
         [self applyNavigationBarOptions:options];
         [self applyTabBarOptions:options];
@@ -160,11 +154,6 @@
 }
 
 - (void)setModalBackgroundColor {
-    if (self.forceTransparentDialogWindow) {
-        self.view.backgroundColor = UIColor.clearColor;
-        return;
-    }
-    
     self.view.backgroundColor = [UIColor.blackColor colorWithAlphaComponent:0.5];
     
     NSString *screenColor = self.options[@"screenBackgroundColor"];

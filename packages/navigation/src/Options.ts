@@ -26,7 +26,6 @@ export interface NavigationOption {
 
 export interface NavigationItem extends NavigationOption {
 	passThroughTouches?: boolean; // 触摸事件是否可以穿透到下一层页面，很少用。
-	forceTransparentDialogWindow?: boolean; // 历史兼容字段：当页面是 modal 覆盖层时，是否强制背景透明
 	animatedTransition?: boolean;
 	forceScreenLandscape?: boolean; // 是否强制横屏
 	swipeBackEnabled?: boolean; // 是否可以通过右滑返回。如果 `backInteractive` 设置为 false, 那么该值无效。Android 下，只有开启了侧滑返回功能，该值才会生效。

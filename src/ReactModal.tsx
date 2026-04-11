@@ -100,7 +100,6 @@ function ReactModal({ navigator, sceneId }: NavigationProps) {
 
 export default withBottomModal({ safeAreaColor: '#F3F3F3' })(
 	withNavigationItem({
-		// forceTransparentDialogWindow: true,
 		// screenBackgroundColor: '#33000000',
 	})(ReactModal),
 );
