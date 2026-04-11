@@ -14,7 +14,7 @@
 
 @implementation HBDNativeNavigation
 
-+ (NSString *)moduleName { 
++ (NSString *)moduleName {
 	return @"HBDNativeNavigation";
 }
 
@@ -43,11 +43,11 @@
 	[self.bridgeManager invalidate];
 }
 
-- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params { 
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params {
 	return std::make_shared<facebook::react::NativeNavigationSpecJSI>(params);
 }
 
-- (nonnull facebook::react::ModuleConstants<JS::NativeNavigation::Constants::Builder>)constantsToExport { 
+- (nonnull facebook::react::ModuleConstants<JS::NativeNavigation::Constants::Builder>)constantsToExport {
 	JS::NativeNavigation::Constants::Builder::Input input = {
 		ResultOK,
 		ResultCancel,
@@ -90,7 +90,7 @@
 	}
 }
 
-- (void)currentRoute:(nonnull RCTResponseSenderBlock)callback { 
+- (void)currentRoute:(nonnull RCTResponseSenderBlock)callback {
 	[self performSelector:@selector(currentRouteWithCallback:) withObject:callback];
 }
 
@@ -98,14 +98,14 @@
 	[self performSelector:@selector(routeGraphWithCallback:) withObject:callback];
 }
 
-- (void)findSceneIdByModuleName:(nonnull NSString *)moduleName callback:(nonnull RCTResponseSenderBlock)callback { 
+- (void)findSceneIdByModuleName:(nonnull NSString *)moduleName callback:(nonnull RCTResponseSenderBlock)callback {
 	[self performSelector:@selector(findSceneIdWithParams:) withObject:@{
 		@"callback": callback,
 		@"moduleName": moduleName,
 	}];
 }
 
-- (void)isStackRoot:(nonnull NSString *)sceneId callback:(nonnull RCTResponseSenderBlock)callback { 
+- (void)isStackRoot:(nonnull NSString *)sceneId callback:(nonnull RCTResponseSenderBlock)callback {
 	UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
 	UINavigationController *nav = vc.navigationController;
 	if (!nav) {
@@ -125,10 +125,15 @@
 		return;
 	}
 
+	if (children.count == 1 && [root isKindOfClass:[UITabBarController class]]) {
+		callback(@[NSNull.null, @YES]);
+		return;
+	}
+
 	callback(@[NSNull.null, @NO]);
 }
 
-- (void)dispatch:(nonnull NSString *)sceneId action:(nonnull NSString *)action params:(nonnull NSDictionary *)params callback:(nonnull RCTResponseSenderBlock)callback { 
+- (void)dispatch:(nonnull NSString *)sceneId action:(nonnull NSString *)action params:(nonnull NSDictionary *)params callback:(nonnull RCTResponseSenderBlock)callback {
 	UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
 	if (!vc) {
 		callback(@[NSNull.null, @NO]);
@@ -139,23 +144,23 @@
 	[self.bridgeManager handleNavigationWithViewController:vc action:action extras:params callback:(RCTResponseSenderBlock)callback];
 }
 
-- (void)setRoot:(nonnull NSDictionary *)layout sticky:(BOOL)sticky callback:(nonnull RCTResponseSenderBlock)callback { 
+- (void)setRoot:(nonnull NSDictionary *)layout sticky:(BOOL)sticky callback:(nonnull RCTResponseSenderBlock)callback {
 	self.bridgeManager.viewHierarchyReady = NO;
 	UIViewController *vc = [self.bridgeManager viewControllerWithLayout:layout];
 	if (!vc) {
 		@throw [[NSException alloc] initWithName:@"IllegalArgumentsException" reason:@"无法创建 ViewController" userInfo:@{ @"layout": layout }];
 	}
-	
+
 	if (self.bridgeManager.didSetRoot) {
 		self.bridgeManager.didSetRoot(@[NSNull.null, @NO]);
 	}
 	self.bridgeManager.didSetRoot = callback;
 	self.bridgeManager.hasRootLayout = YES;
-	
+
 	[self.bridgeManager setRootViewController:vc];
 }
 
-- (void)setResult:(nonnull NSString *)sceneId resultCode:(double)resultCode data:(nonnull NSDictionary *)data { 
+- (void)setResult:(nonnull NSString *)sceneId resultCode:(double)resultCode data:(nonnull NSDictionary *)data {
 	UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
 	[vc setResultCode:resultCode resultData:data];
 }
@@ -168,14 +173,14 @@
 
 	NSString *moduleName = params[@"moduleName"];
 	RCTResponseSenderBlock callback = params[@"callback"];
-	
+
 	NSString *sceneId = [self findSceneIdByModuleName:moduleName];
 	if (sceneId == nil) {
 		RCTLogInfo(@"[Navigation] Can't find sceneId by : %@", moduleName);
 		callback(@[NSNull.null, NSNull.null]);
 		return;
 	}
-	
+
 	RCTLogInfo(@"[Navigation] The sceneId found by %@ : %@", moduleName, sceneId);
 	callback(@[[NSNull null], sceneId]);
 }
@@ -189,9 +194,9 @@
 			return sceneId;
 		}
 	}
-	
+
 	RCTLogInfo(@"[Navigation] KeyWindow NOT found.");
-	
+
 	return nil;
 }
 
@@ -232,7 +237,7 @@
 	}
 
 	HBDViewController *current = [self.bridgeManager primaryViewController];
-	
+
 	if (current) {
 		callback(@[[NSNull null], @{
 			@"moduleName": RCTNullIfNil(current.moduleName),

@@ -252,11 +252,6 @@
 
 - (instancetype)initWithRootViewController:(UIViewController *)rootViewController {
     if (self = [super initWithNavigationBarClass:nil toolbarClass:nil]) {
-        if ([rootViewController isKindOfClass:[HBDViewController class]]) {
-            HBDViewController *root = (HBDViewController *) rootViewController;
-            self.tabBarItem = root.tabBarItem;
-            root.tabBarItem = nil;
-        }
         self.viewControllers = @[rootViewController];
     }
     return self;

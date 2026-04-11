@@ -44,11 +44,18 @@ public class StackDelegate {
     }
 
     public boolean isStackRoot() {
-        if (!hasStackParent()) {
+        StackFragment stackFragment = mFragment.getStackFragment();
+        if (stackFragment == null) {
             return false;
         }
-        StackFragment stackFragment = mFragment.requireStackFragment();
-        return mFragment == stackFragment.getRootFragment();
+        AwesomeFragment root = stackFragment.getRootFragment();
+        if (mFragment == root) {
+            return true;
+        }
+        if (root != null && !root.isLeafAwesomeFragment()) {
+            return FragmentHelper.getBackStackEntryCount(stackFragment) == 1;
+        }
+        return false;
     }
 
     public boolean hasStackParent() {

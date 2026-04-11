@@ -18,7 +18,7 @@
 @implementation HBDViewController
 
 - (void)dealloc {
-    // 
+    //
 }
 
 - (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -35,15 +35,15 @@
         _options = options;
         _props = props;
         _animatedTransition = YES;
-        
+
         if (options[@"animatedTransition"]) {
             _animatedTransition = [options[@"animatedTransition"] boolValue];
         }
-        
+
         if (options[@"forceScreenLandscape"]) {
             _forceScreenLandscape = [options[@"forceScreenLandscape"] boolValue];
         }
-        
+
         [self applyNavigationBarOptions:options];
         [self applyTabBarOptions:options];
     }
@@ -112,7 +112,7 @@
         [currentDevice setValue:@(UIInterfaceOrientationUnknown) forKey:@"orientation"];
         [currentDevice setValue:@(orientation) forKey:@"orientation"];
     }
-    
+
     [UIViewController attemptRotationToDeviceOrientation];
 }
 
@@ -144,7 +144,7 @@
         [self setModalBackgroundColor];
         return;
     }
-    
+
     NSString *screenColor = self.options[@"screenBackgroundColor"];
     if (screenColor) {
         self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
@@ -155,9 +155,9 @@
 
 - (void)setModalBackgroundColor {
     self.view.backgroundColor = [UIColor.blackColor colorWithAlphaComponent:0.5];
-    
+
     NSString *screenColor = self.options[@"screenBackgroundColor"];
-    
+
     if (!screenColor) {
         return;
     }
@@ -171,7 +171,7 @@
 - (void)applyTabBarOptions:(NSDictionary *)options {
     NSDictionary *tabItem = options[@"tabItem"];
     if (tabItem) {
-		UITabBarItem *tabBarItem = self.navigationController ? self.navigationController.tabBarItem : self.tabBarItem;
+		UITabBarItem *tabBarItem = self.tabBarItem;
 		// title
         tabBarItem.title = tabItem[@"title"];
 
@@ -179,12 +179,12 @@
 		NSDictionary *badge = tabItem[@"badge"];
 		tabBarItem.badgeValue = [self badgeText:badge];
 		tabBarItem.badgeColor = [UITabBarItem appearance].badgeColor;
-		
+
 		NSDictionary *unselectedIcon = tabItem[@"unselectedIcon"];
 		NSDictionary *icon = tabItem[@"icon"];
 		UITabBar *appearance = self.tabBarController.tabBar ?: [UITabBar appearance];
 		BOOL dot = [self showDotBadge:badge];
-		
+
 		UITabBarItemAppearance *itemAppearance = appearance.standardAppearance.stackedLayoutAppearance;
 		if (unselectedIcon) {
 			tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] withIconColor:itemAppearance.normal.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
@@ -193,9 +193,7 @@
 			tabBarItem.image = [[HBDUtils UIImage:icon] withIconColor:itemAppearance.normal.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
 			tabBarItem.selectedImage = [[HBDUtils UIImage:icon] withIconColor:itemAppearance.selected.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
 		}
-		if (!self.navigationController) {
-        	self.tabBarItem = tabBarItem;
-		}
+		self.tabBarItem = tabBarItem;
     }
 }
 
@@ -211,14 +209,14 @@
 	if (badge != nil) {
 		self.options[@"tabItem"][@"badge"] = badge;
 	}
-	
+
 	// icon
 	NSDictionary *icon = option[@"icon"];
 	if (icon != nil) {
 		self.options[@"tabItem"][@"icon"] = icon[@"selected"];
 		self.options[@"tabItem"][@"unselectedIcon"] = icon[@"unselected"];
 	}
-	
+
 	[self applyTabBarOptions:self.options];
 }
 
