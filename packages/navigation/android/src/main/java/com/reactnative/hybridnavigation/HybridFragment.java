@@ -131,11 +131,6 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     @Override
-    protected boolean isSwipeBackEnabled() {
-        return garden.swipeBackEnabled;
-    }
-
-    @Override
     protected boolean shouldFitsNavigationBar() {
         if (preferredNavigationBarHidden()) {
             return false;

@@ -699,10 +699,6 @@ public abstract class AwesomeFragment extends InternalFragment {
         return true;
     }
 
-    protected boolean isSwipeBackEnabled() {
-        return true;
-    }
-
     // ------ TabBarFragment -------
 
     @NonNull

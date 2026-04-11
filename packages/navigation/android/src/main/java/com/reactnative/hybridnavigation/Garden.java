@@ -37,14 +37,11 @@ public class Garden {
 
 	boolean backInteractive = true;
 
-	boolean swipeBackEnabled;
-
 	Garden(@NonNull HybridFragment fragment, Style style) {
 		this.fragment = fragment;
 		this.style = style;
 
 		Bundle options = fragment.getOptions();
-		this.swipeBackEnabled = options.getBoolean("swipeBackEnabled", true);
 
 		if (options.get("fitsOpaqueNavigationBarAndroid") != null) {
 			boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid");

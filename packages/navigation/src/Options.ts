@@ -27,7 +27,6 @@ export interface NavigationOption {
 export interface NavigationItem extends NavigationOption {
 	animatedTransition?: boolean;
 	forceScreenLandscape?: boolean; // 是否强制横屏
-	swipeBackEnabled?: boolean; // 是否可以通过右滑返回。如果 `backInteractive` 设置为 false, 那么该值无效。Android 下，只有开启了侧滑返回功能，该值才会生效。
 	tabItem?: TabItem;
 }
 
@@ -51,8 +50,6 @@ export interface DefaultOptions {
 	screenBackgroundColor?: Color; // 页面背景，默认是白色
 	statusBarStyle?: BarStyle; // 状态栏样式，可选项有 `BarStyleLightContent` 和 `BarStyleDarkContent`
 	navigationBarColorAndroid?: Color; // 底部虚拟键背景颜色，仅对 Android 8.0 以上版本生效
-	swipeBackEnabledAndroid?: boolean; // Android 是否开启右滑返回，默认是 false
-	scrimAlphaAndroid?: number; // Android 侧滑返回遮罩效果 [0 - 255]
 	fitsOpaqueNavigationBarAndroid?: boolean; // 适配不透明的导航栏边衬区，默认为 true
 	displayCutoutWhenLandscapeAndroid?: boolean; // 横屏时，是否将界面延伸至刘海区域，默认 true
 

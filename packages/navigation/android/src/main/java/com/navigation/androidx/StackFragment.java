@@ -15,9 +15,7 @@ import androidx.lifecycle.Lifecycle;
 
 import java.util.List;
 
-public class StackFragment extends AwesomeFragment implements SwipeBackLayout.SwipeListener {
-
-    private SwipeBackLayout mSwipeBackLayout;
+public class StackFragment extends AwesomeFragment {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,20 +34,7 @@ public class StackFragment extends AwesomeFragment implements SwipeBackLayout.Sw
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (mStyle.isSwipeBackEnabled() && !SystemUI.isGestureNavigationEnabled(getContentResolver())) {
-            return swipeBackRootView(inflater, container);
-        }
         return inflater.inflate(R.layout.nav_fragment_navigation, container, false);
-    }
-
-    @NonNull
-    private View swipeBackRootView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
-        View root = inflater.inflate(R.layout.nav_fragment_navigation_swipe_back, container, false);
-        mSwipeBackLayout = root.findViewById(R.id.navigation_content);
-        mSwipeBackLayout.setSwipeListener(this);
-        int scrimAlpha = mStyle.getScrimAlpha();
-        mSwipeBackLayout.setScrimColor(scrimAlpha << 24);
-        return root;
     }
 
     @Override
@@ -80,10 +65,6 @@ public class StackFragment extends AwesomeFragment implements SwipeBackLayout.Sw
 
     @Override
     protected boolean onBackPressed() {
-        if (mDragging) {
-            return true;
-        }
-
         AwesomeFragment topFragment = getTopFragment();
         if (topFragment != null && !topFragment.isBackInteractive()) {
             return true;
@@ -301,60 +282,6 @@ public class StackFragment extends AwesomeFragment implements SwipeBackLayout.Sw
             return (AwesomeFragment) getChildFragmentManager().findFragmentById(R.id.navigation_content);
         }
         return null;
-    }
-
-    public SwipeBackLayout getSwipeBackLayout() {
-        return mSwipeBackLayout;
-    }
-
-    private boolean mDragging = false;
-
-    @Override
-    public void onViewDragStateChanged(int state, float scrollPercent) {
-        AwesomeFragment topFragment = getTopFragment();
-        if (topFragment == null) {
-            return;
-        }
-
-        if (state == SwipeBackLayout.STATE_DRAGGING) {
-            handleDraggingState(topFragment);
-            return;
-        }
-
-        if (state == SwipeBackLayout.STATE_IDLE) {
-            handleIdleState(scrollPercent, topFragment);
-        }
-    }
-
-    private void handleDraggingState(AwesomeFragment topFragment) {
-        mDragging = true;
-        AwesomeFragment precursor = FragmentHelper.getFragmentBefore(topFragment);
-        assert precursor != null;
-        precursor.requireView().setVisibility(View.VISIBLE);
-    }
-
-    private void handleIdleState(float scrollPercent, AwesomeFragment topFragment) {
-        mDragging = false;
-
-        AwesomeFragment precursor = FragmentHelper.getFragmentBefore(topFragment);
-        assert precursor != null;
-        precursor.requireView().setVisibility(View.GONE);
-
-        if (scrollPercent >= 1.0f) {
-            popFragmentSync(() -> {/*empty*/}, TransitionAnimation.None);
-        }
-    }
-
-    @Override
-    public boolean shouldSwipeBack() {
-        AwesomeFragment top = getTopFragment();
-        if (top == null) {
-            return false;
-        }
-        return mStyle.isSwipeBackEnabled()
-                && FragmentHelper.getBackStackEntryCount(this) > 1
-                && top.isBackInteractive()
-                && top.isSwipeBackEnabled();
     }
 
 }

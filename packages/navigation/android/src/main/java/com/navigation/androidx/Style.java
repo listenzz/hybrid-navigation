@@ -27,10 +27,9 @@ public class Style implements Cloneable {
     private String tabBarUnselectedItemColor = null;
     private Drawable tabBarShadow = defaultShadow;
 
-    private boolean swipeBackEnabled;
     private String tabBarBadgeColor = "#FF3B30";
 
-    private int scrimAlpha = 25;
+    private int scrimAlpha = 50;
 
     private boolean displayCutoutWhenLandscape = true;
 
@@ -101,14 +100,6 @@ public class Style implements Cloneable {
 
     public void setTabBarShadow(Drawable drawable) {
         this.tabBarShadow = drawable;
-    }
-
-    public boolean isSwipeBackEnabled() {
-        return swipeBackEnabled;
-    }
-
-    public void setSwipeBackEnabled(boolean swipeBackEnabled) {
-        this.swipeBackEnabled = swipeBackEnabled;
     }
 
     public String getTabBarBadgeColor() {

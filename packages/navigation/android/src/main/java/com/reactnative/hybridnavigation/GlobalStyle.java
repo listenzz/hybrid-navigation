@@ -80,14 +80,6 @@ public class GlobalStyle {
             style.setTabBarBadgeColor(badgeColor);
         }
 
-        boolean swipeBackEnabled = options.getBoolean("swipeBackEnabledAndroid", false);
-        style.setSwipeBackEnabled(swipeBackEnabled);
-
-        double scrimAlpha = options.getDouble("scrimAlphaAndroid", -1);
-        if (scrimAlpha != -1) {
-            style.setScrimAlpha((int) scrimAlpha);
-        }
-
         boolean fitsOpaqueNavigationBar = options.getBoolean("fitsOpaqueNavigationBarAndroid", true);
         style.setFitsOpaqueNavigationBar(fitsOpaqueNavigationBar);
     }

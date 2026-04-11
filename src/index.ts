@@ -43,7 +43,6 @@ graph();
 Navigation.setDefaultOptions({
 	screenBackgroundColor: '#F8F8F8',
 	statusBarStyle: BarStyleDarkContent,
-	swipeBackEnabledAndroid: true,
 	navigationBarColorAndroid: '#FFFFFF',
 
 	tabBarBackgroundColor: '#FFFFFF',
