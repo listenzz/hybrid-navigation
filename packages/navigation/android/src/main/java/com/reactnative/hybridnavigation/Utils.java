@@ -19,8 +19,6 @@ import java.util.List;
 
 public class Utils {
 
-    private static final String TAG = "Navigation";
-
     public static Drawable createTabBarShadow(Context context, Bundle shadowImage) {
         Bundle image = shadowImage.getBundle("image");
         if (image != null) {
@@ -44,16 +42,9 @@ public class Utils {
 
         Drawable drawable = DrawableUtils.fromUri(context, uri);
         if (drawable instanceof BitmapDrawable bitmapDrawable) {
-			bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
+            bitmapDrawable.setTileModeX(Shader.TileMode.REPEAT);
         }
         return drawable;
-    }
-
-    public static String getIconUri(Context context, String uri) {
-        if (uri != null && uri.startsWith("font://")) {
-            return DrawableUtils.filepathFromFont(context, uri);
-        }
-        return uri;
     }
 
     @Nullable

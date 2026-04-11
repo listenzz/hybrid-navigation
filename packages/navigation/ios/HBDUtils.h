@@ -34,13 +34,9 @@ UIKIT_STATIC_INLINE void hbd_exchangeImplementations(Class clazz, SEL originalSe
 
 + (UIColor *)colorWithHexString:(NSString *)hexString;
 
-+ (NSString *)hexStringFromColor:(UIColor *)color;
-
 + (UIImage *)UIImage:(NSDictionary *)json;
 
 + (UIImage *)imageWithColor:(UIColor *)color;
-
-+ (NSString *)iconUriFromUri:(NSString *)uri;
 
 + (BOOL)isIphoneX;
 
