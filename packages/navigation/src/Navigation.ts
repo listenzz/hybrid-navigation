@@ -1,17 +1,9 @@
 import type React from 'react';
 import { AppRegistry, ComponentProvider } from 'react-native';
 
-import type {
-	BarButtonItem,
-	DefaultOptions,
-	NavigationOption,
-	TabBarStyle,
-	TabItemInfo,
-	TitleItem,
-} from './Options';
+import type { DefaultOptions, NavigationOption, TabBarStyle, TabItemInfo } from './Options';
 import type { BuildInLayout, Layout, Route, RouteGraph, RouteConfig } from './Route';
 
-import BarButtonEventHandler from './handler/BarButtonEventHandler';
 import LayoutCommandHandler from './handler/LayoutCommandHandler';
 import DispatchCommandHandler from './handler/DispatchCommandHandler';
 import ResultEventHandler, { ResultType } from './handler/ResultEventHandler';
@@ -27,12 +19,6 @@ import NativeGarden from './NativeGarden';
 export type { ResultType } from './handler/ResultEventHandler';
 import type { DispatchParams, NavigationInterceptor } from './handler/DispatchCommandHandler';
 export type { DispatchParams, NavigationInterceptor } from './handler/DispatchCommandHandler';
-
-type BarButtonClickEventListener = (sceneId: string, value: Function) => void;
-
-type Nullable<T> = {
-	[P in keyof T]: T[P] extends T[P] | undefined ? T[P] | null : T[P];
-};
 
 export const { RESULT_CANCEL, RESULT_OK, RESULT_BLOCK } = NativeNavigation.getConstants();
 
@@ -74,28 +60,15 @@ export interface Navigation {
 	currentRoute(): Promise<Route>;
 	routeGraph(): Promise<RouteGraph[]>;
 	setDefaultOptions(options: DefaultOptions): void;
-	setLeftBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null): void;
-	setRightBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null): void;
-	setLeftBarButtonItems(
-		sceneId: string,
-		buttonItems: Array<Nullable<BarButtonItem>> | null,
-	): void;
-	setRightBarButtonItems(
-		sceneId: string,
-		buttonItems: Array<Nullable<BarButtonItem>> | null,
-	): void;
-	setTitleItem(sceneId: string, titleItem: TitleItem): void;
 	updateOptions(sceneId: string, options: NavigationOption): void;
 	updateTabBar(sceneId: string, options: TabBarStyle): void;
 	setTabItem(sceneId: string, item: TabItemInfo | TabItemInfo[]): void;
 	setMenuInteractive(sceneId: string, enabled: boolean): void;
-	setBarButtonClickEventListener(listener: BarButtonClickEventListener): void;
 }
 
 class NavigationImpl implements Navigation {
 	private dispatchHandler = new DispatchCommandHandler();
 	private resultHandler = new ResultEventHandler();
-	private buttonHandler = new BarButtonEventHandler();
 	private layoutHandler = new LayoutCommandHandler();
 	private visibilityHandler = new VisibilityEventHandler();
 
@@ -139,10 +112,7 @@ class NavigationImpl implements Navigation {
 			WrappedComponent = this.hoc(WrappedComponent);
 		}
 
-		// build static options
-		let options: object =
-			this.bindBarButtonClickEvent('permanent', (WrappedComponent as any).navigationItem) ||
-			{};
+		const options: object = (WrappedComponent as any).navigationItem || {};
 		NativeNavigation.registerReactComponent(appKey, options);
 
 		let RootComponent = this.wrap!(appKey)(WrappedComponent);
@@ -215,7 +185,6 @@ class NavigationImpl implements Navigation {
 
 	unmount(sceneId: string) {
 		this.resultHandler.invalidateResultEventListener(sceneId);
-		this.buttonHandler.unbindBarButtonClickEvent(sceneId);
 	}
 
 	setRoot(layout: BuildInLayout | Layout, sticky = false) {
@@ -274,30 +243,6 @@ class NavigationImpl implements Navigation {
 		NativeGarden.setStyle(options);
 	}
 
-	setLeftBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null) {
-		const options = this.bindBarButtonClickEvent(sceneId, buttonItem);
-		NativeGarden.setLeftBarButtonItem(sceneId, options);
-	}
-
-	setRightBarButtonItem(sceneId: string, buttonItem: Nullable<BarButtonItem> | null) {
-		const options = this.bindBarButtonClickEvent(sceneId, buttonItem);
-		NativeGarden.setRightBarButtonItem(sceneId, options);
-	}
-
-	setLeftBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null) {
-		const options = this.bindBarButtonClickEvent(sceneId, buttonItems) as Array<{}> | null;
-		NativeGarden.setLeftBarButtonItems(sceneId, options);
-	}
-
-	setRightBarButtonItems(sceneId: string, buttonItems: Array<Nullable<BarButtonItem>> | null) {
-		const options = this.bindBarButtonClickEvent(sceneId, buttonItems) as Array<{}> | null;
-		NativeGarden.setRightBarButtonItems(sceneId, options);
-	}
-
-	setTitleItem(sceneId: string, titleItem: TitleItem) {
-		NativeGarden.setTitleItem(sceneId, titleItem);
-	}
-
 	updateOptions(sceneId: string, options: NavigationOption) {
 		NativeGarden.updateOptions(sceneId, options);
 	}
@@ -315,17 +260,6 @@ class NavigationImpl implements Navigation {
 
 	setMenuInteractive(sceneId: string, enabled: boolean) {
 		NativeGarden.setMenuInteractive(sceneId, enabled);
-	}
-
-	setBarButtonClickEventListener(listener: BarButtonClickEventListener) {
-		this.buttonHandler.setBarButtonClickEventListener(listener);
-	}
-
-	private bindBarButtonClickEvent(
-		sceneId: string,
-		item: object | null | undefined,
-	): object | null {
-		return this.buttonHandler.bindBarButtonClickEvent(sceneId, item);
 	}
 }
 

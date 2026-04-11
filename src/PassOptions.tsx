@@ -1,28 +1,23 @@
 import React from 'react';
 import { Text, View, ScrollView } from 'react-native';
-import { withNavigationItem } from 'hybrid-navigation';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { NavigationProps } from 'hybrid-navigation';
 
 import styles from './Styles';
+import RNTopBar from './RNTopBar';
 
-export default withNavigationItem({
-	titleItem: {
-		title: 'The Origin Title',
-	},
-})(PassOptions);
-
-function PassOptions() {
-	const insets = useSafeAreaInsets();
-
+export default function PassOptions({ navigator }: NavigationProps) {
 	return (
-		<ScrollView
-			contentInsetAdjustmentBehavior="never"
-			automaticallyAdjustContentInsets={true}
-			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
-		>
-			<View style={[styles.container, { paddingTop: insets.top }]}>
-				<Text style={styles.welcome}>Attention: the title is not 'The Origin Title'</Text>
-			</View>
-		</ScrollView>
+		<View style={{ flex: 1 }}>
+			<RNTopBar title="Pass Options" navigator={navigator} />
+			<ScrollView
+				contentInsetAdjustmentBehavior="never"
+				automaticallyAdjustContentInsets={false}
+				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+			>
+				<View style={styles.container}>
+					<Text style={styles.welcome}>This screen now uses the shared RN TopBar.</Text>
+				</View>
+			</ScrollView>
+		</View>
 	);
 }

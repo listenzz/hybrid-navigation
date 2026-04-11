@@ -1,13 +1,11 @@
 import Navigation, {
 	DeepLink,
 	BarStyleDarkContent,
-	TitleAlignmentCenter,
 	Drawer,
 	Screen,
 	Tabs,
 	Stack,
 } from 'hybrid-navigation';
-import { Image, Platform } from 'react-native';
 import NavigationScreen from './Navigation';
 import Result from './Result';
 import Options from './Options';
@@ -20,7 +18,7 @@ import TopBarShadowHidden from './TopBarShadowHidden';
 import TopBarHidden from './TopBarHidden';
 import TopBarColor from './TopBarColor';
 import TopBarAlpha from './TopBarAlpha';
-import TopBarTitleView, { CustomTitleView } from './TopBarTitleView';
+import TopBarTitleView from './TopBarTitleView';
 import TopBarStyle from './TopBarStyle';
 import ReactModal from './ReactModal';
 import StatusBarHidden from './StatusBarHidden';
@@ -44,40 +42,9 @@ graph();
 // 设置全局样式
 Navigation.setDefaultOptions({
 	screenBackgroundColor: '#F8F8F8',
-	topBarStyle: BarStyleDarkContent,
-	//topBarHidden: true,
-
-	topBarColor: '#FFFFFF',
-	...Platform.select({
-		ios: {
-			topBarColorLightContent: '#FF344C',
-		},
-		android: {
-			topBarColorLightContent: '#F94D53',
-		},
-	}),
-	topBarTintColor: '#000000',
-	topBarTintColorLightContent: '#FFFFFF',
-	titleTextColor: '#000000',
-	titleTextColorLightContent: '#FFFFFF',
-	titleTextSize: 17,
+	statusBarStyle: BarStyleDarkContent,
 	swipeBackEnabledAndroid: true,
-	// splitTopBarTransitionIOS: true,
-	// badgeColor: '#00FFFF',
-	titleAlignmentAndroid: TitleAlignmentCenter,
 	navigationBarColorAndroid: '#FFFFFF',
-	// scrimAlphaAndroid: 50,
-
-	backIcon:
-		Platform.OS === 'ios'
-			? Image.resolveAssetSource(require('./images/icon_back.png'))
-			: undefined,
-	shadowImage: {
-		color: '#DDDDDD',
-		image: Image.resolveAssetSource(require('./images/divider.png')),
-	},
-	// hideBackTitleIOS: true,
-	elevationAndroid: 1,
 
 	tabBarBackgroundColor: '#FFFFFF',
 
@@ -111,7 +78,6 @@ Navigation.registerComponent('TopBarHidden', () => TopBarHidden);
 Navigation.registerComponent('TopBarAlpha', () => TopBarAlpha);
 Navigation.registerComponent('TopBarColor', () => TopBarColor);
 Navigation.registerComponent('TopBarTitleView', () => TopBarTitleView);
-Navigation.registerComponent('CustomTitleView', () => CustomTitleView);
 Navigation.registerComponent('StatusBarHidden', () => StatusBarHidden);
 Navigation.registerComponent('TopBarStyle', () => TopBarStyle, {
 	path: '/topBarStyle/:who',

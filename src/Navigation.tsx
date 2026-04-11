@@ -11,17 +11,9 @@ import Navigation, {
 	RESULT_BLOCK,
 } from 'hybrid-navigation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import RNTopBar from './RNTopBar';
 
 export default withNavigationItem({
-	//topBarStyle: 'light-content',
-	//topBarColor: '#666666',
-	//topBarTintColor: '#ffffff',
-	//titleTextColor: '#ffffff',
-
-	titleItem: {
-		title: 'RN navigation',
-	},
-
 	tabItem: {
 		title: 'Navigation',
 		icon: Image.resolveAssetSource(require('./images/navigation.png')),
@@ -46,7 +38,6 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 
 	const inputRef = useRef<TextInput>(null);
 	useVisibleEffect(() => {
-		console.log('----blur input----');
 		inputRef.current?.blur();
 	});
 
@@ -75,10 +66,7 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 				props.popToId = sceneId;
 			}
 		}
-		const [_, data] = await navigator.push('Navigation', props);
-		if (data) {
-			// setText(data.backId || undefined);
-		}
+		await navigator.push('Navigation', props);
 	}
 
 	async function pop() {
@@ -117,7 +105,6 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 	}
 
 	function handleResult(resultCode: number, data: { text?: string }) {
-		console.log(`Navigation result [${sceneId}]`, resultCode, data);
 		if (resultCode === RESULT_OK) {
 			setText(data?.text);
 			setError(undefined);
@@ -139,7 +126,6 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 			}>('ReactModal');
 			handleResult(resultCode, data);
 		})();
-		// testAwaitResult();
 	}
 
 	async function testAwaitResult() {
@@ -147,7 +133,6 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 			const [resultCode, data] = await navigator.present<{ text?: string }>('Result');
 			if (resultCode === RESULT_BLOCK) {
 				const route = await Navigation.currentRoute();
-				console.info('----testAwaitResult----', JSON.stringify(route));
 				if (route.mode === 'modal' && route.presentingId) {
 					await Navigation.result(route.presentingId, route.requestCode);
 					continue;
@@ -178,79 +163,78 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 		setInput(txt);
 	}
 
-	console.log('Navigation render ', sceneId);
-
 	return (
-		<ScrollView
-			contentInsetAdjustmentBehavior="never"
-			automaticallyAdjustContentInsets={false}
-			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
-			contentContainerStyle={{ flexGrow: 1 }}
-		>
-			<View style={styles.container}>
-				<Text style={styles.welcome}>This's a React Native scene.</Text>
-				<TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>push</Text>
-				</TouchableOpacity>
-				<TouchableOpacity
-					onPress={pop}
-					activeOpacity={0.2}
-					style={styles.button}
-					disabled={isRoot}
-				>
-					<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity
-					onPress={popTo}
-					activeOpacity={0.2}
-					style={styles.button}
-					disabled={popToId === undefined}
-				>
-					<Text
-						style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}
+		<View style={{ flex: 1 }}>
+			<RNTopBar title="RN navigation" navigator={navigator} />
+			<ScrollView
+				contentInsetAdjustmentBehavior="never"
+				automaticallyAdjustContentInsets={false}
+				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+				contentContainerStyle={{ flexGrow: 1 }}
+			>
+				<View style={styles.container}>
+					<Text style={styles.welcome}>This's a React Native scene.</Text>
+					<TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>push</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						onPress={pop}
+						activeOpacity={0.2}
+						style={styles.button}
+						disabled={isRoot}
 					>
-						popTo first
-					</Text>
-				</TouchableOpacity>
+						<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity
-					onPress={popToRoot}
-					activeOpacity={0.2}
-					style={styles.button}
-					disabled={isRoot}
-				>
-					<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
-						popToRoot
-					</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={popTo}
+						activeOpacity={0.2}
+						style={styles.button}
+						disabled={popToId === undefined}
+					>
+						<Text style={popToId === undefined ? styles.buttonTextDisable : styles.buttonText}>
+							popTo first
+						</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity onPress={redirectTo} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>redirectTo</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={popToRoot}
+						activeOpacity={0.2}
+						style={styles.button}
+						disabled={isRoot}
+					>
+						<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
+							popToRoot
+						</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>present</Text>
-				</TouchableOpacity>
+					<TouchableOpacity onPress={redirectTo} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>redirectTo</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>switch to tab 'Options'</Text>
-				</TouchableOpacity>
+					<TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>present</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>show modal</Text>
-				</TouchableOpacity>
+					<TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>switch to tab 'Options'</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity
-					onPress={printRouteGraph}
-					activeOpacity={0.2}
-					style={styles.button}
-				>
-					<Text style={styles.buttonText}>printRouteGraph</Text>
-				</TouchableOpacity>
-				{renderResult()}
-				{renderError()}
-			</View>
+					<TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>show modal</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity
+						onPress={printRouteGraph}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>printRouteGraph</Text>
+					</TouchableOpacity>
+					{renderResult()}
+					{renderError()}
+				</View>
+			</ScrollView>
 			<KeyboardInsetsView extraHeight={16} style={styles.keyboard}>
 				<TextInput
 					ref={inputRef}
@@ -258,10 +242,9 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 					onChangeText={handleTextChanged}
 					autoFocus={false}
 					value={input}
-					placeholder={'test keyboard instes'}
-					textAlignVertical="center"
+					placeholder={'input testing'}
 				/>
 			</KeyboardInsetsView>
-		</ScrollView>
+		</View>
 	);
 }

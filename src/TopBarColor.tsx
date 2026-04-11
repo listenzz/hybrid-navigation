@@ -1,57 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, ScrollView } from 'react-native';
-import Navigation, { withNavigationItem, NavigationProps } from 'hybrid-navigation';
+import { NavigationProps } from 'hybrid-navigation';
 import styles from './Styles';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import RNTopBar from './RNTopBar';
 
-export default withNavigationItem({
-	topBarColor: '#FF0000',
-})(TopBarColor);
+export default function TopBarColor({ navigator }: NavigationProps) {
+	const [topBarColor, setTopBarColor] = useState('#FF0000');
 
-function TopBarColor({ sceneId, navigator }: NavigationProps) {
-	function red() {
-		Navigation.updateOptions(sceneId, { topBarColor: '#FF0000' });
-	}
-
-	function green() {
-		Navigation.updateOptions(sceneId, { topBarColor: '#00FF00' });
-	}
-
-	function blue() {
-		Navigation.updateOptions(sceneId, { topBarColor: '#0000FF' });
-	}
-
-	function topBarColor() {
+	function topBarColorPage() {
 		navigator.push('TopBarColor');
 	}
 
-	const insets = useSafeAreaInsets();
-
 	return (
-		<ScrollView
-			contentInsetAdjustmentBehavior="never"
-			automaticallyAdjustContentInsets={false}
-			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
-		>
-			<View style={[styles.container, { paddingTop: insets.top }]}>
-				<Text style={styles.welcome}>Bright colors</Text>
+		<View style={{ flex: 1 }}>
+			<RNTopBar title="TopBar Color" navigator={navigator} backgroundColor={topBarColor} />
+			<ScrollView
+				contentInsetAdjustmentBehavior="never"
+				automaticallyAdjustContentInsets={false}
+				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+			>
+				<View style={styles.container}>
+					<Text style={styles.welcome}>Bright colors</Text>
 
-				<TouchableOpacity onPress={red} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>Red</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => setTopBarColor('#FF0000')}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>Red</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity onPress={blue} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>Blue</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => setTopBarColor('#0000FF')}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>Blue</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity onPress={green} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>Green</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={() => setTopBarColor('#00AA55')}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>Green</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity onPress={topBarColor} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>TopBarColor</Text>
-				</TouchableOpacity>
-			</View>
-		</ScrollView>
+					<TouchableOpacity onPress={topBarColorPage} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>push TopBarColor</Text>
+					</TouchableOpacity>
+				</View>
+			</ScrollView>
+		</View>
 	);
 }

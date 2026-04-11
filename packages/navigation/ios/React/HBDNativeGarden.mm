@@ -49,43 +49,11 @@
 	return [self constantsToExport];
 }
 
-- (void)setLeftBarButtonItem:(nonnull NSString *)sceneId item:(NSDictionary * _Nullable)item { 
-	HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
-	if (vc) {
-		[vc updateNavigationBarOptions:@{@"leftBarButtonItem": RCTNullIfNil(item)}];
-	}
-}
-
-
-- (void)setLeftBarButtonItems:(nonnull NSString *)sceneId items:(NSArray * _Nullable)items { 
-	HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
-	if (vc) {
-		[vc updateNavigationBarOptions:@{@"leftBarButtonItems": RCTNullIfNil(items)}];
-	}
-}
-
-
 - (void)setMenuInteractive:(nonnull NSString *)sceneId enabled:(BOOL)enabled { 
 	UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
 	HBDDrawerController *drawer = [vc drawerController];
 	if (drawer) {
 		drawer.menuInteractive = enabled;
-	}
-}
-
-
-- (void)setRightBarButtonItem:(nonnull NSString *)sceneId item:(NSDictionary * _Nullable)item { 
-	HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
-	if (vc) {
-		[vc updateNavigationBarOptions:@{@"rightBarButtonItem": RCTNullIfNil(item)}];
-	}
-}
-
-
-- (void)setRightBarButtonItems:(nonnull NSString *)sceneId items:(NSArray * _Nullable)items { 
-	HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
-	if (vc) {
-		[vc updateNavigationBarOptions:@{@"rightBarButtonItems": RCTNullIfNil(items)}];
 	}
 }
 
@@ -102,14 +70,6 @@
 	if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
 		HBDTabBarController *tabBarVC = (HBDTabBarController *)tabBarController;
 		[tabBarVC setTabItem:item];
-	}
-}
-
-
-- (void)setTitleItem:(nonnull NSString *)sceneId item:(nonnull NSDictionary *)item { 
-	HBDViewController *vc = [self viewControllerWithSceneId:sceneId];
-	if (vc) {
-		[vc updateNavigationBarOptions:@{@"titleItem": RCTNullIfNil(item)}];
 	}
 }
 

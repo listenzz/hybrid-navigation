@@ -2,13 +2,11 @@
 
 #import "HBDReactBridgeManager.h"
 #import "HBDRootView.h"
-#import "HBDTitleView.h"
 #import "HBDUtils.h"
 #import "HBDNativeEvent.h"
 #import "GlobalStyle.h"
 
 #import <React/RCTConvert.h>
-#import <React/RCTSurfaceHostingProxyRootView.h>
 
 @interface HBDReactViewController ()
 
@@ -69,29 +67,6 @@
     [super viewDidLoad];
     [self syncRootViewBackgroundColor];
     [self updateReactViewConstraints];
-
-    NSDictionary *titleItem = self.options[@"titleItem"];
-    if (titleItem && self.navigationController) {
-        if (self.hbd_barHidden) {
-            return;
-        }
-        NSString *moduleName = titleItem[@"moduleName"];
-        if (moduleName) {
-            NSString *fitting = titleItem[@"layoutFitting"];
-            CGSize size;
-            if ([fitting isEqualToString:@"expanded"]) {
-                size = UILayoutFittingExpandedSize;
-            } else {
-                size = UILayoutFittingCompressedSize;
-            }
-
-			RCTHost *host = [HBDReactBridgeManager get].rctHost;
-			RCTFabricSurface *surface = [host createSurfaceWithModuleName:moduleName initialProperties:[self propsWithSceneId]];
-			RCTSurfaceHostingProxyRootView *titleRootView = [[RCTSurfaceHostingProxyRootView alloc] initWithSurface:(id)surface];
-            HBDTitleView *titleView = [[HBDTitleView alloc] initWithRootView:titleRootView layoutFittingSize:size navigationBarBounds:self.navigationController.navigationBar.bounds];
-            self.navigationItem.titleView = titleView;
-        }
-    }
 }
 
 - (void)viewSafeAreaInsetsDidChange {
@@ -126,15 +101,9 @@
 	return scene ? scene.statusBarManager.statusBarFrame.size.height : 0;
 }
 
-/// 局部隐藏 topBar 或局部透明 topBar（非全局隐藏）时，需将 SafeArea 顶部修正为状态栏高度
+/// 原生导航栏移除后，SafeArea 顶部交给 RN 层自行处理
 - (BOOL)shouldAdjustSafeAreaTopToStatusBar {
-	if ([GlobalStyle globalStyle].topBarHidden) {
-		return NO;
-	}
-	if (![self.parentViewController isKindOfClass:UINavigationController.class]) {
-		return NO;
-	}
-	return self.hbd_barHidden || self.hbd_barAlpha < 1.0 || colorHasAlphaComponent(self.hbd_barTintColor);
+	return NO;
 }
 
 - (void)viewDidLayoutSubviews {
@@ -160,11 +129,7 @@
 }
 
 - (BOOL)shouldFitWindowInsetsTop {
-    if (![self.parentViewController isKindOfClass:UINavigationController.class]) {
-        return YES;
-    }
-    BOOL isTranslucent = self.hbd_barHidden || self.hbd_barAlpha < 1.0 || colorHasAlphaComponent(self.hbd_barTintColor);
-    return isTranslucent || self.extendedLayoutIncludesOpaqueBars;
+    return YES;
 }
 
 - (BOOL)shouldFitWindowInsetsBottom {

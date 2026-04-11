@@ -48,7 +48,7 @@ import App from './App';
 
 // 配置全局样式
 Navigation.setDefaultOptions({
-  topBarStyle: BarStyleDarkContent,
+  statusBarStyle: BarStyleDarkContent,
 });
 
 // 重要必须

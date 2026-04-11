@@ -1,20 +1,15 @@
 import React from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
 import Navigation, { withNavigationItem, NavigationProps } from 'hybrid-navigation';
 import styles from './Styles';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import RNTopBar from './RNTopBar';
 
 export default withNavigationItem({
 	statusBarHidden: true,
-	titleItem: {
-		title: 'StatusBar Hidden',
-	},
 })(StatusBarHidden);
 
 function StatusBarHidden({ navigator, sceneId }: NavigationProps) {
-	const insets = useSafeAreaInsets();
-
-	function statusBarHidden() {
+	function statusBarHiddenPage() {
 		navigator.push('StatusBarHidden');
 	}
 
@@ -27,19 +22,28 @@ function StatusBarHidden({ navigator, sceneId }: NavigationProps) {
 	}
 
 	return (
-		<View style={[styles.container, { paddingTop: insets.top }]}>
-			<Text style={styles.welcome}> StatusBar Hidden</Text>
-			<TouchableOpacity onPress={showStatusBar} activeOpacity={0.2} style={styles.button}>
-				<Text style={styles.buttonText}>show status bar</Text>
-			</TouchableOpacity>
+		<View style={{ flex: 1 }}>
+			<RNTopBar title="StatusBar Hidden" navigator={navigator} />
+			<ScrollView
+				contentInsetAdjustmentBehavior="never"
+				automaticallyAdjustContentInsets={false}
+				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+			>
+				<View style={styles.container}>
+					<Text style={styles.welcome}>StatusBar Hidden</Text>
+					<TouchableOpacity onPress={showStatusBar} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>show status bar</Text>
+					</TouchableOpacity>
 
-			<TouchableOpacity onPress={hideStatusBar} activeOpacity={0.2} style={styles.button}>
-				<Text style={styles.buttonText}>hide status bar</Text>
-			</TouchableOpacity>
+					<TouchableOpacity onPress={hideStatusBar} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>hide status bar</Text>
+					</TouchableOpacity>
 
-			<TouchableOpacity onPress={statusBarHidden} activeOpacity={0.2} style={styles.button}>
-				<Text style={styles.buttonText}>StatusBarHidden</Text>
-			</TouchableOpacity>
+					<TouchableOpacity onPress={statusBarHiddenPage} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>push StatusBarHidden</Text>
+					</TouchableOpacity>
+				</View>
+			</ScrollView>
 		</View>
 	);
 }

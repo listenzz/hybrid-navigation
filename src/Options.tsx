@@ -5,37 +5,14 @@ import Navigation, {
 	NavigationProps,
 	ImageSource,
 	TabBarStyle,
-	BarButtonItem,
 	TabItemInfo,
 	useVisibleEffect,
 } from 'hybrid-navigation';
 
 import styles from './Styles';
-
-const leftBarButtonItem: BarButtonItem = {
-	icon: Image.resolveAssetSource(require('./images/menu.png')),
-	title: 'Menu',
-	action: navigator => {
-		navigator.toggleMenu();
-	},
-};
+import RNTopBar from './RNTopBar';
 
 export default withNavigationItem({
-	titleItem: {
-		title: 'Options',
-	},
-
-	leftBarButtonItem: leftBarButtonItem,
-
-	rightBarButtonItem: {
-		icon: Image.resolveAssetSource(require('./images/nav.png')),
-		title: 'SETTING',
-		action: navigator => {
-			navigator.push('TopBarMisc');
-		},
-		enabled: false,
-	},
-
 	tabItem: {
 		title: 'Options',
 		icon: Image.resolveAssetSource(require('./images/flower_1.png')),
@@ -57,43 +34,24 @@ function Options({ sceneId, navigator }: NavigationProps) {
 		};
 	}, []);
 
-	const [showsLeftBarButton, setShowsLeftBarButton] = useState(false);
-
-	function toggleLeftBarButton() {
-		setShowsLeftBarButton(!showsLeftBarButton);
-	}
-
-	useEffect(() => {
-		if (showsLeftBarButton) {
-			Navigation.setLeftBarButtonItem(sceneId, null);
-		} else {
-			Navigation.setLeftBarButtonItem(sceneId, leftBarButtonItem);
-		}
-	}, [showsLeftBarButton, sceneId]);
-
-	const [rightButtonEnabled, setRightButtonEnabled] = useState(false);
-
-	function changeRightButton() {
-		setRightButtonEnabled(!rightButtonEnabled);
-	}
-
-	useEffect(() => {
-		Navigation.setRightBarButtonItem(sceneId, {
-			enabled: rightButtonEnabled,
-		});
-	}, [rightButtonEnabled, sceneId]);
-
+	const [showsLeftAction, setShowsLeftAction] = useState(true);
+	const [rightActionEnabled, setRightActionEnabled] = useState(false);
 	const [title, setTitle] = useState('Options');
+
+	function toggleLeftAction() {
+		setShowsLeftAction(!showsLeftAction);
+	}
+
+	function changeRightAction() {
+		setRightActionEnabled(!rightActionEnabled);
+	}
+
 	function changeTitle() {
 		setTitle(title === 'Options' ? '配置' : 'Options');
 	}
 
-	useEffect(() => {
-		Navigation.setTitleItem(sceneId, { title });
-	}, [title, sceneId]);
-
 	function passOptions() {
-		navigator.push('PassOptions', {}, { titleItem: { title: 'The Passing Title' } });
+		navigator.push('PassOptions');
 	}
 
 	function switchTab() {
@@ -143,7 +101,6 @@ function Options({ sceneId, navigator }: NavigationProps) {
 				icon: {
 					selected: icon,
 				},
-				// title: '选项',
 			});
 		}
 	}, [icon, sceneId]);
@@ -196,88 +153,108 @@ function Options({ sceneId, navigator }: NavigationProps) {
 		}
 	}, [tabBarColor, sceneId]);
 
-	console.log('Options render ', sceneId);
 	return (
-		<ScrollView
-			contentInsetAdjustmentBehavior="never"
-			automaticallyAdjustContentInsets={false}
-			contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
-		>
-			<View style={styles.container}>
-				<Text style={styles.welcome}>This's a React Native scene.</Text>
+		<View style={{ flex: 1 }}>
+			<RNTopBar
+				title={title}
+				navigator={navigator}
+				leftAction={
+					showsLeftAction
+						? {
+								label: 'Menu',
+								onPress: () => {
+									navigator.toggleMenu();
+								},
+							}
+						: undefined
+				}
+				rightAction={{
+					label: 'TopBar',
+					onPress: topBarMisc,
+					disabled: !rightActionEnabled,
+				}}
+			/>
+			<ScrollView
+				contentInsetAdjustmentBehavior="never"
+				automaticallyAdjustContentInsets={false}
+				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+			>
+				<View style={styles.container}>
+					<Text style={styles.welcome}>This's a React Native scene.</Text>
 
-				<TouchableOpacity onPress={topBarMisc} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>topBar options</Text>
-				</TouchableOpacity>
+					<TouchableOpacity onPress={topBarMisc} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>topBar demos</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity onPress={passOptions} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>pass options to another scene</Text>
-				</TouchableOpacity>
+					<TouchableOpacity onPress={passOptions} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>pass options to another scene</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity
-					onPress={toggleLeftBarButton}
-					activeOpacity={0.2}
-					style={styles.button}
-				>
-					<Text style={styles.buttonText}>
-						{showsLeftBarButton ? 'show left bar button' : 'hide left bar button'}
-					</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={toggleLeftAction}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>
+							{showsLeftAction ? 'hide left action' : 'show left action'}
+						</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity
-					onPress={changeRightButton}
-					activeOpacity={0.2}
-					style={styles.button}
-				>
-					<Text style={styles.buttonText}>
-						{rightButtonEnabled ? 'disable right button' : 'enable right button'}
-					</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={changeRightAction}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>
+							{rightActionEnabled ? 'disable right action' : 'enable right action'}
+						</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity onPress={changeTitle} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>{`change title to '${
-						title === 'Options' ? '配置' : 'Options'
-					}'`}</Text>
-				</TouchableOpacity>
+					<TouchableOpacity onPress={changeTitle} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>{`change title to '${
+							title === 'Options' ? '配置' : 'Options'
+						}'`}</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
-				</TouchableOpacity>
+					<TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity
-					onPress={toggleTabBadge}
-					activeOpacity={0.2}
-					style={styles.button}
-				>
-					<Text style={styles.buttonText}>
-						{badges && badges[0].badge?.dot ? 'hide tab badge' : 'show tab badge'}
-					</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={toggleTabBadge}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>
+							{badges && badges[0].badge?.dot ? 'hide tab badge' : 'show tab badge'}
+						</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity
-					onPress={replaceTabIcon}
-					activeOpacity={0.2}
-					style={styles.button}
-				>
-					<Text style={styles.buttonText}>replalce tab icon</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={replaceTabIcon}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>replace tab icon</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity
-					onPress={replaceTabItemColor}
-					activeOpacity={0.2}
-					style={styles.button}
-				>
-					<Text style={styles.buttonText}>replace tab item color</Text>
-				</TouchableOpacity>
+					<TouchableOpacity
+						onPress={replaceTabItemColor}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>replace tab item color</Text>
+					</TouchableOpacity>
 
-				<TouchableOpacity
-					onPress={updateTabBarColor}
-					activeOpacity={0.2}
-					style={styles.button}
-				>
-					<Text style={styles.buttonText}>change tab bar color</Text>
-				</TouchableOpacity>
-			</View>
-		</ScrollView>
+					<TouchableOpacity
+						onPress={updateTabBarColor}
+						activeOpacity={0.2}
+						style={styles.button}
+					>
+						<Text style={styles.buttonText}>replace tab bar color</Text>
+					</TouchableOpacity>
+				</View>
+			</ScrollView>
+		</View>
 	);
 }

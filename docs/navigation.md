@@ -206,7 +206,7 @@ const navigator = Navigator.of(sceneId);
 
 ## Navigator
 
-**Navigation** 是应用级单例：负责 setRoot、setDefaultOptions、registerComponent 等全局配置，以及 currentRoute、routeGraph、setTitleItem(sceneId, ...)、updateOptions(sceneId, ...) 等按 sceneId 的查询与更新。
+**Navigation** 是应用级单例：负责 setRoot、setDefaultOptions、registerComponent 等全局配置，以及 currentRoute、routeGraph、updateOptions(sceneId, ...) 等按 sceneId 的查询与更新。
 
 **Navigator** 则是与**单个页面**绑定的导航对象，负责该页面的 push、pop、present
 
@@ -511,13 +511,10 @@ if (navigator) {
 useEffect(() => {
   navigator.isStackRoot().then(isRoot => {
     if (isRoot) {
-      Navigation.setLeftBarButtonItem(sceneId, {
-        title: '取消',
-        action: nav => nav.dismiss(),
-      });
+      console.log('this page is stack root');
     }
   });
-}, [navigator, sceneId]);
+}, [navigator]);
 ```
 
 ### setParams

@@ -53,7 +53,7 @@ import Profile from './ProfileComponent';
 
 // 配置全局样式
 Navigation.setDefaultOptions({
-  topBarStyle: BarStyleDarkContent,
+  statusBarStyle: BarStyleDarkContent,
 });
 
 Navigation.startRegisterComponent();
@@ -315,15 +315,9 @@ import com.reactnative.hybridnavigation.ReactTabBarFragment;
 protected void onCreateMainComponent() {
     // 不要调用 super.onCreateMainComponent()
     Bundle options1 = new Bundle();
-    Bundle titleItem1 = new Bundle();
-    titleItem1.putString("title", "React");
-    options1.putBundle("titleItem", titleItem1);
     HybridFragment f1 = getReactManager().createFragment("Tab1", null, options1);
 
     Bundle options2 = new Bundle();
-    Bundle titleItem2 = new Bundle();
-    titleItem2.putString("title", "Native");
-    options2.putBundle("titleItem", titleItem2);
     HybridFragment f2 = getReactManager().createFragment("Tab2", null, options2);
 
     StackFragment nav1 = new StackFragment();
@@ -522,8 +516,8 @@ end
 
 - (void)reactModuleRegisterDidCompleted:(HBDReactBridgeManager *)manager {
     // 由原生决定 UI 层级时在此设置根界面；此时 index.js 中不要调用 Navigation.setRoot（可参考 [react-native-toast-hybrid](https://github.com/listenzz/react-native-toast-hybrid) 的 [AppDelegate.mm](https://github.com/listenzz/react-native-toast-hybrid/blob/master/ios/ToastHybrid/AppDelegate.mm)）
-    HBDViewController *vc1 = [manager viewControllerWithModuleName:@"Tab1" props:nil options:@{@"titleItem": @{@"title": @"React"}}];
-    HBDViewController *vc2 = [manager viewControllerWithModuleName:@"Tab2" props:nil options:@{@"titleItem": @{@"title": @"Native"}}];
+    HBDViewController *vc1 = [manager viewControllerWithModuleName:@"Tab1" props:nil options:@{}];
+    HBDViewController *vc2 = [manager viewControllerWithModuleName:@"Tab2" props:nil options:@{}];
 
     HBDNavigationController *nav1 = [[HBDNavigationController alloc] initWithRootViewController:vc1];
     nav1.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"React" image:nil selectedImage:nil];

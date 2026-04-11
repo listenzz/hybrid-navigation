@@ -15,13 +15,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
 import com.facebook.common.logging.FLog;
-import com.facebook.react.bridge.JavaOnlyMap;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.UiThreadUtil;
-import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.module.annotations.ReactModule;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.DrawerFragment;
@@ -66,31 +64,6 @@ public class NativeGarden extends NativeGardenSpec {
 				activity.inflateStyle();
 			}
 		});
-	}
-
-	@Override
-	public void setTitleItem(String sceneId, ReadableMap item) {
-		updateOptions(sceneId, item, "titleItem");
-	}
-
-	@Override
-	public void setLeftBarButtonItem(String sceneId, @Nullable ReadableMap item) {
-		updateOptions(sceneId, item, "leftBarButtonItem");
-	}
-
-	@Override
-	public void setRightBarButtonItem(String sceneId, @Nullable ReadableMap item) {
-		updateOptions(sceneId, item, "rightBarButtonItem");
-	}
-
-	@Override
-	public void setLeftBarButtonItems(String sceneId, @Nullable ReadableArray items) {
-		updateOptions(sceneId, items, "leftBarButtonItems");
-	}
-
-	@Override
-	public void setRightBarButtonItems(String sceneId, @Nullable ReadableArray items) {
-		updateOptions(sceneId, items, "rightBarButtonItems");
 	}
 
 	@Override
@@ -151,26 +124,6 @@ public class NativeGarden extends NativeGardenSpec {
 
 			drawerFragment.setMenuInteractive(enabled);
 		});
-	}
-
-	private void updateOptions(String sceneId, @Nullable ReadableMap readableMap, String key) {
-		WritableMap writableMap = new JavaOnlyMap();
-		if (readableMap == null) {
-			writableMap.putNull(key);
-		} else {
-			writableMap.putMap(key, readableMap);
-		}
-		updateOptions(sceneId, writableMap);
-	}
-
-	private void updateOptions(String sceneId, @Nullable ReadableArray readableArray, String key) {
-		WritableMap writableMap = new JavaOnlyMap();
-		if (readableArray == null) {
-			writableMap.putNull(key);
-		} else {
-			writableMap.putArray(key, readableArray);
-		}
-		updateOptions(sceneId, writableMap);
 	}
 
 	@Nullable

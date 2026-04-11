@@ -2,7 +2,6 @@
 
 #import "HBDBarButtonItem.h"
 #import "HBDUtils.h"
-#import "HBDNativeEvent.h"
 
 #import <React/RCTConvert.h>
 
@@ -167,16 +166,7 @@
         }
     }
 	
-	NSString *action = item[@"action"];
-	NSString *sceneId = self.sceneId;
-    if (action) {
-        barButtonItem.actionBlock = ^{
-			[[HBDNativeEvent getInstance] emitOnBarButtonItemClick:@{
-				@"action": action,
-				@"sceneId": sceneId,
-			}];
-        };
-    }
+    barButtonItem.actionBlock = nil;
     return barButtonItem;
 }
 

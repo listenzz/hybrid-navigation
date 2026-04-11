@@ -7,17 +7,6 @@ export interface Spec extends TurboModule {
 	};
 
 	setStyle: (style: CodegenTypes.UnsafeObject) => void;
-	setTitleItem: (sceneId: string, item: CodegenTypes.UnsafeObject) => void;
-	setLeftBarButtonItem: (sceneId: string, item: CodegenTypes.UnsafeObject | null) => void;
-	setRightBarButtonItem: (sceneId: string, item: CodegenTypes.UnsafeObject | null) => void;
-	setLeftBarButtonItems: (
-		sceneId: string,
-		items: Array<CodegenTypes.UnsafeObject> | null,
-	) => void;
-	setRightBarButtonItems: (
-		sceneId: string,
-		items: Array<CodegenTypes.UnsafeObject> | null,
-	) => void;
 	updateOptions: (sceneId: string, options: CodegenTypes.UnsafeObject) => void;
 	updateTabBar: (sceneId: string, item: CodegenTypes.UnsafeObject) => void;
 	setTabItem: (sceneId: string, item: Array<CodegenTypes.UnsafeObject>) => void;

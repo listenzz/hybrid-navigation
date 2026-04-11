@@ -28,9 +28,6 @@
 @property(nonatomic, strong) UIColor *tabBarItemSelectedColor;
 @property(nonatomic, strong) UIColor *tabBarItemNormalColor;
 
-@property(nonatomic, assign, readwrite) BOOL alwaysSplitNavigationBarTransition;
-@property(nonatomic, assign, readwrite, getter=isTopBarHidden) BOOL topBarHidden;
-
 @end
 
 @implementation GlobalStyle {
@@ -68,37 +65,11 @@ static GlobalStyle *globalStyle;
             _screenBackgroundColor = UIColor.whiteColor;
         }
 
-        NSString *topBarStyle = self.options[@"topBarStyle"];
-        if (topBarStyle && [topBarStyle isEqualToString:@"light-content"]) {
+        NSString *statusBarStyle = self.options[@"statusBarStyle"];
+        if (statusBarStyle && [statusBarStyle isEqualToString:@"light-content"]) {
             self.barStyle = UIBarStyleBlack;
         } else {
             self.barStyle = UIBarStyleDefault;
-        }
-
-        // topBarColor
-        NSString *topBarColor = self.options[@"topBarColor"];
-        if (topBarColor) {
-            self.barTintColor = [HBDUtils colorWithHexString:topBarColor];
-        }
-
-        NSNumber *splitTopBarTransitionIOS = self.options[@"splitTopBarTransitionIOS"];
-        if (splitTopBarTransitionIOS) {
-            self.alwaysSplitNavigationBarTransition = [splitTopBarTransitionIOS boolValue];
-        }
-
-        NSNumber *topBarHidden = self.options[@"topBarHidden"];
-        if (topBarHidden) {
-            self.topBarHidden = [topBarHidden boolValue];
-        }
-
-        NSString *topBarColorDarkContent = self.options[@"topBarColorDarkContent"];
-        if (topBarColorDarkContent) {
-            self.barTintColorDarkContent = [HBDUtils colorWithHexString:topBarColorDarkContent];
-        }
-
-        NSString *topBarColorLightContent = self.options[@"topBarColorLightContent"];
-        if (topBarColorLightContent) {
-            self.barTintColorLightContent = [HBDUtils colorWithHexString:topBarColorLightContent];
         }
 
         // navigationBar shadowImage
@@ -115,67 +86,8 @@ static GlobalStyle *globalStyle;
             self.shadowImage = image;
         }
 
-        // hideBackTitle
-        NSNumber *hideBackTitle = options[@"hideBackTitleIOS"];
-        if (!hideBackTitle) {
-            hideBackTitle = options[@"hideBackTitle"];
-        }
-        if (hideBackTitle) {
-            _backTitleHidden = [hideBackTitle boolValue];
-        }
-
-        // backIcon
-        NSDictionary *backIcon = self.options[@"backIcon"];
-        if (backIcon) {
-            self.backIcon = [HBDUtils UIImage:backIcon];
-        }
-
-        // topBarTintColor,
-        NSString *topBarTintColor = self.options[@"topBarTintColor"];
-        if (topBarTintColor) {
-            self.tintColor = [HBDUtils colorWithHexString:topBarTintColor];
-        }
-
-        NSString *topBarTintColorDarkContent = self.options[@"topBarTintColorDarkContent"];
-        if (topBarTintColorDarkContent) {
-            self.tintColorDarkContent = [HBDUtils colorWithHexString:topBarTintColorDarkContent];
-        }
-
-        NSString *topBarTintColorLightContent = self.options[@"topBarTintColorLightContent"];
-        if (topBarTintColorLightContent) {
-            self.tintColorLightContent = [HBDUtils colorWithHexString:topBarTintColorLightContent];
-        }
-
-        // titleTextColor,
-        NSString *titleTextColor = self.options[@"titleTextColor"];
-        if (titleTextColor) {
-            self.titleTextColor = [HBDUtils colorWithHexString:titleTextColor];
-        }
-
-        NSString *titleTextColorDarkContent = self.options[@"titleTextColorDarkContent"];
-        if (titleTextColorDarkContent) {
-            self.titleTextColorDarkContent = [HBDUtils colorWithHexString:titleTextColorDarkContent];
-        }
-
-        NSString *titleTextColorLightContent = self.options[@"titleTextColorLightContent"];
-        if (titleTextColorLightContent) {
-            self.titleTextColorLightContent = [HBDUtils colorWithHexString:titleTextColorLightContent];
-        }
-
-        // titleTextSize
-        NSNumber *titleTextSize = self.options[@"titleTextSize"];
-        if (titleTextSize) {
-            self.titleTextSize = [titleTextSize integerValue];
-        } else {
-            self.titleTextSize = 17;
-        }
-
-        NSNumber *barButtonItemTextSize = self.options[@"barButtonItemTextSize"];
-        if (barButtonItemTextSize) {
-            self.barButtonItemTextSize = [barButtonItemTextSize integerValue];
-        } else {
-            self.barButtonItemTextSize = 15;
-        }
+        self.titleTextSize = 17;
+        self.barButtonItemTextSize = 15;
 
         // tabBarBackgroundColor
         NSString *tabBarBackgroundColor = self.options[@"tabBarBackgroundColor"];

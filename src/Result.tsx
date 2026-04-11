@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, Text, TextInput, Image, ScrollView, View } from 'react-native';
+import { TouchableOpacity, Text, TextInput, ScrollView, View } from 'react-native';
 import styles from './Styles';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Navigation, {
 	RESULT_OK,
@@ -10,12 +9,11 @@ import Navigation, {
 	NavigationProps,
 	useVisibleEffect,
 } from 'hybrid-navigation';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import RNTopBar from './RNTopBar';
 
 export default withNavigationItem({
-	titleItem: {
-		title: 'RN result',
-	},
-	topBarStyle: BarStyleLightContent,
+	statusBarStyle: BarStyleLightContent,
 })(Result);
 
 function Result({ navigator, sceneId }: NavigationProps) {
@@ -34,18 +32,6 @@ function Result({ navigator, sceneId }: NavigationProps) {
 		return () => console.info(`Page Result is invisible [${sceneId}]`);
 	});
 
-	useEffect(() => {
-		if (isRoot) {
-			Navigation.setLeftBarButtonItem(sceneId, {
-				title: 'Cancel',
-				icon: Image.resolveAssetSource(require('./images/cancel.png')),
-				action: navigator => {
-					navigator.dismiss();
-				},
-			});
-		}
-	}, [isRoot, sceneId]);
-
 	function popToRoot() {
 		navigator.popToRoot();
 	}
@@ -61,8 +47,8 @@ function Result({ navigator, sceneId }: NavigationProps) {
 		await navigator.dismiss();
 	}
 
-	function handleTextChanged(text: string) {
-		setText(text);
+	function handleTextChanged(value: string) {
+		setText(value);
 	}
 
 	async function present() {
@@ -82,11 +68,28 @@ function Result({ navigator, sceneId }: NavigationProps) {
 
 	return (
 		<View style={{ flex: 1 }}>
+			<RNTopBar
+				title="RN result"
+				navigator={navigator}
+				rightAction={
+					isRoot
+						? {
+								label: 'Cancel',
+								onPress: () => {
+									navigator.dismiss();
+								},
+							}
+						: undefined
+				}
+			/>
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
-				automaticallyAdjustContentInsets={true}
+				automaticallyAdjustContentInsets={false}
 				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
-				contentContainerStyle={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}
+				contentContainerStyle={[
+					styles.container,
+					{ paddingBottom: insets.bottom > 0 ? insets.bottom : 16 },
+				]}
 			>
 				<Text style={styles.welcome}>This's a React Native scene.</Text>
 
@@ -100,9 +103,7 @@ function Result({ navigator, sceneId }: NavigationProps) {
 					style={styles.button}
 					disabled={isRoot}
 				>
-					<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
-						pop to home
-					</Text>
+					<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop to home</Text>
 				</TouchableOpacity>
 
 				<TextInput
@@ -125,11 +126,7 @@ function Result({ navigator, sceneId }: NavigationProps) {
 					<Text style={styles.buttonText}>showModal</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity
-					onPress={printRouteGraph}
-					activeOpacity={0.2}
-					style={styles.button}
-				>
+				<TouchableOpacity onPress={printRouteGraph} activeOpacity={0.2} style={styles.button}>
 					<Text style={styles.buttonText}>printRouteGraph</Text>
 				</TouchableOpacity>
 			</ScrollView>

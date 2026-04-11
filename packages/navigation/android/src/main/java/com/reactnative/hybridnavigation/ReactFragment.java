@@ -1,20 +1,14 @@
 package com.reactnative.hybridnavigation;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 
 import com.facebook.common.logging.FLog;
 import com.facebook.react.ReactHost;
@@ -31,7 +25,6 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 	private HBDRootView reactRootView;
 
 	private ReactSurface reactSurface;
-	private ReactSurface reactTitleView;
 	private boolean firstRenderCompleted;
 
 	@Nullable
@@ -43,13 +36,6 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 			mountReactView();
 		}
 		return view;
-	}
-
-	@Override
-	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		// 这个时候 toolbar 才创建好
-		initReactTitleView();
 	}
 
 	@Override
@@ -69,10 +55,7 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 
 	@Override
 	protected boolean extendedLayoutIncludesToolbar() {
-		int color = mStyle.getToolbarBackgroundColor();
-		float alpha = mStyle.getToolbarAlpha();
-		Garden garden = getGarden();
-		return Color.alpha(color) < 255 || alpha < 1.0 || garden.toolbarHidden || garden.extendedLayoutIncludesTopBar;
+		return true;
 	}
 
 	@Override
@@ -175,12 +158,6 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 			reactRootView.clearSurface(canStopSurface);
 		}
 
-		if (reactTitleView != null) {
-			if (canStopSurface) {
-				reactTitleView.stop();
-			}
-			reactTitleView = null;
-		}
 	}
 
 	@Override
@@ -233,50 +210,12 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 		rootView.setSurface(reactSurface);
 	}
 
-	private void initReactTitleView() {
-		if (getToolbar() == null) {
-			return;
-		}
-
-		Bundle titleItem = getOptions().getBundle("titleItem");
-		if (titleItem == null) {
-			return;
-		}
-
-		String moduleName = titleItem.getString("moduleName");
-		if (moduleName == null) {
-			return;
-		}
-
-		if (!isReactModuleRegisterCompleted()) {
-			throw new IllegalStateException("[Navigation] React Component 还没有注册完毕。");
-		}
-
-		String fitting = titleItem.getString("layoutFitting");
-		boolean expanded = "expanded".equals(fitting);
-		ReactHost reactHost = getReactManager().getReactHost();
-		ReactSurface reactSurface = reactHost.createSurface(requireContext(), moduleName, getProps());
-		reactTitleView = reactSurface;
-		Toolbar.LayoutParams layoutParams = createTitleLayoutParams(expanded);
-		Toolbar toolbar = getToolbar();
-		toolbar.addView(reactSurface.getView(), layoutParams);
-		reactSurface.start();
-	}
-
 	@Override
 	public void setAppProperties(@NonNull Bundle props) {
 		super.setAppProperties(props);
 		if (isReactModuleRegisterCompleted() && reactRootView != null) {
 			reactRootView.setAppProperties(getProps());
 		}
-	}
-
-	@NonNull
-	private Toolbar.LayoutParams createTitleLayoutParams(boolean expanded) {
-		if (expanded) {
-			return new Toolbar.LayoutParams(MATCH_PARENT, MATCH_PARENT, Gravity.CENTER);
-		}
-		return new Toolbar.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER);
 	}
 
 	@Override

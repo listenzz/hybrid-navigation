@@ -18,7 +18,7 @@ import Navigation, { BarStyleDarkContent } from 'hybrid-navigation';
 import Home from './Home';
 
 // 设置全局样式
-Navigation.setDefaultOptions({ topBarStyle: BarStyleDarkContent });
+Navigation.setDefaultOptions({ statusBarStyle: BarStyleDarkContent });
 
 // 注册页面
 Navigation.startRegisterComponent();

@@ -136,7 +136,7 @@ public class HybridFragment extends AwesomeFragment {
 
     @Override
     protected boolean shouldHideBackButton() {
-        return garden.backButtonHidden;
+        return false;
     }
 
     @Override
@@ -191,10 +191,7 @@ public class HybridFragment extends AwesomeFragment {
 
     @Override
     protected AwesomeToolbar onCreateToolbar(View parent) {
-        if (garden.toolbarHidden) {
-            return null;
-        }
-        return super.onCreateToolbar(parent);
+        return null;
     }
 
     private Bundle options;

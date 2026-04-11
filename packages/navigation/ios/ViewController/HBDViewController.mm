@@ -3,7 +3,6 @@
 #import "HBDViewController+Garden.h"
 #import "HBDUtils.h"
 #import "GlobalStyle.h"
-#import "HBDBackBarButtonItem.h"
 #import "UIImage+WithBadge.h"
 
 #import <React/RCTLog.h>
@@ -252,76 +251,22 @@
 }
 
 - (void)applyNavigationBarOptions:(NSDictionary *)options {
-    NSString *topBarStyle = options[@"topBarStyle"];
-    if (topBarStyle) {
-        if ([topBarStyle isEqualToString:@"dark-content"]) {
+    NSString *statusBarStyle = options[@"statusBarStyle"];
+    if (statusBarStyle) {
+        if ([statusBarStyle isEqualToString:@"dark-content"]) {
             self.hbd_barStyle = UIBarStyleDefault;
         } else {
             self.hbd_barStyle = UIBarStyleBlack;
         }
     }
 
-    NSString *topBarTintColor = options[@"topBarTintColor"];
-    if (topBarTintColor) {
-        self.hbd_tintColor = [HBDUtils colorWithHexString:topBarTintColor];
-    }
-
-    NSMutableDictionary *titleAttributes = [@{} mutableCopy];
-    NSString *titleTextColor = options[@"titleTextColor"];
-    NSNumber *titleTextSize = options[@"titleTextSize"];
-    if (titleTextColor) {
-        titleAttributes[NSForegroundColorAttributeName] = [HBDUtils colorWithHexString:titleTextColor];
-    }
-    if (titleTextSize) {
-        titleAttributes[NSFontAttributeName] = [UIFont systemFontOfSize:[titleTextSize floatValue]];
-    }
-
-    if (titleAttributes.count > 0) {
-        if (self.hbd_titleTextAttributes) {
-            NSMutableDictionary *attributes = [self.hbd_titleTextAttributes mutableCopy];
-            [attributes addEntriesFromDictionary:titleAttributes];
-            self.hbd_titleTextAttributes = attributes;
-        } else {
-            self.hbd_titleTextAttributes = titleAttributes;
-        }
-    }
-
-    NSString *topBarColor = options[@"topBarColor"];
-    if (topBarColor) {
-        self.hbd_barTintColor = [HBDUtils colorWithHexString:topBarColor];
-    }
-
-    NSNumber *topBarAlpha = options[@"topBarAlpha"];
-    if (topBarAlpha) {
-        self.hbd_barAlpha = [topBarAlpha floatValue];
-    }
-
-    // 全局 topBarHidden 优先，一旦设置则局部开启无效
-    if ([GlobalStyle globalStyle].topBarHidden) {
-        self.hbd_barHidden = YES;
-    } else if (options[@"topBarHidden"] != nil) {
-        self.hbd_barHidden = [options[@"topBarHidden"] boolValue];
-    }
-
-    if ([GlobalStyle globalStyle].isBackTitleHidden) {
-        UIBarButtonItem *buttonItem = [[HBDBackBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:NULL];
-        self.navigationItem.backBarButtonItem = buttonItem;
-        self.navigationItem.backButtonDisplayMode = UINavigationItemBackButtonDisplayModeMinimal;
-    }
+    // Native TopBar has been removed and UINavigationBar stays hidden.
+    self.hbd_barHidden = YES;
+    self.extendedLayoutIncludesOpaqueBars = YES;
 
     NSNumber *swipeBackEnabled = options[@"swipeBackEnabled"];
     if (swipeBackEnabled) {
         self.hbd_swipeBackEnabled = [swipeBackEnabled boolValue];
-    }
-
-    NSNumber *extendedLayoutIncludesTopBar = options[@"extendedLayoutIncludesTopBar"];
-    if (extendedLayoutIncludesTopBar) {
-        self.extendedLayoutIncludesOpaqueBars = [extendedLayoutIncludesTopBar boolValue];
-    }
-
-    NSNumber *hideShadow = options[@"topBarShadowHidden"];
-    if (hideShadow) {
-        self.hbd_barShadowHidden = [hideShadow boolValue];
     }
 
     NSNumber *statusBarHidden = options[@"statusBarHidden"];
@@ -333,43 +278,6 @@
     if (backInteractive) {
         self.hbd_backInteractive = [backInteractive boolValue];
     }
-
-    NSNumber *backButtonHidden = options[@"backButtonHidden"];
-    if (backButtonHidden) {
-        if ([backButtonHidden boolValue]) {
-            [self.navigationItem setHidesBackButton:YES];
-        } else {
-            [self.navigationItem setHidesBackButton:NO];
-        }
-    }
-
-    NSDictionary *titleItem = options[@"titleItem"];
-    if (titleItem) {
-        NSString *moduleName = titleItem[@"moduleName"];
-        if (!moduleName) {
-            self.navigationItem.title = titleItem[@"title"];
-        }
-    }
-
-    id rightBarButtonItem = options[@"rightBarButtonItem"];
-    if (rightBarButtonItem) {
-        [self setRightBarButtonItem:RCTNilIfNull(rightBarButtonItem)];
-    }
-
-    id leftBarButtonItem = options[@"leftBarButtonItem"];
-    if (leftBarButtonItem) {
-        [self setLeftBarButtonItem:RCTNilIfNull(leftBarButtonItem)];
-    }
-
-    NSArray *rightBarButtonItems = options[@"rightBarButtonItems"];
-    if (rightBarButtonItems) {
-        [self setRightBarButtonItems:rightBarButtonItems];
-    }
-
-    NSArray *leftBarButtonItems = options[@"leftBarButtonItems"];
-    if (leftBarButtonItems) {
-        [self setLeftBarButtonItems:leftBarButtonItems];
-    }
 }
 
 - (void)updateNavigationBarOptions:(NSDictionary *)options {
@@ -377,26 +285,6 @@
     self.options = [HBDUtils mergeItem:options withTarget:previous];
 
     NSMutableDictionary *target = [options mutableCopy];
-
-    if (options[@"titleItem"]) {
-        target[@"titleItem"] = self.options[@"titleItem"];
-    }
-
-    if (options[@"leftBarButtonItem"]) {
-        target[@"leftBarButtonItem"] = self.options[@"leftBarButtonItem"];
-    }
-
-    if (options[@"rightBarButtonItem"]) {
-        target[@"rightBarButtonItem"] = self.options[@"rightBarButtonItem"];
-    }
-
-    if (options[@"leftBarButtonItems"]) {
-        target[@"leftBarButtonItems"] = self.options[@"leftBarButtonItems"];
-    }
-
-    if (options[@"rightBarButtonItems"]) {
-        target[@"rightBarButtonItems"] = self.options[@"rightBarButtonItems"];
-    }
 
     [self applyNavigationBarOptions:target];
 
@@ -420,7 +308,7 @@
 }
 
 - (BOOL)shouldUpdateNavigationBar:(NSDictionary *)options compareTo:(NSDictionary *)previous {
-    NSArray *keys = @[@"topBarStyle", @"topBarColor", @"topBarAlpha", @"tintColor", @"topBarShadowHidden"];
+    NSArray *keys = @[@"statusBarStyle"];
     for (NSString *opt in options.allKeys) {
         if ([keys containsObject:opt] && [NSString stringWithFormat:@"%@", previous[opt]] != [NSString stringWithFormat:@"%@", options[opt]]) {
             return YES;

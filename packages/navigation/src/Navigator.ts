@@ -24,11 +24,6 @@ Navigation.addGlobalVisibilityEventListener((sceneId: string, visibility: Visibi
 	}
 });
 
-Navigation.setBarButtonClickEventListener((sceneId, value) => {
-	const navigator = Navigator.of(sceneId);
-	value(navigator);
-});
-
 export interface Navigator {}
 
 export class Navigator implements Navigator {

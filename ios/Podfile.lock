@@ -3,7 +3,7 @@ PODS:
   - hermes-engine (250829098.0.7):
     - hermes-engine/Pre-built (= 250829098.0.7)
   - hermes-engine/Pre-built (250829098.0.7)
-  - HybridNavigation (3.1.4):
+  - HybridNavigation (3.1.5):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2185,7 +2185,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   FBLazyVector: c12d2108050e27952983d565a232f6f7b1ad5e69
   hermes-engine: 546254daea0cbbe4f891903dfb8221c13a83dde6
-  HybridNavigation: 42e3df0a38529646ed0cdc2dfbb687a3e99cce7c
+  HybridNavigation: 1d5b8ec4174e71b9ddb39544573989346ee78748
   RCTDeprecation: 3280799c14232a56e5a44f92981a8ee33bc69fd9
   RCTRequired: 9854a51b0f65ccf43ea0b744df4d70fce339db32
   RCTSwiftUI: 96986e49a4fdc2c2103929dee2641e1b57edf33d

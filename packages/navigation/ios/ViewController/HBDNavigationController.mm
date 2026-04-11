@@ -478,26 +478,7 @@
 
 // Fake bar: hide real bar (alpha=0) and add fromFakeBar/toFakeBar on each VC's view for smooth bar color change.
 - (BOOL)shouldShowFakeBarFrom:(UIViewController *)from to:(UIViewController *)to viewController:(UIViewController *_Nonnull)viewController {
-	if ([GlobalStyle globalStyle].topBarHidden) {
-		return NO;
-	}
-	
-	if ([GlobalStyle globalStyle].alwaysSplitNavigationBarTransition && to == viewController) {
-		return YES;
-	}
-	
-    if (to != viewController) {
-        return NO;
-    }
-	
-    if (![from.hbd_barTintColor.description isEqual:to.hbd_barTintColor.description]) {
-		RCTLogInfo(@"from:%@, to:%@",
-				   from.hbd_barTintColor.description,
-				   to.hbd_barTintColor.description);
-        return YES;
-    }
-
-	return from.hbd_barAlpha < 1.0 || to.hbd_barAlpha < 1.0;
+    return NO;
 }
 
 @end
@@ -565,6 +546,7 @@
     self.navigationDelegate = [[HBDNavigationControllerDelegate alloc] initWithNavigationController:self];
     self.navigationDelegate.proxyDelegate = self.delegate;
     self.delegate = self.navigationDelegate;
+    [self setNavigationBarHidden:YES animated:NO];
 }
 
 - (void)setDelegate:(id <UINavigationControllerDelegate>)delegate {
@@ -655,15 +637,7 @@
 }
 
 - (void)updateNavigationBarForViewController:(UIViewController *)vc {
-    // 仅全局 topBarHidden 时直接隐藏 UINavigationBar
-    if ([GlobalStyle globalStyle].topBarHidden) {
-        [self setNavigationBarHidden:YES animated:NO];
-        return;
-    }
-    [self updateNavigationBarStyleForViewController:vc];
-    [self updateNavigationBarAlphaForViewController:vc];
-    [self updateNavigationBarBackgroundForViewController:vc];
-    [self updateNavigationBarTintColorForViewController:vc];
+    [self setNavigationBarHidden:YES animated:NO];
 }
 
 - (void)updateNavigationBarStyleForViewController:(UIViewController *)vc {

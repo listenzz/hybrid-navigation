@@ -1,99 +1,57 @@
-/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { Text, View, TouchableOpacity, ScrollView, Alert, Image } from 'react-native';
-import { LayoutFittingExpanded, NavigationProps, NavigationItem } from 'hybrid-navigation';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, View, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { NavigationProps } from 'hybrid-navigation';
 import styles from './Styles';
+import RNTopBar from './RNTopBar';
 
-function CustomTitleView(props: NavigationProps) {
-	let { params } = props.navigator.state;
+function CustomTitleView({ onPress }: { onPress: () => void }) {
 	return (
 		<View
 			style={{
-				flex: 1,
 				flexDirection: 'row',
 				justifyContent: 'center',
 				alignItems: 'center',
 			}}
 		>
-			<Text style={{ fontSize: 17, fontWeight: 'bold' }}>--Custom Title--</Text>
-			<TouchableOpacity onPress={params.onFackbookButtonClick}>
-				<Image
-					style={{ width: 24, height: 24 }}
-					source={{
-						uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png',
-					}}
-				/>
+			<Text style={{ fontSize: 17, fontWeight: 'bold', marginRight: 12 }}>--Custom Title--</Text>
+			<TouchableOpacity onPress={onPress}>
+				<Text style={{ color: '#1F4FCC', fontSize: 16 }}>Click</Text>
 			</TouchableOpacity>
 		</View>
 	);
 }
 
-export { CustomTitleView };
-
-class TopBarTitleView extends React.Component<NavigationProps> {
-	static navigationItem: NavigationItem = {
-		backButtonHidden: true,
-		titleItem: {
-			// registered component name
-			moduleName: 'CustomTitleView',
-			// `LayoutFittingExpanded` or `LayoutFittingCompressed`, default is `LayoutFittingExpanded`
-			layoutFitting: LayoutFittingExpanded,
-		},
-	};
-
-	constructor(props: NavigationProps) {
-		super(props);
-		this.topBarTitleView = this.topBarTitleView.bind(this);
-		this.props.navigator.setParams({
-			onFackbookButtonClick: this.onFackbookButtonClick.bind(this),
+export default function TopBarTitleView({ navigator }: NavigationProps) {
+	function onTitleActionPress() {
+		Alert.alert('Hello!', 'React title action is clicked.', [{ text: 'OK' }], {
+			cancelable: false,
 		});
 	}
 
-	componentDidAppear() {
-		console.info('TopBarTitleView#componentDidAppear');
+	function topBarTitleView() {
+		navigator.push('TopBarTitleView');
 	}
 
-	componentDidDisappear() {
-		console.info('TopBarTitleView#componentDidDisAppear');
-	}
-
-	onFackbookButtonClick() {
-		Alert.alert(
-			'Hello!',
-			'React button is clicked.',
-			[{ text: 'OK', onPress: () => console.log('OK Pressed') }],
-			{
-				cancelable: false,
-			},
-		);
-	}
-
-	topBarTitleView() {
-		this.props.navigator.push('TopBarTitleView');
-	}
-
-	render() {
-		return (
+	return (
+		<View style={{ flex: 1 }}>
+			<RNTopBar
+				title=""
+				navigator={navigator}
+				titleNode={<CustomTitleView onPress={onTitleActionPress} />}
+			/>
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
-				automaticallyAdjustContentInsets={true}
+				automaticallyAdjustContentInsets={false}
 				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
 			>
-				<SafeAreaView edges={['top']} style={styles.container}>
-					<Text style={styles.welcome}> Custom title bar </Text>
+				<View style={styles.container}>
+					<Text style={styles.welcome}>Custom title bar</Text>
 
-					<TouchableOpacity
-						onPress={this.topBarTitleView}
-						activeOpacity={0.2}
-						style={styles.button}
-					>
-						<Text style={styles.buttonText}>TopBarTitleView</Text>
+					<TouchableOpacity onPress={topBarTitleView} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>push TopBarTitleView</Text>
 					</TouchableOpacity>
-				</SafeAreaView>
+				</View>
 			</ScrollView>
-		);
-	}
+		</View>
+	);
 }
-
-export default TopBarTitleView;

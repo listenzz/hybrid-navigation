@@ -9,11 +9,6 @@ export type ComponentDisappearEvent = {
 	sceneId: string;
 };
 
-export type BarButtonItemClickEvent = {
-	sceneId: string;
-	action: string;
-};
-
 export type ResultEvent = {
 	sceneId: string;
 	requestCode: number;
@@ -32,7 +27,6 @@ export interface Spec extends TurboModule {
 	readonly willSetRoot: CodegenTypes.EventEmitter<void>;
 	readonly didSetRoot: CodegenTypes.EventEmitter<void>;
 	readonly onSwitchTab: CodegenTypes.EventEmitter<SwitchTabEvent>;
-	readonly onBarButtonItemClick: CodegenTypes.EventEmitter<BarButtonItemClickEvent>;
 	readonly onComponentAppear: CodegenTypes.EventEmitter<ComponentAppearEvent>;
 	readonly onComponentDisappear: CodegenTypes.EventEmitter<ComponentDisappearEvent>;
 }
