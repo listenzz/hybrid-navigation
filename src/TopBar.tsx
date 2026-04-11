@@ -36,10 +36,9 @@ interface Props {
 
 const SIDE_WIDTH = 88;
 const BACK_ICON = require('./images/icon_back.png');
-const DEFAULT_TINT_COLOR = '#FF5722';
 let cachedTopInset = initialWindowMetrics?.insets.top ?? 0;
 
-export default function RNTopBar({
+export default function TopBar({
 	title,
 	navigator,
 	titleNode,
@@ -49,7 +48,7 @@ export default function RNTopBar({
 	backgroundColor = '#FFFFFF',
 	alpha = 1,
 	shadowHidden = false,
-	tintColor = DEFAULT_TINT_COLOR,
+	tintColor,
 	titleColor = '#111111',
 }: Props) {
 	const insets = useSafeAreaInsets();
@@ -96,6 +95,8 @@ export default function RNTopBar({
 		return leftAction;
 	}, [isRoot, leftAction, navigator, showBackWhenPossible]);
 
+	const resolvedTintColor = tintColor ?? titleColor;
+
 	return (
 		<View
 			style={[
@@ -104,7 +105,7 @@ export default function RNTopBar({
 			]}
 		>
 			<View style={styles.row}>
-				<Side action={resolvedLeftAction} tintColor={tintColor} />
+				<Side action={resolvedLeftAction} tintColor={resolvedTintColor} />
 				<View style={styles.titleContainer}>
 					{titleNode ? (
 						titleNode
@@ -114,7 +115,7 @@ export default function RNTopBar({
 						</Text>
 					)}
 				</View>
-				<Side action={rightAction} tintColor={tintColor} alignRight />
+				<Side action={rightAction} tintColor={resolvedTintColor} alignRight />
 			</View>
 			{shadowHidden ? null : <View style={styles.shadow} />}
 		</View>

@@ -12,13 +12,7 @@ import Options from './Options';
 import Menu from './Menu';
 import PassOptions from './PassOptions';
 
-import TopBarMisc from './TopBarMisc';
 import Noninteractive from './Noninteractive';
-import TopBarShadowHidden from './TopBarShadowHidden';
-import TopBarHidden from './TopBarHidden';
-import TopBarColor from './TopBarColor';
-import TopBarAlpha from './TopBarAlpha';
-import TopBarTitleView from './TopBarTitleView';
 import TopBarStyle from './TopBarStyle';
 import ReactModal from './ReactModal';
 import StatusBarHidden from './StatusBarHidden';
@@ -68,19 +62,11 @@ Navigation.registerComponent('Options', () => Options, { path: '/options' });
 Navigation.registerComponent('Menu', () => Menu, { path: '/menu' });
 Navigation.registerComponent('PassOptions', () => PassOptions);
 
-Navigation.registerComponent('TopBarMisc', () => TopBarMisc, {
-	dependency: 'Options',
-});
 Navigation.registerComponent('Noninteractive', () => Noninteractive);
-Navigation.registerComponent('TopBarShadowHidden', () => TopBarShadowHidden);
-Navigation.registerComponent('TopBarHidden', () => TopBarHidden);
-Navigation.registerComponent('TopBarAlpha', () => TopBarAlpha);
-Navigation.registerComponent('TopBarColor', () => TopBarColor);
-Navigation.registerComponent('TopBarTitleView', () => TopBarTitleView);
 Navigation.registerComponent('StatusBarHidden', () => StatusBarHidden);
 Navigation.registerComponent('TopBarStyle', () => TopBarStyle, {
 	path: '/topBarStyle/:who',
-	dependency: 'TopBarMisc',
+	dependency: 'Options',
 });
 
 Navigation.registerComponent('ReactModal', () => ReactModal, {

@@ -3,12 +3,12 @@ import { Text, View, ScrollView } from 'react-native';
 import { NavigationProps } from 'hybrid-navigation';
 
 import styles from './Styles';
-import RNTopBar from './RNTopBar';
+import TopBar from './TopBar';
 
 export default function PassOptions({ navigator }: NavigationProps) {
 	return (
 		<View style={{ flex: 1 }}>
-			<RNTopBar title="Pass Options" navigator={navigator} />
+			<TopBar title="Pass Options" navigator={navigator} />
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
 				automaticallyAdjustContentInsets={false}

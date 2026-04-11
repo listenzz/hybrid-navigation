@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
 import Navigation, { withNavigationItem, NavigationProps } from 'hybrid-navigation';
 import styles from './Styles';
-import RNTopBar from './RNTopBar';
+import TopBar from './TopBar';
 
 export default withNavigationItem({
 	backInteractive: false,
@@ -56,7 +56,11 @@ function Noninteractive({ navigator, sceneId }: NavigationProps) {
 
 	return (
 		<View style={{ flex: 1 }}>
-			<RNTopBar title="Noninteractive" navigator={navigator} />
+			<TopBar
+				title="Noninteractive"
+				navigator={navigator}
+				showBackWhenPossible={backInteractive}
+			/>
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
 				automaticallyAdjustContentInsets={false}

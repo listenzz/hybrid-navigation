@@ -11,7 +11,7 @@ import Navigation, {
 	RESULT_BLOCK,
 } from 'hybrid-navigation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import RNTopBar from './RNTopBar';
+import TopBar from './TopBar';
 
 export default withNavigationItem({
 	tabItem: {
@@ -165,7 +165,7 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 
 	return (
 		<View style={{ flex: 1 }}>
-			<RNTopBar title="RN navigation" navigator={navigator} />
+			<TopBar title="RN navigation" navigator={navigator} />
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
 				automaticallyAdjustContentInsets={false}

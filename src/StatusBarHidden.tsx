@@ -1,8 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
 import Navigation, { withNavigationItem, NavigationProps } from 'hybrid-navigation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './Styles';
-import RNTopBar from './RNTopBar';
 
 export default withNavigationItem({
 	statusBarHidden: true,
@@ -22,8 +22,7 @@ function StatusBarHidden({ navigator, sceneId }: NavigationProps) {
 	}
 
 	return (
-		<View style={{ flex: 1 }}>
-			<RNTopBar title="StatusBar Hidden" navigator={navigator} />
+		<SafeAreaView style={{ flex: 1 }} edges={['top', 'bottom']}>
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
 				automaticallyAdjustContentInsets={false}
@@ -44,6 +43,6 @@ function StatusBarHidden({ navigator, sceneId }: NavigationProps) {
 					</TouchableOpacity>
 				</View>
 			</ScrollView>
-		</View>
+		</SafeAreaView>
 	);
 }

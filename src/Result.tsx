@@ -10,7 +10,7 @@ import Navigation, {
 	useVisibleEffect,
 } from 'hybrid-navigation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import RNTopBar from './RNTopBar';
+import TopBar from './TopBar';
 
 export default withNavigationItem({
 	statusBarStyle: BarStyleLightContent,
@@ -68,7 +68,7 @@ function Result({ navigator, sceneId }: NavigationProps) {
 
 	return (
 		<View style={{ flex: 1 }}>
-			<RNTopBar
+			<TopBar
 				title="RN result"
 				navigator={navigator}
 				rightAction={

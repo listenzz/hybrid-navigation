@@ -10,7 +10,7 @@ import Navigation, {
 } from 'hybrid-navigation';
 
 import styles from './Styles';
-import RNTopBar from './RNTopBar';
+import TopBar from './TopBar';
 
 export default withNavigationItem({
 	tabItem: {
@@ -33,22 +33,6 @@ function Options({ sceneId, navigator }: NavigationProps) {
 			console.info('Page Options unmounted');
 		};
 	}, []);
-
-	const [showsLeftAction, setShowsLeftAction] = useState(true);
-	const [rightActionEnabled, setRightActionEnabled] = useState(false);
-	const [title, setTitle] = useState('Options');
-
-	function toggleLeftAction() {
-		setShowsLeftAction(!showsLeftAction);
-	}
-
-	function changeRightAction() {
-		setRightActionEnabled(!rightActionEnabled);
-	}
-
-	function changeTitle() {
-		setTitle(title === 'Options' ? '配置' : 'Options');
-	}
 
 	function passOptions() {
 		navigator.push('PassOptions');
@@ -80,8 +64,20 @@ function Options({ sceneId, navigator }: NavigationProps) {
 		}
 	}, [badges, sceneId]);
 
-	function topBarMisc() {
-		navigator.push('TopBarMisc');
+	function statusBarStyle() {
+		navigator.push('TopBarStyle');
+	}
+
+	function statusBarHidden() {
+		navigator.push('StatusBarHidden');
+	}
+
+	function backInteractive() {
+		navigator.push('Noninteractive');
+	}
+
+	function landscape() {
+		navigator.push('Landscape');
 	}
 
 	const [icon, setIcon] = useState<ImageSource>();
@@ -155,27 +151,16 @@ function Options({ sceneId, navigator }: NavigationProps) {
 
 	return (
 		<View style={{ flex: 1 }}>
-			<RNTopBar
-				title={title}
+			<TopBar
+				title="Options"
 				navigator={navigator}
-				leftAction={
-					showsLeftAction
-						? {
-								label: 'Menu',
-								accessibilityLabel: 'Menu',
-								icon: require('./images/menu.png'),
-								onPress: () => {
-									navigator.toggleMenu();
-								},
-							}
-						: undefined
-				}
-				rightAction={{
-					label: 'TopBar demos',
-					accessibilityLabel: 'TopBar demos',
-					icon: require('./images/settings.png'),
-					onPress: topBarMisc,
-					disabled: !rightActionEnabled,
+				leftAction={{
+					label: 'Menu',
+					accessibilityLabel: 'Menu',
+					icon: require('./images/menu.png'),
+					onPress: () => {
+						navigator.toggleMenu();
+					},
 				}}
 			/>
 			<ScrollView
@@ -186,38 +171,28 @@ function Options({ sceneId, navigator }: NavigationProps) {
 				<View style={styles.container}>
 					<Text style={styles.welcome}>This's a React Native scene.</Text>
 
-					<TouchableOpacity onPress={topBarMisc} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>topBar demos</Text>
-					</TouchableOpacity>
-
 					<TouchableOpacity onPress={passOptions} activeOpacity={0.2} style={styles.button}>
 						<Text style={styles.buttonText}>pass options to another scene</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity
-						onPress={toggleLeftAction}
-						activeOpacity={0.2}
-						style={styles.button}
-					>
-						<Text style={styles.buttonText}>
-							{showsLeftAction ? 'hide left action' : 'show left action'}
-						</Text>
+					<TouchableOpacity onPress={statusBarStyle} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>StatusBar Style</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity
-						onPress={changeRightAction}
+						onPress={statusBarHidden}
 						activeOpacity={0.2}
 						style={styles.button}
 					>
-						<Text style={styles.buttonText}>
-							{rightActionEnabled ? 'disable right action' : 'enable right action'}
-						</Text>
+						<Text style={styles.buttonText}>StatusBar Hidden</Text>
 					</TouchableOpacity>
 
-					<TouchableOpacity onPress={changeTitle} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>{`change title to '${
-							title === 'Options' ? '配置' : 'Options'
-						}'`}</Text>
+					<TouchableOpacity onPress={backInteractive} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>Back Interactive</Text>
+					</TouchableOpacity>
+
+					<TouchableOpacity onPress={landscape} activeOpacity={0.2} style={styles.button}>
+						<Text style={styles.buttonText}>Landscape</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>

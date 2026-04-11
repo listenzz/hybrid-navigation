@@ -8,7 +8,7 @@ import Navigation, {
 	NavigationProps,
 } from 'hybrid-navigation';
 import styles from './Styles';
-import RNTopBar from './RNTopBar';
+import TopBar from './TopBar';
 
 export default withNavigationItem({
 	statusBarStyle: BarStyleLightContent,
@@ -49,7 +49,7 @@ function TopBarStyle({ navigator, sceneId }: NavigationProps) {
 
 	return (
 		<View style={{ flex: 1 }}>
-			<RNTopBar
+			<TopBar
 				title="StatusBar Style"
 				navigator={navigator}
 				backgroundColor={darkContent ? '#FFFFFF' : '#1F2D4A'}
