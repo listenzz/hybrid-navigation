@@ -14,6 +14,8 @@
 
 - (void)setAppProperties:(NSDictionary *)props;
 
+- (void)adjustScreenOrientation;
+
 - (void)updateNavigationBarOptions:(NSDictionary *)options;
 
 - (void)updateTabBarItem:(NSDictionary *)options;

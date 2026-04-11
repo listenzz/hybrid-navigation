@@ -133,6 +133,7 @@ public class ReactTabBarFragment extends TabBarFragment {
 			sendSwitchTabEvent(index);
 			// restore tab bar selected index
 			setTabBarSelectedIndex(getSelectedIndex());
+			completion.run();
 		} else {
 			super.setSelectedIndex(index, completion);
 			intercepted = true;

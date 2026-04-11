@@ -2,6 +2,7 @@
 
 #import "HBDReactBridgeManager.h"
 #import "HBDNavigationController.h"
+#import "HBDViewController.h"
 #import "UIViewController+HBD.h"
 
 #import <React/RCTLog.h>
@@ -21,7 +22,7 @@
     if (!model) {
         return nil;
     }
-   
+
     NSString *moduleName = model[@"moduleName"];
     NSDictionary *props = model[@"props"];
     NSDictionary *options = model[@"options"];
@@ -54,27 +55,27 @@
         [self handlePresentWithViewController:vc extras:extras callback:callback];
         return;
     }
-    
+
     if ([action isEqualToString:@"dismiss"]) {
         [self handleDismissWithViewController:vc callback:callback];
         return;
     }
-    
+
     if ([action isEqualToString:@"showModal"]) {
         [self handleShowModalWithViewController:vc extras:extras callback:callback];
         return;
     }
-    
+
     if ([action isEqualToString:@"hideModal"]) {
         [self handleDismissWithViewController:vc callback:callback];
         return;
     }
-    
+
     if ([action isEqualToString:@"presentLayout"]) {
         [self handlePresentLayoutWithViewController:vc extras:extras callback:callback];
         return;
     }
-    
+
     if ([action isEqualToString:@"showModalLayout"]) {
         [self handleShowModalLayoutWithViewController:vc extras:extras callback:callback];
         return;
@@ -86,7 +87,7 @@
         callback(@[NSNull.null, @NO]);
         return;
     }
-    
+
     UIViewController *vc = [self viewControllerWithExtras:extras];
     NSInteger requestCode = [extras[@"requestCode"] integerValue];
     HBDNavigationController *nav = [[HBDNavigationController alloc] initWithRootViewController:vc];
@@ -106,8 +107,17 @@
 		HBDViewController *hbdvc = (HBDViewController *)vc;
 		animated = hbdvc.animatedTransition;
 	}
-	
+
+	BOOL isOverFullScreen = vc.modalPresentationStyle == UIModalPresentationOverFullScreen;
+	UIViewController *presenting = vc.presentingViewController;
+
     [vc dismissViewControllerAnimated:animated completion:^{
+		if (isOverFullScreen && presenting != nil) {
+			HBDViewController *hbdvc = [[HBDReactBridgeManager get] primaryViewControllerWithViewController:presenting];
+			if (hbdvc != nil) {
+				[hbdvc adjustScreenOrientation];
+			}
+		}
         callback(@[NSNull.null, @YES]);
     }];
 }
@@ -117,19 +127,19 @@
         callback(@[NSNull.null, @NO]);
         return;
     }
-    
+
     UIViewController *vc = [self viewControllerWithExtras:extras];
     NSInteger requestCode = [extras[@"requestCode"] integerValue];
     vc.modalPresentationStyle = UIModalPresentationOverFullScreen;
     vc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [vc setRequestCode:requestCode];
-	
+
 	BOOL animated = YES;
 	if ([vc isKindOfClass:[HBDViewController class]]) {
 		HBDViewController *hbdvc = (HBDViewController *)vc;
 		animated = hbdvc.animatedTransition;
 	}
-	
+
     [presenting presentViewController:vc animated:animated completion:^{
         callback(@[NSNull.null, @YES]);
     }];
@@ -173,7 +183,7 @@
 }
 
 - (void)invalidate {
-    // 
+    //
 }
 
 @end
