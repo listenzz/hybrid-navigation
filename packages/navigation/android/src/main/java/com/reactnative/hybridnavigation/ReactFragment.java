@@ -157,11 +157,6 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 
 	@Override
 	protected boolean onBackPressed() {
-		ReactHost reactHost = getReactManager().getReactHost();
-		if (getShowsDialog()) {
-			reactHost.onBackPressed();
-			return true;
-		}
 		return super.onBackPressed();
 	}
 

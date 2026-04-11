@@ -210,34 +210,6 @@ public class FragmentHelper {
         return null;
     }
 
-    @Nullable
-    public static AwesomeFragment getAwesomeDialogFragment(@NonNull FragmentManager fragmentManager) {
-        if (fragmentManager.isDestroyed()) {
-            return null;
-        }
-
-        List<Fragment> fragments = fragmentManager.getFragments();
-        int count = fragments.size();
-
-        for (int i = count - 1; i > -1; i--) {
-            Fragment fragment = fragments.get(i);
-            if (!fragment.isAdded()) {
-                continue;
-            }
-
-            if (fragment instanceof AwesomeFragment && ((AwesomeFragment) fragment).getShowsDialog()) {
-                return (AwesomeFragment) fragment;
-            }
-
-            AwesomeFragment child = getAwesomeDialogFragment(fragment.getChildFragmentManager());
-            if (child != null) {
-                return child;
-            }
-        }
-
-        return null;
-    }
-
     public static void handlePresentFragment(@NonNull FragmentManager fragmentManager, int containerId, @NonNull AwesomeFragment fragment, @NonNull TransitionAnimation animation) {
         if (fragmentManager.isDestroyed()) {
             return;

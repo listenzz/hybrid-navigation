@@ -73,7 +73,7 @@ interface NavigationOption {
 ```ts
 interface NavigationItem extends NavigationOption {
   passThroughTouches?: boolean;
-  forceTransparentDialogWindow?: boolean;
+  forceTransparentDialogWindow?: boolean; // 历史兼容字段：控制 modal 覆盖层背景是否透明
   animatedTransition?: boolean;
   forceScreenLandscape?: boolean;
   swipeBackEnabled?: boolean;

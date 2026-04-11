@@ -3,10 +3,8 @@ package com.navigation.androidx;
 import com.reactnative.hybridnavigation.R;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -33,7 +31,6 @@ import androidx.fragment.app.InternalFragment;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public abstract class AwesomeFragment extends InternalFragment {
@@ -41,7 +38,6 @@ public abstract class AwesomeFragment extends InternalFragment {
     public static final String TAG = "Navigation";
 
     static final String ARGS_REQUEST_CODE = "nav_request_code";
-    static final String ARGS_SHOW_AS_DIALOG = "show_as_dialog";
 
     private static final String SAVED_TAB_BAR_ITEM = "nav_tab_bar_item";
     private static final String SAVED_SCENE_ID = "nav_scene_id";
@@ -50,7 +46,6 @@ public abstract class AwesomeFragment extends InternalFragment {
     private PresentableActivity mPresentableActivity;
     private final LifecycleDelegate mLifecycleDelegate = new LifecycleDelegate(this);
     private final PresentationDelegate mPresentationDelegate = new PresentationDelegate(this);
-    private final DialogDelegate mDialogDelegate = new DialogDelegate(this);
     private final StackDelegate mStackDelegate = new StackDelegate(this);
 
     protected Style mStyle;
@@ -87,7 +82,6 @@ public abstract class AwesomeFragment extends InternalFragment {
         }
 
         mPresentationDelegate.onCreate(savedInstanceState);
-        mDialogDelegate.onCreate();
 
         setResult(0, null);
     }
@@ -105,16 +99,7 @@ public abstract class AwesomeFragment extends InternalFragment {
     @NonNull
     public LayoutInflater onGetLayoutInflater(@Nullable Bundle savedInstanceState) {
         inflateStyle();
-
-        if (getShowsDialog()) {
-            setStyle(STYLE_NORMAL, R.style.Theme_Nav_FullScreenDialog);
-        }
-
         LayoutInflater layoutInflater = super.onGetLayoutInflater(savedInstanceState);
-        if (getShowsDialog()) {
-            return mDialogDelegate.onGetLayoutInflater(layoutInflater, savedInstanceState);
-        }
-
         if (mStackDelegate.hasStackParent()) {
             return mStackDelegate.onGetLayoutInflater(layoutInflater, savedInstanceState);
         }
@@ -147,10 +132,6 @@ public abstract class AwesomeFragment extends InternalFragment {
     @Override
     protected void performCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.performCreateView(inflater, container, savedInstanceState);
-        if (getShowsDialog()) {
-            mDialogDelegate.setupDialog();
-        }
-
         if (isLeafAwesomeFragment()) {
             setBackgroundDrawable();
         }
@@ -240,45 +221,12 @@ public abstract class AwesomeFragment extends InternalFragment {
     }
 
     private void setBackgroundDrawable() {
-        if (getShowsDialog()) {
-            setBackgroundForDialogWindow();
-            return;
-        }
         requireView().setBackground(new ColorDrawable(mStyle.getScreenBackgroundColor()));
-    }
-
-    private void setBackgroundForDialogWindow() {
-        int color = mStyle.getScreenBackgroundColor();
-        if (AppUtils.isTranslucent(color)) {
-            Window window = getWindow();
-            window.setDimAmount(0);
-            window.setBackgroundDrawable(new ColorDrawable(color));
-        }
     }
 
     @NonNull
     public Window getWindow() {
-        AwesomeFragment fragment = getDialogAwesomeFragment();
-        if (fragment != null) {
-            Dialog dialog = fragment.requireDialog();
-            return Objects.requireNonNull(dialog.getWindow());
-        }
-
         return requireActivity().getWindow();
-    }
-
-    @Nullable
-    public AwesomeFragment getDialogAwesomeFragment() {
-        if (getShowsDialog()) {
-            return this;
-        }
-
-        AwesomeFragment parent = getParentAwesomeFragment();
-        if (parent != null) {
-            return parent.getDialogAwesomeFragment();
-        }
-
-        return null;
     }
 
     @NonNull
@@ -291,10 +239,6 @@ public abstract class AwesomeFragment extends InternalFragment {
 
     @Nullable
     public AwesomeFragment getParentAwesomeFragment() {
-        if (getShowsDialog()) {
-            return null;
-        }
-
         Fragment fragment = getParentFragment();
         if (fragment instanceof AwesomeFragment) {
             return (AwesomeFragment) fragment;
@@ -468,11 +412,6 @@ public abstract class AwesomeFragment extends InternalFragment {
     }
 
     protected boolean onBackPressed() {
-        if (getShowsDialog() && isCancelable()) {
-            hideAsDialog();
-            return true;
-        }
-
         View root = getView();
         if (root != null && SystemUI.isImeVisible(root)) {
             SystemUI.hideIme(getWindow());
@@ -606,64 +545,6 @@ public abstract class AwesomeFragment extends InternalFragment {
         return mPresentationStyle;
     }
 
-    // ------ dialog -----
-
-    /**
-     * @deprecated call {@link #showAsDialog(AwesomeFragment, int)} instead of this method.
-     */
-    @Deprecated
-    @Override
-    public void show(@NonNull FragmentManager manager, String tag) {
-        super.show(manager, tag);
-    }
-
-    /**
-     * @deprecated call {@link #showAsDialog(AwesomeFragment, int)} instead of this method.
-     */
-    @Deprecated
-    @Override
-    public int show(@NonNull FragmentTransaction transaction, String tag) {
-        return super.show(transaction, tag);
-    }
-
-    /**
-     * @deprecated call {@link #hideAsDialog()} instead of this method.
-     */
-    @Deprecated
-    @Override
-    public void dismiss() {
-        super.dismiss();
-    }
-
-    public void showAsDialog(@NonNull AwesomeFragment dialog, int requestCode) {
-        showAsDialog(dialog, requestCode, () -> {
-        });
-    }
-
-    public void showAsDialog(@NonNull AwesomeFragment dialog, int requestCode, @NonNull Runnable completion) {
-        scheduleTaskAtStarted(() -> {
-            mDialogDelegate.showAsDialog(dialog, requestCode, completion);
-        });
-    }
-
-    /**
-     * Dismiss the fragment as dialog.
-     */
-    public void hideAsDialog() {
-        hideAsDialog(() -> {
-        });
-    }
-
-    public void hideAsDialog(@NonNull Runnable completion) {
-        scheduleTaskAtStarted(() -> mDialogDelegate.hideAsDialog(completion));
-    }
-
-    @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
-        mDialogDelegate.onDismiss();
-    }
-
     // ------- statusBar --------
 
     @Nullable
@@ -678,10 +559,6 @@ public abstract class AwesomeFragment extends InternalFragment {
             return child.preferredStatusBarStyle();
         }
 
-        if (getShowsDialog()) {
-            return BarStyle.LightContent;
-        }
-
         return mStyle.getStatusBarStyle();
     }
 
@@ -689,10 +566,6 @@ public abstract class AwesomeFragment extends InternalFragment {
         AwesomeFragment child = childFragmentForAppearance();
         if (child != null) {
             return child.preferredStatusBarHidden();
-        }
-
-        if (getShowsDialog()) {
-            return SystemUI.isStatusBarHidden(requireActivity().getWindow());
         }
 
         return mStyle.isStatusBarHidden();
@@ -733,10 +606,6 @@ public abstract class AwesomeFragment extends InternalFragment {
             return Color.TRANSPARENT;
         }
 
-        if (getShowsDialog()) {
-            return mDialogDelegate.preferredNavigationBarColor();
-        }
-
         if (mStyle.getNavigationBarColor() != Style.INVALID_COLOR) {
             return mStyle.getNavigationBarColor();
         }
@@ -751,10 +620,6 @@ public abstract class AwesomeFragment extends InternalFragment {
             return child.preferredNavigationBarStyle();
         }
 
-        if (getShowsDialog()) {
-            return mDialogDelegate.preferredNavigationBarStyle();
-        }
-
         if (AppUtils.isDark(preferredNavigationBarColor()) && AppUtils.isOpaque(preferredNavigationBarColor())) {
             return BarStyle.LightContent;
         }
@@ -766,10 +631,6 @@ public abstract class AwesomeFragment extends InternalFragment {
         AwesomeFragment child = childFragmentForAppearance();
         if (child != null) {
             return child.preferredNavigationBarHidden();
-        }
-
-        if (getShowsDialog()) {
-            return SystemUI.isNavigationBarHidden(requireActivity().getWindow());
         }
 
         return mStyle.isNavigationBarHidden();

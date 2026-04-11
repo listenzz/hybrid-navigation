@@ -280,11 +280,6 @@ public class ReactManager {
 
 	@Nullable
 	public HybridFragment primaryFragment(@NonNull FragmentManager fragmentManager) {
-		AwesomeFragment dialog = FragmentHelper.getAwesomeDialogFragment(fragmentManager);
-		if (dialog != null) {
-			return primaryFragment(dialog);
-		}
-
 		Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
 		if (fragment instanceof AwesomeFragment) {
 			return primaryFragment((AwesomeFragment) fragment);

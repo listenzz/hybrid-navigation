@@ -184,6 +184,7 @@ public class HybridFragment extends AwesomeFragment {
     }
 
     protected boolean forceTransparentDialogWindow() {
+        // Keep compatibility with existing JS option name; applies to modal overlay background.
         return garden.forceTransparentDialogWindow;
     }
 

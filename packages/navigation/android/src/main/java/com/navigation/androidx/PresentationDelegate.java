@@ -86,10 +86,6 @@ public class PresentationDelegate {
     }
 
     public void dismissFragment(@NonNull Runnable completion, @NonNull TransitionAnimation animation) {
-        if (mFragment.getDialogAwesomeFragment() != null) {
-            throw new IllegalStateException("在 dialog 中， 不能执行此操作, 如需隐藏 dialog , 请调用 `hideAsDialog`");
-        }
-
         AwesomeFragment parent = mFragment.getParentAwesomeFragment();
         if (parent != null) {
             if (definesPresentationContext() && mFragment.getPresentationStyle() == PresentationStyle.CurrentContext) {

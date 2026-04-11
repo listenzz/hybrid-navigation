@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
-public class InternalFragment extends DialogFragment {
+public class InternalFragment extends Fragment {
 
     public int getContainerId() {
         return mContainerId;

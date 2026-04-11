@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
@@ -203,48 +202,6 @@ public abstract class AwesomeActivity extends AppCompatActivity implements Prese
     @Override
     public AwesomeFragment getPresentingFragment(@NonNull AwesomeFragment fragment) {
         return FragmentHelper.getFragmentBefore(fragment);
-    }
-
-    public void showAsDialog(@NonNull AwesomeFragment dialog, int requestCode) {
-        showAsDialog(dialog, requestCode, () -> {
-        });
-    }
-
-    public void showAsDialog(@NonNull AwesomeFragment dialog, int requestCode, @NonNull Runnable completion) {
-        scheduleTaskAtStarted(() -> showAsDialogSync(dialog, requestCode, completion));
-    }
-
-    private void showAsDialogSync(AwesomeFragment dialog, int requestCode, @NonNull Runnable completion) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        Fragment fragment = fragmentManager.findFragmentById(android.R.id.content);
-        if (fragment != null && fragment.isAdded()) {
-            dialog.setTargetFragment(fragment, requestCode);
-        }
-
-        Bundle args = FragmentHelper.getArguments(dialog);
-        args.putBoolean(AwesomeFragment.ARGS_SHOW_AS_DIALOG, true);
-        dialog.setArguments(args);
-        fragmentManager
-                .beginTransaction()
-                .add(dialog, dialog.getSceneId())
-                .commit();
-
-        completion.run();
-    }
-
-    public void hideAsDialog(@NonNull AwesomeFragment dialog) {
-        dialog.hideAsDialog(() -> {
-        });
-    }
-
-    public void hideAsDialog(@NonNull AwesomeFragment dialog, @NonNull Runnable completion) {
-        dialog.hideAsDialog(completion);
-    }
-
-    @Nullable
-    public AwesomeFragment getDialogFragment() {
-        return FragmentHelper.getAwesomeDialogFragment(getSupportFragmentManager());
     }
 
     public void scheduleTaskAtStarted(Runnable runnable) {
