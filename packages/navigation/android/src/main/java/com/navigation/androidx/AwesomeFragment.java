@@ -2,8 +2,6 @@ package com.navigation.androidx;
 
 import com.reactnative.hybridnavigation.R;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ContentResolver;
@@ -20,13 +18,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -155,10 +151,6 @@ public abstract class AwesomeFragment extends InternalFragment {
             mDialogDelegate.setupDialog();
         }
 
-        if (mStackDelegate.hasStackParent()) {
-            mStackDelegate.createToolbar();
-        }
-
         if (isLeafAwesomeFragment()) {
             setBackgroundDrawable();
         }
@@ -173,7 +165,6 @@ public abstract class AwesomeFragment extends InternalFragment {
         }
 
         ViewUtils.applyWindowInsets(getWindow(), rootView, (v) -> {
-            mStackDelegate.applyEdgeToEdge();
             applyEdgeToEdge();
         });
     }
@@ -855,74 +846,6 @@ public abstract class AwesomeFragment extends InternalFragment {
 
     protected boolean hideTabBarWhenPushed() {
         return true;
-    }
-
-    public AwesomeToolbar getToolbar() {
-        return mStackDelegate.getToolbar();
-    }
-
-
-    @Nullable
-    protected AwesomeToolbar onCreateToolbar(View parent) {
-        AwesomeToolbar toolbar = new AwesomeToolbar(requireContext());
-        FrameLayout frameLayout = (FrameLayout) requireView();
-        frameLayout.addView(toolbar, new FrameLayout.LayoutParams(MATCH_PARENT, mStyle.getToolbarHeight()));
-        return toolbar;
-    }
-
-    protected boolean extendedLayoutIncludesToolbar() {
-        Style style = mStyle;
-        int color = mStackDelegate.getToolbarBackgroundColor();
-        float alpha = style.getToolbarAlpha();
-        return AppUtils.isTranslucent(color) || alpha < 1.0;
-    }
-
-    public void setNeedsToolbarAppearanceUpdate() {
-        mStackDelegate.setNeedsToolbarAppearanceUpdate();
-    }
-
-    public void setTitle(@StringRes int resId) {
-        mStackDelegate.setTitle(requireContext(), resId);
-    }
-
-    public void setTitle(CharSequence title) {
-        mStackDelegate.setTitle(title);
-    }
-
-    public void setLeftBarButtonItems(@Nullable ToolbarButtonItem[] barButtonItems) {
-        mStackDelegate.setLeftBarButtonItems(barButtonItems);
-    }
-
-    @Nullable
-    public ToolbarButtonItem[] getLeftBarButtonItems() {
-        return mStackDelegate.getLeftBarButtonItems();
-    }
-
-    public void setRightBarButtonItems(@Nullable ToolbarButtonItem[] barButtonItems) {
-        mStackDelegate.setRightBarButtonItems(barButtonItems);
-    }
-
-    @Nullable
-    public ToolbarButtonItem[] getRightBarButtonItems() {
-        return mStackDelegate.getRightBarButtonItems();
-    }
-
-    public void setLeftBarButtonItem(@Nullable ToolbarButtonItem barButtonItem) {
-        mStackDelegate.setLeftBarButtonItem(barButtonItem);
-    }
-
-    @Nullable
-    public ToolbarButtonItem getLeftBarButtonItem() {
-        return mStackDelegate.getLeftBarButtonItem();
-    }
-
-    public void setRightBarButtonItem(@Nullable ToolbarButtonItem barButtonItem) {
-        mStackDelegate.setRightBarButtonItem(barButtonItem);
-    }
-
-    @Nullable
-    public ToolbarButtonItem getRightBarButtonItem() {
-        return mStackDelegate.getRightBarButtonItem();
     }
 
     // ------ TabBarFragment -------

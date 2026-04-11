@@ -7,14 +7,9 @@
 + (GlobalStyle *)globalStyle;
 
 @property(nonatomic, strong, readonly) UIColor *screenBackgroundColor;
+@property(nonatomic, assign, readonly) UIBarStyle statusBarStyle;
 @property(nonatomic, assign) UIInterfaceOrientationMask interfaceOrientation;
 
 - (instancetype)initWithOptions:(NSDictionary *)options;
-
-- (UIColor *)titleTextColorWithBarStyle:(UIBarStyle)barStyle;
-
-- (UIColor *)tintColorWithBarStyle:(UIBarStyle)barStyle;
-
-- (UIColor *)barTintColorWithBarStyle:(UIBarStyle)barStyle;
 
 @end

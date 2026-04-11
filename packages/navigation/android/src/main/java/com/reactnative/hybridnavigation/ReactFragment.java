@@ -54,11 +54,6 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 	}
 
 	@Override
-	protected boolean extendedLayoutIncludesToolbar() {
-		return true;
-	}
-
-	@Override
 	protected void onCustomStyle(@NonNull Style style) {
 		super.onCustomStyle(style);
 		if (shouldPassThroughTouches()) {

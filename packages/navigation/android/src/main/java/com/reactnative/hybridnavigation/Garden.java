@@ -66,10 +66,6 @@ public class Garden {
 		applyOptions(options);
 	}
 
-	void setupToolbar() {
-		// Native TopBar has been removed.
-	}
-
 	private void applyOptions(@NonNull Bundle options) {
 		String statusBarStyle = options.getString("statusBarStyle");
 		if (statusBarStyle != null) {

@@ -33,24 +33,24 @@ if (resultCode === RESULT_OK) {
 
 ## 创建原生页面
 
-Android 需要继承 `HybridFragment`，具体可以参考 example 项目中 `NativeFragment` 这个类：
+Android 需要继承 `HybridFragment`，具体可以参考 example 项目中 `ExampleHybridFragment` 这个类：
 
 ```java
 // android
-public class NativeFragment extends HybridFragment {
+public class ExampleHybridFragment extends HybridFragment {
 
 }
 ```
 
 HybridFragment 继承于 `AwesomeFragment`，关于 AwesomeFragment 更多细节，请看 [AndroidNavigation](https://github.com/listenzz/AndroidNavigation) 这个子项目。
 
-iOS 需要继承 `HBDViewController`，具体可以参考 example 项目中 `NativeViewController` 这个类：
+iOS 需要继承 `HBDViewController`，具体可以参考 example 项目中 `ExampleHybridViewController` 这个类：
 
 ```objc
 // ios
 #import <HybridNavigation/HybridNavigation.h>
 
-@interface NativeViewController : HBDViewController
+@interface ExampleHybridViewController : HBDViewController
 
 @end
 ```
@@ -66,13 +66,13 @@ ReactManager reactManager = ReactManager.get();
 reactManager.install(getReactHost()); // 或 getReactNativeHost()，视 RN 版本而定
 
 // 注册原生模块
-reactManager.registerNativeModule("NativeModule", NativeFragment.class);
+reactManager.registerNativeModule("NativeModule", ExampleHybridFragment.class);
 ```
 
 **iOS**：在 `AppDelegate` 中，在 `[[HBDReactBridgeManager get] installWithReactHost:...]` 之后调用：
 
 ```objc
-[[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[NativeViewController class]];
+[[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[ExampleHybridViewController class]];
 ```
 
 > 如果 RN 和原生都注册了同样的模块，即模块名相同，会优先采用 RN 模块。一个应用场景是，如果线上原生模块有严重 BUG，可以通过热更新用 RN 模块临时替换，并指引用户升级版本。

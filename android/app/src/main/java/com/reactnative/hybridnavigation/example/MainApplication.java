@@ -62,9 +62,6 @@ public class MainApplication extends Application implements ReactApplication {
 
         ReactManager reactManager = ReactManager.get();
         reactManager.install(getReactHost());
-
-        // register native modules
-        reactManager.registerNativeModule("NativeModule", NativeFragment.class);
         FLog.setMinimumLoggingLevel(FLog.INFO);
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);

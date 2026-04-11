@@ -149,7 +149,7 @@ public class MainActivity extends ReactAppCompatActivity {
   }
 ```
 
-运行项目，如果发现 TopBar 的高度不正常，记得移除所有 `<StatusBar />` 组件
+运行项目后，页面顶部请统一使用 RN TopBar 组件，并通过 `statusBarStyle` / `statusBarHidden` 控制状态栏，避免在页面里直接使用 `<StatusBar />`。
 
 ## iOS 项目配置
 
@@ -229,7 +229,7 @@ cd ios & pod install
 	[[HBDReactBridgeManager get] installWithReactHost:self.rootViewFactory.reactHost];
 
     // register native modules
-    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[NativeViewController class]];
+    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[ExampleHybridViewController class]];
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];
@@ -250,7 +250,7 @@ cd ios & pod install
 
 ![integration-react-2021-10-19-15-38-49](https://todoit.oss-cn-shanghai.aliyuncs.com/todoit/integration-react-2021-10-19-15-38-49.jpg)
 
-运行项目，如果出现关于状态栏的错误提示，记得移除所有 `<StatusBar />` 组件。
+运行项目，如果出现关于状态栏的错误提示，请检查并移除页面内直接使用的 `<StatusBar />` 组件，统一改为 `Navigation` options 控制。
 
 ## 关于闪屏
 

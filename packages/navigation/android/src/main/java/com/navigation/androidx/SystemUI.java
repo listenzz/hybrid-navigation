@@ -2,11 +2,9 @@ package com.navigation.androidx;
 
 import android.app.Activity;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
 import android.provider.Settings;
-import android.util.TypedValue;
 import android.view.DisplayCutout;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,27 +125,6 @@ public class SystemUI {
         WindowInsetsCompat windowInsets = ViewCompat.getRootWindowInsets(window.getDecorView());
         assert windowInsets != null;
         return windowInsets.getInsetsIgnoringVisibility(WindowInsetsCompat.Type.navigationBars()).bottom;
-    }
-
-    public static int toolbarHeight(Context context) {
-        // 创建属性数组，查询 actionBarSize 属性
-        TypedValue typedValue = new TypedValue();
-
-        // 尝试从主题中获取 actionBarSize 属性值
-        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
-            // 如果找到属性值，直接返回转换后的像素值
-            return TypedValue.complexToDimensionPixelSize(
-                    typedValue.data,
-                    context.getResources().getDisplayMetrics()
-            );
-        }
-
-        // 回退方案：如果未找到属性，使用默认值 56dp
-        return (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                56,
-                context.getResources().getDisplayMetrics()
-        );
     }
 
     // 是否刘海屏

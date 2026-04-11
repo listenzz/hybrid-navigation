@@ -30,7 +30,6 @@ public class StackFragment extends AwesomeFragment implements SwipeBackLayout.Sw
             public void onBackStackChanged() {
                 setNeedsStatusBarAppearanceUpdate();
                 setNeedsNavigationBarAppearanceUpdate();
-                setNeedsToolbarAppearanceUpdate();
                 setNeedsLayoutInDisplayCutoutModeUpdate();
             }
         });

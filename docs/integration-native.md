@@ -282,7 +282,7 @@ public class MainApplication extends Application implements ReactApplication {
         reactManager.install(getReactHost());
 
         // register native modules
-        reactManager.registerNativeModule("NativeModule", NativeFragment.class);
+        reactManager.registerNativeModule("NativeModule", ExampleHybridFragment.class);
         FLog.setMinimumLoggingLevel(FLog.INFO);
     }
 }
@@ -462,7 +462,7 @@ end
 #import <React/RCTDevMenu.h>
 
 #import <HybridNavigation/HybridNavigation.h>
-#import "NativeViewController.h"
+#import "ExampleHybridViewController.h"
 
 @interface ReactNativeDelegate : RCTDefaultReactNativeFactoryDelegate
 @end
@@ -504,7 +504,7 @@ end
 	[[HBDReactBridgeManager get] installWithReactHost:self.rootViewFactory.reactHost];
 
     // register native modules
-    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[NativeViewController class]];
+    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[ExampleHybridViewController class]];
 
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];

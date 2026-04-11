@@ -2,26 +2,10 @@
 
 #import "HBDUtils.h"
 
-#import <React/RCTUtils.h>
-
 @interface GlobalStyle ()
 
 @property(nonatomic, copy, readonly) NSDictionary *options;
-
-@property(nonatomic, assign) UIBarStyle barStyle;
-@property(nonatomic, strong) UIImage *shadowImage;
-@property(nonatomic, strong) UIImage *backIcon;
-@property(nonatomic, strong) UIColor *barTintColor;
-@property(nonatomic, strong) UIColor *barTintColorDarkContent;
-@property(nonatomic, strong) UIColor *barTintColorLightContent;
-@property(nonatomic, strong) UIColor *tintColor;
-@property(nonatomic, strong) UIColor *tintColorDarkContent;
-@property(nonatomic, strong) UIColor *tintColorLightContent;
-@property(nonatomic, strong) UIColor *titleTextColor;
-@property(nonatomic, strong) UIColor *titleTextColorDarkContent;
-@property(nonatomic, strong) UIColor *titleTextColorLightContent;
-@property(nonatomic, assign) NSInteger titleTextSize;
-@property(nonatomic, assign) NSInteger barButtonItemTextSize;
+@property(nonatomic, assign, readwrite) UIBarStyle statusBarStyle;
 
 @property(nonatomic, strong) UIColor *tabBarBackgroundColor;
 @property(nonatomic, strong) UIImage *tabBarShadowImage;
@@ -30,18 +14,12 @@
 
 @end
 
-@implementation GlobalStyle {
-    UIColor *_barTintColor;
-    UIColor *_tintColor;
-    UIColor *_titleTextColor;
-}
+@implementation GlobalStyle
 
 static GlobalStyle *globalStyle;
 
 + (void)createWithOptions:(NSDictionary *)options {
     globalStyle = [[GlobalStyle alloc] initWithOptions:options];
-    [globalStyle inflateNavigationBar:[UINavigationBar appearance]];
-    [globalStyle inflateBarButtonItem:[UIBarButtonItem appearance]];
     [globalStyle inflateTabBar:[UITabBar appearance]];
 }
 
@@ -57,7 +35,6 @@ static GlobalStyle *globalStyle;
         _options = options;
         _interfaceOrientation = UIInterfaceOrientationMaskPortrait;
 
-        // screenBackgroundColor
         NSString *screenBackgroundColor = options[@"screenBackgroundColor"];
         if (screenBackgroundColor) {
             _screenBackgroundColor = [HBDUtils colorWithHexString:screenBackgroundColor];
@@ -65,234 +42,83 @@ static GlobalStyle *globalStyle;
             _screenBackgroundColor = UIColor.whiteColor;
         }
 
-        NSString *statusBarStyle = self.options[@"statusBarStyle"];
+        NSString *statusBarStyle = options[@"statusBarStyle"];
         if (statusBarStyle && [statusBarStyle isEqualToString:@"light-content"]) {
-            self.barStyle = UIBarStyleBlack;
+            _statusBarStyle = UIBarStyleBlack;
         } else {
-            self.barStyle = UIBarStyleDefault;
+            _statusBarStyle = UIBarStyleDefault;
         }
 
-        // navigationBar shadowImage
-        NSDictionary *shadowImage = self.options[@"shadowImage"];
-        if (RCTNilIfNull(shadowImage)) {
-            UIImage *image = [UIImage new];
-            NSDictionary *imageItem = shadowImage[@"image"];
-            NSString *color = shadowImage[@"color"];
-            if (imageItem) {
-                image = [HBDUtils UIImage:imageItem];
-            } else if (color) {
-                image = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:color]];
-            }
-            self.shadowImage = image;
-        }
-
-        self.titleTextSize = 17;
-        self.barButtonItemTextSize = 15;
-
-        // tabBarBackgroundColor
-        NSString *tabBarBackgroundColor = self.options[@"tabBarBackgroundColor"];
+        NSString *tabBarBackgroundColor = options[@"tabBarBackgroundColor"];
         if (!tabBarBackgroundColor) {
-			tabBarBackgroundColor = @"#FFFFFF";
+            tabBarBackgroundColor = @"#FFFFFF";
         }
-		self.tabBarBackgroundColor = [HBDUtils colorWithHexString:tabBarBackgroundColor];
+        self.tabBarBackgroundColor = [HBDUtils colorWithHexString:tabBarBackgroundColor];
 
-        // shadowImage
-        NSDictionary *tabBarShadowImage = self.options[@"tabBarShadowImage"];
-        if (RCTNilIfNull(tabBarShadowImage)) {
+        NSDictionary *tabBarShadowImage = options[@"tabBarShadowImage"];
+        if ([tabBarShadowImage isKindOfClass:[NSDictionary class]]) {
             UIImage *image = [UIImage new];
             NSDictionary *imageItem = tabBarShadowImage[@"image"];
             NSString *color = tabBarShadowImage[@"color"];
-            if (imageItem) {
+            if ([imageItem isKindOfClass:[NSDictionary class]]) {
                 image = [HBDUtils UIImage:imageItem];
-            } else if (color) {
+            } else if ([color isKindOfClass:[NSString class]]) {
                 image = [HBDUtils imageWithColor:[HBDUtils colorWithHexString:color]];
             }
             self.tabBarShadowImage = image;
         }
 
-        // tabBar tintColor
-        NSString *tabBarItemSelectedColor = self.options[@"tabBarItemSelectedColor"];
-		NSString *tabBarItemNormalColor = self.options[@"tabBarItemNormalColor"];
-		if (!tabBarItemSelectedColor) {
-			tabBarItemSelectedColor = @"#FF5722";
-		}
-		if (!tabBarItemNormalColor) {
-			tabBarItemNormalColor = @"#666666";
-		}
-		self.tabBarItemSelectedColor = [HBDUtils colorWithHexString:tabBarItemSelectedColor];
-		self.tabBarItemNormalColor = [HBDUtils colorWithHexString:tabBarItemNormalColor];
-		
-
-        NSString *tabBarBadgeColor = self.options[@"tabBarBadgeColor"];
-		if (!tabBarBadgeColor) {
-			tabBarBadgeColor = @"#FF3B30";
-		}
-        if (tabBarBadgeColor) {
-            [UITabBarItem appearance].badgeColor = [HBDUtils colorWithHexString:tabBarBadgeColor];
+        NSString *tabBarItemSelectedColor = options[@"tabBarItemSelectedColor"];
+        NSString *tabBarItemNormalColor = options[@"tabBarItemNormalColor"];
+        if (!tabBarItemSelectedColor) {
+            tabBarItemSelectedColor = @"#FF5722";
         }
+        if (!tabBarItemNormalColor) {
+            tabBarItemNormalColor = @"#666666";
+        }
+        self.tabBarItemSelectedColor = [HBDUtils colorWithHexString:tabBarItemSelectedColor];
+        self.tabBarItemNormalColor = [HBDUtils colorWithHexString:tabBarItemNormalColor];
+
+        NSString *tabBarBadgeColor = options[@"tabBarBadgeColor"];
+        if (!tabBarBadgeColor) {
+            tabBarBadgeColor = @"#FF3B30";
+        }
+        [UITabBarItem appearance].badgeColor = [HBDUtils colorWithHexString:tabBarBadgeColor];
     }
     return self;
 }
 
-- (void)inflateNavigationBar:(UINavigationBar *)navigationBar {
-
-    [navigationBar setBarStyle:self.barStyle];
-    if (self.barTintColor) {
-        [navigationBar setBarTintColor:self.barTintColor];
-    }
-
-    if (self.shadowImage) {
-        [navigationBar setShadowImage:self.shadowImage];
-    }
-
-    if (self.backIcon) {
-        [navigationBar setBackIndicatorImage:self.backIcon];
-        [navigationBar setBackIndicatorTransitionMaskImage:self.backIcon];
-    }
-
-    if (self.tintColor) {
-        [navigationBar setTintColor:self.tintColor];
-    }
-
-    // title
-    NSMutableDictionary *titleAttributes = [[NSMutableDictionary alloc] init];
-    if (self.titleTextColor) {
-        titleAttributes[NSForegroundColorAttributeName] = self.titleTextColor;
-    }
-    titleAttributes[NSFontAttributeName] = [UIFont systemFontOfSize:self.titleTextSize];
-    [navigationBar setTitleTextAttributes:titleAttributes];
-}
-
-- (void)inflateBarButtonItem:(UIBarButtonItem *)barButtonItem {
-    NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
-    attributes[NSFontAttributeName] = [UIFont systemFontOfSize:self.barButtonItemTextSize];
-    [barButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
-    [barButtonItem setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
-    [barButtonItem setTitleTextAttributes:attributes forState:UIControlStateDisabled];
-}
-
 - (void)inflateTabBar:(UITabBar *)tabBar {
-	UITabBarItemAppearance *tabBarItem = [UITabBarItemAppearance new];
-	tabBarItem.normal.titleTextAttributes = @{
-		NSForegroundColorAttributeName: self.tabBarItemNormalColor,
-	};
-	tabBarItem.normal.iconColor = self.tabBarItemNormalColor;
-	tabBarItem.selected.titleTextAttributes = @{
-		NSForegroundColorAttributeName: self.tabBarItemSelectedColor,
-	};
-	tabBarItem.selected.iconColor = self.tabBarItemSelectedColor;
+    UITabBarItemAppearance *tabBarItem = [UITabBarItemAppearance new];
+    tabBarItem.normal.titleTextAttributes = @{
+        NSForegroundColorAttributeName: self.tabBarItemNormalColor,
+    };
+    tabBarItem.normal.iconColor = self.tabBarItemNormalColor;
+    tabBarItem.selected.titleTextAttributes = @{
+        NSForegroundColorAttributeName: self.tabBarItemSelectedColor,
+    };
+    tabBarItem.selected.iconColor = self.tabBarItemSelectedColor;
 
-	UITabBarAppearance *tabBarAppearance = [UITabBarAppearance new];
-	[tabBarAppearance configureWithDefaultBackground];
+    UITabBarAppearance *tabBarAppearance = [UITabBarAppearance new];
+    [tabBarAppearance configureWithDefaultBackground];
 
-	tabBarAppearance.shadowImage = self.tabBarShadowImage;
-	tabBarAppearance.stackedLayoutAppearance = tabBarItem;
+    tabBarAppearance.shadowImage = self.tabBarShadowImage;
+    tabBarAppearance.stackedLayoutAppearance = tabBarItem;
 
-	tabBar.scrollEdgeAppearance = tabBarAppearance;
-	tabBar.standardAppearance = tabBarAppearance;
-	
+    tabBar.scrollEdgeAppearance = tabBarAppearance;
+    tabBar.standardAppearance = tabBarAppearance;
+
     if (self.tabBarBackgroundColor) {
-		if (@available(iOS 26.0, *)) {
-			//
-		} else {
-			tabBar.standardAppearance.backgroundImage = [HBDUtils imageWithColor:self.tabBarBackgroundColor];
-		}
+        if (@available(iOS 26.0, *)) {
+            //
+        } else {
+            tabBar.standardAppearance.backgroundImage = [HBDUtils imageWithColor:self.tabBarBackgroundColor];
+        }
     }
 
     if (self.tabBarShadowImage) {
         [tabBar setShadowImage:self.tabBarShadowImage];
     }
-	
-}
-
-- (void)setBarTintColor:(UIColor *)barTintColor {
-    _barTintColor = barTintColor;
-    _barTintColorDarkContent = barTintColor;
-    _barTintColorLightContent = barTintColor;
-}
-
-- (UIColor *)barTintColor {
-    return [self barTintColorWithBarStyle:_barStyle];
-}
-
-- (UIColor *)barTintColorWithBarStyle:(UIBarStyle)barStyle {
-    if (barStyle == UIBarStyleDefault && _barTintColorDarkContent) {
-        return _barTintColorDarkContent;
-    }
-
-    if (barStyle != UIBarStyleDefault && _barTintColorLightContent) {
-        return _barTintColorLightContent;
-    }
-
-    if (_barTintColor) {
-        return _barTintColor;
-    }
-
-    if (barStyle == UIBarStyleDefault) {
-        return UIColor.whiteColor;
-    }
-
-    return UIColor.blackColor;
-}
-
-- (void)setTintColor:(UIColor *)tintColor {
-    _tintColor = tintColor;
-    _tintColorDarkContent = tintColor;
-    _tintColorLightContent = tintColor;
-}
-
-- (UIColor *)tintColor {
-    return [self tintColorWithBarStyle:_barStyle];
-}
-
-- (UIColor *)tintColorWithBarStyle:(UIBarStyle)barStyle {
-    if (barStyle == UIBarStyleDefault && _tintColorDarkContent) {
-        return _tintColorDarkContent;
-    }
-
-    if (barStyle != UIBarStyleDefault && _tintColorLightContent) {
-        return _tintColorLightContent;
-    }
-
-    if (_tintColor) {
-        return _tintColor;
-    }
-
-    if (barStyle == UIBarStyleDefault) {
-        return UIColor.blackColor;
-    }
-
-    return UIColor.whiteColor;
-}
-
-- (void)setTitleTextColor:(UIColor *)titleTextColor {
-    _titleTextColor = titleTextColor;
-    _titleTextColorDarkContent = titleTextColor;
-    _titleTextColorLightContent = titleTextColor;
-}
-
-- (UIColor *)titleTextColor {
-    return [self titleTextColorWithBarStyle:_barStyle];
-}
-
-- (UIColor *)titleTextColorWithBarStyle:(UIBarStyle)barStyle {
-    if (barStyle == UIBarStyleDefault && _titleTextColorDarkContent) {
-        return _titleTextColorDarkContent;
-    }
-
-    if (barStyle != UIBarStyleDefault && _titleTextColorLightContent) {
-        return _titleTextColorLightContent;
-    }
-
-    if (_titleTextColor) {
-        return _titleTextColor;
-    }
-
-    if (barStyle == UIBarStyleDefault) {
-        return UIColor.blackColor;
-    }
-
-    return UIColor.whiteColor;
 }
 
 @end

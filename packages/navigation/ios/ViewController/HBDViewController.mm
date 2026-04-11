@@ -1,6 +1,5 @@
 #import "HBDViewController.h"
 
-#import "HBDViewController+Garden.h"
 #import "HBDUtils.h"
 #import "GlobalStyle.h"
 #import "UIImage+WithBadge.h"
@@ -261,7 +260,6 @@
     }
 
     // Native TopBar has been removed and UINavigationBar stays hidden.
-    self.hbd_barHidden = YES;
     self.extendedLayoutIncludesOpaqueBars = YES;
 
     NSNumber *swipeBackEnabled = options[@"swipeBackEnabled"];
@@ -281,8 +279,7 @@
 }
 
 - (void)updateNavigationBarOptions:(NSDictionary *)options {
-    NSDictionary *previous = self.options;
-    self.options = [HBDUtils mergeItem:options withTarget:previous];
+    self.options = [HBDUtils mergeItem:options withTarget:self.options];
 
     NSMutableDictionary *target = [options mutableCopy];
 
@@ -293,8 +290,7 @@
         self.view.backgroundColor = [HBDUtils colorWithHexString:screenColor];
     }
 
-    NSNumber *statusBarHidden = options[@"statusBarHidden"];
-    if (statusBarHidden) {
+    if (options[@"statusBarHidden"] || options[@"statusBarStyle"]) {
         [self setNeedsStatusBarAppearanceUpdate];
     }
 
@@ -302,19 +298,6 @@
         [self setNeedsUpdateOfHomeIndicatorAutoHidden];
     }
 
-    if ([self shouldUpdateNavigationBar:options compareTo:previous]) {
-        [self hbd_setNeedsUpdateNavigationBar];
-    }
-}
-
-- (BOOL)shouldUpdateNavigationBar:(NSDictionary *)options compareTo:(NSDictionary *)previous {
-    NSArray *keys = @[@"statusBarStyle"];
-    for (NSString *opt in options.allKeys) {
-        if ([keys containsObject:opt] && [NSString stringWithFormat:@"%@", previous[opt]] != [NSString stringWithFormat:@"%@", options[opt]]) {
-            return YES;
-        }
-    }
-    return NO;
 }
 
 @end

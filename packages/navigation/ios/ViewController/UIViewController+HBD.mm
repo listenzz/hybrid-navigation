@@ -1,6 +1,5 @@
 #import "UIViewController+HBD.h"
 
-#import "HBDNavigationController.h"
 #import "HBDReactViewController.h"
 #import "HBDUtils.h"
 #import "GlobalStyle.h"
@@ -102,131 +101,11 @@
     if (obj) {
 		return (UIBarStyle)[obj integerValue];
     }
-    return [UINavigationBar appearance].barStyle;
+    return [GlobalStyle globalStyle].statusBarStyle;
 }
 
 - (void)setHbd_barStyle:(UIBarStyle)hbd_barStyle {
     objc_setAssociatedObject(self, @selector(hbd_barStyle), @(hbd_barStyle), OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-- (UIColor *)hbd_barTintColor {
-    if (self.hbd_barHidden) {
-        return UIColor.clearColor;
-    }
-
-    id obj = objc_getAssociatedObject(self, _cmd);
-    UIColor *color;
-    if (obj) {
-        color = obj;
-    }
-
-    UIColor *colorWithBarStyle = [[GlobalStyle globalStyle] barTintColorWithBarStyle:self.hbd_barStyle];
-    if (color == nil && colorWithBarStyle != nil) {
-        color = colorWithBarStyle;
-    }
-
-    if (color == nil && [UINavigationBar appearance].barTintColor != nil) {
-        color = [UINavigationBar appearance].barTintColor;
-    }
-
-    if (color == nil) {
-        color = [UINavigationBar appearance].barStyle == UIBarStyleDefault ? [UIColor whiteColor] : [UIColor blackColor];
-    }
-
-    return color;
-}
-
-- (void)setHbd_barTintColor:(UIColor *)tintColor {
-    objc_setAssociatedObject(self, @selector(hbd_barTintColor), tintColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (UIColor *)hbd_tintColor {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    if (obj) {
-        return obj;
-    }
-
-    UIColor *colorWithBarStyle = [[GlobalStyle globalStyle] tintColorWithBarStyle:self.hbd_barStyle];
-    if (colorWithBarStyle) {
-        return colorWithBarStyle;
-    }
-
-    return [UINavigationBar appearance].tintColor;
-}
-
-- (void)setHbd_tintColor:(UIColor *)tintColor {
-    objc_setAssociatedObject(self, @selector(hbd_tintColor), tintColor, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (NSDictionary *)hbd_titleTextAttributes {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    if (obj) {
-        return obj;
-    }
-
-    UIBarStyle barStyle = self.hbd_barStyle;
-    UIColor *colorWithBarStyle = [[GlobalStyle globalStyle] titleTextColorWithBarStyle:barStyle];
-    NSDictionary *colorAttributes = @{NSForegroundColorAttributeName: colorWithBarStyle};
-    NSDictionary *attributes = [UINavigationBar appearance].titleTextAttributes;
-    if (attributes) {
-        NSMutableDictionary *mutableAttributes = [attributes mutableCopy];
-        [mutableAttributes addEntriesFromDictionary:colorAttributes];
-        return mutableAttributes;
-    } else {
-        return colorAttributes;
-    }
-}
-
-- (void)setHbd_titleTextAttributes:(NSDictionary *)attributes {
-    objc_setAssociatedObject(self, @selector(hbd_titleTextAttributes), attributes, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (float)hbd_barAlpha {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    if (self.hbd_barHidden) {
-        return 0;
-    }
-    return obj ? [obj floatValue] : 1.0f;
-}
-
-- (void)setHbd_barAlpha:(float)alpha {
-    objc_setAssociatedObject(self, @selector(hbd_barAlpha), @(alpha), OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-- (BOOL)hbd_barHidden {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    return obj ? [obj boolValue] : NO;
-}
-
-- (void)setHbd_barHidden:(BOOL)hidden {
-    if (hidden) {
-        self.navigationItem.titleView = [UIView new];
-    } else {
-        self.navigationItem.titleView = nil;
-    }
-	if (@available(iOS 16.0, *)) {
-		[self.navigationItem setHidesBackButton:hidden];
-	} else {
-		if (hidden) {
-			self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:[UIView new]];
-		} else {
-			self.navigationItem.leftBarButtonItem = nil;
-		}
-	}
-    objc_setAssociatedObject(self, @selector(hbd_barHidden), @(hidden), OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-- (float)hbd_barShadowAlpha {
-    return self.hbd_barShadowHidden ? 0 : self.hbd_barAlpha;
-}
-
-- (BOOL)hbd_barShadowHidden {
-    id obj = objc_getAssociatedObject(self, _cmd);
-    return self.hbd_barHidden || obj ? [obj boolValue] : NO;
-}
-
-- (void)setHbd_barShadowHidden:(BOOL)hidden {
-    objc_setAssociatedObject(self, @selector(hbd_barShadowHidden), @(hidden), OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (BOOL)hbd_statusBarHidden {
@@ -254,15 +133,6 @@
 
 - (void)setHbd_swipeBackEnabled:(BOOL)enabled {
     objc_setAssociatedObject(self, @selector(hbd_swipeBackEnabled), @(enabled), OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
-
-- (void)hbd_setNeedsUpdateNavigationBar {
-    if (self.navigationController && [self.navigationController isKindOfClass:[HBDNavigationController class]]) {
-        HBDNavigationController *nav = (HBDNavigationController *) self.navigationController;
-        if (self == nav.topViewController) {
-            [nav updateNavigationBarForViewController:self];
-        }
-    }
 }
 
 - (void)setResultCode:(NSInteger)resultCode {

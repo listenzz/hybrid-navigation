@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import com.facebook.react.bridge.ReactContext;
 import com.navigation.androidx.AppUtils;
 import com.navigation.androidx.AwesomeFragment;
-import com.navigation.androidx.AwesomeToolbar;
 import com.navigation.androidx.BarStyle;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.PresentableActivity;
@@ -92,7 +91,6 @@ public class HybridFragment extends AwesomeFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        garden.setupToolbar();
     }
 
     @NonNull
@@ -187,11 +185,6 @@ public class HybridFragment extends AwesomeFragment {
 
     protected boolean forceTransparentDialogWindow() {
         return garden.forceTransparentDialogWindow;
-    }
-
-    @Override
-    protected AwesomeToolbar onCreateToolbar(View parent) {
-        return null;
     }
 
     private Bundle options;

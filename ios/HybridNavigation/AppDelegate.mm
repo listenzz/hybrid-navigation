@@ -10,7 +10,6 @@
 #import <React/RCTDevMenu.h>
 
 #import <HybridNavigation/HybridNavigation.h>
-#import "NativeViewController.h"
 
 @interface ReactNativeDelegate : RCTDefaultReactNativeFactoryDelegate
 
@@ -54,9 +53,6 @@
 	[self.rootViewFactory initializeReactHostWithLaunchOptions:launchOptions bundleConfiguration:[RCTBundleConfiguration defaultConfiguration] devMenuConfiguration:[RCTDevMenuConfiguration defaultConfiguration]];
 	
 	[[HBDReactBridgeManager get] installWithReactHost:self.rootViewFactory.reactHost];
-    
-    // register native modules
-    [[HBDReactBridgeManager get] registerNativeModule:@"NativeModule" forViewController:[NativeViewController class]];
    
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
     UIViewController *rootViewController = [storyboard instantiateInitialViewController];

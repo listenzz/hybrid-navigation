@@ -1,18 +1,13 @@
 package com.navigation.androidx;
 
-import com.reactnative.hybridnavigation.R;
-
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.view.Gravity;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 public class Style implements Cloneable {
 
@@ -21,37 +16,16 @@ public class Style implements Cloneable {
 
     private int screenBackgroundColor = Color.WHITE;
 
-    private int toolbarHeight;
-
-    private BarStyle statusBarStyle;
+    private BarStyle statusBarStyle = BarStyle.DarkContent;
     private boolean statusBarHidden = false;
 
     private int navigationBarColor = INVALID_COLOR;
     private boolean navigationBarHidden = false;
 
-    private int toolbarBackgroundColor;
-    private int toolbarBackgroundColorDarkContent = INVALID_COLOR;
-    private int toolbarBackgroundColorLightContent = INVALID_COLOR;
-    private Drawable backIcon;
-    private int toolbarTintColor = INVALID_COLOR;
-    private int toolbarTintColorDarkContent = INVALID_COLOR;
-    private int toolbarTintColorLightContent = INVALID_COLOR;
-    private int titleTextColor = INVALID_COLOR;
-    private int titleTextColorDarkContent = INVALID_COLOR;
-    private int titleTextColorLightContent = INVALID_COLOR;
-    private int titleTextSize = 17;
-    private int elevation = -1;
-    private int titleGravity = Gravity.START;
-    private int toolbarButtonTextSize = 15;
-    private float toolbarAlpha = 1.f;
-    private boolean toolbarShadowHidden = false;
-
     private String tabBarBackgroundColor = "#FFFFFF";
     private String tabBarItemColor = null;
     private String tabBarUnselectedItemColor = null;
     private Drawable tabBarShadow = defaultShadow;
-
-    private final Context context;
 
     private boolean swipeBackEnabled;
     private String tabBarBadgeColor = "#FF3B30";
@@ -63,14 +37,7 @@ public class Style implements Cloneable {
     private boolean fitsOpaqueNavigationBar = true;
 
     protected Style(Context context) {
-        this.context = context;
-        toolbarBackgroundColor = AppUtils.fetchContextColor(context, android.R.attr.colorPrimary);
-        toolbarHeight = AppUtils.fetchContextDimension(context, android.R.attr.actionBarSize);
-        boolean isLightStyle = AppUtils.isDark(toolbarBackgroundColor);
-        statusBarStyle = isLightStyle ? BarStyle.LightContent : BarStyle.DarkContent;
     }
-
-    // ------ cutout ------
 
     public boolean isDisplayCutoutWhenLandscape() {
         return displayCutoutWhenLandscape;
@@ -80,8 +47,6 @@ public class Style implements Cloneable {
         this.displayCutoutWhenLandscape = displayCutoutWhenLandscape;
     }
 
-    // ------ screen ------
-
     public void setScreenBackgroundColor(int color) {
         screenBackgroundColor = color;
     }
@@ -89,9 +54,6 @@ public class Style implements Cloneable {
     public int getScreenBackgroundColor() {
         return screenBackgroundColor;
     }
-
-    // ----- tabBar  -----
-
 
     public void setTabBarBackgroundColor(String tabBarBackgroundColor) {
         this.tabBarBackgroundColor = tabBarBackgroundColor;
@@ -117,16 +79,6 @@ public class Style implements Cloneable {
         this.tabBarUnselectedItemColor = tabBarUnselectedItemColor;
     }
 
-    // ------- toolbar ---------
-
-    public int getToolbarHeight() {
-        return toolbarHeight;
-    }
-
-    public void setToolbarHeight(int toolbarHeight) {
-        this.toolbarHeight = toolbarHeight;
-    }
-
     public void setStatusBarStyle(BarStyle barStyle) {
         statusBarStyle = barStyle;
     }
@@ -143,166 +95,12 @@ public class Style implements Cloneable {
         this.statusBarHidden = statusBarHidden;
     }
 
-    public void setToolbarBackgroundColor(int color) {
-        toolbarBackgroundColor = color;
-        toolbarBackgroundColorDarkContent = color;
-        toolbarBackgroundColorLightContent = color;
-    }
-
-    public int getToolbarBackgroundColor() {
-        return toolbarBackgroundColor;
-    }
-
-    public void setToolbarBackgroundColorDarkContent(int toolbarBackgroundColorDarkContent) {
-        this.toolbarBackgroundColorDarkContent = toolbarBackgroundColorDarkContent;
-    }
-
-    public int getToolbarBackgroundColorDarkContent() {
-        return toolbarBackgroundColorDarkContent;
-    }
-
-    public void setToolbarBackgroundColorLightContent(int toolbarBackgroundColorLightContent) {
-        this.toolbarBackgroundColorLightContent = toolbarBackgroundColorLightContent;
-    }
-
-    public int getToolbarBackgroundColorLightContent() {
-        return toolbarBackgroundColorLightContent;
-    }
-
-    public void setElevation(int dp) {
-        this.elevation = AppUtils.dp2px(context, dp);
-    }
-
-    public int getElevation() {
-        if (elevation != -1) {
-            return elevation;
-        }
-        return AppUtils.dp2px(context, 1);
-    }
-
-    public void setToolbarTintColor(int color) {
-        toolbarTintColor = color;
-        toolbarTintColorDarkContent = color;
-        toolbarTintColorLightContent = color;
-    }
-
-    public int getToolbarTintColor() {
-        return toolbarTintColor;
-    }
-
-    public void setToolbarTintColorDarkContent(int toolbarTintColorDarkContent) {
-        this.toolbarTintColorDarkContent = toolbarTintColorDarkContent;
-    }
-
-    public int getToolbarTintColorDarkContent() {
-        return toolbarTintColorDarkContent;
-    }
-
-    public void setToolbarTintColorLightContent(int toolbarTintColorLightContent) {
-        this.toolbarTintColorLightContent = toolbarTintColorLightContent;
-    }
-
-    public int getToolbarTintColorLightContent() {
-        return toolbarTintColorLightContent;
-    }
-
-    public void setBackIcon(Drawable icon) {
-        backIcon = icon;
-    }
-
-    public Drawable getBackIcon() {
-        if (backIcon == null) {
-            backIcon = getDefaultBackIcon();
-        }
-
-        if (backIcon.getConstantState() != null) {
-            return DrawableCompat.wrap(AppUtils.copyDrawable(backIcon)).mutate();
-        } else {
-            return DrawableCompat.wrap(backIcon).mutate();
-        }
-    }
-
-    @NonNull
-    private Drawable getDefaultBackIcon() {
-        Drawable drawable = ContextCompat.getDrawable(context, R.drawable.nav_ic_arrow_back);
-        if (drawable == null) {
-            throw new NullPointerException("should not happen");
-        }
-        return drawable;
-    }
-
-    public void setTitleTextColor(int color) {
-        titleTextColor = color;
-        titleTextColorDarkContent = color;
-        titleTextColorLightContent = color;
-    }
-
-    public int getTitleTextColor() {
-        return titleTextColor;
-    }
-
-    public void setTitleTextColorDarkContent(int titleTextColorDarkContent) {
-        this.titleTextColorDarkContent = titleTextColorDarkContent;
-    }
-
-    public int getTitleTextColorDarkContent() {
-        return titleTextColorDarkContent;
-    }
-
-    public void setTitleTextColorLightContent(int titleTextColorLightContent) {
-        this.titleTextColorLightContent = titleTextColorLightContent;
-    }
-
-    public int getTitleTextColorLightContent() {
-        return titleTextColorLightContent;
-    }
-
-    public void setTitleTextSize(int dp) {
-        titleTextSize = dp;
-    }
-
-    public int getTitleTextSize() {
-        return titleTextSize;
-    }
-
-    public float getToolbarAlpha() {
-        return toolbarAlpha;
-    }
-
-    public void setToolbarAlpha(float toolbarAlpha) {
-        this.toolbarAlpha = toolbarAlpha;
-    }
-
-    public boolean isToolbarShadowHidden() {
-        return toolbarShadowHidden;
-    }
-
-    public void setToolbarShadowHidden(boolean toolbarShadowHidden) {
-        this.toolbarShadowHidden = toolbarShadowHidden;
-    }
-
     public Drawable getTabBarShadow() {
         return tabBarShadow;
     }
 
     public void setTabBarShadow(Drawable drawable) {
         this.tabBarShadow = drawable;
-    }
-
-    public void setToolbarButtonTextSize(int dp) {
-        toolbarButtonTextSize = dp;
-    }
-
-    public int getToolbarButtonTextSize() {
-        return toolbarButtonTextSize;
-    }
-
-    public void setTitleGravity(int gravity) {
-        titleGravity = gravity;
-    }
-
-    public int getTitleGravity() {
-        return titleGravity;
     }
 
     public boolean isSwipeBackEnabled() {
