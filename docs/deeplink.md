@@ -9,7 +9,7 @@ import Navigation from 'hybrid-navigation';
 
 Navigation.registerComponent('TopBarStyle', () => TopBarStyle, {
   path: '/topBarStyle/:who',
-  dependency: 'TopBarMisc',
+  dependency: 'Options',
 });
 ```
 
@@ -21,14 +21,13 @@ dependency 表示前置页面，譬如一个详情页可能会依赖一个列表
 
 ```javascript
 Navigation.registerComponent('Options', () => Options);
-Navigation.registerComponent('TopBarMisc', () => TopBarMisc, { dependency: 'Options' });
 Navigation.registerComponent('TopBarStyle', () => TopBarStyle, {
   path: '/topBarStyle/:who',
-  dependency: 'TopBarMisc',
+  dependency: 'Options',
 });
 ```
 
-TopBarStyle 依赖 TopBarMisc, TopBarMisc 依赖 Options, 当我们通过 `hbd://topBarStyle/xxxx?greeting=yyyy` 这样的 url 打开 TopBarStyle 这个页面时，会检查 app 当前的路由图，以决定是否切换到 tab Options, 在打开 TopBarStyle 之前是否需要创建 TopBarMisc。
+TopBarStyle 依赖 Options，当我们通过 `hbd://topBarStyle/xxxx?greeting=yyyy` 这样的 url 打开 TopBarStyle 页面时，会检查 app 当前的路由图，以决定是否切换到 tab Options，并在需要时补齐依赖页面。
 
 mode 表示跳转模式，present 表示使用 `navigator.present` 打开目标页面， `modal` 表示使用 `navigator.showModal` 打开页面，默认是通过 push 的方式打开。
 

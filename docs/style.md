@@ -13,7 +13,6 @@ Navigation.setDefaultOptions({
   screenBackgroundColor: '#F8F8F8',
   statusBarStyle: BarStyleDarkContent,
   navigationBarColorAndroid: '#FFFFFF',
-  swipeBackEnabledAndroid: true,
   displayCutoutWhenLandscapeAndroid: true,
   tabBarBackgroundColor: '#FFFFFF',
   tabBarItemNormalColor: '#666666',
@@ -28,8 +27,6 @@ interface DefaultOptions {
   screenBackgroundColor?: string;
   statusBarStyle?: 'light-content' | 'dark-content';
   navigationBarColorAndroid?: string;
-  swipeBackEnabledAndroid?: boolean;
-  scrimAlphaAndroid?: number;
   displayCutoutWhenLandscapeAndroid?: boolean;
 
   tabBarBackgroundColor?: string;
@@ -71,7 +68,6 @@ interface NavigationOption {
 interface NavigationItem extends NavigationOption {
   animatedTransition?: boolean;
   forceScreenLandscape?: boolean;
-  swipeBackEnabled?: boolean;
   tabItem?: {
     title: string;
     icon?: { uri: string; scale?: number; height?: number; width?: number };
@@ -144,3 +140,7 @@ Navigation.setTabItem(sceneId, {
 ## 迁移说明（passThroughTouches 移除）
 
 `passThroughTouches` 已从 `NavigationItem` 中移除，且不再提供兼容占位行为（no-op）。
+
+## 迁移说明（返回交互）
+
+页面返回交互统一通过 `backInteractive` 控制；`swipeBackEnabledAndroid`、`scrimAlphaAndroid`、`swipeBackEnabled` 不再作为公开配置项提供。

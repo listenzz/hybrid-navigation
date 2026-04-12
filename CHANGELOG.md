@@ -1,5 +1,38 @@
 # Changelog
 
+## 4.0.0
+
+### 破坏性变更
+
+- 移除原生 TopBar 能力，iOS `UINavigationBar` 改为始终隐藏；页面顶部 UI 需在 RN 侧实现。
+- `Navigation` API 删除：`setTitleItem`、`setLeftBarButtonItem`、`setRightBarButtonItem`、`setLeftBarButtonItems`、`setRightBarButtonItems`、`setBarButtonClickEventListener`。
+- `NavigationItem` 删除字段：`titleItem`、`leftBarButtonItem(s)`、`rightBarButtonItem(s)`、`topBarHidden`、`backButtonHidden`、`extendedLayoutIncludesTopBar`、`passThroughTouches`、`forceTransparentDialogWindow`。
+- `NavigationOption` / `DefaultOptions` 不再支持 `topBar*` 系列配置；状态栏样式统一使用 `statusBarStyle`。
+- `TabItem.hideTabBarWhenPush` 移除，push 场景不再通过该字段控制 TabBar 显隐。
+- Android 不再读取 `swipeBackEnabledAndroid`、`scrimAlphaAndroid`、`fitsOpaqueNavigationBarAndroid` 全局样式选项。
+- 移除 Android/iOS 字体图标 URI（`font://...`）支持。
+- Android 内联 `AndroidNavigation` 源码并移除 Maven 依赖。
+
+### 修复
+
+- 修复 `stack > tabs > screen` 层级下 `isStackRoot` 判断错误（Android / iOS）。
+- 修复该层级下 `tabBarItem` 更新不生效（iOS）。
+- iOS Tab 容器将状态栏样式委托给当前选中页面，切换 Tab 后状态栏样式可正确更新。
+- iOS `dismiss` 改为从 modal host 执行关闭，并在返回后恢复页面方向，减少横竖屏错乱。
+
+### 优化
+
+- iOS 横竖屏切换流程重构（iOS 16+ geometry update 前先刷新支持方向并结束编辑），降低旋转异常。
+- iOS 强制横屏页面禁用交互式返回手势，减少转场冲突。
+- React 页面改为占满容器，由 RN 统一处理安全区；Android 在含 TabBar 场景向 RN 注入 `tabBarInset`。
+- 移除 `UIScrollView` 全局 hook（`didMoveToWindow` swizzle），减少对系统行为的侵入。
+
+### 文档与示例
+
+- 文档对齐 v4：样式与集成指南改为 RN TopBar 方案，并补充迁移说明。
+- README/文档更新版本矩阵（3.x 对应 RN >= 0.83），示例工程更新到 RN 0.84 / Node >= 20。
+- 示例项目移除原生 TopBar 示例页并调整启动流程（Android 迁移到 `core-splashscreen`）。
+
 ## 3.1.2
 
 ### iOS
