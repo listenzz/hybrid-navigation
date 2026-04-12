@@ -120,7 +120,7 @@ Navigation.setRootLayoutUpdateListener(
 );
 
 // 设置 UI 层级
-Navigation.setRoot(drawer);
+Navigation.setRoot(rootStack);
 
 // 设置导航拦截器
 Navigation.setInterceptor(async (action, extras) => {

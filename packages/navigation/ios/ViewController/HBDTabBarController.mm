@@ -19,6 +19,10 @@
     return self.selectedViewController;
 }
 
+- (UIViewController *)childViewControllerForStatusBarStyle {
+    return self.selectedViewController;
+}
+
 - (UIViewController *)childViewControllerForHomeIndicatorAutoHidden {
     return self.selectedViewController;
 }
@@ -46,7 +50,7 @@
 	} else if ([vc isKindOfClass:[HBDViewController class]]) {
 		return (HBDViewController *)vc;
 	}
-	
+
 	return nil;
 }
 
@@ -74,10 +78,10 @@
         }
         tabBar.shadowImage = image;
     }
-	
+
     NSString *tabBarItemSelectedColor = options[@"tabBarItemSelectedColor"];
     NSString *tabBarItemNormalColor = options[@"tabBarItemNormalColor"];
-	
+
 	if (tabBarItemSelectedColor) {
 		if (!tabBarItemNormalColor) {
 			tabBarItemNormalColor = @"#666666";
@@ -96,7 +100,7 @@
 		[UITabBar appearance].standardAppearance.stackedLayoutAppearance = tabBarItem;
 		[UITabBar appearance].scrollEdgeAppearance.stackedLayoutAppearance = tabBarItem;
 	}
-	
+
 	for (UIViewController *tab in self.childViewControllers) {
 		HBDViewController *hbdvc = [self tabViewController:tab];
 		[hbdvc updateTabBarItem:hbdvc.options];
@@ -126,11 +130,11 @@
 }
 
 - (id<UIViewControllerAnimatedTransitioning>)tabBarController:(UITabBarController *)tabBarController animationControllerForTransitionFromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC {
-	
+
     if (toVC.viewLoaded) {
         return nil;
     }
-    
+
     return [[HBDFadeAnimation alloc] init];
 }
 

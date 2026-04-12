@@ -29,11 +29,6 @@ export interface NavigationItem extends NavigationOption {
 	tabItem?: TabItem;
 }
 
-export interface BackItem {
-	title: string;
-	tintColor?: Color;
-}
-
 export interface TabItem {
 	title: string;
 	icon?: ImageSource;

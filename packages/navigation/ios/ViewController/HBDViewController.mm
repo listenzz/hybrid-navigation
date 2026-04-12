@@ -83,37 +83,55 @@
 
 - (void)adjustScreenOrientation {
 	UIWindowScene *windowScene = [self getWindowScene];
-
-	if (!self.forceScreenLandscape && windowScene != nil && windowScene.interfaceOrientation != UIInterfaceOrientationPortrait && ![[self hbd_mode] isEqual:@"modal"]) {
-		[self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
+	if (windowScene == nil) {
+		return;
 	}
 
-	if (self.forceScreenLandscape) {
-		[self setScreenOrientation:UIInterfaceOrientationLandscapeRight usingMask:UIInterfaceOrientationMaskLandscape];
+	UIInterfaceOrientation current = windowScene.interfaceOrientation;
+	BOOL isModal = [[self hbd_mode] isEqual:@"modal"];
+
+	if (!self.forceScreenLandscape && current != UIInterfaceOrientationPortrait && !isModal) {
+		[self setScreenOrientation:UIInterfaceOrientationPortrait usingMask:UIInterfaceOrientationMaskPortrait];
+	} else if (self.forceScreenLandscape && !UIInterfaceOrientationIsLandscape(current)) {
+		UIInterfaceOrientation target = UIInterfaceOrientationLandscapeRight;
+		if ([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight) {
+			target = UIInterfaceOrientationLandscapeLeft;
+		}
+		[self setScreenOrientation:target usingMask:UIInterfaceOrientationMaskLandscape];
 	}
 }
 
 - (void)setScreenOrientation:(UIInterfaceOrientation) orientation usingMask:(UIInterfaceOrientationMask) mask {
-    [GlobalStyle globalStyle].interfaceOrientation = mask;
-    if (@available(iOS 16.0, *)) {
-            UIWindowScene *windowScene = [self getWindowScene];
-            if (windowScene != nil) {
-                UIWindowSceneGeometryPreferencesIOS *geometryPreferences = [[UIWindowSceneGeometryPreferencesIOS alloc] initWithInterfaceOrientations:mask];
-                [windowScene requestGeometryUpdateWithPreferences:geometryPreferences errorHandler:^(NSError * _Nonnull error) {
-    #if DEBUG
-                    if (error) {
-                        NSLog(@"Failed to update geometry with UIInterfaceOrientationMask: %@", error);
-                    }
-    #endif
-                }];
-            }
-    }  else {
-        UIDevice* currentDevice = [UIDevice currentDevice];
-        [currentDevice setValue:@(UIInterfaceOrientationUnknown) forKey:@"orientation"];
-        [currentDevice setValue:@(orientation) forKey:@"orientation"];
+    UIWindowScene *windowScene = [self getWindowScene];
+    [self.view endEditing:YES];
+    [self.navigationController.view endEditing:YES];
+    for (UIWindow *window in windowScene.windows) {
+        [window endEditing:YES];
     }
 
-    [UIViewController attemptRotationToDeviceOrientation];
+    [GlobalStyle globalStyle].interfaceOrientation = mask;
+    if (@available(iOS 16.0, *)) {
+        // Ensure orientation capability is updated before geometry request.
+        [self setNeedsUpdateOfSupportedInterfaceOrientations];
+        [self.navigationController setNeedsUpdateOfSupportedInterfaceOrientations];
+        [self.tabBarController setNeedsUpdateOfSupportedInterfaceOrientations];
+
+        if (windowScene != nil) {
+            UIWindowSceneGeometryPreferencesIOS *geometryPreferences = [[UIWindowSceneGeometryPreferencesIOS alloc] initWithInterfaceOrientations:mask];
+            [windowScene requestGeometryUpdateWithPreferences:geometryPreferences errorHandler:^(NSError * _Nonnull error) {
+#if DEBUG
+                if (error) {
+                    NSLog(@"Failed to update geometry with UIInterfaceOrientationMask: %@", error);
+                }
+#endif
+            }];
+        }
+    } else {
+        UIDevice *currentDevice = [UIDevice currentDevice];
+        [currentDevice setValue:@(UIInterfaceOrientationUnknown) forKey:@"orientation"];
+        [currentDevice setValue:@(orientation) forKey:@"orientation"];
+        [UIViewController attemptRotationToDeviceOrientation];
+    }
 }
 
 - (UIWindowScene *)getWindowScene {

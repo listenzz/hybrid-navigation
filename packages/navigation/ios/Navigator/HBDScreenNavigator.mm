@@ -101,6 +101,14 @@
     }];
 }
 
+- (UIViewController *)modalHostViewControllerForViewController:(UIViewController *)vc {
+	UIViewController *host = vc;
+	while (host.parentViewController != nil) {
+		host = host.parentViewController;
+	}
+	return host;
+}
+
 - (void)handleDismissWithViewController:(UIViewController *) vc callback:(RCTResponseSenderBlock)callback {
 	BOOL animated = YES;
 	if ([vc isKindOfClass:[HBDViewController class]]) {
@@ -108,11 +116,11 @@
 		animated = hbdvc.animatedTransition;
 	}
 
-	BOOL isOverFullScreen = vc.modalPresentationStyle == UIModalPresentationOverFullScreen;
-	UIViewController *presenting = vc.presentingViewController;
+	UIViewController *modalHost = [self modalHostViewControllerForViewController:vc];
+	UIViewController *presenting = modalHost.presentingViewController;
 
-    [vc dismissViewControllerAnimated:animated completion:^{
-		if (isOverFullScreen && presenting != nil) {
+    [modalHost dismissViewControllerAnimated:animated completion:^{
+		if (presenting != nil) {
 			HBDViewController *hbdvc = [[HBDReactBridgeManager get] primaryViewControllerWithViewController:presenting];
 			if (hbdvc != nil) {
 				[hbdvc adjustScreenOrientation];
