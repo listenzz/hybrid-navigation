@@ -4,16 +4,16 @@ import styles from './Styles';
 
 import Navigation, {
 	RESULT_OK,
-	BarStyleLightContent,
 	withNavigationItem,
 	NavigationProps,
 	useVisibleEffect,
+	BarStyleDarkContent,
 } from 'hybrid-navigation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TopBar from './TopBar';
 
 export default withNavigationItem({
-	statusBarStyle: BarStyleLightContent,
+	statusBarStyle: BarStyleDarkContent,
 })(Result);
 
 function Result({ navigator, sceneId }: NavigationProps) {
@@ -80,7 +80,7 @@ function Result({ navigator, sceneId }: NavigationProps) {
 								onPress: () => {
 									navigator.dismiss();
 								},
-							}
+						  }
 						: undefined
 				}
 			/>
@@ -105,7 +105,9 @@ function Result({ navigator, sceneId }: NavigationProps) {
 					style={styles.button}
 					disabled={isRoot}
 				>
-					<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>pop to home</Text>
+					<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
+						pop to home
+					</Text>
 				</TouchableOpacity>
 
 				<TextInput
@@ -128,7 +130,11 @@ function Result({ navigator, sceneId }: NavigationProps) {
 					<Text style={styles.buttonText}>showModal</Text>
 				</TouchableOpacity>
 
-				<TouchableOpacity onPress={printRouteGraph} activeOpacity={0.2} style={styles.button}>
+				<TouchableOpacity
+					onPress={printRouteGraph}
+					activeOpacity={0.2}
+					style={styles.button}
+				>
 					<Text style={styles.buttonText}>printRouteGraph</Text>
 				</TouchableOpacity>
 			</ScrollView>

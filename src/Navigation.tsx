@@ -84,6 +84,9 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 	}
 
 	async function redirectTo() {
+		if (isRoot) {
+			return;
+		}
 		if (popToId !== undefined) {
 			await navigator.redirectTo('Navigation', {
 				popToId,
@@ -218,8 +221,11 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 						onPress={redirectTo}
 						activeOpacity={0.2}
 						style={styles.button}
+						disabled={isRoot}
 					>
-						<Text style={styles.buttonText}>redirectTo</Text>
+						<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
+							redirectTo
+						</Text>
 					</TouchableOpacity>
 
 					<TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
