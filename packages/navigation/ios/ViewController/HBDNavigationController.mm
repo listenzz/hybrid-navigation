@@ -5,117 +5,19 @@
 #import <React/RCTLog.h>
 #import <React/RCTUtils.h>
 
-@interface HBDNavigationControllerDelegate : UIScreenEdgePanGestureRecognizer <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
-
-@property(nonatomic, weak) id <UINavigationControllerDelegate> proxyDelegate;
-@property(nonatomic, weak, readonly) HBDNavigationController *nav;
-
-- (instancetype)initWithNavigationController:(HBDNavigationController *)navigationController;
-
-@end
-
-@interface HBDNavigationController ()
+@interface HBDNavigationController () <UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
 @property(nonatomic, weak) UIViewController *poppingViewController;
-@property(nonatomic, strong) HBDNavigationControllerDelegate *navigationDelegate;
+@property(nonatomic, strong) UIScreenEdgePanGestureRecognizer *navigationPopGestureRecognizer;
 
 - (UIGestureRecognizer *)superInteractivePopGestureRecognizer;
+- (void)handleNavigationTransition:(UIScreenEdgePanGestureRecognizer *)pan;
 
 @end
 
 @protocol HBDNavigationTransitionProtocol <NSObject>
 
 - (void)handleNavigationTransition:(UIScreenEdgePanGestureRecognizer *)pan;
-
-@end
-
-@implementation HBDNavigationControllerDelegate
-
-- (instancetype)initWithNavigationController:(HBDNavigationController *)nav {
-    if (self = [super init]) {
-        _nav = nav;
-        self.edges = UIRectEdgeLeft;
-        self.delegate = self;
-        [self addTarget:self action:@selector(handleNavigationTransition:)];
-        [nav.view addGestureRecognizer:self];
-        [nav superInteractivePopGestureRecognizer].enabled = NO;
-    }
-    return self;
-}
-
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
-    HBDNavigationController *nav = self.nav;
-
-    if (nav.transitionCoordinator) {
-        return NO;
-    }
-
-    if (nav.viewControllers.count > 1) {
-        UIViewController *topVC = nav.topViewController;
-        if ([topVC isKindOfClass:[HBDViewController class]] && ((HBDViewController *)topVC).forceScreenLandscape) {
-            return NO;
-        }
-        return topVC.hbd_swipeBackEnabled && topVC.hbd_backInteractive;
-    }
-    return NO;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    if (gestureRecognizer == self.nav.interactivePopGestureRecognizer) {
-        return YES;
-    }
-    return NO;
-}
-
-- (void)handleNavigationTransition:(UIScreenEdgePanGestureRecognizer *)pan {
-    HBDNavigationController *nav = self.nav;
-
-    if (![self.proxyDelegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)]) {
-        id <HBDNavigationTransitionProtocol> target = (id <HBDNavigationTransitionProtocol>) [nav superInteractivePopGestureRecognizer].delegate;
-        if ([target respondsToSelector:@selector(handleNavigationTransition:)]) {
-            [target handleNavigationTransition:pan];
-        }
-    }
-}
-
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    if (self.proxyDelegate && [self.proxyDelegate respondsToSelector:@selector(navigationController:willShowViewController:animated:)]) {
-        [self.proxyDelegate navigationController:navigationController willShowViewController:viewController animated:animated];
-    }
-}
-
-- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    if (self.proxyDelegate && [self.proxyDelegate respondsToSelector:@selector(navigationController:didShowViewController:animated:)]) {
-        [self.proxyDelegate navigationController:navigationController didShowViewController:viewController animated:animated];
-    }
-
-    UIViewController *poppingVC = self.nav.poppingViewController;
-    if (poppingVC && [poppingVC isKindOfClass:[HBDViewController class]]) {
-        [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
-    }
-
-    self.nav.poppingViewController = nil;
-}
-
-- (nullable id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
-                                   interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>)animationController {
-    if (self.proxyDelegate && [self.proxyDelegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)]) {
-        return [self.proxyDelegate navigationController:navigationController interactionControllerForAnimationController:animationController];
-    }
-
-    return nil;
-}
-
-- (nullable id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
-                                            animationControllerForOperation:(UINavigationControllerOperation)operation
-                                                         fromViewController:(UIViewController *)fromVC
-                                                           toViewController:(UIViewController *)toVC {
-    if (self.proxyDelegate && [self.proxyDelegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)]) {
-        return [self.proxyDelegate navigationController:navigationController animationControllerForOperation:operation fromViewController:fromVC toViewController:toVC];
-    }
-
-    return nil;
-}
 
 @end
 
@@ -133,7 +35,7 @@
 }
 
 - (UIGestureRecognizer *)interactivePopGestureRecognizer {
-    return self.navigationDelegate;
+    return self.navigationPopGestureRecognizer;
 }
 
 - (UIGestureRecognizer *)superInteractivePopGestureRecognizer {
@@ -156,18 +58,58 @@
     [super viewDidLoad];
     self.definesPresentationContext = NO;
 
-    self.navigationDelegate = [[HBDNavigationControllerDelegate alloc] initWithNavigationController:self];
-    self.navigationDelegate.proxyDelegate = self.delegate;
-    self.delegate = self.navigationDelegate;
+    self.navigationPopGestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(handleNavigationTransition:)];
+    self.navigationPopGestureRecognizer.edges = UIRectEdgeLeft;
+    self.navigationPopGestureRecognizer.delegate = self;
+    [self.view addGestureRecognizer:self.navigationPopGestureRecognizer];
+    [self superInteractivePopGestureRecognizer].enabled = NO;
+
+    self.delegate = self;
     [self setNavigationBarHidden:YES animated:NO];
 }
 
 - (void)setDelegate:(id <UINavigationControllerDelegate>)delegate {
-    if ([delegate isKindOfClass:[HBDNavigationControllerDelegate class]] || !self.navigationDelegate) {
+    if (delegate == self || !self.navigationPopGestureRecognizer) {
         [super setDelegate:delegate];
-    } else {
-        self.navigationDelegate.proxyDelegate = delegate;
     }
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if (self.transitionCoordinator) {
+        return NO;
+    }
+
+    if (self.viewControllers.count > 1) {
+        UIViewController *topVC = self.topViewController;
+        if ([topVC isKindOfClass:[HBDViewController class]] && ((HBDViewController *)topVC).forceScreenLandscape) {
+            return NO;
+        }
+        return topVC.hbd_swipeBackEnabled && topVC.hbd_backInteractive;
+    }
+    return NO;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    if (gestureRecognizer == self.interactivePopGestureRecognizer) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)handleNavigationTransition:(UIScreenEdgePanGestureRecognizer *)pan {
+    id <HBDNavigationTransitionProtocol> target = (id <HBDNavigationTransitionProtocol>) [self superInteractivePopGestureRecognizer].delegate;
+    if ([target respondsToSelector:@selector(handleNavigationTransition:)]) {
+        [target handleNavigationTransition:pan];
+    }
+}
+
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    UIViewController *poppingVC = self.poppingViewController;
+    if (poppingVC && [poppingVC isKindOfClass:[HBDViewController class]]) {
+        [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];
+    }
+
+    self.poppingViewController = nil;
 }
 
 - (UIViewController *)popViewControllerAnimated:(BOOL)animated {
