@@ -1,7 +1,7 @@
 {
 	"extends": "@react-native/typescript-config",
 	"compilerOptions": {
-		"baseUrl": "./",
+		"rootDir": "./",
 		"paths": {
 			"hybrid-navigation": ["./packages/navigation/src/index"]
 		}
