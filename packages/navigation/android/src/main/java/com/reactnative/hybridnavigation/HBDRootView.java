@@ -84,7 +84,10 @@ public class HBDRootView extends FrameLayout {
 
 	public void clearSurface(boolean stopSurface) {
 		if (surface != null && stopSurface) {
-			surface.stop();
+			try {
+				surface.stop();
+			} catch (RuntimeException ignored) {
+			}
 		}
 		if (reactSurfaceView != null) {
 			reactSurfaceView.setOnTouchListener(null);

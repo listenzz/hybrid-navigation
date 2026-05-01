@@ -129,19 +129,13 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 	private void unmountReactView() {
 		getReactManager().removeReactBridgeReloadListener(this);
 
-		boolean canStopSurface = false;
-		ReactContext reactContext = getCurrentReactContext();
-		if (reactContext != null && reactContext.hasActiveReactInstance()) {
-			canStopSurface = true;
-		}
-
 		if (reactSurface != null) {
 			FLog.w(TAG, "销毁页面-：" + getModuleName());
 			reactSurface = null;
 		}
 
 		if (reactRootView != null) {
-			reactRootView.clearSurface(canStopSurface);
+			reactRootView.clearSurface(true);
 		}
 
 	}
