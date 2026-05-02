@@ -84,6 +84,80 @@ cd -
 yarn ios
 ```
 
+## AI Agent 技能环境
+
+本仓库已接入以下三个 Callstack 技能：
+
+- `agent-device`：驱动 iOS/Android 模拟器或真机进行自动化交互
+- `react-native-best-practices`：React Native 性能优化最佳实践
+- `react-devtools`：通过 `agent-react-devtools` 读取组件树、状态和性能剖析数据
+
+> 使用 `agent-device` 相关命令前，请确保 Node.js 版本为 `>=22`。
+
+如需恢复技能环境（例如换机器后）：
+
+```sh
+yarn skills:restore
+yarn skills:list
+```
+
+运行 React DevTools Agent 的常用命令：
+
+```sh
+# 启动 daemon
+yarn devtools:start
+
+# 查看连接状态（需要 React Native app 正在运行）
+yarn devtools:status
+
+# 停止 daemon
+yarn devtools:stop
+```
+
+运行 Agent Device 的常用命令：
+
+```sh
+# 查看命令帮助
+yarn device:help
+
+# 启动 iOS / Android 目标
+yarn device:boot:ios
+yarn device:boot:android
+
+# 查看安装的 App（用于拿到 bundle id / package name）
+yarn device:apps:ios
+yarn device:apps:android
+
+# 抓取当前页面可交互快照
+yarn device:snapshot
+```
+
+`agent-device + agent-react-devtools` 推荐联动流程：
+
+```sh
+# 1) 启动 metro 和 react devtools daemon
+yarn start
+yarn devtools:start
+
+# 2) 用 agent-device 复现问题
+npx agent-device open <AppNameOrBundleId> --platform ios
+npx agent-device snapshot -i
+npx agent-device click @eN
+
+# 3) 用 react devtools 定位组件与渲染性能
+npx agent-react-devtools profile start
+# 复现同样交互
+npx agent-react-devtools profile stop
+npx agent-react-devtools profile slow --limit 10
+npx agent-react-devtools get component @cN
+```
+
+React Native 不需要额外改代码即可连接 devtools。若使用 Android 真机，请转发端口：
+
+```sh
+adb reverse tcp:8097 tcp:8097
+```
+
 ## 文档
 
 [从这里开始](./docs/README.md)

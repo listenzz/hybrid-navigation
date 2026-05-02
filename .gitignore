@@ -80,3 +80,9 @@ dist/
 .temp/
 .cache/
 
+# local AI agent runtime artifacts
+.codex/
+.agents/
+
+# rotation test artifacts
+tests/rotation/artifacts/
