@@ -61,8 +61,8 @@ useVisibleEffect(() => {
     // true 表示拦截，false 表示不拦截
     return false;
   };
-  BackHandler.addEventListener('hardwareBackPress', handleBackPress);
-  return () => BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+  const subscription = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+  return () => subscription.remove();
 });
 ```
 
@@ -81,7 +81,7 @@ export function withRedux(WrappedComponent: ComponentType<any>) {
     render() {
       return (
         <Provider store={store}>
-          // 注意传递 props 属性
+          {/* 注意传递 props 属性 */}
           <WrappedComponent {...this.props} />
         </Provider>
       );

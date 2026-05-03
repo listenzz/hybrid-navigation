@@ -182,6 +182,7 @@ cd ios && pod install
 #import <React/RCTDevMenu.h>
 
 #import <HybridNavigation/HybridNavigation.h>
+#import "ExampleHybridViewController.h" // 仅当你需要注册原生模块时
 
 @interface ReactNativeDelegate : RCTDefaultReactNativeFactoryDelegate
 

@@ -48,10 +48,10 @@ Navigation.setRootLayoutUpdateListener(
   () => DeepLink.activate('hbd://'),
 );
 
-Navigation.setRoot(drawer, true);
+Navigation.setRoot(rootLayout);
 ```
 
-**方式二**：在入口页面的生命周期中激活（如 example 中 Navigation 页面在挂载时激活、卸载时反激活）。若使用该方式，需确保只在一处调用，且与 setRoot 时机协调。
+**方式二（不推荐）**：在入口页面的生命周期中激活。该方式在多入口或根布局替换时容易重复注册监听；当前 example 已改为方式一。若沿用此方式，需确保只在一处调用，且与 setRoot 时机协调。
 
 ## 拦截
 
@@ -59,13 +59,21 @@ Navigation.setRoot(drawer, true);
 
 router 对象为我们提供了注册和移除拦截器的一对方法
 
+`router.addInterceptor(interceptor): void`
+
+`router.removeInterceptor(interceptor): void`
+
 ```javascript
 import { router } from 'hybrid-navigation';
 router.addInterceptor(func);
 router.removeInterceptor(func);
 ```
 
-func 是一个接收 path 为参数，返回 boolean 的函数，返回 true 表示拦截。
+func 是一个接收 path 为参数，返回 `boolean | Promise<boolean>` 的函数，返回 true 表示拦截。
+
+```ts
+type RouteInterceptor = (path: string) => boolean | Promise<boolean>;
+```
 
 ## iOS 配置
 
