@@ -24,6 +24,7 @@ import com.facebook.react.devsupport.DoubleTapReloadRecognizer;
 import com.facebook.react.devsupport.interfaces.DevSupportManager;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.modules.core.PermissionListener;
+import com.facebook.react.uimanager.DisplayMetricsHolder;
 
 public class ReactAppCompatActivityDelegate {
 
@@ -132,6 +133,7 @@ public class ReactAppCompatActivityDelegate {
 	}
 
 	public void onConfigurationChanged(Configuration newConfig) {
+		DisplayMetricsHolder.initDisplayMetrics(getPlainActivity());
 		ReactHost reactHost = mReactManager.getReactHost();
 		reactHost.onConfigurationChanged(getPlainActivity());
 	}
