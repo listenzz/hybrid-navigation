@@ -1,0 +1,29 @@
+diff --git a/node_modules/@react-native-community/cli-platform-apple/build/commands/runCommand/getBuildSettings.js b/node_modules/@react-native-community/cli-platform-apple/build/commands/runCommand/getBuildSettings.js
+index 9acc98e..f997efe 100644
+--- a/node_modules/@react-native-community/cli-platform-apple/build/commands/runCommand/getBuildSettings.js
++++ b/node_modules/@react-native-community/cli-platform-apple/build/commands/runCommand/getBuildSettings.js
+@@ -27,10 +27,22 @@ function _child_process() {
+ }
+ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+ async function getBuildSettings(xcodeProject, mode, buildOutput, scheme, target) {
+-  const buildSettings = _child_process().default.execFileSync('xcodebuild', [xcodeProject.isWorkspace ? '-workspace' : '-project', xcodeProject.name, '-scheme', scheme, '-sdk', getPlatformName(buildOutput), '-configuration', mode, '-showBuildSettings', '-json'], {
++  const rawBuildSettings = _child_process().default.execFileSync('xcodebuild', [xcodeProject.isWorkspace ? '-workspace' : '-project', xcodeProject.name, '-scheme', scheme, '-sdk', getPlatformName(buildOutput), '-configuration', mode, '-showBuildSettings', '-json'], {
+     encoding: 'utf8'
+   });
+-  const settings = JSON.parse(buildSettings);
++
++  // xcodebuild can print warnings around JSON output (for example about disconnected devices).
++  // Parse only the JSON array payload so those warnings don't break run-ios.
++  const jsonMatch = rawBuildSettings.match(/\[[\s\S]*\]/);
++  if (!jsonMatch) {
++    throw new (_cliTools().CLIError)('Failed to read build settings from xcodebuild output. Please run your project with Xcode and report this issue.');
++  }
++  let settings;
++  try {
++    settings = JSON.parse(jsonMatch[0]);
++  } catch (error) {
++    throw new (_cliTools().CLIError)('Failed to parse build settings JSON from xcodebuild output. Please run your project with Xcode and report this issue.');
++  }
+ 
+   // Find all 'app' targets in the build settings
+   const applicationTargets = settings.filter(setting => setting.buildSettings.WRAPPER_EXTENSION === 'app').map(({

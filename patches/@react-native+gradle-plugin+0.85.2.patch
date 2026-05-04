@@ -1,0 +1,35 @@
+diff --git a/node_modules/@react-native/gradle-plugin/build.gradle.kts b/node_modules/@react-native/gradle-plugin/build.gradle.kts
+index 80021f0..7492090 100644
+--- a/node_modules/@react-native/gradle-plugin/build.gradle.kts
++++ b/node_modules/@react-native/gradle-plugin/build.gradle.kts
+@@ -10,6 +10,16 @@ plugins {
+   alias(libs.plugins.ktfmt).apply(true)
+ }
+ 
++allprojects {
++  repositories {
++    maven(url = "https://repo.huaweicloud.com/repository/maven/")
++    maven(url = "https://maven.aliyun.com/repository/google")
++    maven(url = "https://maven.aliyun.com/repository/public")
++    mavenCentral()
++    google()
++  }
++}
++
+ tasks.register("build") {
+   dependsOn(
+       ":react-native-gradle-plugin:build",
+diff --git a/node_modules/@react-native/gradle-plugin/settings.gradle.kts b/node_modules/@react-native/gradle-plugin/settings.gradle.kts
+index b3c46a3..9e28413 100644
+--- a/node_modules/@react-native/gradle-plugin/settings.gradle.kts
++++ b/node_modules/@react-native/gradle-plugin/settings.gradle.kts
+@@ -7,6 +7,9 @@
+ 
+ pluginManagement {
+   repositories {
++    maven(url = "https://repo.huaweicloud.com/repository/maven/")
++    maven(url = "https://maven.aliyun.com/repository/google")
++    maven(url = "https://maven.aliyun.com/repository/public")
+     mavenCentral()
+     google()
+     gradlePluginPortal()

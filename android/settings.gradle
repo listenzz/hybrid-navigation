@@ -1,6 +1,30 @@
-pluginManagement { includeBuild("../node_modules/@react-native/gradle-plugin") }
+pluginManagement {
+	includeBuild("../node_modules/@react-native/gradle-plugin")
+	repositories {
+		maven { url "https://repo.huaweicloud.com/repository/maven/" }
+		maven { url "https://maven.aliyun.com/repository/google" }
+		maven { url "https://maven.aliyun.com/repository/public" }
+		google()
+		mavenCentral()
+		gradlePluginPortal()
+	}
+}
+
 plugins { id("com.facebook.react.settings") }
-extensions.configure(com.facebook.react.ReactSettingsExtension){ ex -> ex.autolinkLibrariesFromCommand() }
+extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
+	ex.autolinkLibrariesFromCommand()
+}
+
+dependencyResolutionManagement {
+	repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+	repositories {
+		maven { url "https://repo.huaweicloud.com/repository/maven/" }
+		maven { url "https://maven.aliyun.com/repository/google" }
+		maven { url "https://maven.aliyun.com/repository/public" }
+		google()
+		mavenCentral()
+	}
+}
 rootProject.name = 'HybridNavigation'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')

@@ -8,6 +8,9 @@ buildscript {
         kotlinVersion = "2.1.20"
     }
     repositories {
+        maven { url "https://repo.huaweicloud.com/repository/maven/" }
+        maven { url "https://maven.aliyun.com/repository/google" }
+        maven { url "https://maven.aliyun.com/repository/public" }
         google()
         mavenCentral()
     }

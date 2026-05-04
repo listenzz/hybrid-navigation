@@ -35,23 +35,24 @@
 	"dependencies": {
 		"@react-native-community/hooks": "^3.1.0",
 		"@react-native-community/slider": "^5.1.0",
-		"@sdcx/keyboard-insets": "^1.0.2",
+		"@sdcx/keyboard-insets": "^1.0.5",
 		"hybrid-navigation": "*",
 		"react": "19.2.3",
-		"react-native": "0.84.0",
+		"react-native": "0.85.2",
 		"react-native-safe-area-context": "^5.5.2"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.25.2",
 		"@babel/preset-env": "^7.25.3",
 		"@babel/runtime": "^7.25.0",
-		"@react-native-community/cli": "20.0.0",
-		"@react-native-community/cli-platform-android": "20.0.0",
-		"@react-native-community/cli-platform-ios": "20.0.0",
-		"@react-native/babel-preset": "0.84.0",
-		"@react-native/eslint-config": "0.84.0",
-		"@react-native/metro-config": "0.84.0",
-		"@react-native/typescript-config": "0.84.0",
+		"@react-native-community/cli": "20.1.0",
+		"@react-native-community/cli-platform-android": "20.1.0",
+		"@react-native-community/cli-platform-ios": "20.1.0",
+		"@react-native/babel-preset": "0.85.2",
+		"@react-native/eslint-config": "0.85.2",
+		"@react-native/jest-preset": "0.85.2",
+		"@react-native/metro-config": "0.85.2",
+		"@react-native/typescript-config": "0.85.2",
 		"@types/jest": "^29.5.13",
 		"@types/react": "^19.2.0",
 		"@types/react-test-renderer": "^19.1.0",
@@ -63,11 +64,11 @@
 		"patch-package": "^8.0.0",
 		"postinstall-postinstall": "^2.1.0",
 		"prettier": "2.8.8",
-		"react-test-renderer": "19.2.0",
+		"react-test-renderer": "19.2.3",
 		"typescript": "^5.8.3",
 		"vuepress": "2.0.0-beta.51"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=20.19.4"
 	}
 }

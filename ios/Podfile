@@ -1,6 +1,9 @@
 # Disable New Architecture
 # ENV['RCT_NEW_ARCH_ENABLED'] = '0'
 
+# Use an accessible Maven mirror for Hermes prebuilt artifacts.
+ENV['ENTERPRISE_REPOSITORY'] = 'https://repo.huaweicloud.com/repository/maven'
+
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
     'require.resolve(
@@ -21,7 +24,6 @@ target 'HybridNavigation' do
     config = use_native_modules!
     use_react_native!(
         :path => config[:reactNativePath],
-        :hermes_enabled => true,
         :app_path => "#{Pod::Config.instance.installation_root}/.."
     )
 
