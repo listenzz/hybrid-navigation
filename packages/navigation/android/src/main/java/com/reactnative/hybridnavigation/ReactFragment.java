@@ -16,6 +16,7 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.common.LifecycleState;
 import com.facebook.react.interfaces.fabric.ReactSurface;
+import com.navigation.androidx.FragmentHelper;
 
 public class ReactFragment extends HybridFragment implements ReactManager.ReactBridgeReloadListener {
 
@@ -47,7 +48,7 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 	@Override
 	public void onStop() {
 		super.onStop();
-		if (isRemoving() && forceScreenLandscape()) {
+		if (FragmentHelper.isRemoving(this) && forceScreenLandscape()) {
 			unmountReactView();
 		}
 	}

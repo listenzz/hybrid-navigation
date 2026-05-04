@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.facebook.react.interfaces.TaskInterface;
 import com.facebook.react.interfaces.fabric.ReactSurface;
 import com.facebook.react.runtime.ReactSurfaceView;
 
@@ -26,6 +27,9 @@ public class HBDRootView extends FrameLayout {
 
 	@Nullable
 	private ReactSurfaceView reactSurfaceView;
+
+	@Nullable
+	private TaskInterface<Void> startTask;
 
 	@Nullable
 	private Bundle appProperties;
@@ -75,7 +79,7 @@ public class HBDRootView extends FrameLayout {
 			applyAppProperties(appProperties);
 		}
 
-		reactSurface.start();
+		startTask = reactSurface.start();
 	}
 
 	public void clearSurface() {
@@ -83,18 +87,30 @@ public class HBDRootView extends FrameLayout {
 	}
 
 	public void clearSurface(boolean stopSurface) {
-		if (surface != null && stopSurface) {
-			try {
-				surface.stop();
-			} catch (RuntimeException ignored) {
-			}
+		ReactSurface oldSurface = surface;
+		ReactSurfaceView oldReactSurfaceView = reactSurfaceView;
+		TaskInterface<Void> oldStartTask = startTask;
+		View oldSurfaceRootView = oldReactSurfaceView;
+
+		if (oldSurfaceRootView == null && oldSurface != null) {
+			oldSurfaceRootView = oldSurface.getView();
 		}
-		if (reactSurfaceView != null) {
-			reactSurfaceView.setOnTouchListener(null);
-		}
+
 		surface = null;
 		reactSurfaceView = null;
-		removeAllViews();
+		startTask = null;
+
+		if (oldReactSurfaceView != null) {
+			oldReactSurfaceView.setOnTouchListener(null);
+		}
+
+		View surfaceRootView = oldSurfaceRootView;
+		if (oldSurface != null && stopSurface) {
+			ReactSurfaceCleanup.stopThenRun(oldSurface, oldStartTask, () -> removeSurfaceRootView(surfaceRootView));
+			return;
+		}
+
+		removeSurfaceRootView(surfaceRootView);
 	}
 
 	public void setAppProperties(@Nullable Bundle appProperties) {
@@ -131,6 +147,16 @@ public class HBDRootView extends FrameLayout {
 			updateInitProps.invoke(surface, new Bundle(appProperties));
 		} catch (NoSuchMethodException | IllegalAccessException |
 				 InvocationTargetException ignored) {
+		}
+	}
+
+	private void removeSurfaceRootView(@Nullable View oldSurfaceRootView) {
+		if (oldSurfaceRootView == null) {
+			return;
+		}
+
+		if (oldSurfaceRootView.getParent() == this) {
+			removeView(oldSurfaceRootView);
 		}
 	}
 }

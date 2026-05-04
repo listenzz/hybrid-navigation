@@ -133,7 +133,7 @@ public class ReactAppCompatActivityDelegate {
 	}
 
 	public void onConfigurationChanged(Configuration newConfig) {
-		DisplayMetricsHolder.initDisplayMetrics(getPlainActivity());
+		DisplayMetricsHolder.initDisplayMetricsIfNotInitialized(getPlainActivity());
 		ReactHost reactHost = mReactManager.getReactHost();
 		reactHost.onConfigurationChanged(getPlainActivity());
 	}
