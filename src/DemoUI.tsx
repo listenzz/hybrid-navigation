@@ -32,10 +32,19 @@ interface DemoNoteProps {
 }
 
 export function DemoSection({ title, children }: DemoSectionProps) {
+	const rows = React.Children.toArray(children);
+
 	return (
 		<View style={styles.section}>
 			<Text style={styles.sectionTitle}>{title}</Text>
-			<View style={styles.rows}>{children}</View>
+			<View style={styles.rows}>
+				{rows.map((child, index) => (
+					<React.Fragment key={index}>
+						{child}
+						{index < rows.length - 1 ? <View style={styles.separator} /> : null}
+					</React.Fragment>
+				))}
+			</View>
 		</View>
 	);
 }
@@ -111,8 +120,6 @@ const styles = StyleSheet.create({
 	},
 	row: {
 		backgroundColor: colors.surface,
-		borderBottomWidth: StyleSheet.hairlineWidth,
-		borderBottomColor: colors.border,
 	},
 	rowDisabled: {
 		opacity: 0.58,
@@ -128,8 +135,10 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 14,
 		paddingVertical: 12,
 		backgroundColor: colors.surface,
-		borderBottomWidth: StyleSheet.hairlineWidth,
-		borderBottomColor: colors.border,
+	},
+	separator: {
+		height: StyleSheet.hairlineWidth,
+		backgroundColor: colors.border,
 	},
 	iconShell: {
 		width: 34,
