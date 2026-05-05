@@ -4,7 +4,9 @@
 #import "UIViewController+HBD.h"
 
 static const NSTimeInterval HBDDrawerAnimationDuration = 0.28;
-static const CGFloat HBDDrawerContentCornerRadius = 18.0;
+static const CGFloat HBDDrawerLegacyContentCornerRadius = 39.0;
+static const CGFloat HBDDrawerModernPhoneContentCornerRadius = 55.0;
+static const CGFloat HBDDrawerModernPadContentCornerRadius = 24.0;
 static const CGFloat HBDDrawerContentShadowOpacity = 0.16;
 static const CGFloat HBDDrawerContentDimmingAlpha = 0.08;
 static const CGFloat HBDDrawerOpenGestureWidth = 200.0;
@@ -23,6 +25,7 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
 @property(nonatomic, strong) CAGradientLayer *menuGradientOverlayLayer;
 @property(nonatomic, strong) UIView *contentWrapperView;
 @property(nonatomic, strong) UIView *contentClippingView;
+@property(nonatomic, strong) CAShapeLayer *contentClippingMaskLayer;
 @property(nonatomic, strong) UIView *contentDimmingView;
 @property(nonatomic, strong) UIScreenEdgePanGestureRecognizer *edgePanGestureRecognizer;
 @property(nonatomic, strong) UIPanGestureRecognizer *openPanGestureRecognizer;
@@ -640,7 +643,26 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
     self.contentDimmingView.frame = self.contentController.view.bounds;
     self.contentDimmingView.alpha = HBDDrawerContentDimmingAlpha * progress;
 
-    CGFloat cornerRadius = HBDDrawerContentCornerRadius * progress;
+    CGFloat cornerRadius = [self contentCornerRadiusForDrawerProgress:progress];
+    BOOL usesShapeMask = NO;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 260000
+    if (@available(iOS 26.0, *)) {
+        usesShapeMask = YES;
+        if (progress > 0) {
+            if (!self.contentClippingMaskLayer) {
+                self.contentClippingMaskLayer = [CAShapeLayer layer];
+            }
+            self.contentClippingMaskLayer.frame = self.contentClippingView.bounds;
+            self.contentClippingMaskLayer.path = [UIBezierPath bezierPathWithRoundedRect:self.contentClippingView.bounds cornerRadius:cornerRadius].CGPath;
+            self.contentClippingView.layer.mask = self.contentClippingMaskLayer;
+        } else {
+            self.contentClippingView.layer.mask = nil;
+        }
+    }
+#endif
+    if (!usesShapeMask) {
+        self.contentClippingView.layer.mask = nil;
+    }
     self.contentWrapperView.layer.cornerRadius = cornerRadius;
     self.contentClippingView.layer.cornerRadius = cornerRadius;
     self.contentClippingView.layer.masksToBounds = progress > 0;
@@ -651,6 +673,21 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
     }
 
     self.contentWrapperView.layer.shadowOpacity = HBDDrawerContentShadowOpacity * progress;
+}
+
+- (CGFloat)contentCornerRadiusForDrawerProgress:(CGFloat)progress {
+    if (progress <= 0) {
+        return 0;
+    }
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 260000
+    if (@available(iOS 26.0, *)) {
+        CGFloat minDimension = MIN(CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds));
+        return minDimension <= 600 ? HBDDrawerModernPhoneContentCornerRadius : HBDDrawerModernPadContentCornerRadius;
+    }
+#endif
+
+    return HBDDrawerLegacyContentCornerRadius;
 }
 
 - (CGFloat)menuWidth {
