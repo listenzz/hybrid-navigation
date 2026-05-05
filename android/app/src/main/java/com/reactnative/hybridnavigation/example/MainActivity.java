@@ -16,7 +16,10 @@ public class MainActivity extends ReactAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
-        splashScreen.setOnExitAnimationListener(view -> view.remove()); // 移除 fade 动画
+        splashScreen.setOnExitAnimationListener(view -> {
+            view.remove(); // 移除 fade 动画
+            setNeedsSystemBarsAppearanceUpdate();
+        });
         splashScreen.setKeepOnScreenCondition(() -> keepSplashScreenOnScreen);
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null || getCurrentReactContext() != null) {

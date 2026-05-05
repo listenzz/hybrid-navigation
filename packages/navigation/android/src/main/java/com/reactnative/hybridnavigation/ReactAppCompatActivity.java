@@ -99,6 +99,15 @@ public class ReactAppCompatActivity extends AwesomeActivity implements DefaultHa
 		onCreateMainComponent();
 	}
 
+	protected void setNeedsSystemBarsAppearanceUpdate() {
+		Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.content);
+		if (fragment instanceof AwesomeFragment awesomeFragment) {
+			awesomeFragment.setNeedsLayoutInDisplayCutoutModeUpdate();
+			awesomeFragment.setNeedsStatusBarAppearanceUpdate();
+			awesomeFragment.setNeedsNavigationBarAppearanceUpdate();
+		}
+	}
+
 	protected void onCreateMainComponent() {
 		ReactManager reactManager = getReactManager();
 		if (getMainComponentName() != null) {
