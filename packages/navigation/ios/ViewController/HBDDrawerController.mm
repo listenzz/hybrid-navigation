@@ -24,6 +24,7 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
 @property(nonatomic, strong) UIView *contentWrapperView;
 @property(nonatomic, strong) UIView *contentClippingView;
 @property(nonatomic, strong) UIView *contentDimmingView;
+@property(nonatomic, strong) UIScreenEdgePanGestureRecognizer *edgePanGestureRecognizer;
 @property(nonatomic, strong) UIPanGestureRecognizer *openPanGestureRecognizer;
 @property(nonatomic, strong) UIPanGestureRecognizer *contentPanGestureRecognizer;
 @property(nonatomic, strong) UIPanGestureRecognizer *menuPanGestureRecognizer;
@@ -33,6 +34,7 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
 @property(nonatomic, assign) CGFloat drawerProgress;
 @property(nonatomic, assign) BOOL openPanStartedNearEdge;
 @property(nonatomic, assign) BOOL openingGestureHasDrawer;
+@property(nonatomic, assign) BOOL openingGestureAppearanceTransitionInProgress;
 
 @end
 
@@ -78,10 +80,11 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
     edgePanGestureRecognizer.edges = UIRectEdgeLeft;
     edgePanGestureRecognizer.delegate = self;
     [self.view addGestureRecognizer:edgePanGestureRecognizer];
+    self.edgePanGestureRecognizer = edgePanGestureRecognizer;
 
     UIPanGestureRecognizer *openPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleOpenPanGestureRecognizer:)];
     openPanGestureRecognizer.delegate = self;
-    openPanGestureRecognizer.cancelsTouchesInView = NO;
+    openPanGestureRecognizer.cancelsTouchesInView = YES;
     [self.view addGestureRecognizer:openPanGestureRecognizer];
     self.openPanGestureRecognizer = openPanGestureRecognizer;
 }
@@ -176,7 +179,7 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
         UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *) gestureRecognizer;
         CGPoint velocity = [pan velocityInView:self.view];
         if (gestureRecognizer == self.openPanGestureRecognizer) {
-            return [self canOpenMenuByGesture] && self.openPanStartedNearEdge;
+            return [self canOpenMenuByGesture] && self.openPanStartedNearEdge && [self shouldBeginOpeningPanGestureRecognizer:pan];
         }
         BOOL isDrawerClosingPan = gestureRecognizer == self.contentPanGestureRecognizer || gestureRecognizer == self.menuPanGestureRecognizer;
         return isDrawerClosingPan && self.isMenuOpened && velocity.x < 0 && ABS(velocity.x) > ABS(velocity.y) * HBDDrawerHorizontalActivationRatio;
@@ -215,13 +218,6 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
 - (void)addMenuView {
     UIViewController *menu = self.menuController;
     CGFloat menuWidth = [self menuWidth];
-    menu.view.frame = CGRectMake(0, 0, menuWidth, CGRectGetHeight(self.view.bounds));
-    menu.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
-    menu.view.userInteractionEnabled = NO;
-    if (!menu.parentViewController) {
-        [self addChildViewController:menu];
-        [menu didMoveToParentViewController:self];
-    }
 
     UIView *menuHolderView = [[UIView alloc] initWithFrame:self.view.bounds];
     menuHolderView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
@@ -230,7 +226,19 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
 
     [self.view insertSubview:menuHolderView belowSubview:self.contentWrapperView];
     [self.view bringSubviewToFront:self.contentWrapperView];
+
+    BOOL shouldMoveToParent = menu.parentViewController != self;
+    if (shouldMoveToParent) {
+        [self addChildViewController:menu];
+    }
+
+    menu.view.frame = CGRectMake(0, 0, menuWidth, CGRectGetHeight(self.view.bounds));
+    menu.view.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    menu.view.userInteractionEnabled = NO;
     [menuHolderView addSubview:menu.view];
+    if (shouldMoveToParent) {
+        [menu didMoveToParentViewController:self];
+    }
 
     UIView *menuGradientOverlayView = [[UIView alloc] initWithFrame:CGRectZero];
     menuGradientOverlayView.userInteractionEnabled = NO;
@@ -273,6 +281,12 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
 
     CGFloat duration = MAX(0.08, HBDDrawerAnimationDuration * self.drawerProgress);
 
+    if (self.openingGestureAppearanceTransitionInProgress) {
+        [self.menuController endAppearanceTransition];
+        self.openingGestureAppearanceTransitionInProgress = NO;
+        appearanceTransition = YES;
+    }
+
     if (appearanceTransition) {
         [self.menuController beginAppearanceTransition:NO animated:YES];
     }
@@ -280,10 +294,10 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
     [UIView animateWithDuration:duration delay:0. options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseIn animations:^{
         [self applyDrawerProgress:0];
     }                completion:^(BOOL finished) {
-        [self removeMenuView];
         if (appearanceTransition) {
             [self.menuController endAppearanceTransition];
         }
+        [self removeMenuView];
     }];
 }
 
@@ -291,8 +305,18 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
     [self removeGestureRecognizerFromContentWrapperView];
     [self removeGestureRecognizerFromMenuHolderView];
     [self applyDrawerProgress:0];
-    [self.menuController.view removeFromSuperview];
-    self.menuController.view.transform = CGAffineTransformIdentity;
+    BOOL isMenuViewLoaded = self.menuController.isViewLoaded;
+    BOOL shouldRemoveFromParent = self.menuController.parentViewController == self;
+    if (shouldRemoveFromParent) {
+        [self.menuController willMoveToParentViewController:nil];
+    }
+    if (isMenuViewLoaded) {
+        [self.menuController.view removeFromSuperview];
+        self.menuController.view.transform = CGAffineTransformIdentity;
+    }
+    if (shouldRemoveFromParent) {
+        [self.menuController removeFromParentViewController];
+    }
     [self.contentDimmingView removeFromSuperview];
     self.contentDimmingView = nil;
     self.menuGradientOverlayView = nil;
@@ -305,7 +329,7 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
 - (void)settleMenuViewWithAppearanceTransition:(BOOL)appearanceTransition {
     CGFloat duration = MAX(0.08, HBDDrawerAnimationDuration * (1 - self.drawerProgress));
     [self cancelReactTouches];
-    if (appearanceTransition) {
+    if (appearanceTransition && !self.openingGestureAppearanceTransitionInProgress) {
         [self.menuController beginAppearanceTransition:YES animated:YES];
     }
     [UIView animateWithDuration:duration delay:0.0 options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionCurveEaseOut animations:^{
@@ -314,6 +338,7 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
         self.menuController.view.userInteractionEnabled = YES;
         if (appearanceTransition) {
             [self.menuController endAppearanceTransition];
+            self.openingGestureAppearanceTransitionInProgress = NO;
         }
     }];
 }
@@ -371,8 +396,21 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return gestureRecognizer == self.menuPanGestureRecognizer || otherGestureRecognizer == self.menuPanGestureRecognizer ||
-           gestureRecognizer == self.openPanGestureRecognizer || otherGestureRecognizer == self.openPanGestureRecognizer;
+    return gestureRecognizer == self.menuPanGestureRecognizer || otherGestureRecognizer == self.menuPanGestureRecognizer;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldBeRequiredToFailByGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    if (gestureRecognizer == self.edgePanGestureRecognizer || gestureRecognizer == self.openPanGestureRecognizer) {
+        return [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]] &&
+               [self isGestureRecognizer:otherGestureRecognizer attachedInsideView:self.contentController.view];
+    }
+
+    return NO;
+}
+
+- (BOOL)isGestureRecognizer:(UIGestureRecognizer *)gestureRecognizer attachedInsideView:(UIView *)view {
+    UIView *gestureView = gestureRecognizer.view;
+    return gestureView == view || [gestureView isDescendantOfView:view];
 }
 
 - (void)handleEdgePanGestureRecognizer:(UIScreenEdgePanGestureRecognizer *)recognizer {
@@ -444,11 +482,20 @@ static const CGFloat HBDDrawerMenuOverlayMaxAlpha = 0.34;
     return movedFarEnough && movingRight && mostlyHorizontal;
 }
 
+- (BOOL)shouldBeginOpeningPanGestureRecognizer:(UIPanGestureRecognizer *)recognizer {
+    CGPoint velocity = [recognizer velocityInView:self.view];
+    return velocity.x > 0 && ABS(velocity.x) > ABS(velocity.y) * HBDDrawerHorizontalActivationRatio;
+}
+
 - (void)beginOpeningDrawerWithProgress:(CGFloat)progress {
     self.openingGestureHasDrawer = YES;
     [self cancelReactTouches];
     [self prepareDrawerHapticFeedback];
     [self addMenuView];
+    if (!self.openingGestureAppearanceTransitionInProgress) {
+        [self.menuController beginAppearanceTransition:YES animated:YES];
+        self.openingGestureAppearanceTransitionInProgress = YES;
+    }
     [self applyDrawerProgress:progress];
 }
 
