@@ -88,21 +88,21 @@ const tabs: Tabs = {
 	},
 };
 
-const rootStack: Stack = {
-	stack: {
-		children: [tabs],
-	},
-};
-
 const menu: Screen = { screen: { moduleName: 'Menu' } };
 
 const drawer: Drawer = {
 	drawer: {
-		children: [rootStack, menu],
+		children: [tabs, menu],
 		options: {
 			maxDrawerWidth: 280,
 			minDrawerMargin: 64,
 		},
+	},
+};
+
+const rootStack: Stack = {
+	stack: {
+		children: [drawer],
 	},
 };
 
@@ -120,7 +120,7 @@ Navigation.setRootLayoutUpdateListener(
 );
 
 // 设置 UI 层级
-Navigation.setRoot(drawer);
+Navigation.setRoot(rootStack);
 
 // 设置导航拦截器
 Navigation.setInterceptor(async (action, extras) => {

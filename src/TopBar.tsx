@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, Image, ImageSourcePropType } from 'react-native';
-import type { Navigator } from 'hybrid-navigation';
+import { useVisibleEffect, type Navigator } from 'hybrid-navigation';
 import { initialWindowMetrics, useSafeAreaInsets } from 'react-native-safe-area-context';
 import demoTheme from './Theme';
 
@@ -75,6 +75,18 @@ export default function TopBar({
 			mounted = false;
 		};
 	}, [navigator]);
+
+	useVisibleEffect(() => {
+		let mounted = true;
+		navigator.isStackRoot().then(root => {
+			if (mounted) {
+				setIsRoot(root);
+			}
+		});
+		return () => {
+			mounted = false;
+		};
+	});
 
 	const resolvedLeftAction = useMemo<Action | undefined>(() => {
 		if (showBackWhenPossible && !isRoot) {

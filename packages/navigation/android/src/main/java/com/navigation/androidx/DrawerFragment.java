@@ -132,7 +132,27 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
         super.onResume();
         opened = opening = isMenuOpened();
         closed = !isMenuOpened();
-        updateMenuGestureState();
+        requestMenuGestureStateUpdate();
+    }
+
+    @Override
+    public void onPause() {
+        if (mDrawerLayout != null) {
+            mDrawerLayout.setOpenGestureEnabled(false);
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            if (mDrawerLayout != null) {
+                mDrawerLayout.setOpenGestureEnabled(false);
+            }
+            return;
+        }
+        requestMenuGestureStateUpdate();
     }
 
     @Override
@@ -515,11 +535,23 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
         }
 
         boolean drawerVisible = mDrawerProgress > 0 || isMenuOpened();
-        boolean canOpenByGesture = mMenuInteractive && isContentStackRoot();
+        boolean canOpenByGesture = isResumed() && isDrawerStackRoot() && mMenuInteractive && isContentStackRoot();
         mDrawerLayout.setOpenGestureEnabled(canOpenByGesture);
         mDrawerLayout.setDrawerLockMode(drawerVisible || canOpenByGesture
                 ? DrawerLayout.LOCK_MODE_UNLOCKED
                 : DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START);
+    }
+
+    private void requestMenuGestureStateUpdate() {
+        updateMenuGestureState();
+        HybridDrawerLayout drawerLayout = mDrawerLayout;
+        if (drawerLayout != null) {
+            drawerLayout.post(() -> {
+                if (mDrawerLayout == drawerLayout) {
+                    updateMenuGestureState();
+                }
+            });
+        }
     }
 
     public void toggleMenu() {
@@ -562,6 +594,11 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
             return top == null ? content : top;
         }
         return content;
+    }
+
+    private boolean isDrawerStackRoot() {
+        StackFragment stackFragment = getStackFragment();
+        return stackFragment == null || isStackRoot();
     }
 
 }

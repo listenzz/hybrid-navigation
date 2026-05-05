@@ -294,29 +294,7 @@
         return (UINavigationController *)vc;
     }
 
-    UINavigationController *nav = vc.navigationController;
-    if (nav) {
-        return  nav;
-    }
-
-    HBDDrawerController *drawer = vc.drawerController;
-    if (!drawer) {
-        return nil;
-    }
-
-    if ([drawer.contentController isKindOfClass:[UITabBarController class]]) {
-        UITabBarController *tabs = (UITabBarController *)drawer.contentController;
-        if ([tabs.selectedViewController isKindOfClass:[UINavigationController class]]) {
-            return (UINavigationController *)tabs.selectedViewController;
-        }
-        return nil;
-    }
-
-    if ([drawer.contentController isKindOfClass:[UINavigationController class]]) {
-        return (UINavigationController *)drawer.contentController;
-    }
-
-    return drawer.contentController.navigationController;
+    return vc.navigationController;
 }
 
 - (void)invalidate {

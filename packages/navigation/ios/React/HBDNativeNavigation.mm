@@ -107,6 +107,11 @@
 
 - (void)isStackRoot:(nonnull NSString *)sceneId callback:(nonnull RCTResponseSenderBlock)callback {
 	UIViewController *vc = [self.bridgeManager viewControllerBySceneId:sceneId];
+	if (!vc) {
+		callback(@[NSNull.null, @NO]);
+		return;
+	}
+
 	UINavigationController *nav = vc.navigationController;
 	if (!nav) {
 		callback(@[NSNull.null, @NO]);
@@ -120,17 +125,28 @@
 	}
 
 	UIViewController *root = children[0];
-	if ([root.sceneId isEqualToString:sceneId]) {
-		callback(@[NSNull.null, @YES]);
-		return;
-	}
-
-	if (children.count == 1 && [root isKindOfClass:[UITabBarController class]]) {
+	if ([self viewController:vc hasAncestorOrSelf:root]) {
 		callback(@[NSNull.null, @YES]);
 		return;
 	}
 
 	callback(@[NSNull.null, @NO]);
+}
+
+- (BOOL)viewController:(UIViewController *)viewController hasAncestorOrSelf:(UIViewController *)ancestor {
+	if (!viewController || !ancestor) {
+		return NO;
+	}
+
+	NSMutableSet<UIViewController *> *visited = [NSMutableSet set];
+	for (UIViewController *current = viewController; current != nil && ![visited containsObject:current]; current = current.parentViewController) {
+		if (current == ancestor) {
+			return YES;
+		}
+		[visited addObject:current];
+	}
+
+	return NO;
 }
 
 - (void)dispatch:(nonnull NSString *)sceneId action:(nonnull NSString *)action params:(nonnull NSDictionary *)params callback:(nonnull RCTResponseSenderBlock)callback {

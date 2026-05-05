@@ -50,6 +50,18 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 		});
 	}, [navigator]);
 
+	useVisibleEffect(() => {
+		let mounted = true;
+		navigator.isStackRoot().then(root => {
+			if (mounted) {
+				setIsRoot(root);
+			}
+		});
+		return () => {
+			mounted = false;
+		};
+	});
+
 	const inputRef = useRef<TextInput>(null);
 	useVisibleEffect(() => {
 		inputRef.current?.blur();
