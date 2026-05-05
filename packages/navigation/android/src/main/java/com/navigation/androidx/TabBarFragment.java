@@ -284,6 +284,10 @@ public class TabBarFragment extends AwesomeFragment {
         if (completion != null) {
             completion.run();
         }
+        DrawerFragment drawerFragment = getDrawerFragment();
+        if (drawerFragment != null) {
+            drawerFragment.updateMenuGestureState();
+        }
         return current;
     }
 

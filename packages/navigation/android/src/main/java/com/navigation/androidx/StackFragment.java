@@ -27,6 +27,10 @@ public class StackFragment extends AwesomeFragment {
                 setNeedsStatusBarAppearanceUpdate();
                 setNeedsNavigationBarAppearanceUpdate();
                 setNeedsLayoutInDisplayCutoutModeUpdate();
+                DrawerFragment drawerFragment = getDrawerFragment();
+                if (drawerFragment != null) {
+                    drawerFragment.updateMenuGestureState();
+                }
             }
         });
     }

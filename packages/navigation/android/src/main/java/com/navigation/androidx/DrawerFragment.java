@@ -2,10 +2,15 @@ package com.navigation.androidx;
 
 import com.reactnative.hybridnavigation.R;
 
+import android.graphics.Color;
+import android.graphics.Outline;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -20,25 +25,49 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
 
     private static final String MIN_DRAWER_MARGIN_KEY = "MIN_DRAWER_MARGIN_KEY";
     private static final String MAX_DRAWER_WIDTH_KEY = "MAX_DRAWER_WIDTH_KEY";
+    private static final float DRAWER_ANIMATION_CONTENT_CORNER_RADIUS_DP = 18;
+    private static final float DRAWER_ANIMATION_CONTENT_ELEVATION_DP = 16;
+    private static final float DRAWER_ANIMATION_CONTENT_DIMMING_ALPHA = 0.08f;
+    private static final float DRAWER_ANIMATION_MENU_OVERLAY_ALPHA = 0.34f;
+    private static final int DRAWER_MENU_BACKGROUND_COLOR = Color.rgb(245, 240, 230);
 
-    private DrawerLayout mDrawerLayout;
+    private HybridDrawerLayout mDrawerLayout;
+    private FrameLayout mContentLayout;
+    private FrameLayout mMenuLayout;
+    private View mContentDimmingView;
+    private View mMenuGradientOverlayView;
     private int mMinDrawerMargin = 64; // dp
     private int mMaxDrawerWidth; // dp
+    private float mContentCornerRadius;
+    private float mContentElevation;
+    private float mDrawerProgress;
+    private boolean mDrawerGestureHapticPerformed;
+    private boolean mDrawerUserDragging;
+    private float mDrawerDragStartProgress;
+    private boolean mMenuInteractive = true;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.nav_fragment_drawer, container, false);
         mDrawerLayout = root.findViewById(R.id.drawer);
+        mContentLayout = mDrawerLayout.findViewById(R.id.drawer_content);
+        mMenuLayout = mDrawerLayout.findViewById(R.id.drawer_menu);
+        mContentCornerRadius = AppUtils.dp2px(requireContext(), DRAWER_ANIMATION_CONTENT_CORNER_RADIUS_DP);
+        mContentElevation = AppUtils.dp2px(requireContext(), DRAWER_ANIMATION_CONTENT_ELEVATION_DP);
+
+        mDrawerLayout.setBackgroundColor(DRAWER_MENU_BACKGROUND_COLOR);
+        mDrawerLayout.setScrimColor(Color.TRANSPARENT);
+        mDrawerLayout.setDrawerElevation(0);
         mDrawerLayout.addDrawerListener(this);
+        mMenuLayout.setBackgroundColor(DRAWER_MENU_BACKGROUND_COLOR);
 
         if (savedInstanceState != null) {
             mMinDrawerMargin = savedInstanceState.getInt(MIN_DRAWER_MARGIN_KEY, 64);
             mMaxDrawerWidth = savedInstanceState.getInt(MAX_DRAWER_WIDTH_KEY);
         }
 
-        FrameLayout menuLayout = mDrawerLayout.findViewById(R.id.drawer_menu);
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) menuLayout.getLayoutParams();
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mMenuLayout.getLayoutParams();
         int screenWidth = AppUtils.getScreenWidth(requireContext());
         int margin1 = AppUtils.dp2px(requireContext(), mMinDrawerMargin);
         if (margin1 > screenWidth) {
@@ -52,6 +81,9 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
         int margin2 = screenWidth - AppUtils.dp2px(requireContext(), mMaxDrawerWidth);
         int margin = Math.max(margin1, margin2);
         layoutParams.rightMargin = margin - AppUtils.dp2px(requireContext(), 64);
+        mMenuLayout.setLayoutParams(layoutParams);
+
+        setupDrawerChromeViews();
 
         return root;
     }
@@ -60,6 +92,7 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
+            bringDrawerChromeToFront();
             return;
         }
 
@@ -72,6 +105,8 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
 
         addContentFragment();
         addMenuFragment();
+        bringDrawerChromeToFront();
+        updateMenuGestureState();
     }
 
     private void addContentFragment() {
@@ -97,6 +132,7 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
         super.onResume();
         opened = opening = isMenuOpened();
         closed = !isMenuOpened();
+        updateMenuGestureState();
     }
 
     @Override
@@ -125,11 +161,7 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
 
     @Override
     protected boolean preferredStatusBarHidden() {
-        return shouldHideStatusBarWhenMenuOpened() || super.preferredStatusBarHidden();
-    }
-
-    protected boolean shouldHideStatusBarWhenMenuOpened() {
-        return (opening || opened) && requireView().isAttachedToWindow() && !SystemUI.isCutout(getWindow());
+        return super.preferredStatusBarHidden();
     }
 
     @Override
@@ -148,6 +180,9 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
 
     @Override
     public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+        applyDrawerProgress(drawerView, slideOffset);
+        maybePerformDrawerGestureHaptic(slideOffset);
+
         if (slideOffset != 0) {
             if (closed) {
                 if (!opening) {
@@ -168,11 +203,15 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
             opened = false;
             opening = false;
             hideMenuFragment();
+            applyDrawerProgress(drawerView, 0);
+            updateMenuGestureState();
             setNeedsStatusBarAppearanceUpdate();
         } else if (slideOffset == 1) {
             opened = true;
             closed = false;
             closing = false;
+            applyDrawerProgress(drawerView, 1);
+            updateMenuGestureState();
         }
     }
 
@@ -186,6 +225,8 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
                 return;
             }
 
+            applyDrawerProgress(drawerView, 1);
+
             FragmentManager fragmentManager = getChildFragmentManager();
             fragmentManager.beginTransaction()
                     .setPrimaryNavigationFragment(menu)
@@ -194,6 +235,7 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
 
             View menuView = menu.requireView();
             menuView.setClickable(true);
+            updateMenuGestureState();
         });
     }
 
@@ -206,17 +248,27 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
                 return;
             }
 
+            applyDrawerProgress(drawerView, 0);
+
             FragmentManager fragmentManager = getChildFragmentManager();
             fragmentManager.beginTransaction()
                     .setPrimaryNavigationFragment(content)
                     .setMaxLifecycle(menu, Lifecycle.State.STARTED)
                     .commit();
+            updateMenuGestureState();
         });
     }
 
     @Override
     public void onDrawerStateChanged(int newState) {
-        // Log.i(TAG, getDebugTag() + " drawer state:" + newState);
+        if (newState == DrawerLayout.STATE_DRAGGING) {
+            mDrawerUserDragging = true;
+            mDrawerGestureHapticPerformed = false;
+            mDrawerDragStartProgress = mDrawerProgress;
+        } else if (newState == DrawerLayout.STATE_IDLE) {
+            mDrawerUserDragging = false;
+            mDrawerGestureHapticPerformed = false;
+        }
     }
 
     private AwesomeFragment mContentFragment;
@@ -300,6 +352,7 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
 
         scheduleTaskAtStarted(() -> {
             showMenuFragment();
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.START);
             mDrawerLayout.openDrawer(GravityCompat.START);
         });
     }
@@ -339,6 +392,7 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
         fragmentManager.beginTransaction()
                 .show(menu)
                 .commitNow();
+        bringDrawerChromeToFront();
     }
 
     private void hideMenuFragment() {
@@ -355,14 +409,117 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
                 .commitNow();
     }
 
+    private void setupDrawerChromeViews() {
+        setupContentLayoutOutline();
+        setupContentDimmingView();
+        setupMenuGradientOverlayView();
+        bringDrawerChromeToFront();
+        applyDrawerProgress(mMenuLayout, isMenuOpened() ? 1 : 0);
+    }
+
+    private void setupContentLayoutOutline() {
+        mContentLayout.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                float radius = mContentCornerRadius * mDrawerProgress;
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
+            }
+        });
+    }
+
+    private void setupContentDimmingView() {
+        mContentDimmingView = new View(requireContext());
+        mContentDimmingView.setBackgroundColor(Color.BLACK);
+        mContentDimmingView.setAlpha(0);
+        mContentDimmingView.setClickable(false);
+        mContentLayout.addView(mContentDimmingView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+    }
+
+    private void setupMenuGradientOverlayView() {
+        GradientDrawable overlay = new GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, new int[]{
+                Color.argb(Math.round(255 * DRAWER_ANIMATION_MENU_OVERLAY_ALPHA * 0.32f), 0, 0, 0),
+                Color.argb(Math.round(255 * DRAWER_ANIMATION_MENU_OVERLAY_ALPHA * 0.6f), 0, 0, 0),
+                Color.argb(Math.round(255 * DRAWER_ANIMATION_MENU_OVERLAY_ALPHA), 0, 0, 0)
+        });
+
+        mMenuGradientOverlayView = new View(requireContext());
+        mMenuGradientOverlayView.setBackground(overlay);
+        mMenuGradientOverlayView.setAlpha(0);
+        mMenuGradientOverlayView.setClickable(false);
+        mMenuLayout.addView(mMenuGradientOverlayView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+    }
+
+    private void bringDrawerChromeToFront() {
+        if (mMenuGradientOverlayView != null) {
+            mMenuGradientOverlayView.bringToFront();
+        }
+        if (mContentDimmingView != null) {
+            mContentDimmingView.bringToFront();
+        }
+    }
+
+    private void applyDrawerProgress(@NonNull View drawerView, float progress) {
+        progress = Math.max(0, Math.min(1, progress));
+        mDrawerProgress = progress;
+
+        int drawerWidth = drawerView.getWidth();
+        drawerView.setTranslationX(drawerWidth * (1 - progress));
+        mContentLayout.setTranslationX(drawerWidth * progress);
+        mContentLayout.setClipToOutline(progress > 0);
+        mContentLayout.setElevation(mContentElevation * progress);
+        mContentLayout.invalidateOutline();
+
+        mContentDimmingView.setAlpha(DRAWER_ANIMATION_CONTENT_DIMMING_ALPHA * progress);
+        mMenuGradientOverlayView.setAlpha(1 - progress);
+    }
+
+    private void maybePerformDrawerGestureHaptic(float progress) {
+        if (!mDrawerUserDragging || mDrawerGestureHapticPerformed) {
+            return;
+        }
+
+        if (Math.abs(progress - mDrawerDragStartProgress) > 0.015f) {
+            performDrawerGestureHaptic();
+        }
+    }
+
+    private void performDrawerGestureHaptic() {
+        if (mDrawerLayout == null || mDrawerGestureHapticPerformed) {
+            return;
+        }
+
+        mDrawerLayout.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+        mDrawerGestureHapticPerformed = true;
+    }
+
     public void setDrawerLockMode(final int lockMode) {
         if (mDrawerLayout != null) {
-            mDrawerLayout.setDrawerLockMode(lockMode);
+            mDrawerLayout.setDrawerLockMode(lockMode, GravityCompat.START);
         }
     }
 
     public void setMenuInteractive(boolean enabled) {
-        scheduleTaskAtStarted(() -> setDrawerLockMode(enabled ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED));
+        mMenuInteractive = enabled;
+        scheduleTaskAtStarted(this::updateMenuGestureState);
+    }
+
+    public void updateMenuGestureState() {
+        if (mDrawerLayout == null) {
+            return;
+        }
+
+        boolean drawerVisible = mDrawerProgress > 0 || isMenuOpened();
+        boolean canOpenByGesture = mMenuInteractive && isContentStackRoot();
+        mDrawerLayout.setOpenGestureEnabled(canOpenByGesture);
+        mDrawerLayout.setDrawerLockMode(drawerVisible || canOpenByGesture
+                ? DrawerLayout.LOCK_MODE_UNLOCKED
+                : DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START);
     }
 
     public void toggleMenu() {
@@ -387,6 +544,24 @@ public class DrawerFragment extends AwesomeFragment implements DrawerLayout.Draw
 
     public boolean isMenuPrimary() {
         return !(closed || closing);
+    }
+
+    private boolean isContentStackRoot() {
+        AwesomeFragment content = getCurrentContentFragmentForDrawerGesture();
+        return content != null && content.isStackRoot();
+    }
+
+    @Nullable
+    private AwesomeFragment getCurrentContentFragmentForDrawerGesture() {
+        AwesomeFragment content = getContentFragment();
+        if (content instanceof TabBarFragment) {
+            content = ((TabBarFragment) content).getSelectedFragment();
+        }
+        if (content instanceof StackFragment) {
+            AwesomeFragment top = ((StackFragment) content).getTopFragment();
+            return top == null ? content : top;
+        }
+        return content;
     }
 
 }
