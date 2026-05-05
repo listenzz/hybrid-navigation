@@ -154,6 +154,7 @@ const menuStyles = StyleSheet.create({
 	},
 	listContent: {
 		paddingBottom: 18,
+		flexGrow: 1,
 	},
 	sectionTitle: {
 		color: colors.textSubtle,
