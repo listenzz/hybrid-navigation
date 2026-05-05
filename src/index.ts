@@ -90,21 +90,39 @@ const tabs: Tabs = {
 
 const menu: Screen = { screen: { moduleName: 'Menu' } };
 
-const drawer: Drawer = {
-	drawer: {
-		children: [tabs, menu],
-		options: {
-			maxDrawerWidth: 280,
-			minDrawerMargin: 64,
-		},
-	},
+type DemoRootLayout = 'stack-drawer-tabs' | 'drawer-stack-tabs';
+
+const demoRootLayout: DemoRootLayout = 'stack-drawer-tabs';
+
+const drawerOptions = {
+	maxDrawerWidth: 280,
+	minDrawerMargin: 64,
 };
 
-const rootStack: Stack = {
-	stack: {
-		children: [drawer],
-	},
-};
+function createDrawer(content: Tabs | Stack): Drawer {
+	return {
+		drawer: {
+			children: [content, menu],
+			options: drawerOptions,
+		},
+	};
+}
+
+function createStack(content: Drawer | Tabs): Stack {
+	return {
+		stack: {
+			children: [content],
+		},
+	};
+}
+
+function createDemoRoot(layout: DemoRootLayout): Stack | Drawer {
+	if (layout === 'drawer-stack-tabs') {
+		return createDrawer(createStack(tabs));
+	}
+
+	return createStack(createDrawer(tabs));
+}
 
 // 激活 DeepLink，在 Navigation.setRoot 之前
 Navigation.setRootLayoutUpdateListener(
@@ -120,7 +138,7 @@ Navigation.setRootLayoutUpdateListener(
 );
 
 // 设置 UI 层级
-Navigation.setRoot(rootStack);
+Navigation.setRoot(createDemoRoot(demoRootLayout));
 
 // 设置导航拦截器
 Navigation.setInterceptor(async (action, extras) => {

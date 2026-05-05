@@ -86,3 +86,4 @@ dist/
 
 # rotation test artifacts
 tests/rotation/artifacts/
+tests/navigation/artifacts/
