@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableHighlight } from 'react-native';
 import withBottomModal from './withBottomModal';
+import demoTheme from './Theme';
 import Navigation, {
 	RESULT_OK,
 	NavigationProps,
@@ -75,7 +76,7 @@ function ReactModal({ navigator, sceneId }: NavigationProps) {
 
 	const renderItem = (text: string, onPress: () => void) => {
 		return (
-			<TouchableHighlight onPress={onPress} underlayColor={'#212121'}>
+			<TouchableHighlight onPress={onPress} underlayColor={demoTheme.colors.surfaceActive}>
 				<View style={styles.item}>
 					<Text style={styles.itemText}>{text}</Text>
 				</View>
@@ -98,7 +99,7 @@ function ReactModal({ navigator, sceneId }: NavigationProps) {
 	);
 }
 
-export default withBottomModal({ safeAreaColor: '#F3F3F3' })(
+export default withBottomModal({ safeAreaColor: demoTheme.colors.background })(
 	withNavigationItem({
 		// screenBackgroundColor: '#33000000',
 	})(ReactModal),
@@ -106,23 +107,29 @@ export default withBottomModal({ safeAreaColor: '#F3F3F3' })(
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: '#F3F3F3',
+		backgroundColor: demoTheme.colors.surfaceSoft,
+		paddingTop: 10,
+		borderTopLeftRadius: demoTheme.radius.lg,
+		borderTopRightRadius: demoTheme.radius.lg,
+		overflow: 'hidden',
 	},
 	item: {
-		height: 50,
+		height: 52,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: '#FFFFFF',
+		backgroundColor: demoTheme.colors.background,
 	},
 	divider: {
-		marginBottom: 1,
+		borderBottomWidth: StyleSheet.hairlineWidth,
+		borderBottomColor: demoTheme.colors.border,
 	},
 	itemCancel: {
 		marginTop: 10,
-		backgroundColor: '#FFFFFF',
+		backgroundColor: demoTheme.colors.background,
 	},
 	itemText: {
-		fontSize: 18,
-		color: '#212121',
+		fontSize: 16,
+		fontWeight: '600',
+		color: demoTheme.colors.dark,
 	},
 });

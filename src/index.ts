@@ -18,6 +18,7 @@ import ReactModal from './ReactModal';
 import StatusBarHidden from './StatusBarHidden';
 import Landscape from './Landscape';
 import SafeAreaContextHOC from './SafeAreaContextHOC';
+import demoTheme from './Theme';
 
 // LogBox.ignoreAllLogs();
 
@@ -35,18 +36,17 @@ graph();
 
 // 设置全局样式
 Navigation.setDefaultOptions({
-	screenBackgroundColor: '#F8F8F8',
+	screenBackgroundColor: demoTheme.colors.background,
 	statusBarStyle: BarStyleDarkContent,
-	navigationBarColorAndroid: '#FFFFFF',
+	navigationBarColorAndroid: demoTheme.colors.surface,
 
-	tabBarBackgroundColor: '#FFFFFF',
+	tabBarBackgroundColor: demoTheme.colors.background,
 
 	tabBarShadowImage: {
-		// color: '#F0F0F0',
-		// image: Image.resolveAssetSource(require('./images/divider.png')),
+		color: demoTheme.colors.border,
 	},
-	tabBarItemNormalColor: '#666666',
-	tabBarItemSelectedColor: '#FF5722',
+	tabBarItemNormalColor: demoTheme.colors.tabUnselected,
+	tabBarItemSelectedColor: demoTheme.colors.tabSelected,
 });
 
 // 开始注册组件，即基本页面单元
@@ -120,7 +120,7 @@ Navigation.setRootLayoutUpdateListener(
 );
 
 // 设置 UI 层级
-Navigation.setRoot(rootStack);
+Navigation.setRoot(drawer);
 
 // 设置导航拦截器
 Navigation.setInterceptor(async (action, extras) => {

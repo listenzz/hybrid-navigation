@@ -10,11 +10,12 @@ import {
 import { useLayout, useBackHandler } from '@react-native-community/hooks';
 import { NavigationProps } from 'hybrid-navigation';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import demoTheme from './Theme';
 
 export default function withBottomModal({
 	cancelable = true,
-	safeAreaColor = '#ffffff',
-	navigationBarColor = '#ffffff',
+	safeAreaColor = demoTheme.colors.background,
+	navigationBarColor = demoTheme.colors.background,
 } = {}) {
 	return function (WrappedComponent: ComponentType<any>) {
 		function BottomModal(props: NavigationProps, ref: React.Ref<ComponentType<any>>) {

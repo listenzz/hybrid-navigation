@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { TouchableOpacity, Text, View, ScrollView, Image, TextInput } from 'react-native';
+import { Text, View, ScrollView, Image, TextInput } from 'react-native';
 import { KeyboardInsetsView } from '@sdcx/keyboard-insets';
 
 import styles from './Styles';
+import { DemoActionRow, DemoSection } from './DemoUI';
 import Navigation, {
 	RESULT_OK,
 	withNavigationItem,
@@ -12,6 +13,7 @@ import Navigation, {
 } from 'hybrid-navigation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TopBar from './TopBar';
+import demoTheme from './Theme';
 
 export default withNavigationItem({
 	tabItem: {
@@ -23,6 +25,18 @@ export default withNavigationItem({
 interface Props extends NavigationProps {
 	popToId?: string;
 }
+
+const icons = {
+	push: require('./images/action_push.png'),
+	pop: require('./images/action_pop.png'),
+	home: require('./images/action_home.png'),
+	redirect: require('./images/action_redirect.png'),
+	present: require('./images/action_present.png'),
+	modal: require('./images/action_modal.png'),
+	result: require('./images/action_result.png'),
+	tab: require('./images/action_tab.png'),
+	graph: require('./images/action_graph.png'),
+};
 
 function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 	const insets = useSafeAreaInsets();
@@ -113,7 +127,7 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 			setError(undefined);
 		} else {
 			setText(undefined);
-			setError('ACTION CANCEL');
+			setError('Action canceled.');
 		}
 	}
 
@@ -157,112 +171,149 @@ function NavigationScreen({ navigator, sceneId, popToId }: Props) {
 		if (error === undefined) {
 			return null;
 		}
-		return <Text style={styles.result}>{error}</Text>;
+		return <Text style={[styles.result, styles.resultError]}>{error}</Text>;
 	}
 
 	const [input, setInput] = useState<string>();
+	const [inputFocused, setInputFocused] = useState(false);
+	const bottomInputSpace = insets.bottom + 82;
 
 	function handleTextChanged(txt: string) {
 		setInput(txt);
 	}
 
 	return (
-		<View style={{ flex: 1 }}>
-			<TopBar title="RN navigation" navigator={navigator} />
+		<View style={styles.screen}>
+			<TopBar
+				title="RN navigation"
+				navigator={navigator}
+				leftAction={{
+					label: 'Menu',
+					accessibilityLabel: 'Menu',
+					icon: require('./images/menu.png'),
+					onPress: () => {
+						navigator.toggleMenu();
+					},
+				}}
+			/>
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
 				automaticallyAdjustContentInsets={false}
 				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
-				contentContainerStyle={{ flexGrow: 1 }}
+				contentContainerStyle={[styles.scrollContent, { paddingBottom: bottomInputSpace }]}
 			>
 				<View style={styles.container}>
-					<Text style={styles.welcome}>This's a React Native scene.</Text>
-					<TouchableOpacity onPress={push} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>push</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
-						onPress={pop}
-						activeOpacity={0.2}
-						style={styles.button}
-						disabled={isRoot}
-					>
-						<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
-							pop
-						</Text>
-					</TouchableOpacity>
+					<DemoSection title="Stack">
+						<DemoActionRow
+							icon={icons.push}
+							title="Push scene"
+							description="Open another Navigation scene on the current stack."
+							onPress={push}
+						/>
+						<DemoActionRow
+							icon={icons.pop}
+							title="Pop scene"
+							description="Go back one scene when this is not the root."
+							onPress={pop}
+							disabled={isRoot}
+						/>
+						<DemoActionRow
+							icon={icons.pop}
+							title="Pop to first"
+							description="Return to the first pushed scene in this stack branch."
+							onPress={popTo}
+							disabled={popToId === undefined}
+						/>
+						<DemoActionRow
+							icon={icons.home}
+							title="Pop to root"
+							description="Collapse the stack back to the root scene."
+							onPress={popToRoot}
+							disabled={isRoot}
+						/>
+						<DemoActionRow
+							icon={icons.redirect}
+							title="Redirect"
+							description="Replace the current scene with a fresh Navigation scene."
+							onPress={redirectTo}
+							disabled={isRoot}
+						/>
+					</DemoSection>
 
-					<TouchableOpacity
-						onPress={popTo}
-						activeOpacity={0.2}
-						style={styles.button}
-						disabled={popToId === undefined}
-					>
-						<Text
-							style={
-								popToId === undefined ? styles.buttonTextDisable : styles.buttonText
-							}
-						>
-							popTo first
-						</Text>
-					</TouchableOpacity>
+					<DemoSection title="Presentation">
+						<DemoActionRow
+							icon={icons.present}
+							title="Present result"
+							description="Present a scene and wait for its returned text."
+							onPress={present}
+						/>
+						<DemoActionRow
+							icon={icons.modal}
+							title="Show modal"
+							description="Open the custom React bottom modal."
+							onPress={showModal}
+						/>
+						<DemoActionRow
+							icon={icons.result}
+							title="Await modal result"
+							description="Exercise the blocked-result handoff flow."
+							onPress={testAwaitResult}
+						/>
+					</DemoSection>
 
-					<TouchableOpacity
-						onPress={popToRoot}
-						activeOpacity={0.2}
-						style={styles.button}
-						disabled={isRoot}
-					>
-						<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
-							popToRoot
-						</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						onPress={redirectTo}
-						activeOpacity={0.2}
-						style={styles.button}
-						disabled={isRoot}
-					>
-						<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
-							redirectTo
-						</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>present</Text>
-					</TouchableOpacity>
-
-					{isRoot && (
-						<TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
-							<Text style={styles.buttonText}>switch to tab 'Options'</Text>
-						</TouchableOpacity>
-					)}
-
-					<TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>show modal</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						onPress={printRouteGraph}
-						activeOpacity={0.2}
-						style={styles.button}
-					>
-						<Text style={styles.buttonText}>printRouteGraph</Text>
-					</TouchableOpacity>
+					<DemoSection title="Tabs & Debug">
+						<DemoActionRow
+							icon={icons.tab}
+							title="Switch to Options"
+							description="Jump to the Options tab from the root scene."
+							onPress={switchTab}
+							disabled={!isRoot}
+						/>
+						<DemoActionRow
+							icon={icons.graph}
+							title="Print route graph"
+							description="Log the current route graph and active route."
+							onPress={printRouteGraph}
+						/>
+					</DemoSection>
 					{renderResult()}
 					{renderError()}
 				</View>
-				<KeyboardInsetsView extraHeight={16} style={styles.keyboard}>
+			</ScrollView>
+			<KeyboardInsetsView
+				extraHeight={16}
+				style={[styles.keyboard, inputFocused && styles.keyboardFocused]}
+			>
+				<View
+					style={[
+						styles.bottomInputFrame,
+						inputFocused && styles.bottomInputFrameFocused,
+						{ marginBottom: insets.bottom + 14 },
+					]}
+				>
+					<View
+						style={[
+							styles.bottomInputMarker,
+							inputFocused && styles.bottomInputMarkerFocused,
+						]}
+					/>
 					<TextInput
 						ref={inputRef}
-						style={[styles.input2, { marginBottom: insets.bottom + 16 }]}
+						style={styles.input2}
 						onChangeText={handleTextChanged}
+						onFocus={() => {
+							setInputFocused(true);
+						}}
+						onBlur={() => setInputFocused(false)}
 						autoFocus={false}
 						value={input}
-						placeholder={'input testing'}
+						placeholder={'Keyboard input'}
+						placeholderTextColor={demoTheme.colors.textSubtle}
+						selectionColor={demoTheme.colors.primary}
+						underlineColorAndroid="transparent"
 					/>
-				</KeyboardInsetsView>
-			</ScrollView>
+				</View>
+			</KeyboardInsetsView>
 		</View>
 	);
 }

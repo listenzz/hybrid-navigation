@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { useNavigator, useVisibleEffect, withNavigationItem } from 'hybrid-navigation';
 import styles from './Styles';
+import { DemoActionRow, DemoSection } from './DemoUI';
 
 export default withNavigationItem({
 	statusBarHidden: true,
@@ -9,6 +10,11 @@ export default withNavigationItem({
 	forceScreenLandscape: true,
 	homeIndicatorAutoHiddenIOS: true,
 })(Landscape);
+
+const icons = {
+	back: require('./images/action_back.png'),
+	modal: require('./images/action_modal.png'),
+};
 
 function Landscape() {
 	useEffect(() => {
@@ -34,19 +40,27 @@ function Landscape() {
 	};
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={styles.screen}>
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
 				automaticallyAdjustContentInsets={false}
 				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
 			>
 				<View style={styles.container}>
-					<TouchableOpacity onPress={back} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>Back</Text>
-					</TouchableOpacity>
-					<TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>showModal</Text>
-					</TouchableOpacity>
+					<DemoSection title="Landscape">
+						<DemoActionRow
+							icon={icons.back}
+							title="Back"
+							description="Return to the previous portrait scene."
+							onPress={back}
+						/>
+						<DemoActionRow
+							icon={icons.modal}
+							title="Show modal"
+							description="Open the React bottom modal from landscape."
+							onPress={showModal}
+						/>
+					</DemoSection>
 				</View>
 			</ScrollView>
 		</View>

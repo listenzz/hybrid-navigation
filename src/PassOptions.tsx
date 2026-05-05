@@ -1,13 +1,14 @@
 import React from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { NavigationProps } from 'hybrid-navigation';
 
 import styles from './Styles';
 import TopBar from './TopBar';
+import { DemoNote, DemoSection } from './DemoUI';
 
 export default function PassOptions({ navigator }: NavigationProps) {
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={styles.screen}>
 			<TopBar title="Pass Options" navigator={navigator} />
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
@@ -15,7 +16,12 @@ export default function PassOptions({ navigator }: NavigationProps) {
 				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
 			>
 				<View style={styles.container}>
-					<Text style={styles.welcome}>This screen now uses the shared RN TopBar.</Text>
+					<DemoSection title="Options">
+						<DemoNote
+							title="Shared RN TopBar"
+							body="This scene receives navigation options and renders with the shared React Native top bar."
+						/>
+					</DemoSection>
 				</View>
 			</ScrollView>
 		</View>

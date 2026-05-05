@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, Text, View, Image, ScrollView, PixelRatio } from 'react-native';
+import { View, Image, ScrollView, PixelRatio } from 'react-native';
 import Navigation, {
 	withNavigationItem,
 	NavigationProps,
@@ -11,15 +11,31 @@ import Navigation, {
 
 import styles from './Styles';
 import TopBar from './TopBar';
+import demoTheme from './Theme';
+import { DemoActionRow, DemoSection } from './DemoUI';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default withNavigationItem({
 	tabItem: {
 		title: 'Options',
-		icon: Image.resolveAssetSource(require('./images/flower_1.png')),
+		icon: Image.resolveAssetSource(require('./images/settings.png')),
 	},
 })(Options);
 
+const icons = {
+	screen: require('./images/action_screen.png'),
+	status: require('./images/action_status.png'),
+	lock: require('./images/action_lock.png'),
+	rotate: require('./images/action_rotate.png'),
+	tab: require('./images/action_tab.png'),
+	badge: require('./images/action_badge.png'),
+	image: require('./images/action_image.png'),
+	palette: require('./images/action_palette.png'),
+};
+
 function Options({ sceneId, navigator }: NavigationProps) {
+	const insets = useSafeAreaInsets();
+
 	useVisibleEffect(() => {
 		console.info('Page Options is visible');
 		return () => {
@@ -84,7 +100,7 @@ function Options({ sceneId, navigator }: NavigationProps) {
 
 	function replaceTabIcon() {
 		if (icon && icon.uri === 'flower') {
-			setIcon(Image.resolveAssetSource(require('./images/flower_1.png')));
+			setIcon(Image.resolveAssetSource(require('./images/settings.png')));
 		} else {
 			setIcon({ uri: 'flower', scale: PixelRatio.get() });
 		}
@@ -104,15 +120,15 @@ function Options({ sceneId, navigator }: NavigationProps) {
 	const [tabItemColor, setTabItemColor] = useState<TabBarStyle>();
 
 	function replaceTabItemColor() {
-		if (tabItemColor && tabItemColor.tabBarItemSelectedColor === '#8BC34A') {
+		if (tabItemColor && tabItemColor.tabBarItemSelectedColor === demoTheme.colors.accent) {
 			setTabItemColor({
-				tabBarItemSelectedColor: '#FF5722',
-				tabBarItemNormalColor: '#666666',
+				tabBarItemSelectedColor: demoTheme.colors.tabSelected,
+				tabBarItemNormalColor: demoTheme.colors.tabUnselected,
 			});
 		} else {
 			setTabItemColor({
-				tabBarItemSelectedColor: '#8BC34A',
-				tabBarItemNormalColor: '#666666',
+				tabBarItemSelectedColor: demoTheme.colors.accent,
+				tabBarItemNormalColor: demoTheme.colors.tabUnselected,
 			});
 		}
 	}
@@ -126,18 +142,18 @@ function Options({ sceneId, navigator }: NavigationProps) {
 	const [tabBarColor, setTabBarColor] = useState<TabBarStyle>();
 
 	function updateTabBarColor() {
-		if (tabBarColor && tabBarColor.tabBarBackgroundColor === '#EEEEEE') {
+		if (tabBarColor && tabBarColor.tabBarBackgroundColor === demoTheme.colors.surfaceSoft) {
 			setTabBarColor({
-				tabBarBackgroundColor: '#FFFFFF',
+				tabBarBackgroundColor: demoTheme.colors.background,
 				tabBarShadowImage: {
-					color: '#F0F0F0',
+					color: demoTheme.colors.border,
 				},
 			});
 		} else {
 			setTabBarColor({
-				tabBarBackgroundColor: '#EEEEEE',
+				tabBarBackgroundColor: demoTheme.colors.surfaceSoft,
 				tabBarShadowImage: {
-					image: Image.resolveAssetSource(require('./images/divider.png')),
+					color: demoTheme.colors.border,
 				},
 			});
 		}
@@ -150,7 +166,7 @@ function Options({ sceneId, navigator }: NavigationProps) {
 	}, [tabBarColor, sceneId]);
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={styles.screen}>
 			<TopBar
 				title="Options"
 				navigator={navigator}
@@ -167,71 +183,79 @@ function Options({ sceneId, navigator }: NavigationProps) {
 				contentInsetAdjustmentBehavior="never"
 				automaticallyAdjustContentInsets={false}
 				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
+				contentContainerStyle={[
+					styles.scrollContent,
+					{ paddingBottom: insets.bottom + 24 },
+				]}
 			>
 				<View style={styles.container}>
-					<Text style={styles.welcome}>This's a React Native scene.</Text>
+					<DemoSection title="Screens">
+						<DemoActionRow
+							icon={icons.screen}
+							title="Pass options"
+							description="Push a scene that receives navigation options."
+							onPress={passOptions}
+						/>
+						<DemoActionRow
+							icon={icons.status}
+							title="Status bar style"
+							description="Toggle between dark and light status bar content."
+							onPress={statusBarStyle}
+						/>
+						<DemoActionRow
+							icon={icons.status}
+							title="Status bar hidden"
+							description="Open a scene that can hide and show the status bar."
+							onPress={statusBarHidden}
+						/>
+						<DemoActionRow
+							icon={icons.lock}
+							title="Back interactive"
+							description="Test enabling and disabling the back gesture."
+							onPress={backInteractive}
+						/>
+						<DemoActionRow
+							icon={icons.rotate}
+							title="Landscape"
+							description="Open a landscape-only scene."
+							onPress={landscape}
+						/>
+					</DemoSection>
 
-					<TouchableOpacity onPress={passOptions} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>pass options to another scene</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity onPress={statusBarStyle} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>StatusBar Style</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						onPress={statusBarHidden}
-						activeOpacity={0.2}
-						style={styles.button}
-					>
-						<Text style={styles.buttonText}>StatusBar Hidden</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity onPress={backInteractive} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>Back Interactive</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity onPress={landscape} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>Landscape</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity onPress={switchTab} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>switch to tab 'Navigation'</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						onPress={toggleTabBadge}
-						activeOpacity={0.2}
-						style={styles.button}
-					>
-						<Text style={styles.buttonText}>
-							{badges && badges[0].badge?.dot ? 'hide tab badge' : 'show tab badge'}
-						</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						onPress={replaceTabIcon}
-						activeOpacity={0.2}
-						style={styles.button}
-					>
-						<Text style={styles.buttonText}>replace tab icon</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						onPress={replaceTabItemColor}
-						activeOpacity={0.2}
-						style={styles.button}
-					>
-						<Text style={styles.buttonText}>replace tab item color</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity
-						onPress={updateTabBarColor}
-						activeOpacity={0.2}
-						style={styles.button}
-					>
-						<Text style={styles.buttonText}>replace tab bar color</Text>
-					</TouchableOpacity>
+					<DemoSection title="Tab bar">
+						<DemoActionRow
+							icon={icons.tab}
+							title="Switch to Navigation"
+							description="Jump back to the Navigation tab."
+							onPress={switchTab}
+						/>
+						<DemoActionRow
+							icon={icons.badge}
+							title={
+								badges && badges[0].badge?.dot ? 'Hide tab badge' : 'Show tab badge'
+							}
+							description="Toggle a dot badge and a numeric badge."
+							onPress={toggleTabBadge}
+						/>
+						<DemoActionRow
+							icon={icons.image}
+							title="Replace tab icon"
+							description="Switch the Options tab icon source."
+							onPress={replaceTabIcon}
+						/>
+						<DemoActionRow
+							icon={icons.palette}
+							title="Replace item color"
+							description="Toggle selected and unselected tab item colors."
+							onPress={replaceTabItemColor}
+						/>
+						<DemoActionRow
+							icon={icons.palette}
+							title="Replace bar color"
+							description="Toggle the tab bar background treatment."
+							onPress={updateTabBarColor}
+						/>
+					</DemoSection>
 				</View>
 			</ScrollView>
 		</View>

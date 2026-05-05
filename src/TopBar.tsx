@@ -1,14 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-	TouchableOpacity,
-	Text,
-	View,
-	StyleSheet,
-	Image,
-	ImageSourcePropType,
-} from 'react-native';
+import { TouchableOpacity, Text, View, StyleSheet, Image, ImageSourcePropType } from 'react-native';
 import type { Navigator } from 'hybrid-navigation';
 import { initialWindowMetrics, useSafeAreaInsets } from 'react-native-safe-area-context';
+import demoTheme from './Theme';
 
 type Action = {
 	label?: string;
@@ -37,6 +31,7 @@ interface Props {
 const SIDE_WIDTH = 88;
 const BACK_ICON = require('./images/icon_back.png');
 let cachedTopInset = initialWindowMetrics?.insets.top ?? 0;
+const { colors } = demoTheme;
 
 export default function TopBar({
 	title,
@@ -45,15 +40,17 @@ export default function TopBar({
 	leftAction,
 	rightAction,
 	showBackWhenPossible = true,
-	backgroundColor = '#FFFFFF',
+	backgroundColor = colors.background,
 	alpha = 1,
 	shadowHidden = false,
 	tintColor,
-	titleColor = '#111111',
+	titleColor = colors.text,
 }: Props) {
 	const insets = useSafeAreaInsets();
 	const [isRoot, setIsRoot] = useState(false);
-	const [stableTopInset, setStableTopInset] = useState(() => Math.max(insets.top, cachedTopInset));
+	const [stableTopInset, setStableTopInset] = useState(() =>
+		Math.max(insets.top, cachedTopInset),
+	);
 
 	useEffect(() => {
 		// Keep a stable top inset so toggling status bar visibility
@@ -150,14 +147,19 @@ function Side({
 					style={[
 						styles.actionIcon,
 						{
-							tintColor: action.disabled ? '#BDBDBD' : tintColor,
+							tintColor: action.disabled ? colors.disabled : tintColor,
 							width: action.iconWidth ?? 20,
 							height: action.iconHeight ?? 20,
 						},
 					]}
 				/>
 			) : (
-				<Text style={[styles.actionText, { color: action.disabled ? '#BDBDBD' : tintColor }]}>
+				<Text
+					style={[
+						styles.actionText,
+						{ color: action.disabled ? colors.disabled : tintColor },
+					]}
+				>
 					{action.label}
 				</Text>
 			)}
@@ -201,6 +203,6 @@ const styles = StyleSheet.create({
 	},
 	shadow: {
 		height: StyleSheet.hairlineWidth,
-		backgroundColor: '#DDDDDD',
+		backgroundColor: colors.border,
 	},
 });

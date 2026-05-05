@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, Text, View, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import Navigation, {
 	BarStyleLightContent,
 	BarStyleDarkContent,
@@ -9,10 +9,18 @@ import Navigation, {
 } from 'hybrid-navigation';
 import styles from './Styles';
 import TopBar from './TopBar';
+import demoTheme from './Theme';
+import { DemoActionRow, DemoNote, DemoSection } from './DemoUI';
 
 export default withNavigationItem({
 	statusBarStyle: BarStyleLightContent,
 })(TopBarStyle);
+
+const icons = {
+	status: require('./images/action_status.png'),
+	push: require('./images/action_push.png'),
+	modal: require('./images/action_modal.png'),
+};
 
 function TopBarStyle({ navigator, sceneId }: NavigationProps) {
 	const [options, setOptions] = useState<NavigationOption>();
@@ -27,12 +35,12 @@ function TopBarStyle({ navigator, sceneId }: NavigationProps) {
 		if (options && options.statusBarStyle === BarStyleDarkContent) {
 			setOptions({
 				statusBarStyle: BarStyleLightContent,
-				screenBackgroundColor: '#F8F8F8',
+				screenBackgroundColor: demoTheme.colors.background,
 			});
 		} else {
 			setOptions({
 				statusBarStyle: BarStyleDarkContent,
-				screenBackgroundColor: '#F0F0F0',
+				screenBackgroundColor: demoTheme.colors.surfaceSoft,
 			});
 		}
 	}
@@ -48,13 +56,13 @@ function TopBarStyle({ navigator, sceneId }: NavigationProps) {
 	const darkContent = options?.statusBarStyle === BarStyleDarkContent;
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={styles.screen}>
 			<TopBar
 				title="StatusBar Style"
 				navigator={navigator}
-				backgroundColor={darkContent ? '#FFFFFF' : '#1F2D4A'}
-				titleColor={darkContent ? '#111111' : '#FFFFFF'}
-				tintColor={darkContent ? '#1F4FCC' : '#FFFFFF'}
+				backgroundColor={darkContent ? demoTheme.colors.background : demoTheme.colors.dark}
+				titleColor={darkContent ? demoTheme.colors.text : demoTheme.colors.textOnDark}
+				tintColor={darkContent ? demoTheme.colors.accent : demoTheme.colors.textOnDark}
 			/>
 			<ScrollView
 				contentInsetAdjustmentBehavior="never"
@@ -62,25 +70,30 @@ function TopBarStyle({ navigator, sceneId }: NavigationProps) {
 				contentInset={{ top: 0, left: 0, bottom: 0, right: 0 }}
 			>
 				<View style={styles.container}>
-					<Text style={styles.text}>
-						1. Status bar text can only be white on Android below 6.0
-					</Text>
-
-					<Text style={styles.text}>2. Toggle `statusBarStyle` to test dark/light content.</Text>
-
-					<TouchableOpacity onPress={switchStatusBarStyle} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>
-							switch to {darkContent ? 'Light Content Style' : 'Dark Content Style'}
-						</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity onPress={topBarStyle} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>push TopBarStyle</Text>
-					</TouchableOpacity>
-
-					<TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
-						<Text style={styles.buttonText}>show react modal</Text>
-					</TouchableOpacity>
+					<DemoSection title="Status bar">
+						<DemoNote
+							title="Android compatibility"
+							body="Status bar text can only be white on Android below 6.0."
+						/>
+						<DemoActionRow
+							icon={icons.status}
+							title={`Switch to ${darkContent ? 'light content' : 'dark content'}`}
+							description="Toggle statusBarStyle and the matching top bar colors."
+							onPress={switchStatusBarStyle}
+						/>
+						<DemoActionRow
+							icon={icons.push}
+							title="Push TopBarStyle"
+							description="Open another copy of this style demo."
+							onPress={topBarStyle}
+						/>
+						<DemoActionRow
+							icon={icons.modal}
+							title="Show react modal"
+							description="Open the custom React bottom modal."
+							onPress={showModal}
+						/>
+					</DemoSection>
 				</View>
 			</ScrollView>
 		</View>

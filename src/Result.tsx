@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, Text, TextInput, ScrollView, View } from 'react-native';
+import { TextInput, ScrollView, View } from 'react-native';
 import styles from './Styles';
+import { DemoActionRow, DemoSection } from './DemoUI';
 
 import Navigation, {
 	RESULT_OK,
@@ -11,14 +12,25 @@ import Navigation, {
 } from 'hybrid-navigation';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import TopBar from './TopBar';
+import demoTheme from './Theme';
 
 export default withNavigationItem({
 	statusBarStyle: BarStyleDarkContent,
 })(Result);
 
+const icons = {
+	push: require('./images/action_push.png'),
+	home: require('./images/action_home.png'),
+	send: require('./images/action_send.png'),
+	present: require('./images/action_present.png'),
+	modal: require('./images/action_modal.png'),
+	graph: require('./images/action_graph.png'),
+};
+
 function Result({ navigator, sceneId }: NavigationProps) {
 	const [text, setText] = useState('');
 	const [isRoot, setIsRoot] = useState(false);
+	const [inputFocused, setInputFocused] = useState(false);
 	const insets = useSafeAreaInsets();
 
 	useEffect(() => {
@@ -67,7 +79,7 @@ function Result({ navigator, sceneId }: NavigationProps) {
 	}
 
 	return (
-		<View style={{ flex: 1 }}>
+		<View style={styles.screen}>
 			<TopBar
 				title="RN result"
 				navigator={navigator}
@@ -93,50 +105,64 @@ function Result({ navigator, sceneId }: NavigationProps) {
 					{ paddingBottom: insets.bottom > 0 ? insets.bottom : 16 },
 				]}
 			>
-				<Text style={styles.welcome}>This's a React Native scene.</Text>
+				<DemoSection title="Return value">
+					<View style={styles.inputPanel}>
+						<View style={[styles.inputFrame, inputFocused && styles.inputFrameFocused]}>
+							<TextInput
+								style={styles.input}
+								onChangeText={handleTextChanged}
+								onFocus={() => setInputFocused(true)}
+								onBlur={() => setInputFocused(false)}
+								value={text}
+								placeholder={'Enter your text'}
+								placeholderTextColor={demoTheme.colors.textSubtle}
+								selectionColor={demoTheme.colors.primary}
+								textAlignVertical="center"
+								underlineColorAndroid="transparent"
+							/>
+						</View>
+					</View>
+				</DemoSection>
 
-				<TouchableOpacity onPress={pushToReact} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>push to another scene</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity
-					onPress={popToRoot}
-					activeOpacity={0.2}
-					style={styles.button}
-					disabled={isRoot}
-				>
-					<Text style={isRoot ? styles.buttonTextDisable : styles.buttonText}>
-						pop to home
-					</Text>
-				</TouchableOpacity>
-
-				<TextInput
-					style={styles.input}
-					onChangeText={handleTextChanged}
-					value={text}
-					placeholder={'enter your text'}
-					textAlignVertical="center"
-				/>
-
-				<TouchableOpacity onPress={sendResult} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>send data back</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity onPress={present} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>present</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity onPress={showModal} activeOpacity={0.2} style={styles.button}>
-					<Text style={styles.buttonText}>showModal</Text>
-				</TouchableOpacity>
-
-				<TouchableOpacity
-					onPress={printRouteGraph}
-					activeOpacity={0.2}
-					style={styles.button}
-				>
-					<Text style={styles.buttonText}>printRouteGraph</Text>
-				</TouchableOpacity>
+				<DemoSection title="Actions">
+					<DemoActionRow
+						icon={icons.push}
+						title="Push result scene"
+						description="Open another Result scene on this stack."
+						onPress={pushToReact}
+					/>
+					<DemoActionRow
+						icon={icons.home}
+						title="Pop to home"
+						description="Return to the root scene when possible."
+						onPress={popToRoot}
+						disabled={isRoot}
+					/>
+					<DemoActionRow
+						icon={icons.send}
+						title="Send data back"
+						description="Dismiss and return the current input text."
+						onPress={sendResult}
+					/>
+					<DemoActionRow
+						icon={icons.present}
+						title="Present"
+						description="Present another Result scene."
+						onPress={present}
+					/>
+					<DemoActionRow
+						icon={icons.modal}
+						title="Show modal"
+						description="Open the custom React bottom modal."
+						onPress={showModal}
+					/>
+					<DemoActionRow
+						icon={icons.graph}
+						title="Print route graph"
+						description="Log the current route graph and active route."
+						onPress={printRouteGraph}
+					/>
+				</DemoSection>
 			</ScrollView>
 		</View>
 	);

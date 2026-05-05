@@ -1,66 +1,105 @@
 import { StyleSheet } from 'react-native';
 
+import demoTheme from './Theme';
+
+const { colors, radius } = demoTheme;
+
 export default StyleSheet.create({
+	screen: {
+		flex: 1,
+		backgroundColor: colors.background,
+	},
+
 	container: {
 		flex: 1,
 		justifyContent: 'flex-start',
 		alignItems: 'stretch',
+		backgroundColor: colors.background,
+		paddingHorizontal: 16,
+		paddingTop: 18,
+		paddingBottom: 24,
 	},
 
-	transparent: {
-		marginTop: 150,
-		width: 200,
-		height: 120,
-		backgroundColor: 'rgba(0,0,0, 0.5)',
-		alignItems: 'center',
-		justifyContent: 'center',
-		alignSelf: 'center',
-	},
-
-	button: {
-		alignItems: 'center',
-		justifyContent: 'center',
-		height: 40,
-	},
-
-	buttonText: {
-		backgroundColor: 'transparent',
-		color: 'rgb(34,88,220)',
-		fontSize: 15,
-	},
-
-	buttonTextDisable: {
-		backgroundColor: 'transparent',
-		color: '#d1d1d1',
+	scrollContent: {
+		flexGrow: 1,
 	},
 
 	result: {
-		backgroundColor: 'transparent',
-		textAlign: 'center',
-		marginTop: 8,
-		color: '#333333',
+		marginTop: 12,
+		marginHorizontal: 4,
+		paddingLeft: 10,
+		borderLeftWidth: 3,
+		borderLeftColor: colors.primaryMuted,
+		color: colors.textBody,
 		fontSize: 13,
+		lineHeight: 18,
+	},
+
+	resultError: {
+		borderLeftColor: colors.danger,
+		color: colors.textMuted,
 	},
 
 	input: {
-		height: 40,
-		marginTop: 170,
-		marginLeft: 32,
-		marginRight: 32,
-		marginBottom: 16,
-		paddingLeft: 8,
-		paddingRight: 8,
-		borderColor: '#cccccc',
-		borderWidth: 1,
+		minHeight: 46,
+		paddingHorizontal: 14,
+		paddingVertical: 0,
+		color: colors.text,
+		fontSize: 15,
+	},
+
+	inputPanel: {
+		backgroundColor: colors.surface,
+		padding: 12,
+	},
+
+	inputFrame: {
+		minHeight: 48,
+		justifyContent: 'center',
+		borderRadius: radius.md,
+		borderWidth: StyleSheet.hairlineWidth,
+		borderColor: colors.border,
+		backgroundColor: colors.background,
+	},
+
+	inputFrameFocused: {
+		borderColor: colors.primary,
+		backgroundColor: colors.surface,
 	},
 
 	input2: {
-		height: 40,
-		margin: 16,
-		paddingLeft: 8,
-		paddingRight: 8,
-		borderColor: '#cccccc',
-		borderWidth: 1,
+		flex: 1,
+		height: 42,
+		paddingHorizontal: 10,
+		paddingVertical: 0,
+		color: colors.text,
+		fontSize: 14,
+	},
+
+	bottomInputFrame: {
+		minHeight: 44,
+		flexDirection: 'row',
+		alignItems: 'center',
+		marginTop: 8,
+		marginHorizontal: 16,
+		paddingHorizontal: 10,
+		borderRadius: radius.sm,
+		backgroundColor: colors.surfaceSoft,
+	},
+
+	bottomInputFrameFocused: {
+		backgroundColor: colors.surfaceSoft,
+	},
+
+	bottomInputMarker: {
+		width: 6,
+		height: 6,
+		borderRadius: 3,
+		backgroundColor: colors.iconMuted,
+	},
+
+	bottomInputMarkerFocused: {
+		backgroundColor: colors.primary,
 	},
 
 	keyboard: {
@@ -68,22 +107,10 @@ export default StyleSheet.create({
 		left: 0,
 		right: 0,
 		bottom: 0,
-		backgroundColor: '#F8F8F8',
+		backgroundColor: colors.background,
 	},
 
-	welcome: {
-		backgroundColor: 'transparent',
-		lineHeight: 25,
-		fontSize: 17,
-		textAlign: 'center',
-		margin: 16,
-	},
-
-	text: {
-		backgroundColor: 'transparent',
-		fontSize: 16,
-		alignSelf: 'flex-start',
-		textAlign: 'left',
-		margin: 8,
+	keyboardFocused: {
+		paddingTop: 40,
 	},
 });
