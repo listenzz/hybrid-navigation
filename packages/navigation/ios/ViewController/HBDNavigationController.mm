@@ -12,6 +12,7 @@
 
 - (UIGestureRecognizer *)superInteractivePopGestureRecognizer;
 - (void)handleNavigationTransition:(UIScreenEdgePanGestureRecognizer *)pan;
+- (void)hideSystemNavigationBar;
 
 @end
 
@@ -54,6 +55,11 @@
     return self.topViewController;
 }
 
+- (void)hideSystemNavigationBar {
+    [super setNavigationBarHidden:YES animated:NO];
+    self.navigationBar.hidden = YES;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.definesPresentationContext = NO;
@@ -65,7 +71,21 @@
     [self superInteractivePopGestureRecognizer].enabled = NO;
 
     self.delegate = self;
-    [self setNavigationBarHidden:YES animated:NO];
+    [self hideSystemNavigationBar];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self hideSystemNavigationBar];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self hideSystemNavigationBar];
+}
+
+- (void)setNavigationBarHidden:(BOOL)hidden animated:(BOOL)animated {
+    [self hideSystemNavigationBar];
 }
 
 - (void)setDelegate:(id <UINavigationControllerDelegate>)delegate {
@@ -103,7 +123,14 @@
     }
 }
 
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    // 在转场动画开始前强制隐藏导航栏，防止第一次 push 时闪现系统返回按钮
+    [self hideSystemNavigationBar];
+}
+
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    [self hideSystemNavigationBar];
+
     UIViewController *poppingVC = self.poppingViewController;
     if (poppingVC && [poppingVC isKindOfClass:[HBDViewController class]]) {
         [viewController didReceiveResultCode:poppingVC.resultCode resultData:poppingVC.resultData requestCode:0];

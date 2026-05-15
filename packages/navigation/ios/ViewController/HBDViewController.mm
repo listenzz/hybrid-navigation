@@ -205,8 +205,8 @@
 
 		UITabBarItemAppearance *itemAppearance = appearance.standardAppearance.stackedLayoutAppearance;
 		if (unselectedIcon) {
-			tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] withIconColor:itemAppearance.normal.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
-			tabBarItem.selectedImage = [[HBDUtils UIImage:icon] withIconColor:itemAppearance.selected.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
+            tabBarItem.image = [[HBDUtils UIImage:unselectedIcon] withIconColor:nil badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
+            tabBarItem.selectedImage = [[HBDUtils UIImage:icon] withIconColor:nil badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
 		} else {
 			tabBarItem.image = [[HBDUtils UIImage:icon] withIconColor:itemAppearance.normal.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
 			tabBarItem.selectedImage = [[HBDUtils UIImage:icon] withIconColor:itemAppearance.selected.iconColor badgeColor:dot ? tabBarItem.badgeColor : UIColor.clearColor];
