@@ -123,6 +123,7 @@ public class TabBar extends FrameLayout {
         if (tabBarItem != null && tabView != null) {
             bindTabWithData(tabBarItem, tabView, this);
             tabView.initialise();
+            post(() -> relayoutTabs(resolveAvailableWidth()));
         }
     }
 
@@ -293,17 +294,27 @@ public class TabBar extends FrameLayout {
     }
 
     private int resolveAvailableWidth() {
-        int availableWidth = tabContainer.getWidth();
-        if (availableWidth <= 0) {
-            availableWidth = getWidth();
-        }
+        int availableWidth = getWidth();
         if (availableWidth <= 0) {
             availableWidth = getMeasuredWidth();
+        }
+        if (availableWidth <= 0 && getParent() instanceof View) {
+            availableWidth = ((View) getParent()).getWidth();
+        }
+        if (availableWidth <= 0) {
+            availableWidth = tabContainer.getWidth();
         }
         if (availableWidth <= 0) {
             availableWidth = AppUtils.getScreenWidth(getContext());
         }
         return availableWidth;
+    }
+
+    private int resolveMeasuredWidth(int widthMeasureSpec) {
+        if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) {
+            return 0;
+        }
+        return MeasureSpec.getSize(widthMeasureSpec);
     }
 
     private void relayoutTabs(int availableWidth) {
@@ -312,10 +323,30 @@ public class TabBar extends FrameLayout {
         }
 
         int itemWidth = getTabWidth(getContext(), availableWidth, tabBarItems.size());
+        boolean changed = false;
         for (TabView tab : tabs) {
-            tab.setTabWidth(itemWidth);
+            ViewGroup.LayoutParams params = tab.getLayoutParams();
+            if (params == null || params.width != itemWidth) {
+                tab.setTabWidth(itemWidth);
+                changed = true;
+            }
         }
-        tabContainer.requestLayout();
+        if (changed) {
+            tabContainer.requestLayout();
+        }
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int measuredWidth = resolveMeasuredWidth(widthMeasureSpec);
+        if (measuredWidth > 0) {
+            relayoutTabs(measuredWidth);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int actualWidth = getMeasuredWidth();
+        if (actualWidth > 0 && actualWidth != measuredWidth) {
+            relayoutTabs(actualWidth);
+        }
     }
 
     @Override
