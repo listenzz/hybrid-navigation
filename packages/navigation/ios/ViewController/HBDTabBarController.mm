@@ -1,10 +1,8 @@
 #import "HBDTabBarController.h"
 
 #import "HBDReactViewController.h"
-#import "HBDReactBridgeManager.h"
 #import "HBDUtils.h"
 #import "HBDFadeAnimation.h"
-#import "HBDNativeEvent.h"
 
 #import <React/RCTLog.h>
 
@@ -31,7 +29,6 @@
     [super viewDidLoad];
     self.definesPresentationContext = NO;
     self.delegate = self;
-    self.intercepted = YES;
 }
 
 - (void)setTabItem:(NSArray<NSDictionary *> *)options {
@@ -116,16 +113,6 @@
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
-    if ([[HBDReactBridgeManager get] hasRootLayout] && self.intercepted) {
-        long from = self.selectedIndex;
-        long to = [self.childViewControllers indexOfObject:viewController];
-		[[HBDNativeEvent getInstance] emitOnSwitchTab:@{
-			@"sceneId": self.sceneId,
-			@"from": @(from),
-			@"to": @(to),
-		}];
-        return NO;
-    }
     return YES;
 }
 

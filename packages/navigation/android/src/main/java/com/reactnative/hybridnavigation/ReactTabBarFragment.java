@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.facebook.react.bridge.Arguments;
 import com.navigation.androidx.AwesomeFragment;
 import com.navigation.androidx.FragmentHelper;
 import com.navigation.androidx.Style;
@@ -119,37 +118,6 @@ public class ReactTabBarFragment extends TabBarFragment {
 
 	public void setOptions(@NonNull Bundle options) {
 		this.options = options;
-	}
-
-	public void setIntercepted(boolean intercepted) {
-		this.intercepted = intercepted;
-	}
-
-	private boolean intercepted = true;
-
-	@Override
-	public void setSelectedIndex(int index, @NonNull Runnable completion) {
-		if (shouldIntercept()) {
-			sendSwitchTabEvent(index);
-			// restore tab bar selected index
-			setTabBarSelectedIndex(getSelectedIndex());
-			completion.run();
-		} else {
-			super.setSelectedIndex(index, completion);
-			intercepted = true;
-		}
-	}
-
-	private boolean shouldIntercept() {
-		return isAdded() && reactManager.hasRootLayout() && this.intercepted;
-	}
-
-	private void sendSwitchTabEvent(int index) {
-		Bundle data = new Bundle();
-		data.putString("sceneId", getSceneId());
-		data.putInt("from", getSelectedIndex());
-		data.putInt("to", index);
-		NativeEvent.getInstance().emitOnSwitchTab(Arguments.fromBundle(data));
 	}
 
 	public Style getStyle() {

@@ -37,9 +37,7 @@
     if (options) {
         NSNumber *selectedIndex = options[@"selectedIndex"];
         if (selectedIndex) {
-            tabBarController.intercepted = NO;
             tabBarController.selectedIndex = (NSUInteger) [selectedIndex integerValue];
-            tabBarController.intercepted = YES;
         }
     }
 
@@ -108,14 +106,7 @@
         }
     }
     
-    if ([tabBarController isKindOfClass:[HBDTabBarController class]]) {
-        HBDTabBarController *hbdTabBarController = (HBDTabBarController *)tabBarController;
-        hbdTabBarController.intercepted = NO;
-        tabBarController.selectedIndex = to;
-        hbdTabBarController.intercepted = YES;
-    } else {
-        tabBarController.selectedIndex = to;
-    }
+    tabBarController.selectedIndex = to;
     
     callback(@[NSNull.null, @YES]);
 }

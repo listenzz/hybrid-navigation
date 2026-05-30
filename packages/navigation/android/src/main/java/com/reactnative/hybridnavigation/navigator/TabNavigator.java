@@ -160,14 +160,7 @@ public class TabNavigator implements Navigator {
 
         popToStackRootIfNeeded(extras, tabBarFragment);
 
-        if (!(tabBarFragment instanceof ReactTabBarFragment reactTabBarFragment)) {
-            tabBarFragment.setSelectedIndex(to, () -> callback.invoke(null, true));
-            return;
-        }
-
-		reactTabBarFragment.setIntercepted(false);
-        reactTabBarFragment.setSelectedIndex(to, () -> callback.invoke(null, true));
-        reactTabBarFragment.setIntercepted(true);
+        tabBarFragment.setSelectedIndex(to, () -> callback.invoke(null, true));
     }
 
     private boolean isSameTab(int to, @NonNull ReadableMap extras) {
