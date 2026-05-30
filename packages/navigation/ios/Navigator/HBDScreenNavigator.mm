@@ -110,13 +110,14 @@
 }
 
 - (void)handleDismissWithViewController:(UIViewController *) vc callback:(RCTResponseSenderBlock)callback {
-	BOOL animated = YES;
-	if ([vc isKindOfClass:[HBDViewController class]]) {
+	UIViewController *modalHost = [self modalHostViewControllerForViewController:vc];
+	BOOL isModal = modalHost.modalPresentationStyle == UIModalPresentationOverFullScreen;
+	BOOL animated = !isModal;
+	if (!isModal && [vc isKindOfClass:[HBDViewController class]]) {
 		HBDViewController *hbdvc = (HBDViewController *)vc;
 		animated = hbdvc.animatedTransition;
 	}
 
-	UIViewController *modalHost = [self modalHostViewControllerForViewController:vc];
 	UIViewController *presenting = modalHost.presentingViewController;
 
     [modalHost dismissViewControllerAnimated:animated completion:^{
@@ -142,13 +143,7 @@
     vc.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [vc setRequestCode:requestCode];
 
-	BOOL animated = YES;
-	if ([vc isKindOfClass:[HBDViewController class]]) {
-		HBDViewController *hbdvc = (HBDViewController *)vc;
-		animated = hbdvc.animatedTransition;
-	}
-
-    [presenting presentViewController:vc animated:animated completion:^{
+    [presenting presentViewController:vc animated:NO completion:^{
         callback(@[NSNull.null, @YES]);
     }];
 }
@@ -175,7 +170,7 @@
     [vc setRequestCode:requestCode];
     [vc setPresentingSceneId:presenting.sceneId];
 
-    [presenting presentViewController:vc animated:YES completion:^{
+    [presenting presentViewController:vc animated:NO completion:^{
         callback(@[NSNull.null, @YES]);
     }];
 }

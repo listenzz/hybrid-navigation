@@ -80,7 +80,7 @@ public class HybridFragment extends AwesomeFragment {
     private void setBackgroundForModal(@NonNull Style style) {
         int color = mStyle.getScreenBackgroundColor();
         if (Color.alpha(color) == 255) {
-            style.setScreenBackgroundColor(Color.parseColor("#77000000"));
+            style.setScreenBackgroundColor(Color.TRANSPARENT);
         }
     }
 

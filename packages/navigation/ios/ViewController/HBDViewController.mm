@@ -172,7 +172,7 @@
 }
 
 - (void)setModalBackgroundColor {
-    self.view.backgroundColor = [UIColor.blackColor colorWithAlphaComponent:0.5];
+    self.view.backgroundColor = UIColor.clearColor;
 
     NSString *screenColor = self.options[@"screenBackgroundColor"];
 
