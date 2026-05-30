@@ -14,38 +14,50 @@ import demoTheme from './Theme';
 
 export default function withBottomModal({
 	cancelable = true,
+	backdropColor = 'rgba(31, 29, 26, 0.46)',
 	safeAreaColor = demoTheme.colors.background,
 	navigationBarColor = demoTheme.colors.background,
 } = {}) {
 	return function (WrappedComponent: ComponentType<any>) {
 		function BottomModal(props: NavigationProps, ref: React.Ref<ComponentType<any>>) {
-			const animatedHeight = useRef(new Animated.Value(Dimensions.get('screen').height));
+			const animationProgress = useRef(new Animated.Value(0));
+			const hideModalPromise = useRef<Promise<boolean> | null>(null);
 			const { onLayout, height } = useLayout();
 
 			const realHideModal = useRef(props.navigator.hideModal);
 
 			const hideModal = useCallback(() => {
-				return new Promise<boolean>(resolve => {
-					Animated.timing(animatedHeight.current, {
-						toValue: height,
-						duration: 200,
-						easing: Easing.linear,
+				if (hideModalPromise.current) {
+					return hideModalPromise.current;
+				}
+
+				hideModalPromise.current = new Promise<boolean>(resolve => {
+					Animated.timing(animationProgress.current, {
+						toValue: 0,
+						duration: 220,
+						easing: Easing.in(Easing.cubic),
 						useNativeDriver: true,
-					}).start(() => {
-						resolve(realHideModal.current());
+					}).start(({ finished }) => {
+						if (finished) {
+							resolve(realHideModal.current());
+						} else {
+							hideModalPromise.current = null;
+							resolve(false);
+						}
 					});
 				});
-			}, [height]);
+
+				return hideModalPromise.current;
+			}, []);
 
 			props.navigator.hideModal = hideModal;
 
 			useEffect(() => {
 				if (height !== 0) {
-					animatedHeight.current.setValue(height);
-					Animated.timing(animatedHeight.current, {
-						toValue: 0,
-						duration: 250,
-						easing: Easing.linear,
+					Animated.timing(animationProgress.current, {
+						toValue: 1,
+						duration: 260,
+						easing: Easing.out(Easing.cubic),
 						useNativeDriver: true,
 					}).start();
 				}
@@ -58,30 +70,36 @@ export default function withBottomModal({
 
 			useBackHandler(handleHardwareBackPress);
 
+			const translateY = animationProgress.current.interpolate({
+				inputRange: [0, 1],
+				outputRange: [height || Dimensions.get('screen').height, 0],
+			});
+
 			return (
-				<Animated.View
-					style={[
-						styles.container,
-						{
-							transform: [{ translateY: animatedHeight.current }],
-						},
-					]}
-				>
-					<TouchableWithoutFeedback
-						onPress={handleHardwareBackPress}
-						style={styles.flex1}
-					>
-						<View style={styles.flex1} />
+				<View style={styles.container}>
+					<TouchableWithoutFeedback onPress={handleHardwareBackPress}>
+						<Animated.View
+							style={[
+								styles.backdrop,
+								{
+									backgroundColor: backdropColor,
+									opacity: animationProgress.current,
+								},
+							]}
+						/>
 					</TouchableWithoutFeedback>
 
-					<View onLayout={onLayout}>
+					<Animated.View
+						onLayout={onLayout}
+						style={[styles.sheet, { transform: [{ translateY }] }]}
+					>
 						<WrappedComponent {...props} ref={ref} />
 						<SafeAreaView
 							edges={['bottom']}
 							style={{ backgroundColor: safeAreaColor }}
 						/>
-					</View>
-				</Animated.View>
+					</Animated.View>
+				</View>
 			);
 		}
 
@@ -101,11 +119,17 @@ export default function withBottomModal({
 
 const styles = StyleSheet.create({
 	container: {
-		opacity: 1,
 		flex: 1,
 		justifyContent: 'flex-end',
 	},
-	flex1: {
-		flex: 1,
+	backdrop: {
+		position: 'absolute',
+		top: 0,
+		right: 0,
+		bottom: 0,
+		left: 0,
+	},
+	sheet: {
+		width: '100%',
 	},
 });
