@@ -45,10 +45,14 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 		reactRootView = null;
 	}
 
+	@SuppressLint("SourceLockedOrientationActivity")
 	@Override
 	public void onStop() {
 		super.onStop();
 		if (FragmentHelper.isRemoving(this) && forceScreenLandscape()) {
+			if (requireActivity().getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+				requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			}
 			unmountReactView();
 		}
 	}
