@@ -50,9 +50,6 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 	public void onStop() {
 		super.onStop();
 		if (FragmentHelper.isRemoving(this) && forceScreenLandscape()) {
-			if (requireActivity().getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-				requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-			}
 			unmountReactView();
 		}
 	}
@@ -73,8 +70,18 @@ public class ReactFragment extends HybridFragment implements ReactManager.ReactB
 		}
 
 		if (forceScreenLandscape()) {
-			requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+			if (!isRequestedOrientationLandscape()) {
+				requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+			}
 		}
+	}
+
+	private boolean isRequestedOrientationLandscape() {
+		int requestedOrientation = requireActivity().getRequestedOrientation();
+		return requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ||
+			requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE ||
+			requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE ||
+			requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_USER_LANDSCAPE;
 	}
 
 	@Override
